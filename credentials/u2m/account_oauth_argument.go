@@ -21,9 +21,14 @@ type AccountOAuthArgument interface {
 type BasicAccountOAuthArgument struct {
 	accountHost string
 	accountID   string
+
+	// profile is the optional profile name. When set, GetCacheKey() returns
+	// the profile name instead of the host-based key.
+	profile string
 }
 
 var _ AccountOAuthArgument = BasicAccountOAuthArgument{}
+var _ HostCacheKeyProvider = BasicAccountOAuthArgument{}
 
 // NewBasicAccountOAuthArgument creates a new BasicAccountOAuthArgument.
 func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountOAuthArgument, error) {
@@ -31,6 +36,16 @@ func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountO
 		return BasicAccountOAuthArgument{}, err
 	}
 	return BasicAccountOAuthArgument{accountHost: accountsHost, accountID: accountID}, nil
+}
+
+// NewProfileAccountOAuthArgument creates a new BasicAccountOAuthArgument with a
+// profile name. When a profile is set, GetCacheKey() returns the profile name
+// instead of the host-based key.
+func NewProfileAccountOAuthArgument(accountsHost, accountID, profile string) (BasicAccountOAuthArgument, error) {
+	if err := validateHost(accountsHost); err != nil {
+		return BasicAccountOAuthArgument{}, err
+	}
+	return BasicAccountOAuthArgument{accountHost: accountsHost, accountID: accountID, profile: profile}, nil
 }
 
 // GetAccountHost returns the host of the account to authenticate to.
@@ -44,7 +59,17 @@ func (a BasicAccountOAuthArgument) GetAccountId() string {
 }
 
 // GetCacheKey returns a unique key for caching the OAuth token for the account.
-// The key is in the format "<accountHost>/oidc/accounts/<accountID>".
+// If a profile is set, the profile name is returned as the cache key.
+// Otherwise, the key is in the format "<accountHost>/oidc/accounts/<accountID>".
 func (a BasicAccountOAuthArgument) GetCacheKey() string {
+	if a.profile != "" {
+		return a.profile
+	}
+	return a.GetHostCacheKey()
+}
+
+// GetHostCacheKey returns the host-based cache key regardless of whether a
+// profile is set. The key is in the format "<accountHost>/oidc/accounts/<accountID>".
+func (a BasicAccountOAuthArgument) GetHostCacheKey() string {
 	return fmt.Sprintf("%s/oidc/accounts/%s", a.accountHost, a.accountID)
 }

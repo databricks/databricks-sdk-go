@@ -9,3 +9,11 @@ type OAuthArgument interface {
 	// to store and retrieve the token from the token cache.
 	GetCacheKey() string
 }
+
+// HostCacheKeyProvider is an interface for OAuthArgument implementations that
+// can return a host-based cache key regardless of whether a profile is set.
+// This is used by PersistentAuth for dual-write: writing tokens to both the
+// profile-based key and the legacy host-based key during migration.
+type HostCacheKeyProvider interface {
+	GetHostCacheKey() string
+}

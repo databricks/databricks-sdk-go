@@ -610,12 +610,22 @@ func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
 		return nil, err
 	}
 	host := c.CanonicalHostName()
+	profile := c.Profile
 	switch c.HostType() {
 	case AccountHost:
+		if profile != "" {
+			return u2m.NewProfileAccountOAuthArgument(host, c.AccountID, profile)
+		}
 		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
 	case UnifiedHost:
+		if profile != "" {
+			return u2m.NewProfileUnifiedOAuthArgument(host, c.AccountID, profile)
+		}
 		return u2m.NewBasicUnifiedOAuthArgument(host, c.AccountID)
 	case WorkspaceHost:
+		if profile != "" {
+			return u2m.NewProfileWorkspaceOAuthArgument(host, profile)
+		}
 		return u2m.NewBasicWorkspaceOAuthArgument(host)
 	default:
 		return nil, fmt.Errorf("unknown host type: %v", c.HostType())

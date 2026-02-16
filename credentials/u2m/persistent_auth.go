@@ -200,6 +200,11 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 
 // Token loads the OAuth2 token for the given OAuthArgument from the cache. If
 // the token is expired, it is refreshed using the refresh token.
+//
+// When a profile is set, lookup is by profile key only. There is no fallback
+// to the legacy host-based key — users with pre-existing host-keyed tokens
+// will re-authenticate on first use with a profile, at which point dualWrite
+// stores under both keys.
 func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	key := a.oAuthArgument.GetCacheKey()
 	t, err = a.cache.Lookup(key)
@@ -269,7 +274,7 @@ func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) 
 		}
 		return nil, err
 	}
-	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
+	err = a.dualWrite(t)
 	if err != nil {
 		return nil, fmt.Errorf("cache update: %w", err)
 	}
@@ -311,8 +316,8 @@ func (a *PersistentAuth) Challenge() error {
 	if err != nil {
 		return fmt.Errorf("authorize: %w", err)
 	}
-	// cache token identified by host (and possibly the account id)
-	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
+	// cache token identified by profile (primary) and host (dual-write for backward compat)
+	err = a.dualWrite(t)
 	if err != nil {
 		return fmt.Errorf("store: %w", err)
 	}
@@ -454,6 +459,27 @@ func (a *PersistentAuth) randomString(size int) (string, error) {
 		return "", fmt.Errorf("rand.Read: %w", err)
 	}
 	return base64.RawURLEncoding.EncodeToString(raw), nil
+}
+
+// dualWrite stores the token under both the primary cache key and the legacy
+// host-based cache key if the OAuthArgument supports it. This ensures backward
+// compatibility during the migration from host-based to profile-based cache
+// keys. If the primary key and the host key are the same (i.e. no profile is
+// set), no extra write is performed.
+func (a *PersistentAuth) dualWrite(t *oauth2.Token) error {
+	primaryKey := a.oAuthArgument.GetCacheKey()
+	if err := a.cache.Store(primaryKey, t); err != nil {
+		return err
+	}
+	if hcp, ok := a.oAuthArgument.(HostCacheKeyProvider); ok {
+		hostKey := hcp.GetHostCacheKey()
+		if hostKey != primaryKey {
+			if err := a.cache.Store(hostKey, t); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func (a *PersistentAuth) setOAuthContext(ctx context.Context) context.Context {

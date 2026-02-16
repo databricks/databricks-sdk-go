@@ -312,6 +312,106 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 	}
 }
 
+func TestConfig_getOAuthArgument_accountWithProfile(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	c := &Config{
+		Host:      "https://accounts.cloud.databricks.com",
+		AccountID: "abc",
+		Profile:   "my-profile",
+		Loaders:   []Loader{noopLoader},
+	}
+	rawGot, err := c.getOAuthArgument()
+	assert.NoError(t, err)
+	got, ok := rawGot.(u2m.BasicAccountOAuthArgument)
+	assert.True(t, ok)
+	assert.Equal(t, "https://accounts.cloud.databricks.com", got.GetAccountHost())
+	assert.Equal(t, "abc", got.GetAccountId())
+	assert.Equal(t, "my-profile", got.GetCacheKey())
+	assert.Equal(t, "https://accounts.cloud.databricks.com/oidc/accounts/abc", got.GetHostCacheKey())
+}
+
+func TestConfig_getOAuthArgument_workspaceWithProfile(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	c := &Config{
+		Host:    "https://myworkspace.cloud.databricks.com",
+		Profile: "ws-profile",
+		Loaders: []Loader{noopLoader},
+	}
+	rawGot, err := c.getOAuthArgument()
+	assert.NoError(t, err)
+	got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
+	assert.True(t, ok)
+	assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetWorkspaceHost())
+	assert.Equal(t, "ws-profile", got.GetCacheKey())
+	assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetHostCacheKey())
+}
+
+func TestConfig_getOAuthArgument_unifiedWithProfile(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	c := &Config{
+		Host:                       "https://unified.cloud.databricks.com",
+		AccountID:                  "account-123",
+		Profile:                    "unified-profile",
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+	}
+	rawGot, err := c.getOAuthArgument()
+	assert.NoError(t, err)
+	got, ok := rawGot.(u2m.BasicUnifiedOAuthArgument)
+	assert.True(t, ok)
+	assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
+	assert.Equal(t, "account-123", got.GetAccountId())
+	assert.Equal(t, "unified-profile", got.GetCacheKey())
+	assert.Equal(t, "https://unified.cloud.databricks.com/oidc/accounts/account-123", got.GetHostCacheKey())
+}
+
+func TestConfig_getOAuthArgument_withoutProfileBackwardCompat(t *testing.T) {
+	// Verify that when Profile is not set, the cache key uses the host-based
+	// format for backward compatibility.
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	tests := []struct {
+		name    string
+		config  *Config
+		wantKey string
+	}{
+		{
+			name: "workspace without profile",
+			config: &Config{
+				Host:    "https://myworkspace.cloud.databricks.com",
+				Loaders: []Loader{noopLoader},
+			},
+			wantKey: "https://myworkspace.cloud.databricks.com",
+		},
+		{
+			name: "account without profile",
+			config: &Config{
+				Host:      "https://accounts.cloud.databricks.com",
+				AccountID: "abc",
+				Loaders:   []Loader{noopLoader},
+			},
+			wantKey: "https://accounts.cloud.databricks.com/oidc/accounts/abc",
+		},
+		{
+			name: "unified without profile",
+			config: &Config{
+				Host:                       "https://unified.cloud.databricks.com",
+				AccountID:                  "account-123",
+				Experimental_IsUnifiedHost: true,
+				Loaders:                    []Loader{noopLoader},
+			},
+			wantKey: "https://unified.cloud.databricks.com/oidc/accounts/account-123",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rawGot, err := tt.config.getOAuthArgument()
+			assert.NoError(t, err)
+			assert.Equal(t, tt.wantKey, rawGot.GetCacheKey())
+		})
+	}
+}
+
 func TestConfig_EnsureResolved_scopeNormalization(t *testing.T) {
 	testCases := []struct {
 		desc   string
