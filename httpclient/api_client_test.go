@@ -601,6 +601,7 @@ func TestCannotRetryArbitraryReader(t *testing.T) {
 	err := client.Do(context.Background(), "POST", "/a",
 		WithRequestData(customReader{}))
 	require.ErrorContains(t, err, "cannot reset reader of type httpclient.customReader")
+	require.ErrorContains(t, err, "http 429")
 }
 
 func TestRetryGetRequest(t *testing.T) {
