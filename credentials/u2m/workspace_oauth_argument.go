@@ -20,6 +20,10 @@ type BasicWorkspaceOAuthArgument struct {
 	// host is the host of the workspace to authenticate to. This must start
 	// with "https://" and must not have a trailing slash.
 	host string
+
+	// profile is the optional profile name. When set, GetCacheKey() returns
+	// the profile name instead of the host-based key.
+	profile string
 }
 
 func validateHost(host string) error {
@@ -39,10 +43,17 @@ func validateHost(host string) error {
 
 // NewBasicWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument.
 func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, error) {
+	return NewProfileWorkspaceOAuthArgument(host, "")
+}
+
+// NewProfileWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument
+// with a profile name. When a profile is set, GetCacheKey() returns the profile
+// name instead of the host-based key.
+func NewProfileWorkspaceOAuthArgument(host, profile string) (BasicWorkspaceOAuthArgument, error) {
 	if err := validateHost(host); err != nil {
 		return BasicWorkspaceOAuthArgument{}, err
 	}
-	return BasicWorkspaceOAuthArgument{host: host}, nil
+	return BasicWorkspaceOAuthArgument{host: host, profile: profile}, nil
 }
 
 // GetWorkspaceHost returns the host of the workspace to authenticate to.
@@ -51,13 +62,24 @@ func (a BasicWorkspaceOAuthArgument) GetWorkspaceHost() string {
 }
 
 // GetCacheKey returns a unique key for caching the OAuth token for the workspace.
-// The key is in the format "<host>".
+// If a profile is set, the profile name is returned as the cache key.
+// Otherwise, the key is in the format "<host>".
 func (a BasicWorkspaceOAuthArgument) GetCacheKey() string {
-	a.host = strings.TrimSuffix(a.host, "/")
-	if !strings.HasPrefix(a.host, "http") {
-		a.host = fmt.Sprintf("https://%s", a.host)
+	if a.profile != "" {
+		return a.profile
 	}
-	return a.host
+	return a.GetHostCacheKey()
+}
+
+// GetHostCacheKey returns the host-based cache key regardless of whether a
+// profile is set. The key is in the format "<host>".
+func (a BasicWorkspaceOAuthArgument) GetHostCacheKey() string {
+	host := strings.TrimSuffix(a.host, "/")
+	if !strings.HasPrefix(host, "http") {
+		host = fmt.Sprintf("https://%s", host)
+	}
+	return host
 }
 
 var _ WorkspaceOAuthArgument = BasicWorkspaceOAuthArgument{}
+var _ HostCacheKeyProvider = BasicWorkspaceOAuthArgument{}

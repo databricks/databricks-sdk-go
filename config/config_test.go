@@ -312,6 +312,91 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 	}
 }
 
+func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	tests := []struct {
+		name        string
+		config      *Config
+		wantKey     string
+		wantHostKey string
+	}{
+		{
+			name: "workspace without profile",
+			config: &Config{
+				Host:    "https://myworkspace.cloud.databricks.com",
+				Loaders: []Loader{noopLoader},
+			},
+			wantKey:     "https://myworkspace.cloud.databricks.com",
+			wantHostKey: "https://myworkspace.cloud.databricks.com",
+		},
+		{
+			name: "workspace with profile",
+			config: &Config{
+				Host:    "https://myworkspace.cloud.databricks.com",
+				Profile: "ws-profile",
+				Loaders: []Loader{noopLoader},
+			},
+			wantKey:     "ws-profile",
+			wantHostKey: "https://myworkspace.cloud.databricks.com",
+		},
+		{
+			name: "account without profile",
+			config: &Config{
+				Host:      "https://accounts.cloud.databricks.com",
+				AccountID: "abc",
+				Loaders:   []Loader{noopLoader},
+			},
+			wantKey:     "https://accounts.cloud.databricks.com/oidc/accounts/abc",
+			wantHostKey: "https://accounts.cloud.databricks.com/oidc/accounts/abc",
+		},
+		{
+			name: "account with profile",
+			config: &Config{
+				Host:      "https://accounts.cloud.databricks.com",
+				AccountID: "abc",
+				Profile:   "my-profile",
+				Loaders:   []Loader{noopLoader},
+			},
+			wantKey:     "my-profile",
+			wantHostKey: "https://accounts.cloud.databricks.com/oidc/accounts/abc",
+		},
+		{
+			name: "unified without profile",
+			config: &Config{
+				Host:                       "https://unified.cloud.databricks.com",
+				AccountID:                  "account-123",
+				Experimental_IsUnifiedHost: true,
+				Loaders:                    []Loader{noopLoader},
+			},
+			wantKey:     "https://unified.cloud.databricks.com/oidc/accounts/account-123",
+			wantHostKey: "https://unified.cloud.databricks.com/oidc/accounts/account-123",
+		},
+		{
+			name: "unified with profile",
+			config: &Config{
+				Host:                       "https://unified.cloud.databricks.com",
+				AccountID:                  "account-123",
+				Profile:                    "unified-profile",
+				Experimental_IsUnifiedHost: true,
+				Loaders:                    []Loader{noopLoader},
+			},
+			wantKey:     "unified-profile",
+			wantHostKey: "https://unified.cloud.databricks.com/oidc/accounts/account-123",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rawGot, err := tt.config.getOAuthArgument()
+			assert.NoError(t, err)
+			assert.Equal(t, tt.wantKey, rawGot.GetCacheKey())
+			if hcp, ok := rawGot.(u2m.HostCacheKeyProvider); ok {
+				assert.Equal(t, tt.wantHostKey, hcp.GetHostCacheKey())
+			}
+		})
+	}
+}
+
 func TestConfig_EnsureResolved_scopeNormalization(t *testing.T) {
 	testCases := []struct {
 		desc   string
