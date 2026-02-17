@@ -55,7 +55,7 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner 
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if !cfg.IsAzure() {
+	if cfg.Environment().AzureApplicationID == "" {
 		return nil, nil
 	}
 	// Set the azure tenant ID from host if available

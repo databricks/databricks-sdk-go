@@ -39,9 +39,6 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" {
 		return nil, nil
 	}
-	if !cfg.IsAzure() {
-		return nil, nil
-	}
 	err := cfg.loadAzureTenantId(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("load tenant id: %w", err)
