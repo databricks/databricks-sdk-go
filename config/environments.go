@@ -13,7 +13,7 @@ func (c *Config) Environment() environment.DatabricksEnvironment {
 		return *c.DatabricksEnvironment
 	}
 	envs := environment.AllEnvironments()
-	if c.Host == "" && c.AzureResourceID != "" {
+	if (c.Host == "" || c.AzureEnvironment != "") && c.AzureResourceID != "" {
 		// azure resource ID can also be used in lieu of host by some
 		// of the clients, like Terraform. However, in this case, the workspace
 		// is assumed to be a production workspace.

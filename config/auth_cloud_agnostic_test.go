@@ -11,16 +11,18 @@ import (
 )
 
 // TestCloudAgnosticHosts verifies that credential providers work with cloud-agnostic hosts
-// after removing is_azure/is_gcp checks.
+// after removing is_azure/is_gcp checks. These tests ensure that Azure and GCP authentication
+// works with any Databricks host when credentials are properly configured.
+
 func TestAzureClientSecretWithCloudAgnosticHost(t *testing.T) {
 	ctx := context.Background()
 
 	// Create a config with cloud-agnostic host
 	cfg := &Config{
-		Host:             "https://api.databricks.com", // Cloud-agnostic host
-		AzureClientID:    "test-client-id",
+		Host:              "https://api.databricks.com", // Cloud-agnostic host (not *.azuredatabricks.net)
+		AzureClientID:     "test-client-id",
 		AzureClientSecret: "test-client-secret",
-		AzureTenantID:    "test-tenant-id",
+		AzureTenantID:     "test-tenant-id",
 	}
 	cfg.refreshClient = &httpclient.ApiClient{}
 
@@ -40,6 +42,23 @@ func TestAzureClientSecretWithCloudAgnosticHost(t *testing.T) {
 	}
 }
 
+func TestAzureClientSecretReturnsNilWhenCredentialsMissing(t *testing.T) {
+	ctx := context.Background()
+
+	// Test with missing credentials
+	cfg := &Config{
+		Host: "https://api.databricks.com",
+		// Missing AzureClientID, AzureClientSecret, or AzureTenantID
+	}
+
+	creds := AzureClientSecretCredentials{}
+	provider, err := creds.Configure(ctx, cfg)
+
+	// Should return nil when credentials are missing (filtering based on config fields, not cloud type)
+	require.NoError(t, err)
+	assert.Nil(t, provider, "Provider should be nil when Azure credentials are not configured")
+}
+
 func TestGoogleCredentialsWithCloudAgnosticHost(t *testing.T) {
 	ctx := context.Background()
 
@@ -47,7 +66,7 @@ func TestGoogleCredentialsWithCloudAgnosticHost(t *testing.T) {
 	validJSON := `{"type": "service_account", "project_id": "test-project"}`
 
 	cfg := &Config{
-		Host:              "https://api.databricks.com", // Cloud-agnostic host
+		Host:              "https://api.databricks.com", // Cloud-agnostic host (not *.gcp.databricks.com)
 		GoogleCredentials: validJSON,
 	}
 
@@ -67,12 +86,29 @@ func TestGoogleCredentialsWithCloudAgnosticHost(t *testing.T) {
 	}
 }
 
+func TestGoogleCredentialsReturnsNilWhenCredentialsMissing(t *testing.T) {
+	ctx := context.Background()
+
+	// Test with missing credentials
+	cfg := &Config{
+		Host: "https://api.databricks.com",
+		// Missing GoogleCredentials
+	}
+
+	creds := GoogleCredentials{}
+	provider, err := creds.Configure(ctx, cfg)
+
+	// Should return nil when credentials are missing (filtering based on config fields, not cloud type)
+	require.NoError(t, err)
+	assert.Nil(t, provider, "Provider should be nil when Google credentials are not configured")
+}
+
 func TestGoogleDefaultCredentialsWithCloudAgnosticHost(t *testing.T) {
 	ctx := context.Background()
 
 	// Create a config with cloud-agnostic host
 	cfg := &Config{
-		Host:                 "https://api.databricks.com", // Cloud-agnostic host
+		Host:                 "https://api.databricks.com", // Cloud-agnostic host (not *.gcp.databricks.com)
 		GoogleServiceAccount: "test-sa@test-project.iam.gserviceaccount.com",
 	}
 
@@ -91,6 +127,23 @@ func TestGoogleDefaultCredentialsWithCloudAgnosticHost(t *testing.T) {
 	}
 }
 
+func TestGoogleDefaultCredentialsReturnsNilWhenCredentialsMissing(t *testing.T) {
+	ctx := context.Background()
+
+	// Test with missing credentials
+	cfg := &Config{
+		Host: "https://api.databricks.com",
+		// Missing GoogleServiceAccount
+	}
+
+	creds := GoogleDefaultCredentials{}
+	provider, err := creds.Configure(ctx, cfg)
+
+	// Should return nil when credentials are missing (filtering based on config fields, not cloud type)
+	require.NoError(t, err)
+	assert.Nil(t, provider, "Provider should be nil when Google service account is not configured")
+}
+
 func TestAzureCliRequiresAzureApplicationID(t *testing.T) {
 	ctx := context.Background()
 
@@ -99,7 +152,7 @@ func TestAzureCliRequiresAzureApplicationID(t *testing.T) {
 	testEnv := environment.DefaultEnvironment()
 
 	cfg := &Config{
-		Host: "https://api.databricks.com",
+		Host:                  "https://api.databricks.com",
 		DatabricksEnvironment: &testEnv,
 	}
 
