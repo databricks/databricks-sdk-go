@@ -14,9 +14,11 @@ func (c *Config) Environment() environment.DatabricksEnvironment {
 	}
 	envs := environment.AllEnvironments()
 	if (c.Host == "" || c.AzureEnvironment != "") && c.AzureResourceID != "" {
-		// azure resource ID can also be used in lieu of host by some
-		// of the clients, like Terraform. However, in this case, the workspace
-		// is assumed to be a production workspace.
+		// Use Azure environment detection when:
+		// 1. AzureResourceID is provided without a host (e.g., Terraform), OR
+		// 2. AzureEnvironment is explicitly set (e.g., for CNAMEs/cloud-agnostic hosts)
+		// In both cases, the workspace is assumed to be a production workspace.
+
 		azureEnv := strings.ToUpper(c.AzureEnvironment)
 		if azureEnv == "" {
 			azureEnv = "PUBLIC"
