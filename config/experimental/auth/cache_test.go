@@ -12,6 +12,18 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// assertDurationNear verifies that got is within tolerance of want.
+func assertDurationNear(t *testing.T, got, want, tolerance time.Duration) {
+	t.Helper()
+	diff := got - want
+	if diff < 0 {
+		diff = -diff
+	}
+	if diff > tolerance {
+		t.Errorf("duration = %v, want %v (± %v tolerance)", got, want, tolerance)
+	}
+}
+
 func TestNewCachedTokenSource_noCaching(t *testing.T) {
 	want := &cachedTokenSource{}
 	got := NewCachedTokenSource(want, nil)
@@ -30,8 +42,8 @@ func TestNewCachedTokenSource_default(t *testing.T) {
 		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
 	}
 
-	if got.staleDuration != defaultStaleDuration {
-		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, defaultStaleDuration)
+	if got.staleDuration != maxStaleDuration {
+		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, maxStaleDuration)
 	}
 	if got.disableAsync != false {
 		t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, false)
@@ -64,6 +76,154 @@ func TestNewCachedTokenSource_options(t *testing.T) {
 	}
 	if got.cachedToken != wantCachedToken {
 		t.Errorf("NewCachedTokenSource(): cachedToken = %v, want %v", got.cachedToken, wantCachedToken)
+	}
+}
+
+func TestNewCachedTokenSource_standardOAuthToken(t *testing.T) {
+	now := time.Unix(1337, 0)
+	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return nil, nil
+	})
+
+	// Standard OAuth token with 60-minute TTL from now.
+	initialToken := &oauth2.Token{
+		AccessToken: "standard-token",
+		Expiry:      time.Now().Add(60 * time.Minute),
+	}
+
+	cts, ok := NewCachedTokenSource(ts, WithCachedToken(initialToken)).(*cachedTokenSource)
+	if !ok {
+		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
+	}
+
+	// For 60-minute TTL: staleDuration = min(30 min, 20 min) = 20 min (capped at max).
+	wantStaleDuration := 20 * time.Minute
+	assertDurationNear(t, cts.staleDuration, wantStaleDuration, time.Second)
+
+	// Now override timeNow for testing token state transitions.
+	cts.timeNow = func() time.Time { return now }
+	cts.cachedToken.Expiry = now.Add(60 * time.Minute)
+
+	// Verify token is fresh (60 min remaining > 20 min stale period).
+	if state := cts.tokenState(); state != fresh {
+		t.Errorf("tokenState() = %v, want fresh", state)
+	}
+
+	// Advance time to 41 minutes (19 minutes remaining).
+	cts.timeNow = func() time.Time { return now.Add(41 * time.Minute) }
+
+	// Token should now be stale (19 min remaining <= 20 min stale period).
+	if state := cts.tokenState(); state != stale {
+		t.Errorf("tokenState() after 41 minutes = %v, want stale", state)
+	}
+}
+
+func TestNewCachedTokenSource_fastPathToken(t *testing.T) {
+	now := time.Unix(1337, 0)
+	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return nil, nil
+	})
+
+	// FastPath token with 10-minute TTL from now.
+	initialToken := &oauth2.Token{
+		AccessToken: "fastpath-token",
+		Expiry:      time.Now().Add(10 * time.Minute),
+	}
+
+	cts, ok := NewCachedTokenSource(ts, WithCachedToken(initialToken)).(*cachedTokenSource)
+	if !ok {
+		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
+	}
+
+	// For 10-minute TTL: staleDuration = min(5 min, 20 min) = 5 min.
+	wantStaleDuration := 5 * time.Minute
+	assertDurationNear(t, cts.staleDuration, wantStaleDuration, time.Second)
+
+	// Now override timeNow for testing token state transitions.
+	cts.timeNow = func() time.Time { return now }
+	cts.cachedToken.Expiry = now.Add(10 * time.Minute)
+
+	// Verify token is fresh (10 min remaining > 5 min stale period).
+	if state := cts.tokenState(); state != fresh {
+		t.Errorf("tokenState() = %v, want fresh", state)
+	}
+
+	// Advance time to 6 minutes (4 minutes remaining).
+	cts.timeNow = func() time.Time { return now.Add(6 * time.Minute) }
+
+	// Token should now be stale (4 min remaining <= 5 min stale period).
+	if state := cts.tokenState(); state != stale {
+		t.Errorf("tokenState() after 6 minutes = %v, want stale", state)
+	}
+}
+
+func TestNewCachedTokenSource_stalePeriodRecomputation(t *testing.T) {
+	now := time.Unix(1337, 0)
+	fetchTime := now
+	tokenIndex := 1 // Start at 1 since tokens[0] is used as initial cached token.
+
+	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		var token *oauth2.Token
+		if tokenIndex == 1 {
+			// Refreshed token: very short-lived with 90-second TTL from fetch time.
+			token = &oauth2.Token{AccessToken: "token2", Expiry: fetchTime.Add(90 * time.Second)}
+		} else {
+			t.Fatalf("unexpected token fetch, tokenIndex = %d", tokenIndex)
+		}
+		tokenIndex++
+		return token, nil
+	})
+
+	// Create cache with first token: very short-lived with 90-second TTL.
+	initialToken := &oauth2.Token{
+		AccessToken: "token1",
+		Expiry:      time.Now().Add(90 * time.Second),
+	}
+	cts, ok := NewCachedTokenSource(ts, WithCachedToken(initialToken)).(*cachedTokenSource)
+	if !ok {
+		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
+	}
+
+	// Verify initial staleDuration for 90-sec token: min(45 sec, 20 min) = 45 sec.
+	wantStaleDuration := 45 * time.Second
+	assertDurationNear(t, cts.staleDuration, wantStaleDuration, time.Second)
+
+	// Override timeNow for deterministic testing.
+	cts.timeNow = func() time.Time { return now }
+	cts.cachedToken.Expiry = now.Add(90 * time.Second)
+
+	// Verify token is fresh (90 sec remaining > 45 sec stale period).
+	if state := cts.tokenState(); state != fresh {
+		t.Errorf("initial tokenState() = %v, want fresh", state)
+	}
+
+	// Advance time to make first token expired.
+	fetchTime = now.Add(91 * time.Second)
+	cts.timeNow = func() time.Time { return fetchTime }
+
+	// Fetch new token (90-second TTL) - should trigger blockingToken().
+	token, err := cts.Token(context.Background())
+	if err != nil {
+		t.Fatalf("Token() error = %v, want nil", err)
+	}
+	if token.AccessToken != "token2" {
+		t.Errorf("Token().AccessToken = %v, want token2", token.AccessToken)
+	}
+
+	// Verify staleDuration was recomputed (still 45 sec for 90-sec token).
+	assertDurationNear(t, cts.staleDuration, wantStaleDuration, time.Second)
+
+	// Verify refreshed token is fresh (90 sec remaining > 45 sec stale period).
+	if state := cts.tokenState(); state != fresh {
+		t.Errorf("tokenState() after refresh = %v, want fresh", state)
+	}
+
+	// Advance time by 46 seconds (44 seconds remaining).
+	cts.timeNow = func() time.Time { return fetchTime.Add(46 * time.Second) }
+
+	// Token should now be stale (44 sec remaining <= 45 sec stale period).
+	if state := cts.tokenState(); state != stale {
+		t.Errorf("tokenState() after 46 seconds = %v, want stale", state)
 	}
 }
 
