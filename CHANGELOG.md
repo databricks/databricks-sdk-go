@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.109.0 (2026-02-18)
+
+### New Features and Improvements
+* Use profile name as OAuth token cache key instead of host URL, so two profiles on the same host store separate tokens.
+
+
 ## Release v0.108.0 (2026-02-16)
 
 ### API Changes
