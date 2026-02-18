@@ -5,6 +5,7 @@
 ### Breaking Changes
 
 ### New Features and Improvements
+* Add `DefaultCredentialStrategy` package-level variable to allow overriding the default authentication strategy for all `Config` instances.
 
 ### Bug Fixes
 
