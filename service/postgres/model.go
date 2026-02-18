@@ -1244,6 +1244,29 @@ func (s Role) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Attributes that can be granted to a Postgres role. We are only implementing a
+// subset for now, see xref:
+// https://www.postgresql.org/docs/16/sql-createrole.html The values follow
+// Postgres keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they
+// don't include typical underscores between words.
+type RoleAttributes struct {
+	Bypassrls bool `json:"bypassrls,omitempty"`
+
+	Createdb bool `json:"createdb,omitempty"`
+
+	Createrole bool `json:"createrole,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RoleAttributes) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RoleAttributes) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // How the role is authenticated when connecting to Postgres.
 type RoleAuthMethod string
 
@@ -1328,10 +1351,48 @@ func (f *RoleIdentityType) Type() string {
 	return "RoleIdentityType"
 }
 
+// Roles that the DatabaseInstanceRole can be a member of.
+type RoleMembershipRole string
+
+const RoleMembershipRoleDatabricksSuperuser RoleMembershipRole = `DATABRICKS_SUPERUSER`
+
+// String representation for [fmt.Print]
+func (f *RoleMembershipRole) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RoleMembershipRole) Set(v string) error {
+	switch v {
+	case `DATABRICKS_SUPERUSER`:
+		*f = RoleMembershipRole(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATABRICKS_SUPERUSER"`, v)
+	}
+}
+
+// Values returns all possible values for RoleMembershipRole.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RoleMembershipRole) Values() []RoleMembershipRole {
+	return []RoleMembershipRole{
+		RoleMembershipRoleDatabricksSuperuser,
+	}
+}
+
+// Type always returns RoleMembershipRole to satisfy [pflag.Value] interface
+func (f *RoleMembershipRole) Type() string {
+	return "RoleMembershipRole"
+}
+
 type RoleOperationMetadata struct {
 }
 
 type RoleRoleSpec struct {
+	// The desired API-exposed Postgres role attribute to associate with the
+	// role. Optional.
+	Attributes *RoleAttributes `json:"attributes,omitempty"`
 	// If auth_method is left unspecified, a meaningful authentication method is
 	// derived from the identity_type: * For the managed identities, OAUTH is
 	// used. * For the regular postgres roles, authentication based on postgres
@@ -1346,6 +1407,8 @@ type RoleRoleSpec struct {
 	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
 	// for GROUP
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
+	// An enum value for a standard role that this role is a member of.
+	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	//
 	// This expects a valid Postgres identifier as specified in the link below.
@@ -1375,6 +1438,8 @@ type RoleRoleStatus struct {
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
 	// The type of the role.
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
+	// An enum value for a standard role that this role is a member of.
+	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	PostgresRole string `json:"postgres_role,omitempty"`
 

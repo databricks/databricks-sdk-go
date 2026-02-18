@@ -60,8 +60,8 @@ func (a *qualityMonitorV2Impl) GetQualityMonitor(ctx context.Context, request Ge
 	return &qualityMonitor, err
 }
 
-// [DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality
-// Monitoring API instead.
+// Deprecated: Use Data Quality Monitoring API instead
+// (/api/data-quality/v1/monitors). (Unimplemented) List quality monitors.
 func (a *qualityMonitorV2Impl) ListQualityMonitor(ctx context.Context, request ListQualityMonitorRequest) listing.Iterator[QualityMonitor] {
 
 	getNextPage := func(ctx context.Context, req ListQualityMonitorRequest) (*ListQualityMonitorResponse, error) {
@@ -86,8 +86,8 @@ func (a *qualityMonitorV2Impl) ListQualityMonitor(ctx context.Context, request L
 	return iterator
 }
 
-// [DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality
-// Monitoring API instead.
+// Deprecated: Use Data Quality Monitoring API instead
+// (/api/data-quality/v1/monitors). (Unimplemented) List quality monitors.
 func (a *qualityMonitorV2Impl) ListQualityMonitorAll(ctx context.Context, request ListQualityMonitorRequest) ([]QualityMonitor, error) {
 	iterator := a.ListQualityMonitor(ctx, request)
 	return listing.ToSlice[QualityMonitor](ctx, iterator)
