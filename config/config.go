@@ -66,6 +66,17 @@ const (
 
 var defaultScopes = []string{"all-apis"}
 
+// DefaultCredentialStrategy is the default factory for creating a
+// [CredentialsStrategy] when [Config.Credentials] is not set. It can be
+// overridden to change the default authentication behavior for all Config
+// instances.
+//
+// Each invocation must return a new instance to avoid shared mutable state
+// between Config instances.
+var DefaultCredentialStrategy func() CredentialsStrategy = func() CredentialsStrategy {
+	return &DefaultCredentials{}
+}
+
 // Config represents configuration for Databricks Connectivity
 type Config struct {
 	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
@@ -511,7 +522,7 @@ func (c *Config) authenticateIfNeeded() error {
 		return nil
 	}
 	if c.Credentials == nil {
-		c.Credentials = &DefaultCredentials{}
+		c.Credentials = DefaultCredentialStrategy()
 	}
 	if err := c.fixHostIfNeeded(); err != nil && !errors.Is(err, ErrNoHostConfigured) {
 		return err

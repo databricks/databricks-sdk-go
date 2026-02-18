@@ -11,6 +11,25 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 )
 
+func TestDefaultCredentialStrategy(t *testing.T) {
+	original := DefaultCredentialStrategy
+	t.Cleanup(func() { DefaultCredentialStrategy = original })
+
+	want := &DefaultCredentials{}
+	DefaultCredentialStrategy = func() CredentialsStrategy {
+		return want
+	}
+
+	cfg := &Config{
+		Host: "https://example.databricks.com",
+	}
+	cfg.Authenticate(&http.Request{Header: http.Header{}})
+
+	if cfg.Credentials != want {
+		t.Errorf("Credentials: got %v, want %v", cfg.Credentials, want)
+	}
+}
+
 func TestDefaultCredentials_Configure(t *testing.T) {
 	testCases := []struct {
 		desc     string
