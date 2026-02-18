@@ -162,6 +162,65 @@ func (_c *MockAppsInterface_CreateAndWait_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
+// CreateSpace provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) CreateSpace(ctx context.Context, request apps.CreateSpaceRequest) (apps.CreateSpaceOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateSpace")
+	}
+
+	var r0 apps.CreateSpaceOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.CreateSpaceRequest) (apps.CreateSpaceOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.CreateSpaceRequest) apps.CreateSpaceOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(apps.CreateSpaceOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.CreateSpaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_CreateSpace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateSpace'
+type MockAppsInterface_CreateSpace_Call struct {
+	*mock.Call
+}
+
+// CreateSpace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.CreateSpaceRequest
+func (_e *MockAppsInterface_Expecter) CreateSpace(ctx interface{}, request interface{}) *MockAppsInterface_CreateSpace_Call {
+	return &MockAppsInterface_CreateSpace_Call{Call: _e.mock.On("CreateSpace", ctx, request)}
+}
+
+func (_c *MockAppsInterface_CreateSpace_Call) Run(run func(ctx context.Context, request apps.CreateSpaceRequest)) *MockAppsInterface_CreateSpace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.CreateSpaceRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_CreateSpace_Call) Return(_a0 apps.CreateSpaceOperationInterface, _a1 error) *MockAppsInterface_CreateSpace_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_CreateSpace_Call) RunAndReturn(run func(context.Context, apps.CreateSpaceRequest) (apps.CreateSpaceOperationInterface, error)) *MockAppsInterface_CreateSpace_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateUpdate provides a mock function with given fields: ctx, asyncUpdateAppRequest
 func (_m *MockAppsInterface) CreateUpdate(ctx context.Context, asyncUpdateAppRequest apps.AsyncUpdateAppRequest) (*apps.WaitGetUpdateAppSucceeded[apps.AppUpdate], error) {
 	ret := _m.Called(ctx, asyncUpdateAppRequest)
@@ -409,6 +468,65 @@ func (_c *MockAppsInterface_DeleteByName_Call) Return(_a0 *apps.App, _a1 error) 
 }
 
 func (_c *MockAppsInterface_DeleteByName_Call) RunAndReturn(run func(context.Context, string) (*apps.App, error)) *MockAppsInterface_DeleteByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteSpace provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) DeleteSpace(ctx context.Context, request apps.DeleteSpaceRequest) (apps.DeleteSpaceOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSpace")
+	}
+
+	var r0 apps.DeleteSpaceOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.DeleteSpaceRequest) (apps.DeleteSpaceOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.DeleteSpaceRequest) apps.DeleteSpaceOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(apps.DeleteSpaceOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.DeleteSpaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_DeleteSpace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSpace'
+type MockAppsInterface_DeleteSpace_Call struct {
+	*mock.Call
+}
+
+// DeleteSpace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.DeleteSpaceRequest
+func (_e *MockAppsInterface_Expecter) DeleteSpace(ctx interface{}, request interface{}) *MockAppsInterface_DeleteSpace_Call {
+	return &MockAppsInterface_DeleteSpace_Call{Call: _e.mock.On("DeleteSpace", ctx, request)}
+}
+
+func (_c *MockAppsInterface_DeleteSpace_Call) Run(run func(ctx context.Context, request apps.DeleteSpaceRequest)) *MockAppsInterface_DeleteSpace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.DeleteSpaceRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_DeleteSpace_Call) Return(_a0 apps.DeleteSpaceOperationInterface, _a1 error) *MockAppsInterface_DeleteSpace_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_DeleteSpace_Call) RunAndReturn(run func(context.Context, apps.DeleteSpaceRequest) (apps.DeleteSpaceOperationInterface, error)) *MockAppsInterface_DeleteSpace_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1019,6 +1137,124 @@ func (_c *MockAppsInterface_GetPermissionsByAppName_Call) RunAndReturn(run func(
 	return _c
 }
 
+// GetSpace provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) GetSpace(ctx context.Context, request apps.GetSpaceRequest) (*apps.Space, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSpace")
+	}
+
+	var r0 *apps.Space
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.GetSpaceRequest) (*apps.Space, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.GetSpaceRequest) *apps.Space); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.Space)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.GetSpaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_GetSpace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSpace'
+type MockAppsInterface_GetSpace_Call struct {
+	*mock.Call
+}
+
+// GetSpace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.GetSpaceRequest
+func (_e *MockAppsInterface_Expecter) GetSpace(ctx interface{}, request interface{}) *MockAppsInterface_GetSpace_Call {
+	return &MockAppsInterface_GetSpace_Call{Call: _e.mock.On("GetSpace", ctx, request)}
+}
+
+func (_c *MockAppsInterface_GetSpace_Call) Run(run func(ctx context.Context, request apps.GetSpaceRequest)) *MockAppsInterface_GetSpace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.GetSpaceRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_GetSpace_Call) Return(_a0 *apps.Space, _a1 error) *MockAppsInterface_GetSpace_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_GetSpace_Call) RunAndReturn(run func(context.Context, apps.GetSpaceRequest) (*apps.Space, error)) *MockAppsInterface_GetSpace_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetSpaceOperation provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) GetSpaceOperation(ctx context.Context, request apps.GetOperationRequest) (*apps.Operation, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSpaceOperation")
+	}
+
+	var r0 *apps.Operation
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.GetOperationRequest) (*apps.Operation, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.GetOperationRequest) *apps.Operation); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.Operation)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.GetOperationRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_GetSpaceOperation_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSpaceOperation'
+type MockAppsInterface_GetSpaceOperation_Call struct {
+	*mock.Call
+}
+
+// GetSpaceOperation is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.GetOperationRequest
+func (_e *MockAppsInterface_Expecter) GetSpaceOperation(ctx interface{}, request interface{}) *MockAppsInterface_GetSpaceOperation_Call {
+	return &MockAppsInterface_GetSpaceOperation_Call{Call: _e.mock.On("GetSpaceOperation", ctx, request)}
+}
+
+func (_c *MockAppsInterface_GetSpaceOperation_Call) Run(run func(ctx context.Context, request apps.GetOperationRequest)) *MockAppsInterface_GetSpaceOperation_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.GetOperationRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_GetSpaceOperation_Call) Return(_a0 *apps.Operation, _a1 error) *MockAppsInterface_GetSpaceOperation_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_GetSpaceOperation_Call) RunAndReturn(run func(context.Context, apps.GetOperationRequest) (*apps.Operation, error)) *MockAppsInterface_GetSpaceOperation_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetUpdate provides a mock function with given fields: ctx, request
 func (_m *MockAppsInterface) GetUpdate(ctx context.Context, request apps.GetAppUpdateRequest) (*apps.AppUpdate, error) {
 	ret := _m.Called(ctx, request)
@@ -1349,6 +1585,114 @@ func (_c *MockAppsInterface_ListDeploymentsByAppName_Call) Return(_a0 *apps.List
 }
 
 func (_c *MockAppsInterface_ListDeploymentsByAppName_Call) RunAndReturn(run func(context.Context, string) (*apps.ListAppDeploymentsResponse, error)) *MockAppsInterface_ListDeploymentsByAppName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSpaces provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) ListSpaces(ctx context.Context, request apps.ListSpacesRequest) listing.Iterator[apps.Space] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSpaces")
+	}
+
+	var r0 listing.Iterator[apps.Space]
+	if rf, ok := ret.Get(0).(func(context.Context, apps.ListSpacesRequest) listing.Iterator[apps.Space]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[apps.Space])
+		}
+	}
+
+	return r0
+}
+
+// MockAppsInterface_ListSpaces_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSpaces'
+type MockAppsInterface_ListSpaces_Call struct {
+	*mock.Call
+}
+
+// ListSpaces is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.ListSpacesRequest
+func (_e *MockAppsInterface_Expecter) ListSpaces(ctx interface{}, request interface{}) *MockAppsInterface_ListSpaces_Call {
+	return &MockAppsInterface_ListSpaces_Call{Call: _e.mock.On("ListSpaces", ctx, request)}
+}
+
+func (_c *MockAppsInterface_ListSpaces_Call) Run(run func(ctx context.Context, request apps.ListSpacesRequest)) *MockAppsInterface_ListSpaces_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.ListSpacesRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_ListSpaces_Call) Return(_a0 listing.Iterator[apps.Space]) *MockAppsInterface_ListSpaces_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAppsInterface_ListSpaces_Call) RunAndReturn(run func(context.Context, apps.ListSpacesRequest) listing.Iterator[apps.Space]) *MockAppsInterface_ListSpaces_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSpacesAll provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) ListSpacesAll(ctx context.Context, request apps.ListSpacesRequest) ([]apps.Space, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSpacesAll")
+	}
+
+	var r0 []apps.Space
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.ListSpacesRequest) ([]apps.Space, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.ListSpacesRequest) []apps.Space); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]apps.Space)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.ListSpacesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_ListSpacesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSpacesAll'
+type MockAppsInterface_ListSpacesAll_Call struct {
+	*mock.Call
+}
+
+// ListSpacesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.ListSpacesRequest
+func (_e *MockAppsInterface_Expecter) ListSpacesAll(ctx interface{}, request interface{}) *MockAppsInterface_ListSpacesAll_Call {
+	return &MockAppsInterface_ListSpacesAll_Call{Call: _e.mock.On("ListSpacesAll", ctx, request)}
+}
+
+func (_c *MockAppsInterface_ListSpacesAll_Call) Run(run func(ctx context.Context, request apps.ListSpacesRequest)) *MockAppsInterface_ListSpacesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.ListSpacesRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_ListSpacesAll_Call) Return(_a0 []apps.Space, _a1 error) *MockAppsInterface_ListSpacesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_ListSpacesAll_Call) RunAndReturn(run func(context.Context, apps.ListSpacesRequest) ([]apps.Space, error)) *MockAppsInterface_ListSpacesAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1792,6 +2136,65 @@ func (_c *MockAppsInterface_UpdatePermissions_Call) Return(_a0 *apps.AppPermissi
 }
 
 func (_c *MockAppsInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, apps.AppPermissionsRequest) (*apps.AppPermissions, error)) *MockAppsInterface_UpdatePermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateSpace provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) UpdateSpace(ctx context.Context, request apps.UpdateSpaceRequest) (apps.UpdateSpaceOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateSpace")
+	}
+
+	var r0 apps.UpdateSpaceOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.UpdateSpaceRequest) (apps.UpdateSpaceOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.UpdateSpaceRequest) apps.UpdateSpaceOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(apps.UpdateSpaceOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.UpdateSpaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_UpdateSpace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateSpace'
+type MockAppsInterface_UpdateSpace_Call struct {
+	*mock.Call
+}
+
+// UpdateSpace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.UpdateSpaceRequest
+func (_e *MockAppsInterface_Expecter) UpdateSpace(ctx interface{}, request interface{}) *MockAppsInterface_UpdateSpace_Call {
+	return &MockAppsInterface_UpdateSpace_Call{Call: _e.mock.On("UpdateSpace", ctx, request)}
+}
+
+func (_c *MockAppsInterface_UpdateSpace_Call) Run(run func(ctx context.Context, request apps.UpdateSpaceRequest)) *MockAppsInterface_UpdateSpace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.UpdateSpaceRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_UpdateSpace_Call) Return(_a0 apps.UpdateSpaceOperationInterface, _a1 error) *MockAppsInterface_UpdateSpace_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_UpdateSpace_Call) RunAndReturn(run func(context.Context, apps.UpdateSpaceRequest) (apps.UpdateSpaceOperationInterface, error)) *MockAppsInterface_UpdateSpace_Call {
 	_c.Call.Return(run)
 	return _c
 }

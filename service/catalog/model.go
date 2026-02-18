@@ -5,6 +5,7 @@ package catalog
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -323,8 +324,8 @@ type AwsSqsQueue struct {
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format
-	// https://sqs.{region}.amazonaws.com/{account id}/{queue name} Required for
-	// provided_sqs.
+	// https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only
+	// required for provided_sqs.
 	QueueUrl string `json:"queue_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -441,11 +442,12 @@ type AzureQueueStorage struct {
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format https://{storage
-	// account}.queue.core.windows.net/{queue name} Required for provided_aqs.
+	// account}.queue.core.windows.net/{queue name} Only required for
+	// provided_aqs.
 	QueueUrl string `json:"queue_url,omitempty"`
-	// The resource group for the queue, event grid subscription, and external
-	// location storage account. Only required for locations with a service
-	// principal storage credential
+	// Optional resource group for the queue, event grid subscription, and
+	// external location storage account. Only required for locations with a
+	// service principal storage credential
 	ResourceGroup string `json:"resource_group,omitempty"`
 	// Optional subscription id for the queue, event grid subscription, and
 	// external location storage account. Required for locations with a service
@@ -719,6 +721,11 @@ func (s ColumnInfo) MarshalJSON() ([]byte, error) {
 type ColumnMask struct {
 	// The full name of the column mask SQL UDF.
 	FunctionName string `json:"function_name,omitempty"`
+	// The list of additional table columns or literals to be passed as
+	// additional arguments to a column mask function. This is the replacement
+	// of the deprecated using_column_names field and carries information about
+	// the types (alias or constant) of the arguments to the mask function.
+	UsingArguments []PolicyFunctionArgument `json:"using_arguments,omitempty"`
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
 	// of the column being masked and the types of the rest of the args should
@@ -1247,7 +1254,13 @@ type CreateExternalLocation struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name"`
-	// Whether to enable file events on this external location.
+	// The effective value of `enable_file_events` after applying server-side
+	// defaults.
+	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
+	// Whether to enable file events on this external location. Default to
+	// `true`. Set to `false` to disable file events. The actual applied value
+	// may differ due to server-side defaults; check
+	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -1255,8 +1268,8 @@ type CreateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is `true`, must be
-	// defined and have exactly one of the documented properties.
+	// File event queue settings. If `enable_file_events` is not `false`, must
+	// be defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
@@ -1880,12 +1893,14 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 14
+// Next Id: 16
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
 
 const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
+
+const CredentialTypeEdgegridAkamai CredentialType = `EDGEGRID_AKAMAI`
 
 const CredentialTypeOauthAccessToken CredentialType = `OAUTH_ACCESS_TOKEN`
 
@@ -1907,6 +1922,8 @@ const CredentialTypePemPrivateKey CredentialType = `PEM_PRIVATE_KEY`
 
 const CredentialTypeServiceCredential CredentialType = `SERVICE_CREDENTIAL`
 
+const CredentialTypeSswsToken CredentialType = `SSWS_TOKEN`
+
 const CredentialTypeUnknownCredentialType CredentialType = `UNKNOWN_CREDENTIAL_TYPE`
 
 const CredentialTypeUsernamePassword CredentialType = `USERNAME_PASSWORD`
@@ -1919,11 +1936,11 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_MTLS`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
+	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `EDGEGRID_AKAMAI`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_MTLS`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `SSWS_TOKEN`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_MTLS", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "EDGEGRID_AKAMAI", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_MTLS", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "SSWS_TOKEN", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
 	}
 }
 
@@ -1934,6 +1951,7 @@ func (f *CredentialType) Values() []CredentialType {
 	return []CredentialType{
 		CredentialTypeAnyStaticCredential,
 		CredentialTypeBearerToken,
+		CredentialTypeEdgegridAkamai,
 		CredentialTypeOauthAccessToken,
 		CredentialTypeOauthM2m,
 		CredentialTypeOauthMtls,
@@ -1944,6 +1962,7 @@ func (f *CredentialType) Values() []CredentialType {
 		CredentialTypeOidcToken,
 		CredentialTypePemPrivateKey,
 		CredentialTypeServiceCredential,
+		CredentialTypeSswsToken,
 		CredentialTypeUnknownCredentialType,
 		CredentialTypeUsernamePassword,
 	}
@@ -2723,10 +2742,17 @@ type EntityTagAssignment struct {
 	// The type of the entity to which the tag is assigned. Allowed values are:
 	// catalogs, schemas, tables, columns, volumes.
 	EntityType string `json:"entity_type"`
+	// The source type of the tag assignment, e.g., user-assigned or
+	// system-assigned
+	SourceType TagAssignmentSourceType `json:"source_type,omitempty"`
 	// The key of the tag
 	TagKey string `json:"tag_key"`
 	// The value of the tag
 	TagValue string `json:"tag_value,omitempty"`
+	// The timestamp when the tag assignment was last updated
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// The user or principal who updated the tag assignment
+	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2975,7 +3001,13 @@ type ExternalLocationInfo struct {
 	CredentialId string `json:"credential_id,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
-	// Whether to enable file events on this external location.
+	// The effective value of `enable_file_events` after applying server-side
+	// defaults.
+	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
+	// Whether to enable file events on this external location. Default to
+	// `true`. Set to `false` to disable file events. The actual applied value
+	// may differ due to server-side defaults; check
+	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -2983,8 +3015,8 @@ type ExternalLocationInfo struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is `true`, must be
-	// defined and have exactly one of the documented properties.
+	// File event queue settings. If `enable_file_events` is not `false`, must
+	// be defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -3499,7 +3531,7 @@ type GcpPubsub struct {
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The Pub/Sub subscription name in the format
-	// projects/{project}/subscriptions/{subscription name} Required for
+	// projects/{project}/subscriptions/{subscription name}. Only required for
 	// provided_pubsub.
 	SubscriptionName string `json:"subscription_name,omitempty"`
 
@@ -6216,6 +6248,25 @@ func (s PipelineProgress) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A positional argument passed to a row filter or column mask function.
+// Distinguishes between column references and literals.
+type PolicyFunctionArgument struct {
+	// A column reference.
+	Column string `json:"column,omitempty"`
+	// A constant literal.
+	Constant string `json:"constant,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PolicyFunctionArgument) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PolicyFunctionArgument) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PolicyInfo struct {
 	// Options for column mask policies. Valid only if `policy_type` is
 	// `POLICY_TYPE_COLUMN_MASK`. Required on create and optional on update.
@@ -6245,13 +6296,12 @@ type PolicyInfo struct {
 	// the policy, set `name` to a different value on update.
 	Name string `json:"name,omitempty"`
 	// Full name of the securable on which the policy is defined. Required on
-	// create and ignored on update.
+	// create.
 	OnSecurableFullname string `json:"on_securable_fullname,omitempty"`
 	// Type of the securable on which the policy is defined. Only `CATALOG`,
-	// `SCHEMA` and `TABLE` are supported at this moment. Required on create and
-	// ignored on update.
+	// `SCHEMA` and `TABLE` are supported at this moment. Required on create.
 	OnSecurableType SecurableType `json:"on_securable_type,omitempty"`
-	// Type of the policy. Required on create and ignored on update.
+	// Type of the policy. Required on create.
 	PolicyType PolicyType `json:"policy_type"`
 	// Options for row filter policies. Valid only if `policy_type` is
 	// `POLICY_TYPE_ROW_FILTER`. Required on create and optional on update. When
@@ -6925,7 +6975,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 293; Next id: 294
+// Latest kind: CONNECTION_JDBC_OAUTH_M2M = 298; Next id: 299
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7715,6 +7765,11 @@ func (f *TableOperation) Type() string {
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
 	FunctionName string `json:"function_name"`
+	// The list of additional table columns or literals to be passed as
+	// additional arguments to a row filter function. This is the replacement of
+	// the deprecated input_column_names field and carries information about the
+	// types (alias or constant) of the arguments to the filter function.
+	InputArguments []PolicyFunctionArgument `json:"input_arguments,omitempty"`
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
 	// arguments.
@@ -7796,6 +7851,41 @@ func (f *TableType) Values() []TableType {
 // Type always returns TableType to satisfy [pflag.Value] interface
 func (f *TableType) Type() string {
 	return "TableType"
+}
+
+// Enum representing the source type of a tag assignment
+type TagAssignmentSourceType string
+
+const TagAssignmentSourceTypeTagAssignmentSourceTypeSystemDataClassification TagAssignmentSourceType = `TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION`
+
+// String representation for [fmt.Print]
+func (f *TagAssignmentSourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TagAssignmentSourceType) Set(v string) error {
+	switch v {
+	case `TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION`:
+		*f = TagAssignmentSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"`, v)
+	}
+}
+
+// Values returns all possible values for TagAssignmentSourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TagAssignmentSourceType) Values() []TagAssignmentSourceType {
+	return []TagAssignmentSourceType{
+		TagAssignmentSourceTypeTagAssignmentSourceTypeSystemDataClassification,
+	}
+}
+
+// Type always returns TagAssignmentSourceType to satisfy [pflag.Value] interface
+func (f *TagAssignmentSourceType) Type() string {
+	return "TagAssignmentSourceType"
 }
 
 type TagKeyValue struct {
@@ -8093,7 +8183,13 @@ type UpdateExternalLocation struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
-	// Whether to enable file events on this external location.
+	// The effective value of `enable_file_events` after applying server-side
+	// defaults.
+	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
+	// Whether to enable file events on this external location. Default to
+	// `true`. Set to `false` to disable file events. The actual applied value
+	// may differ due to server-side defaults; check
+	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -8101,8 +8197,8 @@ type UpdateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is `true`, must be
-	// defined and have exactly one of the documented properties.
+	// File event queue settings. If `enable_file_events` is not `false`, must
+	// be defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.

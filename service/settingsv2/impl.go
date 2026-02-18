@@ -24,10 +24,7 @@ func (a *accountSettingsV2Impl) GetPublicAccountSetting(ctx context.Context, req
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &setting)
 	return &setting, err
 }
@@ -38,10 +35,7 @@ func (a *accountSettingsV2Impl) GetPublicAccountUserPreference(ctx context.Conte
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &userPreference)
 	return &userPreference, err
 }
@@ -87,10 +81,7 @@ func (a *accountSettingsV2Impl) internalListAccountSettingsMetadata(ctx context.
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountSettingsMetadataResponse)
 	return &listAccountSettingsMetadataResponse, err
 }
@@ -140,10 +131,7 @@ func (a *accountSettingsV2Impl) internalListAccountUserPreferencesMetadata(ctx c
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountUserPreferencesMetadataResponse)
 	return &listAccountUserPreferencesMetadataResponse, err
 }
@@ -155,10 +143,7 @@ func (a *accountSettingsV2Impl) PatchPublicAccountSetting(ctx context.Context, r
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
+
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Setting, &setting)
 	return &setting, err
 }
@@ -170,10 +155,7 @@ func (a *accountSettingsV2Impl) PatchPublicAccountUserPreference(ctx context.Con
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
+
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Setting, &userPreference)
 	return &userPreference, err
 }
@@ -190,8 +172,8 @@ func (a *workspaceSettingsV2Impl) GetPublicWorkspaceSetting(ctx context.Context,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &setting)
 	return &setting, err
@@ -239,8 +221,8 @@ func (a *workspaceSettingsV2Impl) internalListWorkspaceSettingsMetadata(ctx cont
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listWorkspaceSettingsMetadataResponse)
 	return &listWorkspaceSettingsMetadataResponse, err
@@ -254,8 +236,8 @@ func (a *workspaceSettingsV2Impl) PatchPublicWorkspaceSetting(ctx context.Contex
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Setting, &setting)
 	return &setting, err

@@ -112,6 +112,8 @@
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
+// - [networking.EndpointsAPI]: These APIs manage endpoint configurations for this account.
+//
 // - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
 //
 // - [catalog.EntityTagAssignmentsAPI]: Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog.
@@ -238,9 +240,9 @@
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 //
-// - [qualitymonitorv2.QualityMonitorV2API]: [DEPRECATED] This API is deprecated.
+// - [qualitymonitorv2.QualityMonitorV2API]: Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors).
 //
-// - [catalog.QualityMonitorsAPI]: [DEPRECATED] This API is deprecated.
+// - [catalog.QualityMonitorsAPI]: Deprecated: Please use the Data Quality Monitors API instead (REST: /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection.
 //
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //
@@ -373,6 +375,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
+	"github.com/databricks/databricks-sdk-go/service/networking"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/postgres"
@@ -449,6 +452,7 @@ var (
 	_ *settings.EnableNotebookTableClipboardAPI           = nil
 	_ *settings.EnableResultsDownloadingAPI               = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
+	_ *networking.EndpointsAPI                            = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *catalog.EntityTagAssignmentsAPI                    = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil

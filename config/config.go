@@ -97,7 +97,7 @@ type Config struct {
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`
 
 	// Databricks Workspace ID for Workspace clients when working with unified hosts
-	WorkspaceId string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
+	WorkspaceID string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
 	Username string `name:"username" env:"DATABRICKS_USERNAME" auth:"basic"`
@@ -418,7 +418,7 @@ func (c *Config) ConfigType() ConfigType {
 			// All unified host configs must have an account ID
 			return InvalidConfig
 		}
-		if c.WorkspaceId != "" {
+		if c.WorkspaceID != "" {
 			return WorkspaceConfig
 		}
 		return AccountConfig
@@ -621,13 +621,14 @@ func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
 		return nil, err
 	}
 	host := c.CanonicalHostName()
+	profile := c.Profile
 	switch c.HostType() {
 	case AccountHost:
-		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
+		return u2m.NewProfileAccountOAuthArgument(host, c.AccountID, profile)
 	case UnifiedHost:
-		return u2m.NewBasicUnifiedOAuthArgument(host, c.AccountID)
+		return u2m.NewProfileUnifiedOAuthArgument(host, c.AccountID, profile)
 	case WorkspaceHost:
-		return u2m.NewBasicWorkspaceOAuthArgument(host)
+		return u2m.NewProfileWorkspaceOAuthArgument(host, profile)
 	default:
 		return nil, fmt.Errorf("unknown host type: %v", c.HostType())
 	}

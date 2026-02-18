@@ -1225,7 +1225,7 @@ type CreateWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -1905,7 +1905,7 @@ type EditWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2060,7 +2060,7 @@ type EndpointInfo struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2328,6 +2328,17 @@ type ExecuteStatementRequest struct {
 	// [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
 	// [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	Parameters []StatementParameterListItem `json:"parameters,omitempty"`
+	// An array of query tags to annotate a SQL statement. A query tag consists
+	// of a non-empty key and, optionally, a value. To represent a NULL value,
+	// either omit the `value` field or manually set it to `null` or white
+	// space. Refer to the SQL language reference for the format specification
+	// of query tags. There's no significance to the order of tags. Only one
+	// value per key will be recorded. A sequence in excess of 20 query tags
+	// will be coerced to 20. Example:
+	//
+	// { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some
+	// key only tag" } ] }
+	QueryTags []QueryTag `json:"query_tags,omitempty"`
 	// Applies the given row limit to the statement's result set, but unlike the
 	// `LIMIT` clause in SQL, it also sets the `truncated` field in the response
 	// to indicate whether the result was trimmed due to the limit or not.
@@ -2655,7 +2666,7 @@ type GetWarehouseResponse struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -4086,6 +4097,8 @@ type QueryInfo struct {
 	QuerySource *ExternalQuerySource `json:"query_source,omitempty"`
 	// The time the query started.
 	QueryStartTimeMs int64 `json:"query_start_time_ms,omitempty"`
+	// A query execution can be optionally annotated with query tags
+	QueryTags []QueryTag `json:"query_tags,omitempty"`
 	// The text of the query.
 	QueryText string `json:"query_text,omitempty"`
 	// The number of results returned by the query.
@@ -4479,6 +4492,25 @@ func (f *QueryStatus) Values() []QueryStatus {
 // Type always returns QueryStatus to satisfy [pflag.Value] interface
 func (f *QueryStatus) Type() string {
 	return "QueryStatus"
+}
+
+// * A query execution can be annotated with an optional key-value pair to allow
+// users to attribute the executions by key and optional value to filter by.
+// QueryTag is the user-facing representation.
+type QueryTag struct {
+	Key string `json:"key"`
+
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *QueryTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepeatedEndpointConfPairs struct {

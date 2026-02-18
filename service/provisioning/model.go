@@ -265,7 +265,8 @@ func (s CreateVpcEndpointRequest) MarshalJSON() ([]byte, error) {
 
 type CreateWorkspaceRequest struct {
 	AwsRegion string `json:"aws_region,omitempty"`
-	// The cloud name. This field always has the value `gcp`.
+	// DEPRECATED: This field is being ignored by the server and will be removed
+	// in the future. The cloud name. This field always has the value `gcp`.
 	Cloud string `json:"cloud,omitempty"`
 
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
@@ -534,6 +535,8 @@ type EndpointUseCase string
 
 const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACCESS`
 
+const EndpointUseCaseGeneralAccess EndpointUseCase = `GENERAL_ACCESS`
+
 const EndpointUseCaseWorkspaceAccess EndpointUseCase = `WORKSPACE_ACCESS`
 
 // String representation for [fmt.Print]
@@ -544,11 +547,11 @@ func (f *EndpointUseCase) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointUseCase) Set(v string) error {
 	switch v {
-	case `DATAPLANE_RELAY_ACCESS`, `WORKSPACE_ACCESS`:
+	case `DATAPLANE_RELAY_ACCESS`, `GENERAL_ACCESS`, `WORKSPACE_ACCESS`:
 		*f = EndpointUseCase(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DATAPLANE_RELAY_ACCESS", "WORKSPACE_ACCESS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DATAPLANE_RELAY_ACCESS", "GENERAL_ACCESS", "WORKSPACE_ACCESS"`, v)
 	}
 }
 
@@ -558,6 +561,7 @@ func (f *EndpointUseCase) Set(v string) error {
 func (f *EndpointUseCase) Values() []EndpointUseCase {
 	return []EndpointUseCase{
 		EndpointUseCaseDataplaneRelayAccess,
+		EndpointUseCaseGeneralAccess,
 		EndpointUseCaseWorkspaceAccess,
 	}
 }

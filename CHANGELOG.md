@@ -1,5 +1,57 @@
 # Version changelog
 
+## Release v0.109.0 (2026-02-18)
+
+### New Features and Improvements
+* Use profile name as OAuth token cache key instead of host URL, so two profiles on the same host store separate tokens.
+
+
+## Release v0.108.0 (2026-02-16)
+
+### API Changes
+* Add [networking](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/networking) package.
+* Add [a.Endpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/networking#EndpointsAPI) account-level service.
+* Add `FilterCondition` and `Transformations` fields for [ml.DeltaTableSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DeltaTableSource).
+* Add `BudgetPolicyId` and `CustomTags` fields for [postgres.ProjectSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectSpec).
+* Add `BudgetPolicyId` and `CustomTags` fields for [postgres.ProjectStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectStatus).
+* Add `CreateSpace`, `DeleteSpace`, `GetSpace`, `GetSpaceOperation`, `ListSpaces` and `UpdateSpace` methods for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppsAPI) workspace-level service.
+* Add `Space` field for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `Space` field for [apps.ListAppsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#ListAppsRequest).
+* [Breaking] Remove `FilterCondition` and `Transformations` fields for [ml.DeltaTableSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DeltaTableSource).
+
+
+## Release v0.107.0 (2026-02-12)
+
+### API Changes
+* Add `SourceType`, `UpdateTime` and `UpdatedBy` fields for [catalog.EntityTagAssignment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EntityTagAssignment).
+* Add `SkipNotify` field for [dashboards.Subscription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Subscription).
+* Add `SparseCheckout` field for [jobs.GitSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GitSource).
+* Add `DisableAutoOptimization`, `MaxRetries`, `MinRetryIntervalMillis` and `RetryOnTimeout` fields for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `DisableAutoOptimization`, `MaxRetries`, `MinRetryIntervalMillis` and `RetryOnTimeout` fields for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `EdgegridAkamai` enum value for [catalog.CredentialType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CredentialType).
+
+
+## Release v0.106.0 (2026-02-10)
+
+### API Changes
+* Add `BaseEnvironment` field for [compute.Environment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Environment).
+* Add `Filters` field for [jobs.DashboardTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#DashboardTask).
+* Add `Id` field for [sharing.CreateRecipient](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CreateRecipient).
+* Add `Id` field for [sharing.RecipientInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientInfo).
+* Add `Id` field for [sharing.UpdateRecipient](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#UpdateRecipient).
+* Add `QueryTags` field for [sql.ExecuteStatementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#ExecuteStatementRequest).
+* Add `QueryTags` field for [sql.QueryInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryInfo).
+* Add `SswsToken` enum value for [catalog.CredentialType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CredentialType).
+* Add `UcVolumeMisconfigured` enum value for [compute.EventType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EventType).
+* [Breaking] Change `Username` field for [iamv2.User](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#User) to no longer be required.
+
+
+## Release v0.105.0 (2026-02-09)
+
+### Breaking Changes
+* `WorkspaceId` in Config is changed to `WorkspaceID`
+
+
 ## Release v0.104.0 (2026-02-03)
 
 ### New Features and Improvements

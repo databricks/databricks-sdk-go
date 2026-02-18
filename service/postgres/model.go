@@ -520,10 +520,8 @@ func (f *EndpointType) Type() string {
 	return "EndpointType"
 }
 
-// Legacy definition of the ErrorCode enum. Please keep in sync with
-// api-base/proto/error_code.proto (except status code mapping annotations as
-// this file doesn't have them). Will be removed eventually, pending the ScalaPB
-// 0.4 cleanup.
+// Error codes returned by Databricks APIs to indicate specific failure
+// conditions.
 type ErrorCode string
 
 const ErrorCodeAborted ErrorCode = `ABORTED`
@@ -914,7 +912,8 @@ func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListProjectsRequest struct {
-	// Upper bound for items returned. Cannot be negative.
+	// Upper bound for items returned. Cannot be negative. The maximum value is
+	// 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
@@ -1046,6 +1045,23 @@ func (s Project) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ProjectCustomTag struct {
+	// The key of the custom tag.
+	Key string `json:"key,omitempty"`
+	// The value of the custom tag.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ProjectCustomTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProjectCustomTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A collection of settings for a compute endpoint.
 type ProjectDefaultEndpointSettings struct {
 	// The maximum number of Compute Units. Minimum value is 0.5.
@@ -1077,6 +1093,18 @@ type ProjectOperationMetadata struct {
 }
 
 type ProjectSpec struct {
+	// The desired budget policy to associate with the project. See
+	// status.budget_policy_id for the policy that is actually applied to the
+	// project.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Custom tags to associate with the project. Forwarded to LBM for billing
+	// and cost tracking. To update tags, provide the new tag list and include
+	// "spec.custom_tags" in the update_mask. To clear all tags, provide an
+	// empty list and include "spec.custom_tags" in the update_mask. To preserve
+	// existing tags, omit this field from the update_mask (or use wildcard "*"
+	// which auto-excludes empty tags).
+	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
+
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// Human-readable project name. Length should be between 1 and 256
 	// characters.
@@ -1102,6 +1130,10 @@ func (s ProjectSpec) MarshalJSON() ([]byte, error) {
 type ProjectStatus struct {
 	// The logical size limit for a branch.
 	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
+	// The budget policy that is applied to the project.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// The effective custom tags associated with the project.
+	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
 	// The effective default endpoint settings.
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// The effective human-readable project name.
@@ -1212,6 +1244,29 @@ func (s Role) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Attributes that can be granted to a Postgres role. We are only implementing a
+// subset for now, see xref:
+// https://www.postgresql.org/docs/16/sql-createrole.html The values follow
+// Postgres keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they
+// don't include typical underscores between words.
+type RoleAttributes struct {
+	Bypassrls bool `json:"bypassrls,omitempty"`
+
+	Createdb bool `json:"createdb,omitempty"`
+
+	Createrole bool `json:"createrole,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RoleAttributes) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RoleAttributes) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // How the role is authenticated when connecting to Postgres.
 type RoleAuthMethod string
 
@@ -1296,10 +1351,48 @@ func (f *RoleIdentityType) Type() string {
 	return "RoleIdentityType"
 }
 
+// Roles that the DatabaseInstanceRole can be a member of.
+type RoleMembershipRole string
+
+const RoleMembershipRoleDatabricksSuperuser RoleMembershipRole = `DATABRICKS_SUPERUSER`
+
+// String representation for [fmt.Print]
+func (f *RoleMembershipRole) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RoleMembershipRole) Set(v string) error {
+	switch v {
+	case `DATABRICKS_SUPERUSER`:
+		*f = RoleMembershipRole(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATABRICKS_SUPERUSER"`, v)
+	}
+}
+
+// Values returns all possible values for RoleMembershipRole.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RoleMembershipRole) Values() []RoleMembershipRole {
+	return []RoleMembershipRole{
+		RoleMembershipRoleDatabricksSuperuser,
+	}
+}
+
+// Type always returns RoleMembershipRole to satisfy [pflag.Value] interface
+func (f *RoleMembershipRole) Type() string {
+	return "RoleMembershipRole"
+}
+
 type RoleOperationMetadata struct {
 }
 
 type RoleRoleSpec struct {
+	// The desired API-exposed Postgres role attribute to associate with the
+	// role. Optional.
+	Attributes *RoleAttributes `json:"attributes,omitempty"`
 	// If auth_method is left unspecified, a meaningful authentication method is
 	// derived from the identity_type: * For the managed identities, OAUTH is
 	// used. * For the regular postgres roles, authentication based on postgres
@@ -1314,12 +1407,20 @@ type RoleRoleSpec struct {
 	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
 	// for GROUP
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
+	// An enum value for a standard role that this role is a member of.
+	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	//
 	// This expects a valid Postgres identifier as specified in the link below.
 	// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
 	//
 	// Required when creating the Role.
+	//
+	// If you wish to create a Postgres Role backed by a managed Databricks
+	// identity, then postgres_role must be one of the following:
+	//
+	// 1. user email for IdentityType.USER 2. app ID for
+	// IdentityType.SERVICE_PRINCIPAL 2. group name for IdentityType.GROUP
 	PostgresRole string `json:"postgres_role,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1337,6 +1438,8 @@ type RoleRoleStatus struct {
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
 	// The type of the role.
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
+	// An enum value for a standard role that this role is a member of.
+	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	PostgresRole string `json:"postgres_role,omitempty"`
 

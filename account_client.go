@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
+	"github.com/databricks/databricks-sdk-go/service/networking"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -70,6 +71,9 @@ type AccountClient struct {
 	// on the E2 version of the platform. If you are not sure, contact your
 	// Databricks representative.
 	EncryptionKeys provisioning.EncryptionKeysInterface
+
+	// These APIs manage endpoint configurations for this account.
+	Endpoints networking.EndpointsInterface
 
 	// These APIs manage account federation policies.
 	//
@@ -466,7 +470,7 @@ type AccountClient struct {
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration - host incorrect or account_id missing")
-var ErrWorkspaceIdInAccountClient = errors.New("WorkspaceId must not be set when using AccountClient")
+var ErrWorkspaceIDInAccountClient = errors.New("WorkspaceID must not be set when using AccountClient")
 
 // NewAccountClient creates new Databricks SDK client for Accounts or returns
 // error in case configuration is wrong
@@ -486,11 +490,6 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if cfg.AccountID == "" || cfg.HostType() == config.WorkspaceHost {
 		return nil, ErrNotAccountClient
 	}
-	// WorkspaceId must NOT be present in a config used with account client because
-	// unified hosts route calls based on the presence of the X-Databricks-Org-Id header.
-	if cfg.WorkspaceId != "" {
-		return nil, ErrWorkspaceIdInAccountClient
-	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -506,6 +505,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Credentials:                      provisioning.NewCredentials(apiClient),
 		CustomAppIntegration:             oauth2.NewCustomAppIntegration(apiClient),
 		EncryptionKeys:                   provisioning.NewEncryptionKeys(apiClient),
+		Endpoints:                        networking.NewEndpoints(apiClient),
 		FederationPolicy:                 oauth2.NewAccountFederationPolicy(apiClient),
 		GroupsV2:                         iam.NewAccountGroupsV2(apiClient),
 		IamV2:                            iamv2.NewAccountIamV2(apiClient),

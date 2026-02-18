@@ -763,9 +763,9 @@ type PoliciesService interface {
 	UpdatePolicy(ctx context.Context, request UpdatePolicyRequest) (*PolicyInfo, error)
 }
 
-// [DEPRECATED] This API is deprecated. Please use the Data Quality Monitors API
-// instead (REST: /api/data-quality/v1/monitors), which manages both Data
-// Profiling and Anomaly Detection.
+// Deprecated: Please use the Data Quality Monitors API instead (REST:
+// /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly
+// Detection.
 //
 // A monitor computes and monitors data or model quality metrics for a table
 // over time. It generates metrics tables and a dashboard that you can use to
@@ -778,12 +778,14 @@ type PoliciesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QualityMonitorsService interface {
 
-	// [DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality
-	// Monitors API instead (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Cancels an already-initiated refresh
+	// job.
 	CancelRefresh(ctx context.Context, request CancelRefreshRequest) error
 
-	// [DEPRECATED] Creates a new monitor for the specified table. Use Data
-	// Quality Monitors API instead (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Creates a new monitor for the specified
+	// table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog,
 	// have **USE_SCHEMA** on the table's parent schema, and have **SELECT**
@@ -797,8 +799,9 @@ type QualityMonitorsService interface {
 	// where this call was made.
 	Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error)
 
-	// [DEPRECATED] Deletes a monitor for the specified table. Use Data Quality
-	// Monitors API instead (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Deletes a monitor for the specified
+	// table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
 	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
@@ -813,8 +816,8 @@ type QualityMonitorsService interface {
 	// this call; those assets must be manually cleaned up (if desired).
 	Delete(ctx context.Context, request DeleteQualityMonitorRequest) (*DeleteMonitorResponse, error)
 
-	// [DEPRECATED] Gets a monitor for the specified table. Use Data Quality
-	// Monitors API instead (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Gets a monitor for the specified table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
 	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
@@ -828,9 +831,9 @@ type QualityMonitorsService interface {
 	// than where the monitor was created.
 	Get(ctx context.Context, request GetQualityMonitorRequest) (*MonitorInfo, error)
 
-	// [DEPRECATED] Gets info about a specific monitor refresh using the given
-	// refresh ID. Use Data Quality Monitors API instead
-	// (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Gets info about a specific monitor
+	// refresh using the given refresh ID.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
 	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
@@ -842,9 +845,9 @@ type QualityMonitorsService interface {
 	// was created.
 	GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error)
 
-	// [DEPRECATED] Gets an array containing the history of the most recent
-	// refreshes (up to 25) for this table. Use Data Quality Monitors API
-	// instead (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Gets an array containing the history of
+	// the most recent refreshes (up to 25) for this table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
 	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
@@ -856,9 +859,9 @@ type QualityMonitorsService interface {
 	// was created.
 	ListRefreshes(ctx context.Context, request ListRefreshesRequest) (*MonitorRefreshListResponse, error)
 
-	// [DEPRECATED] Regenerates the monitoring dashboard for the specified
-	// table. Use Data Quality Monitors API instead
-	// (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Regenerates the monitoring dashboard for
+	// the specified table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
 	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
@@ -871,10 +874,9 @@ type QualityMonitorsService interface {
 	// specified when the monitor was created.
 	RegenerateDashboard(ctx context.Context, request RegenerateDashboardRequest) (*RegenerateDashboardResponse, error)
 
-	// [DEPRECATED] Queues a metric refresh on the monitor for the specified
-	// table. Use Data Quality Monitors API instead
-	// (/api/data-quality/v1/monitors). The refresh will execute in the
-	// background.
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Queues a metric refresh on the monitor
+	// for the specified table. The refresh will execute in the background.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
 	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
@@ -886,8 +888,9 @@ type QualityMonitorsService interface {
 	// was created.
 	RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error)
 
-	// [DEPRECATED] Updates a monitor for the specified table. Use Data Quality
-	// Monitors API instead (/api/data-quality/v1/monitors).
+	// Deprecated: Use Data Quality Monitors API instead
+	// (/api/data-quality/v1/monitors). Updates a monitor for the specified
+	// table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
 	// have **USE_CATALOG** on the table's parent catalog and be an owner of the

@@ -751,14 +751,14 @@ type WorkspaceClient struct {
 	// contain the shared data.
 	Providers sharing.ProvidersInterface
 
-	// [DEPRECATED] This API is deprecated. Please use the Data Quality
-	// Monitoring API instead (REST: /api/data-quality/v1/monitors). Manage data
-	// quality of UC objects (currently support `schema`).
+	// Deprecated: Please use the Data Quality Monitoring API instead (REST:
+	// /api/data-quality/v1/monitors). Manage data quality of UC objects
+	// (currently support `schema`).
 	QualityMonitorV2 qualitymonitorv2.QualityMonitorV2Interface
 
-	// [DEPRECATED] This API is deprecated. Please use the Data Quality Monitors
-	// API instead (REST: /api/data-quality/v1/monitors), which manages both
-	// Data Profiling and Anomaly Detection.
+	// Deprecated: Please use the Data Quality Monitors API instead (REST:
+	// /api/data-quality/v1/monitors), which manages both Data Profiling and
+	// Anomaly Detection.
 	//
 	// A monitor computes and monitors data or model quality metrics for a table
 	// over time. It generates metrics tables and a dashboard that you can use
@@ -1370,7 +1370,7 @@ type WorkspaceClient struct {
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration - host is not a workspace host")
-var ErrWorkspaceIdRequired = errors.New("WorkspaceId must be set when using WorkspaceClient with unified host")
+var ErrWorkspaceIDRequired = errors.New("WorkspaceID must be set when using WorkspaceClient with unified host")
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
 // returns error in case configuration is wrong
@@ -1391,8 +1391,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if hostType == config.AccountHost {
 		return nil, ErrNotWorkspaceClient
 	}
-	if hostType == config.UnifiedHost && cfg.WorkspaceId == "" {
-		return nil, ErrWorkspaceIdRequired
+	if hostType == config.UnifiedHost && cfg.WorkspaceID == "" {
+		return nil, ErrWorkspaceIDRequired
 	}
 
 	apiClient, err := cfg.NewApiClient()
