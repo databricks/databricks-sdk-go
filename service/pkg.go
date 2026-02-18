@@ -240,9 +240,9 @@
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 //
-// - [qualitymonitorv2.QualityMonitorV2API]: [DEPRECATED] This API is deprecated.
+// - [qualitymonitorv2.QualityMonitorV2API]: Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors).
 //
-// - [catalog.QualityMonitorsAPI]: [DEPRECATED] This API is deprecated.
+// - [catalog.QualityMonitorsAPI]: Deprecated: Please use the Data Quality Monitors API instead (REST: /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection.
 //
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //

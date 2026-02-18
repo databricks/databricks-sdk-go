@@ -721,6 +721,11 @@ func (s ColumnInfo) MarshalJSON() ([]byte, error) {
 type ColumnMask struct {
 	// The full name of the column mask SQL UDF.
 	FunctionName string `json:"function_name,omitempty"`
+	// The list of additional table columns or literals to be passed as
+	// additional arguments to a column mask function. This is the replacement
+	// of the deprecated using_column_names field and carries information about
+	// the types (alias or constant) of the arguments to the mask function.
+	UsingArguments []PolicyFunctionArgument `json:"using_arguments,omitempty"`
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
 	// of the column being masked and the types of the rest of the args should
@@ -1249,8 +1254,13 @@ type CreateExternalLocation struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name"`
+	// The effective value of `enable_file_events` after applying server-side
+	// defaults.
+	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
 	// Whether to enable file events on this external location. Default to
-	// `true`. Set to `false` to disable file events.
+	// `true`. Set to `false` to disable file events. The actual applied value
+	// may differ due to server-side defaults; check
+	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -2991,8 +3001,13 @@ type ExternalLocationInfo struct {
 	CredentialId string `json:"credential_id,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
+	// The effective value of `enable_file_events` after applying server-side
+	// defaults.
+	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
 	// Whether to enable file events on this external location. Default to
-	// `true`. Set to `false` to disable file events.
+	// `true`. Set to `false` to disable file events. The actual applied value
+	// may differ due to server-side defaults; check
+	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -6233,6 +6248,25 @@ func (s PipelineProgress) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A positional argument passed to a row filter or column mask function.
+// Distinguishes between column references and literals.
+type PolicyFunctionArgument struct {
+	// A column reference.
+	Column string `json:"column,omitempty"`
+	// A constant literal.
+	Constant string `json:"constant,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PolicyFunctionArgument) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PolicyFunctionArgument) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PolicyInfo struct {
 	// Options for column mask policies. Valid only if `policy_type` is
 	// `POLICY_TYPE_COLUMN_MASK`. Required on create and optional on update.
@@ -7731,6 +7765,11 @@ func (f *TableOperation) Type() string {
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
 	FunctionName string `json:"function_name"`
+	// The list of additional table columns or literals to be passed as
+	// additional arguments to a row filter function. This is the replacement of
+	// the deprecated input_column_names field and carries information about the
+	// types (alias or constant) of the arguments to the filter function.
+	InputArguments []PolicyFunctionArgument `json:"input_arguments,omitempty"`
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
 	// arguments.
@@ -8144,8 +8183,13 @@ type UpdateExternalLocation struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
+	// The effective value of `enable_file_events` after applying server-side
+	// defaults.
+	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
 	// Whether to enable file events on this external location. Default to
-	// `true`. Set to `false` to disable file events.
+	// `true`. Set to `false` to disable file events. The actual applied value
+	// may differ due to server-side defaults; check
+	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
