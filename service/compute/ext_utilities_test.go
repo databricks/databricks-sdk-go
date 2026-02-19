@@ -10,9 +10,9 @@ import (
 func TestGetOrCreateRunningCluster_Aws_NoAwsAttributes(t *testing.T) {
 	client, server := qa.HTTPFixtures{
 		{
-		Method:   "GET",
-		Resource: "/api/2.1/clusters/list?",
-		Response: ListClustersResponse{},
+			Method:   "GET",
+			Resource: "/api/2.1/clusters/list?",
+			Response: ListClustersResponse{},
 		},
 		{
 			Method:       "GET",
