@@ -1231,7 +1231,7 @@ type CreateWarehouseRequest struct {
 	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
-	// Defaults to false.
+	// Defaults to true.
 	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
@@ -1911,7 +1911,7 @@ type EditWarehouseRequest struct {
 	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
-	// Defaults to false.
+	// Defaults to true.
 	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
@@ -2066,7 +2066,7 @@ type EndpointInfo struct {
 	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
-	// Defaults to false.
+	// Defaults to true.
 	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
@@ -2672,7 +2672,7 @@ type GetWarehouseResponse struct {
 	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
-	// Defaults to false.
+	// Defaults to true.
 	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
