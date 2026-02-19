@@ -71,9 +71,10 @@ var defaultScopes = []string{"all-apis"}
 // overridden to change the default authentication behavior for all Config
 // instances.
 //
-// Each invocation must return a new instance to avoid shared mutable state
-// between Config instances.
-var DefaultCredentialStrategy func() CredentialsStrategy = func() CredentialsStrategy {
+// Note: This variable is not thread safe and is expected to be set during
+// program initialization or before any concurrent use. Changing it at runtime
+// in a concurrent context may lead to race conditions and undefined behavior.
+var DefaultCredentialStrategyProvider func() CredentialsStrategy = func() CredentialsStrategy {
 	return &DefaultCredentials{}
 }
 
@@ -522,7 +523,7 @@ func (c *Config) authenticateIfNeeded() error {
 		return nil
 	}
 	if c.Credentials == nil {
-		c.Credentials = DefaultCredentialStrategy()
+		c.Credentials = DefaultCredentialStrategyProvider()
 	}
 	if err := c.fixHostIfNeeded(); err != nil && !errors.Is(err, ErrNoHostConfigured) {
 		return err

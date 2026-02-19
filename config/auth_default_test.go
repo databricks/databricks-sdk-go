@@ -12,11 +12,11 @@ import (
 )
 
 func TestDefaultCredentialStrategy(t *testing.T) {
-	original := DefaultCredentialStrategy
-	t.Cleanup(func() { DefaultCredentialStrategy = original })
+	original := DefaultCredentialStrategyProvider
+	t.Cleanup(func() { DefaultCredentialStrategyProvider = original })
 
 	want := &DefaultCredentials{}
-	DefaultCredentialStrategy = func() CredentialsStrategy {
+	DefaultCredentialStrategyProvider = func() CredentialsStrategy {
 		return want
 	}
 
