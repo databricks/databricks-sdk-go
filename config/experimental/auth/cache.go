@@ -92,8 +92,7 @@ func NewCachedTokenSource(ts TokenSource, opts ...Option) TokenSource {
 	// period based on its TTL. This ensures the first call to tokenState() uses
 	// the correct stale period instead of the default maximum.
 	if cts.cachedToken != nil {
-		ttl := cts.cachedToken.Expiry.Sub(cts.timeNow())
-		cts.staleDuration = computeStalePeriod(ttl)
+		cts.updateStaleDuration()
 	}
 
 	return cts
@@ -158,6 +157,14 @@ const (
 	expired                   // The token has expired and cannot be used.
 )
 
+// updateStaleDuration recomputes staleDuration from the current cachedToken's
+// TTL. It must be called immediately after cachedToken is set. When called on
+// a shared instance (after construction), the lock must be held.
+func (cts *cachedTokenSource) updateStaleDuration() {
+	ttl := cts.cachedToken.Expiry.Sub(cts.timeNow())
+	cts.staleDuration = computeStalePeriod(ttl)
+}
+
 // tokenState returns the state of the token. The function is not thread-safe
 // and should be called with the lock held.
 func (c *cachedTokenSource) tokenState() tokenState {
@@ -216,10 +223,7 @@ func (cts *cachedTokenSource) blockingToken(ctx context.Context) (*oauth2.Token,
 		return nil, err
 	}
 	cts.cachedToken = t
-	// Compute and store the stale period for this specific token based on its
-	// TTL at acquisition time. This value remains fixed for the token's lifetime.
-	ttl := t.Expiry.Sub(cts.timeNow())
-	cts.staleDuration = computeStalePeriod(ttl)
+	cts.updateStaleDuration()
 	return t, nil
 }
 
@@ -240,11 +244,7 @@ func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 				return
 			}
 			cts.cachedToken = t
-			// Compute and store the stale period for this specific token based on
-			// its TTL at acquisition time. This value remains fixed for the token's
-			// lifetime.
-			ttl := t.Expiry.Sub(cts.timeNow())
-			cts.staleDuration = computeStalePeriod(ttl)
+			cts.updateStaleDuration()
 		}()
 	}
 }

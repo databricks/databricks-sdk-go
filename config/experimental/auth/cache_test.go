@@ -12,15 +12,11 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// assertDurationNear verifies that got is within tolerance of want.
-func assertDurationNear(t *testing.T, got, want, tolerance time.Duration) {
-	t.Helper()
-	diff := got - want
-	if diff < 0 {
-		diff = -diff
-	}
-	if diff > tolerance {
-		t.Errorf("duration = %v, want %v (± %v tolerance)", got, want, tolerance)
+// withTimeNow returns an Option that sets the time source used by the cached
+// token source. This is intended for testing purposes only.
+func withTimeNow(f func() time.Time) Option {
+	return func(cts *cachedTokenSource) {
+		cts.timeNow = f
 	}
 }
 
@@ -117,23 +113,24 @@ func TestNewCachedTokenSource_stalePeriodAdaptation(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			// Create initial token with specified TTL.
+			// Create initial token with specified TTL using fixed now.
 			initialToken := &oauth2.Token{
 				AccessToken: tc.tokenName,
-				Expiry:      time.Now().Add(tc.tokenTTL),
+				Expiry:      now.Add(tc.tokenTTL),
 			}
 
-			cts, ok := NewCachedTokenSource(ts, WithCachedToken(initialToken)).(*cachedTokenSource)
+			cts, ok := NewCachedTokenSource(ts,
+				withTimeNow(func() time.Time { return now }),
+				WithCachedToken(initialToken),
+			).(*cachedTokenSource)
 			if !ok {
 				t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
 			}
 
-			// Verify staleDuration is computed correctly based on token TTL.
-			assertDurationNear(t, cts.staleDuration, tc.wantStaleDuration, time.Second)
-
-			// Override timeNow for deterministic testing.
-			cts.timeNow = func() time.Time { return now }
-			cts.cachedToken.Expiry = now.Add(tc.tokenTTL)
+			// Verify staleDuration is computed exactly based on token TTL.
+			if cts.staleDuration != tc.wantStaleDuration {
+				t.Errorf("staleDuration = %v, want %v", cts.staleDuration, tc.wantStaleDuration)
+			}
 
 			// Verify token is fresh (remaining time > stale period).
 			if state := cts.tokenState(); state != fresh {
@@ -171,20 +168,21 @@ func TestNewCachedTokenSource_stalePeriodRecomputation(t *testing.T) {
 	// Create cache with first token: very short-lived with 90-second TTL.
 	initialToken := &oauth2.Token{
 		AccessToken: "token1",
-		Expiry:      time.Now().Add(90 * time.Second),
+		Expiry:      now.Add(90 * time.Second),
 	}
-	cts, ok := NewCachedTokenSource(ts, WithCachedToken(initialToken)).(*cachedTokenSource)
+	cts, ok := NewCachedTokenSource(ts,
+		withTimeNow(func() time.Time { return now }),
+		WithCachedToken(initialToken),
+	).(*cachedTokenSource)
 	if !ok {
 		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
 	}
 
 	// Verify initial staleDuration for 90-sec token: min(45 sec, 20 min) = 45 sec.
 	wantStaleDuration := 45 * time.Second
-	assertDurationNear(t, cts.staleDuration, wantStaleDuration, time.Second)
-
-	// Override timeNow for deterministic testing.
-	cts.timeNow = func() time.Time { return now }
-	cts.cachedToken.Expiry = now.Add(90 * time.Second)
+	if cts.staleDuration != wantStaleDuration {
+		t.Errorf("staleDuration = %v, want %v", cts.staleDuration, wantStaleDuration)
+	}
 
 	// Verify token is fresh (90 sec remaining > 45 sec stale period).
 	if state := cts.tokenState(); state != fresh {
@@ -205,7 +203,9 @@ func TestNewCachedTokenSource_stalePeriodRecomputation(t *testing.T) {
 	}
 
 	// Verify staleDuration was recomputed (still 45 sec for 90-sec token).
-	assertDurationNear(t, cts.staleDuration, wantStaleDuration, time.Second)
+	if cts.staleDuration != wantStaleDuration {
+		t.Errorf("staleDuration after refresh = %v, want %v", cts.staleDuration, wantStaleDuration)
+	}
 
 	// Verify refreshed token is fresh (90 sec remaining > 45 sec stale period).
 	if state := cts.tokenState(); state != fresh {
