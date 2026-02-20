@@ -105,6 +105,21 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 	return &listEndpointResponse, err
 }
 
+func (a *vectorSearchEndpointsImpl) PatchEndpoint(ctx context.Context, request PatchEndpointRequest) (*EndpointInfo, error) {
+	var endpointInfo EndpointInfo
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &endpointInfo)
+	return &endpointInfo, err
+}
+
 func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error) {
 	var retrieveUserVisibleMetricsResponse RetrieveUserVisibleMetricsResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/metrics", request.Name)

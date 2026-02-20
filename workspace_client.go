@@ -245,6 +245,11 @@ type WorkspaceClient struct {
 	// a GET request and then POST it to create a new one. Dashboards can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
+	//
+	// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+	// instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/dashboards/
 	Dashboards sql.DashboardsInterface
 
 	// Manage the data quality of Unity Catalog objects (currently support

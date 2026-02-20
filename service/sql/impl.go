@@ -397,6 +397,11 @@ func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (
 //
 // **Warning**: Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
+//
+// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+// instead. [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/dashboards/
 func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
 
 	request.Page = 1 // start iterating from the first page
@@ -427,6 +432,11 @@ func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest
 //
 // **Warning**: Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
+//
+// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+// instead. [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/dashboards/
 func (a *dashboardsImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[Dashboard, int](ctx, iterator, request.PageSize)

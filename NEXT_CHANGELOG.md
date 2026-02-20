@@ -15,3 +15,15 @@
 * Make clusters creation in AWS not depend on cloud parsed from host. Changed default AWS availability for auto-created utility clusters from SPOT to SPOT_WITH_FALLBACK (API default). 
 
 ### API Changes
+* Add `PatchEndpoint` method for [w.VectorSearchEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchEndpointsAPI) workspace-level service.
+* Add `App` field for [apps.AppResource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResource).
+* Add `SecurableKind` field for [apps.AppResourceUcSecurable](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResourceUcSecurable).
+* Add `ReadOnlyHost` field for [postgres.EndpointHosts](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointHosts).
+* Add `Group` field for [postgres.EndpointSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointSpec).
+* Add `Group` field for [postgres.EndpointStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointStatus).
+* Add `InitialEndpointSpec` field for [postgres.Project](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Project).
+* Add `MinQps` field for [vectorsearch.CreateEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateEndpoint).
+* Add `ScalingInfo` field for [vectorsearch.EndpointInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointInfo).
+* Add `Modify` enum value for [apps.AppResourceUcSecurableUcSecurablePermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResourceUcSecurableUcSecurablePermission).
+* Add `CouldNotGetDashboardSchemaException` enum value for [dashboards.MessageErrorType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#MessageErrorType).
+* Add `Degraded` enum value for [postgres.EndpointStatusState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointStatusState).

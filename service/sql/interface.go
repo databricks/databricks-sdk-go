@@ -142,31 +142,61 @@ type DashboardWidgetsService interface {
 // to create a new one. Dashboards can be scheduled using the `sql_task` type of
 // the Jobs API, e.g. :method:jobs/create.
 //
+// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+// instead. [Learn more]
+//
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
+// [Learn more]: https://docs.databricks.com/en/dashboards/
 type DashboardsService interface {
 
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.
+	//
+	// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+	// instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/dashboards/
 	Delete(ctx context.Context, request DeleteDashboardRequest) error
 
 	// Returns a JSON representation of a dashboard object, including its
 	// visualization and query objects.
+	//
+	// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+	// instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/dashboards/
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Fetch a paginated list of dashboard objects.
 	//
 	// **Warning**: Calling this API concurrently 10 or more times could result
 	// in throttling, service degradation, or a temporary ban.
+	//
+	// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+	// instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/dashboards/
 	List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error)
 
 	// A restored dashboard appears in list views and searches and can be
 	// shared.
+	//
+	// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+	// instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/dashboards/
 	Restore(ctx context.Context, request RestoreDashboardRequest) error
 
 	// Modify this dashboard definition. This operation only affects attributes
 	// of the dashboard object. It does not add, modify, or remove widgets.
 	//
 	// **Note**: You cannot undo this operation.
+	//
+	// **Warning**: This API is deprecated. Please use the AI/BI Dashboards API
+	// instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/dashboards/
 	Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error)
 }
 
