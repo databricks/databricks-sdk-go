@@ -14,6 +14,12 @@
 
 ### Internal Changes
 
-* Make clusters creation in AWS not depend on cloud parsed from host. Changed default AWS availability for auto-created utility clusters from SPOT to SPOT_WITH_FALLBACK (API default). 
+* Add `NewCredentialsChain` to allow internal tools to configure a custom
+  credentials chain that differs from the SDK's default chain. This is not
+  intended for end-user consumption.
+* Export OIDC credential types (`GitHubOIDCCredentials`, `AzureDevOpsOIDCCredentials`,
+  `EnvOIDCCredentials`, `FileOIDCCredentials`) so they can be used as building
+  blocks in custom credentials chains.
+* Make clusters creation in AWS not depend on cloud parsed from host. Changed default AWS availability for auto-created utility clusters from SPOT to SPOT_WITH_FALLBACK (API default).
 
 ### API Changes
