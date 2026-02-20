@@ -171,6 +171,10 @@ func (c *cachedTokenSource) tokenState() tokenState {
 	if c.cachedToken == nil {
 		return expired
 	}
+	if c.cachedToken.Expiry.IsZero() {
+		return fresh // zero expiry means that token is permanently valid.
+	}
+
 	switch lifeSpan := c.cachedToken.Expiry.Sub(c.timeNow()); {
 	case lifeSpan <= 0:
 		return expired
