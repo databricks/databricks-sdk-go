@@ -152,11 +152,6 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		NodeTypeId:             smallestNodeType,
 		AutoterminationMinutes: 10,
 	}
-	if a.clustersImpl.client.Config.IsAws() {
-		r.AwsAttributes = &AwsAttributes{
-			Availability: "SPOT",
-		}
-	}
 	if len(custom) == 1 {
 		r = custom[0]
 	}
