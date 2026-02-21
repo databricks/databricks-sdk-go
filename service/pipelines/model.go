@@ -1959,6 +1959,25 @@ func (s PostgresSlotConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Specifies a replace_where predicate override for a replace where flow.
+type ReplaceWhereOverride struct {
+	// Name of the flow to apply this override to.
+	FlowName string `json:"flow_name,omitempty"`
+	// SQL predicate string to use as replace_where condition. Example: `date =
+	// '2024-10-10' AND city = 'xyz'`
+	PredicateOverride string `json:"predicate_override,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ReplaceWhereOverride) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ReplaceWhereOverride) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ReportSpec struct {
 	// Required. Destination catalog to store table.
 	DestinationCatalog string `json:"destination_catalog"`
@@ -2204,6 +2223,10 @@ type StartUpdate struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// A list of predicate overrides for replace_where flows in this update.
+	// Only replace_where flows may be specified. Flows not listed use their
+	// original predicate.
+	ReplaceWhereOverrides []ReplaceWhereOverride `json:"replace_where_overrides,omitempty"`
 	// The information about the requested rewind operation. If specified this
 	// is a rewind mode update.
 	RewindSpec *RewindSpec `json:"rewind_spec,omitempty"`

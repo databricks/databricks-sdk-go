@@ -16,10 +16,9 @@ import (
 // [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 type GitCredentialsService interface {
 
-	// Creates a Git credential entry for the user. Only one Git credential per
-	// user is supported, so any attempts to create credentials if an entry
-	// already exists will fail. Use the PATCH endpoint to update existing
-	// credentials, or the DELETE endpoint to delete existing credentials.
+	// Creates a Git credential entry for the user. Use the PATCH endpoint to
+	// update existing credentials, or the DELETE endpoint to delete existing
+	// credentials.
 	Create(ctx context.Context, request CreateCredentialsRequest) (*CreateCredentialsResponse, error)
 
 	// Deletes the specified Git credential.
