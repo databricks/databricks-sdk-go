@@ -12,6 +12,14 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// withTimeNow returns an Option that sets the time source used by the cached
+// token source. This is intended for testing purposes only.
+func withTimeNow(f func() time.Time) Option {
+	return func(cts *cachedTokenSource) {
+		cts.timeNow = f
+	}
+}
+
 func TestNewCachedTokenSource_noCaching(t *testing.T) {
 	want := &cachedTokenSource{}
 	got := NewCachedTokenSource(want, nil)
@@ -30,8 +38,8 @@ func TestNewCachedTokenSource_default(t *testing.T) {
 		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
 	}
 
-	if got.staleDuration != defaultStaleDuration {
-		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, defaultStaleDuration)
+	if got.staleDuration != maxStaleDuration {
+		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, maxStaleDuration)
 	}
 	if got.disableAsync != false {
 		t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, false)
@@ -64,6 +72,152 @@ func TestNewCachedTokenSource_options(t *testing.T) {
 	}
 	if got.cachedToken != wantCachedToken {
 		t.Errorf("NewCachedTokenSource(): cachedToken = %v, want %v", got.cachedToken, wantCachedToken)
+	}
+}
+
+func TestNewCachedTokenSource_stalePeriodAdaptation(t *testing.T) {
+	now := time.Unix(1337, 0)
+	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return nil, nil
+	})
+
+	testCases := []struct {
+		name                string
+		tokenTTL            time.Duration
+		tokenName           string
+		wantStaleDuration   time.Duration
+		advanceTimeForStale time.Duration
+	}{
+		{
+			name:                "standard OAuth token with 60-minute TTL",
+			tokenTTL:            60 * time.Minute,
+			tokenName:           "standard-token",
+			wantStaleDuration:   20 * time.Minute,
+			advanceTimeForStale: 41 * time.Minute,
+		},
+		{
+			name:                "fastPath token with 10-minute TTL",
+			tokenTTL:            10 * time.Minute,
+			tokenName:           "fastpath-token",
+			wantStaleDuration:   5 * time.Minute,
+			advanceTimeForStale: 6 * time.Minute,
+		},
+		{
+			name:                "very short token with 90-second TTL",
+			tokenTTL:            90 * time.Second,
+			tokenName:           "very-short-token",
+			wantStaleDuration:   45 * time.Second,
+			advanceTimeForStale: 50 * time.Second,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Create initial token with specified TTL using fixed now.
+			initialToken := &oauth2.Token{
+				AccessToken: tc.tokenName,
+				Expiry:      now.Add(tc.tokenTTL),
+			}
+
+			cts, ok := NewCachedTokenSource(ts,
+				withTimeNow(func() time.Time { return now }),
+				WithCachedToken(initialToken),
+			).(*cachedTokenSource)
+			if !ok {
+				t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
+			}
+
+			// Verify staleDuration is computed exactly based on token TTL.
+			if cts.staleDuration != tc.wantStaleDuration {
+				t.Errorf("staleDuration = %v, want %v", cts.staleDuration, tc.wantStaleDuration)
+			}
+
+			// Verify token is fresh (remaining time > stale period).
+			if state := cts.tokenState(); state != fresh {
+				t.Errorf("tokenState() = %v, want fresh", state)
+			}
+
+			// Advance time to make token stale.
+			cts.timeNow = func() time.Time { return now.Add(tc.advanceTimeForStale) }
+
+			// Token should now be stale (remaining time <= stale period).
+			if state := cts.tokenState(); state != stale {
+				t.Errorf("tokenState() after %v = %v, want stale", tc.advanceTimeForStale, state)
+			}
+		})
+	}
+}
+
+func TestNewCachedTokenSource_stalePeriodRecomputation(t *testing.T) {
+	now := time.Unix(1337, 0)
+	fetchTime := now
+	tokenIndex := 1 // Start at 1 since tokens[0] is used as initial cached token.
+
+	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		var token *oauth2.Token
+		if tokenIndex == 1 {
+			// Refreshed token: very short-lived with 90-second TTL from fetch time.
+			token = &oauth2.Token{AccessToken: "token2", Expiry: fetchTime.Add(90 * time.Second)}
+		} else {
+			t.Fatalf("unexpected token fetch, tokenIndex = %d", tokenIndex)
+		}
+		tokenIndex++
+		return token, nil
+	})
+
+	// Create cache with first token: very short-lived with 90-second TTL.
+	initialToken := &oauth2.Token{
+		AccessToken: "token1",
+		Expiry:      now.Add(90 * time.Second),
+	}
+	cts, ok := NewCachedTokenSource(ts,
+		withTimeNow(func() time.Time { return now }),
+		WithCachedToken(initialToken),
+	).(*cachedTokenSource)
+	if !ok {
+		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
+	}
+
+	// Verify initial staleDuration for 90-sec token: min(45 sec, 20 min) = 45 sec.
+	wantStaleDuration := 45 * time.Second
+	if cts.staleDuration != wantStaleDuration {
+		t.Errorf("staleDuration = %v, want %v", cts.staleDuration, wantStaleDuration)
+	}
+
+	// Verify token is fresh (90 sec remaining > 45 sec stale period).
+	if state := cts.tokenState(); state != fresh {
+		t.Errorf("initial tokenState() = %v, want fresh", state)
+	}
+
+	// Advance time to make first token expired.
+	fetchTime = now.Add(91 * time.Second)
+	cts.timeNow = func() time.Time { return fetchTime }
+
+	// Fetch new token (90-second TTL) - should trigger blockingToken().
+	token, err := cts.Token(context.Background())
+	if err != nil {
+		t.Fatalf("Token() error = %v, want nil", err)
+	}
+	if token.AccessToken != "token2" {
+		t.Errorf("Token().AccessToken = %v, want token2", token.AccessToken)
+	}
+
+	// Verify staleDuration was recomputed (still 45 sec for 90-sec token).
+	if cts.staleDuration != wantStaleDuration {
+		t.Errorf("staleDuration after refresh = %v, want %v", cts.staleDuration, wantStaleDuration)
+	}
+
+	// Verify refreshed token is fresh (90 sec remaining > 45 sec stale period).
+	if state := cts.tokenState(); state != fresh {
+		t.Errorf("tokenState() after refresh = %v, want fresh", state)
+	}
+
+	// Advance time by 46 seconds (44 seconds remaining).
+	cts.timeNow = func() time.Time { return fetchTime.Add(46 * time.Second) }
+
+	// Token should now be stale (44 sec remaining <= 45 sec stale period).
+	if state := cts.tokenState(); state != stale {
+		t.Errorf("tokenState() after 46 seconds = %v, want stale", state)
 	}
 }
 
