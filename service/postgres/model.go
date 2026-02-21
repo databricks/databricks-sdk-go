@@ -347,6 +347,54 @@ func (s Endpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type EndpointGroupSpec struct {
+	// Whether to allow read-only connections to read-write endpoints. Only
+	// relevant for read-write endpoints where size.max > 1.
+	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
+	// The maximum number of computes in the endpoint group. Currently, this
+	// must be equal to min. Set to 1 for single compute endpoints, to disable
+	// HA. To manually suspend all computes in an endpoint group, set disabled
+	// to true on the EndpointSpec.
+	Max int `json:"max"`
+	// The minimum number of computes in the endpoint group. Currently, this
+	// must be equal to max. This must be greater than or equal to 1.
+	Min int `json:"min"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointGroupSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointGroupSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EndpointGroupStatus struct {
+	// Whether read-only connections to read-write endpoints are allowed. Only
+	// relevant if read replicas are configured by specifying size.max > 1.
+	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
+	// The maximum number of computes in the endpoint group. Currently, this
+	// must be equal to min. Set to 1 for single compute endpoints, to disable
+	// HA. To manually suspend all computes in an endpoint group, set disabled
+	// to true on the EndpointSpec.
+	Max int `json:"max"`
+	// The minimum number of computes in the endpoint group. Currently, this
+	// must be equal to max. This must be greater than or equal to 1.
+	Min int `json:"min"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointGroupStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointGroupStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Encapsulates various hostnames (r/w or r/o, pooled or not) for an endpoint.
 type EndpointHosts struct {
 	// The hostname to connect to this endpoint. For read-write endpoints, this
@@ -354,6 +402,12 @@ type EndpointHosts struct {
 	// read-only endpoints, this is a read-only hostname which allows read-only
 	// operations.
 	Host string `json:"host,omitempty"`
+	// An optionally defined read-only host for the endpoint, without pooling.
+	// For read-only endpoints, this attribute is always defined and is
+	// equivalent to host. For read-write endpoints, this attribute is defined
+	// if the enclosing endpoint is a group with greater than 1 computes
+	// configured, and has readable secondaries enabled.
+	ReadOnlyHost string `json:"read_only_host,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -386,6 +440,10 @@ type EndpointSpec struct {
 	Disabled bool `json:"disabled,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type"`
+	// Settings for optional HA configuration of the endpoint. If unspecified,
+	// the endpoint defaults to non HA settings, with a single compute backing
+	// the endpoint (and no readable secondaries for Read/Write endpoints).
+	Group *EndpointGroupSpec `json:"group,omitempty"`
 	// When set to true, explicitly disables automatic suspension (never
 	// suspend). Should be set to true when provided.
 	NoSuspension bool `json:"no_suspension,omitempty"`
@@ -420,6 +478,8 @@ type EndpointStatus struct {
 	Disabled bool `json:"disabled,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
+	// Details on the HA configuration of the endpoint.
+	Group *EndpointGroupStatus `json:"group,omitempty"`
 	// Contains host information for connecting to the endpoint.
 	Hosts *EndpointHosts `json:"hosts,omitempty"`
 
@@ -446,6 +506,8 @@ type EndpointStatusState string
 
 const EndpointStatusStateActive EndpointStatusState = `ACTIVE`
 
+const EndpointStatusStateDegraded EndpointStatusState = `DEGRADED`
+
 const EndpointStatusStateIdle EndpointStatusState = `IDLE`
 
 const EndpointStatusStateInit EndpointStatusState = `INIT`
@@ -458,11 +520,11 @@ func (f *EndpointStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStatusState) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `IDLE`, `INIT`:
+	case `ACTIVE`, `DEGRADED`, `IDLE`, `INIT`:
 		*f = EndpointStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "IDLE", "INIT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DEGRADED", "IDLE", "INIT"`, v)
 	}
 }
 
@@ -472,6 +534,7 @@ func (f *EndpointStatusState) Set(v string) error {
 func (f *EndpointStatusState) Values() []EndpointStatusState {
 	return []EndpointStatusState{
 		EndpointStatusStateActive,
+		EndpointStatusStateDegraded,
 		EndpointStatusStateIdle,
 		EndpointStatusStateInit,
 	}
@@ -835,6 +898,11 @@ type GetRoleRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type InitialEndpointSpec struct {
+	// Settings for HA configuration of the endpoint
+	Group *EndpointGroupSpec `json:"group,omitempty"`
+}
+
 type ListBranchesRequest struct {
 	// Upper bound for items returned. Cannot be negative.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -1020,6 +1088,13 @@ func (s Operation) MarshalJSON() ([]byte, error) {
 type Project struct {
 	// A timestamp indicating when the project was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Configuration settings for the initial Read/Write endpoint created inside
+	// the default branch for a newly created project. If omitted, the initial
+	// endpoint created will have default settings, without high availability
+	// configured. This field does not apply to any endpoints created after
+	// project creation. Use spec.default_endpoint_settings to configure default
+	// settings for endpoints created after project creation.
+	InitialEndpointSpec *InitialEndpointSpec `json:"initial_endpoint_spec,omitempty"`
 	// Output only. The full resource path of the project. Format:
 	// projects/{project_id}
 	Name string `json:"name,omitempty"`

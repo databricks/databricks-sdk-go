@@ -768,6 +768,8 @@ type AppPermissionsRequest struct {
 }
 
 type AppResource struct {
+	App *AppResourceApp `json:"app,omitempty"`
+
 	Database *AppResourceDatabase `json:"database,omitempty"`
 	// Description of the App Resource.
 	Description string `json:"description,omitempty"`
@@ -797,6 +799,9 @@ func (s *AppResource) UnmarshalJSON(b []byte) error {
 
 func (s AppResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type AppResourceApp struct {
 }
 
 type AppResourceDatabase struct {
@@ -1141,13 +1146,28 @@ type AppResourceUcSecurable struct {
 	Permission AppResourceUcSecurableUcSecurablePermission `json:"permission"`
 
 	SecurableFullName string `json:"securable_full_name"`
+	// The securable kind from Unity Catalog. See
+	// https://docs.databricks.com/api/workspace/tables/get#securable_kind_manifest-securable_kind.
+	SecurableKind string `json:"securable_kind,omitempty"`
 
 	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppResourceUcSecurable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppResourceUcSecurable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AppResourceUcSecurableUcSecurablePermission string
 
 const AppResourceUcSecurableUcSecurablePermissionExecute AppResourceUcSecurableUcSecurablePermission = `EXECUTE`
+
+const AppResourceUcSecurableUcSecurablePermissionModify AppResourceUcSecurableUcSecurablePermission = `MODIFY`
 
 const AppResourceUcSecurableUcSecurablePermissionReadVolume AppResourceUcSecurableUcSecurablePermission = `READ_VOLUME`
 
@@ -1165,11 +1185,11 @@ func (f *AppResourceUcSecurableUcSecurablePermission) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppResourceUcSecurableUcSecurablePermission) Set(v string) error {
 	switch v {
-	case `EXECUTE`, `READ_VOLUME`, `SELECT`, `USE_CONNECTION`, `WRITE_VOLUME`:
+	case `EXECUTE`, `MODIFY`, `READ_VOLUME`, `SELECT`, `USE_CONNECTION`, `WRITE_VOLUME`:
 		*f = AppResourceUcSecurableUcSecurablePermission(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EXECUTE", "READ_VOLUME", "SELECT", "USE_CONNECTION", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXECUTE", "MODIFY", "READ_VOLUME", "SELECT", "USE_CONNECTION", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -1179,6 +1199,7 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Set(v string) error {
 func (f *AppResourceUcSecurableUcSecurablePermission) Values() []AppResourceUcSecurableUcSecurablePermission {
 	return []AppResourceUcSecurableUcSecurablePermission{
 		AppResourceUcSecurableUcSecurablePermissionExecute,
+		AppResourceUcSecurableUcSecurablePermissionModify,
 		AppResourceUcSecurableUcSecurablePermissionReadVolume,
 		AppResourceUcSecurableUcSecurablePermissionSelect,
 		AppResourceUcSecurableUcSecurablePermissionUseConnection,
