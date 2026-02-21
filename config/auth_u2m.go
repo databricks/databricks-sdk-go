@@ -39,7 +39,7 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if err != nil {
 		return nil, err
 	}
-	return credentials.NewOAuthCredentialsProviderFromTokenSource(auth.NewCachedTokenSource(ts)), nil
+	return credentials.NewOAuthCredentialsProviderFromTokenSource(auth.NewCachedTokenSource(ts, cacheOptions(cfg)...)), nil
 }
 
 // ErrCustomScopesNotSupported is returned when custom scopes are specified

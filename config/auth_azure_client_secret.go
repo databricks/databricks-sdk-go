@@ -54,8 +54,9 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	env := cfg.Environment()
 	aadEndpoint := env.AzureActiveDirectoryEndpoint()
 	managementEndpoint := env.AzureServiceManagementEndpoint()
-	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, env.AzureApplicationID))
-	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, managementEndpoint))
-	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken))
+	opts := cacheOptions(cfg)
+	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, env.AzureApplicationID), opts...)
+	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, managementEndpoint), opts...)
+	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken, opts...))
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }

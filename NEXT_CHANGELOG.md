@@ -5,8 +5,10 @@
 ### Breaking Changes
 
 ### New Features and Improvements
-* Add `DefaultCredentialStrategyProvider` package-level variable to allow 
+* Add `DefaultCredentialStrategyProvider` package-level variable to allow
   overriding the default authentication strategy for all `Config` instances.
+* Add `DisableAsyncTokenRefresh` field to `Config` to allow disabling
+  asynchronous token refresh for short-lived processes like the Databricks CLI.
 
 ### Bug Fixes
 

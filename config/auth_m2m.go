@@ -34,6 +34,6 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		Scopes:       cfg.GetScopes(),
 	}).TokenSource(ctx)
 
-	visitor := refreshableVisitor(ts)
+	visitor := refreshableVisitor(ts, cacheOptions(cfg)...)
 	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
