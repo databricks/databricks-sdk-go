@@ -481,6 +481,65 @@ func (_c *MockVectorSearchEndpointsInterface_ListEndpointsAll_Call) RunAndReturn
 	return _c
 }
 
+// PatchEndpoint provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) PatchEndpoint(ctx context.Context, request vectorsearch.PatchEndpointRequest) (*vectorsearch.EndpointInfo, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PatchEndpoint")
+	}
+
+	var r0 *vectorsearch.EndpointInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.PatchEndpointRequest) (*vectorsearch.EndpointInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.PatchEndpointRequest) *vectorsearch.EndpointInfo); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.EndpointInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.PatchEndpointRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_PatchEndpoint_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchEndpoint'
+type MockVectorSearchEndpointsInterface_PatchEndpoint_Call struct {
+	*mock.Call
+}
+
+// PatchEndpoint is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.PatchEndpointRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) PatchEndpoint(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_PatchEndpoint_Call {
+	return &MockVectorSearchEndpointsInterface_PatchEndpoint_Call{Call: _e.mock.On("PatchEndpoint", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_PatchEndpoint_Call) Run(run func(ctx context.Context, request vectorsearch.PatchEndpointRequest)) *MockVectorSearchEndpointsInterface_PatchEndpoint_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.PatchEndpointRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_PatchEndpoint_Call) Return(_a0 *vectorsearch.EndpointInfo, _a1 error) *MockVectorSearchEndpointsInterface_PatchEndpoint_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_PatchEndpoint_Call) RunAndReturn(run func(context.Context, vectorsearch.PatchEndpointRequest) (*vectorsearch.EndpointInfo, error)) *MockVectorSearchEndpointsInterface_PatchEndpoint_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // RetrieveUserVisibleMetrics provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchEndpointsInterface) RetrieveUserVisibleMetrics(ctx context.Context, request vectorsearch.RetrieveUserVisibleMetricsRequest) (*vectorsearch.RetrieveUserVisibleMetricsResponse, error) {
 	ret := _m.Called(ctx, request)
