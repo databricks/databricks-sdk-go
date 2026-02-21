@@ -11,12 +11,19 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// cacheOptions returns the auth.Option values derived from the given Config.
+func cacheOptions(cfg *Config) []auth.Option {
+	return []auth.Option{
+		auth.WithAsyncRefresh(!cfg.DisableAsyncTokenRefresh),
+	}
+}
+
 // serviceToServiceVisitor returns a visitor that sets the Authorization header
 // to the token from the auth token source and the provided secondary header to
 // the token from the secondary token source.
-func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
-	refreshableAuth := auth.NewCachedTokenSource(authconv.AuthTokenSource(primary))
-	refreshableSecondary := auth.NewCachedTokenSource(authconv.AuthTokenSource(secondary))
+func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHeader string, opts ...auth.Option) func(r *http.Request) error {
+	refreshableAuth := auth.NewCachedTokenSource(authconv.AuthTokenSource(primary), opts...)
+	refreshableSecondary := auth.NewCachedTokenSource(authconv.AuthTokenSource(secondary), opts...)
 	return func(r *http.Request) error {
 		inner, err := refreshableAuth.Token(context.Background())
 		if err != nil {
@@ -34,13 +41,13 @@ func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHea
 }
 
 // The same as serviceToServiceVisitor, but without a secondary token source.
-func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
-	return refreshableAuthVisitor(authconv.AuthTokenSource(inner))
+func refreshableVisitor(inner oauth2.TokenSource, opts ...auth.Option) func(r *http.Request) error {
+	return refreshableAuthVisitor(authconv.AuthTokenSource(inner), opts...)
 }
 
 // The same as serviceToServiceVisitor, but without a secondary token source.
-func refreshableAuthVisitor(inner auth.TokenSource) func(r *http.Request) error {
-	cts := auth.NewCachedTokenSource(inner)
+func refreshableAuthVisitor(inner auth.TokenSource, opts ...auth.Option) func(r *http.Request) error {
+	cts := auth.NewCachedTokenSource(inner, opts...)
 	return func(r *http.Request) error {
 		inner, err := cts.Token(context.Background())
 		if err != nil {
@@ -64,15 +71,16 @@ func azureVisitor(cfg *Config, inner func(*http.Request) error) func(*http.Reque
 // seconds before they expire. The reason for this is that Azure Databricks
 // rejects tokens that expire in 30 seconds or less and we want to give a 10
 // second buffer.
-func azureReuseTokenSource(t *oauth2.Token, ts oauth2.TokenSource) oauth2.TokenSource {
+func azureReuseTokenSource(t *oauth2.Token, ts oauth2.TokenSource, opts ...auth.Option) oauth2.TokenSource {
 	early := wrap(ts, func(t *oauth2.Token) *oauth2.Token {
 		t.Expiry = t.Expiry.Add(-40 * time.Second)
 		return t
 	})
 
+	allOpts := append([]auth.Option{auth.WithCachedToken(t)}, opts...)
 	return authconv.OAuth2TokenSource(auth.NewCachedTokenSource(
 		authconv.AuthTokenSource(early),
-		auth.WithCachedToken(t),
+		allOpts...,
 	))
 }
 

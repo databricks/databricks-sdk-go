@@ -43,9 +43,10 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		}
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
-	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID))
-	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()))
-	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken))
+	opts := cacheOptions(cfg)
+	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID), opts...)
+	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()), opts...)
+	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken, opts...))
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 

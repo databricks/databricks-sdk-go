@@ -50,7 +50,7 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 		httpClient:    cfg.refreshClient,
 	}
 
-	cts := auth.NewCachedTokenSource(ts)
+	cts := auth.NewCachedTokenSource(ts, cacheOptions(cfg)...)
 	return credentials.NewOAuthCredentialsProviderFromTokenSource(cts), nil
 }
 

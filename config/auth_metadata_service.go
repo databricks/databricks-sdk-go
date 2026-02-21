@@ -77,7 +77,7 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 		return nil, err
 	}
 
-	cts := auth.NewCachedTokenSource(ms)
+	cts := auth.NewCachedTokenSource(ms, cacheOptions(cfg)...)
 	return credentials.NewOAuthCredentialsProviderFromTokenSource(cts), nil
 }
 

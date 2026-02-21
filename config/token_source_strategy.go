@@ -21,7 +21,9 @@ type tokenSourceStrategy struct {
 
 // Configure implements [CredentialsStrategy.Configure].
 func (tss *tokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	cp := credentials.NewOAuthCredentialsProviderFromTokenSource(auth.NewCachedTokenSource(tss.ts))
+	cp := credentials.NewOAuthCredentialsProviderFromTokenSource(
+		auth.NewCachedTokenSource(tss.ts, cacheOptions(cfg)...),
+	)
 
 	// Sanity check that a token can be obtained.
 	//
