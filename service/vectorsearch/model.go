@@ -30,6 +30,10 @@ type CreateEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Type of endpoint
 	EndpointType EndpointType `json:"endpoint_type"`
+	// Min QPS for the endpoint. Mutually exclusive with num_replicas. The
+	// actual replica count is calculated at index creation/sync time based on
+	// this value.
+	MinQps int64 `json:"min_qps,omitempty"`
 	// Name of the vector search endpoint
 	Name string `json:"name"`
 
@@ -311,6 +315,8 @@ type EndpointInfo struct {
 	Name string `json:"name,omitempty"`
 	// Number of indexes on the endpoint
 	NumIndexes int `json:"num_indexes,omitempty"`
+	// Scaling information for the endpoint
+	ScalingInfo *EndpointScalingInfo `json:"scaling_info,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -320,6 +326,23 @@ func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s EndpointInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EndpointScalingInfo struct {
+	// The minimum QPS target requested for the endpoint.
+	RequestedMinQps int64 `json:"requested_min_qps,omitempty"`
+	// The current state of the scaling change request.
+	State ScalingChangeState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointScalingInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointScalingInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -652,6 +675,24 @@ func (s PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PatchEndpointRequest struct {
+	// Name of the vector search endpoint
+	EndpointName string `json:"-" url:"-"`
+	// Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to
+	// default scaling behavior.
+	MinQps int64 `json:"min_qps,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PatchEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PatchEndpointRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered
 // execution mode, the system stops processing after successfully refreshing the
 // source table in the pipeline once, ensuring the table is updated based on the
@@ -891,6 +932,46 @@ func (s *RetrieveUserVisibleMetricsResponse) UnmarshalJSON(b []byte) error {
 
 func (s RetrieveUserVisibleMetricsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ScalingChangeState string
+
+const ScalingChangeStateScalingChangeApplied ScalingChangeState = `SCALING_CHANGE_APPLIED`
+
+const ScalingChangeStateScalingChangeInProgress ScalingChangeState = `SCALING_CHANGE_IN_PROGRESS`
+
+const ScalingChangeStateScalingChangeUnspecified ScalingChangeState = `SCALING_CHANGE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (f *ScalingChangeState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ScalingChangeState) Set(v string) error {
+	switch v {
+	case `SCALING_CHANGE_APPLIED`, `SCALING_CHANGE_IN_PROGRESS`, `SCALING_CHANGE_UNSPECIFIED`:
+		*f = ScalingChangeState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SCALING_CHANGE_APPLIED", "SCALING_CHANGE_IN_PROGRESS", "SCALING_CHANGE_UNSPECIFIED"`, v)
+	}
+}
+
+// Values returns all possible values for ScalingChangeState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ScalingChangeState) Values() []ScalingChangeState {
+	return []ScalingChangeState{
+		ScalingChangeStateScalingChangeApplied,
+		ScalingChangeStateScalingChangeInProgress,
+		ScalingChangeStateScalingChangeUnspecified,
+	}
+}
+
+// Type always returns ScalingChangeState to satisfy [pflag.Value] interface
+func (f *ScalingChangeState) Type() string {
+	return "ScalingChangeState"
 }
 
 type ScanVectorIndexRequest struct {
