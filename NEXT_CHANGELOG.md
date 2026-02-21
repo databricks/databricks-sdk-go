@@ -11,6 +11,7 @@
 ### Bug Fixes
 
 ### Documentation
+* Added "Retries" section to README.
 
 ### Internal Changes
 

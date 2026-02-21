@@ -33,6 +33,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
     - [Cluster library management](#cluster-library-management)
     - [Advanced usage](#advanced-usage)
   - [Paginated responses](#paginated-responses)
+  - [Retries](#retries)
   - [`GetByName` utility methods](#getbyname-utility-methods)
   - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
   - [Integration with `io` interfaces for DBFS](#integration-with-io-interfaces-for-dbfs)
@@ -444,6 +445,10 @@ for _, repo := range all {
     println(repo.Path)
 }
 ```
+
+## Retries
+
+The SDK automatically retries failed requests that are safe to retry. This includes HTTP 429 (Too Many Requests) and 503 (Service Unavailable) responses, as well as network-level errors such as connection resets and timeouts. The SDK uses a backoff strategy with jitter between retry attempts to avoid overwhelming the service. Retry behavior can be adjusted through the SDK configuration.
 
 ## `GetByName` utility methods
 
