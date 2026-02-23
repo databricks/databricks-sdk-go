@@ -11,9 +11,6 @@ import (
 // Maximum duration for the stale period. This value is chosen to provide
 // robustness for standard OAuth tokens, supporting 99.95% availability,
 // adding breathing room over the existing 99.99% SLA.
-// For tokens with shorter lifetimes (e.g., FastPath tokens with 10-minute TTL),
-// the stale period is computed as min(TTL × 0.5, maxStaleDuration) to adapt to
-// the token's actual lifetime.
 const maxStaleDuration = 20 * time.Minute
 
 // computeStalePeriod calculates the stale period for a token based on its TTL.
@@ -23,18 +20,16 @@ const maxStaleDuration = 20 * time.Minute
 // Formula: min(TTL × 0.5, maxStaleDuration)
 //
 // Edge cases:
-//   - TTL <= 0 (expired or no expiry): returns maxStaleDuration.
+//   - TTL <= 0 (expired or no expiry): returns 0.
 //   - Very short TTL (e.g., 2 seconds): returns TTL / 2 without minimum enforcement.
 //   - Standard OAuth (60 minutes): returns 20 minutes (capped at max).
 //   - FastPath (10 minutes): returns 5 minutes.
 func computeStalePeriod(ttl time.Duration) time.Duration {
 	if ttl <= 0 {
-		// Token is already expired or has no expiry (Expiry.IsZero()).
-		// Use max stale duration as a safe default.
-		return maxStaleDuration
+		return 0
 	}
+
 	stalePeriod := ttl / 2
-	// Cap the stale period at the maximum stale duration.
 	if stalePeriod > maxStaleDuration {
 		return maxStaleDuration
 	}
