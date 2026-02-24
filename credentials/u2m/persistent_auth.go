@@ -201,13 +201,29 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 // Token loads the OAuth2 token for the given OAuthArgument from the cache. If
 // the token is expired, it is refreshed using the refresh token.
 //
-// When a profile is set, lookup is by profile key only. There is no fallback
-// to the legacy host-based key — users with pre-existing host-keyed tokens
-// will re-authenticate on first use with a profile, at which point dualWrite
-// stores under both keys.
+// When a profile is set, lookup is by profile key first. If the profile key is
+// not found and the OAuthArgument implements HostCacheKeyProvider, a fallback
+// lookup by host key is attempted. If found, dualWrite is called to migrate the
+// token to the profile key for future lookups.
 func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	key := a.oAuthArgument.GetCacheKey()
 	t, err = a.cache.Lookup(key)
+	if errors.Is(err, cache.ErrNotFound) {
+		if hcp, ok := a.oAuthArgument.(HostCacheKeyProvider); ok {
+			hostKey := hcp.GetHostCacheKey()
+			if hostKey != key {
+				t, err = a.cache.Lookup(hostKey)
+				if err == nil {
+					// Return the host-keyed token so the caller isn't blocked,
+					// but don't migrate it to the profile key. The host key may
+					// contain a token from a different profile with different
+					// scopes. The next `auth login --profile` will write the
+					// correct token under the profile key.
+					logger.Debugf(a.ctx, "token cache: profile key %q not found, using legacy host key %q (run 'databricks auth login --profile <name>' to migrate)", key, hostKey)
+				}
+			}
+		}
+	}
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}

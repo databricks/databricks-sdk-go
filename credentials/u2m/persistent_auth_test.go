@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"golang.org/x/oauth2"
 )
@@ -95,25 +96,69 @@ func TestToken_WithProfile(t *testing.T) {
 	}
 }
 
-func TestToken_WithProfile_NoFallbackToHostKey(t *testing.T) {
-	// When a profile is set, Token() looks up by profile key only. If no token
-	// exists under that key (e.g. legacy host-keyed token from before upgrade),
-	// it returns an error rather than silently falling back to the host key.
-	// Users re-authenticate once, and dualWrite stores under both keys going forward.
+func TestToken_WithProfile_FallbackToHostKey(t *testing.T) {
+	// When a profile is set but the profile key is not found, Token() falls
+	// back to the host key and returns the token. It does NOT migrate (write)
+	// the token to the profile key — the host key may hold a token from a
+	// different profile with different scopes.
 	profileKey := "my-profile"
-	cache := &tokenCacheMock{
+	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
+	c := &tokenCacheMock{
 		lookup: func(key string) (*oauth2.Token, error) {
-			if key != profileKey {
-				t.Fatalf("lookup(): want key %q, got %q", profileKey, key)
+			if key == profileKey {
+				return nil, cache.ErrNotFound
 			}
-			return nil, fmt.Errorf("token not found")
+			if key == hostKey {
+				return &oauth2.Token{
+					AccessToken: "host-token",
+					Expiry:      time.Now().Add(1 * time.Minute),
+				}, nil
+			}
+			t.Fatalf("lookup(): unexpected key %q", key)
+			return nil, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call with key %q — fallback must not persist", key)
+			return nil
 		},
 	}
 	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz", profileKey)
 	if err != nil {
 		t.Fatalf("NewProfileAccountOAuthArgument(): want no error, got %v", err)
 	}
-	p, err := NewPersistentAuth(context.Background(), WithTokenCache(cache), WithOAuthArgument(arg))
+	p, err := NewPersistentAuth(context.Background(), WithTokenCache(c), WithOAuthArgument(arg))
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "host-token" {
+		t.Errorf("p.Token(): want access token %q, got %q", "host-token", tok.AccessToken)
+	}
+}
+
+func TestToken_WithProfile_BothKeysMiss(t *testing.T) {
+	// When both the profile key and host key miss, Token() returns ErrNotFound.
+	profileKey := "my-profile"
+	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			if key == profileKey || key == hostKey {
+				return nil, cache.ErrNotFound
+			}
+			t.Fatalf("lookup(): unexpected key %q", key)
+			return nil, nil
+		},
+	}
+	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz", profileKey)
+	if err != nil {
+		t.Fatalf("NewProfileAccountOAuthArgument(): want no error, got %v", err)
+	}
+	p, err := NewPersistentAuth(context.Background(), WithTokenCache(c), WithOAuthArgument(arg))
 	if err != nil {
 		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
 	}
@@ -121,10 +166,50 @@ func TestToken_WithProfile_NoFallbackToHostKey(t *testing.T) {
 
 	_, err = p.Token()
 	if err == nil {
-		t.Fatal("p.Token(): want error for missing profile-keyed token, got nil")
+		t.Fatal("p.Token(): want error for missing token, got nil")
 	}
 	if !strings.Contains(err.Error(), "cache:") {
 		t.Errorf("p.Token(): want cache error, got %v", err)
+	}
+}
+
+func TestToken_NoProfile_NoFallbackAttempted(t *testing.T) {
+	// When no profile is set, the primary key is the host key. No fallback
+	// is attempted because the primary and host keys are the same.
+	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
+	lookupCount := 0
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			lookupCount++
+			if key != hostKey {
+				t.Fatalf("lookup(): want key %q, got %q", hostKey, key)
+			}
+			return &oauth2.Token{
+				AccessToken: "host-token",
+				Expiry:      time.Now().Add(1 * time.Minute),
+			}, nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+	}
+	p, err := NewPersistentAuth(context.Background(), WithTokenCache(c), WithOAuthArgument(arg))
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "host-token" {
+		t.Errorf("p.Token(): want access token %q, got %q", "host-token", tok.AccessToken)
+	}
+	// Only one lookup should have been made (no fallback)
+	if lookupCount != 1 {
+		t.Errorf("lookup count: want 1, got %d", lookupCount)
 	}
 }
 

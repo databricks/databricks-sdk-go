@@ -125,7 +125,7 @@ func TestFindDatabricksCli(t *testing.T) {
 	}
 }
 
-func TestBuildCliCommand(t *testing.T) {
+func TestBuildCliCommands(t *testing.T) {
 	const (
 		cliPath     = "/path/to/databricks"
 		host        = "https://workspace.cloud.databricks.com"
@@ -136,9 +136,10 @@ func TestBuildCliCommand(t *testing.T) {
 	)
 
 	testCases := []struct {
-		name    string
-		cfg     *Config
-		wantCmd []string
+		name        string
+		cfg         *Config
+		wantCmd     []string
+		wantHostCmd []string
 	}{
 		{
 			name:    "workspace host",
@@ -196,13 +197,27 @@ func TestBuildCliCommand(t *testing.T) {
 			},
 			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
 		},
+		{
+			name:        "profile uses --profile with --host fallback",
+			cfg:         &Config{Profile: "my-profile", Host: host},
+			wantCmd:     []string{cliPath, "auth", "token", "--profile", "my-profile"},
+			wantHostCmd: []string{cliPath, "auth", "token", "--host", host},
+		},
+		{
+			name:    "profile without host — no fallback",
+			cfg:     &Config{Profile: "my-profile"},
+			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile"},
+		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildCliCommand(cliPath, tc.cfg)
-			if !slices.Equal(got, tc.wantCmd) {
-				t.Errorf("buildCliCommand() = %v, want %v", got, tc.wantCmd)
+			gotCmd, gotHostCmd := buildCliCommands(cliPath, tc.cfg)
+			if !slices.Equal(gotCmd, tc.wantCmd) {
+				t.Errorf("primary cmd = %v, want %v", gotCmd, tc.wantCmd)
+			}
+			if !slices.Equal(gotHostCmd, tc.wantHostCmd) {
+				t.Errorf("host cmd = %v, want %v", gotHostCmd, tc.wantHostCmd)
 			}
 		})
 	}
@@ -300,5 +315,76 @@ func TestCliTokenSource_Token(t *testing.T) {
 				t.Errorf("AccessToken = %q, want %q", token.AccessToken, tc.wantToken)
 			}
 		})
+	}
+}
+
+func TestCliTokenSource_Token_FallbackOnUnknownFlag(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping shell script test on Windows")
+	}
+
+	expiry := time.Now().Add(1 * time.Hour).Format(time.RFC3339)
+	validResponse, _ := json.Marshal(cliTokenResponse{
+		AccessToken: "fallback-token",
+		TokenType:   "Bearer",
+		Expiry:      expiry,
+	})
+
+	tempDir := t.TempDir()
+
+	// Primary script simulates an old CLI that doesn't know --profile.
+	profileScript := filepath.Join(tempDir, "profile_cli.sh")
+	if err := os.WriteFile(profileScript, []byte("#!/bin/sh\necho 'Error: unknown flag: --profile' >&2\nexit 1"), 0755); err != nil {
+		t.Fatalf("failed to create profile script: %v", err)
+	}
+
+	// Fallback script succeeds with --host.
+	hostScript := filepath.Join(tempDir, "host_cli.sh")
+	if err := os.WriteFile(hostScript, []byte("#!/bin/sh\necho '"+string(validResponse)+"'"), 0755); err != nil {
+		t.Fatalf("failed to create host script: %v", err)
+	}
+
+	ts := &CliTokenSource{
+		cmd:     []string{profileScript},
+		hostCmd: []string{hostScript},
+	}
+	token, err := ts.Token(context.Background())
+	if err != nil {
+		t.Fatalf("Token() error = %v, want fallback to succeed", err)
+	}
+	if token.AccessToken != "fallback-token" {
+		t.Errorf("AccessToken = %q, want %q", token.AccessToken, "fallback-token")
+	}
+}
+
+func TestCliTokenSource_Token_NoFallbackOnRealError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping shell script test on Windows")
+	}
+
+	tempDir := t.TempDir()
+
+	// Primary script fails with a real auth error (not unknown flag).
+	profileScript := filepath.Join(tempDir, "profile_cli.sh")
+	if err := os.WriteFile(profileScript, []byte("#!/bin/sh\necho 'cache: databricks OAuth is not configured for this host' >&2\nexit 1"), 0755); err != nil {
+		t.Fatalf("failed to create profile script: %v", err)
+	}
+
+	// Fallback script would succeed, but should not be called.
+	hostScript := filepath.Join(tempDir, "host_cli.sh")
+	if err := os.WriteFile(hostScript, []byte("#!/bin/sh\necho 'should not reach here' >&2\nexit 1"), 0755); err != nil {
+		t.Fatalf("failed to create host script: %v", err)
+	}
+
+	ts := &CliTokenSource{
+		cmd:     []string{profileScript},
+		hostCmd: []string{hostScript},
+	}
+	_, err := ts.Token(context.Background())
+	if err == nil {
+		t.Fatal("Token() error = nil, want error")
+	}
+	if !strings.Contains(err.Error(), "databricks OAuth is not configured") {
+		t.Errorf("Token() error = %v, want error containing original auth failure", err)
 	}
 }
