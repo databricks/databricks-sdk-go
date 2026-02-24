@@ -42,7 +42,7 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credenti
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
 	logger.Infof(ctx, "Using Google Credentials")
-	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token")
+	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token", cacheOptions(cfg)...)
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 
