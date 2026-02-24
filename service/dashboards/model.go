@@ -234,7 +234,7 @@ type GenieAttachment struct {
 	Query *GenieQueryAttachment `json:"query,omitempty"`
 	// Follow-up questions suggested by Genie
 	SuggestedQuestions *GenieSuggestedQuestionsAttachment `json:"suggested_questions,omitempty"`
-	// Text Attachment if Genie responds with text. This also contains the final
+	// Text Attachment if Genie responds with text This also contains the final
 	// summary when available.
 	Text *TextAttachment `json:"text,omitempty"`
 
@@ -255,7 +255,7 @@ type GenieConversation struct {
 	// Timestamp when the message was created
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 	// Conversation ID. Legacy identifier, use conversation_id instead
-	Id string `json:"id"`
+	Id string `json:"id,omitempty"`
 	// Timestamp when the message was last updated
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Genie space ID
@@ -263,7 +263,7 @@ type GenieConversation struct {
 	// Conversation title
 	Title string `json:"title"`
 	// ID of the user who created the conversation
-	UserId int `json:"user_id"`
+	UserId int `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -279,9 +279,19 @@ func (s GenieConversation) MarshalJSON() ([]byte, error) {
 type GenieConversationSummary struct {
 	ConversationId string `json:"conversation_id"`
 
-	CreatedTimestamp int64 `json:"created_timestamp"`
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 
-	Title string `json:"title"`
+	Title string `json:"title,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieConversationSummary) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieConversationSummary) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GenieCreateConversationMessageRequest struct {
@@ -454,21 +464,11 @@ type GenieGetDownloadFullQueryResultRequest struct {
 	DownloadId string `json:"-" url:"-"`
 	// JWT signature for the download_id to ensure secure access to query
 	// results
-	DownloadIdSignature string `json:"-" url:"download_id_signature,omitempty"`
+	DownloadIdSignature string `json:"-" url:"download_id_signature"`
 	// Message ID
 	MessageId string `json:"-" url:"-"`
 	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GenieGetDownloadFullQueryResultRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GenieGetDownloadFullQueryResultRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GenieGetDownloadFullQueryResultResponse struct {
@@ -657,7 +657,7 @@ type GenieMessage struct {
 	// User feedback for the message if provided
 	Feedback *GenieFeedback `json:"feedback,omitempty"`
 	// Message ID. Legacy identifier, use message_id instead
-	Id string `json:"id"`
+	Id string `json:"id,omitempty"`
 	// Timestamp when the message was last updated
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Message ID
