@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -31,7 +32,12 @@ type cliTokenResponse struct {
 }
 
 type CliTokenSource struct {
+	// cmd is the primary command to execute (--profile when available, --host otherwise).
 	cmd []string
+
+	// hostCmd is a fallback command using --host, used when the primary --profile
+	// command fails because the CLI is too old to support --profile.
+	hostCmd []string
 }
 
 func NewCliTokenSource(cfg *Config) (*CliTokenSource, error) {
@@ -39,14 +45,29 @@ func NewCliTokenSource(cfg *Config) (*CliTokenSource, error) {
 	if err != nil {
 		return nil, err
 	}
-	cmd := buildCliCommand(cliPath, cfg)
-	return &CliTokenSource{cmd: cmd}, nil
+	profileCmd, hostCmd := buildCliCommands(cliPath, cfg)
+	return &CliTokenSource{cmd: profileCmd, hostCmd: hostCmd}, nil
 }
 
-// buildCliCommand constructs the CLI command arguments for fetching an auth token.
-// It handles unified hosts (with optional account_id and workspace_id), account hosts,
-// and workspace hosts.
-func buildCliCommand(cliPath string, cfg *Config) []string {
+// buildCliCommands constructs the CLI commands for fetching an auth token.
+// When cfg.Profile is set, the primary command uses --profile and a fallback
+// --host command is also returned for compatibility with older CLIs.
+// When cfg.Profile is empty, the primary command uses --host and no fallback
+// is needed.
+func buildCliCommands(cliPath string, cfg *Config) (primaryCmd []string, hostCmd []string) {
+	if cfg.Profile != "" {
+		primary := []string{cliPath, "auth", "token", "--profile", cfg.Profile}
+		if cfg.Host != "" {
+			// Build a --host fallback for old CLIs that don't support --profile.
+			return primary, buildHostCommand(cliPath, cfg)
+		}
+		return primary, nil
+	}
+	return buildHostCommand(cliPath, cfg), nil
+}
+
+// buildHostCommand constructs the legacy --host based CLI command.
+func buildHostCommand(cliPath string, cfg *Config) []string {
 	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
 	switch cfg.HostType() {
 	case UnifiedHost:
@@ -63,8 +84,21 @@ func buildCliCommand(cliPath string, cfg *Config) []string {
 	return cmd
 }
 
+// Token fetches an OAuth token by shelling out to the Databricks CLI.
+// When a --profile command is configured, it is tried first. If the CLI
+// returns "unknown flag: --profile" (indicating an older CLI version),
+// the fallback --host command is used instead.
 func (c *CliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
-	cmd := exec.CommandContext(ctx, c.cmd[0], c.cmd[1:]...)
+	tok, err := c.execCliCommand(ctx, c.cmd)
+	if err != nil && c.hostCmd != nil && isUnknownFlagError(err) {
+		logger.Warnf(ctx, "Databricks CLI does not support --profile flag. Falling back to --host. Please upgrade your CLI to the latest version.")
+		return c.execCliCommand(ctx, c.hostCmd)
+	}
+	return tok, err
+}
+
+func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oauth2.Token, error) {
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
 	stdout, err := cmd.Output()
 	if err != nil {
 		var exitErr *exec.ExitError
@@ -86,6 +120,13 @@ func (c *CliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
 		TokenType:   resp.TokenType,
 		Expiry:      expiry,
 	}, nil
+}
+
+// isUnknownFlagError returns true if the error indicates the CLI does not
+// recognize the --profile flag. This happens with older CLI versions that
+// predate profile-based token lookup.
+func isUnknownFlagError(err error) bool {
+	return strings.Contains(err.Error(), "unknown flag: --profile")
 }
 
 // parseExpiry parses an expiry time string in multiple formats for cross-SDK compatibility.
