@@ -794,6 +794,7 @@ func (f *ChannelName) Type() string {
 }
 
 type ClientConfig struct {
+	// allow_custom_js_visualizations is not supported/implemneted.
 	AllowCustomJsVisualizations bool `json:"allow_custom_js_visualizations,omitempty"`
 
 	AllowDownloads bool `json:"allow_downloads,omitempty"`
