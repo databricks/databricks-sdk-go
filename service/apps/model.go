@@ -2203,7 +2203,7 @@ type Space struct {
 	// The name of the app space. The name must contain only lowercase
 	// alphanumeric characters and hyphens. It must be unique within the
 	// workspace.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The OAuth2 app client ID for the app space.
 	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
 	// The OAuth2 app integration ID for the app space.

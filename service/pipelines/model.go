@@ -2216,6 +2216,8 @@ type StartUpdate struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Key/value map of parameters to pass to the pipeline execution
+	Parameters map[string]string `json:"parameters,omitempty"`
 
 	PipelineId string `json:"-" url:"-"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
@@ -2480,6 +2482,8 @@ type UpdateInfo struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Key/value map of parameters used to initiate the update
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// The ID of the pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// A list of tables to update without fullRefresh. If both refresh_selection

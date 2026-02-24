@@ -15,7 +15,8 @@ type CreateTagPolicyRequest struct {
 }
 
 type DeleteTagAssignmentRequest struct {
-	// The identifier of the entity to which the tag is assigned
+	// The identifier of the entity to which the tag is assigned. For apps, the
+	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
@@ -30,7 +31,8 @@ type DeleteTagPolicyRequest struct {
 }
 
 type GetTagAssignmentRequest struct {
-	// The identifier of the entity to which the tag is assigned
+	// The identifier of the entity to which the tag is assigned. For apps, the
+	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
@@ -45,7 +47,8 @@ type GetTagPolicyRequest struct {
 }
 
 type ListTagAssignmentsRequest struct {
-	// The identifier of the entity to which the tag is assigned
+	// The identifier of the entity to which the tag is assigned. For apps, the
+	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
@@ -121,7 +124,8 @@ func (s ListTagPoliciesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type TagAssignment struct {
-	// The identifier of the entity to which the tag is assigned
+	// The identifier of the entity to which the tag is assigned. For apps, the
+	// entity_id is the app name
 	EntityId string `json:"entity_id"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
@@ -169,7 +173,8 @@ func (s TagPolicy) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateTagAssignmentRequest struct {
-	// The identifier of the entity to which the tag is assigned
+	// The identifier of the entity to which the tag is assigned. For apps, the
+	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
