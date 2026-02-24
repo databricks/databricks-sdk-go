@@ -156,6 +156,9 @@ const (
 // TTL. It must be called immediately after cachedToken is set. When called on
 // a shared instance (after construction), the lock must be held.
 func (cts *cachedTokenSource) updateStaleDuration() {
+	if cts.cachedToken == nil {
+		return
+	}
 	ttl := cts.cachedToken.Expiry.Sub(cts.timeNow())
 	cts.staleDuration = computeStalePeriod(ttl)
 }
