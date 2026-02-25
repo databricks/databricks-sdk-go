@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
@@ -459,5 +460,193 @@ func TestConfig_EnsureResolved_scopeNormalization(t *testing.T) {
 				t.Errorf("EnsureResolved() scopes mismatch (-want +got):\n%s", diff)
 			}
 		})
+	}
+}
+
+func TestConfig_DiscoveryURL_FromEnv(t *testing.T) {
+	t.Setenv("DATABRICKS_DISCOVERY_URL", "https://custom.idp.example.com/oidc")
+	cfg := &Config{Host: testHMHost, Token: "t"}
+	if err := cfg.EnsureResolved(); err != nil {
+		t.Fatal(err)
+	}
+	if cfg.DiscoveryURL != "https://custom.idp.example.com/oidc" {
+		t.Errorf("unexpected DiscoveryURL: %q", cfg.DiscoveryURL)
+	}
+}
+
+func TestConfig_getOidcEndpoints_UsesDiscoveryURL(t *testing.T) {
+	discoveryURL := testHMHost + "/oidc"
+	cfg := &Config{
+		Host:         testHMHost,
+		Token:        "t",
+		DiscoveryURL: discoveryURL,
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/oidc",
+				Status:   200,
+				Response: `{"authorization_endpoint": "` + testHMHost + `/oidc/v1/authorize", "token_endpoint": "` + testHMHost + `/oidc/v1/token"}`,
+			},
+		},
+	}
+	endpoints, err := cfg.getOidcEndpoints(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := &u2m.OAuthAuthorizationServer{
+		AuthorizationEndpoint: testHMHost + "/oidc/v1/authorize",
+		TokenEndpoint:         testHMHost + "/oidc/v1/token",
+	}
+	if diff := cmp.Diff(want, endpoints); diff != "" {
+		t.Errorf("mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_WorkspacePopulatesAllFields(t *testing.T) {
+	cfg := &Config{
+		Host:  testHMHost,
+		Token: "t",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `"}`,
+			},
+		},
+	}
+	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if cfg.AccountID != testHMAccountID {
+		t.Errorf("unexpected AccountID: %q", cfg.AccountID)
+	}
+	if cfg.WorkspaceID != testHMWorkspaceID {
+		t.Errorf("unexpected WorkspaceID: %q", cfg.WorkspaceID)
+	}
+	if cfg.DiscoveryURL != testHMHost+"/oidc" {
+		t.Errorf("unexpected DiscoveryURL: %q", cfg.DiscoveryURL)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
+	cfg := &Config{
+		Host:      testHMAccHost,
+		Token:     "t",
+		AccountID: testHMAccountID,
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMAccHost + `/oidc/accounts/{account_id}"}`,
+			},
+		},
+	}
+	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	want := testHMAccHost + "/oidc/accounts/" + testHMAccountID
+	if cfg.DiscoveryURL != want {
+		t.Errorf("unexpected DiscoveryURL: %q", cfg.DiscoveryURL)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingFields(t *testing.T) {
+	cfg := &Config{
+		Host:        testHMHost,
+		Token:       "t",
+		AccountID:   testHMAccountID,
+		WorkspaceID: testHMWorkspaceID,
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "other-account", "workspace_id": "other-ws"}`,
+			},
+		},
+	}
+	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if cfg.AccountID != testHMAccountID {
+		t.Errorf("AccountID was overwritten: %q", cfg.AccountID)
+	}
+	if cfg.WorkspaceID != testHMWorkspaceID {
+		t.Errorf("WorkspaceID was overwritten: %q", cfg.WorkspaceID)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_MissingAccountID(t *testing.T) {
+	cfg := &Config{
+		Host:  testHMAccHost,
+		Token: "t",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMAccHost + `/oidc/accounts/{account_id}"}`,
+			},
+		},
+	}
+	err := cfg.resolveHostMetadata(context.Background())
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "account_id is not configured") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_MissingOIDCEndpoint(t *testing.T) {
+	cfg := &Config{
+		Host:  testHMHost,
+		Token: "t",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"account_id": "` + testHMAccountID + `"}`,
+			},
+		},
+	}
+	err := cfg.resolveHostMetadata(context.Background())
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "discovery_url is not configured") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_HTTPError(t *testing.T) {
+	cfg := &Config{
+		Host:  testHMHost,
+		Token: "t",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   500,
+				Response: `{"error": "internal error"}`,
+			},
+		},
+	}
+	err := cfg.resolveHostMetadata(context.Background())
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "fetching host metadata from") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_NoHost(t *testing.T) {
+	cfg := &Config{}
+	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+		t.Fatal(err)
 	}
 }
