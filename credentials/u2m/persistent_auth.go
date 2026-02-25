@@ -203,8 +203,8 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 //
 // When a profile is set, lookup is by profile key first. If the profile key is
 // not found and the OAuthArgument implements HostCacheKeyProvider, a fallback
-// lookup by host key is attempted. If found, dualWrite is called to migrate the
-// token to the profile key for future lookups.
+// lookup by host key is attempted. If found, the token is returned without
+// being migrated to the profile key (see inline comment for rationale).
 func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	key := a.oAuthArgument.GetCacheKey()
 	t, err = a.cache.Lookup(key)
@@ -477,11 +477,16 @@ func (a *PersistentAuth) randomString(size int) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(raw), nil
 }
 
-// dualWrite stores the token under both the primary cache key and the legacy
-// host-based cache key if the OAuthArgument supports it. This ensures backward
-// compatibility during the migration from host-based to profile-based cache
-// keys. If the primary key and the host key are the same (i.e. no profile is
-// set), no extra write is performed.
+// dualWrite stores the token under both the primary cache key (profile name)
+// and the legacy host-based cache key. If the primary key and the host key are
+// the same (i.e. no profile is set), no extra write is performed.
+//
+// The host-based write exists for cross-SDK compatibility: older versions of
+// the Python and Java SDKs look up tokens exclusively by host URL. Removing
+// the host write would break users who have a newer Go CLI but an older
+// Python/Java SDK sharing the same token cache. Once the other SDKs adopt
+// profile-based cache keys, dualWrite can be replaced with a single write to
+// the primary key. See also HostCacheKeyProvider in oauth_argument.go.
 func (a *PersistentAuth) dualWrite(t *oauth2.Token) error {
 	primaryKey := a.oAuthArgument.GetCacheKey()
 	if err := a.cache.Store(primaryKey, t); err != nil {
