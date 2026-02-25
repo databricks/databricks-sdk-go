@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.113.0 (2026-02-25)
+
+### New Features and Improvements
+* Add `DisableAsyncTokenRefresh` field to `Config` to allow disabling
+  asynchronous token refresh for short-lived processes like the Databricks CLI.
+
+
 ## Release v0.112.0 (2026-02-24)
 
 ### Bug Fixes
