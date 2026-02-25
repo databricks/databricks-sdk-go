@@ -1835,9 +1835,6 @@ type Table struct {
 	Comment string `json:"comment,omitempty"`
 	// The id of the table.
 	Id string `json:"id,omitempty"`
-	// Internal information for D2D sharing that should not be disclosed to
-	// external users.
-	InternalAttributes *TableInternalAttributes `json:"internal_attributes,omitempty"`
 	// The catalog and schema of the materialized table
 	MaterializationNamespace string `json:"materialization_namespace,omitempty"`
 	// The name of a materialized table.
@@ -1862,102 +1859,6 @@ func (s *Table) UnmarshalJSON(b []byte) error {
 
 func (s Table) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Internal information for D2D sharing that should not be disclosed to external
-// users.
-type TableInternalAttributes struct {
-	// Managed Delta Metadata location for foreign iceberg tables.
-	AuxiliaryManagedLocation string `json:"auxiliary_managed_location,omitempty"`
-	// Storage locations of all table dependencies for shared views. Used on the
-	// recipient side for SEG (Secure Egress Gateway) whitelisting.
-	DependencyStorageLocations []string `json:"dependency_storage_locations,omitempty"`
-	// Whether the table has uniform enabled.
-	HasDeltaUniformIceberg bool `json:"has_delta_uniform_iceberg,omitempty"`
-	// Will be populated in the reconciliation response for VIEW and
-	// FOREIGN_TABLE, with the value of the parent UC entity's storage_location,
-	// following the same logic as getManagedEntityPath in
-	// CreateStagingTableHandler, which is used to store the materialized table
-	// for a shared VIEW/FOREIGN_TABLE for D2O queries. The value will be used
-	// on the recipient side to be whitelisted when SEG is enabled on the
-	// workspace of the recipient, to allow the recipient users to query this
-	// shared VIEW/FOREIGN_TABLE.
-	ParentStorageLocation string `json:"parent_storage_location,omitempty"`
-	// The cloud storage location of a shard table with DIRECTORY_BASED_TABLE
-	// type.
-	StorageLocation string `json:"storage_location,omitempty"`
-	// The type of the shared table.
-	Type TableInternalAttributesSharedTableType `json:"type,omitempty"`
-	// The view definition of a shared view. DEPRECATED.
-	ViewDefinition string `json:"view_definition,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *TableInternalAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TableInternalAttributes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type TableInternalAttributesSharedTableType string
-
-const TableInternalAttributesSharedTableTypeDeltaIcebergTable TableInternalAttributesSharedTableType = `DELTA_ICEBERG_TABLE`
-
-const TableInternalAttributesSharedTableTypeDirectoryBasedTable TableInternalAttributesSharedTableType = `DIRECTORY_BASED_TABLE`
-
-const TableInternalAttributesSharedTableTypeFileBasedTable TableInternalAttributesSharedTableType = `FILE_BASED_TABLE`
-
-const TableInternalAttributesSharedTableTypeForeignIcebergTable TableInternalAttributesSharedTableType = `FOREIGN_ICEBERG_TABLE`
-
-const TableInternalAttributesSharedTableTypeForeignTable TableInternalAttributesSharedTableType = `FOREIGN_TABLE`
-
-const TableInternalAttributesSharedTableTypeMaterializedView TableInternalAttributesSharedTableType = `MATERIALIZED_VIEW`
-
-const TableInternalAttributesSharedTableTypeMetricView TableInternalAttributesSharedTableType = `METRIC_VIEW`
-
-const TableInternalAttributesSharedTableTypeStreamingTable TableInternalAttributesSharedTableType = `STREAMING_TABLE`
-
-const TableInternalAttributesSharedTableTypeView TableInternalAttributesSharedTableType = `VIEW`
-
-// String representation for [fmt.Print]
-func (f *TableInternalAttributesSharedTableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *TableInternalAttributesSharedTableType) Set(v string) error {
-	switch v {
-	case `DELTA_ICEBERG_TABLE`, `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_ICEBERG_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `METRIC_VIEW`, `STREAMING_TABLE`, `VIEW`:
-		*f = TableInternalAttributesSharedTableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DELTA_ICEBERG_TABLE", "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_ICEBERG_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "METRIC_VIEW", "STREAMING_TABLE", "VIEW"`, v)
-	}
-}
-
-// Values returns all possible values for TableInternalAttributesSharedTableType.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttributesSharedTableType {
-	return []TableInternalAttributesSharedTableType{
-		TableInternalAttributesSharedTableTypeDeltaIcebergTable,
-		TableInternalAttributesSharedTableTypeDirectoryBasedTable,
-		TableInternalAttributesSharedTableTypeFileBasedTable,
-		TableInternalAttributesSharedTableTypeForeignIcebergTable,
-		TableInternalAttributesSharedTableTypeForeignTable,
-		TableInternalAttributesSharedTableTypeMaterializedView,
-		TableInternalAttributesSharedTableTypeMetricView,
-		TableInternalAttributesSharedTableTypeStreamingTable,
-		TableInternalAttributesSharedTableTypeView,
-	}
-}
-
-// Type always returns TableInternalAttributesSharedTableType to satisfy [pflag.Value] interface
-func (f *TableInternalAttributesSharedTableType) Type() string {
-	return "TableInternalAttributesSharedTableType"
 }
 
 type UpdateProvider struct {
@@ -2073,9 +1974,6 @@ type Volume struct {
 	// shared_volume_id for recon to check if this volume is already in
 	// recipient's DB or not.
 	Id string `json:"id,omitempty"`
-	// Internal attributes for D2D sharing that should not be disclosed to
-	// external users.
-	InternalAttributes *VolumeInternalAttributes `json:"internal_attributes,omitempty"`
 	// The name of the volume.
 	Name string `json:"name,omitempty"`
 	// The name of the schema that the volume belongs to.
@@ -2095,24 +1993,5 @@ func (s *Volume) UnmarshalJSON(b []byte) error {
 }
 
 func (s Volume) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Internal information for D2D sharing that should not be disclosed to external
-// users.
-type VolumeInternalAttributes struct {
-	// The cloud storage location of the volume
-	StorageLocation string `json:"storage_location,omitempty"`
-	// The type of the shared volume.
-	Type string `json:"type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *VolumeInternalAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s VolumeInternalAttributes) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }

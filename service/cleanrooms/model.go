@@ -764,7 +764,7 @@ type CreateCleanRoomOutputCatalogRequest struct {
 }
 
 type CreateCleanRoomOutputCatalogResponse struct {
-	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
+	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
 type CreateCleanRoomRequest struct {
