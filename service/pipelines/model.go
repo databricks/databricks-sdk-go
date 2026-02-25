@@ -660,6 +660,8 @@ type GetPipelineResponse struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Serverless budget policy ID of this pipeline.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Publishing mode of the pipeline
+	EffectivePublishingMode PublishingMode `json:"effective_publishing_mode,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
@@ -1957,6 +1959,44 @@ func (s *PostgresSlotConfig) UnmarshalJSON(b []byte) error {
 
 func (s PostgresSlotConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Enum representing the publishing mode of a pipeline.
+type PublishingMode string
+
+const PublishingModeDefaultPublishingMode PublishingMode = `DEFAULT_PUBLISHING_MODE`
+
+const PublishingModeLegacyPublishingMode PublishingMode = `LEGACY_PUBLISHING_MODE`
+
+// String representation for [fmt.Print]
+func (f *PublishingMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PublishingMode) Set(v string) error {
+	switch v {
+	case `DEFAULT_PUBLISHING_MODE`, `LEGACY_PUBLISHING_MODE`:
+		*f = PublishingMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEFAULT_PUBLISHING_MODE", "LEGACY_PUBLISHING_MODE"`, v)
+	}
+}
+
+// Values returns all possible values for PublishingMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PublishingMode) Values() []PublishingMode {
+	return []PublishingMode{
+		PublishingModeDefaultPublishingMode,
+		PublishingModeLegacyPublishingMode,
+	}
+}
+
+// Type always returns PublishingMode to satisfy [pflag.Value] interface
+func (f *PublishingMode) Type() string {
+	return "PublishingMode"
 }
 
 // Specifies a replace_where predicate override for a replace where flow.
