@@ -12,6 +12,14 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// withTimeNow returns an Option that sets the time source used by the cached
+// token source. This is intended for testing purposes only.
+func withTimeNow(f func() time.Time) Option {
+	return func(cts *cachedTokenSource) {
+		cts.timeNow = f
+	}
+}
+
 func TestNewCachedTokenSource_noCaching(t *testing.T) {
 	want := &cachedTokenSource{}
 	got := NewCachedTokenSource(want, nil)
@@ -30,8 +38,8 @@ func TestNewCachedTokenSource_default(t *testing.T) {
 		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
 	}
 
-	if got.staleDuration != defaultStaleDuration {
-		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, defaultStaleDuration)
+	if got.staleDuration != maxStaleDuration {
+		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, maxStaleDuration)
 	}
 	if got.disableAsync != false {
 		t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, false)
@@ -64,6 +72,100 @@ func TestNewCachedTokenSource_options(t *testing.T) {
 	}
 	if got.cachedToken != wantCachedToken {
 		t.Errorf("NewCachedTokenSource(): cachedToken = %v, want %v", got.cachedToken, wantCachedToken)
+	}
+}
+
+func TestNewCachedTokenSource_dynamicStaleDuration(t *testing.T) {
+	now := time.Unix(1337, 0)
+
+	testCases := []struct {
+		name              string
+		tokenTTL          time.Duration
+		wantStaleDuration time.Duration
+		advanceForStale   time.Duration
+	}{
+		{
+			name:              "standard OAuth token with 60-minute TTL",
+			tokenTTL:          60 * time.Minute,
+			wantStaleDuration: 20 * time.Minute,
+			advanceForStale:   41 * time.Minute,
+		},
+		{
+			name:              "short-lived token with 10-minute TTL",
+			tokenTTL:          10 * time.Minute,
+			wantStaleDuration: 5 * time.Minute,
+			advanceForStale:   6 * time.Minute,
+		},
+		{
+			name:              "very short token with 90-second TTL",
+			tokenTTL:          90 * time.Second,
+			wantStaleDuration: 45 * time.Second,
+			advanceForStale:   50 * time.Second,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			fetchTime := now
+			refreshed := false
+			ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+				if refreshed {
+					t.Fatal("unexpected second token fetch")
+				}
+				refreshed = true
+				return &oauth2.Token{
+					AccessToken: "refreshed-token",
+					Expiry:      fetchTime.Add(tc.tokenTTL),
+				}, nil
+			})
+
+			initialToken := &oauth2.Token{
+				AccessToken: "initial-token",
+				Expiry:      now.Add(tc.tokenTTL),
+			}
+			cts, ok := NewCachedTokenSource(ts,
+				withTimeNow(func() time.Time { return now }),
+				WithCachedToken(initialToken),
+			).(*cachedTokenSource)
+			if !ok {
+				t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", cts)
+			}
+
+			if cts.staleDuration != tc.wantStaleDuration {
+				t.Errorf("initial staleDuration = %v, want %v", cts.staleDuration, tc.wantStaleDuration)
+			}
+			if state := cts.tokenState(); state != fresh {
+				t.Errorf("initial tokenState() = %v, want fresh", state)
+			}
+
+			cts.timeNow = func() time.Time { return now.Add(tc.advanceForStale) }
+			if state := cts.tokenState(); state != stale {
+				t.Errorf("tokenState() after %v = %v, want stale", tc.advanceForStale, state)
+			}
+
+			fetchTime = now.Add(tc.tokenTTL + 1*time.Second)
+			cts.timeNow = func() time.Time { return fetchTime }
+
+			token, err := cts.Token(context.Background())
+			if err != nil {
+				t.Fatalf("Token() error = %v", err)
+			}
+			if token.AccessToken != "refreshed-token" {
+				t.Errorf("Token().AccessToken = %q, want %q", token.AccessToken, "refreshed-token")
+			}
+
+			if cts.staleDuration != tc.wantStaleDuration {
+				t.Errorf("refreshed staleDuration = %v, want %v", cts.staleDuration, tc.wantStaleDuration)
+			}
+			if state := cts.tokenState(); state != fresh {
+				t.Errorf("tokenState() after refresh = %v, want fresh", state)
+			}
+
+			cts.timeNow = func() time.Time { return fetchTime.Add(tc.advanceForStale) }
+			if state := cts.tokenState(); state != stale {
+				t.Errorf("tokenState() after refresh + %v = %v, want stale", tc.advanceForStale, state)
+			}
+		})
 	}
 }
 

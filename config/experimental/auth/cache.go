@@ -8,9 +8,33 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// Default duration for the stale period. This value is chosen to cover the
-// maximum monthly downtime allowed by a 99.99% uptime SLA (~4.38 minutes).
-const defaultStaleDuration = 5 * time.Minute
+// Maximum duration for the stale period. This value is chosen to provide
+// robustness for standard OAuth tokens, supporting 99.95% availability,
+// adding breathing room over the existing 99.99% SLA.
+const maxStaleDuration = 20 * time.Minute
+
+// computeStalePeriod calculates the stale period for a token based on its TTL.
+// The stale period is the time before expiry when a token is considered stale
+// and should be refreshed asynchronously.
+//
+// Formula: min(TTL × 0.5, maxStaleDuration)
+//
+// Edge cases:
+//   - TTL <= 0 (expired or no expiry): returns 0.
+//   - Very short TTL (e.g., 2 seconds): returns TTL / 2 without minimum enforcement.
+//   - Standard OAuth (60 minutes): returns 20 minutes (capped at max).
+//   - FastPath (10 minutes): returns 5 minutes.
+func computeStalePeriod(ttl time.Duration) time.Duration {
+	if ttl <= 0 {
+		return 0
+	}
+
+	stalePeriod := ttl / 2
+	if stalePeriod > maxStaleDuration {
+		return maxStaleDuration
+	}
+	return stalePeriod
+}
 
 type Option func(*cachedTokenSource)
 
@@ -28,7 +52,7 @@ func WithAsyncRefresh(b bool) Option {
 	}
 }
 
-// NewCachedTokenProvider wraps a [TokenSource] to cache the tokens it returns.
+// NewCachedTokenSource wraps a [TokenSource] to cache the tokens it returns.
 // By default, the cache will refresh tokens asynchronously a few minutes before
 // they expire.
 //
@@ -51,12 +75,19 @@ func NewCachedTokenSource(ts TokenSource, opts ...Option) TokenSource {
 
 	cts := &cachedTokenSource{
 		tokenSource:   ts,
-		staleDuration: defaultStaleDuration,
+		staleDuration: maxStaleDuration,
 		timeNow:       time.Now,
 	}
 
 	for _, opt := range opts {
 		opt(cts)
+	}
+
+	// If an initial token was provided via WithCachedToken, compute its stale
+	// period based on its TTL. This ensures the first call to tokenState() uses
+	// the correct stale period instead of the default maximum.
+	if cts.cachedToken != nil {
+		cts.updateStaleDuration()
 	}
 
 	return cts
@@ -70,6 +101,9 @@ type cachedTokenSource struct {
 	disableAsync bool
 
 	// Duration during which a token is considered stale, see tokenState.
+	// This value is computed dynamically for each token based on its TTL at
+	// acquisition time using the formula: min(TTL × 0.5, maxStaleDuration).
+	// The value remains fixed for the lifetime of each token.
 	staleDuration time.Duration
 
 	mu          sync.Mutex
@@ -118,12 +152,27 @@ const (
 	expired                   // The token has expired and cannot be used.
 )
 
+// updateStaleDuration recomputes staleDuration from the current cachedToken's
+// TTL. It must be called immediately after cachedToken is set. When called on
+// a shared instance (after construction), the lock must be held.
+func (cts *cachedTokenSource) updateStaleDuration() {
+	if cts.cachedToken == nil {
+		return
+	}
+	ttl := cts.cachedToken.Expiry.Sub(cts.timeNow())
+	cts.staleDuration = computeStalePeriod(ttl)
+}
+
 // tokenState returns the state of the token. The function is not thread-safe
 // and should be called with the lock held.
 func (c *cachedTokenSource) tokenState() tokenState {
 	if c.cachedToken == nil {
 		return expired
 	}
+	if c.cachedToken.Expiry.IsZero() {
+		return fresh // zero expiry means that token is permanently valid.
+	}
+
 	switch lifeSpan := c.cachedToken.Expiry.Sub(c.timeNow()); {
 	case lifeSpan <= 0:
 		return expired
@@ -176,6 +225,7 @@ func (cts *cachedTokenSource) blockingToken(ctx context.Context) (*oauth2.Token,
 		return nil, err
 	}
 	cts.cachedToken = t
+	cts.updateStaleDuration()
 	return t, nil
 }
 
@@ -196,6 +246,7 @@ func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 				return
 			}
 			cts.cachedToken = t
+			cts.updateStaleDuration()
 		}()
 	}
 }
