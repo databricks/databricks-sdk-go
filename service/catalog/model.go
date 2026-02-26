@@ -6975,7 +6975,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_JDBC_OAUTH_M2M = 298; Next id: 299
+// Latest kind: EXTERNAL_LOCATION_ONELAKE_MANAGED = 299; Next id: 300
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

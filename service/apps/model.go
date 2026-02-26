@@ -2204,10 +2204,6 @@ type Space struct {
 	// alphanumeric characters and hyphens. It must be unique within the
 	// workspace.
 	Name string `json:"name"`
-	// The OAuth2 app client ID for the app space.
-	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
-	// The OAuth2 app integration ID for the app space.
-	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
 	// Resources for the app space. Resources configured at the space level are
 	// available to all apps in the space.
 	Resources []AppResource `json:"resources,omitempty"`
