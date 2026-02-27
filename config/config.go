@@ -252,6 +252,13 @@ type Config struct {
 
 	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
 	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
+
+	// OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
+	// from this URL instead of the default host-type-based well-known endpoint logic.
+	// Mirrors discoveryUrl in the Java SDK.
+	//
+	// Experimental: subject to change.
+	DiscoveryURL string `name:"discovery_url" env:"DATABRICKS_DISCOVERY_URL" auth:"-"`
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to
@@ -602,10 +609,15 @@ func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.Respon
 }
 
 // getOidcEndpoints returns the OAuth endpoints for the current configuration.
+// If DiscoveryURL is set, endpoints are fetched directly from it. Otherwise
+// falls back to host-type-based well-known endpoint logic.
 func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
 	c.EnsureResolved()
 	oauthClient := &u2m.BasicOAuthEndpointSupplier{
 		Client: c.refreshClient,
+	}
+	if c.DiscoveryURL != "" {
+		return oauthClient.GetEndpointsFromURL(ctx, c.DiscoveryURL)
 	}
 	host := c.CanonicalHostName()
 	switch c.HostType() {
@@ -618,6 +630,46 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	default:
 		return nil, fmt.Errorf("unknown host type: %v", c.HostType())
 	}
+}
+
+// resolveHostMetadata populates missing config fields from the host's
+// /.well-known/databricks-config discovery endpoint. It back-fills AccountID,
+// WorkspaceID, and DiscoveryURL (with any {account_id} placeholder substituted)
+// if those fields are not already set. Returns an error if AccountID cannot be
+// resolved or no oidc_endpoint is present in the metadata.
+//
+// Experimental: subject to change.
+func (c *Config) resolveHostMetadata(ctx context.Context) error {
+	if c.Host == "" {
+		return nil
+	}
+	if err := c.EnsureResolved(); err != nil {
+		return err
+	}
+	meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
+	if err != nil {
+		return err
+	}
+	if c.AccountID == "" && meta.AccountID != "" {
+		logger.Debugf(ctx, "Resolved account_id from host metadata: %q", meta.AccountID)
+		c.AccountID = meta.AccountID
+	}
+	if c.AccountID == "" {
+		return fmt.Errorf("account_id is not configured and could not be resolved from host metadata")
+	}
+	if c.WorkspaceID == "" && meta.WorkspaceID != "" {
+		logger.Debugf(ctx, "Resolved workspace_id from host metadata: %q", meta.WorkspaceID)
+		c.WorkspaceID = meta.WorkspaceID
+	}
+	if c.DiscoveryURL == "" {
+		if meta.OIDCEndpoint == "" {
+			return fmt.Errorf("discovery_url is not configured and could not be resolved from host metadata")
+		}
+		discoveryURL := strings.ReplaceAll(meta.OIDCEndpoint, "{account_id}", c.AccountID)
+		logger.Debugf(ctx, "Resolved discovery_url from host metadata: %q", discoveryURL)
+		c.DiscoveryURL = discoveryURL
+	}
+	return nil
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
