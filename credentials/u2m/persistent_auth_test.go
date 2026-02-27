@@ -476,6 +476,10 @@ func (m MockOAuthEndpointSupplier) GetUnifiedOAuthEndpoints(ctx context.Context,
 	}, nil
 }
 
+func (m MockOAuthEndpointSupplier) GetEndpointsFromURL(_ context.Context, _ string) (*OAuthAuthorizationServer, error) {
+	return nil, ErrOAuthNotSupported
+}
+
 func TestToken_RefreshesExpiredAccessToken(t *testing.T) {
 	ctx := context.Background()
 	expectedKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"

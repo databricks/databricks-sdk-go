@@ -22,6 +22,10 @@ type OAuthEndpointSupplier interface {
 
 	// GetUnifiedOAuthEndpoints returns the OAuth2 endpoints for the unified host.
 	GetUnifiedOAuthEndpoints(ctx context.Context, host string, accountId string) (*OAuthAuthorizationServer, error)
+
+	// GetEndpointsFromURL fetches OAuth2 endpoints directly from an authorization
+	// server metadata URL, bypassing host-type detection.
+	GetEndpointsFromURL(ctx context.Context, rawURL string) (*OAuthAuthorizationServer, error)
 }
 
 // BasicOAuthEndpointSupplier is an implementation of the OAuthEndpointSupplier interface.
@@ -30,10 +34,11 @@ type BasicOAuthEndpointSupplier struct {
 	Client *httpclient.ApiClient
 }
 
-// getOAuthEndpointsByDiscoveryUrl queries the OIDC discovery endpoint to get the OAuth endpoints.
-func (c *BasicOAuthEndpointSupplier) getOAuthEndpointsByDiscoveryUrl(ctx context.Context, discoveryUrl string) (*OAuthAuthorizationServer, error) {
+// GetEndpointsFromURL fetches OAuth2 endpoints directly from an authorization
+// server metadata URL, bypassing host-type detection.
+func (c *BasicOAuthEndpointSupplier) GetEndpointsFromURL(ctx context.Context, rawURL string) (*OAuthAuthorizationServer, error) {
 	var oauthEndpoints OAuthAuthorizationServer
-	if err := c.Client.Do(ctx, "GET", discoveryUrl, httpclient.WithResponseUnmarshal(&oauthEndpoints)); err != nil {
+	if err := c.Client.Do(ctx, "GET", rawURL, httpclient.WithResponseUnmarshal(&oauthEndpoints)); err != nil {
 		if errors.Is(err, apierr.ErrNotFound) {
 			return nil, ErrOAuthNotSupported
 		}
@@ -45,7 +50,7 @@ func (c *BasicOAuthEndpointSupplier) getOAuthEndpointsByDiscoveryUrl(ctx context
 // GetWorkspaceOAuthEndpoints returns the OAuth endpoints for the given workspace.
 func (c *BasicOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error) {
 	oidc := fmt.Sprintf("%s/oidc/.well-known/oauth-authorization-server", workspaceHost)
-	return c.getOAuthEndpointsByDiscoveryUrl(ctx, oidc)
+	return c.GetEndpointsFromURL(ctx, oidc)
 }
 
 // GetAccountOAuthEndpoints returns the OAuth2 endpoints for the account. The
@@ -60,7 +65,7 @@ func (c *BasicOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Contex
 // GetUnifiedOAuthEndpoints returns the OAuth2 endpoints for the unified host
 func (c *BasicOAuthEndpointSupplier) GetUnifiedOAuthEndpoints(ctx context.Context, host string, accountId string) (*OAuthAuthorizationServer, error) {
 	oidc := fmt.Sprintf("%s/oidc/accounts/%s/.well-known/oauth-authorization-server", host, accountId)
-	return c.getOAuthEndpointsByDiscoveryUrl(ctx, oidc)
+	return c.GetEndpointsFromURL(ctx, oidc)
 }
 
 // OAuthAuthorizationServer contains the OAuth endpoints for a Databricks account
