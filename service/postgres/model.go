@@ -184,6 +184,34 @@ type CreateBranchRequest struct {
 	Parent string `json:"-" url:"-"`
 }
 
+type CreateDatabaseRequest struct {
+	// The desired specification of a Database.
+	Database Database `json:"database"`
+	// The ID to use for the Database, which will become the final component of
+	// the database's resource name. This ID becomes the database name in
+	// postgres.
+	//
+	// This value should be 4-63 characters, and only use characters available
+	// in DNS names, as defined by RFC-1123
+	//
+	// If database_id is not specified in the request, it is generated
+	// automatically.
+	DatabaseId string `json:"-" url:"database_id,omitempty"`
+	// The Branch where this Database will be created. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateDatabaseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateDatabaseRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateEndpointRequest struct {
 	// The Endpoint to create.
 	Endpoint Endpoint `json:"endpoint"`
@@ -235,6 +263,34 @@ func (s CreateRoleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Database represents a Postgres database within a Branch.
+type Database struct {
+	// A timestamp indicating when the database was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The resource name of the database. Format:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
+	Name string `json:"name,omitempty"`
+	// The branch containing this database. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Parent string `json:"parent,omitempty"`
+	// The desired state of the Database.
+	Spec *DatabaseDatabaseSpec `json:"spec,omitempty"`
+	// The observed state of the Database.
+	Status *DatabaseDatabaseStatus `json:"status,omitempty"`
+	// A timestamp indicating when the database was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Database) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Database) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DatabaseCredential struct {
 	// Timestamp in UTC of when this credential expires.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
@@ -251,6 +307,56 @@ func (s *DatabaseCredential) UnmarshalJSON(b []byte) error {
 
 func (s DatabaseCredential) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DatabaseDatabaseSpec struct {
+	// The name of the Postgres database.
+	//
+	// This expects a valid Postgres identifier as specified in the link below.
+	// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+	// Required when creating the Database.
+	//
+	// To rename, pass a valid postgres identifier when updating the Database.
+	PostgresDatabase string `json:"postgres_database,omitempty"`
+	// The name of the role that owns the database. Format:
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	//
+	// To change the owner, pass valid existing Role name when updating the
+	// Database
+	//
+	// A database always has an owner.
+	Role string `json:"role,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseDatabaseSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseDatabaseSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DatabaseDatabaseStatus struct {
+	// The name of the Postgres database.
+	PostgresDatabase string `json:"postgres_database,omitempty"`
+	// The name of the role that owns the database. Format:
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Role string `json:"role,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseDatabaseStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseDatabaseStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DatabaseOperationMetadata struct {
 }
 
 // Databricks Error that is returned by all Databricks APIs.
@@ -277,6 +383,12 @@ func (s DatabricksServiceExceptionWithDetailsProto) MarshalJSON() ([]byte, error
 type DeleteBranchRequest struct {
 	// The full resource path of the branch to delete. Format:
 	// projects/{project_id}/branches/{branch_id}
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteDatabaseRequest struct {
+	// The resource name of the postgres database. Format:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
 }
 
@@ -875,6 +987,12 @@ type GetBranchRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetDatabaseRequest struct {
+	// The name of the Database to retrieve. Format:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
+	Name string `json:"-" url:"-"`
+}
+
 type GetEndpointRequest struct {
 	// The full resource path of the endpoint to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
@@ -938,6 +1056,44 @@ func (s *ListBranchesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListBranchesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabasesRequest struct {
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of Databases. Requests first page
+	// if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The Branch that owns this collection of databases. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabasesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabasesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabasesResponse struct {
+	// List of databases.
+	Databases []Database `json:"databases,omitempty"`
+	// Pagination token to request the next page of databases.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabasesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabasesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1537,6 +1693,21 @@ type UpdateBranchRequest struct {
 	Branch Branch `json:"branch"`
 	// Output only. The full resource path of the branch. Format:
 	// projects/{project_id}/branches/{branch_id}
+	Name string `json:"-" url:"-"`
+	// The list of fields to update. If unspecified, all fields will be updated
+	// when possible.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+type UpdateDatabaseRequest struct {
+	// The Database to update.
+	//
+	// The database's `name` field is used to identify the database to update.
+	// Format:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
+	Database Database `json:"database"`
+	// The resource name of the database. Format:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible.
