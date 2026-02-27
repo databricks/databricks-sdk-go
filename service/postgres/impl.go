@@ -40,6 +40,25 @@ func (a *postgresImpl) CreateBranch(ctx context.Context, request CreateBranchReq
 	return &operation, err
 }
 
+func (a *postgresImpl) CreateDatabase(ctx context.Context, request CreateDatabaseRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", request.Parent)
+	queryParams := make(map[string]any)
+
+	if request.DatabaseId != "" || slices.Contains(request.ForceSendFields, "DatabaseId") {
+		queryParams["database_id"] = request.DatabaseId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Database, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/endpoints", request.Parent)
@@ -98,6 +117,20 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 }
 
 func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -180,6 +213,20 @@ func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) 
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &branch)
 	return &branch, err
+}
+
+func (a *postgresImpl) GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error) {
+	var database Database
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &database)
+	return &database, err
 }
 
 func (a *postgresImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*Endpoint, error) {
@@ -281,6 +328,51 @@ func (a *postgresImpl) internalListBranches(ctx context.Context, request ListBra
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBranchesResponse)
 	return &listBranchesResponse, err
+}
+
+// List Databases.
+func (a *postgresImpl) ListDatabases(ctx context.Context, request ListDatabasesRequest) listing.Iterator[Database] {
+
+	getNextPage := func(ctx context.Context, req ListDatabasesRequest) (*ListDatabasesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDatabases(ctx, req)
+	}
+	getItems := func(resp *ListDatabasesResponse) []Database {
+		return resp.Databases
+	}
+	getNextReq := func(resp *ListDatabasesResponse) *ListDatabasesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Databases.
+func (a *postgresImpl) ListDatabasesAll(ctx context.Context, request ListDatabasesRequest) ([]Database, error) {
+	iterator := a.ListDatabases(ctx, request)
+	return listing.ToSlice[Database](ctx, iterator)
+}
+
+func (a *postgresImpl) internalListDatabases(ctx context.Context, request ListDatabasesRequest) (*ListDatabasesResponse, error) {
+	var listDatabasesResponse ListDatabasesResponse
+	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabasesResponse)
+	return &listDatabasesResponse, err
 }
 
 // Returns a paginated list of compute endpoints in the branch.
@@ -439,6 +531,28 @@ func (a *postgresImpl) UpdateBranch(ctx context.Context, request UpdateBranchReq
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Branch, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) UpdateDatabase(ctx context.Context, request UpdateDatabaseRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Database, &operation)
 	return &operation, err
 }
 

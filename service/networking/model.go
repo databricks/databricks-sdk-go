@@ -34,7 +34,8 @@ func (s AzurePrivateEndpointInfo) MarshalJSON() ([]byte, error) {
 
 type CreateEndpointRequest struct {
 	Endpoint Endpoint `json:"endpoint"`
-
+	// The parent resource name of the account under which the endpoint is
+	// created. Format: `accounts/{account_id}`.
 	Parent string `json:"-" url:"-"`
 }
 
@@ -169,7 +170,8 @@ type ListEndpointsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
-
+	// The parent resource name of the account to list endpoints for. Format:
+	// `accounts/{account_id}`.
 	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`

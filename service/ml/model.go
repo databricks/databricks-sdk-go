@@ -1009,12 +1009,37 @@ type DeleteWebhookRequest struct {
 }
 
 type DeltaTableSource struct {
+	// Schema of the resulting dataframe after transformations, in Spark
+	// StructType JSON format (from df.schema.json()). Required if
+	// transformation_sql is specified. Example:
+	// {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
 	// The entity columns of the Delta table.
 	EntityColumns []string `json:"entity_columns"`
+	// Single WHERE clause to filter delta table before applying
+	// transformations. Will be row-wise evaluated, so should only include
+	// conditionals and projections.
+	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part (catalog, schema, table) name of the Delta table.
 	FullName string `json:"full_name"`
 	// The timeseries column of the Delta table.
 	TimeseriesColumn string `json:"timeseries_column"`
+	// A single SQL SELECT expression applied after filter_condition. Should
+	// contains all the columns needed (eg. "SELECT *, col_a + col_b AS col_c
+	// FROM x.y.z WHERE col_a > 0" would have `transformation_sql` "*, col_a +
+	// col_b AS col_c") If transformation_sql is not provided, all columns of
+	// the delta table are present in the DataSource dataframe.
+	TransformationSql string `json:"transformation_sql,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeltaTableSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // An experiment and its metadata.
