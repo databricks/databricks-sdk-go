@@ -244,6 +244,12 @@ type Config struct {
 	// This mutex is also used for config resolution.
 	mu sync.Mutex
 
+	// resolveAuthOnce ensures authentication happens exactly once.
+	resolveAuthOnce sync.Once
+
+	// resolveAuthErr stores the error from the authentication attempt.
+	resolveAuthErr error
+
 	// HTTP request interceptor, that assigns Authorization header
 	credentialsProvider credentials.CredentialsProvider
 
@@ -516,16 +522,19 @@ func (c *Config) wrapDebug(err error) error {
 	return fmt.Errorf("%w. %s", err, debug)
 }
 
-// authenticateIfNeeded lazily authenticates across authorizers or returns error
+// authenticateIfNeeded lazily authenticates across authorizers or returns error.
+// It uses sync.Once to ensure authentication happens exactly once and is safe
+// for concurrent use.
 func (c *Config) authenticateIfNeeded() error {
-	if c.credentialsProvider != nil {
-		return nil
-	}
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	if c.credentialsProvider != nil {
-		return nil
-	}
+	c.resolveAuthOnce.Do(func() {
+		c.resolveAuthErr = c.doAuthenticate()
+	})
+	return c.resolveAuthErr
+}
+
+// doAuthenticate performs the actual authentication initialization.
+// This method is called exactly once by authenticateIfNeeded via sync.Once.
+func (c *Config) doAuthenticate() error {
 	if c.Credentials == nil {
 		c.Credentials = DefaultCredentialStrategyProvider()
 	}
