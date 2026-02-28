@@ -1340,6 +1340,9 @@ type ProjectSpec struct {
 	// Human-readable project name. Length should be between 1 and 256
 	// characters.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to enable PG native password login on all endpoints in this
+	// project. Defaults to true.
+	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
 	// recovery for all branches in this project. Value should be between 0s and
 	// 2592000s (up to 30 days).
@@ -1369,6 +1372,9 @@ type ProjectStatus struct {
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// The effective human-readable project name.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to enable PG native password login on all endpoints in this
+	// project.
+	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The effective number of seconds to retain the shared history for point in
 	// time recovery.
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`

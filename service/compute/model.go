@@ -2577,8 +2577,6 @@ type EditInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-	// Flexible node type configuration for the pool.
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
