@@ -20,3 +20,6 @@
 * Add `EnvironmentVersion` field for [pipelines.PipelinesEnvironment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesEnvironment).
 * Add `ResetCheckpointSelection` field for [pipelines.StartUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#StartUpdate).
 * [Breaking] Remove `Oauth2AppClientId` and `Oauth2AppIntegrationId` fields for [apps.Space](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#Space).
+* Add `EnablePgNativeLogin` field for [postgres.ProjectSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectSpec).
+* Add `EnablePgNativeLogin` field for [postgres.ProjectStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectStatus).
+* [Breaking] Remove `NodeTypeFlexibility` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
