@@ -247,6 +247,48 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				"Authorization": "access-token test-auth-token",
 			},
 		},
+		{
+			desc: "success with cloud-agnostic host",
+			cfg: &Config{
+				DatabricksEnvironment: &environment.DatabricksEnvironment{
+					DnsZone: ".databricks.com",
+					// Azure settings are present even though it's not detected as Azure cloud
+					AzureApplicationID: "test-azure-app-id",
+					AzureEnvironment:   &environment.AzurePublicCloud,
+				},
+				AzureClientID:              "test-client-id",
+				AzureTenantID:              "test-tenant-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
+				Host:                       "https://api.databricks.com", // Cloud-agnostic host
+				HTTPTransport: fixtures.MappingTransport{
+					"GET /test?version=1&audience=api://AzureADTokenExchange": {
+						Status: http.StatusOK,
+						ExpectedHeaders: map[string]string{
+							"Authorization": "Bearer token-1337",
+							"Accept":        "application/json",
+						},
+						Response: `{"value": "id-token-42"}`,
+					},
+					"POST /test-tenant-id/oauth2/token": {
+						Status: http.StatusOK,
+						ExpectedHeaders: map[string]string{
+							"Accept":       "application/json",
+							"Content-Type": "application/x-www-form-urlencoded",
+						},
+						Response: map[string]string{
+							"token_type":    "access-token",
+							"access_token":  "test-auth-token",
+							"refresh_token": "refresh",
+							"expires_on":    "0",
+						},
+					},
+				},
+			},
+			wantHeaders: map[string]string{
+				"Authorization": "access-token test-auth-token",
+			},
+		},
 	}
 
 	for _, tc := range testCases {

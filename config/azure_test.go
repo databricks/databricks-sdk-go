@@ -31,14 +31,3 @@ func TestLoadAzureTenantId_Failure(t *testing.T) {
 	err := c.loadAzureTenantId(context.Background())
 	assert.ErrorIs(t, err, testErr)
 }
-
-func TestLoadAzureTenantId_SkipNotInAzure(t *testing.T) {
-	testErr := errors.New("Failed to fetch login page")
-	c := &Config{
-		Host:                     "https://test.cloud.databricks.com/",
-		azureTenantIdFetchClient: makeFailingClient(testErr),
-	}
-	err := c.loadAzureTenantId(context.Background())
-	assert.NoError(t, err)
-	assert.Empty(t, c.AzureTenantID)
-}
