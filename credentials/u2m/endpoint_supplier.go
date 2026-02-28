@@ -56,10 +56,8 @@ func (c *BasicOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Cont
 // GetAccountOAuthEndpoints returns the OAuth2 endpoints for the account. The
 // account-level OAuth endpoints are fixed based on the account ID and host.
 func (c *BasicOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error) {
-	return &OAuthAuthorizationServer{
-		AuthorizationEndpoint: fmt.Sprintf("%s/oidc/accounts/%s/v1/authorize", accountHost, accountId),
-		TokenEndpoint:         fmt.Sprintf("%s/oidc/accounts/%s/v1/token", accountHost, accountId),
-	}, nil
+	oidc := fmt.Sprintf("%s/oidc/.well-known/oauth-authorization-server", accountHost)
+	return c.getOAuthEndpointsByDiscoveryUrl(ctx, oidc)
 }
 
 // GetUnifiedOAuthEndpoints returns the OAuth2 endpoints for the unified host
