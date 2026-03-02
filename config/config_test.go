@@ -40,6 +40,22 @@ func TestHostType_AwsDodAccount(t *testing.T) {
 	assert.Equal(t, AccountHost, c.HostType())
 }
 
+func TestHostType_AwsAccountWithoutScheme(t *testing.T) {
+	c := &Config{
+		Host:      "accounts.cloud.databricks.com",
+		AccountID: "123e4567-e89b-12d3-a456-426614174000",
+	}
+	assert.Equal(t, AccountHost, c.HostType())
+}
+
+func TestHostType_AwsDodAccountWithoutScheme(t *testing.T) {
+	c := &Config{
+		Host:      "accounts-dod.cloud.databricks.us",
+		AccountID: "123e4567-e89b-12d3-a456-426614174000",
+	}
+	assert.Equal(t, AccountHost, c.HostType())
+}
+
 func TestHostType_AwsWorkspace(t *testing.T) {
 	c := &Config{
 		Host:      "https://my-workspace.cloud.databricks.us",

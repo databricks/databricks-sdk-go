@@ -401,12 +401,21 @@ func (c *Config) HostType() HostType {
 		return AccountHost
 	}
 
+	// Normalize the host to ensure the scheme is present before checking
+	// prefixes. Profiles saved without "https://" (e.g. from user input)
+	// would otherwise fail the prefix check and be misclassified as
+	// workspace hosts.
+	host := c.Host
+	if host != "" && !strings.Contains(host, "://") {
+		host = "https://" + host
+	}
+
 	accountsPrefixes := []string{
 		"https://accounts.",
 		"https://accounts-dod.",
 	}
 	for _, prefix := range accountsPrefixes {
-		if strings.HasPrefix(c.Host, prefix) {
+		if strings.HasPrefix(host, prefix) {
 			return AccountHost
 		}
 	}
