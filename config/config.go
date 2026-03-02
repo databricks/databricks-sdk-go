@@ -410,14 +410,8 @@ func (c *Config) HostType() HostType {
 		host = "https://" + host
 	}
 
-	accountsPrefixes := []string{
-		"https://accounts.",
-		"https://accounts-dod.",
-	}
-	for _, prefix := range accountsPrefixes {
-		if strings.HasPrefix(host, prefix) {
-			return AccountHost
-		}
+	if strings.HasPrefix(host, "https://accounts.") || strings.HasPrefix(host, "https://accounts-dod.") {
+		return AccountHost
 	}
 
 	return WorkspaceHost
