@@ -26,6 +26,12 @@ type PostgresService interface {
 	// Creates a new database branch in the project.
 	CreateBranch(ctx context.Context, request CreateBranchRequest) (*Operation, error)
 
+	// Create a Database.
+	//
+	// Creates a database in the specified branch. A branch can have multiple
+	// databases.
+	CreateDatabase(ctx context.Context, request CreateDatabaseRequest) (*Operation, error)
+
 	// Creates a new compute endpoint in the branch.
 	CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Operation, error)
 
@@ -38,6 +44,9 @@ type PostgresService interface {
 
 	// Deletes the specified database branch.
 	DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error)
+
+	// Delete a Database.
+	DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error)
 
 	// Deletes the specified compute endpoint.
 	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*Operation, error)
@@ -53,6 +62,9 @@ type PostgresService interface {
 
 	// Retrieves information about the specified database branch.
 	GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error)
+
+	// Get a Database.
+	GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error)
 
 	// Retrieves information about the specified compute endpoint, including its
 	// connection details and operational state.
@@ -71,6 +83,9 @@ type PostgresService interface {
 	// Returns a paginated list of database branches in the project.
 	ListBranches(ctx context.Context, request ListBranchesRequest) (*ListBranchesResponse, error)
 
+	// List Databases.
+	ListDatabases(ctx context.Context, request ListDatabasesRequest) (*ListDatabasesResponse, error)
+
 	// Returns a paginated list of compute endpoints in the branch.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointsResponse, error)
 
@@ -84,6 +99,9 @@ type PostgresService interface {
 	// Updates the specified database branch. You can set this branch as the
 	// project's default branch, or protect/unprotect it.
 	UpdateBranch(ctx context.Context, request UpdateBranchRequest) (*Operation, error)
+
+	// Update a Database.
+	UpdateDatabase(ctx context.Context, request UpdateDatabaseRequest) (*Operation, error)
 
 	// Updates the specified compute endpoint. You can update autoscaling
 	// limits, suspend timeout, or enable/disable the compute endpoint.

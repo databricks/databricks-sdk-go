@@ -83,6 +83,65 @@ func (_c *MockPostgresInterface_CreateBranch_Call) RunAndReturn(run func(context
 	return _c
 }
 
+// CreateDatabase provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) CreateDatabase(ctx context.Context, request postgres.CreateDatabaseRequest) (postgres.CreateDatabaseOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDatabase")
+	}
+
+	var r0 postgres.CreateDatabaseOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateDatabaseRequest) (postgres.CreateDatabaseOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateDatabaseRequest) postgres.CreateDatabaseOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateDatabaseOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.CreateDatabaseRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateDatabase_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDatabase'
+type MockPostgresInterface_CreateDatabase_Call struct {
+	*mock.Call
+}
+
+// CreateDatabase is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateDatabaseRequest
+func (_e *MockPostgresInterface_Expecter) CreateDatabase(ctx interface{}, request interface{}) *MockPostgresInterface_CreateDatabase_Call {
+	return &MockPostgresInterface_CreateDatabase_Call{Call: _e.mock.On("CreateDatabase", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateDatabase_Call) Run(run func(ctx context.Context, request postgres.CreateDatabaseRequest)) *MockPostgresInterface_CreateDatabase_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.CreateDatabaseRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateDatabase_Call) Return(_a0 postgres.CreateDatabaseOperationInterface, _a1 error) *MockPostgresInterface_CreateDatabase_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateDatabase_Call) RunAndReturn(run func(context.Context, postgres.CreateDatabaseRequest) (postgres.CreateDatabaseOperationInterface, error)) *MockPostgresInterface_CreateDatabase_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateEndpoint provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) CreateEndpoint(ctx context.Context, request postgres.CreateEndpointRequest) (postgres.CreateEndpointOperationInterface, error) {
 	ret := _m.Called(ctx, request)
@@ -315,6 +374,65 @@ func (_c *MockPostgresInterface_DeleteBranch_Call) Return(_a0 postgres.DeleteBra
 }
 
 func (_c *MockPostgresInterface_DeleteBranch_Call) RunAndReturn(run func(context.Context, postgres.DeleteBranchRequest) (postgres.DeleteBranchOperationInterface, error)) *MockPostgresInterface_DeleteBranch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDatabase provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) DeleteDatabase(ctx context.Context, request postgres.DeleteDatabaseRequest) (postgres.DeleteDatabaseOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDatabase")
+	}
+
+	var r0 postgres.DeleteDatabaseOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteDatabaseRequest) (postgres.DeleteDatabaseOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteDatabaseRequest) postgres.DeleteDatabaseOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteDatabaseOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteDatabaseRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteDatabase_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDatabase'
+type MockPostgresInterface_DeleteDatabase_Call struct {
+	*mock.Call
+}
+
+// DeleteDatabase is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteDatabaseRequest
+func (_e *MockPostgresInterface_Expecter) DeleteDatabase(ctx interface{}, request interface{}) *MockPostgresInterface_DeleteDatabase_Call {
+	return &MockPostgresInterface_DeleteDatabase_Call{Call: _e.mock.On("DeleteDatabase", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteDatabase_Call) Run(run func(ctx context.Context, request postgres.DeleteDatabaseRequest)) *MockPostgresInterface_DeleteDatabase_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.DeleteDatabaseRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteDatabase_Call) Return(_a0 postgres.DeleteDatabaseOperationInterface, _a1 error) *MockPostgresInterface_DeleteDatabase_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteDatabase_Call) RunAndReturn(run func(context.Context, postgres.DeleteDatabaseRequest) (postgres.DeleteDatabaseOperationInterface, error)) *MockPostgresInterface_DeleteDatabase_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -610,6 +728,65 @@ func (_c *MockPostgresInterface_GetBranch_Call) Return(_a0 *postgres.Branch, _a1
 }
 
 func (_c *MockPostgresInterface_GetBranch_Call) RunAndReturn(run func(context.Context, postgres.GetBranchRequest) (*postgres.Branch, error)) *MockPostgresInterface_GetBranch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDatabase provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetDatabase(ctx context.Context, request postgres.GetDatabaseRequest) (*postgres.Database, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDatabase")
+	}
+
+	var r0 *postgres.Database
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetDatabaseRequest) (*postgres.Database, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetDatabaseRequest) *postgres.Database); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.Database)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetDatabaseRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetDatabase_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDatabase'
+type MockPostgresInterface_GetDatabase_Call struct {
+	*mock.Call
+}
+
+// GetDatabase is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetDatabaseRequest
+func (_e *MockPostgresInterface_Expecter) GetDatabase(ctx interface{}, request interface{}) *MockPostgresInterface_GetDatabase_Call {
+	return &MockPostgresInterface_GetDatabase_Call{Call: _e.mock.On("GetDatabase", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetDatabase_Call) Run(run func(ctx context.Context, request postgres.GetDatabaseRequest)) *MockPostgresInterface_GetDatabase_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetDatabaseRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetDatabase_Call) Return(_a0 *postgres.Database, _a1 error) *MockPostgresInterface_GetDatabase_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetDatabase_Call) RunAndReturn(run func(context.Context, postgres.GetDatabaseRequest) (*postgres.Database, error)) *MockPostgresInterface_GetDatabase_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -954,6 +1131,114 @@ func (_c *MockPostgresInterface_ListBranchesAll_Call) Return(_a0 []postgres.Bran
 }
 
 func (_c *MockPostgresInterface_ListBranchesAll_Call) RunAndReturn(run func(context.Context, postgres.ListBranchesRequest) ([]postgres.Branch, error)) *MockPostgresInterface_ListBranchesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDatabases provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListDatabases(ctx context.Context, request postgres.ListDatabasesRequest) listing.Iterator[postgres.Database] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabases")
+	}
+
+	var r0 listing.Iterator[postgres.Database]
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListDatabasesRequest) listing.Iterator[postgres.Database]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[postgres.Database])
+		}
+	}
+
+	return r0
+}
+
+// MockPostgresInterface_ListDatabases_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabases'
+type MockPostgresInterface_ListDatabases_Call struct {
+	*mock.Call
+}
+
+// ListDatabases is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListDatabasesRequest
+func (_e *MockPostgresInterface_Expecter) ListDatabases(ctx interface{}, request interface{}) *MockPostgresInterface_ListDatabases_Call {
+	return &MockPostgresInterface_ListDatabases_Call{Call: _e.mock.On("ListDatabases", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListDatabases_Call) Run(run func(ctx context.Context, request postgres.ListDatabasesRequest)) *MockPostgresInterface_ListDatabases_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListDatabasesRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListDatabases_Call) Return(_a0 listing.Iterator[postgres.Database]) *MockPostgresInterface_ListDatabases_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListDatabases_Call) RunAndReturn(run func(context.Context, postgres.ListDatabasesRequest) listing.Iterator[postgres.Database]) *MockPostgresInterface_ListDatabases_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDatabasesAll provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListDatabasesAll(ctx context.Context, request postgres.ListDatabasesRequest) ([]postgres.Database, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabasesAll")
+	}
+
+	var r0 []postgres.Database
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListDatabasesRequest) ([]postgres.Database, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListDatabasesRequest) []postgres.Database); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]postgres.Database)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.ListDatabasesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_ListDatabasesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabasesAll'
+type MockPostgresInterface_ListDatabasesAll_Call struct {
+	*mock.Call
+}
+
+// ListDatabasesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListDatabasesRequest
+func (_e *MockPostgresInterface_Expecter) ListDatabasesAll(ctx interface{}, request interface{}) *MockPostgresInterface_ListDatabasesAll_Call {
+	return &MockPostgresInterface_ListDatabasesAll_Call{Call: _e.mock.On("ListDatabasesAll", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListDatabasesAll_Call) Run(run func(ctx context.Context, request postgres.ListDatabasesRequest)) *MockPostgresInterface_ListDatabasesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListDatabasesRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListDatabasesAll_Call) Return(_a0 []postgres.Database, _a1 error) *MockPostgresInterface_ListDatabasesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListDatabasesAll_Call) RunAndReturn(run func(context.Context, postgres.ListDatabasesRequest) ([]postgres.Database, error)) *MockPostgresInterface_ListDatabasesAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1337,6 +1622,65 @@ func (_c *MockPostgresInterface_UpdateBranch_Call) Return(_a0 postgres.UpdateBra
 }
 
 func (_c *MockPostgresInterface_UpdateBranch_Call) RunAndReturn(run func(context.Context, postgres.UpdateBranchRequest) (postgres.UpdateBranchOperationInterface, error)) *MockPostgresInterface_UpdateBranch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateDatabase provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) UpdateDatabase(ctx context.Context, request postgres.UpdateDatabaseRequest) (postgres.UpdateDatabaseOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDatabase")
+	}
+
+	var r0 postgres.UpdateDatabaseOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateDatabaseRequest) (postgres.UpdateDatabaseOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateDatabaseRequest) postgres.UpdateDatabaseOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.UpdateDatabaseOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateDatabaseRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_UpdateDatabase_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDatabase'
+type MockPostgresInterface_UpdateDatabase_Call struct {
+	*mock.Call
+}
+
+// UpdateDatabase is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.UpdateDatabaseRequest
+func (_e *MockPostgresInterface_Expecter) UpdateDatabase(ctx interface{}, request interface{}) *MockPostgresInterface_UpdateDatabase_Call {
+	return &MockPostgresInterface_UpdateDatabase_Call{Call: _e.mock.On("UpdateDatabase", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_UpdateDatabase_Call) Run(run func(ctx context.Context, request postgres.UpdateDatabaseRequest)) *MockPostgresInterface_UpdateDatabase_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.UpdateDatabaseRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateDatabase_Call) Return(_a0 postgres.UpdateDatabaseOperationInterface, _a1 error) *MockPostgresInterface_UpdateDatabase_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateDatabase_Call) RunAndReturn(run func(context.Context, postgres.UpdateDatabaseRequest) (postgres.UpdateDatabaseOperationInterface, error)) *MockPostgresInterface_UpdateDatabase_Call {
 	_c.Call.Return(run)
 	return _c
 }
