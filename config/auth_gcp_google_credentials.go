@@ -21,7 +21,7 @@ func (c GoogleCredentials) Name() string {
 }
 
 func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if cfg.GoogleCredentials == "" || !cfg.IsGcp() {
+	if cfg.GoogleCredentials == "" {
 		return nil, nil
 	}
 	json, err := readCredentials(cfg.GoogleCredentials)
