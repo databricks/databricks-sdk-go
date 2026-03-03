@@ -164,6 +164,8 @@
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
+// - [knowledgeassistants.KnowledgeAssistantsAPI]: Manage Knowledge Assistants and related resources.
+//
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
 //
 // - [dashboards.LakeviewEmbeddedAPI]: Token-based Lakeview APIs for embedding dashboards in external applications.
@@ -373,6 +375,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
+	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/networking"
@@ -478,6 +481,7 @@ var (
 	_ *settings.IpAccessListsAPI                          = nil
 	_ *settings.AccountIpAccessListsAPI                   = nil
 	_ *jobs.JobsAPI                                       = nil
+	_ *knowledgeassistants.KnowledgeAssistantsAPI         = nil
 	_ *dashboards.LakeviewAPI                             = nil
 	_ *dashboards.LakeviewEmbeddedAPI                     = nil
 	_ *compute.LibrariesAPI                               = nil
