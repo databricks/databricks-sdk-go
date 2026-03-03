@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.116.0 (2026-03-03)
+
+### Bug Fixes
+
+* Fix `HostType()` misclassifying account hosts when the scheme is missing ([#1510](https://github.com/databricks/databricks-sdk-go/pull/1510)).
+
+
 ## Release v0.115.0 (2026-03-02)
 
 ### Internal Changes
