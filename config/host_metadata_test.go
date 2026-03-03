@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 )
@@ -30,6 +31,7 @@ func TestGetHostMetadata_WorkspaceStaticOIDCEndpoint(t *testing.T) {
 				"oidc_endpoint": testHMHost + "/oidc",
 				"account_id":    testHMAccountID,
 				"workspace_id":  testHMWorkspaceID,
+				"cloud":         "AWS",
 			},
 		},
 	})
@@ -41,6 +43,7 @@ func TestGetHostMetadata_WorkspaceStaticOIDCEndpoint(t *testing.T) {
 		OIDCEndpoint: testHMHost + "/oidc",
 		AccountID:    testHMAccountID,
 		WorkspaceID:  testHMWorkspaceID,
+		Cloud:        "AWS",
 	}
 	if diff := cmp.Diff(want, meta); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
@@ -80,5 +83,58 @@ func TestGetHostMetadata_HTTPError(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "fetching host metadata from") {
 		t.Errorf("expected error containing %q, got %q", "fetching host metadata from", err.Error())
+	}
+}
+
+func TestGetHostMetadata_WithCloudField(t *testing.T) {
+	tests := []struct {
+		name      string
+		cloud     string
+		wantCloud environment.Cloud
+	}{
+		{
+			name:      "AWS",
+			cloud:     "AWS",
+			wantCloud: environment.CloudAWS,
+		},
+		{
+			name:      "Azure",
+			cloud:     "Azure",
+			wantCloud: environment.CloudAzure,
+		},
+		{
+			name:      "GCP",
+			cloud:     "GCP",
+			wantCloud: environment.CloudGCP,
+		},
+		{
+			name:      "missing cloud field",
+			cloud:     "",
+			wantCloud: environment.CloudUnknown,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			response := map[string]string{
+				"oidc_endpoint": testHMHost + "/oidc",
+				"account_id":    testHMAccountID,
+			}
+			if tc.cloud != "" {
+				response["cloud"] = tc.cloud
+			}
+			client := newTestAPIClient(fixtures.MappingTransport{
+				"GET /.well-known/databricks-config": {
+					Status:   200,
+					Response: response,
+				},
+			})
+			meta, err := getHostMetadata(context.Background(), testHMHost, client)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if meta.Cloud != tc.wantCloud {
+				t.Errorf("Cloud field mismatch: got %q, want %q", meta.Cloud, tc.wantCloud)
+			}
+		})
 	}
 }
