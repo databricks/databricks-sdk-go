@@ -210,7 +210,11 @@ type Config struct {
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers
 	HTTPTransport http.RoundTripper
 
-	// Environment override to return when resolving the current environment.
+	// Cloud is the cloud provider for this Databricks deployment (AWS, Azure, GCP, or CloudUnknown).
+	//
+	// Experimental: subject to change.
+	Cloud environment.Cloud `name:"cloud" env:"DATABRICKS_CLOUD" auth:"-"`
+
 	DatabricksEnvironment *environment.DatabricksEnvironment
 
 	// When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.
@@ -352,16 +356,25 @@ func (c *Config) IsAzure() bool {
 	if c.AzureResourceID != "" {
 		return true
 	}
+	if c.Cloud != environment.CloudUnknown {
+		return c.Cloud == environment.CloudAzure
+	}
 	return c.Environment().Cloud == environment.CloudAzure
 }
 
 // IsGcp returns if the client is configured for Databricks on Google Cloud.
 func (c *Config) IsGcp() bool {
+	if c.Cloud != environment.CloudUnknown {
+		return c.Cloud == environment.CloudGCP
+	}
 	return c.Environment().Cloud == environment.CloudGCP
 }
 
 // IsAws returns if the client is configured for Databricks on AWS.
 func (c *Config) IsAws() bool {
+	if c.Cloud != environment.CloudUnknown {
+		return c.Cloud == environment.CloudAWS
+	}
 	return c.Host != "" && !c.IsAzure() && !c.IsGcp()
 }
 
@@ -643,7 +656,7 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 
 // resolveHostMetadata populates missing config fields from the host's
 // /.well-known/databricks-config discovery endpoint. It back-fills AccountID,
-// WorkspaceID, and DiscoveryURL (with any {account_id} placeholder substituted)
+// WorkspaceID, Cloud, and DiscoveryURL (with any {account_id} placeholder substituted)
 // if those fields are not already set. Returns an error if AccountID cannot be
 // resolved or no oidc_endpoint is present in the metadata.
 //
@@ -657,6 +670,7 @@ func (c *Config) resolveHostMetadata(ctx context.Context) error {
 	}
 	meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
 	if err != nil {
+		logger.Debugf(ctx, "Failed to fetch host metadata: %v", err)
 		return err
 	}
 	if c.AccountID == "" && meta.AccountID != "" {
@@ -669,6 +683,14 @@ func (c *Config) resolveHostMetadata(ctx context.Context) error {
 	if c.WorkspaceID == "" && meta.WorkspaceID != "" {
 		logger.Debugf(ctx, "Resolved workspace_id from host metadata: %q", meta.WorkspaceID)
 		c.WorkspaceID = meta.WorkspaceID
+	}
+	if c.Cloud == "" && meta.Cloud != environment.CloudUnknown {
+		logger.Debugf(ctx, "Resolved cloud from host metadata: %q", meta.Cloud)
+		c.Cloud = meta.Cloud
+	}
+	if c.Cloud == "" {
+		c.Cloud = c.Environment().Cloud
+		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
 	}
 	if c.DiscoveryURL == "" {
 		if meta.OIDCEndpoint == "" {

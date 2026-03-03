@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
@@ -18,6 +19,9 @@ type hostMetadata struct {
 
 	// WorkspaceID is the Databricks workspace ID associated with this host, if available.
 	WorkspaceID string `json:"workspace_id"`
+
+	// Cloud is the cloud provider for this Databricks deployment (AWS, Azure, or GCP).
+	Cloud environment.Cloud `json:"cloud"`
 }
 
 // getHostMetadata fetches the raw Databricks well-known configuration from
