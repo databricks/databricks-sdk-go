@@ -13,3 +13,5 @@
 ### Internal Changes
 
 ### API Changes
+* Add [knowledgeassistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants) package.
+* Add [w.KnowledgeAssistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants#KnowledgeAssistantsAPI) workspace-level service.

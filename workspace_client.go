@@ -21,6 +21,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
+	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
@@ -523,6 +524,9 @@ type WorkspaceClient struct {
 	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
+
+	// Manage Knowledge Assistants and related resources.
+	KnowledgeAssistants knowledgeassistants.KnowledgeAssistantsInterface
 
 	// These APIs provide specific management operations for Lakeview
 	// dashboards. Generic resource management can be done with Workspace API
@@ -1467,6 +1471,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		InstanceProfiles:                    compute.NewInstanceProfiles(databricksClient),
 		IpAccessLists:                       settings.NewIpAccessLists(databricksClient),
 		Jobs:                                jobs.NewJobs(databricksClient),
+		KnowledgeAssistants:                 knowledgeassistants.NewKnowledgeAssistants(databricksClient),
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),

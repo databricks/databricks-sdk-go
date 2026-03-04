@@ -19,6 +19,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
@@ -103,6 +104,7 @@ func NewMockWorkspaceClient(t interface {
 			InstanceProfiles:                    compute.NewMockInstanceProfilesInterface(t),
 			IpAccessLists:                       settings.NewMockIpAccessListsInterface(t),
 			Jobs:                                jobs.NewMockJobsInterface(t),
+			KnowledgeAssistants:                 knowledgeassistants.NewMockKnowledgeAssistantsInterface(t),
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
 			LakeviewEmbedded:                    dashboards.NewMockLakeviewEmbeddedInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
@@ -779,6 +781,14 @@ func (m *MockWorkspaceClient) GetMockJobsAPI() *jobs.MockJobsInterface {
 	api, ok := m.WorkspaceClient.Jobs.(*jobs.MockJobsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Jobs to be *jobs.MockJobsInterface, actual was %T", m.WorkspaceClient.Jobs))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockKnowledgeAssistantsAPI() *knowledgeassistants.MockKnowledgeAssistantsInterface {
+	api, ok := m.WorkspaceClient.KnowledgeAssistants.(*knowledgeassistants.MockKnowledgeAssistantsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected KnowledgeAssistants to be *knowledgeassistants.MockKnowledgeAssistantsInterface, actual was %T", m.WorkspaceClient.KnowledgeAssistants))
 	}
 	return api
 }
