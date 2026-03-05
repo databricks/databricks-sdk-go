@@ -34,6 +34,15 @@ type CredentialsStrategy interface {
 	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
 }
 
+// CloudScoped is an optional interface that a [CredentialsStrategy] can
+// implement to declare which cloud it supports. When implemented, the
+// credentials chain skips this strategy in auto-detect mode if the configured
+// host's cloud does not match. Cloud filtering is bypassed when
+// [Config.AuthType] is explicitly set.
+type CloudScoped interface {
+	Cloud() environment.Cloud
+}
+
 type Loader interface {
 	// Name is human-addressable representation of this config resolver
 	Name() string

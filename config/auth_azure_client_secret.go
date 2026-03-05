@@ -8,6 +8,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -17,6 +18,11 @@ type AzureClientSecretCredentials struct {
 
 func (c AzureClientSecretCredentials) Name() string {
 	return "azure-client-secret"
+}
+
+// Cloud implements [CloudScoped.Cloud].
+func (c AzureClientSecretCredentials) Cloud() environment.Cloud {
+	return environment.CloudAzure
 }
 
 func (c AzureClientSecretCredentials) tokenSourceFor(

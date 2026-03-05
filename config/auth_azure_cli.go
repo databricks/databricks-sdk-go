@@ -11,6 +11,7 @@ import (
 
 	"golang.org/x/oauth2"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -26,6 +27,11 @@ type AzureCliCredentials struct {
 
 func (c AzureCliCredentials) Name() string {
 	return "azure-cli"
+}
+
+// Cloud implements [CloudScoped.Cloud].
+func (c AzureCliCredentials) Cloud() environment.Cloud {
+	return environment.CloudAzure
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
@@ -29,6 +30,11 @@ type AzureMsiCredentials struct {
 
 func (c AzureMsiCredentials) Name() string {
 	return "azure-msi"
+}
+
+// Cloud implements [CloudScoped.Cloud].
+func (c AzureMsiCredentials) Cloud() environment.Cloud {
+	return environment.CloudAzure
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {

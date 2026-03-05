@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
@@ -20,6 +21,11 @@ type AzureGithubOIDCCredentials struct{}
 // Name implements [CredentialsStrategy.Name].
 func (c AzureGithubOIDCCredentials) Name() string {
 	return "github-oidc-azure"
+}
+
+// Cloud implements [CloudScoped.Cloud].
+func (c AzureGithubOIDCCredentials) Cloud() environment.Cloud {
+	return environment.CloudAzure
 }
 
 // Configure implements [CredentialsStrategy.Configure].

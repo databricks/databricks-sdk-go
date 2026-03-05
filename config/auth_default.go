@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -23,25 +22,13 @@ var ErrCannotConfigureDefault = fmt.Errorf("cannot configure default credentials
 // INTERNAL: This function is not part of the public API and is subject to
 // change. Users are encouraged to use an explicit credentials strategy rather
 // than relying on a custom credentials chain.
-func NewCredentialsChain(strategies ...CredentialsStrategy) *credentialsChain {
+func NewCredentialsChain(strategies ...CredentialsStrategy) CredentialsStrategy {
 	return &credentialsChain{strategies: strategies}
 }
 
 type credentialsChain struct {
 	strategies []CredentialsStrategy
-	// cloudRequirements maps a strategy name to the cloud it requires. When
-	// set, the auto-detect loop skips strategies whose required cloud does not
-	// match the configured host. The map is not consulted when AuthType is
-	// explicitly set — in that case the named strategy is always attempted.
-	cloudRequirements map[string]environment.Cloud
-	name              string
-}
-
-// WithCloudRequirements sets the cloud requirements for the chain and returns
-// the chain for method chaining.
-func (c *credentialsChain) WithCloudRequirements(m map[string]environment.Cloud) *credentialsChain {
-	c.cloudRequirements = m
-	return c
+	name       string
 }
 
 func (c *credentialsChain) Name() string {
@@ -76,9 +63,9 @@ func (c *credentialsChain) Configure(ctx context.Context, cfg *Config) (credenti
 		// In auto-detect mode, skip cloud-specific strategies that don't match
 		// the detected cloud. This prevents Azure strategies from being
 		// attempted silently on GCP hosts and vice-versa.
-		if requiredCloud, ok := c.cloudRequirements[s.Name()]; ok {
-			if cfg.Environment().Cloud != requiredCloud {
-				logger.Debugf(ctx, "Skipping %q: not configured for %s", s.Name(), requiredCloud)
+		if cs, ok := s.(CloudScoped); ok {
+			if cs.Cloud() != cfg.Environment().Cloud {
+				logger.Debugf(ctx, "Skipping %q: requires %s", s.Name(), cs.Cloud())
 				continue
 			}
 		}
@@ -144,18 +131,7 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		// Google strategies.
 		GoogleCredentials{},
 		GoogleDefaultCredentials{},
-	).WithCloudRequirements(map[string]environment.Cloud{
-		// cloudRequirements declares the cloud each strategy requires.
-		// DefaultCredentials uses this to skip cloud-specific strategies in
-		// auto-detect mode when the host cloud does not match. Cloud filtering
-		// is bypassed when AuthType is explicitly set.
-		"github-oidc-azure":   environment.CloudAzure,
-		"azure-msi":           environment.CloudAzure,
-		"azure-client-secret": environment.CloudAzure,
-		"azure-cli":           environment.CloudAzure,
-		"google-credentials":  environment.CloudGCP,
-		"google-id":           environment.CloudGCP,
-	})
+	)
 	cp, err := chain.Configure(ctx, cfg)
 	if err != nil {
 		return nil, err

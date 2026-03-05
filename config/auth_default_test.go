@@ -10,15 +10,18 @@ import (
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 )
 
-// recordingStrategy is a test helper that records whether Configure was called.
-type recordingStrategy struct {
+// cloudScopedStrategy is a test helper that implements both [CredentialsStrategy]
+// and [CloudScoped], recording whether Configure was called.
+type cloudScopedStrategy struct {
 	name   string
 	called bool
+	cloud  environment.Cloud
 }
 
-func (r *recordingStrategy) Name() string { return r.name }
-func (r *recordingStrategy) Configure(_ context.Context, _ *Config) (credentials.CredentialsProvider, error) {
-	r.called = true
+func (s *cloudScopedStrategy) Name() string             { return s.name }
+func (s *cloudScopedStrategy) Cloud() environment.Cloud { return s.cloud }
+func (s *cloudScopedStrategy) Configure(_ context.Context, _ *Config) (credentials.CredentialsProvider, error) {
+	s.called = true
 	return nil, nil
 }
 
@@ -26,13 +29,8 @@ func (r *recordingStrategy) Configure(_ context.Context, _ *Config) (credentials
 // chain skips a cloud-specific strategy in auto-detect mode when the detected
 // cloud does not match the strategy's required cloud.
 func TestCredentialsChain_CloudFiltering_SkipsOnCloudMismatch(t *testing.T) {
-	azureStrategy := &recordingStrategy{name: "azure-cli"}
-	chain := &credentialsChain{
-		strategies: []CredentialsStrategy{azureStrategy},
-		cloudRequirements: map[string]environment.Cloud{
-			"azure-cli": environment.CloudAzure,
-		},
-	}
+	azureStrategy := &cloudScopedStrategy{name: "azure-cli", cloud: environment.CloudAzure}
+	chain := &credentialsChain{strategies: []CredentialsStrategy{azureStrategy}}
 
 	// GCP host: azure-cli must be skipped in auto-detect mode.
 	cfg := &Config{Host: "https://xyz.gcp.databricks.com/", resolved: true}
@@ -47,13 +45,8 @@ func TestCredentialsChain_CloudFiltering_SkipsOnCloudMismatch(t *testing.T) {
 // the cloud filter is bypassed when AuthType is explicitly set, so that a user
 // can request "azure-cli" even on a GCP host.
 func TestCredentialsChain_CloudFiltering_BypassesOnExplicitAuthType(t *testing.T) {
-	azureStrategy := &recordingStrategy{name: "azure-cli"}
-	chain := &credentialsChain{
-		strategies: []CredentialsStrategy{azureStrategy},
-		cloudRequirements: map[string]environment.Cloud{
-			"azure-cli": environment.CloudAzure,
-		},
-	}
+	azureStrategy := &cloudScopedStrategy{name: "azure-cli", cloud: environment.CloudAzure}
+	chain := &credentialsChain{strategies: []CredentialsStrategy{azureStrategy}}
 
 	// GCP host but auth_type is explicitly set: cloud filter must be bypassed.
 	cfg := &Config{Host: "https://xyz.gcp.databricks.com/", AuthType: "azure-cli", resolved: true}

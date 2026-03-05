@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2/google"
@@ -18,6 +19,11 @@ type GoogleCredentials struct {
 
 func (c GoogleCredentials) Name() string {
 	return "google-credentials"
+}
+
+// Cloud implements [CloudScoped.Cloud].
+func (c GoogleCredentials) Cloud() environment.Cloud {
+	return environment.CloudGCP
 }
 
 func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
