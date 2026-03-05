@@ -37,6 +37,8 @@ func workspaceHost(env environment.DatabricksEnvironment, accountHost string, de
 // except that the host is set to the workspace host, and the account ID is
 // not set.
 //
+// Deprecated: Use NewWorkspaceClient directly instead.
+//
 // Example:
 //
 //	a, err := databricks.NewAccountClient()
