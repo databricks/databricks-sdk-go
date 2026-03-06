@@ -1,5 +1,26 @@
 # Version changelog
 
+## Release v0.118.0 (2026-03-05)
+
+### Internal Changes
+
+* Fix `GetWorkspaceClient` for unified account hosts ([#1517](https://github.com/databricks/databricks-sdk-go/pull/1517)).
+* Add test for `GetWorkspaceClient` with SPOG host ([#1518](https://github.com/databricks/databricks-sdk-go/pull/1518)).
+
+
+## Release v0.117.0 (2026-03-04)
+
+### Internal Changes
+* Move cloud-based credential filtering from individual strategies into `DefaultCredentials`. Azure strategies are skipped on GCP/AWS hosts in auto-detect mode; GCP strategies are skipped on Azure/AWS hosts. When `auth_type` is explicitly set (e.g. `azure-cli`), cloud filtering is bypassed so the named strategy is always attempted regardless of host cloud.
+
+
+## Release v0.116.0 (2026-03-03)
+
+### Bug Fixes
+
+* Fix `HostType()` misclassifying account hosts when the scheme is missing ([#1510](https://github.com/databricks/databricks-sdk-go/pull/1510)).
+
+
 ## Release v0.115.0 (2026-03-02)
 
 ### Internal Changes

@@ -1,6 +1,7 @@
 package environment
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -8,10 +9,39 @@ import (
 type Cloud string
 
 const (
-	CloudAWS   Cloud = "AWS"
-	CloudAzure Cloud = "Azure"
-	CloudGCP   Cloud = "GCP"
+	CloudAWS     Cloud = "AWS"
+	CloudAzure   Cloud = "Azure"
+	CloudGCP     Cloud = "GCP"
+	CloudUnknown Cloud = ""
 )
+
+// UnmarshalJSON automatically normalizes the cloud string when parsing JSON
+func (c *Cloud) UnmarshalJSON(data []byte) error {
+	var rawString string
+
+	if err := json.Unmarshal(data, &rawString); err != nil {
+		return err
+	}
+
+	*c = normalizeCloud(rawString)
+	return nil
+}
+
+func normalizeCloud(cloud string) Cloud {
+	switch strings.ToUpper(cloud) {
+	case "AWS":
+		return CloudAWS
+	case "AZURE":
+		return CloudAzure
+	case "GCP":
+		return CloudGCP
+	case "":
+		return CloudUnknown
+	// For forward compatibility with new cloud providers that are not yet supported by the SDK.
+	default:
+		return Cloud(cloud)
+	}
+}
 
 type DatabricksEnvironment struct {
 	Cloud              Cloud
@@ -51,7 +81,6 @@ func DefaultEnvironment() DatabricksEnvironment {
 		Cloud:   CloudAWS,
 		DnsZone: ".cloud.databricks.com",
 	}
-
 }
 
 var envs = []DatabricksEnvironment{

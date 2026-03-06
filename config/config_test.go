@@ -729,3 +729,158 @@ func TestConfig_ResolveHostMetadata_NoHost(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestConfig_ResolveHostMetadata_PopulatesCloudFromAPI(t *testing.T) {
+	cfg := &Config{
+		Host:  testHMHost,
+		Token: "t",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "Azure"}`,
+			},
+		},
+	}
+	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if cfg.Cloud != "Azure" {
+		t.Errorf("unexpected Cloud: %q", cfg.Cloud)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_CloudFallbackToDNS(t *testing.T) {
+	cfg := &Config{
+		Host:  "https://my-workspace.azuredatabricks.net",
+		Token: "t",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "https://my-workspace.azuredatabricks.net/oidc", "account_id": "` + testHMAccountID + `"}`,
+			},
+		},
+	}
+	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if cfg.Cloud != "Azure" {
+		t.Errorf("unexpected Cloud from DNS fallback: %q", cfg.Cloud)
+	}
+}
+
+func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) {
+	cfg := &Config{
+		Host:  testHMHost,
+		Token: "t",
+		Cloud: "GCP",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if cfg.Cloud != "GCP" {
+		t.Errorf("Cloud was overwritten: got %q, want %q", cfg.Cloud, "GCP")
+	}
+}
+
+func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
+	tests := []struct {
+		name      string
+		cloudJSON string
+		wantCloud string
+	}{
+		{
+			name:      "AWS",
+			cloudJSON: "AWS",
+			wantCloud: "AWS",
+		},
+		{
+			name:      "Azure",
+			cloudJSON: "Azure",
+			wantCloud: "Azure",
+		},
+		{
+			name:      "GCP",
+			cloudJSON: "GCP",
+			wantCloud: "GCP",
+		},
+		{
+			name:      "aws lowercase",
+			cloudJSON: "aws",
+			wantCloud: "AWS",
+		},
+		{
+			name:      "AWS uppercase",
+			cloudJSON: "AWS",
+			wantCloud: "AWS",
+		},
+		{
+			name:      "azure lowercase",
+			cloudJSON: "azure",
+			wantCloud: "Azure",
+		},
+		{
+			name:      "AZURE uppercase",
+			cloudJSON: "AZURE",
+			wantCloud: "Azure",
+		},
+		{
+			name:      "Azure title case",
+			cloudJSON: "Azure",
+			wantCloud: "Azure",
+		},
+		{
+			name:      "gcp lowercase",
+			cloudJSON: "gcp",
+			wantCloud: "GCP",
+		},
+		{
+			name:      "GCP uppercase",
+			cloudJSON: "GCP",
+			wantCloud: "GCP",
+		},
+		{
+			name:      "Another cloud is supported",
+			cloudJSON: "Another",
+			wantCloud: "Another",
+		},
+		{
+			name:      "Unknown cloud falls back to DNS",
+			cloudJSON: "",
+			wantCloud: "AWS", // Falls back to DNS-based detection for testHMHost
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg := &Config{
+				Host:  testHMHost,
+				Token: "t",
+				HTTPTransport: fixtures.SliceTransport{
+					{
+						Method:   "GET",
+						Resource: "/.well-known/databricks-config",
+						Status:   200,
+						Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "` + tc.cloudJSON + `"}`,
+					},
+				},
+			}
+			if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+				t.Fatal(err)
+			}
+			if string(cfg.Cloud) != tc.wantCloud {
+				t.Errorf("unexpected Cloud: got %q, want %q", cfg.Cloud, tc.wantCloud)
+			}
+		})
+	}
+}
