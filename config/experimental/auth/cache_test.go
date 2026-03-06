@@ -221,6 +221,90 @@ func TestCachedTokenSource_tokenState(t *testing.T) {
 	}
 }
 
+func TestCachedTokenSource_AsyncRefreshRetry(t *testing.T) {
+	errTime := time.Unix(1337, 0)
+	initialErr := fmt.Errorf("initial refresh error")
+	staleDuration := 10 * time.Minute
+	defaultExpiry := errTime.Add(1 * time.Hour)
+
+	retryErr := fmt.Errorf("retry error")
+
+	testCases := []struct {
+		name         string
+		timeSinceErr time.Duration
+		retryFails   bool
+
+		wantCalls      int
+		wantRefreshErr error
+		wantErrTime    time.Time
+	}{
+		{
+			name:           "no retry before backoff elapses",
+			timeSinceErr:   30 * time.Second,
+			wantCalls:      0,
+			wantRefreshErr: initialErr,
+			wantErrTime:    errTime,
+		},
+		{
+			name:           "successful retry after backoff elapses",
+			timeSinceErr:   asyncRefreshBackoff + 1*time.Second,
+			wantCalls:      1,
+			wantRefreshErr: nil,
+			wantErrTime:    time.Time{},
+		},
+		{
+			name:           "failed retry after backoff elapses",
+			timeSinceErr:   asyncRefreshBackoff + 1*time.Second,
+			retryFails:     true,
+			wantCalls:      1,
+			wantRefreshErr: retryErr,
+			wantErrTime:    errTime.Add(asyncRefreshBackoff + 1*time.Second),
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			now := errTime.Add(tc.timeSinceErr)
+			gotCalls := int32(0)
+
+			var returnedErr error
+			if tc.retryFails {
+				returnedErr = retryErr
+			}
+
+			cts := &cachedTokenSource{
+				staleDuration:  staleDuration,
+				refreshErr:     initialErr,
+				refreshErrTime: errTime,
+				timeNow:        func() time.Time { return now },
+				cachedToken:    &oauth2.Token{Expiry: now.Add(5 * time.Minute)},
+				tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+					atomic.AddInt32(&gotCalls, 1)
+					return &oauth2.Token{Expiry: defaultExpiry}, returnedErr
+				}),
+			}
+
+			_, err := cts.Token(context.Background())
+			if err != nil {
+				t.Fatalf("Token() error = %v", err)
+			}
+
+			// Wait for async refresh goroutine to finish.
+			time.Sleep(20 * time.Millisecond)
+
+			if int(gotCalls) != tc.wantCalls {
+				t.Errorf("token source calls = %d, want %d", gotCalls, tc.wantCalls)
+			}
+			if cts.refreshErr != tc.wantRefreshErr {
+				t.Errorf("refreshErr = %v, want %v", cts.refreshErr, tc.wantRefreshErr)
+			}
+			if cts.refreshErrTime != tc.wantErrTime {
+				t.Errorf("refreshErrTime = %v, want %v", cts.refreshErrTime, tc.wantErrTime)
+			}
+		})
+	}
+}
+
 func TestCachedTokenSource_Token(t *testing.T) {
 	now := time.Unix(1337, 0) // mock value for time.Now()
 	nTokenCalls := 10         // number of goroutines calling Token()
@@ -374,5 +458,32 @@ func TestCachedTokenSource_Token(t *testing.T) {
 				t.Errorf("want cached token %v, got %v", tc.wantToken, cts.cachedToken)
 			}
 		})
+	}
+}
+
+func TestCachedTokenSource_BlockingRefreshClearsErrTime(t *testing.T) {
+	now := time.Unix(1337, 0)
+	defaultExpiry := now.Add(1 * time.Hour)
+
+	cts := &cachedTokenSource{
+		staleDuration:  10 * time.Minute,
+		refreshErr:     fmt.Errorf("previous error"),
+		refreshErrTime: now.Add(-2 * time.Minute),
+		timeNow:        func() time.Time { return now },
+		cachedToken:    &oauth2.Token{Expiry: now.Add(-1 * time.Second)}, // expired
+		tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+			return &oauth2.Token{Expiry: defaultExpiry}, nil
+		}),
+	}
+
+	_, err := cts.Token(context.Background())
+	if err != nil {
+		t.Fatalf("Token() error = %v", err)
+	}
+	if cts.refreshErr != nil {
+		t.Errorf("refreshErr = %v, want nil", cts.refreshErr)
+	}
+	if !cts.refreshErrTime.IsZero() {
+		t.Errorf("refreshErrTime = %v, want zero", cts.refreshErrTime)
 	}
 }
