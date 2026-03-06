@@ -13,6 +13,13 @@ import (
 // adding breathing room over the existing 99.99% SLA.
 const maxStaleDuration = 20 * time.Minute
 
+// Minimum wait time before retrying a failed async refresh. This prevents
+// hammering a failing server while still recovering quickly from transient
+// errors (e.g., brief network issues). With a 20-minute max stale period,
+// this allows up to ~20 retries before the token expires and forces a
+// blocking call.
+const asyncRefreshBackoff = 1 * time.Minute
+
 // computeStalePeriod calculates the stale period for a token based on its TTL.
 // The stale period is the time before expiry when a token is considered stale
 // and should be refreshed asynchronously.
@@ -113,12 +120,12 @@ type cachedTokenSource struct {
 	// multiple async refreshes from being triggered at the same time.
 	isRefreshing bool
 
-	// Error returned by the last refresh. Async refreshes are disabled if this
-	// value is not nil so that the cache does not continue sending request to
-	// a potentially failing server. The next blocking call will re-enable async
-	// refreshes by setting this value to nil if it succeeds, or return the
-	// error if it fails.
-	refreshErr error
+	// Error returned by the last async refresh. When set, async refreshes are
+	// paused for asyncRefreshBackoff to avoid hammering a failing server. After
+	// the backoff elapses, the next stale-token request retries async refresh.
+	// A blocking call (on token expiry) unconditionally clears this state.
+	refreshErr     error
+	refreshErrTime time.Time
 
 	timeNow func() time.Time // for testing
 }
@@ -212,6 +219,7 @@ func (cts *cachedTokenSource) blockingToken(ctx context.Context) (*oauth2.Token,
 	// more information.
 	cts.isRefreshing = false
 	cts.refreshErr = nil
+	cts.refreshErrTime = time.Time{}
 
 	// It's possible that the token got refreshed (either by a blockingToken or
 	// an asyncRefresh call) while this particular call was waiting to acquire
@@ -232,7 +240,8 @@ func (cts *cachedTokenSource) blockingToken(ctx context.Context) (*oauth2.Token,
 func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 	cts.mu.Lock()
 	defer cts.mu.Unlock()
-	if !cts.isRefreshing && cts.refreshErr == nil {
+	canRetry := cts.refreshErr != nil && cts.timeNow().Sub(cts.refreshErrTime) >= asyncRefreshBackoff
+	if !cts.isRefreshing && (cts.refreshErr == nil || canRetry) {
 		cts.isRefreshing = true
 
 		go func() {
@@ -243,8 +252,11 @@ func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 			cts.isRefreshing = false
 			if err != nil {
 				cts.refreshErr = err
+				cts.refreshErrTime = cts.timeNow()
 				return
 			}
+			cts.refreshErr = nil
+			cts.refreshErrTime = time.Time{}
 			cts.cachedToken = t
 			cts.updateStaleDuration()
 		}()
