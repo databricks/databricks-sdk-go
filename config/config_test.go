@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strings"
 	"testing"
@@ -9,8 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 // mockLoader is a test helper that implements the Loader interface.
@@ -24,53 +23,71 @@ func (m mockLoader) Configure(cfg *Config) error {
 	return m(cfg)
 }
 
-func TestHostType_AwsAccount(t *testing.T) {
-	c := &Config{
-		Host:      "https://accounts.cloud.databricks.com",
-		AccountID: "123e4567-e89b-12d3-a456-426614174000",
+func TestConfig_HostType(t *testing.T) {
+	tests := []struct {
+		name   string
+		config *Config
+		want   HostType
+	}{
+		{
+			name: "AWS account",
+			config: &Config{
+				Host:      "https://accounts.cloud.databricks.com",
+				AccountID: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: AccountHost,
+		},
+		{
+			name: "AWS DoD account",
+			config: &Config{
+				Host:      "https://accounts-dod.cloud.databricks.us",
+				AccountID: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: AccountHost,
+		},
+		{
+			name: "AWS account without scheme",
+			config: &Config{
+				Host:      "accounts.cloud.databricks.com",
+				AccountID: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: AccountHost,
+		},
+		{
+			name: "AWS DoD account without scheme",
+			config: &Config{
+				Host:      "accounts-dod.cloud.databricks.us",
+				AccountID: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: AccountHost,
+		},
+		{
+			name: "AWS workspace",
+			config: &Config{
+				Host:      "https://my-workspace.cloud.databricks.us",
+				AccountID: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: WorkspaceHost,
+		},
+		{
+			name: "unified",
+			config: &Config{
+				Host:                       "https://unified.cloud.databricks.com",
+				AccountID:                  "123e4567-e89b-12d3-a456-426614174000",
+				Experimental_IsUnifiedHost: true,
+			},
+			want: UnifiedHost,
+		},
 	}
-	assert.Equal(t, AccountHost, c.HostType())
-}
 
-func TestHostType_AwsDodAccount(t *testing.T) {
-	c := &Config{
-		Host:      "https://accounts-dod.cloud.databricks.us",
-		AccountID: "123e4567-e89b-12d3-a456-426614174000",
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.config.HostType()
+			if got != tt.want {
+				t.Errorf("HostType() = %v, want %v", got, tt.want)
+			}
+		})
 	}
-	assert.Equal(t, AccountHost, c.HostType())
-}
-
-func TestHostType_AwsAccountWithoutScheme(t *testing.T) {
-	c := &Config{
-		Host:      "accounts.cloud.databricks.com",
-		AccountID: "123e4567-e89b-12d3-a456-426614174000",
-	}
-	assert.Equal(t, AccountHost, c.HostType())
-}
-
-func TestHostType_AwsDodAccountWithoutScheme(t *testing.T) {
-	c := &Config{
-		Host:      "accounts-dod.cloud.databricks.us",
-		AccountID: "123e4567-e89b-12d3-a456-426614174000",
-	}
-	assert.Equal(t, AccountHost, c.HostType())
-}
-
-func TestHostType_AwsWorkspace(t *testing.T) {
-	c := &Config{
-		Host:      "https://my-workspace.cloud.databricks.us",
-		AccountID: "123e4567-e89b-12d3-a456-426614174000",
-	}
-	assert.Equal(t, WorkspaceHost, c.HostType())
-}
-
-func TestHostType_Unified(t *testing.T) {
-	c := &Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "123e4567-e89b-12d3-a456-426614174000",
-		Experimental_IsUnifiedHost: true,
-	}
-	assert.Equal(t, UnifiedHost, c.HostType())
 }
 
 func TestIsAccountClient_PanicsOnUnifiedHost(t *testing.T) {
@@ -79,7 +96,12 @@ func TestIsAccountClient_PanicsOnUnifiedHost(t *testing.T) {
 		AccountID:                  "test-account",
 		Experimental_IsUnifiedHost: true,
 	}
-	assert.Panics(t, func() { c.IsAccountClient() })
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("expected IsAccountClient() to panic, but it did not")
+		}
+	}()
+	c.IsAccountClient()
 }
 
 func TestNewWithWorkspaceHost(t *testing.T) {
@@ -92,17 +114,27 @@ func TestNewWithWorkspaceHost(t *testing.T) {
 		resolved:           true,
 	}
 	c2, err := c.NewWithWorkspaceHost("https://my-workspace.cloud.databricks.us")
-	assert.NoError(t, err)
-	// Host should be updated
-	assert.Equal(t, "https://my-workspace.cloud.databricks.us", c2.Host)
-	// Account ID and Azure Resource ID should be cleared
-	assert.Equal(t, "", c2.AccountID)
-	assert.Equal(t, "", c2.AzureResourceID)
-	// Other fields should be preserved
-	assert.Equal(t, "client-id", c2.ClientID)
-	assert.Equal(t, "http://", c2.MetadataServiceURL)
-	// The new config will not be automatically resolved.
-	assert.False(t, c2.resolved)
+	if err != nil {
+		t.Fatalf("NewWithWorkspaceHost() error: %v", err)
+	}
+	if c2.Host != "https://my-workspace.cloud.databricks.us" {
+		t.Errorf("Host = %q, want %q", c2.Host, "https://my-workspace.cloud.databricks.us")
+	}
+	if c2.AccountID != "" {
+		t.Errorf("AccountID = %q, want empty", c2.AccountID)
+	}
+	if c2.AzureResourceID != "" {
+		t.Errorf("AzureResourceID = %q, want empty", c2.AzureResourceID)
+	}
+	if c2.ClientID != "client-id" {
+		t.Errorf("ClientID = %q, want %q", c2.ClientID, "client-id")
+	}
+	if c2.MetadataServiceURL != "http://" {
+		t.Errorf("MetadataServiceURL = %q, want %q", c2.MetadataServiceURL, "http://")
+	}
+	if c2.resolved {
+		t.Error("resolved = true, want false")
+	}
 }
 
 func TestAuthenticate_InvalidHostSet(t *testing.T) {
@@ -111,9 +143,13 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 		Token: "abcdefg",
 	}
 	req, err := http.NewRequestWithContext(context.Background(), "GET", c.Host, nil)
-	require.NoError(t, err)
+	if err != nil {
+		t.Fatalf("NewRequestWithContext() error: %v", err)
+	}
 	err = c.Authenticate(req)
-	assert.ErrorIs(t, err, ErrNoHostConfigured)
+	if !errors.Is(err, ErrNoHostConfigured) {
+		t.Fatalf("Authenticate() error = %v, want %v", err, ErrNoHostConfigured)
+	}
 }
 
 func TestConfig_getOidcEndpoints_account(t *testing.T) {
@@ -141,11 +177,16 @@ func TestConfig_getOidcEndpoints_account(t *testing.T) {
 				AccountID: tt.accountID,
 			}
 			got, err := c.getOidcEndpoints(context.Background())
-			assert.NoError(t, err)
-			assert.Equal(t, &u2m.OAuthAuthorizationServer{
+			if err != nil {
+				t.Fatalf("getOidcEndpoints() error: %v", err)
+			}
+			want := &u2m.OAuthAuthorizationServer{
 				AuthorizationEndpoint: "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
 				TokenEndpoint:         "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/token",
-			}, got)
+			}
+			if diff := cmp.Diff(want, got); diff != "" {
+				t.Errorf("getOidcEndpoints() mismatch (-want +got):\n%s", diff)
+			}
 		})
 	}
 }
@@ -179,11 +220,16 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 				},
 			}
 			got, err := c.getOidcEndpoints(context.Background())
-			assert.NoError(t, err)
-			assert.Equal(t, &u2m.OAuthAuthorizationServer{
+			if err != nil {
+				t.Fatalf("getOidcEndpoints() error: %v", err)
+			}
+			want := &u2m.OAuthAuthorizationServer{
 				AuthorizationEndpoint: "https://myworkspace.cloud.databricks.com/oidc/v1/authorize",
 				TokenEndpoint:         "https://myworkspace.cloud.databricks.com/oidc/v1/token",
-			}, got)
+			}
+			if diff := cmp.Diff(want, got); diff != "" {
+				t.Errorf("getOidcEndpoints() mismatch (-want +got):\n%s", diff)
+			}
 		})
 	}
 }
@@ -222,11 +268,16 @@ func TestConfig_getOidcEndpoints_unified(t *testing.T) {
 				},
 			}
 			got, err := c.getOidcEndpoints(context.Background())
-			assert.NoError(t, err)
-			assert.Equal(t, &u2m.OAuthAuthorizationServer{
+			if err != nil {
+				t.Fatalf("getOidcEndpoints() error: %v", err)
+			}
+			want := &u2m.OAuthAuthorizationServer{
 				AuthorizationEndpoint: "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
 				TokenEndpoint:         "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token",
-			}, got)
+			}
+			if diff := cmp.Diff(want, got); diff != "" {
+				t.Errorf("getOidcEndpoints() mismatch (-want +got):\n%s", diff)
+			}
 		})
 	}
 }
@@ -256,11 +307,19 @@ func TestConfig_getOAuthArgument_account(t *testing.T) {
 				AccountID: tt.accountID,
 			}
 			rawGot, err := c.getOAuthArgument()
-			assert.NoError(t, err)
+			if err != nil {
+				t.Fatalf("getOAuthArgument() error: %v", err)
+			}
 			got, ok := rawGot.(u2m.BasicAccountOAuthArgument)
-			assert.True(t, ok)
-			assert.Equal(t, "https://accounts.cloud.databricks.com", got.GetAccountHost())
-			assert.Equal(t, "abc", got.GetAccountId())
+			if !ok {
+				t.Fatalf("getOAuthArgument() returned %T, want BasicAccountOAuthArgument", rawGot)
+			}
+			if got.GetAccountHost() != "https://accounts.cloud.databricks.com" {
+				t.Errorf("GetAccountHost() = %q, want %q", got.GetAccountHost(), "https://accounts.cloud.databricks.com")
+			}
+			if got.GetAccountId() != "abc" {
+				t.Errorf("GetAccountId() = %q, want %q", got.GetAccountId(), "abc")
+			}
 		})
 	}
 }
@@ -286,10 +345,16 @@ func TestConfig_getOAuthArgument_workspace(t *testing.T) {
 				Host: tt.host,
 			}
 			rawGot, err := c.getOAuthArgument()
-			assert.NoError(t, err)
+			if err != nil {
+				t.Fatalf("getOAuthArgument() error: %v", err)
+			}
 			got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
-			assert.True(t, ok)
-			assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetWorkspaceHost())
+			if !ok {
+				t.Fatalf("getOAuthArgument() returned %T, want BasicWorkspaceOAuthArgument", rawGot)
+			}
+			if got.GetWorkspaceHost() != "https://myworkspace.cloud.databricks.com" {
+				t.Errorf("GetWorkspaceHost() = %q, want %q", got.GetWorkspaceHost(), "https://myworkspace.cloud.databricks.com")
+			}
 		})
 	}
 }
@@ -320,11 +385,19 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 				Experimental_IsUnifiedHost: true,
 			}
 			rawGot, err := c.getOAuthArgument()
-			assert.NoError(t, err)
+			if err != nil {
+				t.Fatalf("getOAuthArgument() error: %v", err)
+			}
 			got, ok := rawGot.(u2m.UnifiedOAuthArgument)
-			assert.True(t, ok, "Expected UnifiedOAuthArgument")
-			assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
-			assert.Equal(t, "account-123", got.GetAccountId())
+			if !ok {
+				t.Fatalf("getOAuthArgument() returned %T, want UnifiedOAuthArgument", rawGot)
+			}
+			if got.GetHost() != "https://unified.cloud.databricks.com" {
+				t.Errorf("GetHost() = %q, want %q", got.GetHost(), "https://unified.cloud.databricks.com")
+			}
+			if got.GetAccountId() != "account-123" {
+				t.Errorf("GetAccountId() = %q, want %q", got.GetAccountId(), "account-123")
+			}
 		})
 	}
 }
@@ -405,10 +478,16 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			rawGot, err := tt.config.getOAuthArgument()
-			assert.NoError(t, err)
-			assert.Equal(t, tt.wantKey, rawGot.GetCacheKey())
+			if err != nil {
+				t.Fatalf("getOAuthArgument() error: %v", err)
+			}
+			if rawGot.GetCacheKey() != tt.wantKey {
+				t.Errorf("GetCacheKey() = %q, want %q", rawGot.GetCacheKey(), tt.wantKey)
+			}
 			if hcp, ok := rawGot.(u2m.HostCacheKeyProvider); ok {
-				assert.Equal(t, tt.wantHostKey, hcp.GetHostCacheKey())
+				if hcp.GetHostCacheKey() != tt.wantHostKey {
+					t.Errorf("GetHostCacheKey() = %q, want %q", hcp.GetHostCacheKey(), tt.wantHostKey)
+				}
 			}
 		})
 	}
