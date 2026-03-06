@@ -46,6 +46,22 @@ func TestConfig_HostType(t *testing.T) {
 			want: AccountHost,
 		},
 		{
+			name: "AWS account without scheme",
+			config: &Config{
+				Host:      "accounts.cloud.databricks.com",
+				AccountID: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: AccountHost,
+		},
+		{
+			name: "AWS DoD account without scheme",
+			config: &Config{
+				Host:      "accounts-dod.cloud.databricks.us",
+				AccountID: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: AccountHost,
+		},
+		{
 			name: "AWS workspace",
 			config: &Config{
 				Host:      "https://my-workspace.cloud.databricks.us",
