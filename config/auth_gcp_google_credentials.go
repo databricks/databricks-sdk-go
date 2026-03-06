@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2/google"
@@ -18,6 +19,17 @@ type GoogleCredentials struct {
 
 func (c GoogleCredentials) Name() string {
 	return "google-credentials"
+}
+
+// Validate implements [ValidatingStrategy.Validate].
+func (c GoogleCredentials) Validate(_ context.Context, cfg *Config) error {
+	if cfg.GoogleCredentials == "" {
+		return fmt.Errorf("google_credentials is not set")
+	}
+	if cfg.Environment().Cloud != environment.CloudGCP {
+		return fmt.Errorf("%w: requires GCP, got %s", ErrInvalidCloud, cfg.Environment().Cloud)
+	}
+	return nil
 }
 
 func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {

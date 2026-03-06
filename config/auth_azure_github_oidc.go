@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
@@ -20,6 +21,29 @@ type AzureGithubOIDCCredentials struct{}
 // Name implements [CredentialsStrategy.Name].
 func (c AzureGithubOIDCCredentials) Name() string {
 	return "github-oidc-azure"
+}
+
+// Validate implements [ValidatingStrategy.Validate].
+func (c AzureGithubOIDCCredentials) Validate(_ context.Context, cfg *Config) error {
+	if cfg.AzureClientID == "" {
+		return fmt.Errorf("azure_client_id is required")
+	}
+	if cfg.Host == "" {
+		return fmt.Errorf("host is required")
+	}
+	if cfg.AzureTenantID == "" {
+		return fmt.Errorf("azure_tenant_id is required")
+	}
+	if cfg.ActionsIDTokenRequestURL == "" {
+		return fmt.Errorf("ACTIONS_ID_TOKEN_REQUEST_URL is required")
+	}
+	if cfg.ActionsIDTokenRequestToken == "" {
+		return fmt.Errorf("ACTIONS_ID_TOKEN_REQUEST_TOKEN is required")
+	}
+	if cfg.Environment().Cloud != environment.CloudAzure {
+		return fmt.Errorf("%w: requires Azure, got %s", ErrInvalidCloud, cfg.Environment().Cloud)
+	}
+	return nil
 }
 
 // Configure implements [CredentialsStrategy.Configure].
