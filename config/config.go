@@ -412,6 +412,15 @@ func (c *Config) IsAccountClient() bool {
 	return false
 }
 
+// normalizedHost returns the normalized host for the client.
+// Small utility function to avoid duplicating the logic in HostType().
+func normalizedHost(host string) string {
+	if host != "" && !strings.Contains(host, "://") {
+		host = "https://" + host
+	}
+	return host
+}
+
 // HostType returns the type of host that the client is configured for.
 func (c *Config) HostType() HostType {
 	if c.Experimental_IsUnifiedHost {
@@ -427,11 +436,7 @@ func (c *Config) HostType() HostType {
 	// prefixes. Profiles saved without "https://" (e.g. from user input)
 	// would otherwise fail the prefix check and be misclassified as
 	// workspace hosts.
-	host := c.Host
-	if host != "" && !strings.Contains(host, "://") {
-		host = "https://" + host
-	}
-
+	host := normalizedHost(c.Host)
 	accountsPrefixes := []string{
 		"https://accounts.",
 		"https://accounts-dod.",
