@@ -234,22 +234,22 @@ func TestCachedTokenSource_AsyncRefreshRetry(t *testing.T) {
 		timeSinceErr time.Duration
 		retryFails   bool
 
-		wantCalls      int
-		wantRefreshErr bool
-		wantErrTime    time.Time
+		wantCalls     int
+		wantRefreshErr error
+		wantErrTime   time.Time
 	}{
 		{
 			name:           "no retry before backoff elapses",
 			timeSinceErr:   30 * time.Second,
 			wantCalls:      0,
-			wantRefreshErr: true,
+			wantRefreshErr: initialErr,
 			wantErrTime:    errTime,
 		},
 		{
 			name:           "successful retry after backoff elapses",
 			timeSinceErr:   asyncRefreshBackoff + 1*time.Second,
 			wantCalls:      1,
-			wantRefreshErr: false,
+			wantRefreshErr: nil,
 			wantErrTime:    time.Time{},
 		},
 		{
@@ -257,7 +257,7 @@ func TestCachedTokenSource_AsyncRefreshRetry(t *testing.T) {
 			timeSinceErr:   asyncRefreshBackoff + 1*time.Second,
 			retryFails:     true,
 			wantCalls:      1,
-			wantRefreshErr: true,
+			wantRefreshErr: retryErr,
 			wantErrTime:    errTime.Add(asyncRefreshBackoff + 1*time.Second),
 		},
 	}
@@ -295,9 +295,8 @@ func TestCachedTokenSource_AsyncRefreshRetry(t *testing.T) {
 			if int(gotCalls) != tc.wantCalls {
 				t.Errorf("token source calls = %d, want %d", gotCalls, tc.wantCalls)
 			}
-			hasErr := cts.refreshErr != nil
-			if hasErr != tc.wantRefreshErr {
-				t.Errorf("refreshErr is nil = %v, want nil = %v", !hasErr, !tc.wantRefreshErr)
+			if cts.refreshErr != tc.wantRefreshErr {
+				t.Errorf("refreshErr = %v, want %v", cts.refreshErr, tc.wantRefreshErr)
 			}
 			if cts.refreshErrTime != tc.wantErrTime {
 				t.Errorf("refreshErrTime = %v, want %v", cts.refreshErrTime, tc.wantErrTime)
