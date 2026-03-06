@@ -51,13 +51,11 @@ var azDummy = &Config{
 	Host:                     "https://adb-xyz.c.azuredatabricks.net/",
 	azureTenantIdFetchClient: makeClient(redirectResponse),
 }
-
 var azDummyWithResourceId = &Config{
 	Host:                     "https://adb-xyz.c.azuredatabricks.net/",
 	AzureResourceID:          "/subscriptions/123/resourceGroups/abc/providers/Microsoft.Databricks/workspaces/abc123",
 	azureTenantIdFetchClient: makeClient(redirectResponse),
 }
-
 var azDummyWitInvalidResourceId = &Config{
 	Host:                     "https://adb-xyz.c.azuredatabricks.net/",
 	AzureResourceID:          "invalidResourceId",
@@ -78,6 +76,13 @@ func testdataPath() string {
 		"/bin",
 	}
 	return strings.Join(paths, ":")
+}
+
+func TestAzureCliCredentials_SkipAws(t *testing.T) {
+	aa := AzureCliCredentials{}
+	x, err := aa.Configure(context.Background(), &Config{Host: "https://xyz.cloud.databricks.com/"})
+	assert.Nil(t, x)
+	assert.NoError(t, err)
 }
 
 func TestAzureCliCredentials_NotInstalled(t *testing.T) {
