@@ -23,9 +23,27 @@ func (c AzureGithubOIDCCredentials) Name() string {
 	return "github-oidc-azure"
 }
 
-// Cloud implements [CloudScoped.Cloud].
-func (c AzureGithubOIDCCredentials) Cloud() environment.Cloud {
-	return environment.CloudAzure
+// Validate implements [ValidatingStrategy.Validate].
+func (c AzureGithubOIDCCredentials) Validate(_ context.Context, cfg *Config) error {
+	if cfg.AzureClientID == "" {
+		return fmt.Errorf("azure_client_id is required")
+	}
+	if cfg.Host == "" {
+		return fmt.Errorf("host is required")
+	}
+	if cfg.AzureTenantID == "" {
+		return fmt.Errorf("azure_tenant_id is required")
+	}
+	if cfg.ActionsIDTokenRequestURL == "" {
+		return fmt.Errorf("ACTIONS_ID_TOKEN_REQUEST_URL is required")
+	}
+	if cfg.ActionsIDTokenRequestToken == "" {
+		return fmt.Errorf("ACTIONS_ID_TOKEN_REQUEST_TOKEN is required")
+	}
+	if cfg.Environment().Cloud != environment.CloudAzure {
+		return fmt.Errorf("%w: requires Azure, got %s", ErrInvalidCloud, cfg.Environment().Cloud)
+	}
+	return nil
 }
 
 // Configure implements [CredentialsStrategy.Configure].

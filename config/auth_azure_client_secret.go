@@ -20,9 +20,21 @@ func (c AzureClientSecretCredentials) Name() string {
 	return "azure-client-secret"
 }
 
-// Cloud implements [CloudScoped.Cloud].
-func (c AzureClientSecretCredentials) Cloud() environment.Cloud {
-	return environment.CloudAzure
+// Validate implements [ValidatingStrategy.Validate].
+func (c AzureClientSecretCredentials) Validate(_ context.Context, cfg *Config) error {
+	if cfg.AzureClientID == "" {
+		return fmt.Errorf("azure_client_id is required")
+	}
+	if cfg.AzureClientSecret == "" {
+		return fmt.Errorf("azure_client_secret is required")
+	}
+	if cfg.AzureTenantID == "" {
+		return fmt.Errorf("azure_tenant_id is required")
+	}
+	if cfg.Environment().Cloud != environment.CloudAzure {
+		return fmt.Errorf("%w: requires Azure, got %s", ErrInvalidCloud, cfg.Environment().Cloud)
+	}
+	return nil
 }
 
 func (c AzureClientSecretCredentials) tokenSourceFor(

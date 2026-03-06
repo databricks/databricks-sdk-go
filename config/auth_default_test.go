@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -10,17 +11,22 @@ import (
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 )
 
-// cloudScopedStrategy is a test helper that implements both [CredentialsStrategy]
-// and [CloudScoped], recording whether Configure was called.
-type cloudScopedStrategy struct {
+// validatingStrategy is a test helper that implements [CredentialsStrategy]
+// and [ValidatingStrategy], recording whether Configure was called.
+type validatingStrategy struct {
 	name   string
 	called bool
 	cloud  environment.Cloud
 }
 
-func (s *cloudScopedStrategy) Name() string             { return s.name }
-func (s *cloudScopedStrategy) Cloud() environment.Cloud { return s.cloud }
-func (s *cloudScopedStrategy) Configure(_ context.Context, _ *Config) (credentials.CredentialsProvider, error) {
+func (s *validatingStrategy) Name() string { return s.name }
+func (s *validatingStrategy) Validate(_ context.Context, cfg *Config) error {
+	if cfg.Environment().Cloud != s.cloud {
+		return fmt.Errorf("%w: requires %s, got %s", ErrInvalidCloud, s.cloud, cfg.Environment().Cloud)
+	}
+	return nil
+}
+func (s *validatingStrategy) Configure(_ context.Context, _ *Config) (credentials.CredentialsProvider, error) {
 	s.called = true
 	return nil, nil
 }
@@ -29,7 +35,7 @@ func (s *cloudScopedStrategy) Configure(_ context.Context, _ *Config) (credentia
 // chain skips a cloud-specific strategy in auto-detect mode when the detected
 // cloud does not match the strategy's required cloud.
 func TestCredentialsChain_CloudFiltering_SkipsOnCloudMismatch(t *testing.T) {
-	azureStrategy := &cloudScopedStrategy{name: "azure-cli", cloud: environment.CloudAzure}
+	azureStrategy := &validatingStrategy{name: "azure-cli", cloud: environment.CloudAzure}
 	chain := &credentialsChain{strategies: []CredentialsStrategy{azureStrategy}}
 
 	// GCP host: azure-cli must be skipped in auto-detect mode.
@@ -45,7 +51,7 @@ func TestCredentialsChain_CloudFiltering_SkipsOnCloudMismatch(t *testing.T) {
 // the cloud filter is bypassed when AuthType is explicitly set, so that a user
 // can request "azure-cli" even on a GCP host.
 func TestCredentialsChain_CloudFiltering_BypassesOnExplicitAuthType(t *testing.T) {
-	azureStrategy := &cloudScopedStrategy{name: "azure-cli", cloud: environment.CloudAzure}
+	azureStrategy := &validatingStrategy{name: "azure-cli", cloud: environment.CloudAzure}
 	chain := &credentialsChain{strategies: []CredentialsStrategy{azureStrategy}}
 
 	// GCP host but auth_type is explicitly set: cloud filter must be bypassed.

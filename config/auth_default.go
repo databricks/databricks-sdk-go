@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -42,12 +43,18 @@ func (c *credentialsChain) Configure(ctx context.Context, cfg *Config) (credenti
 	}
 
 	// If an auth type is specified, try to configure the credentials for that
-	// specific auth type. Cloud filtering is bypassed entirely so that users
-	// can explicitly request any strategy regardless of detected cloud (e.g.
-	// "azure-cli" on a GCP host).
+	// specific auth type. ErrInvalidCloud is ignored so users can explicitly
+	// request a cloud-specific strategy (e.g. "azure-cli") on any host. Other
+	// validation errors are propagated so misconfigured strategies fail fast.
 	if cfg.AuthType != "" {
 		for _, s := range c.strategies {
 			if s.Name() == cfg.AuthType {
+				if vs, ok := s.(ValidatingStrategy); ok {
+					// ErrInvalidCloud is ignored so users can explicitly request a cloud-specific strategy (e.g. "azure-cli") on any host.
+					if err := vs.Validate(ctx, cfg); err != nil && !errors.Is(err, ErrInvalidCloud) {
+						return nil, err
+					}
+				}
 				logger.Tracef(ctx, "Attempting to configure auth: %q", s.Name())
 				c.name = s.Name()
 				return s.Configure(ctx, cfg)
@@ -60,12 +67,12 @@ func (c *credentialsChain) Configure(ctx context.Context, cfg *Config) (credenti
 	// succeeds, returns the credentials provider. If a strategy fails, swallow
 	// the error and try the next strategy.
 	for _, s := range c.strategies {
-		// In auto-detect mode, skip cloud-specific strategies that don't match
-		// the detected cloud. This prevents Azure strategies from being
-		// attempted silently on GCP hosts and vice-versa.
-		if cs, ok := s.(CloudScoped); ok {
-			if cs.Cloud() != cfg.Environment().Cloud {
-				logger.Debugf(ctx, "Skipping %q: requires %s", s.Name(), cs.Cloud())
+		// In auto-detect mode, consult ValidatingStrategy to skip strategies
+		// that are not applicable (e.g. cloud mismatch). This prevents Azure
+		// strategies from being attempted silently on GCP hosts and vice-versa.
+		if vs, ok := s.(ValidatingStrategy); ok {
+			if err := vs.Validate(ctx, cfg); err != nil {
+				logger.Debugf(ctx, "Skipping %q: %v", s.Name(), err)
 				continue
 			}
 		}

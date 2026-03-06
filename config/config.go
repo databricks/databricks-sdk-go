@@ -34,13 +34,24 @@ type CredentialsStrategy interface {
 	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
 }
 
-// CloudScoped is an optional interface that a [CredentialsStrategy] can
-// implement to declare which cloud it supports. When implemented, the
-// credentials chain skips this strategy in auto-detect mode if the configured
-// host's cloud does not match. Cloud filtering is bypassed when
-// [Config.AuthType] is explicitly set.
-type CloudScoped interface {
-	Cloud() environment.Cloud
+// ErrInvalidCloud is returned by [ValidatingStrategy.Validate] when the
+// configured host's cloud does not match the cloud required by the strategy.
+// In auto-detect mode, strategies returning this error are skipped. When
+// [Config.AuthType] is explicitly set, this error is ignored and the strategy
+// is still attempted, allowing users to force a cloud-specific auth method on
+// any host.
+var ErrInvalidCloud = errors.New("cloud not supported by this strategy")
+
+// ValidatingStrategy is an optional interface that a [CredentialsStrategy] can
+// implement to declare upfront whether it is applicable for the current
+// configuration. The credentials chain consults Validate before Configure:
+//   - In auto-detect mode: any error from Validate causes the strategy to be
+//     skipped.
+//   - When [Config.AuthType] is explicitly set: [ErrInvalidCloud] is ignored so
+//     that users can force a cloud-specific strategy on a different-cloud host.
+//     Any other validation error is propagated.
+type ValidatingStrategy interface {
+	Validate(context.Context, *Config) error
 }
 
 type Loader interface {
