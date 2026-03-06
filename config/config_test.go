@@ -132,7 +132,7 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 	}
 	err = c.Authenticate(req)
 	if !errors.Is(err, ErrNoHostConfigured) {
-		t.Errorf("Authenticate() error = %v, want %v", err, ErrNoHostConfigured)
+		t.Fatalf("Authenticate() error = %v, want %v", err, ErrNoHostConfigured)
 	}
 }
 
