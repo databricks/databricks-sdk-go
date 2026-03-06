@@ -45,6 +45,12 @@ type HTTPFixtures []HTTPFixture
 // Client creates DatabricksClient for emulated HTTP server
 func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Server) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// The SDK fetches host metadata on every EnsureResolved call. Return 404
+		// so tests don't need to stub this endpoint unless they specifically want to test it.
+		if req.Method == "GET" && req.RequestURI == "/.well-known/databricks-config" {
+			rw.WriteHeader(404)
+			return
+		}
 		found := false
 		for i, fixture := range fixtures {
 			if (req.Method == fixture.Method && req.RequestURI == fixture.Resource) || fixture.MatchAny {
