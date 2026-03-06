@@ -234,9 +234,9 @@ func TestCachedTokenSource_AsyncRefreshRetry(t *testing.T) {
 		timeSinceErr time.Duration
 		retryFails   bool
 
-		wantCalls     int
+		wantCalls      int
 		wantRefreshErr error
-		wantErrTime   time.Time
+		wantErrTime    time.Time
 	}{
 		{
 			name:           "no retry before backoff elapses",
