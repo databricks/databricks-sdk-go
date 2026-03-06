@@ -16,11 +16,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/database"
+	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
+	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
@@ -251,6 +253,12 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/dashboards/
 	Dashboards sql.DashboardsInterface
+
+	// Manage data classification for Unity Catalog catalogs. Data
+	// classification automatically identifies and tags sensitive data (PII) in
+	// Unity Catalog tables. Each catalog can have at most one configuration
+	// resource that controls scanning behavior and auto-tagging rules.
+	DataClassification dataclassification.DataClassificationInterface
 
 	// Manage the data quality of Unity Catalog objects (currently support
 	// `schema` and `table`)
@@ -523,6 +531,9 @@ type WorkspaceClient struct {
 	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
+
+	// Manage Knowledge Assistants and related resources.
+	KnowledgeAssistants knowledgeassistants.KnowledgeAssistantsInterface
 
 	// These APIs provide specific management operations for Lakeview
 	// dashboards. Generic resource management can be done with Workspace API
@@ -1443,6 +1454,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		CurrentUser:                         iam.NewCurrentUser(databricksClient),
 		DashboardWidgets:                    sql.NewDashboardWidgets(databricksClient),
 		Dashboards:                          sql.NewDashboards(databricksClient),
+		DataClassification:                  dataclassification.NewDataClassification(databricksClient),
 		DataQuality:                         dataquality.NewDataQuality(databricksClient),
 		DataSources:                         sql.NewDataSources(databricksClient),
 		Database:                            database.NewDatabase(databricksClient),
@@ -1467,6 +1479,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		InstanceProfiles:                    compute.NewInstanceProfiles(databricksClient),
 		IpAccessLists:                       settings.NewIpAccessLists(databricksClient),
 		Jobs:                                jobs.NewJobs(databricksClient),
+		KnowledgeAssistants:                 knowledgeassistants.NewKnowledgeAssistants(databricksClient),
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),

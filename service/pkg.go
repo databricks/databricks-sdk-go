@@ -82,6 +82,8 @@
 //
 // - [sql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
 //
+// - [dataclassification.DataClassificationAPI]: Manage data classification for Unity Catalog catalogs.
+//
 // - [dataquality.DataQualityAPI]: Manage the data quality of Unity Catalog objects (currently support `schema` and `table`).
 //
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
@@ -163,6 +165,8 @@
 // - [settings.AccountIpAccessListsAPI]: The Accounts IP Access List API enables account admins to configure IP access lists for access to the account console.
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
+//
+// - [knowledgeassistants.KnowledgeAssistantsAPI]: Manage Knowledge Assistants and related resources.
 //
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
 //
@@ -368,11 +372,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/database"
+	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
+	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/networking"
@@ -437,6 +443,7 @@ var (
 	_ *settings.DashboardEmailSubscriptionsAPI            = nil
 	_ *sql.DashboardWidgetsAPI                            = nil
 	_ *sql.DashboardsAPI                                  = nil
+	_ *dataclassification.DataClassificationAPI           = nil
 	_ *dataquality.DataQualityAPI                         = nil
 	_ *sql.DataSourcesAPI                                 = nil
 	_ *database.DatabaseAPI                               = nil
@@ -478,6 +485,7 @@ var (
 	_ *settings.IpAccessListsAPI                          = nil
 	_ *settings.AccountIpAccessListsAPI                   = nil
 	_ *jobs.JobsAPI                                       = nil
+	_ *knowledgeassistants.KnowledgeAssistantsAPI         = nil
 	_ *dashboards.LakeviewAPI                             = nil
 	_ *dashboards.LakeviewEmbeddedAPI                     = nil
 	_ *compute.LibrariesAPI                               = nil

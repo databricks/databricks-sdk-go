@@ -525,9 +525,9 @@ type GetPermissionLevelsRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
-	// dbsql-dashboards, directories, experiments, files, genie, instance-pools,
-	// jobs, notebooks, pipelines, queries, registered-models, repos,
-	// serving-endpoints, or warehouses.
+	// database-projects, dbsql-dashboards, directories, experiments, files,
+	// genie, instance-pools, jobs, notebooks, pipelines, queries,
+	// registered-models, repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -541,9 +541,9 @@ type GetPermissionRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
-	// dbsql-dashboards, directories, experiments, files, genie, instance-pools,
-	// jobs, notebooks, pipelines, queries, registered-models, repos,
-	// serving-endpoints, or warehouses.
+	// database-projects, dbsql-dashboards, directories, experiments, files,
+	// genie, instance-pools, jobs, notebooks, pipelines, queries,
+	// registered-models, repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1892,9 +1892,9 @@ type SetObjectPermissions struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
-	// dbsql-dashboards, directories, experiments, files, genie, instance-pools,
-	// jobs, notebooks, pipelines, queries, registered-models, repos,
-	// serving-endpoints, or warehouses.
+	// database-projects, dbsql-dashboards, directories, experiments, files,
+	// genie, instance-pools, jobs, notebooks, pipelines, queries,
+	// registered-models, repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -2018,9 +2018,9 @@ type UpdateObjectPermissions struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
-	// dbsql-dashboards, directories, experiments, files, genie, instance-pools,
-	// jobs, notebooks, pipelines, queries, registered-models, repos,
-	// serving-endpoints, or warehouses.
+	// database-projects, dbsql-dashboards, directories, experiments, files,
+	// genie, instance-pools, jobs, notebooks, pipelines, queries,
+	// registered-models, repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 

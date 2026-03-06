@@ -13,3 +13,6 @@
 ### Internal Changes
 
 ### API Changes
+* Add [dataclassification](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataclassification) and [knowledgeassistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants) packages.
+* Add [w.DataClassification](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataclassification#DataClassificationAPI) workspace-level service.
+* Add [w.KnowledgeAssistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants#KnowledgeAssistantsAPI) workspace-level service.
