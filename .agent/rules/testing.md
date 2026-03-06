@@ -19,7 +19,7 @@ Table-driven tests are preferred for API client methods:
 for _, tc := range testCases {
     t.Run(tc.name, func(t *testing.T) {
         // ...
-        if diff := cmp.Diff(tc.expected, actual); diff != "" {
+        if diff := cmp.Diff(tc.want, got); diff != "" {
             t.Errorf("mismatch (-want +got):\n%s", diff)
         }
     })
@@ -41,14 +41,44 @@ for _, tc := range testCases {
 - Add explicit timeouts to channel/goroutine-based tests to prevent hanging
 - Use `defer close(ch)` for channel cleanup to handle error paths safely
 
+## Naming and Style
+
+- Use `want` for expected values and `got` for actual values — not `expected`/`actual`
+- Use **named struct fields** in test mock initialization: `&IDToken{Value: tok}` not `&IDToken{tok}`
+- Use existing test utilities (e.g., `auth.TokenSourceFn`) rather than creating new
+  one-off mock types
+
+## Test Design Philosophy
+
+- **Pragmatic about test value**: don't write tests that can't catch real regressions.
+  If removing the tested code wouldn't be caught by the test, the test is not useful
+- **Prefer blackbox tests over whitebox tests**: verify observable behavior, not
+  implementation details. When structural constraints make blackbox testing impossible,
+  consider refactoring for testability — but not at the cost of breaking backward compatibility
+- **Test at the right abstraction level**: test behavior through the public interface of
+  a component, not through its internals. Tests for `ErrorRetrier` logic belong in
+  `errors_test.go`, not in tests for `ApiClient` that happens to use it
+- **Mock at the right level**: mock the nearest interface boundary, not deep internals.
+  Prefer mocking `PersistentAuth` over the `OAuthClient` it wraps
+- **Prefer isolated tests by design**: use dependency injection and mocks rather than
+  relying on environment cleanup utilities like `CleanupEnvironment`. Structure tests
+  so each validates one layer of logic
+- **Don't over-engineer test safety nets**: if the only way a function panics is a
+  runtime stack overflow, a recovery wrapper adds no value
+- Use mock helpers (e.g., `withMockEnv`) consistently — don't mix `t.Setenv` and
+  mock helpers in the same test
+
 ## Anti-Patterns (never do these)
 
 - Deleting or skipping flaky tests instead of fixing the root cause
-- Over-mocking — prefer HTTP fixtures over deep mock chains
 - Tests depending on execution order or shared mutable state
-- Non-descriptive test names (`TestFoo`, `TestBasic`) — use `TestFunctionName_Scenario_ExpectedBehavior`
-- `time.Sleep` in tests — inject a clock or use polling with `assert.Eventually`
+- Non-descriptive test names (`TestFoo`, `TestBasic`) — follow the same pattern as Go
+  `Example` functions: `TestFunctionName_description` (e.g., `TestHostType_missingScheme`,
+  `TestConfig_HostType_missingScheme` for a method on a type)
+- `time.Now` i ntests — use a mock clock
 - Testing generated code in `service/` — test your hand-written code that uses it
 - Exporting methods solely for test access — use `cmp.Diff` to compare structs,
   or write internal (`_test.go` in same package) tests instead
 - Unnecessary concurrency in tests — if goroutines/channels aren't clearly needed, don't use them
+- Accepting workarounds without understanding root causes — if `CleanupEnvironment` is
+  needed, investigate *why* the environment is dirty
