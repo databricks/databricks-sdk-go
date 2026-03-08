@@ -5,6 +5,18 @@ with hand-written authentication, configuration, and transport infrastructure.
 
 For scoped coding rules, skills, and prompt templates, see the `.agent/` directory.
 
+### Rules (`.agent/rules/`)
+- **api-design.md** — API design principles for the Databricks SDK.
+- **error-handling.md** — Error handling conventions for the Databricks SDK.
+- **style-guide.md** — Go code style and naming conventions for the Databricks SDK.
+- **testing.md** — Testing standards and anti-patterns for the Databricks SDK.
+
+### Skills (`.agent/skills/`)
+- **write-pr-description** — Write or improve a GitHub pull request description.
+
+### Prompts (`.agent/prompts/`)
+- **code-review.md** — Review PR or code changes for backward compatibility, correctness, and style.
+
 ## Development
 
 Prerequisites: Go 1.22+, `goimports`, `staticcheck`, `gotestsum`.
