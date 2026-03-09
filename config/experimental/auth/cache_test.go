@@ -322,8 +322,8 @@ func TestCachedTokenSource_Token(t *testing.T) {
 	testCases := []struct {
 		desc                     string        // description of the test case
 		cachedToken              *oauth2.Token // token cached before calling Token()
-		disableAsync             bool          // whether are disabled or not
-		asyncRefreshAllowedAfter time.Time
+		disableAsync             bool          // whether async refreshes are disabled
+		asyncRefreshAllowedAfter time.Time     // time after which async refreshes may be attempted
 
 		returnedToken *oauth2.Token // token returned by the token source
 		returnedError error         // error returned by the token source
@@ -373,12 +373,6 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			returnedToken: &oauth2.Token{Expiry: now.Add(-1 * time.Hour)},
 			wantCalls:     10,
 			wantToken:     &oauth2.Token{Expiry: now.Add(-1 * time.Hour)},
-		},
-		{
-			desc:          "[Async] no cached token",
-			returnedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
-			wantCalls:     1,
-			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:          "[Async] no cached token",
