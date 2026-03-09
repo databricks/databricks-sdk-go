@@ -78,6 +78,21 @@ type GenieInterface interface {
 	// ----
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
 
+	// Create and run evaluations for multiple benchmark questions in a Genie space.
+	GenieCreateEvalRun(ctx context.Context, request GenieCreateEvalRunRequest) (*GenieEvalRunResponse, error)
+
+	// Get details for evaluation results.
+	GenieGetEvalResultDetails(ctx context.Context, request GenieGetEvalResultDetailsRequest) (*GenieEvalResultDetails, error)
+
+	// Get evaluation run details.
+	GenieGetEvalRun(ctx context.Context, request GenieGetEvalRunRequest) (*GenieEvalRunResponse, error)
+
+	// List evaluation results for a specific evaluation run.
+	GenieListEvalResults(ctx context.Context, request GenieListEvalResultsRequest) (*GenieListEvalResultsResponse, error)
+
+	// Lists all evaluation runs in a space.
+	GenieListEvalRuns(ctx context.Context, request GenieListEvalRunsRequest) (*GenieListEvalRunsResponse, error)
+
 	// After [Generating a Full Query Result
 	// Download](:method:genie/generatedownloadfullqueryresult) and successfully
 	// receiving a `download_id` and `download_id_signature`, use this API to poll
