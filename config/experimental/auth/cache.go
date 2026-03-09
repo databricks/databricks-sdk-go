@@ -20,6 +20,10 @@ const maxAsyncRefreshLeadTime = 20 * time.Minute
 // blocking call.
 const asyncRefreshRetryBackoff = 1 * time.Minute
 
+// Maximum time an async refresh is allowed to run before the child context
+// is canceled.
+const asyncRefreshTimeout = 1 * time.Minute
+
 // computeAsyncRefreshLeadTime calculates how long before expiry async
 // refreshes may start for a token with the given remaining TTL.
 //
@@ -213,7 +217,10 @@ func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 
 	cts.isRefreshing = true
 	go func() {
-		t, err := cts.tokenSource.Token(ctx)
+		refreshCtx, cancel := context.WithTimeout(ctx, asyncRefreshTimeout)
+		defer cancel()
+
+		t, err := cts.tokenSource.Token(refreshCtx)
 
 		cts.mu.Lock()
 		defer cts.mu.Unlock()
