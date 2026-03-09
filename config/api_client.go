@@ -44,7 +44,9 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			// r.Host empty makes debug logs misleadingly show an empty host.
 			r.URL.Host = url.Host
 			r.URL.Scheme = url.Scheme
-			r.Host = url.Host
+			if r.Host == "" {
+				r.Host = url.Host
+			}
 			return nil
 		},
 		authInUserAgentVisitor(cfg),
