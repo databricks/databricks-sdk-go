@@ -65,6 +65,8 @@ type App struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// Name of the space this app belongs to.
 	Space string `json:"space,omitempty"`
+
+	TelemetryExportDestinations []TelemetryExportDestination `json:"telemetry_export_destinations,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The email of the user that last updated the app.
@@ -2446,6 +2448,21 @@ type StartAppRequest struct {
 type StopAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
+}
+
+// A single telemetry export destination with its configuration and status.
+type TelemetryExportDestination struct {
+	UnityCatalog *UnityCatalog `json:"unity_catalog,omitempty"`
+}
+
+// Unity Catalog Destinations for OTEL telemetry export.
+type UnityCatalog struct {
+	// Unity Catalog table for OTEL logs.
+	LogsTable string `json:"logs_table"`
+	// Unity Catalog table for OTEL metrics.
+	MetricsTable string `json:"metrics_table"`
+	// Unity Catalog table for OTEL traces (spans).
+	TracesTable string `json:"traces_table"`
 }
 
 type UpdateAppRequest struct {

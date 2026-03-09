@@ -226,6 +226,55 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type EvaluationStatusType string
+
+const EvaluationStatusTypeDone EvaluationStatusType = `DONE`
+
+const EvaluationStatusTypeEvaluationCancelled EvaluationStatusType = `EVALUATION_CANCELLED`
+
+const EvaluationStatusTypeEvaluationFailed EvaluationStatusType = `EVALUATION_FAILED`
+
+const EvaluationStatusTypeEvaluationTimeout EvaluationStatusType = `EVALUATION_TIMEOUT`
+
+const EvaluationStatusTypeNotStarted EvaluationStatusType = `NOT_STARTED`
+
+const EvaluationStatusTypeRunning EvaluationStatusType = `RUNNING`
+
+// String representation for [fmt.Print]
+func (f *EvaluationStatusType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EvaluationStatusType) Set(v string) error {
+	switch v {
+	case `DONE`, `EVALUATION_CANCELLED`, `EVALUATION_FAILED`, `EVALUATION_TIMEOUT`, `NOT_STARTED`, `RUNNING`:
+		*f = EvaluationStatusType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DONE", "EVALUATION_CANCELLED", "EVALUATION_FAILED", "EVALUATION_TIMEOUT", "NOT_STARTED", "RUNNING"`, v)
+	}
+}
+
+// Values returns all possible values for EvaluationStatusType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EvaluationStatusType) Values() []EvaluationStatusType {
+	return []EvaluationStatusType{
+		EvaluationStatusTypeDone,
+		EvaluationStatusTypeEvaluationCancelled,
+		EvaluationStatusTypeEvaluationFailed,
+		EvaluationStatusTypeEvaluationTimeout,
+		EvaluationStatusTypeNotStarted,
+		EvaluationStatusTypeRunning,
+	}
+}
+
+// Type always returns EvaluationStatusType to satisfy [pflag.Value] interface
+func (f *EvaluationStatusType) Type() string {
+	return "EvaluationStatusType"
+}
+
 // Genie AI Response
 type GenieAttachment struct {
 	// Attachment ID
@@ -303,6 +352,16 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieCreateEvalRunRequest struct {
+	// List of benchmark question IDs to evaluate. These questions must exist in
+	// the specified Genie space. If none are specified, then all benchmark
+	// questions are evaluated.
+	BenchmarkQuestionIds []string `json:"benchmark_question_ids,omitempty"`
+	// The ID associated with the Genie space where the evaluations will be
+	// executed.
+	SpaceId string `json:"-" url:"-"`
+}
+
 type GenieCreateSpaceRequest struct {
 	// Optional description
 	Description string `json:"description,omitempty"`
@@ -344,6 +403,196 @@ type GenieDeleteConversationRequest struct {
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the Genie space where the conversation is located.
 	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieEvalAssessment string
+
+const GenieEvalAssessmentBad GenieEvalAssessment = `BAD`
+
+const GenieEvalAssessmentGood GenieEvalAssessment = `GOOD`
+
+const GenieEvalAssessmentNeedsReview GenieEvalAssessment = `NEEDS_REVIEW`
+
+// String representation for [fmt.Print]
+func (f *GenieEvalAssessment) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GenieEvalAssessment) Set(v string) error {
+	switch v {
+	case `BAD`, `GOOD`, `NEEDS_REVIEW`:
+		*f = GenieEvalAssessment(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BAD", "GOOD", "NEEDS_REVIEW"`, v)
+	}
+}
+
+// Values returns all possible values for GenieEvalAssessment.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GenieEvalAssessment) Values() []GenieEvalAssessment {
+	return []GenieEvalAssessment{
+		GenieEvalAssessmentBad,
+		GenieEvalAssessmentGood,
+		GenieEvalAssessmentNeedsReview,
+	}
+}
+
+// Type always returns GenieEvalAssessment to satisfy [pflag.Value] interface
+func (f *GenieEvalAssessment) Type() string {
+	return "GenieEvalAssessment"
+}
+
+type GenieEvalResponse struct {
+	// The response content (either text or SQL query).
+	Response string `json:"response,omitempty"`
+	// Type of response
+	ResponseType GenieEvalResponseType `json:"response_type,omitempty"`
+	// SQL Statement Execution response.
+	SqlExecutionResult *sql.StatementResponse `json:"sql_execution_result,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieEvalResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieEvalResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieEvalResponseType string
+
+const GenieEvalResponseTypeSql GenieEvalResponseType = `SQL`
+
+const GenieEvalResponseTypeText GenieEvalResponseType = `TEXT`
+
+// String representation for [fmt.Print]
+func (f *GenieEvalResponseType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GenieEvalResponseType) Set(v string) error {
+	switch v {
+	case `SQL`, `TEXT`:
+		*f = GenieEvalResponseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SQL", "TEXT"`, v)
+	}
+}
+
+// Values returns all possible values for GenieEvalResponseType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GenieEvalResponseType) Values() []GenieEvalResponseType {
+	return []GenieEvalResponseType{
+		GenieEvalResponseTypeSql,
+		GenieEvalResponseTypeText,
+	}
+}
+
+// Type always returns GenieEvalResponseType to satisfy [pflag.Value] interface
+func (f *GenieEvalResponseType) Type() string {
+	return "GenieEvalResponseType"
+}
+
+// Shows summary information for an evaluation result. For detailed information
+// including SQL execution results, actual/expected responses, and assessment
+// scores, use GenieGetEvalResultDetails.
+type GenieEvalResult struct {
+	// Stored snapshot of original benchmark answer text.
+	BenchmarkAnswer string `json:"benchmark_answer,omitempty"`
+	// The ID of the benchmark question that was evaluated.
+	BenchmarkQuestionId string `json:"benchmark_question_id"`
+	// User ID who created evaluation result.
+	CreatedByUser int64 `json:"created_by_user,omitempty"`
+	// Stored snapshot of original benchmark question text.
+	Question string `json:"question,omitempty"`
+	// Unique identifier for this evaluation result.
+	ResultId string `json:"result_id"`
+	// The ID of the space the evaluation result belongs to.
+	SpaceId string `json:"space_id"`
+	// Current status of this evaluation result.
+	Status EvaluationStatusType `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieEvalResult) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieEvalResult) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Shows detailed information for an evaluation result.
+type GenieEvalResultDetails struct {
+	// The actual response generated by Genie.
+	ActualResponse []GenieEvalResponse `json:"actual_response,omitempty"`
+	// Assessment of the evaluation result: good, bad, or needs review
+	Assessment GenieEvalAssessment `json:"assessment,omitempty"`
+	// Reasons for the assessment score.
+	AssessmentReasons []ScoreReason `json:"assessment_reasons,omitempty"`
+	// The ID of the benchmark question that was evaluated.
+	BenchmarkQuestionId string `json:"benchmark_question_id"`
+	// Current status of the evaluation run.
+	EvalRunStatus EvaluationStatusType `json:"eval_run_status,omitempty"`
+	// The expected responses from the benchmark.
+	ExpectedResponse []GenieEvalResponse `json:"expected_response,omitempty"`
+	// Whether this evaluation was manually assessed.
+	ManualAssessment bool `json:"manual_assessment,omitempty"`
+	// The unique identifier for the evaluation result.
+	ResultId string `json:"result_id"`
+	// The ID of the space the evaluation result belongs to.
+	SpaceId string `json:"space_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieEvalResultDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieEvalResultDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieEvalRunResponse struct {
+	// Timestamp when the evaluation run was created (milliseconds since epoch).
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
+	// The unique identifier for the evaluation run.
+	EvalRunId string `json:"eval_run_id"`
+	// Current status of the evaluation run.
+	EvalRunStatus EvaluationStatusType `json:"eval_run_status,omitempty"`
+	// Timestamp when the evaluation run was last updated (milliseconds since
+	// epoch).
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// Number of questions answered correctly.
+	NumCorrect int64 `json:"num_correct,omitempty"`
+	// Number of questions that have been completed.
+	NumDone int64 `json:"num_done,omitempty"`
+	// Number of questions that need manual review.
+	NumNeedsReview int64 `json:"num_needs_review,omitempty"`
+	// Total number of questions in the evaluation run.
+	NumQuestions int64 `json:"num_questions,omitempty"`
+	// User ID who initiated the evaluation run.
+	RunByUser int64 `json:"run_by_user,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieEvalRunResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieEvalRunResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GenieExecuteMessageAttachmentQueryRequest struct {
@@ -477,6 +726,23 @@ type GenieGetDownloadFullQueryResultResponse struct {
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
+type GenieGetEvalResultDetailsRequest struct {
+	// The unique identifier for the evaluation run.
+	EvalRunId string `json:"-" url:"-"`
+	// The unique identifier for the evaluation result.
+	ResultId string `json:"-" url:"-"`
+	// The ID associated with the Genie space where the evaluation run is
+	// located.
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetEvalRunRequest struct {
+	EvalRunId string `json:"-" url:"-"`
+	// The ID associated with the Genie space where the evaluation run is
+	// located.
+	SpaceId string `json:"-" url:"-"`
+}
+
 type GenieGetMessageAttachmentQueryResultRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -606,6 +872,82 @@ func (s *GenieListConversationsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s GenieListConversationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListEvalResultsRequest struct {
+	// The unique identifier for the evaluation run.
+	EvalRunId string `json:"-" url:"-"`
+	// Maximum number of eval results to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque token to retrieve the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The ID associated with the Genie space where the evaluation run is
+	// located.
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListEvalResultsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListEvalResultsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListEvalResultsResponse struct {
+	// List of evaluation results for the specified run.
+	EvalResults []GenieEvalResult `json:"eval_results,omitempty"`
+	// The token to use for retrieving the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListEvalResultsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListEvalResultsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListEvalRunsRequest struct {
+	// Maximum number of evaluation runs to return per page
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Token to get the next page of results
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The ID associated with the Genie space where the evaluation run is
+	// located.
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListEvalRunsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListEvalRunsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListEvalRunsResponse struct {
+	// List of evaluation runs for a space on provided page token and page size
+	EvalRuns []GenieEvalRunResponse `json:"eval_runs,omitempty"`
+	// The token to use for retrieving the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListEvalRunsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListEvalRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1553,6 +1895,112 @@ func (f *SchedulePauseStatus) Values() []SchedulePauseStatus {
 // Type always returns SchedulePauseStatus to satisfy [pflag.Value] interface
 func (f *SchedulePauseStatus) Type() string {
 	return "SchedulePauseStatus"
+}
+
+type ScoreReason string
+
+const ScoreReasonColumnTypeDifference ScoreReason = `COLUMN_TYPE_DIFFERENCE`
+
+const ScoreReasonEmptyGoodSql ScoreReason = `EMPTY_GOOD_SQL`
+
+const ScoreReasonEmptyResult ScoreReason = `EMPTY_RESULT`
+
+const ScoreReasonLlmJudgeFormattingError ScoreReason = `LLM_JUDGE_FORMATTING_ERROR`
+
+const ScoreReasonLlmJudgeIncompleteOrPartialOutput ScoreReason = `LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT`
+
+const ScoreReasonLlmJudgeIncorrectFunctionUsage ScoreReason = `LLM_JUDGE_INCORRECT_FUNCTION_USAGE`
+
+const ScoreReasonLlmJudgeIncorrectMetricCalculation ScoreReason = `LLM_JUDGE_INCORRECT_METRIC_CALCULATION`
+
+const ScoreReasonLlmJudgeIncorrectTableOrFieldUsage ScoreReason = `LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE`
+
+const ScoreReasonLlmJudgeInstructionComplianceOrMissingBusinessLogic ScoreReason = `LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC`
+
+const ScoreReasonLlmJudgeMisinterpretationOfUserRequest ScoreReason = `LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST`
+
+const ScoreReasonLlmJudgeMissingJoin ScoreReason = `LLM_JUDGE_MISSING_JOIN`
+
+const ScoreReasonLlmJudgeMissingOrIncorrectAggregation ScoreReason = `LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION`
+
+const ScoreReasonLlmJudgeMissingOrIncorrectFilter ScoreReason = `LLM_JUDGE_MISSING_OR_INCORRECT_FILTER`
+
+const ScoreReasonLlmJudgeMissingOrIncorrectJoin ScoreReason = `LLM_JUDGE_MISSING_OR_INCORRECT_JOIN`
+
+const ScoreReasonLlmJudgeOther ScoreReason = `LLM_JUDGE_OTHER`
+
+const ScoreReasonLlmJudgeSemanticError ScoreReason = `LLM_JUDGE_SEMANTIC_ERROR`
+
+const ScoreReasonLlmJudgeSyntaxError ScoreReason = `LLM_JUDGE_SYNTAX_ERROR`
+
+const ScoreReasonLlmJudgeWrongAggregation ScoreReason = `LLM_JUDGE_WRONG_AGGREGATION`
+
+const ScoreReasonLlmJudgeWrongColumns ScoreReason = `LLM_JUDGE_WRONG_COLUMNS`
+
+const ScoreReasonLlmJudgeWrongFilter ScoreReason = `LLM_JUDGE_WRONG_FILTER`
+
+const ScoreReasonResultExtraColumns ScoreReason = `RESULT_EXTRA_COLUMNS`
+
+const ScoreReasonResultExtraRows ScoreReason = `RESULT_EXTRA_ROWS`
+
+const ScoreReasonResultMissingColumns ScoreReason = `RESULT_MISSING_COLUMNS`
+
+const ScoreReasonResultMissingRows ScoreReason = `RESULT_MISSING_ROWS`
+
+const ScoreReasonSingleCellDifference ScoreReason = `SINGLE_CELL_DIFFERENCE`
+
+// String representation for [fmt.Print]
+func (f *ScoreReason) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ScoreReason) Set(v string) error {
+	switch v {
+	case `COLUMN_TYPE_DIFFERENCE`, `EMPTY_GOOD_SQL`, `EMPTY_RESULT`, `LLM_JUDGE_FORMATTING_ERROR`, `LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT`, `LLM_JUDGE_INCORRECT_FUNCTION_USAGE`, `LLM_JUDGE_INCORRECT_METRIC_CALCULATION`, `LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE`, `LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC`, `LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST`, `LLM_JUDGE_MISSING_JOIN`, `LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION`, `LLM_JUDGE_MISSING_OR_INCORRECT_FILTER`, `LLM_JUDGE_MISSING_OR_INCORRECT_JOIN`, `LLM_JUDGE_OTHER`, `LLM_JUDGE_SEMANTIC_ERROR`, `LLM_JUDGE_SYNTAX_ERROR`, `LLM_JUDGE_WRONG_AGGREGATION`, `LLM_JUDGE_WRONG_COLUMNS`, `LLM_JUDGE_WRONG_FILTER`, `RESULT_EXTRA_COLUMNS`, `RESULT_EXTRA_ROWS`, `RESULT_MISSING_COLUMNS`, `RESULT_MISSING_ROWS`, `SINGLE_CELL_DIFFERENCE`:
+		*f = ScoreReason(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COLUMN_TYPE_DIFFERENCE", "EMPTY_GOOD_SQL", "EMPTY_RESULT", "LLM_JUDGE_FORMATTING_ERROR", "LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT", "LLM_JUDGE_INCORRECT_FUNCTION_USAGE", "LLM_JUDGE_INCORRECT_METRIC_CALCULATION", "LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE", "LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC", "LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST", "LLM_JUDGE_MISSING_JOIN", "LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION", "LLM_JUDGE_MISSING_OR_INCORRECT_FILTER", "LLM_JUDGE_MISSING_OR_INCORRECT_JOIN", "LLM_JUDGE_OTHER", "LLM_JUDGE_SEMANTIC_ERROR", "LLM_JUDGE_SYNTAX_ERROR", "LLM_JUDGE_WRONG_AGGREGATION", "LLM_JUDGE_WRONG_COLUMNS", "LLM_JUDGE_WRONG_FILTER", "RESULT_EXTRA_COLUMNS", "RESULT_EXTRA_ROWS", "RESULT_MISSING_COLUMNS", "RESULT_MISSING_ROWS", "SINGLE_CELL_DIFFERENCE"`, v)
+	}
+}
+
+// Values returns all possible values for ScoreReason.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ScoreReason) Values() []ScoreReason {
+	return []ScoreReason{
+		ScoreReasonColumnTypeDifference,
+		ScoreReasonEmptyGoodSql,
+		ScoreReasonEmptyResult,
+		ScoreReasonLlmJudgeFormattingError,
+		ScoreReasonLlmJudgeIncompleteOrPartialOutput,
+		ScoreReasonLlmJudgeIncorrectFunctionUsage,
+		ScoreReasonLlmJudgeIncorrectMetricCalculation,
+		ScoreReasonLlmJudgeIncorrectTableOrFieldUsage,
+		ScoreReasonLlmJudgeInstructionComplianceOrMissingBusinessLogic,
+		ScoreReasonLlmJudgeMisinterpretationOfUserRequest,
+		ScoreReasonLlmJudgeMissingJoin,
+		ScoreReasonLlmJudgeMissingOrIncorrectAggregation,
+		ScoreReasonLlmJudgeMissingOrIncorrectFilter,
+		ScoreReasonLlmJudgeMissingOrIncorrectJoin,
+		ScoreReasonLlmJudgeOther,
+		ScoreReasonLlmJudgeSemanticError,
+		ScoreReasonLlmJudgeSyntaxError,
+		ScoreReasonLlmJudgeWrongAggregation,
+		ScoreReasonLlmJudgeWrongColumns,
+		ScoreReasonLlmJudgeWrongFilter,
+		ScoreReasonResultExtraColumns,
+		ScoreReasonResultExtraRows,
+		ScoreReasonResultMissingColumns,
+		ScoreReasonResultMissingRows,
+		ScoreReasonSingleCellDifference,
+	}
+}
+
+// Type always returns ScoreReason to satisfy [pflag.Value] interface
+func (f *ScoreReason) Type() string {
+	return "ScoreReason"
 }
 
 type Subscriber struct {
