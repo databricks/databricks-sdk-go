@@ -11,6 +11,7 @@ import (
 
 	"golang.org/x/oauth2"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -26,6 +27,14 @@ type AzureCliCredentials struct {
 
 func (c AzureCliCredentials) Name() string {
 	return "azure-cli"
+}
+
+// Validate implements [ValidatingStrategy.Validate].
+func (c AzureCliCredentials) Validate(_ context.Context, cfg *Config) error {
+	if cfg.Environment().Cloud != environment.CloudAzure {
+		return fmt.Errorf("%w: requires Azure, got %s", ErrInvalidCloud, cfg.Environment().Cloud)
+	}
+	return nil
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work

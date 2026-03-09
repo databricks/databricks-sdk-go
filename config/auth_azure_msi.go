@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
@@ -29,6 +30,20 @@ type AzureMsiCredentials struct {
 
 func (c AzureMsiCredentials) Name() string {
 	return "azure-msi"
+}
+
+// Validate implements [ValidatingStrategy.Validate].
+func (c AzureMsiCredentials) Validate(_ context.Context, cfg *Config) error {
+	if !cfg.AzureUseMSI {
+		return fmt.Errorf("azure_use_msi is not enabled")
+	}
+	if cfg.AzureResourceID == "" && cfg.ConfigType() == WorkspaceConfig {
+		return fmt.Errorf("azure_workspace_resource_id is required for workspace authentication")
+	}
+	if cfg.Environment().Cloud != environment.CloudAzure {
+		return fmt.Errorf("%w: requires Azure, got %s", ErrInvalidCloud, cfg.Environment().Cloud)
+	}
+	return nil
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {

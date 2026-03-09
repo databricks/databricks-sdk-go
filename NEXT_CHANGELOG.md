@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+ * Restore `NewCredentialsChain` return type to `CredentialsStrategy` interface ([#1516](https://github.com/databricks/databricks-sdk-go/pull/1516)).
+
 ### Documentation
 
 ### Internal Changes

@@ -8,6 +8,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -17,6 +18,23 @@ type AzureClientSecretCredentials struct {
 
 func (c AzureClientSecretCredentials) Name() string {
 	return "azure-client-secret"
+}
+
+// Validate implements [ValidatingStrategy.Validate].
+func (c AzureClientSecretCredentials) Validate(_ context.Context, cfg *Config) error {
+	if cfg.AzureClientID == "" {
+		return fmt.Errorf("azure_client_id is required")
+	}
+	if cfg.AzureClientSecret == "" {
+		return fmt.Errorf("azure_client_secret is required")
+	}
+	if cfg.AzureTenantID == "" {
+		return fmt.Errorf("azure_tenant_id is required")
+	}
+	if cfg.Environment().Cloud != environment.CloudAzure {
+		return fmt.Errorf("%w: requires Azure, got %s", ErrInvalidCloud, cfg.Environment().Cloud)
+	}
+	return nil
 }
 
 func (c AzureClientSecretCredentials) tokenSourceFor(
