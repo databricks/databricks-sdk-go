@@ -96,6 +96,11 @@ type PersistentAuth struct {
 	// When true, offline_access will NOT be automatically added to scopes,
 	// meaning the token will not include a refresh token.
 	disableOfflineAccess bool
+
+	// discoveryMode enables the login.databricks.com discovery flow.
+	// When true, Challenge() uses the discovery token source instead of
+	// the standard authhandler flow.
+	discoveryMode bool
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -154,6 +159,16 @@ func WithScopes(scopes []string) PersistentAuthOption {
 func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.disableOfflineAccess = disable
+	}
+}
+
+// WithDiscoveryLogin enables the login.databricks.com discovery flow.
+// When enabled, Challenge() routes through login.databricks.com instead
+// of directly to a workspace OIDC endpoint. The OAuthArgument must
+// implement DiscoveryOAuthArgument.
+func WithDiscoveryLogin() PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.discoveryMode = true
 	}
 }
 
@@ -303,6 +318,9 @@ func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) 
 // callback server listens for the redirect from the identity provider and
 // exchanges the authorization code for an access token.
 func (a *PersistentAuth) Challenge() error {
+	if a.discoveryMode {
+		return a.discoveryChallenge()
+	}
 	err := a.startListener(a.ctx)
 	if err != nil {
 		return fmt.Errorf("starting listener: %w", err)
@@ -338,6 +356,19 @@ func (a *PersistentAuth) Challenge() error {
 		return fmt.Errorf("store: %w", err)
 	}
 	return nil
+}
+
+// discoveryChallenge handles the login.databricks.com discovery flow.
+// The listener must be started before the discovery token source is invoked
+// because the challenge needs the redirect address to build the authorize URL.
+func (a *PersistentAuth) discoveryChallenge() error {
+	err := a.startListener(a.ctx)
+	if err != nil {
+		return fmt.Errorf("starting listener: %w", err)
+	}
+	defer a.Close()
+	ds := &discoveryTokenSource{pa: a}
+	return ds.challenge()
 }
 
 // startListener starts a listener on appRedirectAddr, retrying if the address

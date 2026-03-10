@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
@@ -1032,5 +1033,129 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				t.Fatalf("p.Challenge(): want no error, got %v", err)
 			}
 		})
+	}
+}
+
+func TestChallenge_Discovery(t *testing.T) {
+	// Mock token server that responds to POST /oidc/v1/token.
+	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Errorf("token server: want POST, got %s", r.Method)
+		}
+		if r.URL.Path != "/oidc/v1/token" {
+			t.Errorf("token server: want path /oidc/v1/token, got %s", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"access_token":"discovery-access-token","refresh_token":"discovery-refresh-token","token_type":"Bearer","expires_in":3600}`)
+	}))
+	defer tokenServer.Close()
+
+	// The issuer is the mock server URL + /oidc.
+	issuer := tokenServer.URL + "/oidc"
+
+	browserOpened := make(chan string, 1)
+	browserMock := func(u string) error {
+		browserOpened <- u
+		return nil
+	}
+
+	var storedKey string
+	var storedToken *oauth2.Token
+	cacheMock := &tokenCacheMock{
+		store: func(key string, tok *oauth2.Token) error {
+			storedKey = key
+			storedToken = tok
+			return nil
+		},
+	}
+
+	arg, err := NewBasicDiscoveryOAuthArgument("discovery-profile")
+	if err != nil {
+		t.Fatalf("NewBasicDiscoveryOAuthArgument(): %v", err)
+	}
+
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(cacheMock),
+		WithBrowser(browserMock),
+		WithHttpClient(tokenServer.Client()),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+		WithDiscoveryLogin(),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	errc := make(chan error, 1)
+	go func() {
+		errc <- p.Challenge()
+	}()
+
+	// Wait for browser to be called and extract state from the authorize URL.
+	var state string
+	select {
+	case authURL := <-browserOpened:
+		u, err := url.Parse(authURL)
+		if err != nil {
+			t.Fatalf("parsing auth URL: %v", err)
+		}
+		destURL := u.Query().Get("destination_url")
+		dest, err := url.Parse(destURL)
+		if err != nil {
+			t.Fatalf("parsing destination_url: %v", err)
+		}
+		state = dest.Query().Get("state")
+		if state == "" {
+			t.Fatal("state is empty in authorize URL")
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for browser to be called")
+	}
+
+	// Fire the callback with code, state, and iss.
+	callbackURL := fmt.Sprintf("http://%s?code=test-code&state=%s&iss=%s",
+		p.redirectAddr, url.QueryEscape(state), url.QueryEscape(issuer))
+	resp, err := http.Get(callbackURL)
+	if err != nil {
+		t.Fatalf("callback GET: %v", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		t.Fatalf("callback: want status 200, got %d", resp.StatusCode)
+	}
+
+	// Wait for Challenge to complete.
+	select {
+	case err := <-errc:
+		if err != nil {
+			t.Fatalf("Challenge(): %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for Challenge to complete")
+	}
+
+	// Verify token was cached under profile key.
+	if storedKey != "discovery-profile" {
+		t.Errorf("cache key = %q, want %q", storedKey, "discovery-profile")
+	}
+	if storedToken == nil {
+		t.Fatal("stored token is nil")
+	}
+	if storedToken.AccessToken != "discovery-access-token" {
+		t.Errorf("access token = %q, want %q", storedToken.AccessToken, "discovery-access-token")
+	}
+	if storedToken.RefreshToken != "discovery-refresh-token" {
+		t.Errorf("refresh token = %q, want %q", storedToken.RefreshToken, "discovery-refresh-token")
+	}
+
+	// Verify discovered host was set on the argument.
+	expectedHost, err := DeriveHostFromIssuer(issuer)
+	if err != nil {
+		t.Fatalf("DeriveHostFromIssuer(%q): %v", issuer, err)
+	}
+	if arg.GetDiscoveredHost() != expectedHost {
+		t.Errorf("discovered host = %q, want %q", arg.GetDiscoveredHost(), expectedHost)
 	}
 }

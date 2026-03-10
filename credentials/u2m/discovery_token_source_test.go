@@ -146,11 +146,11 @@ func TestBuildDiscoveryAuthorizeURL(t *testing.T) {
 	q := destParsed.Query()
 	expectations := map[string]string{
 		"client_id":             appClientID,
-		"redirect_uri":         "http://localhost:8020",
-		"response_type":        "code",
-		"scope":                "offline_access all-apis",
-		"state":                "test-state",
-		"code_challenge":       "test-challenge",
+		"redirect_uri":          "http://localhost:8020",
+		"response_type":         "code",
+		"scope":                 "offline_access all-apis",
+		"state":                 "test-state",
+		"code_challenge":        "test-challenge",
 		"code_challenge_method": "S256",
 	}
 	for key, want := range expectations {
