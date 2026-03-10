@@ -1,5 +1,15 @@
 # Version changelog
 
+## Release v0.119.0 (2026-03-09)
+
+### API Changes
+* Add [dataclassification](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataclassification) and [knowledgeassistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants) packages.
+* Add [w.DataClassification](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataclassification#DataClassificationAPI) workspace-level service.
+* Add [w.KnowledgeAssistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants#KnowledgeAssistantsAPI) workspace-level service.
+* Add `GenieCreateEvalRun`, `GenieGetEvalResultDetails`, `GenieGetEvalRun`, `GenieListEvalResults` and `GenieListEvalRuns` methods for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service.
+* Add `TelemetryExportDestinations` field for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+
+
 ## Release v0.118.0 (2026-03-05)
 
 ### Internal Changes
