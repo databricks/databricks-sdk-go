@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.115.0
+## Release v0.120.0
 
 ### Breaking Changes
 
@@ -11,6 +11,6 @@
 ### Documentation
 
 ### Internal Changes
-* Implement dynamic auth token stale period based on initial token lifetime. Increased up to 20 mins for standard OAuth with proportionally shorter periods for short-lived tokens.
+- **Auth cache**: Simplify experimental auth token refresh scheduling by replacing stale-duration/token-state tracking with an `asyncRefreshAllowedAfter` timestamp. Async refreshes now start based on a per-token dynamic lead time and, after a failed async refresh, are deferred by 1 minute before retrying while expiry still forces a blocking refresh.
 
 ### API Changes

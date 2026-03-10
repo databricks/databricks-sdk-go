@@ -6,6 +6,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/common/environment"
 )
 
+// Deprecated: Use the Cloud field and cloud-specific helper methods (IsAws, IsAzure, IsGcp)
+// instead. Environment() returns environment metadata including cloud type and Azure-specific
+// endpoints.
 func (c *Config) Environment() environment.DatabricksEnvironment {
 	// Use the provided environment if specified. Tests may configure the client with different hostnames,
 	// like localhost, which are not resolvable to a known environment, while needing to mock a specific environment.

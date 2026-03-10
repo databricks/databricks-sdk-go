@@ -210,7 +210,11 @@ type Config struct {
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers
 	HTTPTransport http.RoundTripper
 
-	// Environment override to return when resolving the current environment.
+	// Cloud is the cloud provider for this Databricks deployment (AWS, Azure, GCP, or CloudUnknown).
+	//
+	// Experimental: subject to change.
+	Cloud environment.Cloud `name:"cloud" env:"DATABRICKS_CLOUD" auth:"-"`
+
 	DatabricksEnvironment *environment.DatabricksEnvironment
 
 	// When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.
@@ -252,6 +256,13 @@ type Config struct {
 
 	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
 	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
+
+	// OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
+	// from this URL instead of the default host-type-based well-known endpoint logic.
+	// Mirrors discoveryUrl in the Java SDK.
+	//
+	// Experimental: subject to change.
+	DiscoveryURL string `name:"discovery_url" env:"DATABRICKS_DISCOVERY_URL" auth:"-"`
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to
@@ -345,16 +356,25 @@ func (c *Config) IsAzure() bool {
 	if c.AzureResourceID != "" {
 		return true
 	}
+	if c.Cloud != environment.CloudUnknown {
+		return c.Cloud == environment.CloudAzure
+	}
 	return c.Environment().Cloud == environment.CloudAzure
 }
 
 // IsGcp returns if the client is configured for Databricks on Google Cloud.
 func (c *Config) IsGcp() bool {
+	if c.Cloud != environment.CloudUnknown {
+		return c.Cloud == environment.CloudGCP
+	}
 	return c.Environment().Cloud == environment.CloudGCP
 }
 
 // IsAws returns if the client is configured for Databricks on AWS.
 func (c *Config) IsAws() bool {
+	if c.Cloud != environment.CloudUnknown {
+		return c.Cloud == environment.CloudAWS
+	}
 	return c.Host != "" && !c.IsAzure() && !c.IsGcp()
 }
 
@@ -383,6 +403,15 @@ func (c *Config) IsAccountClient() bool {
 	return false
 }
 
+// normalizedHost returns the normalized host for the client.
+// Small utility function to avoid duplicating the logic in HostType().
+func normalizedHost(host string) string {
+	if host != "" && !strings.Contains(host, "://") {
+		host = "https://" + host
+	}
+	return host
+}
+
 // HostType returns the type of host that the client is configured for.
 func (c *Config) HostType() HostType {
 	if c.Experimental_IsUnifiedHost {
@@ -394,12 +423,17 @@ func (c *Config) HostType() HostType {
 		return AccountHost
 	}
 
+	// Normalize the host to ensure the scheme is present before checking
+	// prefixes. Profiles saved without "https://" (e.g. from user input)
+	// would otherwise fail the prefix check and be misclassified as
+	// workspace hosts.
+	host := normalizedHost(c.Host)
 	accountsPrefixes := []string{
 		"https://accounts.",
 		"https://accounts-dod.",
 	}
 	for _, prefix := range accountsPrefixes {
-		if strings.HasPrefix(c.Host, prefix) {
+		if strings.HasPrefix(host, prefix) {
 			return AccountHost
 		}
 	}
@@ -602,10 +636,15 @@ func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.Respon
 }
 
 // getOidcEndpoints returns the OAuth endpoints for the current configuration.
+// If DiscoveryURL is set, endpoints are fetched directly from it. Otherwise
+// falls back to host-type-based well-known endpoint logic.
 func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
 	c.EnsureResolved()
 	oauthClient := &u2m.BasicOAuthEndpointSupplier{
 		Client: c.refreshClient,
+	}
+	if c.DiscoveryURL != "" {
+		return oauthClient.GetEndpointsFromURL(ctx, c.DiscoveryURL)
 	}
 	host := c.CanonicalHostName()
 	switch c.HostType() {
@@ -618,6 +657,55 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	default:
 		return nil, fmt.Errorf("unknown host type: %v", c.HostType())
 	}
+}
+
+// resolveHostMetadata populates missing config fields from the host's
+// /.well-known/databricks-config discovery endpoint. It back-fills AccountID,
+// WorkspaceID, Cloud, and DiscoveryURL (with any {account_id} placeholder substituted)
+// if those fields are not already set. Returns an error if AccountID cannot be
+// resolved or no oidc_endpoint is present in the metadata.
+//
+// Experimental: subject to change.
+func (c *Config) resolveHostMetadata(ctx context.Context) error {
+	if c.Host == "" {
+		return nil
+	}
+	if err := c.EnsureResolved(); err != nil {
+		return err
+	}
+	meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
+	if err != nil {
+		logger.Debugf(ctx, "Failed to fetch host metadata: %v", err)
+		return err
+	}
+	if c.AccountID == "" && meta.AccountID != "" {
+		logger.Debugf(ctx, "Resolved account_id from host metadata: %q", meta.AccountID)
+		c.AccountID = meta.AccountID
+	}
+	if c.AccountID == "" {
+		return fmt.Errorf("account_id is not configured and could not be resolved from host metadata")
+	}
+	if c.WorkspaceID == "" && meta.WorkspaceID != "" {
+		logger.Debugf(ctx, "Resolved workspace_id from host metadata: %q", meta.WorkspaceID)
+		c.WorkspaceID = meta.WorkspaceID
+	}
+	if c.Cloud == "" && meta.Cloud != environment.CloudUnknown {
+		logger.Debugf(ctx, "Resolved cloud from host metadata: %q", meta.Cloud)
+		c.Cloud = meta.Cloud
+	}
+	if c.Cloud == "" {
+		c.Cloud = c.Environment().Cloud
+		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
+	}
+	if c.DiscoveryURL == "" {
+		if meta.OIDCEndpoint == "" {
+			return fmt.Errorf("discovery_url is not configured and could not be resolved from host metadata")
+		}
+		discoveryURL := strings.ReplaceAll(meta.OIDCEndpoint, "{account_id}", c.AccountID)
+		logger.Debugf(ctx, "Resolved discovery_url from host metadata: %q", discoveryURL)
+		c.DiscoveryURL = discoveryURL
+	}
+	return nil
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {

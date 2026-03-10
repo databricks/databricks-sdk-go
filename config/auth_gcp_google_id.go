@@ -21,7 +21,7 @@ func (c GoogleDefaultCredentials) Name() string {
 }
 
 func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if cfg.GoogleServiceAccount == "" || !cfg.IsGcp() {
+	if cfg.GoogleServiceAccount == "" {
 		return nil, nil
 	}
 	inner, err := c.idTokenSource(ctx, cfg.Host, cfg.GoogleServiceAccount, c.opts...)

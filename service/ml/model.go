@@ -1009,12 +1009,39 @@ type DeleteWebhookRequest struct {
 }
 
 type DeltaTableSource struct {
+	// Schema of the resulting dataframe after transformations, in Spark
+	// StructType JSON format (from df.schema.json()). Required if
+	// transformation_sql is specified. Example:
+	// {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
+	// Deprecated: Use Feature.entity instead. Kept for backwards compatibility.
 	// The entity columns of the Delta table.
 	EntityColumns []string `json:"entity_columns"`
+	// Single WHERE clause to filter delta table before applying
+	// transformations. Will be row-wise evaluated, so should only include
+	// conditionals and projections.
+	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part (catalog, schema, table) name of the Delta table.
 	FullName string `json:"full_name"`
-	// The timeseries column of the Delta table.
+	// Deprecated: Use Feature.timeseries_column instead. Kept for backwards
+	// compatibility. The timeseries column of the Delta table.
 	TimeseriesColumn string `json:"timeseries_column"`
+	// A single SQL SELECT expression applied after filter_condition. Should
+	// contains all the columns needed (eg. "SELECT *, col_a + col_b AS col_c
+	// FROM x.y.z WHERE col_a > 0" would have `transformation_sql` "*, col_a +
+	// col_b AS col_c") If transformation_sql is not provided, all columns of
+	// the delta table are present in the DataSource dataframe.
+	TransformationSql string `json:"transformation_sql,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeltaTableSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // An experiment and its metadata.
@@ -1210,24 +1237,30 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 type Feature struct {
 	// The description of the feature.
 	Description string `json:"description,omitempty"`
+	// Deprecated: Use DeltaTableSource.filter_condition or
+	// KafkaSource.filter_condition instead. Kept for backwards compatibility.
 	// The filter condition applied to the source data before aggregation.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part name (catalog, schema, name) of the feature.
 	FullName string `json:"full_name"`
 	// The function by which the feature is computed.
 	Function Function `json:"function"`
-	// The input columns from which the feature is computed.
+	// Deprecated: Use AggregationFunction.inputs instead. Kept for backwards
+	// compatibility. The input columns from which the feature is computed.
 	Inputs []string `json:"inputs"`
-	// WARNING: This field is primarily intended for internal use by Databricks
-	// systems and is automatically populated when features are created through
-	// Databricks notebooks or jobs. Users should not manually set this field as
-	// incorrect values may lead to inaccurate lineage tracking or unexpected
-	// behavior. This field will be set by feature-engineering client and should
-	// be left unset by SDK and terraform users.
+	// Lineage context information for this feature. WARNING: This field is
+	// primarily intended for internal use by Databricks systems and is
+	// automatically populated when features are created through Databricks
+	// notebooks or jobs. Users should not manually set this field as incorrect
+	// values may lead to inaccurate lineage tracking or unexpected behavior.
+	// This field will be set by feature-engineering client and should be left
+	// unset by SDK and terraform users.
 	LineageContext *LineageContext `json:"lineage_context,omitempty"`
 	// The data source of the feature.
 	Source DataSource `json:"source"`
-	// The time window in which the feature is computed.
+	// Deprecated: Use Function.aggregation_function.time_window instead. Kept
+	// for backwards compatibility. The time window in which the feature is
+	// computed.
 	TimeWindow *TimeWindow `json:"time_window,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1423,12 +1456,18 @@ func (f *ForecastingExperimentState) Type() string {
 }
 
 type Function struct {
-	// Extra parameters for parameterized functions.
+	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
+	// for backwards compatibility. Extra parameters for parameterized
+	// functions.
 	ExtraParameters []FunctionExtraParameter `json:"extra_parameters,omitempty"`
-	// The type of the function.
+	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
+	// for backwards compatibility. The type of the function.
 	FunctionType FunctionFunctionType `json:"function_type"`
 }
 
+// Deprecated: Use typed fields on function-specific messages (e.g.
+// ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter
+// instead. Kept for backwards compatibility.
 type FunctionExtraParameter struct {
 	// The name of the parameter.
 	Key string `json:"key"`
@@ -1436,6 +1475,9 @@ type FunctionExtraParameter struct {
 	Value string `json:"value"`
 }
 
+// Deprecated: Use the function-specific messages in
+// AggregationFunction.function_type oneof instead. Kept for backwards
+// compatibility.
 type FunctionFunctionType string
 
 const FunctionFunctionTypeApproxCountDistinct FunctionFunctionType = `APPROX_COUNT_DISTINCT`
@@ -1884,12 +1926,14 @@ type KafkaConfig struct {
 }
 
 type KafkaSource struct {
+	// Deprecated: Use Feature.entity instead. Kept for backwards compatibility.
 	// The entity column identifiers of the Kafka source.
 	EntityColumnIdentifiers []ColumnIdentifier `json:"entity_column_identifiers"`
 	// Name of the Kafka source, used to identify it. This is used to look up
 	// the corresponding KafkaConfig object. Can be distinct from topic name.
 	Name string `json:"name"`
-	// The timeseries column identifier of the Kafka source.
+	// Deprecated: Use Feature.timeseries_column instead. Kept for backwards
+	// compatibility. The timeseries column identifier of the Kafka source.
 	TimeseriesColumnIdentifier ColumnIdentifier `json:"timeseries_column_identifier"`
 }
 

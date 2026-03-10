@@ -65,6 +65,8 @@ type App struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// Name of the space this app belongs to.
 	Space string `json:"space,omitempty"`
+
+	TelemetryExportDestinations []TelemetryExportDestination `json:"telemetry_export_destinations,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The email of the user that last updated the app.
@@ -782,6 +784,8 @@ type AppResource struct {
 	// Name of the App Resource.
 	Name string `json:"name"`
 
+	Postgres *AppResourcePostgres `json:"postgres,omitempty"`
+
 	Secret *AppResourceSecret `json:"secret,omitempty"`
 
 	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
@@ -992,6 +996,58 @@ func (f *AppResourceJobJobPermission) Values() []AppResourceJobJobPermission {
 // Type always returns AppResourceJobJobPermission to satisfy [pflag.Value] interface
 func (f *AppResourceJobJobPermission) Type() string {
 	return "AppResourceJobJobPermission"
+}
+
+type AppResourcePostgres struct {
+	Branch string `json:"branch,omitempty"`
+
+	Database string `json:"database,omitempty"`
+
+	Permission AppResourcePostgresPostgresPermission `json:"permission,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppResourcePostgres) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppResourcePostgres) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppResourcePostgresPostgresPermission string
+
+const AppResourcePostgresPostgresPermissionCanConnectAndCreate AppResourcePostgresPostgresPermission = `CAN_CONNECT_AND_CREATE`
+
+// String representation for [fmt.Print]
+func (f *AppResourcePostgresPostgresPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourcePostgresPostgresPermission) Set(v string) error {
+	switch v {
+	case `CAN_CONNECT_AND_CREATE`:
+		*f = AppResourcePostgresPostgresPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_CONNECT_AND_CREATE"`, v)
+	}
+}
+
+// Values returns all possible values for AppResourcePostgresPostgresPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourcePostgresPostgresPermission) Values() []AppResourcePostgresPostgresPermission {
+	return []AppResourcePostgresPostgresPermission{
+		AppResourcePostgresPostgresPermissionCanConnectAndCreate,
+	}
+}
+
+// Type always returns AppResourcePostgresPostgresPermission to satisfy [pflag.Value] interface
+func (f *AppResourcePostgresPostgresPermission) Type() string {
+	return "AppResourcePostgresPostgresPermission"
 }
 
 type AppResourceSecret struct {
@@ -2204,10 +2260,6 @@ type Space struct {
 	// alphanumeric characters and hyphens. It must be unique within the
 	// workspace.
 	Name string `json:"name"`
-	// The OAuth2 app client ID for the app space.
-	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
-	// The OAuth2 app integration ID for the app space.
-	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
 	// Resources for the app space. Resources configured at the space level are
 	// available to all apps in the space.
 	Resources []AppResource `json:"resources,omitempty"`
@@ -2396,6 +2448,21 @@ type StartAppRequest struct {
 type StopAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
+}
+
+// A single telemetry export destination with its configuration and status.
+type TelemetryExportDestination struct {
+	UnityCatalog *UnityCatalog `json:"unity_catalog,omitempty"`
+}
+
+// Unity Catalog Destinations for OTEL telemetry export.
+type UnityCatalog struct {
+	// Unity Catalog table for OTEL logs.
+	LogsTable string `json:"logs_table"`
+	// Unity Catalog table for OTEL metrics.
+	MetricsTable string `json:"metrics_table"`
+	// Unity Catalog table for OTEL traces (spans).
+	TracesTable string `json:"traces_table"`
 }
 
 type UpdateAppRequest struct {
