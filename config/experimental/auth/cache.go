@@ -96,7 +96,7 @@ func NewCachedTokenSource(ts TokenSource, opts ...Option) TokenSource {
 	// after which async refreshes may be attempted based on the token TTL
 	// available at construction time.
 	if cts.cachedToken != nil {
-		cts.updateAsyncRefreshAllowedAfter()
+		cts.updateNextAsyncRefresh()
 	}
 
 	return cts
@@ -109,11 +109,11 @@ type cachedTokenSource struct {
 	// If true, only refresh the token with a blocking call when it is expired.
 	disableAsync bool
 
-	// Time after which async refreshes may be attempted for cachedToken. This
-	// is computed from the token TTL at the moment the token is cached. If an
+	// Earliest time when an async refresh may be attempted for cachedToken.
+	// Computed from the token TTL at the moment the token is cached. If an
 	// async refresh fails, this timestamp is pushed forward by
 	// asyncRefreshRetryBackoff to delay the next retry.
-	asyncRefreshAllowedAfter time.Time
+	nextAsyncRefresh time.Time
 
 	mu          sync.Mutex
 	cachedToken *oauth2.Token
@@ -134,17 +134,17 @@ func (cts *cachedTokenSource) Token(ctx context.Context) (*oauth2.Token, error) 
 	return cts.asyncToken(ctx)
 }
 
-// updateAsyncRefreshAllowedAfter recomputes the time after which async
-// refreshes may be attempted from the current cachedToken's TTL. It must be
-// called immediately after cachedToken is set. When called on a shared
-// instance (after construction), the lock must be held.
-func (cts *cachedTokenSource) updateAsyncRefreshAllowedAfter() {
+// updateNextAsyncRefresh recomputes nextAsyncRefresh from the current
+// cachedToken's TTL. It must be called immediately after cachedToken is set.
+// When called on a shared instance (after construction), the lock must be
+// held.
+func (cts *cachedTokenSource) updateNextAsyncRefresh() {
 	if cts.cachedToken == nil || cts.cachedToken.Expiry.IsZero() {
-		cts.asyncRefreshAllowedAfter = time.Time{}
+		cts.nextAsyncRefresh = time.Time{}
 		return
 	}
 	ttl := cts.cachedToken.Expiry.Sub(cts.timeNow())
-	cts.asyncRefreshAllowedAfter = cts.cachedToken.Expiry.Add(-computeAsyncRefreshLeadTime(ttl))
+	cts.nextAsyncRefresh = cts.cachedToken.Expiry.Add(-computeAsyncRefreshLeadTime(ttl))
 }
 
 // tokenExpired reports whether the current token is missing or unusable. The
@@ -166,7 +166,7 @@ func (cts *cachedTokenSource) canRefreshAsync() bool {
 	if cts.cachedToken == nil || cts.cachedToken.Expiry.IsZero() {
 		return false
 	}
-	return cts.timeNow().After(cts.asyncRefreshAllowedAfter)
+	return cts.timeNow().After(cts.nextAsyncRefresh)
 }
 
 func (cts *cachedTokenSource) asyncToken(ctx context.Context) (*oauth2.Token, error) {
@@ -204,7 +204,7 @@ func (cts *cachedTokenSource) blockingToken(ctx context.Context) (*oauth2.Token,
 		return nil, err
 	}
 	cts.cachedToken = t
-	cts.updateAsyncRefreshAllowedAfter()
+	cts.updateNextAsyncRefresh()
 	return t, nil
 }
 
@@ -217,7 +217,7 @@ func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 
 	cts.isRefreshing = true
 	go func() {
-		refreshCtx, cancel := context.WithTimeout(ctx, asyncRefreshTimeout)
+		refreshCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), asyncRefreshTimeout)
 		defer cancel()
 
 		t, err := cts.tokenSource.Token(refreshCtx)
@@ -226,10 +226,15 @@ func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 		defer cts.mu.Unlock()
 		cts.isRefreshing = false
 		if err != nil {
-			cts.asyncRefreshAllowedAfter = cts.timeNow().Add(asyncRefreshRetryBackoff)
+			cts.nextAsyncRefresh = cts.timeNow().Add(asyncRefreshRetryBackoff)
+			return
+		}
+		// Skip the update if a blocking refresh cached a newer token while
+		// this async refresh was in flight.
+		if cts.cachedToken != nil && !cts.cachedToken.Expiry.IsZero() && t.Expiry.Before(cts.cachedToken.Expiry) {
 			return
 		}
 		cts.cachedToken = t
-		cts.updateAsyncRefreshAllowedAfter()
+		cts.updateNextAsyncRefresh()
 	}()
 }

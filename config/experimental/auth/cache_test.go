@@ -49,8 +49,8 @@ func TestNewCachedTokenSource_default(t *testing.T) {
 		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
 	}
 
-	if !got.asyncRefreshAllowedAfter.IsZero() {
-		t.Errorf("NewCachedTokenSource() asyncRefreshAllowedAfter = %v, want zero value", got.asyncRefreshAllowedAfter)
+	if !got.nextAsyncRefresh.IsZero() {
+		t.Errorf("NewCachedTokenSource() nextAsyncRefresh = %v, want zero value", got.nextAsyncRefresh)
 	}
 	if got.disableAsync != false {
 		t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, false)
@@ -86,7 +86,7 @@ func TestNewCachedTokenSource_options(t *testing.T) {
 	}
 }
 
-func TestCachedTokenSource_updateAsyncRefreshAllowedAfter(t *testing.T) {
+func TestCachedTokenSource_updateNextAsyncRefresh(t *testing.T) {
 	now := time.Unix(1337, 0)
 
 	testCases := []struct {
@@ -120,11 +120,11 @@ func TestCachedTokenSource_updateAsyncRefreshAllowedAfter(t *testing.T) {
 				timeNow: func() time.Time { return now },
 			}
 
-			cts.updateAsyncRefreshAllowedAfter()
+			cts.updateNextAsyncRefresh()
 
 			want := now.Add(tc.wantAllowedAfter)
-			if cts.asyncRefreshAllowedAfter != want {
-				t.Errorf("asyncRefreshAllowedAfter = %v, want %v", cts.asyncRefreshAllowedAfter, want)
+			if cts.nextAsyncRefresh != want {
+				t.Errorf("nextAsyncRefresh = %v, want %v", cts.nextAsyncRefresh, want)
 			}
 		})
 	}
@@ -193,10 +193,10 @@ func TestCachedTokenSource_canRefreshAsync(t *testing.T) {
 	now := time.Unix(1337, 0) // mock value for time.Now()
 
 	testCases := []struct {
-		name                     string
-		token                    *oauth2.Token
-		asyncRefreshAllowedAfter time.Time
-		want                     bool
+		name             string
+		token            *oauth2.Token
+		nextAsyncRefresh time.Time
+		want             bool
 	}{
 		{
 			name: "nil token",
@@ -214,33 +214,33 @@ func TestCachedTokenSource_canRefreshAsync(t *testing.T) {
 			token: &oauth2.Token{
 				Expiry: now.Add(1 * time.Hour),
 			},
-			asyncRefreshAllowedAfter: now.Add(1 * time.Minute),
-			want:                     false,
+			nextAsyncRefresh: now.Add(1 * time.Minute),
+			want:             false,
 		},
 		{
 			name: "exactly at async refresh boundary",
 			token: &oauth2.Token{
 				Expiry: now.Add(1 * time.Hour),
 			},
-			asyncRefreshAllowedAfter: now,
-			want:                     false,
+			nextAsyncRefresh: now,
+			want:             false,
 		},
 		{
 			name: "after async refresh boundary",
 			token: &oauth2.Token{
 				Expiry: now.Add(1 * time.Hour),
 			},
-			asyncRefreshAllowedAfter: now.Add(-1 * time.Second),
-			want:                     true,
+			nextAsyncRefresh: now.Add(-1 * time.Second),
+			want:             true,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			cts := &cachedTokenSource{
-				cachedToken:              tc.token,
-				asyncRefreshAllowedAfter: tc.asyncRefreshAllowedAfter,
-				timeNow:                  func() time.Time { return now },
+				cachedToken:      tc.token,
+				nextAsyncRefresh: tc.nextAsyncRefresh,
+				timeNow:          func() time.Time { return now },
 			}
 
 			got := cts.canRefreshAsync()
@@ -287,9 +287,9 @@ func TestCachedTokenSource_AsyncRefreshRetry(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			gotCalls := int32(0)
 			cts := &cachedTokenSource{
-				cachedToken:              currentToken,
-				asyncRefreshAllowedAfter: failTime.Add(asyncRefreshRetryBackoff),
-				timeNow:                  func() time.Time { return tc.now },
+				cachedToken:      currentToken,
+				nextAsyncRefresh: failTime.Add(asyncRefreshRetryBackoff),
+				timeNow:          func() time.Time { return tc.now },
 				tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 					atomic.AddInt32(&gotCalls, 1)
 					return refreshedToken, nil
@@ -320,10 +320,10 @@ func TestCachedTokenSource_Token(t *testing.T) {
 	now := time.Unix(1337, 0) // mock value for time.Now()
 	nTokenCalls := 10         // number of goroutines calling Token()
 	testCases := []struct {
-		desc                     string        // description of the test case
-		cachedToken              *oauth2.Token // token cached before calling Token()
-		disableAsync             bool          // whether async refreshes are disabled
-		asyncRefreshAllowedAfter time.Time     // time after which async refreshes may be attempted
+		desc             string        // description of the test case
+		cachedToken      *oauth2.Token // token cached before calling Token()
+		disableAsync     bool          // whether async refreshes are disabled
+		nextAsyncRefresh time.Time     // time after which async refreshes may be attempted
 
 		returnedToken *oauth2.Token // token returned by the token source
 		returnedError error         // error returned by the token source
@@ -388,35 +388,35 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
-			desc:                     "[Async] fresh cached token",
-			cachedToken:              &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
-			asyncRefreshAllowedAfter: now.Add(1 * time.Minute),
-			wantCalls:                0,
-			wantToken:                &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
+			desc:             "[Async] fresh cached token",
+			cachedToken:      &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
+			nextAsyncRefresh: now.Add(1 * time.Minute),
+			wantCalls:        0,
+			wantToken:        &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
-			desc:                     "[Async] stale cached token",
-			cachedToken:              &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
-			asyncRefreshAllowedAfter: now.Add(-1 * time.Second),
-			returnedToken:            &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
-			wantCalls:                1,
-			wantToken:                &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
+			desc:             "[Async] stale cached token",
+			cachedToken:      &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
+			nextAsyncRefresh: now.Add(-1 * time.Second),
+			returnedToken:    &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
+			wantCalls:        1,
+			wantToken:        &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
-			desc:                     "[Async] refresh error",
-			cachedToken:              &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
-			asyncRefreshAllowedAfter: now.Add(-1 * time.Second),
-			returnedError:            fmt.Errorf("test error"),
-			wantCalls:                1,
-			wantToken:                &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
+			desc:             "[Async] refresh error",
+			cachedToken:      &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
+			nextAsyncRefresh: now.Add(-1 * time.Second),
+			returnedError:    fmt.Errorf("test error"),
+			wantCalls:        1,
+			wantToken:        &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 		},
 		{
-			desc:                     "[Async] stale cached token, expired token returned",
-			cachedToken:              &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
-			asyncRefreshAllowedAfter: now.Add(-1 * time.Second),
-			returnedToken:            &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
-			wantCalls:                1,
-			wantToken:                &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
+			desc:             "[Async] stale cached token, expired token returned",
+			cachedToken:      &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
+			nextAsyncRefresh: now.Add(-1 * time.Second),
+			returnedToken:    &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
+			wantCalls:        1,
+			wantToken:        &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 		},
 		{
 			desc:          "[Async] recover from error",
@@ -431,10 +431,10 @@ func TestCachedTokenSource_Token(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			gotCalls := int32(0)
 			cts := &cachedTokenSource{
-				disableAsync:             tc.disableAsync,
-				cachedToken:              tc.cachedToken,
-				asyncRefreshAllowedAfter: tc.asyncRefreshAllowedAfter,
-				timeNow:                  func() time.Time { return now },
+				disableAsync:     tc.disableAsync,
+				cachedToken:      tc.cachedToken,
+				nextAsyncRefresh: tc.nextAsyncRefresh,
+				timeNow:          func() time.Time { return now },
 				tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 					atomic.AddInt32(&gotCalls, 1)
 					time.Sleep(10 * time.Millisecond)
@@ -465,15 +465,15 @@ func TestCachedTokenSource_Token(t *testing.T) {
 	}
 }
 
-func TestCachedTokenSource_BlockingRefreshUpdatesAsyncRefreshAllowedAfter(t *testing.T) {
+func TestCachedTokenSource_BlockingRefreshUpdatesNextAsyncRefresh(t *testing.T) {
 	now := time.Unix(1337, 0)
 	refreshedToken := &oauth2.Token{Expiry: now.Add(1 * time.Hour)}
 
 	cts := &cachedTokenSource{
-		disableAsync:             true,
-		asyncRefreshAllowedAfter: now.Add(-2 * time.Minute),
-		timeNow:                  func() time.Time { return now },
-		cachedToken:              &oauth2.Token{Expiry: now.Add(-1 * time.Second)}, // expired
+		disableAsync:     true,
+		nextAsyncRefresh: now.Add(-2 * time.Minute),
+		timeNow:          func() time.Time { return now },
+		cachedToken:      &oauth2.Token{Expiry: now.Add(-1 * time.Second)}, // expired
 		tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 			return refreshedToken, nil
 		}),
@@ -485,7 +485,47 @@ func TestCachedTokenSource_BlockingRefreshUpdatesAsyncRefreshAllowedAfter(t *tes
 	}
 
 	want := refreshedToken.Expiry.Add(-maxAsyncRefreshLeadTime)
-	if cts.asyncRefreshAllowedAfter != want {
-		t.Errorf("asyncRefreshAllowedAfter = %v, want %v", cts.asyncRefreshAllowedAfter, want)
+	if cts.nextAsyncRefresh != want {
+		t.Errorf("nextAsyncRefresh = %v, want %v", cts.nextAsyncRefresh, want)
+	}
+}
+
+func TestCachedTokenSource_AsyncRefreshSkipsOlderToken(t *testing.T) {
+	now := time.Unix(1337, 0)
+	// Simulate a blocking refresh that cached a fresh token while an async
+	// refresh was in flight. The async goroutine should not overwrite the
+	// fresher cached token with its older result.
+	cachedToken := &oauth2.Token{
+		AccessToken: "fresh-from-blocking",
+		Expiry:      now.Add(1 * time.Hour),
+	}
+	olderToken := &oauth2.Token{
+		AccessToken: "stale-from-async",
+		Expiry:      now.Add(30 * time.Minute),
+	}
+
+	cts := &cachedTokenSource{
+		cachedToken:      &oauth2.Token{AccessToken: "original", Expiry: now.Add(2 * time.Minute)},
+		nextAsyncRefresh: now.Add(-1 * time.Second),
+		timeNow:          func() time.Time { return now },
+	}
+	cts.tokenSource = TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		// Simulate blocking refresh completing first by swapping in the
+		// fresh token before this goroutine returns.
+		cts.mu.Lock()
+		cts.cachedToken = cachedToken
+		cts.mu.Unlock()
+		return olderToken, nil
+	})
+
+	_, err := cts.Token(context.Background())
+	if err != nil {
+		t.Fatalf("Token() error = %v", err)
+	}
+
+	waitForAsyncRefreshToComplete(t, cts)
+
+	if cts.cachedToken != cachedToken {
+		t.Errorf("cachedToken = %v, want %v (fresher token from blocking refresh)", cts.cachedToken, cachedToken)
 	}
 }
