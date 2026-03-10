@@ -54,6 +54,11 @@ func TestDeriveHostFromIssuer(t *testing.T) {
 			issuer: "http://127.0.0.1:12345/oidc",
 			want:   "http://127.0.0.1:12345",
 		},
+		{
+			name:    "http non-local host rejected",
+			issuer:  "http://127.0.0.1.attacker.tld/oidc",
+			wantErr: true,
+		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -183,12 +188,10 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 		return nil
 	}
 
-	var storedKey string
-	var storedToken *oauth2.Token
+	storedTokens := map[string]*oauth2.Token{}
 	cacheMock := &tokenCacheMock{
 		store: func(key string, tok *oauth2.Token) error {
-			storedKey = key
-			storedToken = tok
+			storedTokens[key] = tok
 			return nil
 		},
 	}
@@ -205,6 +208,7 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 		WithHttpClient(tokenServer.Client()),
 		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
 		WithOAuthArgument(arg),
+		WithDiscoveryLogin(),
 	)
 	if err != nil {
 		t.Fatalf("NewPersistentAuth(): %v", err)
@@ -267,20 +271,6 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 		t.Fatal("timed out waiting for challenge to complete")
 	}
 
-	// Verify token was cached under profile key.
-	if storedKey != "test-profile" {
-		t.Errorf("cache key = %q, want %q", storedKey, "test-profile")
-	}
-	if storedToken == nil {
-		t.Fatal("stored token is nil")
-	}
-	if storedToken.AccessToken != "test-access-token" {
-		t.Errorf("access token = %q, want %q", storedToken.AccessToken, "test-access-token")
-	}
-	if storedToken.RefreshToken != "test-refresh-token" {
-		t.Errorf("refresh token = %q, want %q", storedToken.RefreshToken, "test-refresh-token")
-	}
-
 	// Verify discovered host was set.
 	expectedHost, err := DeriveHostFromIssuer(issuer)
 	if err != nil {
@@ -288,5 +278,20 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 	}
 	if arg.GetDiscoveredHost() != expectedHost {
 		t.Errorf("discovered host = %q, want %q", arg.GetDiscoveredHost(), expectedHost)
+	}
+	if len(storedTokens) != 2 {
+		t.Fatalf("store count: want 2 keys (profile and host), got %d", len(storedTokens))
+	}
+	for _, key := range []string{"test-profile", expectedHost} {
+		storedToken := storedTokens[key]
+		if storedToken == nil {
+			t.Fatalf("stored token for key %q is nil", key)
+		}
+		if storedToken.AccessToken != "test-access-token" {
+			t.Errorf("access token for key %q = %q, want %q", key, storedToken.AccessToken, "test-access-token")
+		}
+		if storedToken.RefreshToken != "test-refresh-token" {
+			t.Errorf("refresh token for key %q = %q, want %q", key, storedToken.RefreshToken, "test-refresh-token")
+		}
 	}
 }

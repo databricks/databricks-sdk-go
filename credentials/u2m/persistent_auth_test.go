@@ -1059,12 +1059,10 @@ func TestChallenge_Discovery(t *testing.T) {
 		return nil
 	}
 
-	var storedKey string
-	var storedToken *oauth2.Token
+	storedTokens := map[string]*oauth2.Token{}
 	cacheMock := &tokenCacheMock{
 		store: func(key string, tok *oauth2.Token) error {
-			storedKey = key
-			storedToken = tok
+			storedTokens[key] = tok
 			return nil
 		},
 	}
@@ -1136,20 +1134,6 @@ func TestChallenge_Discovery(t *testing.T) {
 		t.Fatal("timed out waiting for Challenge to complete")
 	}
 
-	// Verify token was cached under profile key.
-	if storedKey != "discovery-profile" {
-		t.Errorf("cache key = %q, want %q", storedKey, "discovery-profile")
-	}
-	if storedToken == nil {
-		t.Fatal("stored token is nil")
-	}
-	if storedToken.AccessToken != "discovery-access-token" {
-		t.Errorf("access token = %q, want %q", storedToken.AccessToken, "discovery-access-token")
-	}
-	if storedToken.RefreshToken != "discovery-refresh-token" {
-		t.Errorf("refresh token = %q, want %q", storedToken.RefreshToken, "discovery-refresh-token")
-	}
-
 	// Verify discovered host was set on the argument.
 	expectedHost, err := DeriveHostFromIssuer(issuer)
 	if err != nil {
@@ -1157,5 +1141,20 @@ func TestChallenge_Discovery(t *testing.T) {
 	}
 	if arg.GetDiscoveredHost() != expectedHost {
 		t.Errorf("discovered host = %q, want %q", arg.GetDiscoveredHost(), expectedHost)
+	}
+	if len(storedTokens) != 2 {
+		t.Fatalf("store count: want 2 keys (profile and host), got %d", len(storedTokens))
+	}
+	for _, key := range []string{"discovery-profile", expectedHost} {
+		storedToken := storedTokens[key]
+		if storedToken == nil {
+			t.Fatalf("stored token for key %q is nil", key)
+		}
+		if storedToken.AccessToken != "discovery-access-token" {
+			t.Errorf("access token for key %q = %q, want %q", key, storedToken.AccessToken, "discovery-access-token")
+		}
+		if storedToken.RefreshToken != "discovery-refresh-token" {
+			t.Errorf("refresh token for key %q = %q, want %q", key, storedToken.RefreshToken, "discovery-refresh-token")
+		}
 	}
 }

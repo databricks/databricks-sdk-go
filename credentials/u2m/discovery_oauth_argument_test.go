@@ -2,6 +2,7 @@ package u2m
 
 import (
 	"context"
+	"strings"
 	"testing"
 )
 
@@ -46,16 +47,52 @@ func TestDiscoveryOAuthArgument_ConstructorRejectsEmptyProfile(t *testing.T) {
 	}
 }
 
-func TestDiscoveryOAuthArgument_NewPersistentAuthAcceptsIt(t *testing.T) {
+func TestDiscoveryOAuthArgument_NewPersistentAuthRequiresDiscoveryLogin(t *testing.T) {
 	arg, err := NewBasicDiscoveryOAuthArgument("discovery-profile")
 	if err != nil {
 		t.Fatalf("NewBasicDiscoveryOAuthArgument(): want no error, got %v", err)
 	}
-	p, err := NewPersistentAuth(context.Background(), WithOAuthArgument(arg))
+	_, err = NewPersistentAuth(context.Background(), WithOAuthArgument(arg))
+	if err == nil {
+		t.Fatal("NewPersistentAuth(): want error for DiscoveryOAuthArgument without WithDiscoveryLogin, got nil")
+	}
+	if !strings.Contains(err.Error(), "requires WithDiscoveryLogin") {
+		t.Fatalf("NewPersistentAuth(): want discovery login requirement error, got %v", err)
+	}
+}
+
+func TestDiscoveryOAuthArgument_NewPersistentAuthAcceptsItWithDiscoveryLogin(t *testing.T) {
+	arg, err := NewBasicDiscoveryOAuthArgument("discovery-profile")
+	if err != nil {
+		t.Fatalf("NewBasicDiscoveryOAuthArgument(): want no error, got %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithOAuthArgument(arg),
+		WithDiscoveryLogin(),
+	)
 	if err != nil {
 		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
 	}
 	defer p.Close()
+}
+
+func TestDiscoveryOAuthArgument_DiscoveryLoginRejectsNonDiscoveryArgument(t *testing.T) {
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+	}
+	_, err = NewPersistentAuth(
+		context.Background(),
+		WithOAuthArgument(arg),
+		WithDiscoveryLogin(),
+	)
+	if err == nil {
+		t.Fatal("NewPersistentAuth(): want error for discovery login without DiscoveryOAuthArgument, got nil")
+	}
+	if !strings.Contains(err.Error(), "discovery login requires DiscoveryOAuthArgument") {
+		t.Fatalf("NewPersistentAuth(): want discovery login validation error, got %v", err)
+	}
 }
 
 type unsupportedOAuthArgument struct{}

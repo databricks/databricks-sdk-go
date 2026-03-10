@@ -26,7 +26,7 @@ func DeriveHostFromIssuer(issuer string) (string, error) {
 		return "", fmt.Errorf("parsing issuer URL %q: %w", issuer, err)
 	}
 	// Allow http for localhost (consistent with validateHost in workspace_oauth_argument.go).
-	if u.Scheme == "http" && strings.HasPrefix(u.Host, "127.0.0.1") {
+	if u.Scheme == "http" && u.Hostname() == "127.0.0.1" {
 		// ok
 	} else if u.Scheme != "https" {
 		return "", fmt.Errorf("issuer must use https scheme: %q", issuer)
@@ -101,14 +101,7 @@ func (d *discoveryTokenSource) challenge() error {
 		return fmt.Errorf("state and pkce: %w", err)
 	}
 
-	// Determine scopes: same logic as oauth2Config().
-	scopes := d.pa.scopes
-	if len(scopes) == 0 {
-		scopes = []string{"all-apis"}
-	}
-	if !d.pa.disableOfflineAccess {
-		scopes = append([]string{"offline_access"}, scopes...)
-	}
+	scopes := d.pa.resolveScopes()
 
 	pkce := PKCEParams{
 		Challenge:       authPKCE.Challenge,
@@ -152,13 +145,14 @@ func (d *discoveryTokenSource) challenge() error {
 		return fmt.Errorf("token exchange: %w", err)
 	}
 
-	// Store discovered host on the argument.
-	if discoveryArg, ok := d.pa.oAuthArgument.(DiscoveryOAuthArgument); ok {
-		discoveryArg.SetDiscoveredHost(host)
+	discoveryArg, ok := d.pa.oAuthArgument.(DiscoveryOAuthArgument)
+	if !ok {
+		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", d.pa.oAuthArgument)
 	}
+	discoveryArg.SetDiscoveredHost(host)
 
-	// Cache the token.
-	if err := d.pa.cache.Store(d.pa.oAuthArgument.GetCacheKey(), token); err != nil {
+	// Cache the token using both the profile key and the discovered host key.
+	if err := d.pa.dualWrite(token); err != nil {
 		return fmt.Errorf("storing token: %w", err)
 	}
 	return nil

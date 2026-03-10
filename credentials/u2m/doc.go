@@ -14,6 +14,11 @@ an account- or workspace-level host. Account-level endpoints are fixed based on 
 ID and host, while workspace-level endpoints are discovered using the OIDC discovery endpoint
 at /oidc/.well-known/oauth-authorization-server.
 
+For host-agnostic login through login.databricks.com, use WithDiscoveryLogin together with a
+DiscoveryOAuthArgument during Challenge(). This is a bootstrap flow only. Once the callback
+reveals the workspace host, construct the usual host-based OAuthArgument for future
+PersistentAuth instances.
+
 To trigger the authorization flow, construct a PersistentAuth object and call the
 Challenge() method:
 

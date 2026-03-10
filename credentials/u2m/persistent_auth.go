@@ -164,8 +164,12 @@ func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
 
 // WithDiscoveryLogin enables the login.databricks.com discovery flow.
 // When enabled, Challenge() routes through login.databricks.com instead
-// of directly to a workspace OIDC endpoint. The OAuthArgument must
-// implement DiscoveryOAuthArgument.
+// of directly to a workspace OIDC endpoint.
+//
+// This option is only valid with [DiscoveryOAuthArgument], which is a
+// bootstrap-only argument type for discovery login. Once the workspace host
+// has been discovered, callers should construct the usual host-based
+// OAuthArgument for future PersistentAuth instances.
 func WithDiscoveryLogin() PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.discoveryMode = true
@@ -224,18 +228,16 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	key := a.oAuthArgument.GetCacheKey()
 	t, err = a.cache.Lookup(key)
 	if errors.Is(err, cache.ErrNotFound) {
-		if hcp, ok := a.oAuthArgument.(HostCacheKeyProvider); ok {
-			hostKey := hcp.GetHostCacheKey()
-			if hostKey != key {
-				t, err = a.cache.Lookup(hostKey)
-				if err == nil {
-					// Return the host-keyed token so the caller isn't blocked,
-					// but don't migrate it to the profile key. The host key may
-					// contain a token from a different profile with different
-					// scopes. The next `auth login --profile` will write the
-					// correct token under the profile key.
-					logger.Debugf(a.ctx, "token cache: profile key %q not found, using legacy host key %q (run 'databricks auth login --profile <name>' to migrate)", key, hostKey)
-				}
+		hostKey := a.hostCacheKey()
+		if hostKey != "" && hostKey != key {
+			t, err = a.cache.Lookup(hostKey)
+			if err == nil {
+				// Return the host-keyed token so the caller isn't blocked,
+				// but don't migrate it to the profile key. The host key may
+				// contain a token from a different profile with different
+				// scopes. The next `auth login --profile` will write the
+				// correct token under the profile key.
+				logger.Debugf(a.ctx, "token cache: profile key %q not found, using legacy host key %q (run 'databricks auth login --profile <name>' to migrate)", key, hostKey)
 			}
 		}
 	}
@@ -426,7 +428,8 @@ func (a *PersistentAuth) Close() error {
 }
 
 // validateArg ensures that the OAuthArgument is either a WorkspaceOAuthArgument,
-// AccountOAuthArgument, UnifiedOAuthArgument, or DiscoveryOAuthArgument.
+// AccountOAuthArgument, UnifiedOAuthArgument, or a bootstrap-only
+// DiscoveryOAuthArgument paired with WithDiscoveryLogin.
 func (a *PersistentAuth) validateArg() error {
 	if a.oAuthArgument == nil {
 		return errors.New("missing OAuthArgument")
@@ -438,13 +441,19 @@ func (a *PersistentAuth) validateArg() error {
 	if !isWorkspaceArg && !isAccountArg && !isUnifiedArg && !isDiscoveryArg {
 		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement WorkspaceOAuthArgument, AccountOAuthArgument, UnifiedOAuthArgument, or DiscoveryOAuthArgument", a.oAuthArgument)
 	}
+	if isDiscoveryArg && !a.discoveryMode {
+		return fmt.Errorf("discovery OAuthArgument %T requires WithDiscoveryLogin; after discovery, construct a WorkspaceOAuthArgument with the discovered host", a.oAuthArgument)
+	}
+	if a.discoveryMode && !isDiscoveryArg {
+		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", a.oAuthArgument)
+	}
 	return nil
 }
 
-// oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
-func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
-	// Default to "all-apis" for backwards compatibility with direct users of PersistentAuth
-	// i.e. people implementing their own U2M authentication.
+// resolveScopes returns the effective OAuth scopes for this PersistentAuth.
+// It defaults to "all-apis" for backwards compatibility, and prepends
+// "offline_access" unless disabled.
+func (a *PersistentAuth) resolveScopes() []string {
 	scopes := a.scopes
 	if len(scopes) == 0 {
 		scopes = []string{"all-apis"}
@@ -452,6 +461,12 @@ func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	if !a.disableOfflineAccess {
 		scopes = append([]string{"offline_access"}, scopes...)
 	}
+	return scopes
+}
+
+// oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
+func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
+	scopes := a.resolveScopes()
 
 	var endpoints *OAuthAuthorizationServer
 	var err error
@@ -463,6 +478,8 @@ func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 			a.ctx, argg.GetAccountHost(), argg.GetAccountId())
 	case UnifiedOAuthArgument:
 		endpoints, err = a.endpointSupplier.GetUnifiedOAuthEndpoints(a.ctx, argg.GetHost(), argg.GetAccountId())
+	case DiscoveryOAuthArgument:
+		return nil, fmt.Errorf("discovery OAuthArgument %T is only supported with WithDiscoveryLogin during Challenge; after discovery, construct a WorkspaceOAuthArgument with the discovered host", a.oAuthArgument)
 	default:
 		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument, AccountOAuthArgument or UnifiedOAuthArgument interface", a.oAuthArgument)
 	}
@@ -524,15 +541,26 @@ func (a *PersistentAuth) dualWrite(t *oauth2.Token) error {
 	if err := a.cache.Store(primaryKey, t); err != nil {
 		return err
 	}
-	if hcp, ok := a.oAuthArgument.(HostCacheKeyProvider); ok {
-		hostKey := hcp.GetHostCacheKey()
-		if hostKey != primaryKey {
-			if err := a.cache.Store(hostKey, t); err != nil {
-				return err
-			}
+	hostKey := a.hostCacheKey()
+	if hostKey != "" && hostKey != primaryKey {
+		if err := a.cache.Store(hostKey, t); err != nil {
+			return err
 		}
 	}
 	return nil
+}
+
+// hostCacheKey returns the legacy host-based cache key used for cross-SDK
+// token sharing. Discovery logins learn their host from the callback, so the
+// host key comes from the discovered host instead of a static OAuth argument.
+func (a *PersistentAuth) hostCacheKey() string {
+	if discoveryArg, ok := a.oAuthArgument.(DiscoveryOAuthArgument); ok {
+		return discoveryArg.GetDiscoveredHost()
+	}
+	if hcp, ok := a.oAuthArgument.(HostCacheKeyProvider); ok {
+		return hcp.GetHostCacheKey()
+	}
+	return ""
 }
 
 func (a *PersistentAuth) setOAuthContext(ctx context.Context) context.Context {
