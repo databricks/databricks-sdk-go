@@ -5,7 +5,7 @@ with hand-written authentication, configuration, and transport infrastructure.
 
 ## Development
 
-Prerequisites: Go 1.22+, `goimports`, `staticcheck`, `gotestsum`.
+Prerequisites: Go 1.18+ (see `go.mod`), `goimports`, `staticcheck`, `gotestsum`.
 
 ```bash
 make build      # go build ./...
@@ -18,7 +18,9 @@ make coverage   # View HTML coverage report
 make codegen    # Regenerate service/ from OpenAPI specs
 ```
 
-CI runs `go build`, `go vet`, `staticcheck`, and `make test` across Go 1.22, 1.23, and 1.24.
+CI runs `make test` across Go 1.19, 1.20, 1.21, 1.22, and 1.23; lint and fmt run on Go 1.23.
+Code must compile on all CI versions — do not use stdlib APIs newer than Go 1.18
+(the module's minimum version in `go.mod`) without a local shim.
 
 ## Architecture
 
@@ -58,7 +60,8 @@ After regenerating, run `make fmt` and `make lint`.
 
 ## Code Style
 
-- Go 1.22+ idioms: range-over-int, `min`/`max` builtins
+- Go 1.18 is the minimum version — avoid stdlib APIs added after 1.18 (e.g., `context.WithoutCancel`
+  requires 1.21, `min`/`max` builtins require 1.21, range-over-int requires 1.22)
 - Format with `goimports` (handles import grouping) then `gofmt`
 - All exported functions and types need doc comments: `// FuncName does X.`
 - Interface doc comments should explain the **contract/lifecycle** — when methods are called,
