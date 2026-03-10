@@ -130,6 +130,8 @@ type PostgresInterface interface {
 	UpdateEndpoint(ctx context.Context, request UpdateEndpointRequest) (UpdateEndpointOperationInterface, error)
 
 	UpdateProject(ctx context.Context, request UpdateProjectRequest) (UpdateProjectOperationInterface, error)
+
+	UpdateRole(ctx context.Context, request UpdateRoleRequest) (UpdateRoleOperationInterface, error)
 }
 
 func NewPostgres(client *client.DatabricksClient) *PostgresAPI {
@@ -2174,6 +2176,155 @@ func (a *updateProjectOperation) Metadata() (*ProjectOperationMetadata, error) {
 
 // Done reports whether the long-running operation has completed.
 func (a *updateProjectOperation) Done() (bool, error) {
+	// Refresh the operation state first
+	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
+		Name: a.operation.Name,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Update local operation state
+	a.operation = operation
+
+	return operation.Done, nil
+}
+
+func (a *PostgresAPI) UpdateRole(ctx context.Context, request UpdateRoleRequest) (UpdateRoleOperationInterface, error) {
+	operation, err := a.postgresImpl.UpdateRole(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &updateRoleOperation{
+		impl:      &a.postgresImpl,
+		operation: operation,
+	}, nil
+}
+
+type UpdateRoleOperationInterface interface {
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) (*Role, error)
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*RoleOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
+}
+
+type updateRoleOperation struct {
+	impl      *postgresImpl
+	operation *Operation
+}
+
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *updateRoleOperation) Wait(ctx context.Context, opts ...api.Option) (*Role, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	errOperationInProgress := errors.New("operation still in progress")
+	var result *Role
+	call := func(ctx context.Context) error {
+		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
+			Name: a.operation.Name,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Update local operation state
+		a.operation = operation
+
+		if !operation.Done {
+			return errOperationInProgress
+		}
+
+		if operation.Error != nil {
+			var errorMsg string
+			if operation.Error.Message != "" {
+				errorMsg = operation.Error.Message
+			} else {
+				errorMsg = "unknown error"
+			}
+
+			if operation.Error.ErrorCode != "" {
+				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
+			}
+
+			return fmt.Errorf("operation failed: %s", errorMsg)
+		}
+
+		// Operation completed successfully, unmarshal response
+		if operation.Response == nil {
+			return fmt.Errorf("operation completed but no response available")
+		}
+
+		var role Role
+		err = json.Unmarshal(operation.Response, &role)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal role response: %w", err)
+		}
+
+		result = &role
+
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
+	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
+
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+
+}
+
+// Name returns the name of the long-running operation. The name is assigned
+// by the server and is unique within the service from which the operation is created.
+func (a *updateRoleOperation) Name() string {
+	return a.operation.Name
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (a *updateRoleOperation) Metadata() (*RoleOperationMetadata, error) {
+	if a.operation.Metadata == nil {
+		return nil, nil
+	}
+
+	var metadata RoleOperationMetadata
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (a *updateRoleOperation) Done() (bool, error) {
 	// Refresh the operation state first
 	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
 		Name: a.operation.Name,

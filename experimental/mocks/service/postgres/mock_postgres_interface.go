@@ -1803,6 +1803,65 @@ func (_c *MockPostgresInterface_UpdateProject_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// UpdateRole provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) UpdateRole(ctx context.Context, request postgres.UpdateRoleRequest) (postgres.UpdateRoleOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateRole")
+	}
+
+	var r0 postgres.UpdateRoleOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateRoleRequest) (postgres.UpdateRoleOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateRoleRequest) postgres.UpdateRoleOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.UpdateRoleOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateRoleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_UpdateRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateRole'
+type MockPostgresInterface_UpdateRole_Call struct {
+	*mock.Call
+}
+
+// UpdateRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.UpdateRoleRequest
+func (_e *MockPostgresInterface_Expecter) UpdateRole(ctx interface{}, request interface{}) *MockPostgresInterface_UpdateRole_Call {
+	return &MockPostgresInterface_UpdateRole_Call{Call: _e.mock.On("UpdateRole", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_UpdateRole_Call) Run(run func(ctx context.Context, request postgres.UpdateRoleRequest)) *MockPostgresInterface_UpdateRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.UpdateRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateRole_Call) Return(_a0 postgres.UpdateRoleOperationInterface, _a1 error) *MockPostgresInterface_UpdateRole_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateRole_Call) RunAndReturn(run func(context.Context, postgres.UpdateRoleRequest) (postgres.UpdateRoleOperationInterface, error)) *MockPostgresInterface_UpdateRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockPostgresInterface creates a new instance of MockPostgresInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockPostgresInterface(t interface {
