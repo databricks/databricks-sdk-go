@@ -394,8 +394,8 @@ func (a *PersistentAuth) Close() error {
 	return a.ln.Close()
 }
 
-// validateArg ensures that the OAuthArgument is either a WorkspaceOAuthArgument
-// or an AccountOAuthArgument or a UnifiedOAuthArgument.
+// validateArg ensures that the OAuthArgument is either a WorkspaceOAuthArgument,
+// AccountOAuthArgument, UnifiedOAuthArgument, or DiscoveryOAuthArgument.
 func (a *PersistentAuth) validateArg() error {
 	if a.oAuthArgument == nil {
 		return errors.New("missing OAuthArgument")
@@ -403,8 +403,9 @@ func (a *PersistentAuth) validateArg() error {
 	_, isWorkspaceArg := a.oAuthArgument.(WorkspaceOAuthArgument)
 	_, isAccountArg := a.oAuthArgument.(AccountOAuthArgument)
 	_, isUnifiedArg := a.oAuthArgument.(UnifiedOAuthArgument)
-	if !isWorkspaceArg && !isAccountArg && !isUnifiedArg {
-		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument, AccountOAuthArgument or UnifiedOAuthArgument interface", a.oAuthArgument)
+	_, isDiscoveryArg := a.oAuthArgument.(DiscoveryOAuthArgument)
+	if !isWorkspaceArg && !isAccountArg && !isUnifiedArg && !isDiscoveryArg {
+		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement WorkspaceOAuthArgument, AccountOAuthArgument, UnifiedOAuthArgument, or DiscoveryOAuthArgument", a.oAuthArgument)
 	}
 	return nil
 }
