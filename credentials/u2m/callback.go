@@ -45,6 +45,11 @@ type callbackServer struct {
 	// rendering the page.html template.
 	renderErrCh chan error
 
+	// lastIssuer stores the iss (issuer) query parameter from the OAuth
+	// callback, per RFC 9207. Used by the discovery login flow to identify
+	// which workspace the user selected.
+	lastIssuer string
+
 	// feedbackCh is a channel that receives the result of the authentication
 	// attempt.
 	feedbackCh chan oauthResult
@@ -88,6 +93,7 @@ func (cb *callbackServer) Close() error {
 
 // ServeHTTP renders the page.html template.
 func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	cb.lastIssuer = r.FormValue("iss")
 	res := oauthResult{
 		Error:            r.FormValue("error"),
 		ErrorDescription: r.FormValue("error_description"),
@@ -116,6 +122,13 @@ func (cb *callbackServer) getHost() string {
 	default:
 		return ""
 	}
+}
+
+// Issuer returns the iss parameter from the last OAuth callback received.
+// This is populated during the discovery login flow when login.databricks.com
+// redirects back with the workspace issuer.
+func (cb *callbackServer) Issuer() string {
+	return cb.lastIssuer
 }
 
 // Handler opens up a browser waits for redirect to come back from the identity provider
