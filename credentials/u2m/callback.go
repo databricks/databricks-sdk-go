@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+	"sync"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -47,7 +48,8 @@ type callbackServer struct {
 
 	// lastIssuer stores the iss (issuer) query parameter from the OAuth
 	// callback, per RFC 9207. Used by the discovery login flow to identify
-	// which workspace the user selected.
+	// which workspace the user selected. Protected by issuerMu.
+	issuerMu   sync.Mutex
 	lastIssuer string
 
 	// feedbackCh is a channel that receives the result of the authentication
@@ -93,7 +95,9 @@ func (cb *callbackServer) Close() error {
 
 // ServeHTTP renders the page.html template.
 func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	cb.issuerMu.Lock()
 	cb.lastIssuer = r.FormValue("iss")
+	cb.issuerMu.Unlock()
 	res := oauthResult{
 		Error:            r.FormValue("error"),
 		ErrorDescription: r.FormValue("error_description"),
@@ -128,6 +132,8 @@ func (cb *callbackServer) getHost() string {
 // This is populated during the discovery login flow when login.databricks.com
 // redirects back with the workspace issuer.
 func (cb *callbackServer) Issuer() string {
+	cb.issuerMu.Lock()
+	defer cb.issuerMu.Unlock()
 	return cb.lastIssuer
 }
 

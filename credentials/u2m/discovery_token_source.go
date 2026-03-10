@@ -115,11 +115,15 @@ func (d *discoveryTokenSource) challenge() error {
 	if err != nil {
 		return fmt.Errorf("authorize: %w", err)
 	}
-	issuer := cb.Issuer()
 
-	// Validate state matches what we generated.
+	// Validate state matches what we generated before consuming callback data.
 	if returnedState != state {
 		return fmt.Errorf("state mismatch: expected %q, got %q", state, returnedState)
+	}
+
+	issuer := cb.Issuer()
+	if issuer == "" {
+		return fmt.Errorf("discovery login failed: callback did not include an issuer (iss) parameter")
 	}
 
 	// Derive host and token endpoint from the issuer.
