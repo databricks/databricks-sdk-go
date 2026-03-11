@@ -249,11 +249,13 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
-	if !t.Valid() || a.tokenExpiringSoon(t) {
+	if !t.Valid() {
+		t, err = a.refresh(t)
+	} else if a.tokenExpiringSoon(t) {
 		t, err = a.forceRefresh(t)
-		if err != nil {
-			return nil, fmt.Errorf("token refresh: %w", err)
-		}
+	}
+	if err != nil {
+		return nil, fmt.Errorf("token refresh: %w", err)
 	}
 
 	// Do not include the refresh token for security reasons. Refresh tokens are
