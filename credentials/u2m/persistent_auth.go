@@ -251,7 +251,7 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	}
 	if !t.Valid() {
 		t, err = a.refresh(t)
-	} else if a.tokenExpiringSoon(t) {
+	} else if tokenExpiringSoon(t) {
 		t, err = a.forceRefresh(t)
 	}
 	if err != nil {
@@ -267,7 +267,7 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 // tokenExpiringSoon returns true when the token is technically still valid but
 // will expire within the tokenRefreshBuffer window. Tokens with a zero expiry
 // (meaning they never expire) are not considered expiring soon.
-func (a *PersistentAuth) tokenExpiringSoon(t *oauth2.Token) bool {
+func tokenExpiringSoon(t *oauth2.Token) bool {
 	return !t.Expiry.IsZero() && time.Until(t.Expiry) < tokenRefreshBuffer
 }
 
