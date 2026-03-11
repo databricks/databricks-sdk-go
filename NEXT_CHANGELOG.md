@@ -6,6 +6,8 @@
 
 ### New Features and Improvements
 
+* Support `default_profile` in `[__settings__]` section of `.databrickscfg` ([#XXXX](https://github.com/databricks/databricks-sdk-go/pull/XXXX)).
+
 ### Bug Fixes
 
 ### Documentation

@@ -1,9 +1,13 @@
 package config
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/google/go-cmp/cmp"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // withMockEnv mocks environment variables for testing config file loading
@@ -92,4 +96,84 @@ func TestConfigFile_Scopes(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Test 1: default_profile resolves correctly
+func TestConfigFile_DefaultProfileResolves(t *testing.T) {
+	configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/default_profile",
+		},
+		AssertAuth: "pat",
+		AssertHost: "https://my-workspace.cloud.databricks.com",
+	}.apply(t)
+}
+
+// Test 2: default_profile takes precedence over [DEFAULT]
+func TestConfigFile_DefaultProfileTakesPrecedenceOverDefault(t *testing.T) {
+	configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/default_profile",
+		},
+		AssertAuth: "pat",
+		AssertHost: "https://my-workspace.cloud.databricks.com",
+	}.apply(t)
+}
+
+// Test 3: Legacy fallback when no [__settings__]
+func TestConfigFile_LegacyFallbackNoSettings(t *testing.T) {
+	configFixture{
+		Env: map[string]string{
+			"HOME": "testdata",
+		},
+		AssertAuth: "pat",
+		AssertHost: "https://dbc-XXXXXXXX-YYYY.cloud.databricks.com",
+	}.apply(t)
+}
+
+// Test 4: Legacy fallback when default_profile is empty
+func TestConfigFile_LegacyFallbackEmptyDefaultProfile(t *testing.T) {
+	configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/default_profile_empty",
+		},
+		AssertAuth: "pat",
+		AssertHost: "https://default.cloud.databricks.com",
+	}.apply(t)
+}
+
+// Test 5: [__settings__] is not a profile.
+// The resolveDefaultProfile function reads the default_profile value from
+// [__settings__] but never returns "__settings__" itself as a profile name.
+func TestConfigFile_SettingsSectionNotAProfile(t *testing.T) {
+	f, err := LoadFile("testdata/default_profile/.databrickscfg")
+	require.NoError(t, err)
+
+	profile, _ := resolveDefaultProfile(f)
+	assert.NotEqual(t, settingsSection, profile,
+		"resolveDefaultProfile must never return the settings section name as a profile")
+}
+
+// Test 6: Explicit --profile overrides default_profile
+func TestConfigFile_ExplicitProfileOverridesDefaultProfile(t *testing.T) {
+	configFixture{
+		Profile: "other",
+		Env: map[string]string{
+			"HOME": "testdata/default_profile",
+		},
+		AssertAuth: "pat",
+		AssertHost: "https://other.cloud.databricks.com",
+	}.apply(t)
+}
+
+// Test 7: default_profile pointing to nonexistent section
+func TestConfigFile_DefaultProfileNonexistentSection(t *testing.T) {
+	env.CleanupEnvironment(t)
+	configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/default_profile_nonexistent",
+		},
+		AssertError: fmt.Sprintf("resolve: %s has no deleted-profile profile configured",
+			"testdata/default_profile_nonexistent/.databrickscfg"),
+	}.apply(t)
 }

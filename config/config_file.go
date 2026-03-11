@@ -86,12 +86,15 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	// don't modify the config, so that debug appears clearly
 	profile := cfg.Profile
 	hasExplicitProfile := cfg.Profile != ""
+	hasDefaultProfileSetting := false
 	if !hasExplicitProfile {
-		profile = "DEFAULT"
+		profile, hasDefaultProfileSetting = resolveDefaultProfile(configFile)
 	}
 	profileValues := configFile.Section(profile)
 	if len(profileValues.Keys()) == 0 {
-		if !hasExplicitProfile {
+		// Treat default_profile the same as an explicit --profile flag:
+		// if the referenced section doesn't exist, return an error.
+		if !hasExplicitProfile && !hasDefaultProfileSetting {
 			logger.Debugf(context.Background(), "%s has no %s profile configured", configFile.Path(), profile)
 			return nil
 		}
@@ -103,6 +106,25 @@ func (l configFileLoader) Configure(cfg *Config) error {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
 	}
 	return nil
+}
+
+// settingsSection is the reserved section name for tool settings in
+// .databrickscfg. It is not a profile. The CLI writes to this section
+// (e.g. via "databricks auth switch") to store the user's default profile.
+const settingsSection = "__settings__"
+
+// resolveDefaultProfile checks the [__settings__] section for a
+// default_profile key. If found and non-empty, returns (profileName, true).
+// Otherwise returns ("DEFAULT", false) to preserve legacy behavior.
+func resolveDefaultProfile(f *File) (string, bool) {
+	section, err := f.GetSection(settingsSection)
+	if err == nil {
+		key, err := section.GetKey("default_profile")
+		if err == nil && key.String() != "" {
+			return key.String(), true
+		}
+	}
+	return "DEFAULT", false
 }
 
 func (l configFileLoader) isAnyAuthConfigured(cfg *Config) bool {
