@@ -7,7 +7,6 @@ import (
 
 	listing "github.com/databricks/databricks-sdk-go/listing"
 	files "github.com/databricks/databricks-sdk-go/service/files"
-
 	mock "github.com/stretchr/testify/mock"
 )
 

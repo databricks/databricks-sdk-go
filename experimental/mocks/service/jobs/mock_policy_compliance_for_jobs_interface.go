@@ -7,7 +7,6 @@ import (
 
 	listing "github.com/databricks/databricks-sdk-go/listing"
 	jobs "github.com/databricks/databricks-sdk-go/service/jobs"
-
 	mock "github.com/stretchr/testify/mock"
 )
 

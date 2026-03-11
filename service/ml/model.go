@@ -200,6 +200,37 @@ func (f *ActivityType) Type() string {
 	return "ActivityType"
 }
 
+// An aggregation function applied over a time window.
+type AggregationFunction struct {
+	ApproxCountDistinct *ApproxCountDistinctFunction `json:"approx_count_distinct,omitempty"`
+
+	ApproxPercentile *ApproxPercentileFunction `json:"approx_percentile,omitempty"`
+
+	Avg *AvgFunction `json:"avg,omitempty"`
+
+	CountFunction *CountFunction `json:"count_function,omitempty"`
+
+	First *FirstFunction `json:"first,omitempty"`
+
+	Last *LastFunction `json:"last,omitempty"`
+
+	Max *MaxFunction `json:"max,omitempty"`
+
+	Min *MinFunction `json:"min,omitempty"`
+
+	StddevPop *StddevPopFunction `json:"stddev_pop,omitempty"`
+
+	StddevSamp *StddevSampFunction `json:"stddev_samp,omitempty"`
+
+	Sum *SumFunction `json:"sum,omitempty"`
+	// The time window over which the aggregation is computed.
+	TimeWindow *TimeWindow `json:"time_window,omitempty"`
+
+	VarPop *VarPopFunction `json:"var_pop,omitempty"`
+
+	VarSamp *VarSampFunction `json:"var_samp,omitempty"`
+}
+
 // Details required to identify and approve a model version stage transition
 // request.
 type ApproveTransitionRequest struct {
@@ -239,6 +270,46 @@ type ApproveTransitionRequestResponse struct {
 	Activity *Activity `json:"activity,omitempty"`
 }
 
+// Computes the approximate count of distinct values.
+type ApproxCountDistinctFunction struct {
+	// The input column from which the approximate count of distinct values is
+	// computed.
+	Input string `json:"input"`
+	// The maximum relative standard deviation allowed (default defined by
+	// Spark).
+	RelativeSd float64 `json:"relative_sd,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ApproxCountDistinctFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ApproxCountDistinctFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Computes the approximate percentile of values.
+type ApproxPercentileFunction struct {
+	// The accuracy parameter (higher is more accurate but slower).
+	Accuracy int64 `json:"accuracy,omitempty"`
+	// The input column from which the approximate percentile is computed.
+	Input string `json:"input"`
+	// The percentile value to compute (between 0 and 1).
+	Percentile float64 `json:"percentile"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ApproxPercentileFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ApproxPercentileFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AuthConfig struct {
 	// Name of the Unity Catalog service credential. This value will be set
 	// under the option databricks.serviceCredential
@@ -253,6 +324,12 @@ func (s *AuthConfig) UnmarshalJSON(b []byte) error {
 
 func (s AuthConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Computes the average of values.
+type AvgFunction struct {
+	// The input column from which the average is computed.
+	Input string `json:"input"`
 }
 
 type BackfillSource struct {
@@ -388,6 +465,12 @@ func (s *ContinuousWindow) UnmarshalJSON(b []byte) error {
 
 func (s ContinuousWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Computes the count of values.
+type CountFunction struct {
+	// The input column from which the count is computed.
+	Input string `json:"input"`
 }
 
 // Details required to create a comment on a model version.
@@ -1014,16 +1097,18 @@ type DeltaTableSource struct {
 	// transformation_sql is specified. Example:
 	// {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}
 	DataframeSchema string `json:"dataframe_schema,omitempty"`
+	// Deprecated: Use Feature.entity instead. Kept for backwards compatibility.
 	// The entity columns of the Delta table.
-	EntityColumns []string `json:"entity_columns"`
+	EntityColumns []string `json:"entity_columns,omitempty"`
 	// Single WHERE clause to filter delta table before applying
 	// transformations. Will be row-wise evaluated, so should only include
 	// conditionals and projections.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part (catalog, schema, table) name of the Delta table.
 	FullName string `json:"full_name"`
-	// The timeseries column of the Delta table.
-	TimeseriesColumn string `json:"timeseries_column"`
+	// Deprecated: Use Feature.timeseries_column instead. Kept for backwards
+	// compatibility. The timeseries column of the Delta table.
+	TimeseriesColumn string `json:"timeseries_column,omitempty"`
 	// A single SQL SELECT expression applied after filter_condition. Should
 	// contains all the columns needed (eg. "SELECT *, col_a + col_b AS col_c
 	// FROM x.y.z WHERE col_a > 0" would have `transformation_sql` "*, col_a +
@@ -1040,6 +1125,11 @@ func (s *DeltaTableSource) UnmarshalJSON(b []byte) error {
 
 func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type EntityColumn struct {
+	// The name of the entity column.
+	Name string `json:"name"`
 }
 
 // An experiment and its metadata.
@@ -1235,25 +1325,37 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 type Feature struct {
 	// The description of the feature.
 	Description string `json:"description,omitempty"`
+	// The entity columns for the feature, used as aggregation keys and for
+	// query-time lookup.
+	Entities []EntityColumn `json:"entities,omitempty"`
+	// Deprecated: Use DeltaTableSource.filter_condition or
+	// KafkaSource.filter_condition instead. Kept for backwards compatibility.
 	// The filter condition applied to the source data before aggregation.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part name (catalog, schema, name) of the feature.
 	FullName string `json:"full_name"`
 	// The function by which the feature is computed.
 	Function Function `json:"function"`
-	// The input columns from which the feature is computed.
-	Inputs []string `json:"inputs"`
-	// WARNING: This field is primarily intended for internal use by Databricks
-	// systems and is automatically populated when features are created through
-	// Databricks notebooks or jobs. Users should not manually set this field as
-	// incorrect values may lead to inaccurate lineage tracking or unexpected
-	// behavior. This field will be set by feature-engineering client and should
-	// be left unset by SDK and terraform users.
+	// Deprecated: Use AggregationFunction.inputs instead. Kept for backwards
+	// compatibility. The input columns from which the feature is computed.
+	Inputs []string `json:"inputs,omitempty"`
+	// Lineage context information for this feature. WARNING: This field is
+	// primarily intended for internal use by Databricks systems and is
+	// automatically populated when features are created through Databricks
+	// notebooks or jobs. Users should not manually set this field as incorrect
+	// values may lead to inaccurate lineage tracking or unexpected behavior.
+	// This field will be set by feature-engineering client and should be left
+	// unset by SDK and terraform users.
 	LineageContext *LineageContext `json:"lineage_context,omitempty"`
 	// The data source of the feature.
 	Source DataSource `json:"source"`
-	// The time window in which the feature is computed.
+	// Deprecated: Use Function.aggregation_function.time_window instead. Kept
+	// for backwards compatibility. The time window in which the feature is
+	// computed.
 	TimeWindow *TimeWindow `json:"time_window,omitempty"`
+	// Column recording time, used for point-in-time joins, backfills, and
+	// aggregations.
+	TimeseriesColumn *TimeseriesColumn `json:"timeseries_column,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1380,6 +1482,12 @@ type FinalizeLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+// Returns the first value.
+type FirstFunction struct {
+	// The input column from which the first value is returned.
+	Input string `json:"input"`
+}
+
 // Represents a forecasting experiment with its unique identifier, URL, and
 // state.
 type ForecastingExperiment struct {
@@ -1448,12 +1556,20 @@ func (f *ForecastingExperimentState) Type() string {
 }
 
 type Function struct {
-	// Extra parameters for parameterized functions.
+	// An aggregation function applied over a time window.
+	AggregationFunction *AggregationFunction `json:"aggregation_function,omitempty"`
+	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
+	// for backwards compatibility. Extra parameters for parameterized
+	// functions.
 	ExtraParameters []FunctionExtraParameter `json:"extra_parameters,omitempty"`
-	// The type of the function.
-	FunctionType FunctionFunctionType `json:"function_type"`
+	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
+	// for backwards compatibility. The type of the function.
+	FunctionType FunctionFunctionType `json:"function_type,omitempty"`
 }
 
+// Deprecated: Use typed fields on function-specific messages (e.g.
+// ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter
+// instead. Kept for backwards compatibility.
 type FunctionExtraParameter struct {
 	// The name of the parameter.
 	Key string `json:"key"`
@@ -1461,6 +1577,9 @@ type FunctionExtraParameter struct {
 	Value string `json:"value"`
 }
 
+// Deprecated: Use the function-specific messages in
+// AggregationFunction.function_type oneof instead. Kept for backwards
+// compatibility.
 type FunctionFunctionType string
 
 const FunctionFunctionTypeApproxCountDistinct FunctionFunctionType = `APPROX_COUNT_DISTINCT`
@@ -1909,13 +2028,33 @@ type KafkaConfig struct {
 }
 
 type KafkaSource struct {
+	// Deprecated: Use Feature.entity instead. Kept for backwards compatibility.
 	// The entity column identifiers of the Kafka source.
-	EntityColumnIdentifiers []ColumnIdentifier `json:"entity_column_identifiers"`
+	EntityColumnIdentifiers []ColumnIdentifier `json:"entity_column_identifiers,omitempty"`
+	// The filter condition applied to the source data before aggregation.
+	FilterCondition string `json:"filter_condition,omitempty"`
 	// Name of the Kafka source, used to identify it. This is used to look up
 	// the corresponding KafkaConfig object. Can be distinct from topic name.
 	Name string `json:"name"`
-	// The timeseries column identifier of the Kafka source.
-	TimeseriesColumnIdentifier ColumnIdentifier `json:"timeseries_column_identifier"`
+	// Deprecated: Use Feature.timeseries_column instead. Kept for backwards
+	// compatibility. The timeseries column identifier of the Kafka source.
+	TimeseriesColumnIdentifier *ColumnIdentifier `json:"timeseries_column_identifier,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KafkaSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KafkaSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Returns the last value.
+type LastFunction struct {
+	// The input column from which the last value is returned.
+	Input string `json:"input"`
 }
 
 // Lineage context information for tracking where an API was invoked. This will
@@ -2677,6 +2816,12 @@ func (f *MaterializedFeaturePipelineScheduleState) Type() string {
 	return "MaterializedFeaturePipelineScheduleState"
 }
 
+// Computes the maximum value.
+type MaxFunction struct {
+	// The input column from which the maximum is computed.
+	Input string `json:"input"`
+}
+
 // Metric associated with a run, represented as a key-value pair.
 type Metric struct {
 	// The dataset digest of the dataset associated with the metric, e.g. an md5
@@ -2709,6 +2854,12 @@ func (s *Metric) UnmarshalJSON(b []byte) error {
 
 func (s Metric) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Computes the minimum value.
+type MinFunction struct {
+	// The input column from which the minimum is computed.
+	Input string `json:"input"`
 }
 
 type Model struct {
@@ -4270,6 +4421,19 @@ func (f *Status) Type() string {
 	return "Status"
 }
 
+// Computes the population standard deviation.
+type StddevPopFunction struct {
+	// The input column from which the population standard deviation is
+	// computed.
+	Input string `json:"input"`
+}
+
+// Computes the sample standard deviation.
+type StddevSampFunction struct {
+	// The input column from which the sample standard deviation is computed.
+	Input string `json:"input"`
+}
+
 type SubscriptionMode struct {
 	// A JSON string that contains the specific topic-partitions to consume
 	// from. For example, for '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th
@@ -4291,6 +4455,12 @@ func (s *SubscriptionMode) UnmarshalJSON(b []byte) error {
 
 func (s SubscriptionMode) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Computes the sum of values.
+type SumFunction struct {
+	// The input column from which the sum is computed.
+	Input string `json:"input"`
 }
 
 // Details required to test a registry webhook.
@@ -4326,6 +4496,11 @@ type TimeWindow struct {
 	Sliding *SlidingWindow `json:"sliding,omitempty"`
 
 	Tumbling *TumblingWindow `json:"tumbling,omitempty"`
+}
+
+type TimeseriesColumn struct {
+	// The name of the timeseries column.
+	Name string `json:"name"`
 }
 
 // Details required to transition a model version's stage.
@@ -4684,6 +4859,18 @@ func (f *UpdateRunStatus) Type() string {
 
 type UpdateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
+}
+
+// Computes the population variance.
+type VarPopFunction struct {
+	// The input column from which the population variance is computed.
+	Input string `json:"input"`
+}
+
+// Computes the sample variance.
+type VarSampFunction struct {
+	// The input column from which the sample variance is computed.
+	Input string `json:"input"`
 }
 
 // Qualifier for the view type.

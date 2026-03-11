@@ -109,4 +109,7 @@ type PostgresService interface {
 
 	// Updates the specified database project.
 	UpdateProject(ctx context.Context, request UpdateProjectRequest) (*Operation, error)
+
+	// Update a role for a branch.
+	UpdateRole(ctx context.Context, request UpdateRoleRequest) (*Operation, error)
 }

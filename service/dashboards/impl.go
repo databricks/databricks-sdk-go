@@ -117,6 +117,77 @@ func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request
 	return &genieGenerateDownloadFullQueryResultResponse, err
 }
 
+func (a *genieImpl) GenieCreateEvalRun(ctx context.Context, request GenieCreateEvalRunRequest) (*GenieEvalRunResponse, error) {
+	var genieEvalRunResponse GenieEvalRunResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieEvalRunResponse)
+	return &genieEvalRunResponse, err
+}
+
+func (a *genieImpl) GenieGetEvalResultDetails(ctx context.Context, request GenieGetEvalResultDetailsRequest) (*GenieEvalResultDetails, error) {
+	var genieEvalResultDetails GenieEvalResultDetails
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v/results/%v", request.SpaceId, request.EvalRunId, request.ResultId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieEvalResultDetails)
+	return &genieEvalResultDetails, err
+}
+
+func (a *genieImpl) GenieGetEvalRun(ctx context.Context, request GenieGetEvalRunRequest) (*GenieEvalRunResponse, error) {
+	var genieEvalRunResponse GenieEvalRunResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v", request.SpaceId, request.EvalRunId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieEvalRunResponse)
+	return &genieEvalRunResponse, err
+}
+
+func (a *genieImpl) GenieListEvalResults(ctx context.Context, request GenieListEvalResultsRequest) (*GenieListEvalResultsResponse, error) {
+	var genieListEvalResultsResponse GenieListEvalResultsResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v/results", request.SpaceId, request.EvalRunId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListEvalResultsResponse)
+	return &genieListEvalResultsResponse, err
+}
+
+func (a *genieImpl) GenieListEvalRuns(ctx context.Context, request GenieListEvalRunsRequest) (*GenieListEvalRunsResponse, error) {
+	var genieListEvalRunsResponse GenieListEvalRunsResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListEvalRunsResponse)
+	return &genieListEvalRunsResponse, err
+}
+
 func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error) {
 	var genieGetDownloadFullQueryResultResponse GenieGetDownloadFullQueryResultResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId, request.DownloadId)
