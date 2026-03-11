@@ -5,10 +5,8 @@ package catalog
 import (
 	context "context"
 
-	catalog "github.com/databricks/databricks-sdk-go/service/catalog"
-
 	listing "github.com/databricks/databricks-sdk-go/listing"
-
+	catalog "github.com/databricks/databricks-sdk-go/service/catalog"
 	mock "github.com/stretchr/testify/mock"
 )
 

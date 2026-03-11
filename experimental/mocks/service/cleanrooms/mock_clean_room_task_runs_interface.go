@@ -5,10 +5,8 @@ package cleanrooms
 import (
 	context "context"
 
-	cleanrooms "github.com/databricks/databricks-sdk-go/service/cleanrooms"
-
 	listing "github.com/databricks/databricks-sdk-go/listing"
-
+	cleanrooms "github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	mock "github.com/stretchr/testify/mock"
 )
 

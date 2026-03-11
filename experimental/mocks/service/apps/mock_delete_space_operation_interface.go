@@ -3,11 +3,10 @@
 package apps
 
 import (
-	api "github.com/databricks/databricks-sdk-go/experimental/api"
-	apps "github.com/databricks/databricks-sdk-go/service/apps"
-
 	context "context"
 
+	api "github.com/databricks/databricks-sdk-go/experimental/api"
+	apps "github.com/databricks/databricks-sdk-go/service/apps"
 	mock "github.com/stretchr/testify/mock"
 )
 

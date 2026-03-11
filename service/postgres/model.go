@@ -1672,6 +1672,9 @@ func (s RoleRoleSpec) MarshalJSON() ([]byte, error) {
 }
 
 type RoleRoleStatus struct {
+	// The PG role attributes associated with the role.
+	Attributes *RoleAttributes `json:"attributes,omitempty"`
+
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
 	// The type of the role.
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
@@ -1746,5 +1749,19 @@ type UpdateProjectRequest struct {
 	Project Project `json:"project"`
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+type UpdateRoleRequest struct {
+	// Output only. The full resource path of the role. Format:
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Name string `json:"-" url:"-"`
+	// The Postgres Role to update.
+	//
+	// The role's `name` field is used to identify the role to update. Format:
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Role Role `json:"role"`
+	// The list of fields to update in Postgres Role. If unspecified, all fields
+	// will be updated when possible.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }

@@ -5,10 +5,8 @@ package compute
 import (
 	context "context"
 
-	compute "github.com/databricks/databricks-sdk-go/service/compute"
-
 	listing "github.com/databricks/databricks-sdk-go/listing"
-
+	compute "github.com/databricks/databricks-sdk-go/service/compute"
 	mock "github.com/stretchr/testify/mock"
 )
 

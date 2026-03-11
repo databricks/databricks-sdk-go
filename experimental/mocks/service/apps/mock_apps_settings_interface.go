@@ -5,10 +5,8 @@ package apps
 import (
 	context "context"
 
-	apps "github.com/databricks/databricks-sdk-go/service/apps"
-
 	listing "github.com/databricks/databricks-sdk-go/listing"
-
+	apps "github.com/databricks/databricks-sdk-go/service/apps"
 	mock "github.com/stretchr/testify/mock"
 )
 

@@ -6,7 +6,6 @@ import (
 	context "context"
 
 	billing "github.com/databricks/databricks-sdk-go/service/billing"
-
 	mock "github.com/stretchr/testify/mock"
 )
 

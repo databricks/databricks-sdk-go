@@ -2787,7 +2787,7 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
-	// Enable Serverless compute for SQL warehouses
+	// Deprecated: only setting this to true is allowed.
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
@@ -4859,7 +4859,7 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
-	// Enable Serverless compute for SQL warehouses
+	// Deprecated: only setting this to true is allowed.
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
