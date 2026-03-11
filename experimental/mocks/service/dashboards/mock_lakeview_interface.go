@@ -7,7 +7,6 @@ import (
 
 	listing "github.com/databricks/databricks-sdk-go/listing"
 	dashboards "github.com/databricks/databricks-sdk-go/service/dashboards"
-
 	mock "github.com/stretchr/testify/mock"
 )
 

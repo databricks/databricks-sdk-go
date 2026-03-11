@@ -6,7 +6,6 @@ import (
 	context "context"
 
 	agentbricks "github.com/databricks/databricks-sdk-go/service/agentbricks"
-
 	mock "github.com/stretchr/testify/mock"
 )
 

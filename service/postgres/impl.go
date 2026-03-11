@@ -599,3 +599,25 @@ func (a *postgresImpl) UpdateProject(ctx context.Context, request UpdateProjectR
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Project, &operation)
 	return &operation, err
 }
+
+func (a *postgresImpl) UpdateRole(ctx context.Context, request UpdateRoleRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Role, &operation)
+	return &operation, err
+}

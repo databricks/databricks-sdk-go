@@ -1012,6 +1012,12 @@ type ExternalFunctionRequest struct {
 	Params string `json:"params,omitempty"`
 	// The relative path for the API endpoint. This is required.
 	Path string `json:"path"`
+	// Optional subdomain to prepend to the connection URL's host. If provided,
+	// this will be added as a prefix to the connection URL's host. For example,
+	// if the connection URL is `https://api.example.com/v1` and `sub_domain` is
+	// `"custom"`, the resulting URL will be
+	// `https://custom.api.example.com/v1`.
+	SubDomain string `json:"sub_domain,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
