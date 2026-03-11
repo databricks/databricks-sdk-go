@@ -24,7 +24,8 @@ func (c AzureGithubOIDCCredentials) Name() string {
 
 // Configure implements [CredentialsStrategy.Configure].
 func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" || cfg.ActionsIDTokenRequestURL == "" || cfg.ActionsIDTokenRequestToken == "" {
+	// Sanity check that the config is configured for Azure Databricks.
+	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" || cfg.ActionsIDTokenRequestURL == "" || cfg.ActionsIDTokenRequestToken == "" {
 		return nil, nil
 	}
 	supplier := oidc.NewGithubIDTokenSource(
