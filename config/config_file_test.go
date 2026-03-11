@@ -109,6 +109,19 @@ func TestConfigFile_DefaultProfileResolves(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfigFile_DefaultProfileSetsResolvedProfileName(t *testing.T) {
+	env.CleanupEnvironment(t)
+
+	cfg, err := configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/default_profile_no_default",
+		},
+	}.configureProviderAndReturnConfig(t)
+
+	require.NoError(t, err)
+	assert.Equal(t, "my-workspace", cfg.Profile)
+}
+
 // Test 2: default_profile takes precedence over [DEFAULT]
 func TestConfigFile_DefaultProfileTakesPrecedenceOverDefault(t *testing.T) {
 	configFixture{
@@ -166,16 +179,15 @@ func TestConfigFile_SettingsSectionNotAProfile(t *testing.T) {
 	}
 }
 
-// Test 5b: default_profile = __settings__ is rejected.
-// If someone writes default_profile = __settings__, the SDK must not try to
-// load [__settings__] as a profile. It should fall through to [DEFAULT].
+// Test 5b: default_profile = __settings__ is rejected with the same
+// profile-not-found error as other invalid profile selections.
 func TestConfigFile_DefaultProfileSettingsSelfReference(t *testing.T) {
 	configFixture{
 		Env: map[string]string{
 			"HOME": "testdata/default_profile_self_ref",
 		},
-		AssertAuth: "pat",
-		AssertHost: "https://default.cloud.databricks.com",
+		AssertError: fmt.Sprintf("resolve: %s has no __settings__ profile configured",
+			"testdata/default_profile_self_ref/.databrickscfg"),
 	}.apply(t)
 }
 
@@ -189,6 +201,21 @@ func TestConfigFile_ExplicitProfileOverridesDefaultProfile(t *testing.T) {
 		AssertAuth: "pat",
 		AssertHost: "https://other.cloud.databricks.com",
 	}.apply(t)
+}
+
+func TestConfigFile_ExplicitSettingsSectionProfileRejected(t *testing.T) {
+	env.CleanupEnvironment(t)
+
+	_, err := configFixture{
+		Profile: "__settings__",
+		Env: map[string]string{
+			"HOME": "testdata/default_profile",
+		},
+	}.configureProviderAndReturnConfig(t)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, fmt.Sprintf("resolve: %s has no __settings__ profile configured",
+		"testdata/default_profile/.databrickscfg"))
 }
 
 // Test 7: default_profile pointing to nonexistent section

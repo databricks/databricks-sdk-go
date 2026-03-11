@@ -91,7 +91,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 		profile, hasDefaultProfileSetting = resolveDefaultProfile(configFile)
 	}
 	profileValues := configFile.Section(profile)
-	if len(profileValues.Keys()) == 0 {
+	if profile == settingsSection || len(profileValues.Keys()) == 0 {
 		// Treat default_profile the same as an explicit --profile flag:
 		// if the referenced section doesn't exist, return an error.
 		if !hasExplicitProfile && !hasDefaultProfileSetting {
@@ -104,6 +104,9 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	err = ConfigAttributes.ResolveFromStringMapWithSource(cfg, profileValues.KeysHash(), Source{Type: SourceFile, Name: configFile.Path()})
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
+	}
+	if hasDefaultProfileSetting {
+		cfg.Profile = profile
 	}
 	return nil
 }
@@ -120,8 +123,11 @@ func resolveDefaultProfile(f *File) (string, bool) {
 	section, err := f.GetSection(settingsSection)
 	if err == nil {
 		key, err := section.GetKey("default_profile")
-		if err == nil && key.String() != "" && key.String() != settingsSection {
-			return key.String(), true
+		if err == nil {
+			defaultProfile := strings.TrimSpace(key.String())
+			if defaultProfile != "" {
+				return defaultProfile, true
+			}
 		}
 	}
 	return "DEFAULT", false
