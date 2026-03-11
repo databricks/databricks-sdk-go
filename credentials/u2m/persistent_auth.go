@@ -35,6 +35,11 @@ const (
 	// listenerTimeout is the maximum duration spent trying to acquire a
 	// listener (including port selection).
 	listenerTimeout = 45 * time.Second
+
+	// tokenRefreshBuffer is the duration before token expiry at which the
+	// token is proactively refreshed. This prevents callers from receiving
+	// near-expired tokens that may expire before the next request.
+	tokenRefreshBuffer = 5 * time.Minute
 )
 
 var (
@@ -244,9 +249,8 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
-	// refresh if invalid
-	if !t.Valid() {
-		t, err = a.refresh(t)
+	if !t.Valid() || a.tokenExpiringSoon(t) {
+		t, err = a.forceRefresh(t)
 		if err != nil {
 			return nil, fmt.Errorf("token refresh: %w", err)
 		}
@@ -256,6 +260,25 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	// long-lived credentials that we do not want to expose unnecessarily.
 	t.RefreshToken = ""
 	return t, nil
+}
+
+// tokenExpiringSoon returns true when the token is technically still valid but
+// will expire within the tokenRefreshBuffer window. Tokens with a zero expiry
+// (meaning they never expire) are not considered expiring soon.
+func (a *PersistentAuth) tokenExpiringSoon(t *oauth2.Token) bool {
+	return !t.Expiry.IsZero() && time.Until(t.Expiry) < tokenRefreshBuffer
+}
+
+// forceRefresh refreshes the token, even if the oauth2 library would consider
+// it still valid. The oauth2 library's TokenSource only performs a refresh when
+// the token's Valid() method returns false, which by default requires the token
+// to be within 10 seconds of expiry. To bypass this when we want to refresh
+// earlier (e.g. within the tokenRefreshBuffer window), we set the expiry to the
+// past on a shallow copy of the token before passing it to refresh.
+func (a *PersistentAuth) forceRefresh(t *oauth2.Token) (*oauth2.Token, error) {
+	expired := *t
+	expired.Expiry = time.Now().Add(-time.Minute)
+	return a.refresh(&expired)
 }
 
 // refresh refreshes the token for the given OAuthArgument, storing the new
