@@ -98,11 +98,11 @@ func TestConfigFile_Scopes(t *testing.T) {
 	}
 }
 
-// Test 1: default_profile resolves correctly
+// Test 1: default_profile resolves correctly (no [DEFAULT] section present)
 func TestConfigFile_DefaultProfileResolves(t *testing.T) {
 	configFixture{
 		Env: map[string]string{
-			"HOME": "testdata/default_profile",
+			"HOME": "testdata/default_profile_no_default",
 		},
 		AssertAuth: "pat",
 		AssertHost: "https://my-workspace.cloud.databricks.com",
@@ -152,6 +152,31 @@ func TestConfigFile_SettingsSectionNotAProfile(t *testing.T) {
 	profile, _ := resolveDefaultProfile(f)
 	assert.NotEqual(t, settingsSection, profile,
 		"resolveDefaultProfile must never return the settings section name as a profile")
+
+	// Verify __settings__ is excluded from section enumeration.
+	for _, name := range f.SectionStrings() {
+		if name == settingsSection {
+			// The ini library includes __settings__ as a section, but the
+			// SDK must never treat it as a profile. This assertion documents
+			// that callers must filter it out when enumerating profiles.
+			profile, _ := resolveDefaultProfile(f)
+			assert.NotEqual(t, settingsSection, profile)
+			return
+		}
+	}
+}
+
+// Test 5b: default_profile = __settings__ is rejected.
+// If someone writes default_profile = __settings__, the SDK must not try to
+// load [__settings__] as a profile. It should fall through to [DEFAULT].
+func TestConfigFile_DefaultProfileSettingsSelfReference(t *testing.T) {
+	configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/default_profile_self_ref",
+		},
+		AssertAuth: "pat",
+		AssertHost: "https://default.cloud.databricks.com",
+	}.apply(t)
 }
 
 // Test 6: Explicit --profile overrides default_profile

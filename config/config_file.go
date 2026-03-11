@@ -120,7 +120,7 @@ func resolveDefaultProfile(f *File) (string, bool) {
 	section, err := f.GetSection(settingsSection)
 	if err == nil {
 		key, err := section.GetKey("default_profile")
-		if err == nil && key.String() != "" {
+		if err == nil && key.String() != "" && key.String() != settingsSection {
 			return key.String(), true
 		}
 	}
