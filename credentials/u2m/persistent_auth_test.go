@@ -883,6 +883,151 @@ func TestPersistentAuth_startListener_explicitPortNoFallBack(t *testing.T) {
 	}
 }
 
+func TestTokenValid_ExpiryDeltaTriggersRefresh(t *testing.T) {
+	tok := &oauth2.Token{
+		AccessToken: "valid",
+		Expiry:      time.Now().Add(1 * time.Hour),
+	}
+	pa := &PersistentAuth{expiryDelta: 2 * time.Hour}
+	if pa.tokenValid(tok) {
+		t.Error("tokenValid(): want false (1h remaining < 2h delta), got true")
+	}
+}
+
+func TestTokenValid_ExpiryDeltaNoRefreshNeeded(t *testing.T) {
+	tok := &oauth2.Token{
+		AccessToken: "valid",
+		Expiry:      time.Now().Add(1 * time.Hour),
+	}
+	pa := &PersistentAuth{expiryDelta: 5 * time.Minute}
+	if !pa.tokenValid(tok) {
+		t.Error("tokenValid(): want true (1h remaining > 5m delta), got false")
+	}
+}
+
+func TestTokenValid_ZeroDeltaFallsBackToDefault(t *testing.T) {
+	tok := &oauth2.Token{
+		AccessToken: "valid",
+		Expiry:      time.Now().Add(1 * time.Hour),
+	}
+	pa := &PersistentAuth{expiryDelta: 0}
+	if !pa.tokenValid(tok) {
+		t.Error("tokenValid(): want true (default Valid() for non-expired token), got false")
+	}
+}
+
+func TestTokenValid_ZeroExpiryAlwaysValid(t *testing.T) {
+	tok := &oauth2.Token{
+		AccessToken: "valid",
+	}
+	pa := &PersistentAuth{expiryDelta: 2 * time.Hour}
+	if !pa.tokenValid(tok) {
+		t.Error("tokenValid(): want true (zero expiry → always valid), got false")
+	}
+}
+
+func TestTokenValid_NilTokenInvalid(t *testing.T) {
+	pa := &PersistentAuth{expiryDelta: 5 * time.Minute}
+	if pa.tokenValid(nil) {
+		t.Error("tokenValid(): want false for nil token, got true")
+	}
+}
+
+func TestTokenValid_EmptyAccessTokenInvalid(t *testing.T) {
+	tok := &oauth2.Token{
+		Expiry: time.Now().Add(1 * time.Hour),
+	}
+	pa := &PersistentAuth{expiryDelta: 5 * time.Minute}
+	if pa.tokenValid(tok) {
+		t.Error("tokenValid(): want false for empty access token, got true")
+	}
+}
+
+func TestToken_WithExpiryDeltaTriggersRefresh(t *testing.T) {
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken:  "still-valid",
+				RefreshToken: "refresh-me",
+				Expiry:       time.Now().Add(1 * time.Hour),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `access_token=refreshed&refresh_token=new-refresh`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/x-www-form-urlencoded"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+		WithExpiryDelta(2*time.Hour),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): %v", err)
+	}
+	if tok.AccessToken != "refreshed" {
+		t.Errorf("want access token 'refreshed', got %q", tok.AccessToken)
+	}
+}
+
+func TestToken_WithExpiryDeltaSkipsRefresh(t *testing.T) {
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken:  "still-valid",
+				RefreshToken: "refresh-me",
+				Expiry:       time.Now().Add(1 * time.Hour),
+			}, nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+		WithExpiryDelta(5*time.Minute),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): %v", err)
+	}
+	if tok.AccessToken != "still-valid" {
+		t.Errorf("want access token 'still-valid' (no refresh), got %q", tok.AccessToken)
+	}
+}
+
 // TestU2M_ScopesAndOfflineAccess verifies that OAuth scopes are correctly configured
 // and sent during the authorization flow, and that the disableOfflineAccess flag
 // correctly controls whether offline_access is added to the scope.

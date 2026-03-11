@@ -101,6 +101,11 @@ type PersistentAuth struct {
 	// When true, Challenge() uses the discovery token source instead of
 	// the standard authhandler flow.
 	discoveryMode bool
+
+	// expiryDelta is a custom token expiry safety margin. When set, the token
+	// is considered expired if it has less than expiryDelta remaining before
+	// its expiry time. A zero value falls back to oauth2's default behavior.
+	expiryDelta time.Duration
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -176,6 +181,14 @@ func WithDiscoveryLogin() PersistentAuthOption {
 	}
 }
 
+// WithExpiryDelta sets a custom token expiry safety margin. When set,
+// the token is considered expired if it has less than d remaining.
+func WithExpiryDelta(d time.Duration) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.expiryDelta = d
+	}
+}
+
 // NewPersistentAuth creates a new PersistentAuth with the provided options.
 func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*PersistentAuth, error) {
 	p := &PersistentAuth{}
@@ -245,8 +258,13 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
 	// refresh if invalid
-	if !t.Valid() {
-		t, err = a.refresh(t)
+	if !a.tokenValid(t) {
+		// When using a custom expiryDelta, the token may still be valid by
+		// oauth2's default 10-second margin. Force the expiry to the past so
+		// the oauth2 library's TokenSource performs the actual refresh.
+		refreshTok := *t
+		refreshTok.Expiry = time.Now().Add(-1 * time.Minute)
+		t, err = a.refresh(&refreshTok)
 		if err != nil {
 			return nil, fmt.Errorf("token refresh: %w", err)
 		}
@@ -256,6 +274,22 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	// long-lived credentials that we do not want to expose unnecessarily.
 	t.RefreshToken = ""
 	return t, nil
+}
+
+// tokenValid checks whether the token is still valid. When expiryDelta is set,
+// the token is considered expired if it has less than expiryDelta remaining.
+// Otherwise it falls back to oauth2's default Valid() check.
+func (a *PersistentAuth) tokenValid(t *oauth2.Token) bool {
+	if a.expiryDelta == 0 {
+		return t.Valid()
+	}
+	if t == nil || t.AccessToken == "" {
+		return false
+	}
+	if t.Expiry.IsZero() {
+		return true
+	}
+	return time.Now().Before(t.Expiry.Round(0).Add(-a.expiryDelta))
 }
 
 // refresh refreshes the token for the given OAuthArgument, storing the new
