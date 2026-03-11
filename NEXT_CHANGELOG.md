@@ -11,6 +11,7 @@
 ### Documentation
 
 ### Internal Changes
+* Proactively refresh OAuth tokens expiring within 5 minutes in `PersistentAuth.Token()` to prevent callers from receiving near-expired tokens.
 
 ### API Changes
 * Add `UpdateRole` method for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
