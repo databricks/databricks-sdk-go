@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/stretchr/testify/assert"
 )
@@ -36,4 +37,33 @@ func TestAuthInUserAgentVisitorCustom(t *testing.T) {
 	uac := strings.Split(useragent.FromContext(request.Context()), " ")
 	assert.NotContains(t, uac, "auth/PAT")
 	assert.Contains(t, uac, "auth/oath")
+}
+
+func TestAgentInUserAgentVisitorDetected(t *testing.T) {
+	env.CleanupEnvironment(t)
+	useragent.ClearCache()
+	t.Setenv("CLAUDECODE", "1")
+
+	request := &http.Request{}
+	provider := useragent.AgentProvider()
+	assert.Equal(t, "claude-code", provider)
+
+	ctx := useragent.InContext(request.Context(), useragent.AgentKey, provider)
+	*request = *request.WithContext(ctx)
+
+	ua := useragent.FromContext(request.Context())
+	assert.Contains(t, ua, "agent/claude-code")
+	assert.Equal(t, 1, strings.Count(ua, "agent/"))
+}
+
+func TestAgentInUserAgentVisitorNoAgent(t *testing.T) {
+	env.CleanupEnvironment(t)
+	useragent.ClearCache()
+
+	request := &http.Request{}
+	provider := useragent.AgentProvider()
+	assert.Equal(t, "", provider)
+
+	ua := useragent.FromContext(request.Context())
+	assert.NotContains(t, ua, "agent/")
 }

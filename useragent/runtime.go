@@ -9,9 +9,10 @@ import (
 // being used. This is useful for testing.
 func ClearCache() {
 	// Reset the sync.Once to their default values. This will recompute the
-	// values on the next call to Runtime() or CiCdProvider().
+	// values on the next call to Runtime(), CiCdProvider(), or AgentProvider().
 	runtimeOnce = sync.Once{}
 	providerOnce = sync.Once{}
+	agentOnce = sync.Once{}
 }
 
 var runtimeOnce sync.Once

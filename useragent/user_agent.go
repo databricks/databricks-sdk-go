@@ -15,6 +15,7 @@ const (
 	RuntimeKey = "runtime"
 	CicdKey    = "cicd"
 	AuthKey    = "auth"
+	AgentKey   = "agent"
 )
 
 // WithProduct sets the product name and product version globally.

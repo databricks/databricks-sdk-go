@@ -63,6 +63,17 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			*r = *r.WithContext(ctx) // replace request
 			return nil
 		},
+		func(r *http.Request) error {
+			// Detect if we are running inside a known AI coding agent.
+			provider := useragent.AgentProvider()
+			if provider == "" {
+				return nil
+			}
+			// Add the detected agent to the user agent
+			ctx := useragent.InContext(r.Context(), useragent.AgentKey, provider)
+			*r = *r.WithContext(ctx) // replace request
+			return nil
+		},
 	}
 
 	return httpclient.ClientConfig{
