@@ -9,6 +9,99 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+// Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto
+type AlertEvaluationState string
+
+const AlertEvaluationStateError AlertEvaluationState = `ERROR`
+
+const AlertEvaluationStateOk AlertEvaluationState = `OK`
+
+const AlertEvaluationStateTriggered AlertEvaluationState = `TRIGGERED`
+
+const AlertEvaluationStateUnknown AlertEvaluationState = `UNKNOWN`
+
+// String representation for [fmt.Print]
+func (f *AlertEvaluationState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertEvaluationState) Set(v string) error {
+	switch v {
+	case `ERROR`, `OK`, `TRIGGERED`, `UNKNOWN`:
+		*f = AlertEvaluationState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ERROR", "OK", "TRIGGERED", "UNKNOWN"`, v)
+	}
+}
+
+// Values returns all possible values for AlertEvaluationState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertEvaluationState) Values() []AlertEvaluationState {
+	return []AlertEvaluationState{
+		AlertEvaluationStateError,
+		AlertEvaluationStateOk,
+		AlertEvaluationStateTriggered,
+		AlertEvaluationStateUnknown,
+	}
+}
+
+// Type always returns AlertEvaluationState to satisfy [pflag.Value] interface
+func (f *AlertEvaluationState) Type() string {
+	return "AlertEvaluationState"
+}
+
+type AlertTask struct {
+	// The alert_id is the canonical identifier of the alert.
+	AlertId string `json:"alert_id,omitempty"`
+	// The subscribers receive alert evaluation result notifications after the
+	// alert task is completed. The number of subscriptions is limited to 100.
+	Subscribers []AlertTaskSubscriber `json:"subscribers,omitempty"`
+	// The warehouse_id identifies the warehouse settings used by the alert
+	// task.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+	// The workspace_path is the path to the alert file in the workspace. The
+	// path: * must start with "/Workspace" * must be a normalized path. User
+	// has to select only one of alert_id or workspace_path to identify the
+	// alert.
+	WorkspacePath string `json:"workspace_path,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertTaskOutput struct {
+	AlertState AlertEvaluationState `json:"alert_state,omitempty"`
+}
+
+// Represents a subscriber that will receive alert notifications. A subscriber
+// can be either a user (via email) or a notification destination (via
+// destination_id).
+type AlertTaskSubscriber struct {
+	DestinationId string `json:"destination_id,omitempty"`
+	// A valid workspace email address.
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertTaskSubscriber) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertTaskSubscriber) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AuthenticationMethod string
 
 const AuthenticationMethodOauth AuthenticationMethod = `OAUTH`
@@ -4045,6 +4138,8 @@ func (s RunNowResponse) MarshalJSON() ([]byte, error) {
 
 // Run output was retrieved successfully.
 type RunOutput struct {
+	// The output of an alert task, if available
+	AlertOutput *AlertTaskOutput `json:"alert_output,omitempty"`
 	// The output of a clean rooms notebook task, if available
 	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput `json:"clean_rooms_notebook_output,omitempty"`
 	// The output of a dashboard task, if available
@@ -4323,6 +4418,8 @@ type RunStatus struct {
 
 // Used when outputting a child run, in GetRun or ListRuns.
 type RunTask struct {
+	// New alert v2 task
+	AlertTask *AlertTask `json:"alert_task,omitempty"`
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0. If the initial run
 	// attempt fails, and the job has a retry policy (`max_retries` > 0),
@@ -5155,6 +5252,8 @@ func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
 }
 
 type SubmitTask struct {
+	// New alert v2 task
+	AlertTask *AlertTask `json:"alert_task,omitempty"`
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
@@ -5384,6 +5483,8 @@ func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type Task struct {
+	// New alert v2 task
+	AlertTask *AlertTask `json:"alert_task,omitempty"`
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
