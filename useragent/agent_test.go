@@ -41,6 +41,13 @@ func TestAgentProviderCodex(t *testing.T) {
 	assert.Equal(t, "codex", lookupAgentProvider())
 }
 
+func TestAgentProviderCopilotCLI(t *testing.T) {
+	env.CleanupEnvironment(t)
+	ClearCache()
+	t.Setenv("COPILOT_CLI", "1")
+	assert.Equal(t, "copilot-cli", lookupAgentProvider())
+}
+
 func TestAgentProviderCursor(t *testing.T) {
 	env.CleanupEnvironment(t)
 	ClearCache()
