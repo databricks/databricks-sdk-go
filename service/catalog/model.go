@@ -1893,7 +1893,7 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 16
+// Next Id: 17
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
@@ -6975,7 +6975,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_OUTLOOK_OAUTH_M2M = 300; Next id: 301
+// Latest kind: CONNECTION_GOOGLE_DRIVE_SERVICE_ACCOUNT = 301; Next id: 302
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

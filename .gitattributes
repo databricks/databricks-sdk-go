@@ -133,6 +133,7 @@ experimental/mocks/service/postgres/mock_update_branch_operation_interface.go li
 experimental/mocks/service/postgres/mock_update_database_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_endpoint_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_project_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_update_role_operation_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_credentials_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_encryption_keys_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_networks_interface.go linguist-generated=true
