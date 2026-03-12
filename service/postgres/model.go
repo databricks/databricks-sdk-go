@@ -1344,8 +1344,8 @@ type ProjectSpec struct {
 	// project. Defaults to true.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
-	// recovery for all branches in this project. Value should be between 0s and
-	// 2592000s (up to 30 days).
+	// recovery for all branches in this project. Value should be between
+	// 172800s (2 days) and 2592000s (30 days).
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
 	// The major Postgres version number. Supported versions are 16 and 17.
 	PgVersion int `json:"pg_version,omitempty"`
