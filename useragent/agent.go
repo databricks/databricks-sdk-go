@@ -40,6 +40,9 @@ func lookupAgentProvider() string {
 		if v := os.Getenv(a.envVar); v != "" {
 			detected = a.product
 			count++
+			if count > 1 {
+				break
+			}
 		}
 	}
 	if count == 1 {

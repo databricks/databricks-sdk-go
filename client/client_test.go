@@ -560,6 +560,19 @@ func TestUserAgentForAgent(t *testing.T) {
 	}
 }
 
+func TestUserAgentForMultipleAgents(t *testing.T) {
+	env.CleanupEnvironment(t)
+	useragent.ClearCache()
+
+	t.Setenv("CLAUDECODE", "1")
+	t.Setenv("CURSOR_AGENT", "1")
+
+	userAgent := captureUserAgent(t)
+
+	// When multiple agent env vars are set, no agent/ entry should appear.
+	assert.NotContains(t, userAgent, "agent/")
+}
+
 func TestUserAgentForAgentNotSet(t *testing.T) {
 	env.CleanupEnvironment(t)
 	useragent.ClearCache()
