@@ -7,7 +7,6 @@ import (
 
 	listing "github.com/databricks/databricks-sdk-go/listing"
 	knowledgeassistants "github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
-
 	mock "github.com/stretchr/testify/mock"
 )
 

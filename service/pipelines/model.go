@@ -190,6 +190,47 @@ func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// For certain database sources LakeFlow Connect offers both query based and cdc
+// ingestion, ConnectorType can bse used to convey the type of ingestion. If
+// connection_name is provided for database sources, we default to Query Based
+// ingestion
+type ConnectorType string
+
+const ConnectorTypeCdc ConnectorType = `CDC`
+
+const ConnectorTypeQueryBased ConnectorType = `QUERY_BASED`
+
+// String representation for [fmt.Print]
+func (f *ConnectorType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ConnectorType) Set(v string) error {
+	switch v {
+	case `CDC`, `QUERY_BASED`:
+		*f = ConnectorType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CDC", "QUERY_BASED"`, v)
+	}
+}
+
+// Values returns all possible values for ConnectorType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ConnectorType) Values() []ConnectorType {
+	return []ConnectorType{
+		ConnectorTypeCdc,
+		ConnectorTypeQueryBased,
+	}
+}
+
+// Type always returns ConnectorType to satisfy [pflag.Value] interface
+func (f *ConnectorType) Type() string {
+	return "ConnectorType"
+}
+
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -326,6 +367,33 @@ func (s *DataPlaneId) UnmarshalJSON(b []byte) error {
 }
 
 func (s DataPlaneId) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Location of staged data storage
+type DataStagingOptions struct {
+	// (Required, Immutable) The name of the catalog for the connector's staging
+	// storage location.
+	CatalogName string `json:"catalog_name"`
+	// (Required, Immutable) The name of the schema for the connector's staging
+	// storage location.
+	SchemaName string `json:"schema_name"`
+	// (Optional) The Unity Catalog-compatible name for the storage location.
+	// This is the volume to use for the data that is extracted by the
+	// connector. Spark Declarative Pipelines system will automatically create
+	// the volume under the catalog and schema. For Combined Cdc Managed
+	// Ingestion pipelines default name for the volume would be :
+	// __databricks_ingestion_gateway_staging_data-$pipelineId
+	VolumeName string `json:"volume_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DataStagingOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataStagingOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -802,6 +870,14 @@ type IngestionPipelineDefinition struct {
 	// replaced with ingestion_gateway_id to change the connector to Cdc Managed
 	// Ingestion Pipeline with Gateway pipeline.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// (Optional) Connector Type for sources. Ex: CDC, Query Based.
+	ConnectorType ConnectorType `json:"connector_type,omitempty"`
+	// (Optional) Location of staged data storage. This is required for
+	// migration from Cdc Managed Ingestion Pipeline with Gateway pipeline to
+	// Combined Cdc Managed Ingestion Pipeline. If not specified, the volume for
+	// staged data will be created in catalog and schema/target specified in the
+	// top level pipeline definition.
+	DataStagingOptions *DataStagingOptions `json:"data_staging_options,omitempty"`
 	// (Optional) A window that specifies a set of time ranges for snapshot
 	// queries in CDC.
 	FullRefreshWindow *OperationTimeWindow `json:"full_refresh_window,omitempty"`
@@ -1268,6 +1344,21 @@ type Origin struct {
 	FlowName string `json:"flow_name,omitempty"`
 	// The optional host name where the event was triggered
 	Host string `json:"host,omitempty"`
+	// The name of the source catalog name (if known) from whose data ingestion
+	// is described by this event.
+	IngestionSourceCatalogName string `json:"ingestion_source_catalog_name,omitempty"`
+	// The name of the source UC connection (if known) from whose data ingestion
+	// is described by this event.
+	IngestionSourceConnectionName string `json:"ingestion_source_connection_name,omitempty"`
+	// The name of the source schema name (if known) from whose data ingestion
+	// is described by this event.
+	IngestionSourceSchemaName string `json:"ingestion_source_schema_name,omitempty"`
+	// The name of the source table name (if known) from whose data ingestion is
+	// described by this event.
+	IngestionSourceTableName string `json:"ingestion_source_table_name,omitempty"`
+	// An optional implementation-defined source table version of a dataset
+	// being (re)ingested.
+	IngestionSourceTableVersion string `json:"ingestion_source_table_version,omitempty"`
 	// The id of a maintenance run. Globally unique.
 	MaintenanceId string `json:"maintenance_id,omitempty"`
 	// Materialization name.

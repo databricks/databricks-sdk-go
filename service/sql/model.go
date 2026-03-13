@@ -2787,7 +2787,7 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
-	// Enable Serverless compute for SQL warehouses
+	// Deprecated: only setting this to true is allowed.
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
@@ -3541,8 +3541,9 @@ type ListWarehousesRequest struct {
 	// When paginating, all other parameters provided to `ListWarehouses` must
 	// match the call that provided the page token.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Service Principal which will be used to fetch the list of endpoints. If
-	// not specified, SQL Gateway will use the user from the session header.
+	// Deprecated: this field is ignored by the server. Service Principal which
+	// will be used to fetch the list of endpoints. If not specified, SQL
+	// Gateway will use the user from the session header.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4859,7 +4860,7 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
-	// Enable Serverless compute for SQL warehouses
+	// Deprecated: only setting this to true is allowed.
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types

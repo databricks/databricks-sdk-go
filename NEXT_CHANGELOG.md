@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.120.0
+## Release v0.122.0
 
 ### Breaking Changes
 
@@ -14,3 +14,9 @@
 - **Auth cache**: Simplify experimental auth token refresh scheduling by replacing stale-duration/token-state tracking with an `asyncRefreshAllowedAfter` timestamp. Async refreshes now start based on a per-token dynamic lead time and, after a failed async refresh, are deferred by 1 minute before retrying while expiry still forces a blocking refresh.
 
 ### API Changes
+* Add `AlertOutput` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+* Add `AlertTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `AlertTask` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `AlertTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+* Add [environments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments) package.
+* Add [w.Environments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments#EnvironmentsAPI) workspace-level service.

@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/database"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dataquality"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/environments"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
@@ -88,6 +89,7 @@ func NewMockWorkspaceClient(t interface {
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			EntityTagAssignments:                catalog.NewMockEntityTagAssignmentsInterface(t),
+			Environments:                        environments.NewMockEnvironmentsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
 			ExternalLineage:                     catalog.NewMockExternalLineageInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
@@ -647,6 +649,14 @@ func (m *MockWorkspaceClient) GetMockEntityTagAssignmentsAPI() *catalog.MockEnti
 	api, ok := m.WorkspaceClient.EntityTagAssignments.(*catalog.MockEntityTagAssignmentsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected EntityTagAssignments to be *catalog.MockEntityTagAssignmentsInterface, actual was %T", m.WorkspaceClient.EntityTagAssignments))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEnvironmentsAPI() *environments.MockEnvironmentsInterface {
+	api, ok := m.WorkspaceClient.Environments.(*environments.MockEnvironmentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Environments to be *environments.MockEnvironmentsInterface, actual was %T", m.WorkspaceClient.Environments))
 	}
 	return api
 }

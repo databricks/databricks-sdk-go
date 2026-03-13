@@ -413,9 +413,6 @@ type DeleteRoleRequest struct {
 	//
 	// NOTE: setting this requires spinning up a compute to succeed, since it
 	// involves running SQL queries.
-	//
-	// TODO: #LKB-7187 implement reassign_owned_to on LBM side. This might
-	// end-up being a synchronous query when this parameter is used.
 	ReassignOwnedTo string `json:"-" url:"reassign_owned_to,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1344,8 +1341,8 @@ type ProjectSpec struct {
 	// project. Defaults to true.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
-	// recovery for all branches in this project. Value should be between 0s and
-	// 2592000s (up to 30 days).
+	// recovery for all branches in this project. Value should be between
+	// 172800s (2 days) and 2592000s (30 days).
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
 	// The major Postgres version number. Supported versions are 16 and 17.
 	PgVersion int `json:"pg_version,omitempty"`
@@ -1672,6 +1669,9 @@ func (s RoleRoleSpec) MarshalJSON() ([]byte, error) {
 }
 
 type RoleRoleStatus struct {
+	// The PG role attributes associated with the role.
+	Attributes *RoleAttributes `json:"attributes,omitempty"`
+
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
 	// The type of the role.
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
@@ -1746,5 +1746,19 @@ type UpdateProjectRequest struct {
 	Project Project `json:"project"`
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+type UpdateRoleRequest struct {
+	// Output only. The full resource path of the role. Format:
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Name string `json:"-" url:"-"`
+	// The Postgres Role to update.
+	//
+	// The role's `name` field is used to identify the role to update. Format:
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Role Role `json:"role"`
+	// The list of fields to update in Postgres Role. If unspecified, all fields
+	// will be updated when possible.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
