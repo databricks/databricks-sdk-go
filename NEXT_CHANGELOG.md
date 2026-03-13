@@ -17,3 +17,5 @@
 * Add `AlertTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
 * Add `AlertTask` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
 * Add `AlertTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+* Add [environments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments) package.
+* Add [w.Environments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments#EnvironmentsAPI) workspace-level service.
