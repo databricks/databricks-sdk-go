@@ -19,3 +19,4 @@
 * Add `AlertTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
 * Add [environments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments) package.
 * Add [w.Environments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments#EnvironmentsAPI) workspace-level service.
+* Add `CanCreateApp` enum value for [iam.PermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionLevel).
