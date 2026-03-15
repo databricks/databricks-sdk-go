@@ -1566,6 +1566,8 @@ const PermissionLevelCanBind PermissionLevel = `CAN_BIND`
 
 const PermissionLevelCanCreate PermissionLevel = `CAN_CREATE`
 
+const PermissionLevelCanCreateApp PermissionLevel = `CAN_CREATE_APP`
+
 const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
 
 const PermissionLevelCanEditMetadata PermissionLevel = `CAN_EDIT_METADATA`
@@ -1606,11 +1608,11 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_CREATE`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_MONITOR`, `CAN_MONITOR_ONLY`, `CAN_QUERY`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
+	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_CREATE`, `CAN_CREATE_APP`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_MONITOR`, `CAN_MONITOR_ONLY`, `CAN_QUERY`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_CREATE", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_MONITOR", "CAN_MONITOR_ONLY", "CAN_QUERY", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_CREATE", "CAN_CREATE_APP", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_MONITOR", "CAN_MONITOR_ONLY", "CAN_QUERY", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
 	}
 }
 
@@ -1622,6 +1624,7 @@ func (f *PermissionLevel) Values() []PermissionLevel {
 		PermissionLevelCanAttachTo,
 		PermissionLevelCanBind,
 		PermissionLevelCanCreate,
+		PermissionLevelCanCreateApp,
 		PermissionLevelCanEdit,
 		PermissionLevelCanEditMetadata,
 		PermissionLevelCanManage,

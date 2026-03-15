@@ -18,6 +18,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
+	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
@@ -315,6 +316,14 @@ type WorkspaceClient struct {
 	// columns, volumes. With these APIs, users can create, update, delete, and
 	// list tag assignments across Unity Catalog entities
 	EntityTagAssignments catalog.EntityTagAssignmentsInterface
+
+	// APIs to manage environment resources.
+	//
+	// The Environments API provides management capabilities for different types
+	// of environments including workspace-level base environments that define
+	// the environment version and dependencies to be used in serverless
+	// notebooks and jobs.
+	Environments environments.EnvironmentsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
 	// runs belong to an experiment. Each experiment lets you visualize, search,
@@ -1461,6 +1470,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
 		EntityTagAssignments:                catalog.NewEntityTagAssignments(databricksClient),
+		Environments:                        environments.NewEnvironments(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
 		ExternalLineage:                     catalog.NewExternalLineage(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
