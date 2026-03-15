@@ -23,6 +23,7 @@ func listKnownAgents() []knownAgent {
 		{"CURSOR_AGENT", "cursor"},           // Closed source
 		{"GEMINI_CLI", "gemini-cli"},         // https://google-gemini.github.io/gemini-cli
 		{"OPENCODE", "opencode"},             // https://github.com/opencode-ai/opencode
+		{"OPENCLAW_SHELL", "openclaw"},       // https://github.com/anthropics/openclaw
 	}
 }
 

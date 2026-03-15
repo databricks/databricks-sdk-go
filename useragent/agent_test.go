@@ -69,6 +69,13 @@ func TestAgentProviderOpenCode(t *testing.T) {
 	assert.Equal(t, "opencode", lookupAgentProvider())
 }
 
+func TestAgentProviderOpenClaw(t *testing.T) {
+	env.CleanupEnvironment(t)
+	ClearCache()
+	t.Setenv("OPENCLAW_SHELL", "exec")
+	assert.Equal(t, "openclaw", lookupAgentProvider())
+}
+
 func TestAgentProviderMultipleAgents(t *testing.T) {
 	env.CleanupEnvironment(t)
 	ClearCache()
