@@ -3541,8 +3541,9 @@ type ListWarehousesRequest struct {
 	// When paginating, all other parameters provided to `ListWarehouses` must
 	// match the call that provided the page token.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Service Principal which will be used to fetch the list of endpoints. If
-	// not specified, SQL Gateway will use the user from the session header.
+	// Deprecated: this field is ignored by the server. Service Principal which
+	// will be used to fetch the list of endpoints. If not specified, SQL
+	// Gateway will use the user from the session header.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

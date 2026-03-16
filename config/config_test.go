@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
@@ -570,7 +570,7 @@ func TestConfig_DiscoveryURL_FromEnv(t *testing.T) {
 }
 
 func TestConfig_getOidcEndpoints_UsesDiscoveryURL(t *testing.T) {
-	discoveryURL := testHMHost + "/oidc"
+	discoveryURL := testHMHost + "/oidc/.well-known/oauth-authorization-server"
 	cfg := &Config{
 		Host:         testHMHost,
 		Token:        "t",
@@ -578,7 +578,7 @@ func TestConfig_getOidcEndpoints_UsesDiscoveryURL(t *testing.T) {
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
-				Resource: "/oidc",
+				Resource: "/oidc/.well-known/oauth-authorization-server",
 				Status:   200,
 				Response: `{"authorization_endpoint": "` + testHMHost + `/oidc/v1/authorize", "token_endpoint": "` + testHMHost + `/oidc/v1/token"}`,
 			},
@@ -597,38 +597,13 @@ func TestConfig_getOidcEndpoints_UsesDiscoveryURL(t *testing.T) {
 	}
 }
 
-func TestConfig_ResolveHostMetadata_WorkspacePopulatesAllFields(t *testing.T) {
-	cfg := &Config{
-		Host:  testHMHost,
-		Token: "t",
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `"}`,
-			},
-		},
-	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-		t.Fatal(err)
-	}
-	if cfg.AccountID != testHMAccountID {
-		t.Errorf("unexpected AccountID: %q", cfg.AccountID)
-	}
-	if cfg.WorkspaceID != testHMWorkspaceID {
-		t.Errorf("unexpected WorkspaceID: %q", cfg.WorkspaceID)
-	}
-	if cfg.DiscoveryURL != testHMHost+"/oidc" {
-		t.Errorf("unexpected DiscoveryURL: %q", cfg.DiscoveryURL)
-	}
-}
-
 func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:      testHMAccHost,
-		Token:     "t",
-		AccountID: testHMAccountID,
+		Host:                       testHMAccHost,
+		AccountID:                  testHMAccountID,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
@@ -638,21 +613,20 @@ func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-		t.Fatal(err)
-	}
-	want := testHMAccHost + "/oidc/accounts/" + testHMAccountID
-	if cfg.DiscoveryURL != want {
-		t.Errorf("unexpected DiscoveryURL: %q", cfg.DiscoveryURL)
-	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	want := testHMAccHost + "/oidc/accounts/" + testHMAccountID + "/.well-known/oauth-authorization-server"
+	assert.Equal(t, want, cfg.DiscoveryURL)
 }
 
 func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingFields(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:        testHMHost,
-		Token:       "t",
-		AccountID:   testHMAccountID,
-		WorkspaceID: testHMWorkspaceID,
+		Host:                       testHMHost,
+		AccountID:                  testHMAccountID,
+		WorkspaceID:                testHMWorkspaceID,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
@@ -662,94 +636,18 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingFields(t *testing.T)
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-		t.Fatal(err)
-	}
-	if cfg.AccountID != testHMAccountID {
-		t.Errorf("AccountID was overwritten: %q", cfg.AccountID)
-	}
-	if cfg.WorkspaceID != testHMWorkspaceID {
-		t.Errorf("WorkspaceID was overwritten: %q", cfg.WorkspaceID)
-	}
-}
-
-func TestConfig_ResolveHostMetadata_MissingAccountID(t *testing.T) {
-	cfg := &Config{
-		Host:  testHMAccHost,
-		Token: "t",
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMAccHost + `/oidc/accounts/{account_id}"}`,
-			},
-		},
-	}
-	err := cfg.resolveHostMetadata(context.Background())
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "account_id is not configured") {
-		t.Errorf("unexpected error: %v", err)
-	}
-}
-
-func TestConfig_ResolveHostMetadata_MissingOIDCEndpoint(t *testing.T) {
-	cfg := &Config{
-		Host:  testHMHost,
-		Token: "t",
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"account_id": "` + testHMAccountID + `"}`,
-			},
-		},
-	}
-	err := cfg.resolveHostMetadata(context.Background())
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "discovery_url is not configured") {
-		t.Errorf("unexpected error: %v", err)
-	}
-}
-
-func TestConfig_ResolveHostMetadata_HTTPError(t *testing.T) {
-	cfg := &Config{
-		Host:  testHMHost,
-		Token: "t",
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   500,
-				Response: `{"error": "internal error"}`,
-			},
-		},
-	}
-	err := cfg.resolveHostMetadata(context.Background())
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "fetching host metadata from") {
-		t.Errorf("unexpected error: %v", err)
-	}
-}
-
-func TestConfig_ResolveHostMetadata_NoHost(t *testing.T) {
-	cfg := &Config{}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-		t.Fatal(err)
-	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
 }
 
 func TestConfig_ResolveHostMetadata_PopulatesCloudFromAPI(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:  testHMHost,
-		Token: "t",
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
@@ -759,18 +657,17 @@ func TestConfig_ResolveHostMetadata_PopulatesCloudFromAPI(t *testing.T) {
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-		t.Fatal(err)
-	}
-	if cfg.Cloud != "Azure" {
-		t.Errorf("unexpected Cloud: %q", cfg.Cloud)
-	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, environment.Cloud("Azure"), cfg.Cloud)
 }
 
 func TestConfig_ResolveHostMetadata_CloudFallbackToDNS(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:  "https://my-workspace.azuredatabricks.net",
-		Token: "t",
+		Host:                       "https://my-workspace.azuredatabricks.net",
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
@@ -780,19 +677,18 @@ func TestConfig_ResolveHostMetadata_CloudFallbackToDNS(t *testing.T) {
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-		t.Fatal(err)
-	}
-	if cfg.Cloud != "Azure" {
-		t.Errorf("unexpected Cloud from DNS fallback: %q", cfg.Cloud)
-	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, environment.Cloud("Azure"), cfg.Cloud)
 }
 
 func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:  testHMHost,
-		Token: "t",
-		Cloud: "GCP",
+		Host:                       testHMHost,
+		Cloud:                      "GCP",
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
@@ -802,12 +698,109 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) 
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-		t.Fatal(err)
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, environment.Cloud("GCP"), cfg.Cloud)
+}
+
+func TestEnsureResolved_ResolvesHostMetadata_WhenUnifiedHost(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
+			},
+		},
 	}
-	if cfg.Cloud != "GCP" {
-		t.Errorf("Cloud was overwritten: got %q, want %q", cfg.Cloud, "GCP")
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
+	assert.Equal(t, testHMHost+"/oidc/.well-known/oauth-authorization-server", cfg.DiscoveryURL)
+	assert.Equal(t, "AWS", string(cfg.Cloud))
+}
+
+func TestEnsureResolved_SkipsHostMetadata_WhenNotUnified(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:          testHMHost,
+		Loaders:       []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			// No metadata endpoint — if it were called, the slice would fail
+		},
 	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.AccountID)
+	assert.Empty(t, cfg.WorkspaceID)
+}
+
+func TestEnsureResolved_HostMetadataFailure_NonFatal(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   500,
+				Response: `{"error": "internal error"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.True(t, cfg.resolved)
+}
+
+func TestEnsureResolved_HostMetadata_NoOidcEndpoint_NonFatal(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"account_id": "` + testHMAccountID + `"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Empty(t, cfg.DiscoveryURL)
+}
+
+func TestEnsureResolved_HostMetadata_MissingAccountIdWithPlaceholder_Warns(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc/accounts/{account_id}"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// DiscoveryURL should not be set because account_id is empty and placeholder can't be substituted
+	assert.Empty(t, cfg.DiscoveryURL)
 }
 
 func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
@@ -877,11 +870,13 @@ func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
 			wantCloud: "AWS", // Falls back to DNS-based detection for testHMHost
 		},
 	}
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			cfg := &Config{
-				Host:  testHMHost,
-				Token: "t",
+				Host:                       testHMHost,
+				Experimental_IsUnifiedHost: true,
+				Loaders:                    []Loader{noopLoader},
 				HTTPTransport: fixtures.SliceTransport{
 					{
 						Method:   "GET",
@@ -891,12 +886,9 @@ func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
 					},
 				},
 			}
-			if err := cfg.resolveHostMetadata(context.Background()); err != nil {
-				t.Fatal(err)
-			}
-			if string(cfg.Cloud) != tc.wantCloud {
-				t.Errorf("unexpected Cloud: got %q, want %q", cfg.Cloud, tc.wantCloud)
-			}
+			err := cfg.EnsureResolved()
+			require.NoError(t, err)
+			assert.Equal(t, tc.wantCloud, string(cfg.Cloud))
 		})
 	}
 }
