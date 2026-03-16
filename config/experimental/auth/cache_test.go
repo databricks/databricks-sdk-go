@@ -12,6 +12,32 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// reuseTokenSource is a test helper that mimics the caching behaviour of
+// oauth2.ReuseTokenSource: it calls the underlying source only when the cached
+// token is within expiryDelta of its expiry. This is the inner layer in the
+// double-caching stack described in https://github.com/databricks/databricks-sdk-go/issues/1549.
+type reuseTokenSource struct {
+	mu          sync.Mutex
+	cached      *oauth2.Token
+	inner       TokenSource
+	expiryDelta time.Duration
+	timeNow     func() time.Time
+}
+
+func (r *reuseTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.cached != nil && r.timeNow().Before(r.cached.Expiry.Add(-r.expiryDelta)) {
+		return r.cached, nil
+	}
+	t, err := r.inner.Token(ctx)
+	if err != nil {
+		return nil, err
+	}
+	r.cached = t
+	return t, nil
+}
+
 func waitForAsyncRefreshToComplete(t *testing.T, cts *cachedTokenSource) {
 	t.Helper()
 
@@ -527,5 +553,162 @@ func TestCachedTokenSource_AsyncRefreshSkipsOlderToken(t *testing.T) {
 
 	if cts.cachedToken != cachedToken {
 		t.Errorf("cachedToken = %v, want %v (fresher token from blocking refresh)", cts.cachedToken, cachedToken)
+	}
+}
+
+// TestCachedTokenSource_AsyncRefreshBlockedByInnerCache demonstrates that when
+// cachedTokenSource wraps a ReuseTokenSource-like inner source (as happened
+// when clientcredentials.Config.TokenSource was used directly), each async
+// refresh call returns the inner-cached token without an HTTP fetch until the
+// token is within the inner layer's expiryDelta (~10s) of expiry. The
+// proactive 20-min refresh window is wasted.
+// See https://github.com/databricks/databricks-sdk-go/issues/1549.
+func TestCachedTokenSource_AsyncRefreshBlockedByInnerCache(t *testing.T) {
+	const tokenTTL = 3600 * time.Second
+	const innerExpiryDelta = 10 * time.Second // mirrors oauth2.ReuseTokenSource
+
+	var now time.Time
+	nowFn := func() time.Time { return now }
+
+	httpFetches := 0 // counts real network calls to the token endpoint
+
+	// rawSource represents the HTTP token endpoint — always returns a fresh token.
+	rawSource := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		httpFetches++
+		return &oauth2.Token{
+			AccessToken: fmt.Sprintf("token-%d", httpFetches),
+			Expiry:      nowFn().Add(tokenTTL),
+		}, nil
+	})
+
+	// innerSource mimics oauth2.ReuseTokenSource: delegates to rawSource only
+	// when the cached token is within innerExpiryDelta of expiry, otherwise
+	// returns the cached token without a network call.
+	innerSrc := &reuseTokenSource{
+		inner:       rawSource,
+		expiryDelta: innerExpiryDelta,
+		timeNow:     nowFn,
+	}
+
+	// Seed the inner cache with the initial token at T=0.
+	now = time.Unix(0, 0)
+	initialToken, err := innerSrc.Token(context.Background())
+	if err != nil {
+		t.Fatalf("initial token: %v", err)
+	}
+	fetchesAfterInit := httpFetches // == 1
+
+	// outer is cachedTokenSource — the layer that is supposed to refresh
+	// proactively maxAsyncRefreshLeadTime before the token expires.
+	outer := &cachedTokenSource{
+		tokenSource: innerSrc,
+		cachedToken: initialToken,
+		timeNow:     nowFn,
+	}
+	outer.updateNextAsyncRefresh()
+
+	// Advance the clock just past the first async refresh window
+	// (T = expiry - 20min + 1s). If cachedTokenSource could reach the HTTP
+	// endpoint it would fetch a fresh token here. With double-caching it cannot.
+	now = initialToken.Expiry.Add(-maxAsyncRefreshLeadTime + 1*time.Second)
+	outer.Token(context.Background())
+	waitForAsyncRefreshToComplete(t, outer)
+
+	if httpFetches > fetchesAfterInit {
+		// No bug: the async refresh reached the HTTP endpoint at T-20min.
+		t.Logf("no double-caching: new token fetched at T-%v as intended", maxAsyncRefreshLeadTime)
+		return
+	}
+
+	// Bug is present: async refresh returned the inner-cached token.
+	// Advance second by second to find when the first real HTTP fetch happens.
+	var firstRealFetchAt time.Time
+	for now.Before(initialToken.Expiry.Add(1 * time.Second)) {
+		now = now.Add(1 * time.Second)
+		outer.Token(context.Background())
+		waitForAsyncRefreshToComplete(t, outer)
+		if httpFetches > fetchesAfterInit {
+			firstRealFetchAt = now
+			break
+		}
+	}
+
+	if firstRealFetchAt.IsZero() {
+		t.Fatal("no new token fetched even after expiry — token source completely broken")
+	}
+
+	// The first real HTTP fetch happens near T-innerExpiryDelta rather than
+	// T-maxAsyncRefreshLeadTime because the inner ReuseTokenSource returns its
+	// cached token for all earlier async calls. The fix (see auth_m2m.go) is to
+	// pass a direct token source so cachedTokenSource is the sole cache layer.
+	remainingAtFetch := initialToken.Expiry.Sub(firstRealFetchAt)
+	t.Logf(
+		"double-caching: first real HTTP fetch happened at T-%v (expected T-%v with direct source)",
+		remainingAtFetch, maxAsyncRefreshLeadTime,
+	)
+	if remainingAtFetch > innerExpiryDelta+5*time.Second {
+		t.Errorf("unexpected: first fetch at T-%v, should be near T-%v with double-caching",
+			remainingAtFetch, innerExpiryDelta)
+	}
+}
+
+// TestCachedTokenSource_AsyncRefreshWithDirectSource verifies that when
+// cachedTokenSource wraps a direct token source (no inner caching layer), the
+// async refresh fetches a genuinely new token at the proactive window
+// (maxAsyncRefreshLeadTime before expiry) rather than at the last moment.
+// This is the behaviour enabled by the fix in auth_m2m.go.
+func TestCachedTokenSource_AsyncRefreshWithDirectSource(t *testing.T) {
+	const tokenTTL = 3600 * time.Second
+
+	var now time.Time
+	nowFn := func() time.Time { return now }
+
+	httpFetches := 0
+
+	// directSource always calls the HTTP endpoint — no inner caching layer.
+	directSource := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		httpFetches++
+		return &oauth2.Token{
+			AccessToken: fmt.Sprintf("token-%d", httpFetches),
+			Expiry:      nowFn().Add(tokenTTL),
+		}, nil
+	})
+
+	now = time.Unix(0, 0)
+	initialToken, err := directSource.Token(context.Background())
+	if err != nil {
+		t.Fatalf("initial token: %v", err)
+	}
+	fetchesAfterInit := httpFetches // == 1
+
+	outer := &cachedTokenSource{
+		tokenSource: directSource,
+		cachedToken: initialToken,
+		timeNow:     nowFn,
+	}
+	outer.updateNextAsyncRefresh()
+
+	// Advance just past the first async window (T = expiry - 20min + 1s).
+	now = initialToken.Expiry.Add(-maxAsyncRefreshLeadTime + 1*time.Second)
+	outer.Token(context.Background())
+	waitForAsyncRefreshToComplete(t, outer)
+
+	if httpFetches <= fetchesAfterInit {
+		t.Errorf(
+			"expected a new-token HTTP fetch at T-%v but none happened;\n"+
+				"direct source should always produce a fresh token for async refresh",
+			maxAsyncRefreshLeadTime,
+		)
+		return
+	}
+
+	// Confirm the cached token has a later expiry (it's a genuinely new token).
+	outer.mu.Lock()
+	cachedExpiry := outer.cachedToken.Expiry
+	outer.mu.Unlock()
+
+	if !cachedExpiry.After(initialToken.Expiry) {
+		t.Errorf("refreshed token expiry %v is not after initial expiry %v",
+			cachedExpiry, initialToken.Expiry)
 	}
 }
