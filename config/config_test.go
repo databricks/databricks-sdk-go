@@ -491,7 +491,7 @@ func TestConfig_DiscoveryURL_FromEnv(t *testing.T) {
 }
 
 func TestConfig_getOidcEndpoints_UsesDiscoveryURL(t *testing.T) {
-	discoveryURL := testHMHost + "/oidc"
+	discoveryURL := testHMHost + "/oidc/.well-known/oauth-authorization-server"
 	cfg := &Config{
 		Host:         testHMHost,
 		Token:        "t",
@@ -499,7 +499,7 @@ func TestConfig_getOidcEndpoints_UsesDiscoveryURL(t *testing.T) {
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
-				Resource: "/oidc",
+				Resource: "/oidc/.well-known/oauth-authorization-server",
 				Status:   200,
 				Response: `{"authorization_endpoint": "` + testHMHost + `/oidc/v1/authorize", "token_endpoint": "` + testHMHost + `/oidc/v1/token"}`,
 			},
@@ -540,8 +540,9 @@ func TestConfig_ResolveHostMetadata_WorkspacePopulatesAllFields(t *testing.T) {
 	if cfg.WorkspaceID != testHMWorkspaceID {
 		t.Errorf("unexpected WorkspaceID: %q", cfg.WorkspaceID)
 	}
-	if cfg.DiscoveryURL != testHMHost+"/oidc" {
-		t.Errorf("unexpected DiscoveryURL: %q", cfg.DiscoveryURL)
+	wantDiscovery := testHMHost + "/oidc/.well-known/oauth-authorization-server"
+	if cfg.DiscoveryURL != wantDiscovery {
+		t.Errorf("unexpected DiscoveryURL: got %q, want %q", cfg.DiscoveryURL, wantDiscovery)
 	}
 }
 
@@ -562,9 +563,9 @@ func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
 	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	want := testHMAccHost + "/oidc/accounts/" + testHMAccountID
+	want := testHMAccHost + "/oidc/accounts/" + testHMAccountID + "/.well-known/oauth-authorization-server"
 	if cfg.DiscoveryURL != want {
-		t.Errorf("unexpected DiscoveryURL: %q", cfg.DiscoveryURL)
+		t.Errorf("unexpected DiscoveryURL: got %q, want %q", cfg.DiscoveryURL, want)
 	}
 }
 
@@ -729,6 +730,106 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) 
 	if cfg.Cloud != "GCP" {
 		t.Errorf("Cloud was overwritten: got %q, want %q", cfg.Cloud, "GCP")
 	}
+}
+
+func TestEnsureResolved_ResolvesHostMetadata_WhenUnifiedHost(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
+	assert.Equal(t, testHMHost+"/oidc/.well-known/oauth-authorization-server", cfg.DiscoveryURL)
+	assert.Equal(t, "AWS", string(cfg.Cloud))
+}
+
+func TestEnsureResolved_SkipsHostMetadata_WhenNotUnified(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:          testHMHost,
+		Loaders:       []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			// No metadata endpoint — if it were called, the slice would fail
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.AccountID)
+	assert.Empty(t, cfg.WorkspaceID)
+}
+
+func TestEnsureResolved_HostMetadataFailure_NonFatal(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   500,
+				Response: `{"error": "internal error"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.True(t, cfg.resolved)
+}
+
+func TestEnsureResolved_HostMetadata_NoOidcEndpoint_NonFatal(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"account_id": "` + testHMAccountID + `"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Empty(t, cfg.DiscoveryURL)
+}
+
+func TestEnsureResolved_HostMetadata_MissingAccountIdWithPlaceholder_Warns(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc/accounts/{account_id}"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// DiscoveryURL should not be set because account_id is empty and placeholder can't be substituted
+	assert.Empty(t, cfg.DiscoveryURL)
 }
 
 func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {

@@ -520,6 +520,15 @@ func (c *Config) EnsureResolved() error {
 	}
 	slices.Sort(c.Scopes)
 	c.Scopes = slices.Compact(c.Scopes)
+	if c.Experimental_IsUnifiedHost && c.Host != "" {
+		_ = c.fixHostIfNeeded()
+		meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
+		if err != nil {
+			logger.Warnf(ctx, "Failed to resolve host metadata: %v. Falling back to user config.", err)
+		} else {
+			c.applyHostMetadata(ctx, meta)
+		}
+	}
 	c.resolved = true
 	return nil
 }
@@ -659,6 +668,47 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	}
 }
 
+// applyHostMetadata back-fills AccountID, WorkspaceID, Cloud, and DiscoveryURL
+// from the given host metadata. It is non-fatal: missing OIDC endpoint or
+// account_id placeholders that cannot be substituted are logged as warnings
+// and skipped rather than returning errors.
+func (c *Config) applyHostMetadata(ctx context.Context, meta *hostMetadata) {
+	if c.AccountID == "" && meta.AccountID != "" {
+		logger.Debugf(ctx, "Resolved account_id from host metadata: %q", meta.AccountID)
+		c.AccountID = meta.AccountID
+	}
+	if c.WorkspaceID == "" && meta.WorkspaceID != "" {
+		logger.Debugf(ctx, "Resolved workspace_id from host metadata: %q", meta.WorkspaceID)
+		c.WorkspaceID = meta.WorkspaceID
+	}
+	if c.Cloud == "" && meta.Cloud != environment.CloudUnknown {
+		logger.Debugf(ctx, "Resolved cloud from host metadata: %q", meta.Cloud)
+		c.Cloud = meta.Cloud
+	}
+	if c.Cloud == "" {
+		c.Cloud = c.Environment().Cloud
+		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
+	}
+	if c.DiscoveryURL == "" {
+		if meta.OIDCEndpoint == "" {
+			logger.Warnf(ctx, "Host metadata missing oidc_endpoint; skipping discovery URL resolution")
+			return
+		}
+		oidcRoot := meta.OIDCEndpoint
+		if strings.Contains(oidcRoot, "{account_id}") {
+			if c.AccountID == "" {
+				logger.Warnf(ctx, "Host metadata oidc_endpoint contains {account_id} placeholder but account_id is not set; skipping discovery URL resolution")
+				return
+			}
+			oidcRoot = strings.ReplaceAll(oidcRoot, "{account_id}", c.AccountID)
+		}
+		oidcRoot = strings.TrimRight(oidcRoot, "/")
+		discoveryURL := oidcRoot + "/.well-known/oauth-authorization-server"
+		logger.Debugf(ctx, "Resolved discovery_url from host metadata: %q", discoveryURL)
+		c.DiscoveryURL = discoveryURL
+	}
+}
+
 // resolveHostMetadata populates missing config fields from the host's
 // /.well-known/databricks-config discovery endpoint. It back-fills AccountID,
 // WorkspaceID, Cloud, and DiscoveryURL (with any {account_id} placeholder substituted)
@@ -678,32 +728,12 @@ func (c *Config) resolveHostMetadata(ctx context.Context) error {
 		logger.Debugf(ctx, "Failed to fetch host metadata: %v", err)
 		return err
 	}
-	if c.AccountID == "" && meta.AccountID != "" {
-		logger.Debugf(ctx, "Resolved account_id from host metadata: %q", meta.AccountID)
-		c.AccountID = meta.AccountID
-	}
+	c.applyHostMetadata(ctx, meta)
 	if c.AccountID == "" {
 		return fmt.Errorf("account_id is not configured and could not be resolved from host metadata")
 	}
-	if c.WorkspaceID == "" && meta.WorkspaceID != "" {
-		logger.Debugf(ctx, "Resolved workspace_id from host metadata: %q", meta.WorkspaceID)
-		c.WorkspaceID = meta.WorkspaceID
-	}
-	if c.Cloud == "" && meta.Cloud != environment.CloudUnknown {
-		logger.Debugf(ctx, "Resolved cloud from host metadata: %q", meta.Cloud)
-		c.Cloud = meta.Cloud
-	}
-	if c.Cloud == "" {
-		c.Cloud = c.Environment().Cloud
-		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
-	}
 	if c.DiscoveryURL == "" {
-		if meta.OIDCEndpoint == "" {
-			return fmt.Errorf("discovery_url is not configured and could not be resolved from host metadata")
-		}
-		discoveryURL := strings.ReplaceAll(meta.OIDCEndpoint, "{account_id}", c.AccountID)
-		logger.Debugf(ctx, "Resolved discovery_url from host metadata: %q", discoveryURL)
-		c.DiscoveryURL = discoveryURL
+		return fmt.Errorf("discovery_url is not configured and could not be resolved from host metadata")
 	}
 	return nil
 }
