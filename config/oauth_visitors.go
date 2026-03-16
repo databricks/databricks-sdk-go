@@ -8,6 +8,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
+	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -34,6 +35,29 @@ func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHea
 		cloud, err := refreshableSecondary.Token(context.Background())
 		if err != nil {
 			return fmt.Errorf("cloud token: %w", err)
+		}
+		r.Header.Set(secondaryHeader, cloud.AccessToken)
+		return nil
+	}
+}
+
+// serviceToServiceVisitorWithFallback is like serviceToServiceVisitor but
+// logs a warning and skips the secondary header when the secondary token
+// source fails, instead of returning an error.
+func serviceToServiceVisitorWithFallback(primary, secondary oauth2.TokenSource, secondaryHeader string, opts ...auth.Option) func(r *http.Request) error {
+	refreshableAuth := auth.NewCachedTokenSource(authconv.AuthTokenSource(primary), opts...)
+	refreshableSecondary := auth.NewCachedTokenSource(authconv.AuthTokenSource(secondary), opts...)
+	return func(r *http.Request) error {
+		inner, err := refreshableAuth.Token(context.Background())
+		if err != nil {
+			return fmt.Errorf("inner token: %w", err)
+		}
+		inner.SetAuthHeader(r)
+
+		cloud, err := refreshableSecondary.Token(context.Background())
+		if err != nil {
+			logger.Warnf(r.Context(), "Failed to get secondary token for %s header: %v. Skipping.", secondaryHeader, err)
+			return nil
 		}
 		r.Header.Set(secondaryHeader, cloud.AccessToken)
 		return nil
