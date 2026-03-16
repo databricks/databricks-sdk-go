@@ -52,6 +52,9 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 			var databricksServer *httptest.Server
 			databricksServer = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.Path {
+				case "/.well-known/databricks-config":
+					http.NotFound(w, r)
+
 				case "/oidc/.well-known/oauth-authorization-server":
 					w.Header().Set("Content-Type", "application/json")
 					json.NewEncoder(w).Encode(u2m.OAuthAuthorizationServer{

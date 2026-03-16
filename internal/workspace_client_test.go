@@ -13,3 +13,8 @@ func TestUcAccWorkspaceClient_CurrentWorkspaceId_NoTranspile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expectedWorkspaceId, workspaceId)
 }
+
+func TestAccWorkspaceClient_AccountIDResolvedFromMetadata(t *testing.T) {
+	_, w := workspaceTest(t)
+	assert.NotEmpty(t, w.Config.AccountID, "account_id must be populated after config resolution")
+}

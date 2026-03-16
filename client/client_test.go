@@ -32,6 +32,9 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 		ConfigFile:          "/dev/null",
 		RetryTimeoutSeconds: 1,
 		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			if r.URL.Path == "/.well-known/databricks-config" {
+				return nil, fmt.Errorf("not found")
+			}
 			require.Equal(t, "GET", r.Method)
 			require.Equal(t, "/a/b", r.URL.Path)
 			require.Equal(t, "c=d", r.URL.RawQuery)
@@ -319,6 +322,9 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 		Token:      "token",
 		ConfigFile: "/dev/null",
 		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			if r.URL.Path == "/.well-known/databricks-config" {
+				return nil, fmt.Errorf("not found")
+			}
 			assert.Equal(t, expectedPaths[i], r.URL.Path)
 			i++
 			return &http.Response{

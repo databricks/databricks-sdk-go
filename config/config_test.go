@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 	"net/http"
-	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
@@ -531,7 +530,7 @@ func TestConfig_ResolveHostMetadata_WorkspacePopulatesAllFields(t *testing.T) {
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
 	if cfg.AccountID != testHMAccountID {
@@ -559,7 +558,7 @@ func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
 	want := testHMAccHost + "/oidc/accounts/" + testHMAccountID
@@ -583,7 +582,7 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingFields(t *testing.T)
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
 	if cfg.AccountID != testHMAccountID {
@@ -607,12 +606,11 @@ func TestConfig_ResolveHostMetadata_MissingAccountID(t *testing.T) {
 			},
 		},
 	}
-	err := cfg.resolveHostMetadata(context.Background())
-	if err == nil {
-		t.Fatal("expected error, got nil")
+	if err := cfg.EnsureResolved(); err != nil {
+		t.Fatal(err)
 	}
-	if !strings.Contains(err.Error(), "account_id is not configured") {
-		t.Errorf("unexpected error: %v", err)
+	if cfg.AccountID != "" {
+		t.Errorf("expected empty AccountID, got %q", cfg.AccountID)
 	}
 }
 
@@ -629,12 +627,14 @@ func TestConfig_ResolveHostMetadata_MissingOIDCEndpoint(t *testing.T) {
 			},
 		},
 	}
-	err := cfg.resolveHostMetadata(context.Background())
-	if err == nil {
-		t.Fatal("expected error, got nil")
+	if err := cfg.EnsureResolved(); err != nil {
+		t.Fatal(err)
 	}
-	if !strings.Contains(err.Error(), "discovery_url is not configured") {
-		t.Errorf("unexpected error: %v", err)
+	if cfg.DiscoveryURL != "" {
+		t.Errorf("expected empty DiscoveryURL, got %q", cfg.DiscoveryURL)
+	}
+	if cfg.AccountID != testHMAccountID {
+		t.Errorf("unexpected AccountID: %q", cfg.AccountID)
 	}
 }
 
@@ -651,18 +651,21 @@ func TestConfig_ResolveHostMetadata_HTTPError(t *testing.T) {
 			},
 		},
 	}
-	err := cfg.resolveHostMetadata(context.Background())
-	if err == nil {
-		t.Fatal("expected error, got nil")
+	if err := cfg.EnsureResolved(); err != nil {
+		t.Fatal(err)
 	}
-	if !strings.Contains(err.Error(), "fetching host metadata from") {
-		t.Errorf("unexpected error: %v", err)
+	// Fields should remain empty — metadata could not be fetched.
+	if cfg.AccountID != "" {
+		t.Errorf("expected empty AccountID, got %q", cfg.AccountID)
+	}
+	if cfg.DiscoveryURL != "" {
+		t.Errorf("expected empty DiscoveryURL, got %q", cfg.DiscoveryURL)
 	}
 }
 
 func TestConfig_ResolveHostMetadata_NoHost(t *testing.T) {
 	cfg := &Config{}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -680,7 +683,7 @@ func TestConfig_ResolveHostMetadata_PopulatesCloudFromAPI(t *testing.T) {
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
 	if cfg.Cloud != "Azure" {
@@ -701,7 +704,7 @@ func TestConfig_ResolveHostMetadata_CloudFallbackToDNS(t *testing.T) {
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
 	if cfg.Cloud != "Azure" {
@@ -723,7 +726,7 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) 
 			},
 		},
 	}
-	if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
 	if cfg.Cloud != "GCP" {
@@ -812,7 +815,7 @@ func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
 					},
 				},
 			}
-			if err := cfg.resolveHostMetadata(context.Background()); err != nil {
+			if err := cfg.EnsureResolved(); err != nil {
 				t.Fatal(err)
 			}
 			if string(cfg.Cloud) != tc.wantCloud {
