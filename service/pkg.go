@@ -120,6 +120,8 @@
 //
 // - [catalog.EntityTagAssignmentsAPI]: Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog.
 //
+// - [environments.EnvironmentsAPI]: APIs to manage environment resources.
+//
 // - [settings.EsmEnablementAccountAPI]: The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces.
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
@@ -374,6 +376,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
+	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
@@ -462,6 +465,7 @@ var (
 	_ *networking.EndpointsAPI                            = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *catalog.EntityTagAssignmentsAPI                    = nil
+	_ *environments.EnvironmentsAPI                       = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
 	_ *catalog.ExternalLineageAPI                         = nil
