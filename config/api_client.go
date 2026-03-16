@@ -36,8 +36,17 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			if err != nil {
 				return err
 			}
+			// API requests are made with relative paths (e.g. /api/2.0/...).
+			// r.URL.Host and r.URL.Scheme direct the HTTP client to the right
+			// server. r.Host sets the Host header explicitly; if r.Host is
+			// empty, Go copies r.URL.Host into the Host header automatically
+			// before sending, so both reach the same server — but leaving
+			// r.Host empty makes debug logs misleadingly show an empty host.
 			r.URL.Host = url.Host
 			r.URL.Scheme = url.Scheme
+			if r.Host == "" {
+				r.Host = url.Host
+			}
 			return nil
 		},
 		authInUserAgentVisitor(cfg),

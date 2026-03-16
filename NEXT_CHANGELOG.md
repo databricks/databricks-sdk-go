@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+ - Fix debug logs showing empty `Host` for API requests.
+
 ### Documentation
 
 ### Internal Changes
