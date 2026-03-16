@@ -24,6 +24,17 @@ func (m mockLoader) Configure(cfg *Config) error {
 	return m(cfg)
 }
 
+// metadataNotFoundTransport returns an HTTPTransport that returns 404 for
+// the host metadata endpoint, ensuring tests don't make real HTTP calls.
+var metadataNotFoundTransport = fixtures.SliceTransport{
+	{
+		Method:       "GET",
+		Resource:     "/.well-known/databricks-config",
+		ReuseRequest: true,
+		Status:       404,
+	},
+}
+
 func TestHostType_AwsAccount(t *testing.T) {
 	c := &Config{
 		Host:      "https://accounts.cloud.databricks.com",
@@ -64,22 +75,23 @@ func TestHostType_AwsWorkspace(t *testing.T) {
 	assert.Equal(t, WorkspaceHost, c.HostType())
 }
 
-func TestHostType_Unified(t *testing.T) {
+func TestHostType_UnifiedFlagNoLongerReturnsUnified(t *testing.T) {
 	c := &Config{
 		Host:                       "https://unified.cloud.databricks.com",
 		AccountID:                  "123e4567-e89b-12d3-a456-426614174000",
 		Experimental_IsUnifiedHost: true,
 	}
-	assert.Equal(t, UnifiedHost, c.HostType())
+	// Unified flag is no longer checked; host type is determined by URL pattern only
+	assert.Equal(t, WorkspaceHost, c.HostType())
 }
 
-func TestIsAccountClient_PanicsOnUnifiedHost(t *testing.T) {
+func TestIsAccountClient_NoLongerPanicsOnUnifiedHost(t *testing.T) {
 	c := &Config{
 		Host:                       "https://unified.cloud.databricks.com",
 		AccountID:                  "test-account",
 		Experimental_IsUnifiedHost: true,
 	}
-	assert.Panics(t, func() { c.IsAccountClient() })
+	assert.NotPanics(t, func() { c.IsAccountClient() })
 }
 
 func TestNewWithWorkspaceHost(t *testing.T) {
@@ -117,6 +129,7 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 }
 
 func TestConfig_getOidcEndpoints_account(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	tests := []struct {
 		name      string
 		host      string
@@ -137,8 +150,10 @@ func TestConfig_getOidcEndpoints_account(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Config{
-				Host:      tt.host,
-				AccountID: tt.accountID,
+				Host:          tt.host,
+				AccountID:     tt.accountID,
+				Loaders:       []Loader{noopLoader},
+				HTTPTransport: metadataNotFoundTransport,
 			}
 			got, err := c.getOidcEndpoints(context.Background())
 			assert.NoError(t, err)
@@ -188,47 +203,30 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 	}
 }
 
-func TestConfig_getOidcEndpoints_unified(t *testing.T) {
-	tests := []struct {
-		name      string
-		host      string
-		accountID string
-	}{
-		{
-			name:      "without trailing slash",
-			host:      "https://unified.cloud.databricks.com",
-			accountID: "abc",
-		},
-		{
-			name:      "with trailing slash",
-			host:      "https://unified.cloud.databricks.com/",
-			accountID: "abc",
+func TestConfig_getOidcEndpoints_usesDiscoveryURLFromMetadata(t *testing.T) {
+	// Unified hosts resolve DiscoveryURL from metadata during EnsureResolved.
+	// The getOidcEndpoints method then uses the DiscoveryURL.
+	discoveryURL := "https://unified.cloud.databricks.com/oidc/accounts/abc/.well-known/oauth-authorization-server"
+	c := &Config{
+		Host:         "https://unified.cloud.databricks.com",
+		AccountID:    "abc",
+		Token:        "t",
+		DiscoveryURL: discoveryURL,
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/oidc/accounts/abc/.well-known/oauth-authorization-server",
+				Status:   200,
+				Response: `{"authorization_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize", "token_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token"}`,
+			},
 		},
 	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := &Config{
-				Host:                       tt.host,
-				AccountID:                  tt.accountID,
-				Experimental_IsUnifiedHost: true,
-				HTTPTransport: fixtures.SliceTransport{
-					{
-						Method:   "GET",
-						Resource: "/oidc/accounts/abc/.well-known/oauth-authorization-server",
-						Status:   200,
-						Response: `{"authorization_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize", "token_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token"}`,
-					},
-				},
-			}
-			got, err := c.getOidcEndpoints(context.Background())
-			assert.NoError(t, err)
-			assert.Equal(t, &u2m.OAuthAuthorizationServer{
-				AuthorizationEndpoint: "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
-				TokenEndpoint:         "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token",
-			}, got)
-		})
-	}
+	got, err := c.getOidcEndpoints(context.Background())
+	assert.NoError(t, err)
+	assert.Equal(t, &u2m.OAuthAuthorizationServer{
+		AuthorizationEndpoint: "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
+		TokenEndpoint:         "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token",
+	}, got)
 }
 
 func TestConfig_getOAuthArgument_account(t *testing.T) {
@@ -294,39 +292,19 @@ func TestConfig_getOAuthArgument_workspace(t *testing.T) {
 	}
 }
 
-func TestConfig_getOAuthArgument_Unified(t *testing.T) {
-	tests := []struct {
-		name      string
-		host      string
-		accountID string
-	}{
-		{
-			name:      "without trailing slash",
-			host:      "https://unified.cloud.databricks.com",
-			accountID: "account-123",
-		},
-		{
-			name:      "with trailing slash",
-			host:      "https://unified.cloud.databricks.com/",
-			accountID: "account-123",
-		},
+func TestConfig_getOAuthArgument_FormerUnifiedHostTreatedAsWorkspace(t *testing.T) {
+	// With the unified flag no longer checked, a non-accounts host
+	// is treated as a workspace host for OAuth argument purposes.
+	c := &Config{
+		Host:                       "https://unified.cloud.databricks.com",
+		AccountID:                  "account-123",
+		Experimental_IsUnifiedHost: true,
 	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := &Config{
-				Host:                       tt.host,
-				AccountID:                  tt.accountID,
-				Experimental_IsUnifiedHost: true,
-			}
-			rawGot, err := c.getOAuthArgument()
-			assert.NoError(t, err)
-			got, ok := rawGot.(u2m.UnifiedOAuthArgument)
-			assert.True(t, ok, "Expected UnifiedOAuthArgument")
-			assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
-			assert.Equal(t, "account-123", got.GetAccountId())
-		})
-	}
+	rawGot, err := c.getOAuthArgument()
+	assert.NoError(t, err)
+	got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
+	assert.True(t, ok, "Expected BasicWorkspaceOAuthArgument")
+	assert.Equal(t, "https://unified.cloud.databricks.com", got.GetWorkspaceHost())
 }
 
 func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
@@ -378,18 +356,18 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 			wantHostKey: "https://accounts.cloud.databricks.com/oidc/accounts/abc",
 		},
 		{
-			name: "unified without profile",
+			name: "former unified without profile (now workspace)",
 			config: &Config{
 				Host:                       "https://unified.cloud.databricks.com",
 				AccountID:                  "account-123",
 				Experimental_IsUnifiedHost: true,
 				Loaders:                    []Loader{noopLoader},
 			},
-			wantKey:     "https://unified.cloud.databricks.com/oidc/accounts/account-123",
-			wantHostKey: "https://unified.cloud.databricks.com/oidc/accounts/account-123",
+			wantKey:     "https://unified.cloud.databricks.com",
+			wantHostKey: "https://unified.cloud.databricks.com",
 		},
 		{
-			name: "unified with profile",
+			name: "former unified with profile (now workspace)",
 			config: &Config{
 				Host:                       "https://unified.cloud.databricks.com",
 				AccountID:                  "account-123",
@@ -398,7 +376,7 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 				Loaders:                    []Loader{noopLoader},
 			},
 			wantKey:     "unified-profile",
-			wantHostKey: "https://unified.cloud.databricks.com/oidc/accounts/account-123",
+			wantHostKey: "https://unified.cloud.databricks.com",
 		},
 	}
 
@@ -527,10 +505,11 @@ func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
 		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMAccHost + `/oidc/accounts/{account_id}"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMAccHost + `/oidc/accounts/{account_id}"}`,
 			},
 		},
 	}
@@ -550,10 +529,11 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingFields(t *testing.T)
 		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "other-account", "workspace_id": "other-ws"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "other-account", "workspace_id": "other-ws"}`,
 			},
 		},
 	}
@@ -571,10 +551,11 @@ func TestConfig_ResolveHostMetadata_PopulatesCloudFromAPI(t *testing.T) {
 		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "Azure"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "Azure"}`,
 			},
 		},
 	}
@@ -591,10 +572,11 @@ func TestConfig_ResolveHostMetadata_CloudFallbackToDNS(t *testing.T) {
 		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "https://my-workspace.azuredatabricks.net/oidc", "account_id": "` + testHMAccountID + `"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "https://my-workspace.azuredatabricks.net/oidc", "account_id": "` + testHMAccountID + `"}`,
 			},
 		},
 	}
@@ -612,10 +594,11 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) 
 		Loaders:                    []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
 			},
 		},
 	}
@@ -624,56 +607,40 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) 
 	assert.Equal(t, environment.Cloud("GCP"), cfg.Cloud)
 }
 
-func TestEnsureResolved_ResolvesHostMetadata_WhenUnifiedHost(t *testing.T) {
+func TestEnsureResolved_ResolvesHostMetadata_WhenHostSet(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
 			},
 		},
 	}
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
+	// Metadata is now always resolved when host is set
 	assert.Equal(t, testHMAccountID, cfg.AccountID)
 	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
-	assert.Equal(t, testHMHost+"/oidc/.well-known/oauth-authorization-server", cfg.DiscoveryURL)
-	assert.Equal(t, "AWS", string(cfg.Cloud))
-}
-
-func TestEnsureResolved_SkipsHostMetadata_WhenNotUnified(t *testing.T) {
-	noopLoader := mockLoader(func(cfg *Config) error { return nil })
-	cfg := &Config{
-		Host:          testHMHost,
-		Loaders:       []Loader{noopLoader},
-		HTTPTransport: fixtures.SliceTransport{
-			// No metadata endpoint — if it were called, the slice would fail
-		},
-	}
-	err := cfg.EnsureResolved()
-	require.NoError(t, err)
-	assert.Empty(t, cfg.AccountID)
-	assert.Empty(t, cfg.WorkspaceID)
 }
 
 func TestEnsureResolved_HostMetadataFailure_NonFatal(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   500,
-				Response: `{"error": "internal error"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       500,
+				Response:     `{"error": "internal error"}`,
 			},
 		},
 	}
@@ -685,15 +652,15 @@ func TestEnsureResolved_HostMetadataFailure_NonFatal(t *testing.T) {
 func TestEnsureResolved_HostMetadata_NoOidcEndpoint_NonFatal(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"account_id": "` + testHMAccountID + `"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"account_id": "` + testHMAccountID + `"}`,
 			},
 		},
 	}
@@ -706,15 +673,15 @@ func TestEnsureResolved_HostMetadata_NoOidcEndpoint_NonFatal(t *testing.T) {
 func TestEnsureResolved_HostMetadata_MissingAccountIdWithPlaceholder_Warns(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc/accounts/{account_id}"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc/accounts/{account_id}"}`,
 			},
 		},
 	}
@@ -727,15 +694,15 @@ func TestEnsureResolved_HostMetadata_MissingAccountIdWithPlaceholder_Warns(t *te
 func TestApplyHostMetadata_SetsTokenAudienceForAccountHost(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
 			},
 		},
 	}
@@ -748,15 +715,15 @@ func TestApplyHostMetadata_SetsTokenAudienceForAccountHost(t *testing.T) {
 func TestApplyHostMetadata_NoTokenAudienceForWorkspaceHost(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
 			},
 		},
 	}
@@ -769,16 +736,16 @@ func TestApplyHostMetadata_NoTokenAudienceForWorkspaceHost(t *testing.T) {
 func TestApplyHostMetadata_DoesNotOverrideExistingTokenAudience(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		TokenAudience:              "custom-audience",
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:          testHMHost,
+		TokenAudience: "custom-audience",
+		Loaders:       []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
-				Method:   "GET",
-				Resource: "/.well-known/databricks-config",
-				Status:   200,
-				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
 			},
 		},
 	}
@@ -863,10 +830,11 @@ func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
 				Loaders:                    []Loader{noopLoader},
 				HTTPTransport: fixtures.SliceTransport{
 					{
-						Method:   "GET",
-						Resource: "/.well-known/databricks-config",
-						Status:   200,
-						Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "` + tc.cloudJSON + `"}`,
+						Method:       "GET",
+						Resource:     "/.well-known/databricks-config",
+						ReuseRequest: true,
+						Status:       200,
+						Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "` + tc.cloudJSON + `"}`,
 					},
 				},
 			}

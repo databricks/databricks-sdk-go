@@ -71,17 +71,14 @@ func ucwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	return ctx, databricks.Must(databricks.NewWorkspaceClient())
 }
 
-// Once the experimental flag is removed for unified hosts, we can move the test support
-// for unified host to DATABRICKS_HOST as default.
 func unifiedHostAccountTest(t *testing.T) (context.Context, *databricks.AccountClient, *databricks.WorkspaceClient) {
 	loadDebugEnvIfRunsFromIDE(t, "account")
 	cfg := &config.Config{
-		Host:                       GetEnvOrSkipTest(t, "UNIFIED_HOST"),
-		AccountID:                  GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
-		ClientID:                   GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_ID"),
-		WorkspaceID:                GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"),
-		ClientSecret:               GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_SECRET"),
-		Experimental_IsUnifiedHost: true,
+		Host:         GetEnvOrSkipTest(t, "UNIFIED_HOST"),
+		AccountID:    GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
+		ClientID:     GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_ID"),
+		WorkspaceID:  GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"),
+		ClientSecret: GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_SECRET"),
 		// Large timeout to support API calls that take long.
 		// For example, the /usage/download API can take more than
 		// 60 seconds to return a response.
@@ -90,9 +87,6 @@ func unifiedHostAccountTest(t *testing.T) (context.Context, *databricks.AccountC
 	err := cfg.EnsureResolved()
 	if err != nil {
 		skipf(t)("error: %s", err)
-	}
-	if cfg.HostType() != config.UnifiedHost {
-		skipf(t)("Not in unified host env: %s/%s", cfg.AccountID, cfg.Host)
 	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()

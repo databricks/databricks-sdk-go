@@ -379,14 +379,9 @@ func (c *Config) IsAws() bool {
 }
 
 // IsAccountClient returns true if client is configured for Accounts API.
-// Panics if the config has the unified host flag set.
 //
 // Deprecated: Use HostType() if possible, or ConfigType() if necessary.
 func (c *Config) IsAccountClient() bool {
-	if c.Experimental_IsUnifiedHost {
-		panic("IsAccountClient cannot be used with unified hosts; use HostType() instead")
-	}
-
 	if c.AccountID != "" && c.isTesting {
 		return true
 	}
@@ -413,11 +408,9 @@ func normalizedHost(host string) string {
 }
 
 // HostType returns the type of host that the client is configured for.
+// HostType now only returns WorkspaceHost or AccountHost. UnifiedHost is
+// deprecated; host metadata resolution handles unified host behavior.
 func (c *Config) HostType() HostType {
-	if c.Experimental_IsUnifiedHost {
-		return UnifiedHost
-	}
-
 	// TODO: Refactor tests so that this is not needed.
 	if c.AccountID != "" && c.isTesting {
 		return AccountHost
@@ -449,18 +442,12 @@ func (c *Config) HostType() HostType {
 func (c *Config) ConfigType() ConfigType {
 	switch c.HostType() {
 	case AccountHost:
-		return AccountConfig
-	case WorkspaceHost:
-		return WorkspaceConfig
-	case UnifiedHost:
-		if c.AccountID == "" {
-			// All unified host configs must have an account ID
-			return InvalidConfig
-		}
 		if c.WorkspaceID != "" {
 			return WorkspaceConfig
 		}
 		return AccountConfig
+	case WorkspaceHost:
+		return WorkspaceConfig
 	default:
 		return InvalidConfig
 	}
@@ -520,9 +507,7 @@ func (c *Config) EnsureResolved() error {
 	}
 	slices.Sort(c.Scopes)
 	c.Scopes = slices.Compact(c.Scopes)
-	if c.Experimental_IsUnifiedHost {
-		c.resolveHostMetadata(ctx)
-	}
+	c.resolveHostMetadata(ctx)
 	c.resolved = true
 	return nil
 }
@@ -653,8 +638,6 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	switch c.HostType() {
 	case AccountHost:
 		return oauthClient.GetAccountOAuthEndpoints(ctx, host, c.AccountID)
-	case UnifiedHost:
-		return oauthClient.GetUnifiedOAuthEndpoints(ctx, host, c.AccountID)
 	case WorkspaceHost:
 		return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
 	default:
@@ -733,8 +716,6 @@ func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
 	switch c.HostType() {
 	case AccountHost:
 		return u2m.NewProfileAccountOAuthArgument(host, c.AccountID, profile)
-	case UnifiedHost:
-		return u2m.NewProfileUnifiedOAuthArgument(host, c.AccountID, profile)
 	case WorkspaceHost:
 		return u2m.NewProfileWorkspaceOAuthArgument(host, profile)
 	default:

@@ -63,10 +63,6 @@ func (c *AccountClient) GetWorkspaceClient(ws provisioning.Workspace) (*Workspac
 	}
 	cfg.AzureResourceID = ws.AzureResourceId()
 	cfg.WorkspaceID = fmt.Sprintf("%d", ws.WorkspaceId)
-	if c.Config.Experimental_IsUnifiedHost {
-		cfg.AccountID = c.Config.AccountID
-		cfg.Experimental_IsUnifiedHost = true
-	}
 	w, err := NewWorkspaceClient((*Config)(cfg))
 	if err != nil {
 		return nil, err
