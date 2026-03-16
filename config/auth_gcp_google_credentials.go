@@ -34,14 +34,20 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credenti
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain OIDC token from JSON: %w", err)
 	}
-	// Obtain token source for creating Google Cloud Platform token.
+	opts := cacheOptions(cfg)
+	if !requiresGcpSaAccessToken(ctx, cfg) {
+		logger.Infof(ctx, "Using Google Credentials for Workspace")
+		visitor := refreshableVisitor(inner, opts...)
+		return credentials.CredentialsProviderFn(visitor), nil
+	}
+	// Account-level host: obtain token source for creating Google Cloud Platform token.
 	creds, err := google.CredentialsFromJSON(ctx, json,
 		"https://www.googleapis.com/auth/cloud-platform",
 		"https://www.googleapis.com/auth/compute")
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
-	logger.Infof(ctx, "Using Google Credentials")
+	logger.Infof(ctx, "Using Google Credentials for Account")
 	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token", true, cacheOptions(cfg)...)
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }

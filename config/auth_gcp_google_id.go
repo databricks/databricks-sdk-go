@@ -29,7 +29,12 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 		return nil, err
 	}
 	opts := cacheOptions(cfg)
-	// Always attempt to create SA token source for the secondary header.
+	if !requiresGcpSaAccessToken(ctx, cfg) {
+		logger.Infof(ctx, "Using Google Default Application Credentials for Workspace")
+		visitor := refreshableVisitor(inner, opts...)
+		return credentials.CredentialsProviderFn(visitor), nil
+	}
+	// Account-level host: attempt to create SA token source for the secondary header.
 	// If it fails, fall back to refreshableVisitor with a warning.
 	platform, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
 		TargetPrincipal: cfg.GoogleServiceAccount,
@@ -43,7 +48,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 		visitor := refreshableVisitor(inner, opts...)
 		return credentials.CredentialsProviderFn(visitor), nil
 	}
-	logger.Infof(ctx, "Using Google Default Application Credentials")
+	logger.Infof(ctx, "Using Google Default Application Credentials for Account")
 	visitor := serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token", true, opts...)
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
