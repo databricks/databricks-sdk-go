@@ -520,17 +520,8 @@ func (c *Config) EnsureResolved() error {
 	}
 	slices.Sort(c.Scopes)
 	c.Scopes = slices.Compact(c.Scopes)
-	if c.Experimental_IsUnifiedHost && c.Host != "" {
-		if err := c.fixHostIfNeeded(); err != nil {
-			logger.Warnf(ctx, "Failed to fix host for metadata resolution: %v", err)
-		} else {
-			meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
-			if err != nil {
-				logger.Warnf(ctx, "Failed to resolve host metadata: %v. Falling back to user config.", err)
-			} else {
-				c.applyHostMetadata(ctx, meta)
-			}
-		}
+	if c.Experimental_IsUnifiedHost {
+		c.resolveHostMetadata(ctx)
 	}
 	c.resolved = true
 	return nil
@@ -671,11 +662,27 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	}
 }
 
-// applyHostMetadata back-fills AccountID, WorkspaceID, Cloud, and DiscoveryURL
-// from the given host metadata. It is non-fatal: missing OIDC endpoint or
-// account_id placeholders that cannot be substituted are logged as warnings
-// and skipped rather than returning errors.
-func (c *Config) applyHostMetadata(ctx context.Context, meta *hostMetadata) {
+// resolveHostMetadata populates missing config fields from the host's
+// /.well-known/databricks-config discovery endpoint. It back-fills AccountID,
+// WorkspaceID, Cloud, and DiscoveryURL (with any {account_id} placeholder substituted)
+// if those fields are not already set.
+//
+// Errors from the metadata endpoint are non-fatal: a warning is logged and the
+// method returns without modifying the config. This mirrors the Python SDK
+// behavior where metadata resolution is best-effort during config init.
+func (c *Config) resolveHostMetadata(ctx context.Context) {
+	if c.Host == "" {
+		return
+	}
+	if err := c.fixHostIfNeeded(); err != nil {
+		logger.Warnf(ctx, "Failed to fix host for metadata resolution: %v", err)
+		return
+	}
+	meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
+	if err != nil {
+		logger.Warnf(ctx, "Failed to resolve host metadata: %v. Falling back to user config.", err)
+		return
+	}
 	if c.AccountID == "" && meta.AccountID != "" {
 		logger.Debugf(ctx, "Resolved account_id from host metadata: %q", meta.AccountID)
 		c.AccountID = meta.AccountID
@@ -710,35 +717,6 @@ func (c *Config) applyHostMetadata(ctx context.Context, meta *hostMetadata) {
 		logger.Debugf(ctx, "Resolved discovery_url from host metadata: %q", discoveryURL)
 		c.DiscoveryURL = discoveryURL
 	}
-}
-
-// resolveHostMetadata populates missing config fields from the host's
-// /.well-known/databricks-config discovery endpoint. It back-fills AccountID,
-// WorkspaceID, Cloud, and DiscoveryURL (with any {account_id} placeholder substituted)
-// if those fields are not already set. Returns an error if AccountID cannot be
-// resolved or no oidc_endpoint is present in the metadata.
-//
-// Experimental: subject to change.
-func (c *Config) resolveHostMetadata(ctx context.Context) error {
-	if c.Host == "" {
-		return nil
-	}
-	if err := c.EnsureResolved(); err != nil {
-		return err
-	}
-	meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
-	if err != nil {
-		logger.Debugf(ctx, "Failed to fetch host metadata: %v", err)
-		return err
-	}
-	c.applyHostMetadata(ctx, meta)
-	if c.AccountID == "" {
-		return fmt.Errorf("account_id is not configured and could not be resolved from host metadata")
-	}
-	if c.DiscoveryURL == "" {
-		return fmt.Errorf("discovery_url is not configured and could not be resolved from host metadata")
-	}
-	return nil
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
