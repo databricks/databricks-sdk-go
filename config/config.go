@@ -699,6 +699,10 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		c.Cloud = c.Environment().Cloud
 		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
 	}
+	if c.TokenAudience == "" && meta.WorkspaceID == "" && c.AccountID != "" {
+		logger.Debugf(ctx, "Setting token_audience to account_id for account host: %q", c.AccountID)
+		c.TokenAudience = c.AccountID
+	}
 	if c.DiscoveryURL == "" {
 		if meta.OIDCEndpoint == "" {
 			logger.Warnf(ctx, "Host metadata missing oidc_endpoint; skipping discovery URL resolution")
