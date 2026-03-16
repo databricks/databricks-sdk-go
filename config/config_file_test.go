@@ -155,9 +155,25 @@ func TestConfigFile_LegacyFallbackEmptyDefaultProfile(t *testing.T) {
 	}.apply(t)
 }
 
+// Test 4b: default_profile = DEFAULT is treated as an explicit selection,
+// not as the legacy fallback. cfg.Profile is set to "DEFAULT" and a missing
+// [DEFAULT] section would error (unlike the silent legacy fallback).
+func TestConfigFile_ExplicitDefaultProfileViaSetting(t *testing.T) {
+	env.CleanupEnvironment(t)
+
+	cfg, err := configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/default_profile_explicit_default",
+		},
+	}.configureProviderAndReturnConfig(t)
+
+	require.NoError(t, err)
+	assert.Equal(t, "DEFAULT", cfg.Profile)
+	assert.Equal(t, "https://default.cloud.databricks.com", cfg.Host)
+}
+
 // Test 5: [__settings__] is not a profile.
-// The resolveProfile function reads the default_profile value from
-// [__settings__] but never returns "__settings__" itself as a profile name.
+// resolveProfile never returns "__settings__" as a profile name.
 func TestConfigFile_SettingsSectionNotAProfile(t *testing.T) {
 	f, err := LoadFile("testdata/default_profile/.databrickscfg")
 	require.NoError(t, err)
@@ -167,18 +183,9 @@ func TestConfigFile_SettingsSectionNotAProfile(t *testing.T) {
 	assert.NotEqual(t, settingsSection, profile,
 		"resolveProfile must never return the settings section name as a profile")
 
-	// Verify __settings__ is excluded from section enumeration.
-	for _, name := range f.SectionStrings() {
-		if name == settingsSection {
-			// The ini library includes __settings__ as a section, but the
-			// SDK must never treat it as a profile. This assertion documents
-			// that callers must filter it out when enumerating profiles.
-			profile, _, err := resolveProfile("", f)
-			require.NoError(t, err)
-			assert.NotEqual(t, settingsSection, profile)
-			return
-		}
-	}
+	// The ini library includes __settings__ as a section. Callers that
+	// enumerate profiles must filter it out.
+	assert.Contains(t, f.SectionStrings(), settingsSection)
 }
 
 // Test 5b: default_profile = __settings__ is rejected because __settings__
