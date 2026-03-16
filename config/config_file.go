@@ -83,18 +83,13 @@ func (l configFileLoader) Configure(cfg *Config) error {
 		}
 		return fmt.Errorf("cannot parse config file: %w", err)
 	}
-	// don't modify the config, so that debug appears clearly
-	profile := cfg.Profile
-	hasExplicitProfile := cfg.Profile != ""
-	hasDefaultProfileSetting := false
-	if !hasExplicitProfile {
-		profile, hasDefaultProfileSetting = resolveDefaultProfile(configFile)
+	profile, isFallback, err := resolveProfile(cfg.Profile, configFile)
+	if err != nil {
+		return fmt.Errorf("%s: %w", configFile.Path(), err)
 	}
 	profileValues := configFile.Section(profile)
-	if profile == settingsSection || len(profileValues.Keys()) == 0 {
-		// Treat default_profile the same as an explicit --profile flag:
-		// if the referenced section doesn't exist, return an error.
-		if !hasExplicitProfile && !hasDefaultProfileSetting {
+	if len(profileValues.Keys()) == 0 {
+		if isFallback {
 			logger.Debugf(context.Background(), "%s has no %s profile configured", configFile.Path(), profile)
 			return nil
 		}
@@ -105,7 +100,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
 	}
-	if hasDefaultProfileSetting {
+	if !isFallback {
 		cfg.Profile = profile
 	}
 	return nil
@@ -116,21 +111,37 @@ func (l configFileLoader) Configure(cfg *Config) error {
 // (e.g. via "databricks auth switch") to store the user's default profile.
 const settingsSection = "__settings__"
 
-// resolveDefaultProfile checks the [__settings__] section for a
-// default_profile key. If found and non-empty, returns (profileName, true).
-// Otherwise returns ("DEFAULT", false) to preserve legacy behavior.
-func resolveDefaultProfile(f *File) (string, bool) {
+// resolveProfile returns the profile name to use and whether it is a
+// legacy fallback to the DEFAULT section:
+//   - If requestedProfile is set, returns it with isFallback=false.
+//   - If [__settings__].default_profile is set, returns it with isFallback=false.
+//   - Otherwise, returns "DEFAULT" with isFallback=true.
+//
+// Returns an error if the resolved profile is the reserved __settings__
+// section name.
+func resolveProfile(requestedProfile string, f *File) (string, bool, error) {
+	if requestedProfile != "" {
+		if requestedProfile == settingsSection {
+			return "", false, fmt.Errorf(
+				"%s is a reserved section name and cannot be used as a profile", settingsSection)
+		}
+		return requestedProfile, false, nil
+	}
 	section, err := f.GetSection(settingsSection)
 	if err == nil {
 		key, err := section.GetKey("default_profile")
 		if err == nil {
-			defaultProfile := strings.TrimSpace(key.String())
-			if defaultProfile != "" {
-				return defaultProfile, true
+			v := strings.TrimSpace(key.String())
+			if v != "" {
+				if v == settingsSection {
+					return "", false, fmt.Errorf(
+						"%s is a reserved section name and cannot be used as a profile", settingsSection)
+				}
+				return v, false, nil
 			}
 		}
 	}
-	return "DEFAULT", false
+	return "DEFAULT", true, nil
 }
 
 func (l configFileLoader) isAnyAuthConfigured(cfg *Config) bool {

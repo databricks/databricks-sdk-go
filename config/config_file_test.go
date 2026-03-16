@@ -156,15 +156,16 @@ func TestConfigFile_LegacyFallbackEmptyDefaultProfile(t *testing.T) {
 }
 
 // Test 5: [__settings__] is not a profile.
-// The resolveDefaultProfile function reads the default_profile value from
+// The resolveProfile function reads the default_profile value from
 // [__settings__] but never returns "__settings__" itself as a profile name.
 func TestConfigFile_SettingsSectionNotAProfile(t *testing.T) {
 	f, err := LoadFile("testdata/default_profile/.databrickscfg")
 	require.NoError(t, err)
 
-	profile, _ := resolveDefaultProfile(f)
+	profile, _, err := resolveProfile("", f)
+	require.NoError(t, err)
 	assert.NotEqual(t, settingsSection, profile,
-		"resolveDefaultProfile must never return the settings section name as a profile")
+		"resolveProfile must never return the settings section name as a profile")
 
 	// Verify __settings__ is excluded from section enumeration.
 	for _, name := range f.SectionStrings() {
@@ -172,21 +173,22 @@ func TestConfigFile_SettingsSectionNotAProfile(t *testing.T) {
 			// The ini library includes __settings__ as a section, but the
 			// SDK must never treat it as a profile. This assertion documents
 			// that callers must filter it out when enumerating profiles.
-			profile, _ := resolveDefaultProfile(f)
+			profile, _, err := resolveProfile("", f)
+			require.NoError(t, err)
 			assert.NotEqual(t, settingsSection, profile)
 			return
 		}
 	}
 }
 
-// Test 5b: default_profile = __settings__ is rejected with the same
-// profile-not-found error as other invalid profile selections.
+// Test 5b: default_profile = __settings__ is rejected because __settings__
+// is a reserved section name.
 func TestConfigFile_DefaultProfileSettingsSelfReference(t *testing.T) {
 	configFixture{
 		Env: map[string]string{
 			"HOME": "testdata/default_profile_self_ref",
 		},
-		AssertError: fmt.Sprintf("resolve: %s has no __settings__ profile configured",
+		AssertError: fmt.Sprintf("resolve: %s: __settings__ is a reserved section name and cannot be used as a profile",
 			"testdata/default_profile_self_ref/.databrickscfg"),
 	}.apply(t)
 }
@@ -214,7 +216,7 @@ func TestConfigFile_ExplicitSettingsSectionProfileRejected(t *testing.T) {
 	}.configureProviderAndReturnConfig(t)
 
 	require.Error(t, err)
-	assert.ErrorContains(t, err, fmt.Sprintf("resolve: %s has no __settings__ profile configured",
+	assert.ErrorContains(t, err, fmt.Sprintf("resolve: %s: __settings__ is a reserved section name and cannot be used as a profile",
 		"testdata/default_profile/.databrickscfg"))
 }
 
