@@ -70,14 +70,6 @@ func buildCliCommands(cliPath string, cfg *Config) (primaryCmd []string, hostCmd
 func buildHostCommand(cliPath string, cfg *Config) []string {
 	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
 	switch cfg.HostType() {
-	case UnifiedHost:
-		cmd = append(cmd, "--experimental-is-unified-host")
-		if cfg.AccountID != "" {
-			cmd = append(cmd, "--account-id", cfg.AccountID)
-		}
-		if cfg.WorkspaceID != "" {
-			cmd = append(cmd, "--workspace-id", cfg.WorkspaceID)
-		}
 	case AccountHost:
 		cmd = append(cmd, "--account-id", cfg.AccountID)
 	}

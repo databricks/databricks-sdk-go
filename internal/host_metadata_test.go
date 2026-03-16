@@ -19,9 +19,7 @@ func TestHostMetadataResolution(t *testing.T) {
 	}
 	t.Parallel()
 
-	cfg := &config.Config{
-		Experimental_IsUnifiedHost: true,
-	}
+	cfg := &config.Config{}
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
 
