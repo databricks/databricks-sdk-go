@@ -521,12 +521,15 @@ func (c *Config) EnsureResolved() error {
 	slices.Sort(c.Scopes)
 	c.Scopes = slices.Compact(c.Scopes)
 	if c.Experimental_IsUnifiedHost && c.Host != "" {
-		_ = c.fixHostIfNeeded()
-		meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
-		if err != nil {
-			logger.Warnf(ctx, "Failed to resolve host metadata: %v. Falling back to user config.", err)
+		if err := c.fixHostIfNeeded(); err != nil {
+			logger.Warnf(ctx, "Failed to fix host for metadata resolution: %v", err)
 		} else {
-			c.applyHostMetadata(ctx, meta)
+			meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
+			if err != nil {
+				logger.Warnf(ctx, "Failed to resolve host metadata: %v. Falling back to user config.", err)
+			} else {
+				c.applyHostMetadata(ctx, meta)
+			}
 		}
 	}
 	c.resolved = true
