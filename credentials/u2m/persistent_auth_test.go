@@ -829,6 +829,51 @@ func TestToken_ReturnsInvalidRefreshTokenError(t *testing.T) {
 	}
 }
 
+func TestToken_ReturnsMissingRefreshTokenErrorWhenExpired(t *testing.T) {
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken: "expired",
+				Expiry:      time.Now().Add(-1 * time.Minute),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — Token() should fail before writing when refresh token is missing")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: fixtures.SliceTransport{}}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err == nil {
+		t.Fatal("Token(): want error when refresh token is missing, got nil")
+	}
+	if tok != nil {
+		t.Errorf("Token(): want nil token on error, got %v", tok)
+	}
+	if !errors.Is(err, ErrMissingRefreshToken) {
+		t.Fatalf("Token(): want ErrMissingRefreshToken, got %v", err)
+	}
+	want := "token refresh: cached token has no refresh token"
+	if got := err.Error(); got != want {
+		t.Errorf("Token(): want error %q, got %q", want, got)
+	}
+}
+
 func TestForceRefreshToken_RefreshesValidToken(t *testing.T) {
 	refreshCalled := false
 	c := &tokenCacheMock{
@@ -922,7 +967,10 @@ func TestForceRefreshToken_FailsWithoutRefreshToken(t *testing.T) {
 	if tok != nil {
 		t.Errorf("ForceRefreshToken(): want nil token on error, got %v", tok)
 	}
-	want := "forced token refresh: oauth2: token expired and refresh token is not set"
+	if !errors.Is(err, ErrMissingRefreshToken) {
+		t.Fatalf("ForceRefreshToken(): want ErrMissingRefreshToken, got %v", err)
+	}
+	want := "forced token refresh: cached token has no refresh token"
 	if got := err.Error(); got != want {
 		t.Errorf("ForceRefreshToken(): want error %q, got %q", want, got)
 	}

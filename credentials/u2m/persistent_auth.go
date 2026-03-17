@@ -311,6 +311,9 @@ func needsRefresh(t *oauth2.Token) bool {
 // This should be fixed in a follow-up by adding cross-process coordination
 // around refresh and cache writes.
 func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) {
+	if oldToken.RefreshToken == "" {
+		return nil, ErrMissingRefreshToken
+	}
 	cfg, err := a.oauth2Config()
 	if err != nil {
 		return nil, err
