@@ -11,6 +11,6 @@
 ### Documentation
 
 ### Internal Changes
-* Proactively refresh OAuth tokens expiring within 5 minutes in `PersistentAuth.Token()` to prevent callers from receiving near-expired tokens.
+* Proactively attempt to refresh OAuth tokens expiring within 5 minutes in `PersistentAuth.Token()` to reduce the chance of callers receiving near-expired tokens. If the refresh fails and the token is still valid, the existing token is returned.
 
 ### API Changes
