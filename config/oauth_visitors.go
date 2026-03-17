@@ -8,6 +8,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
+	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -19,9 +20,11 @@ func cacheOptions(cfg *Config) []auth.Option {
 }
 
 // serviceToServiceVisitor returns a visitor that sets the Authorization header
-// to the token from the auth token source and the provided secondary header to
-// the token from the secondary token source.
-func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHeader string, opts ...auth.Option) func(r *http.Request) error {
+// to the token from the primary token source and the provided secondary header
+// to the token from the secondary token source. If secondaryOptional is true,
+// a failure to get the secondary token logs a warning and skips the header
+// instead of returning an error.
+func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHeader string, secondaryOptional bool, opts ...auth.Option) func(r *http.Request) error {
 	refreshableAuth := auth.NewCachedTokenSource(authconv.AuthTokenSource(primary), opts...)
 	refreshableSecondary := auth.NewCachedTokenSource(authconv.AuthTokenSource(secondary), opts...)
 	return func(r *http.Request) error {
@@ -33,6 +36,10 @@ func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHea
 
 		cloud, err := refreshableSecondary.Token(context.Background())
 		if err != nil {
+			if secondaryOptional {
+				logger.Warnf(r.Context(), "Failed to get secondary token for %s header: %v. Skipping.", secondaryHeader, err)
+				return nil
+			}
 			return fmt.Errorf("cloud token: %w", err)
 		}
 		r.Header.Set(secondaryHeader, cloud.AccessToken)
