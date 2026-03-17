@@ -724,6 +724,69 @@ func TestEnsureResolved_HostMetadata_MissingAccountIdWithPlaceholder_Warns(t *te
 	assert.Empty(t, cfg.DiscoveryURL)
 }
 
+func TestApplyHostMetadata_SetsTokenAudienceForAccountHost(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// No workspace_id and has account_id → token audience should be set
+	assert.Equal(t, testHMAccountID, cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_NoTokenAudienceForWorkspaceHost(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// Has workspace_id → token audience should NOT be set
+	assert.Empty(t, cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_DoesNotOverrideExistingTokenAudience(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:                       testHMHost,
+		TokenAudience:              "custom-audience",
+		Experimental_IsUnifiedHost: true,
+		Loaders:                    []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/.well-known/databricks-config",
+				Status:   200,
+				Response: `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, "custom-audience", cfg.TokenAudience)
+}
+
 func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
 	tests := []struct {
 		name      string
