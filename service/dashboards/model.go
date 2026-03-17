@@ -1088,6 +1088,8 @@ type GenieSendMessageFeedbackRequest struct {
 type GenieSpace struct {
 	// Description of the Genie Space
 	Description string `json:"description,omitempty"`
+	// Parent folder path of the Genie Space
+	ParentPath string `json:"parent_path,omitempty"`
 	// The contents of the Genie Space in serialized string form. This field is
 	// excluded in List Genie spaces responses. Use the [Get Genie
 	// Space](:method:genie/getspace) API to retrieve an example response, which
