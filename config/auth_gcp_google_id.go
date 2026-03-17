@@ -44,7 +44,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 		return credentials.CredentialsProviderFn(visitor), nil
 	}
 	logger.Infof(ctx, "Using Google Default Application Credentials")
-	visitor := serviceToServiceVisitorWithFallback(inner, platform, "X-Databricks-GCP-SA-Access-Token", opts...)
+	visitor := serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token", true, opts...)
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 

@@ -47,7 +47,7 @@ func (s *staticTokenSource) Token() (*oauth2.Token, error) {
 func TestServiceToServiceVisitorWithFallback_BothSucceed(t *testing.T) {
 	primary := &staticTokenSource{token: &oauth2.Token{AccessToken: "primary-token"}}
 	secondary := &staticTokenSource{token: &oauth2.Token{AccessToken: "secondary-token"}}
-	visitor := serviceToServiceVisitorWithFallback(primary, secondary, "X-Secondary")
+	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", true)
 
 	req, err := http.NewRequest("GET", "https://example.com", nil)
 	require.NoError(t, err)
@@ -60,7 +60,7 @@ func TestServiceToServiceVisitorWithFallback_BothSucceed(t *testing.T) {
 func TestServiceToServiceVisitorWithFallback_SecondaryFails_SkipsHeader(t *testing.T) {
 	primary := &staticTokenSource{token: &oauth2.Token{AccessToken: "primary-token"}}
 	secondary := &staticTokenSource{err: fmt.Errorf("secondary failed")}
-	visitor := serviceToServiceVisitorWithFallback(primary, secondary, "X-Secondary")
+	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", true)
 
 	req, err := http.NewRequest("GET", "https://example.com", nil)
 	require.NoError(t, err)
@@ -70,10 +70,22 @@ func TestServiceToServiceVisitorWithFallback_SecondaryFails_SkipsHeader(t *testi
 	assert.Empty(t, req.Header.Get("X-Secondary"))
 }
 
+func TestServiceToServiceVisitor_SecondaryFails_NotOptional_ReturnsError(t *testing.T) {
+	primary := &staticTokenSource{token: &oauth2.Token{AccessToken: "primary-token"}}
+	secondary := &staticTokenSource{err: fmt.Errorf("secondary failed")}
+	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", false)
+
+	req, err := http.NewRequest("GET", "https://example.com", nil)
+	require.NoError(t, err)
+	err = visitor(req)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "cloud token")
+}
+
 func TestServiceToServiceVisitorWithFallback_PrimaryFails_ReturnsError(t *testing.T) {
 	primary := &staticTokenSource{err: fmt.Errorf("primary failed")}
 	secondary := &staticTokenSource{token: &oauth2.Token{AccessToken: "secondary-token"}}
-	visitor := serviceToServiceVisitorWithFallback(primary, secondary, "X-Secondary")
+	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", true)
 
 	req, err := http.NewRequest("GET", "https://example.com", nil)
 	require.NoError(t, err)

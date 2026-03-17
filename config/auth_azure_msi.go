@@ -46,7 +46,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	opts := cacheOptions(cfg)
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID), opts...)
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()), opts...)
-	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken, opts...))
+	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken, false, opts...))
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 
