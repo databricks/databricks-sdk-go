@@ -38,7 +38,7 @@ func TestToken(t *testing.T) {
 			}
 			return &oauth2.Token{
 				AccessToken: "bcd",
-				Expiry:      time.Now().Add(1 * time.Minute),
+				Expiry:      time.Now().Add(1 * time.Hour),
 			}, nil
 		},
 	}
@@ -74,7 +74,7 @@ func TestToken_WithProfile(t *testing.T) {
 			}
 			return &oauth2.Token{
 				AccessToken: "profile-token",
-				Expiry:      time.Now().Add(1 * time.Minute),
+				Expiry:      time.Now().Add(1 * time.Hour),
 			}, nil
 		},
 	}
@@ -112,7 +112,7 @@ func TestToken_WithProfile_FallbackToHostKey(t *testing.T) {
 			if key == hostKey {
 				return &oauth2.Token{
 					AccessToken: "host-token",
-					Expiry:      time.Now().Add(1 * time.Minute),
+					Expiry:      time.Now().Add(1 * time.Hour),
 				}, nil
 			}
 			t.Fatalf("lookup(): unexpected key %q", key)
@@ -187,7 +187,7 @@ func TestToken_NoProfile_NoFallbackAttempted(t *testing.T) {
 			}
 			return &oauth2.Token{
 				AccessToken: "host-token",
-				Expiry:      time.Now().Add(1 * time.Minute),
+				Expiry:      time.Now().Add(1 * time.Hour),
 			}, nil
 		},
 	}
@@ -541,6 +541,195 @@ func TestToken_RefreshesExpiredAccessToken(t *testing.T) {
 	}
 	if tok.RefreshToken != "" {
 		t.Errorf("p.Token(): want refresh token '', got %s", tok.RefreshToken)
+	}
+}
+
+func TestToken_RefreshesTokenExpiringSoon(t *testing.T) {
+	ctx := context.Background()
+	expectedKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			if key != expectedKey {
+				t.Fatalf("lookup(): want key %s, got %s", expectedKey, key)
+			}
+			return &oauth2.Token{
+				AccessToken:  "expiring-soon",
+				RefreshToken: "cde",
+				Expiry:       time.Now().Add(4 * time.Minute),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+	}
+	p, err := NewPersistentAuth(
+		ctx,
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `access_token=refreshed&refresh_token=def`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/x-www-form-urlencoded"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "refreshed" {
+		t.Errorf("p.Token(): want access token 'refreshed', got %s", tok.AccessToken)
+	}
+}
+
+func TestToken_ReturnsStillValidTokenWhenProactiveRefreshFails(t *testing.T) {
+	ctx := context.Background()
+	expectedKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
+	transport := fixtures.SliceTransport{
+		{
+			Method:   "POST",
+			Resource: "/oidc/accounts/xyz/v1/token",
+			Response: `{"error": "temporarily_unavailable", "error_description": "temporarily unavailable"}`,
+			Status:   503,
+		},
+	}
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			if key != expectedKey {
+				t.Fatalf("lookup(): want key %s, got %s", expectedKey, key)
+			}
+			return &oauth2.Token{
+				AccessToken:  "still-valid",
+				RefreshToken: "cde",
+				Expiry:       time.Now().Add(4 * time.Minute),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call - refresh should not succeed")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+	}
+	p, err := NewPersistentAuth(
+		ctx,
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: transport}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "still-valid" {
+		t.Errorf("p.Token(): want access token 'still-valid', got %s", tok.AccessToken)
+	}
+	if tok.RefreshToken != "" {
+		t.Errorf("p.Token(): want refresh token '', got %s", tok.RefreshToken)
+	}
+	if transport[0].Method != "" {
+		t.Errorf("refresh(): want proactive refresh attempt, but request was not sent")
+	}
+}
+
+func TestToken_DoesNotRefreshTokenNotExpiringSoon(t *testing.T) {
+	transport := fixtures.SliceTransport{}
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken: "still-valid",
+				Expiry:      time.Now().Add(6 * time.Minute),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — token should not be refreshed")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: transport}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "still-valid" {
+		t.Errorf("p.Token(): want access token 'still-valid', got %s", tok.AccessToken)
+	}
+}
+
+func TestToken_ZeroExpiryDoesNotTriggerRefresh(t *testing.T) {
+	transport := fixtures.SliceTransport{}
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken: "no-expiry",
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — zero-expiry token should not be refreshed")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: transport}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("p.Token(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "no-expiry" {
+		t.Errorf("p.Token(): want access token 'no-expiry', got %s", tok.AccessToken)
 	}
 }
 

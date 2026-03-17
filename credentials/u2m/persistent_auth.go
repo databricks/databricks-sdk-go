@@ -35,6 +35,11 @@ const (
 	// listenerTimeout is the maximum duration spent trying to acquire a
 	// listener (including port selection).
 	listenerTimeout = 45 * time.Second
+
+	// tokenRefreshBuffer is the duration before token expiry at which the
+	// token is proactively refreshed. This prevents callers from receiving
+	// near-expired tokens that may expire before the next request.
+	tokenRefreshBuffer = 5 * time.Minute
 )
 
 var (
@@ -45,8 +50,8 @@ var (
 
 // PersistentAuth is an OAuth manager that handles the U2M OAuth flow. Tokens
 // are stored in and looked up from the provided cache. Tokens include the
-// refresh token. On load, if the access token is expired, it is refreshed
-// using the refresh token.
+// refresh token. On load, if the access token is expired or close to expiry,
+// it is refreshed using the refresh token.
 //
 // The PersistentAuth is safe for concurrent use. The token cache is locked
 // during token retrieval, refresh and storage.
@@ -218,7 +223,8 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 }
 
 // Token loads the OAuth2 token for the given OAuthArgument from the cache. If
-// the token is expired, it is refreshed using the refresh token.
+// the token is expired or close to expiry, it is refreshed using the refresh
+// token.
 //
 // When a profile is set, lookup is by profile key first. If the profile key is
 // not found and the OAuthArgument implements HostCacheKeyProvider, a fallback
@@ -244,11 +250,13 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
-	// refresh if invalid
-	if !t.Valid() {
-		t, err = a.refresh(t)
-		if err != nil {
+	if needsRefresh(t) {
+		if refreshedToken, err := a.refresh(t); err == nil {
+			t = refreshedToken
+		} else if !t.Valid() {
 			return nil, fmt.Errorf("token refresh: %w", err)
+		} else {
+			logger.Debugf(a.ctx, "proactive token refresh failed, returning existing token: %v", err)
 		}
 	}
 
@@ -258,19 +266,31 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	return t, nil
 }
 
+// needsRefresh returns true when the token should be refreshed, either because
+// it is no longer valid or because it will expire within the
+// tokenRefreshBuffer window.
+func needsRefresh(t *oauth2.Token) bool {
+	if !t.Valid() {
+		return true
+	}
+	return !t.Expiry.IsZero() && time.Until(t.Expiry) < tokenRefreshBuffer
+}
+
 // refresh refreshes the token for the given OAuthArgument, storing the new
 // token in the cache.
 func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) {
-	// OAuth2 config is invoked only for expired tokens to speed up
-	// the happy path in the token retrieval
 	cfg, err := a.oauth2Config()
 	if err != nil {
 		return nil, err
 	}
-	// make OAuth2 library use our client
 	ctx := a.setOAuthContext(a.ctx)
-	// eagerly refresh token
-	t, err := cfg.TokenSource(ctx, oldToken).Token()
+	// Force the oauth2 library to refresh by ensuring the token appears
+	// expired. PersistentAuth owns the refresh decision (including the
+	// proactive buffer), so the oauth2 library should always perform the
+	// refresh when asked.
+	expired := *oldToken
+	expired.Expiry = time.Now().Add(-time.Minute)
+	t, err := cfg.TokenSource(ctx, &expired).Token()
 	if err != nil {
 		// The default RoundTripper of our httpclient.ApiClient returns an error
 		// if the response status code is not 2xx. This isn't compliant with the
