@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.123.0 (2026-03-17)
+
+### New Features and Improvements
+
+* Support `default_profile` in `[__settings__]` section of `.databrickscfg` ([#1534](https://github.com/databricks/databricks-sdk-go/pull/1534)).
+
+
 ## Release v0.122.0 (2026-03-16)
 
 ### API Changes
