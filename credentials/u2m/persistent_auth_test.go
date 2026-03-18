@@ -874,6 +874,50 @@ func TestToken_ReturnsMissingRefreshTokenErrorWhenExpired(t *testing.T) {
 	}
 }
 
+func TestToken_ReturnsExistingTokenWhenNearExpiryAndNoRefreshToken(t *testing.T) {
+	// Token is still valid but within the proactive refresh window (5 min).
+	// Token() attempts refresh, refresh() returns ErrMissingRefreshToken.
+	// Token() falls back to the existing token since it is still valid.
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken: "near-expiry",
+				Expiry:      time.Now().Add(3 * time.Minute), // within tokenRefreshBuffer
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — Token() should return existing token without migrating")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: fixtures.SliceTransport{}}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("Token(): want no error when falling back to valid token, got %v", err)
+	}
+	if tok == nil {
+		t.Fatal("Token(): want token, got nil")
+	}
+	if tok.AccessToken != "near-expiry" {
+		t.Errorf("Token(): want access token 'near-expiry', got %s", tok.AccessToken)
+	}
+}
+
 func TestForceRefreshToken_RefreshesValidToken(t *testing.T) {
 	refreshCalled := false
 	c := &tokenCacheMock{
@@ -985,6 +1029,10 @@ func TestForceRefreshToken_FailsOnRefreshError(t *testing.T) {
 				Expiry:       time.Now().Add(1 * time.Hour),
 			}, nil
 		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — refresh should not succeed")
+			return nil
+		},
 	}
 	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	if err != nil {
@@ -1032,6 +1080,10 @@ func TestForceRefreshToken_InvalidRefreshTokenError(t *testing.T) {
 				RefreshToken: "bad-refresh",
 				Expiry:       time.Now().Add(-1 * time.Minute),
 			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — refresh should not succeed")
+			return nil
 		},
 	}
 	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")

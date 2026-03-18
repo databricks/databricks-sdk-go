@@ -282,8 +282,9 @@ func (a *PersistentAuth) Token() (*oauth2.Token, error) {
 //
 // When the token was loaded via host-key fallback (profile key not found), the
 // refreshed token is dual-written to both the profile key and host key,
-// effectively migrating the token to the profile. This differs from Token(),
-// which returns host-fallback tokens without migrating them.
+// effectively migrating the token to the profile. Token() migrates only when
+// it needs to refresh (expired or nearly expired); ForceRefreshToken always
+// refreshes, so it always migrates on success.
 func (a *PersistentAuth) ForceRefreshToken() (*oauth2.Token, error) {
 	t, err := a.loadToken()
 	if err != nil {
