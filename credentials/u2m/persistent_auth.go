@@ -279,6 +279,11 @@ func (a *PersistentAuth) Token() (*oauth2.Token, error) {
 // it, regardless of its expiry. Unlike Token(), if the refresh fails the error
 // is always returned -- the caller explicitly asked for a fresh token, so
 // silently falling back to a stale one would be incorrect.
+//
+// When the token was loaded via host-key fallback (profile key not found), the
+// refreshed token is dual-written to both the profile key and host key,
+// effectively migrating the token to the profile. This differs from Token(),
+// which returns host-fallback tokens without migrating them.
 func (a *PersistentAuth) ForceRefreshToken() (*oauth2.Token, error) {
 	t, err := a.loadToken()
 	if err != nil {
@@ -311,6 +316,10 @@ func needsRefresh(t *oauth2.Token) bool {
 // This should be fixed in a follow-up by adding cross-process coordination
 // around refresh and cache writes.
 func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) {
+	// Fail fast with ErrMissingRefreshToken instead of letting the oauth2
+	// library attempt to refresh and return a misleading error (e.g. "token
+	// expired" when the real problem is that the cached token is not
+	// refresh-capable).
 	if oldToken.RefreshToken == "" {
 		return nil, ErrMissingRefreshToken
 	}
