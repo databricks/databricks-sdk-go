@@ -480,7 +480,21 @@ func (f *PersonalComputeMessagePersonalComputeMessageEnum) Type() string {
 }
 
 type RestrictWorkspaceAdminsMessage struct {
+	// When true, workspace admins cannot create governance tags. ALLOW_ALL
+	// status does not override this; they are independent.
+	DisableGovTagCreation bool `json:"disable_gov_tag_creation,omitempty"`
+
 	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RestrictWorkspaceAdminsMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RestrictWorkspaceAdminsMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RestrictWorkspaceAdminsMessageStatus string
