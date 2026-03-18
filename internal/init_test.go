@@ -31,12 +31,18 @@ func init() {
 	}
 }
 
+// testEnvironmentType returns the value of the TEST_ENVIRONMENT_TYPE
+// environment variable, which controls integration test filtering.
+func testEnvironmentType() string {
+	return os.Getenv("TEST_ENVIRONMENT_TYPE")
+}
+
 // prelude for all workspace-level tests
 func workspaceTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	loadDebugEnvIfRunsFromIDE(t, "workspace")
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
-		skipf(t)("Skipping workspace test on account level")
+	if envType := testEnvironmentType(); envType != "" && envType != "WORKSPACE" && envType != "UC_WORKSPACE" {
+		skipf(t)("Skipping workspace test: TEST_ENVIRONMENT_TYPE=%s", envType)
 	}
 	t.Parallel()
 	ctx := context.Background()
@@ -46,8 +52,8 @@ func workspaceTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) 
 // prelude for all workspace-level UC tests
 func ucwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	loadDebugEnvIfRunsFromIDE(t, "ucws")
-	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
-		skipf(t)("Skipping workspace test on account level")
+	if envType := testEnvironmentType(); envType != "" && envType != "UC_WORKSPACE" {
+		skipf(t)("Skipping UC workspace test: TEST_ENVIRONMENT_TYPE=%s", envType)
 	}
 	GetEnvOrSkipTest(t, "TEST_METASTORE_ID")
 	t.Parallel()
@@ -91,6 +97,9 @@ func unifiedHostAccountTest(t *testing.T) (context.Context, *databricks.AccountC
 // prelude for all account-level tests
 func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	loadDebugEnvIfRunsFromIDE(t, "account")
+	if envType := testEnvironmentType(); envType != "" && envType != "ACCOUNT" && envType != "UC_ACCOUNT" {
+		skipf(t)("Skipping account test: TEST_ENVIRONMENT_TYPE=%s", envType)
+	}
 	cfg := &config.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 		// Large timeout to support API calls that take long.
@@ -102,9 +111,6 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	if err != nil {
 		skipf(t)("error: %s", err)
 	}
-	if cfg.HostType() == config.WorkspaceHost {
-		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
-	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()
 	ctx := context.Background()
@@ -115,15 +121,15 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 // prelude for all UC account-level tests
 func ucacctTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	loadDebugEnvIfRunsFromIDE(t, "ucacct")
+	if envType := testEnvironmentType(); envType != "" && envType != "UC_ACCOUNT" {
+		skipf(t)("Skipping UC account test: TEST_ENVIRONMENT_TYPE=%s", envType)
+	}
 	cfg := &config.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 	}
 	err := cfg.EnsureResolved()
 	if err != nil {
 		skipf(t)("error: %s", err)
-	}
-	if cfg.HostType() == config.WorkspaceHost {
-		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
 	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()
