@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.124.0
+## Release v0.125.0
 
 ### Breaking Changes
 
@@ -11,7 +11,5 @@
 ### Documentation
 
 ### Internal Changes
-* Proactively attempt to refresh OAuth tokens expiring within 5 minutes in `PersistentAuth.Token()` to reduce the chance of callers receiving near-expired tokens. If the refresh fails and the token is still valid, the existing token is returned.
 
 ### API Changes
-* Add `ParentPath` field for [dashboards.GenieSpace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieSpace).
