@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -25,7 +24,7 @@ func (a *cleanRoomAssetRevisionsImpl) Get(ctx context.Context, request GetCleanR
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAsset)
@@ -70,7 +69,7 @@ func (a *cleanRoomAssetRevisionsImpl) internalList(ctx context.Context, request 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAssetRevisionsResponse)
@@ -90,7 +89,7 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Asset, &cleanRoomAsset)
@@ -105,7 +104,7 @@ func (a *cleanRoomAssetsImpl) CreateCleanRoomAssetReview(ctx context.Context, re
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createCleanRoomAssetReviewResponse)
@@ -118,7 +117,7 @@ func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -132,7 +131,7 @@ func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAsset
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAsset)
@@ -177,7 +176,7 @@ func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListClea
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAssetsResponse)
@@ -192,7 +191,7 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Asset, &cleanRoomAsset)
@@ -212,7 +211,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) Create(ctx context.Context, request Cre
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cleanRoomAutoApprovalRule)
@@ -225,7 +224,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) Delete(ctx context.Context, request Del
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -239,7 +238,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) Get(ctx context.Context, request GetCle
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAutoApprovalRule)
@@ -284,7 +283,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) internalList(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAutoApprovalRulesResponse)
@@ -299,7 +298,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) Update(ctx context.Context, request Upd
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.AutoApprovalRule, &cleanRoomAutoApprovalRule)
@@ -349,7 +348,7 @@ func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCl
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomNotebookTaskRunsResponse)
@@ -369,7 +368,7 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequ
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.CleanRoom, &cleanRoom)
@@ -384,7 +383,7 @@ func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request Create
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.OutputCatalog, &createCleanRoomOutputCatalogResponse)
@@ -397,7 +396,7 @@ func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -411,7 +410,7 @@ func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoom)
@@ -458,7 +457,7 @@ func (a *cleanRoomsImpl) internalList(ctx context.Context, request ListCleanRoom
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomsResponse)
@@ -473,7 +472,7 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequ
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &cleanRoom)

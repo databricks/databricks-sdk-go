@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/config"
 )
 
 // unexported type that holds implementations of just DataClassification API methods
@@ -26,7 +25,7 @@ func (a *dataClassificationImpl) CreateCatalogConfig(ctx context.Context, reques
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.CatalogConfig, &catalogConfig)
@@ -39,7 +38,7 @@ func (a *dataClassificationImpl) DeleteCatalogConfig(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -53,7 +52,7 @@ func (a *dataClassificationImpl) GetCatalogConfig(ctx context.Context, request G
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &catalogConfig)
@@ -75,7 +74,7 @@ func (a *dataClassificationImpl) UpdateCatalogConfig(ctx context.Context, reques
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.CatalogConfig, &catalogConfig)
