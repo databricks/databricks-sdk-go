@@ -442,9 +442,6 @@ func (c *Config) HostType() HostType {
 func (c *Config) ConfigType() ConfigType {
 	switch c.HostType() {
 	case AccountHost:
-		if c.WorkspaceID != "" {
-			return WorkspaceConfig
-		}
 		return AccountConfig
 	case WorkspaceHost:
 		return WorkspaceConfig
