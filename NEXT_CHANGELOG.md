@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.124.0
+## Release v0.125.0
 
 ### Breaking Changes
 
@@ -17,3 +17,5 @@
 ### API Changes
 * Add `PersistentAuth.ForceRefreshToken()` to force-refresh cached U2M OAuth tokens and return an error instead of falling back to an existing token when refresh fails.
 * Add `ParentPath` field for [dashboards.GenieSpace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieSpace).
+* Add `DisableGovTagCreation` field for [settings.RestrictWorkspaceAdminsMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsMessage).
+* Add `DisableGovTagCreation` field for [settingsv2.RestrictWorkspaceAdminsMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#RestrictWorkspaceAdminsMessage).
