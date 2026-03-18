@@ -28,7 +28,7 @@ func listKnownAgents() []knownAgent {
 }
 
 // lookupAgentProvider checks environment for known agent env vars.
-// Returns the product name if exactly one is set (non-empty).
+// Returns the product name if exactly one is set.
 // Returns empty string if zero or multiple are set.
 //
 // Unlike CI/CD detection (which returns the first match), agent detection
@@ -39,7 +39,7 @@ func lookupAgentProvider() string {
 	var detected string
 	count := 0
 	for _, a := range listKnownAgents() {
-		if v := os.Getenv(a.envVar); v != "" {
+		if _, ok := os.LookupEnv(a.envVar); ok {
 			detected = a.product
 			count++
 			if count > 1 {
