@@ -366,4 +366,16 @@ func TestLimitIterator(t *testing.T) {
 		}
 		assert.Equal(t, []int{1, 2, 3, 4}, values)
 	})
+
+	t.Run("HasNext is idempotent", func(t *testing.T) {
+		iterator := listing.SliceIterator[int]([]int{1, 2, 3})
+		limited := listing.NewLimitIterator[int](&iterator, 2)
+
+		assert.True(t, limited.HasNext(context.Background()))
+		assert.True(t, limited.HasNext(context.Background()))
+
+		v, err := limited.Next(context.Background())
+		assert.NoError(t, err)
+		assert.Equal(t, 1, v)
+	})
 }

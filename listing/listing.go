@@ -249,7 +249,9 @@ type limitIterator[T any] struct {
 }
 
 // NewLimitIterator wraps an iterator and yields at most n items. If n <= 0,
-// the inner iterator is returned unchanged (no limit is applied).
+// the inner iterator is returned unchanged (no limit is applied). Note that
+// this differs from ToSliceN, where n == 0 means unlimited but negative n
+// yields zero items.
 func NewLimitIterator[T any](iter Iterator[T], n int) Iterator[T] {
 	if n <= 0 {
 		return iter
