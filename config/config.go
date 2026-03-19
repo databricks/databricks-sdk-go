@@ -411,6 +411,10 @@ func normalizedHost(host string) string {
 // HostType now only returns WorkspaceHost or AccountHost. UnifiedHost is
 // deprecated; host metadata resolution handles unified host behavior.
 func (c *Config) HostType() HostType {
+	// TODO: Remove this after TF updates its code.
+	if c.Experimental_IsUnifiedHost {
+		return UnifiedHost
+	}
 	// TODO: Refactor tests so that this is not needed.
 	if c.AccountID != "" && c.isTesting {
 		return AccountHost
