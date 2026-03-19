@@ -1,5 +1,16 @@
 # Version changelog
 
+## Release v0.125.0 (2026-03-19)
+
+### New Features and Improvements
+
+* Add automatic detection of AI coding agents (Claude Code, Cursor, Cline, Codex, Copilot CLI, Gemini CLI, OpenCode, Antigravity, Openclaw) in the user-agent string. The SDK now appends `agent/<name>` to HTTP request headers when running inside a known AI agent environment.
+
+### API Changes
+* Add `DisableGovTagCreation` field for [settings.RestrictWorkspaceAdminsMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsMessage).
+* Add `DisableGovTagCreation` field for [settingsv2.RestrictWorkspaceAdminsMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#RestrictWorkspaceAdminsMessage).
+
+
 ## Release v0.124.0 (2026-03-18)
 
 ### Internal Changes
