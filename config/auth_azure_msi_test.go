@@ -121,6 +121,33 @@ func TestMsiTokenNotFound(t *testing.T) {
 	require.ErrorIs(t, err, apierr.ErrNotFound)
 }
 
+func TestMsiHappyFlowWithHostAndNoResourceID(t *testing.T) {
+	assertHeaders(t, &Config{
+		Host:        "https://adb-123.4.azuredatabricks.net",
+		AzureUseMSI: true,
+		AuthType:    "azure-msi",
+		HTTPTransport: fixtures.MappingTransport{
+			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d": {
+				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
+					"Metadata": "true",
+				},
+				Response: someValidToken("cde"),
+			},
+			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.core.windows.net%2F": {
+				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
+					"Metadata": "true",
+				},
+				Response: someValidToken("def"),
+			},
+		},
+	}, map[string]string{
+		"Authorization":                          "Bearer cde",
+		"X-Databricks-Azure-Sp-Management-Token": "def",
+	})
+}
+
 func TestMsiInvalidTokenExpiry(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		AzureUseMSI:     true,

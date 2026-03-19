@@ -14,8 +14,10 @@ import (
 	"golang.org/x/oauth2"
 )
 
-var errInvalidToken = errors.New("invalid token")
-var errInvalidTokenExpiry = errors.New("invalid token expiry")
+var (
+	errInvalidToken       = errors.New("invalid token")
+	errInvalidTokenExpiry = errors.New("invalid token expiry")
+)
 
 // well-known URL for Azure Instance Metadata Service (IMDS)
 // https://learn.microsoft.com/en-us/azure-stack/user/instance-metadata-service
@@ -24,19 +26,20 @@ var instanceMetadataPrefix = "http://169.254.169.254/metadata"
 // timeout to wait for IMDS response
 const azureMsiTimeout = 10 * time.Second
 
-type AzureMsiCredentials struct {
-}
+type AzureMsiCredentials struct{}
 
 func (c AzureMsiCredentials) Name() string {
 	return "azure-msi"
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && cfg.ConfigType() == WorkspaceConfig) {
+	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && cfg.Host == "") {
 		return nil, nil
 	}
 	env := cfg.Environment()
-	if !cfg.IsAccountClient() {
+	// If the host is not set, we need to resolve it from the Azure Resource ID.
+	// This is only needed for Workspaces, because Accounts always have a host.
+	if cfg.Host == "" {
 		err := cfg.azureEnsureWorkspaceUrl(ctx, c)
 		if err != nil {
 			return nil, fmt.Errorf("resolve host: %w", err)

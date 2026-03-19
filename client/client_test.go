@@ -22,6 +22,15 @@ import (
 type hc func(r *http.Request) (*http.Response, error)
 
 func (cb hc) RoundTrip(r *http.Request) (*http.Response, error) {
+	// Return 404 for host metadata endpoint to prevent config resolution
+	// from interfering with test assertions.
+	if r.Method == "GET" && r.URL.Path == "/.well-known/databricks-config" {
+		return &http.Response{
+			StatusCode: 404,
+			Body:       io.NopCloser(strings.NewReader(`{"error_code":"NOT_FOUND","message":"host metadata endpoint auto-stubbed by test framework"}`)),
+			Request:    r,
+		}, nil
+	}
 	return cb(r)
 }
 
