@@ -154,10 +154,9 @@ func TestBuildCliCommands(t *testing.T) {
 		{
 			name: "former unified host treated as workspace",
 			cfg: &Config{
-				Host:                       unifiedHost,
-				Experimental_IsUnifiedHost: true,
-				AccountID:                  accountID,
-				WorkspaceID:                workspaceID,
+				Host:        unifiedHost,
+				AccountID:   accountID,
+				WorkspaceID: workspaceID,
 			},
 			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost},
 		},

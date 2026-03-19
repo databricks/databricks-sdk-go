@@ -77,9 +77,8 @@ func TestHostType_AwsWorkspace(t *testing.T) {
 
 func TestHostType_UnifiedFlagNoLongerReturnsUnified(t *testing.T) {
 	c := &Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "123e4567-e89b-12d3-a456-426614174000",
-		Experimental_IsUnifiedHost: true,
+		Host:      "https://unified.cloud.databricks.com",
+		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
 	// Unified flag is no longer checked; host type is determined by URL pattern only
 	assert.Equal(t, WorkspaceHost, c.HostType())
@@ -87,9 +86,8 @@ func TestHostType_UnifiedFlagNoLongerReturnsUnified(t *testing.T) {
 
 func TestIsAccountClient_NoLongerPanicsOnUnifiedHost(t *testing.T) {
 	c := &Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "test-account",
-		Experimental_IsUnifiedHost: true,
+		Host:      "https://unified.cloud.databricks.com",
+		AccountID: "test-account",
 	}
 	assert.NotPanics(t, func() { c.IsAccountClient() })
 }
@@ -296,9 +294,8 @@ func TestConfig_getOAuthArgument_FormerUnifiedHostTreatedAsWorkspace(t *testing.
 	// With the unified flag no longer checked, a non-accounts host
 	// is treated as a workspace host for OAuth argument purposes.
 	c := &Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "account-123",
-		Experimental_IsUnifiedHost: true,
+		Host:      "https://unified.cloud.databricks.com",
+		AccountID: "account-123",
 	}
 	rawGot, err := c.getOAuthArgument()
 	assert.NoError(t, err)
@@ -358,10 +355,9 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 		{
 			name: "former unified without profile (now workspace)",
 			config: &Config{
-				Host:                       "https://unified.cloud.databricks.com",
-				AccountID:                  "account-123",
-				Experimental_IsUnifiedHost: true,
-				Loaders:                    []Loader{noopLoader},
+				Host:      "https://unified.cloud.databricks.com",
+				AccountID: "account-123",
+				Loaders:   []Loader{noopLoader},
 			},
 			wantKey:     "https://unified.cloud.databricks.com",
 			wantHostKey: "https://unified.cloud.databricks.com",
@@ -369,11 +365,10 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 		{
 			name: "former unified with profile (now workspace)",
 			config: &Config{
-				Host:                       "https://unified.cloud.databricks.com",
-				AccountID:                  "account-123",
-				Profile:                    "unified-profile",
-				Experimental_IsUnifiedHost: true,
-				Loaders:                    []Loader{noopLoader},
+				Host:      "https://unified.cloud.databricks.com",
+				AccountID: "account-123",
+				Profile:   "unified-profile",
+				Loaders:   []Loader{noopLoader},
 			},
 			wantKey:     "unified-profile",
 			wantHostKey: "https://unified.cloud.databricks.com",
@@ -499,10 +494,9 @@ func TestConfig_getOidcEndpoints_UsesDiscoveryURL(t *testing.T) {
 func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMAccHost,
-		AccountID:                  testHMAccountID,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:      testHMAccHost,
+		AccountID: testHMAccountID,
+		Loaders:   []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:       "GET",
@@ -522,11 +516,10 @@ func TestConfig_ResolveHostMetadata_AccountSubstitutesAccountID(t *testing.T) {
 func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingFields(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		AccountID:                  testHMAccountID,
-		WorkspaceID:                testHMWorkspaceID,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:        testHMHost,
+		AccountID:   testHMAccountID,
+		WorkspaceID: testHMWorkspaceID,
+		Loaders:     []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:       "GET",
@@ -546,9 +539,8 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingFields(t *testing.T)
 func TestConfig_ResolveHostMetadata_PopulatesCloudFromAPI(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:       "GET",
@@ -567,9 +559,8 @@ func TestConfig_ResolveHostMetadata_PopulatesCloudFromAPI(t *testing.T) {
 func TestConfig_ResolveHostMetadata_CloudFallbackToDNS(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       "https://my-workspace.azuredatabricks.net",
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    "https://my-workspace.azuredatabricks.net",
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:       "GET",
@@ -588,10 +579,9 @@ func TestConfig_ResolveHostMetadata_CloudFallbackToDNS(t *testing.T) {
 func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingCloud(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
-		Host:                       testHMHost,
-		Cloud:                      "GCP",
-		Experimental_IsUnifiedHost: true,
-		Loaders:                    []Loader{noopLoader},
+		Host:    testHMHost,
+		Cloud:   "GCP",
+		Loaders: []Loader{noopLoader},
 		HTTPTransport: fixtures.SliceTransport{
 			{
 				Method:       "GET",
@@ -825,9 +815,8 @@ func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			cfg := &Config{
-				Host:                       testHMHost,
-				Experimental_IsUnifiedHost: true,
-				Loaders:                    []Loader{noopLoader},
+				Host:    testHMHost,
+				Loaders: []Loader{noopLoader},
 				HTTPTransport: fixtures.SliceTransport{
 					{
 						Method:       "GET",
