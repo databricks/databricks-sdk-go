@@ -1,6 +1,6 @@
 module github.com/databricks/databricks-sdk-go
 
-go 1.18
+go 1.24
 
 require (
 	github.com/google/go-cmp v0.6.0
