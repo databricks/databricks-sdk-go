@@ -829,6 +829,367 @@ func TestToken_ReturnsInvalidRefreshTokenError(t *testing.T) {
 	}
 }
 
+func TestToken_ReturnsMissingRefreshTokenErrorWhenExpired(t *testing.T) {
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken: "expired",
+				Expiry:      time.Now().Add(-1 * time.Minute),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — Token() should fail before writing when refresh token is missing")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: fixtures.SliceTransport{}}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err == nil {
+		t.Fatal("Token(): want error when refresh token is missing, got nil")
+	}
+	if tok != nil {
+		t.Errorf("Token(): want nil token on error, got %v", tok)
+	}
+	if !errors.Is(err, ErrMissingRefreshToken) {
+		t.Fatalf("Token(): want ErrMissingRefreshToken, got %v", err)
+	}
+	want := "token refresh: cached token has no refresh token"
+	if got := err.Error(); got != want {
+		t.Errorf("Token(): want error %q, got %q", want, got)
+	}
+}
+
+func TestToken_ReturnsExistingTokenWhenNearExpiryAndNoRefreshToken(t *testing.T) {
+	// Token is still valid but within the proactive refresh window (5 min).
+	// Token() attempts refresh, refresh() returns ErrMissingRefreshToken.
+	// Token() falls back to the existing token since it is still valid.
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken: "near-expiry",
+				Expiry:      time.Now().Add(3 * time.Minute), // within tokenRefreshBuffer
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — Token() should return existing token without migrating")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: fixtures.SliceTransport{}}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.Token()
+	if err != nil {
+		t.Fatalf("Token(): want no error when falling back to valid token, got %v", err)
+	}
+	if tok == nil {
+		t.Fatal("Token(): want token, got nil")
+	}
+	if tok.AccessToken != "near-expiry" {
+		t.Errorf("Token(): want access token 'near-expiry', got %s", tok.AccessToken)
+	}
+}
+
+func TestForceRefreshToken_RefreshesValidToken(t *testing.T) {
+	refreshCalled := false
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken:  "still-valid",
+				RefreshToken: "refresh-me",
+				Expiry:       time.Now().Add(1 * time.Hour),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			refreshCalled = true
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `access_token=force-refreshed&refresh_token=new-refresh`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/x-www-form-urlencoded"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if err != nil {
+		t.Fatalf("ForceRefreshToken(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "force-refreshed" {
+		t.Errorf("ForceRefreshToken(): want access token 'force-refreshed', got %s", tok.AccessToken)
+	}
+	if tok.RefreshToken != "" {
+		t.Errorf("ForceRefreshToken(): want refresh token redacted, got %s", tok.RefreshToken)
+	}
+	if !refreshCalled {
+		t.Error("ForceRefreshToken(): want refresh to be called for valid token, but it was not")
+	}
+}
+
+func TestForceRefreshToken_FailsWithoutRefreshToken(t *testing.T) {
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken: "still-valid",
+				Expiry:      time.Now().Add(1 * time.Hour),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — ForceRefreshToken() should fail before writing when refresh token is missing")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{Transport: fixtures.SliceTransport{}}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if err == nil {
+		t.Fatal("ForceRefreshToken(): want error when refresh token is missing, got nil")
+	}
+	if tok != nil {
+		t.Errorf("ForceRefreshToken(): want nil token on error, got %v", tok)
+	}
+	if !errors.Is(err, ErrMissingRefreshToken) {
+		t.Fatalf("ForceRefreshToken(): want ErrMissingRefreshToken, got %v", err)
+	}
+	want := "forced token refresh: cached token has no refresh token"
+	if got := err.Error(); got != want {
+		t.Errorf("ForceRefreshToken(): want error %q, got %q", want, got)
+	}
+}
+
+func TestForceRefreshToken_FailsOnRefreshError(t *testing.T) {
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken:  "still-valid",
+				RefreshToken: "bad-refresh",
+				Expiry:       time.Now().Add(1 * time.Hour),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — refresh should not succeed")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `{"error": "temporarily_unavailable", "error_description": "temporarily unavailable"}`,
+					Status:   503,
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if err == nil {
+		t.Fatal("ForceRefreshToken(): want error when refresh fails, got nil")
+	}
+	if tok != nil {
+		t.Errorf("ForceRefreshToken(): want nil token on error, got %v", tok)
+	}
+	want := "forced token refresh: temporarily unavailable (error code: temporarily_unavailable)"
+	if got := err.Error(); got != want {
+		t.Errorf("ForceRefreshToken(): want error %q, got %q", want, got)
+	}
+}
+
+func TestForceRefreshToken_InvalidRefreshTokenError(t *testing.T) {
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			return &oauth2.Token{
+				AccessToken:  "expired",
+				RefreshToken: "bad-refresh",
+				Expiry:       time.Now().Add(-1 * time.Minute),
+			}, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			t.Fatalf("store(): unexpected call — refresh should not succeed")
+			return nil
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `{"error": "invalid_grant", "error_description": "Refresh token is invalid"}`,
+					Status:   401,
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if tok != nil {
+		t.Fatalf("ForceRefreshToken(): want nil token, got %v", tok)
+	}
+	target := &InvalidRefreshTokenError{}
+	if !errors.As(err, &target) {
+		t.Fatalf("ForceRefreshToken(): want InvalidRefreshTokenError, got %v", err)
+	}
+}
+
+func TestForceRefreshToken_WithProfileFallbackToHostKey(t *testing.T) {
+	profileKey := "my-profile"
+	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
+	storedKeys := map[string]bool{}
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			if key == profileKey {
+				return nil, cache.ErrNotFound
+			}
+			if key == hostKey {
+				return &oauth2.Token{
+					AccessToken:  "host-token",
+					RefreshToken: "host-refresh",
+					Expiry:       time.Now().Add(1 * time.Hour),
+				}, nil
+			}
+			t.Fatalf("lookup(): unexpected key %q", key)
+			return nil, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			storedKeys[key] = true
+			return nil
+		},
+	}
+	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz", profileKey)
+	if err != nil {
+		t.Fatalf("NewProfileAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `access_token=force-refreshed&refresh_token=new-ref`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/x-www-form-urlencoded"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if err != nil {
+		t.Fatalf("ForceRefreshToken(): want no error, got %v", err)
+	}
+	if tok.AccessToken != "force-refreshed" {
+		t.Errorf("ForceRefreshToken(): want access token 'force-refreshed', got %s", tok.AccessToken)
+	}
+	if tok.RefreshToken != "" {
+		t.Errorf("ForceRefreshToken(): want refresh token redacted, got %s", tok.RefreshToken)
+	}
+	if !storedKeys[profileKey] {
+		t.Error("ForceRefreshToken(): want dual-write to profile key after forced refresh")
+	}
+	if !storedKeys[hostKey] {
+		t.Error("ForceRefreshToken(): want dual-write to host key after forced refresh")
+	}
+}
+
 func TestChallenge(t *testing.T) {
 	ctx := context.Background()
 
