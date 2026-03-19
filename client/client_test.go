@@ -527,6 +527,62 @@ func TestUserAgentForCiCd(t *testing.T) {
 
 }
 
+func TestUserAgentForAgent(t *testing.T) {
+	agentToEnv := map[string]map[string]string{
+		"claude-code": {
+			"CLAUDECODE": "1",
+		},
+		"cursor": {
+			"CURSOR_AGENT": "1",
+		},
+		"codex": {
+			"CODEX_CI": "1",
+		},
+	}
+
+	for agent, envVars := range agentToEnv {
+		t.Run(agent, func(t *testing.T) {
+			env.CleanupEnvironment(t)
+			useragent.ClearCache()
+
+			for k, v := range envVars {
+				t.Setenv(k, v)
+			}
+
+			userAgent := captureUserAgent(t)
+
+			// The user agent should contain the agent provider.
+			assert.Contains(t, userAgent, "agent/"+agent)
+
+			// There should be exactly one agent entry.
+			assert.Equal(t, 1, strings.Count(userAgent, "agent/"))
+		})
+	}
+}
+
+func TestUserAgentForMultipleAgents(t *testing.T) {
+	env.CleanupEnvironment(t)
+	useragent.ClearCache()
+
+	t.Setenv("CLAUDECODE", "1")
+	t.Setenv("CURSOR_AGENT", "1")
+
+	userAgent := captureUserAgent(t)
+
+	// When multiple agent env vars are set, no agent/ entry should appear.
+	assert.NotContains(t, userAgent, "agent/")
+}
+
+func TestUserAgentForAgentNotSet(t *testing.T) {
+	env.CleanupEnvironment(t)
+	useragent.ClearCache()
+
+	userAgent := captureUserAgent(t)
+
+	// When no agent env vars are set, no agent/ entry should appear.
+	assert.NotContains(t, userAgent, "agent/")
+}
+
 func TestRetryOn503(t *testing.T) {
 	var requested bool
 	c, err := New(&config.Config{
