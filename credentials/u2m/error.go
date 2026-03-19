@@ -7,8 +7,8 @@ import "errors"
 var ErrMissingRefreshToken = errors.New("cached token has no refresh token")
 
 // InvalidRefreshTokenError is returned from PersistentAuth's Token() and
-// ForceRefreshToken() methods if the access token has expired and the refresh
-// token in the token cache is invalid.
+// ForceRefreshToken() methods when a token refresh is attempted and the cached
+// refresh token is invalid.
 type InvalidRefreshTokenError struct {
 	error
 }
