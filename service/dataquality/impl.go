@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -25,7 +26,7 @@ func (a *dataQualityImpl) CancelRefresh(ctx context.Context, request CancelRefre
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelRefreshResponse)
@@ -40,7 +41,7 @@ func (a *dataQualityImpl) CreateMonitor(ctx context.Context, request CreateMonit
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Monitor, &monitor)
@@ -55,7 +56,7 @@ func (a *dataQualityImpl) CreateRefresh(ctx context.Context, request CreateRefre
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Refresh, &refresh)
@@ -68,7 +69,7 @@ func (a *dataQualityImpl) DeleteMonitor(ctx context.Context, request DeleteMonit
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -81,7 +82,7 @@ func (a *dataQualityImpl) DeleteRefresh(ctx context.Context, request DeleteRefre
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -95,7 +96,7 @@ func (a *dataQualityImpl) GetMonitor(ctx context.Context, request GetMonitorRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &monitor)
@@ -109,7 +110,7 @@ func (a *dataQualityImpl) GetRefresh(ctx context.Context, request GetRefreshRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &refresh)
@@ -154,7 +155,7 @@ func (a *dataQualityImpl) internalListMonitor(ctx context.Context, request ListM
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listMonitorResponse)
@@ -225,7 +226,7 @@ func (a *dataQualityImpl) internalListRefresh(ctx context.Context, request ListR
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRefreshResponse)
@@ -244,7 +245,7 @@ func (a *dataQualityImpl) UpdateMonitor(ctx context.Context, request UpdateMonit
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Monitor, &monitor)
@@ -263,7 +264,7 @@ func (a *dataQualityImpl) UpdateRefresh(ctx context.Context, request UpdateRefre
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Refresh, &refresh)

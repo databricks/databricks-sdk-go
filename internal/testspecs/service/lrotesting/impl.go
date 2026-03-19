@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 )
 
 // unexported type that holds implementations of just LroTesting API methods
@@ -21,7 +22,7 @@ func (a *lroTestingImpl) CancelOperation(ctx context.Context, request CancelOper
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
@@ -36,7 +37,7 @@ func (a *lroTestingImpl) CreateTestResource(ctx context.Context, request CreateT
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Resource, &operation)
@@ -50,7 +51,7 @@ func (a *lroTestingImpl) DeleteTestResource(ctx context.Context, request DeleteT
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
@@ -64,7 +65,7 @@ func (a *lroTestingImpl) GetOperation(ctx context.Context, request GetOperationR
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &operation)
@@ -78,7 +79,7 @@ func (a *lroTestingImpl) GetTestResource(ctx context.Context, request GetTestRes
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &testResource)

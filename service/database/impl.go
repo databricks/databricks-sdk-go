@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/google/uuid"
@@ -27,7 +28,7 @@ func (a *databaseImpl) CreateDatabaseCatalog(ctx context.Context, request Create
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Catalog, &databaseCatalog)
@@ -42,7 +43,7 @@ func (a *databaseImpl) CreateDatabaseInstance(ctx context.Context, request Creat
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
@@ -61,7 +62,7 @@ func (a *databaseImpl) CreateDatabaseInstanceRole(ctx context.Context, request C
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseInstanceRole, &databaseInstanceRole)
@@ -76,7 +77,7 @@ func (a *databaseImpl) CreateDatabaseTable(ctx context.Context, request CreateDa
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Table, &databaseTable)
@@ -91,7 +92,7 @@ func (a *databaseImpl) CreateSyncedDatabaseTable(ctx context.Context, request Cr
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.SyncedTable, &syncedDatabaseTable)
@@ -104,7 +105,7 @@ func (a *databaseImpl) DeleteDatabaseCatalog(ctx context.Context, request Delete
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -117,7 +118,7 @@ func (a *databaseImpl) DeleteDatabaseInstance(ctx context.Context, request Delet
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -130,7 +131,7 @@ func (a *databaseImpl) DeleteDatabaseInstanceRole(ctx context.Context, request D
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -143,7 +144,7 @@ func (a *databaseImpl) DeleteDatabaseTable(ctx context.Context, request DeleteDa
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -156,7 +157,7 @@ func (a *databaseImpl) DeleteSyncedDatabaseTable(ctx context.Context, request De
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -170,7 +171,7 @@ func (a *databaseImpl) FindDatabaseInstanceByUid(ctx context.Context, request Fi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstance)
@@ -188,7 +189,7 @@ func (a *databaseImpl) GenerateDatabaseCredential(ctx context.Context, request G
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &databaseCredential)
@@ -202,7 +203,7 @@ func (a *databaseImpl) GetDatabaseCatalog(ctx context.Context, request GetDataba
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseCatalog)
@@ -216,7 +217,7 @@ func (a *databaseImpl) GetDatabaseInstance(ctx context.Context, request GetDatab
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstance)
@@ -230,7 +231,7 @@ func (a *databaseImpl) GetDatabaseInstanceRole(ctx context.Context, request GetD
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstanceRole)
@@ -244,7 +245,7 @@ func (a *databaseImpl) GetDatabaseTable(ctx context.Context, request GetDatabase
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseTable)
@@ -258,7 +259,7 @@ func (a *databaseImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSy
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &syncedDatabaseTable)
@@ -303,7 +304,7 @@ func (a *databaseImpl) internalListDatabaseCatalogs(ctx context.Context, request
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseCatalogsResponse)
@@ -356,7 +357,7 @@ func (a *databaseImpl) internalListDatabaseInstanceRoles(ctx context.Context, re
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseInstanceRolesResponse)
@@ -401,7 +402,7 @@ func (a *databaseImpl) internalListDatabaseInstances(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseInstancesResponse)
@@ -446,7 +447,7 @@ func (a *databaseImpl) internalListSyncedDatabaseTables(ctx context.Context, req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSyncedDatabaseTablesResponse)
@@ -465,7 +466,7 @@ func (a *databaseImpl) UpdateDatabaseCatalog(ctx context.Context, request Update
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseCatalog, &databaseCatalog)
@@ -484,7 +485,7 @@ func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request Updat
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
@@ -503,7 +504,7 @@ func (a *databaseImpl) UpdateSyncedDatabaseTable(ctx context.Context, request Up
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.SyncedTable, &syncedDatabaseTable)

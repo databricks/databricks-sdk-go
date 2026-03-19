@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
@@ -26,7 +27,7 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieMessage)
@@ -41,7 +42,7 @@ func (a *genieImpl) CreateSpace(ctx context.Context, request GenieCreateSpaceReq
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieSpace)
@@ -54,7 +55,7 @@ func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteC
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -67,7 +68,7 @@ func (a *genieImpl) DeleteConversationMessage(ctx context.Context, request Genie
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -81,7 +82,7 @@ func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request G
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
@@ -95,7 +96,7 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
@@ -109,7 +110,7 @@ func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGenerateDownloadFullQueryResultResponse)
@@ -124,7 +125,7 @@ func (a *genieImpl) GenieCreateEvalRun(ctx context.Context, request GenieCreateE
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieEvalRunResponse)
@@ -138,7 +139,7 @@ func (a *genieImpl) GenieGetEvalResultDetails(ctx context.Context, request Genie
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieEvalResultDetails)
@@ -152,7 +153,7 @@ func (a *genieImpl) GenieGetEvalRun(ctx context.Context, request GenieGetEvalRun
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieEvalRunResponse)
@@ -166,7 +167,7 @@ func (a *genieImpl) GenieListEvalResults(ctx context.Context, request GenieListE
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListEvalResultsResponse)
@@ -180,7 +181,7 @@ func (a *genieImpl) GenieListEvalRuns(ctx context.Context, request GenieListEval
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListEvalRunsResponse)
@@ -194,7 +195,7 @@ func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request Geni
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetDownloadFullQueryResultResponse)
@@ -208,7 +209,7 @@ func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversation
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieMessage)
@@ -222,7 +223,7 @@ func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
@@ -236,7 +237,7 @@ func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetM
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
@@ -250,7 +251,7 @@ func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
@@ -264,7 +265,7 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieSpace)
@@ -278,7 +279,7 @@ func (a *genieImpl) ListConversationMessages(ctx context.Context, request GenieL
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationMessagesResponse)
@@ -292,7 +293,7 @@ func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConv
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationsResponse)
@@ -306,7 +307,7 @@ func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesReque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListSpacesResponse)
@@ -320,7 +321,7 @@ func (a *genieImpl) SendMessageFeedback(ctx context.Context, request GenieSendMe
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
@@ -335,7 +336,7 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieStartConversationResponse)
@@ -348,7 +349,7 @@ func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceReque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -363,7 +364,7 @@ func (a *genieImpl) UpdateSpace(ctx context.Context, request GenieUpdateSpaceReq
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &genieSpace)
@@ -391,7 +392,7 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Dashboard, &dashboard)
@@ -406,7 +407,7 @@ func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateSchedul
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Schedule, &schedule)
@@ -421,7 +422,7 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Subscription, &subscription)
@@ -434,7 +435,7 @@ func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteSchedul
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -447,7 +448,7 @@ func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSub
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -461,7 +462,7 @@ func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*D
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dashboard)
@@ -475,7 +476,7 @@ func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDas
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &publishedDashboard)
@@ -489,7 +490,7 @@ func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleReque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &schedule)
@@ -503,7 +504,7 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &subscription)
@@ -548,7 +549,7 @@ func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsR
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDashboardsResponse)
@@ -593,7 +594,7 @@ func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSc
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSchedulesResponse)
@@ -638,7 +639,7 @@ func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request Li
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSubscriptionsResponse)
@@ -653,7 +654,7 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
@@ -668,7 +669,7 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &publishedDashboard)
@@ -681,7 +682,7 @@ func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -694,7 +695,7 @@ func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboard
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
@@ -717,7 +718,7 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Dashboard, &dashboard)
@@ -732,7 +733,7 @@ func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateSchedul
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Schedule, &schedule)
@@ -751,7 +752,7 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Contex
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardTokenInfoResponse)

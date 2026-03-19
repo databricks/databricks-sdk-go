@@ -488,6 +488,9 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		return nil, err
 	}
+	if cfg.AccountID == "" || cfg.HostType() == config.WorkspaceHost {
+		return nil, ErrNotAccountClient
+	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
