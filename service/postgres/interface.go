@@ -26,6 +26,9 @@ type PostgresService interface {
 	// Creates a new database branch in the project.
 	CreateBranch(ctx context.Context, request CreateBranchRequest) (*Operation, error)
 
+	// Register a Postgres database in the Unity Catalog.
+	CreateCatalog(ctx context.Context, request CreateCatalogRequest) (*Operation, error)
+
 	// Create a Database.
 	//
 	// Creates a database in the specified branch. A branch can have multiple
@@ -42,8 +45,14 @@ type PostgresService interface {
 	// Creates a new Postgres role in the branch.
 	CreateRole(ctx context.Context, request CreateRoleRequest) (*Operation, error)
 
+	// Create a Synced Table.
+	CreateSyncedTable(ctx context.Context, request CreateSyncedTableRequest) (*Operation, error)
+
 	// Deletes the specified database branch.
 	DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error)
+
+	// Delete a Database Catalog.
+	DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) (*Operation, error)
 
 	// Delete a Database.
 	DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error)
@@ -57,11 +66,17 @@ type PostgresService interface {
 	// Deletes the specified Postgres role.
 	DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error)
 
+	// Delete a Synced Table.
+	DeleteSyncedTable(ctx context.Context, request DeleteSyncedTableRequest) (*Operation, error)
+
 	// Generate OAuth credentials for a Postgres database.
 	GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error)
 
 	// Retrieves information about the specified database branch.
 	GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error)
+
+	// Get a Database Catalog.
+	GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error)
 
 	// Get a Database.
 	GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error)
@@ -79,6 +94,9 @@ type PostgresService interface {
 	// Retrieves information about the specified Postgres role, including its
 	// authentication method and permissions.
 	GetRole(ctx context.Context, request GetRoleRequest) (*Role, error)
+
+	// Get a Synced Table.
+	GetSyncedTable(ctx context.Context, request GetSyncedTableRequest) (*SyncedTable, error)
 
 	// Returns a paginated list of database branches in the project.
 	ListBranches(ctx context.Context, request ListBranchesRequest) (*ListBranchesResponse, error)

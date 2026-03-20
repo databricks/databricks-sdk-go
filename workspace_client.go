@@ -1394,10 +1394,7 @@ type WorkspaceClient struct {
 	Users iam.UsersInterface
 }
 
-var (
-	ErrNotWorkspaceClient  = errors.New("invalid Databricks Workspace configuration - host is not a workspace host")
-	ErrWorkspaceIDRequired = errors.New("WorkspaceID must be set when using WorkspaceClient with unified host")
-)
+var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration - host is not a workspace host")
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
 // returns error in case configuration is wrong
@@ -1414,7 +1411,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	apiClient, err := cfg.NewApiClient()
 	if err != nil {
 		return nil, err
