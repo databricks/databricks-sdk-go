@@ -39,6 +39,25 @@ func (a *postgresImpl) CreateBranch(ctx context.Context, request CreateBranchReq
 	return &operation, err
 }
 
+func (a *postgresImpl) CreateCatalog(ctx context.Context, request CreateCatalogRequest) (*Operation, error) {
+	var operation Operation
+	path := "/api/2.0/postgres/catalogs"
+	queryParams := make(map[string]any)
+
+	if request.CatalogId != "" {
+		queryParams["catalog_id"] = request.CatalogId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Catalog, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) CreateDatabase(ctx context.Context, request CreateDatabaseRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", request.Parent)
@@ -115,7 +134,40 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 	return &operation, err
 }
 
+func (a *postgresImpl) CreateSyncedTable(ctx context.Context, request CreateSyncedTableRequest) (*Operation, error) {
+	var operation Operation
+	path := "/api/2.0/postgres/synced_tables"
+	queryParams := make(map[string]any)
+
+	if request.SyncedTableId != "" {
+		queryParams["synced_table_id"] = request.SyncedTableId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.SyncedTable, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -185,6 +237,20 @@ func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest
 	return &operation, err
 }
 
+func (a *postgresImpl) DeleteSyncedTable(ctx context.Context, request DeleteSyncedTableRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error) {
 	var databaseCredential DatabaseCredential
 	path := "/api/2.0/postgres/credentials"
@@ -212,6 +278,20 @@ func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) 
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &branch)
 	return &branch, err
+}
+
+func (a *postgresImpl) GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error) {
+	var catalog Catalog
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &catalog)
+	return &catalog, err
 }
 
 func (a *postgresImpl) GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error) {
@@ -282,6 +362,20 @@ func (a *postgresImpl) GetRole(ctx context.Context, request GetRoleRequest) (*Ro
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &role)
 	return &role, err
+}
+
+func (a *postgresImpl) GetSyncedTable(ctx context.Context, request GetSyncedTableRequest) (*SyncedTable, error) {
+	var syncedTable SyncedTable
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &syncedTable)
+	return &syncedTable, err
 }
 
 // Returns a paginated list of database branches in the project.
