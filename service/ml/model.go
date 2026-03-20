@@ -357,6 +357,13 @@ type ColumnIdentifier struct {
 	VariantExprPath string `json:"variant_expr_path"`
 }
 
+// A ColumnSelection function, equivalent to the LAST() record of an entity over
+// a lifetime ContinuousWindow
+type ColumnSelection struct {
+	// Column name from source to select as the feature value.
+	Column string `json:"column"`
+}
+
 // An action that a user (with sufficient permissions) could take on an activity
 // or comment.
 //
@@ -1558,6 +1565,8 @@ func (f *ForecastingExperimentState) Type() string {
 type Function struct {
 	// An aggregation function applied over a time window.
 	AggregationFunction *AggregationFunction `json:"aggregation_function,omitempty"`
+	// Selects the latest value of a single column in a data source
+	ColumnSelection *ColumnSelection `json:"column_selection,omitempty"`
 	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
 	// for backwards compatibility. Extra parameters for parameterized
 	// functions.
