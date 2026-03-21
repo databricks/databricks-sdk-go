@@ -21,6 +21,7 @@
  * Bump golang.org/x/oauth2 from 0.20.0 to 0.27.0 ([#1563](https://github.com/databricks/databricks-sdk-go/pull/1563)).
  * Bump golang.org/x/crypto from 0.21.0 to 0.45.0 in /examples/zerolog ([#1568](https://github.com/databricks/databricks-sdk-go/pull/1568)).
  * Bump golang.org/x/crypto from 0.31.0 to 0.45.0 ([#1564](https://github.com/databricks/databricks-sdk-go/pull/1564)).
+ * Bump google.golang.org/grpc from 1.58.3 to 1.79.3 in /examples/zerolog ([#1565](https://github.com/databricks/databricks-sdk-go/pull/1565)).
 
 ### API Changes
 * Add `CreateCatalog`, `CreateSyncedTable`, `DeleteCatalog`, `DeleteSyncedTable`, `GetCatalog` and `GetSyncedTable` methods for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
