@@ -791,6 +791,7 @@ func TestEnsureResolved_CustomResolver_ReceivesDefaultFetch(t *testing.T) {
 		},
 		HostMetadataResolver: &mockHostMetadataResolver{
 			resolveFn: func(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error) {
+				assert.Equal(t, testHMHost, host)
 				return fetch(ctx, host)
 			},
 		},
