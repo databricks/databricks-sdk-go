@@ -745,28 +745,18 @@ func TestApplyHostMetadata_DoesNotOverrideExistingTokenAudience(t *testing.T) {
 	assert.Equal(t, "custom-audience", cfg.TokenAudience)
 }
 
-type mockHostMetadataResolver struct {
-	resolveFn func(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error)
-}
-
-func (m *mockHostMetadataResolver) Resolve(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error) {
-	return m.resolveFn(ctx, host, fetch)
-}
-
 func TestEnsureResolved_UsesCustomHostMetadataResolver(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:    testHMHost,
 		Loaders: []Loader{noopLoader},
-		HostMetadataResolver: &mockHostMetadataResolver{
-			resolveFn: func(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error) {
-				return &HostMetadata{
-					OIDCEndpoint: testHMHost + "/oidc",
-					AccountID:    testHMAccountID,
-					WorkspaceID:  testHMWorkspaceID,
-					Cloud:        "AWS",
-				}, nil
-			},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			return &HostMetadata{
+				OIDCEndpoint: testHMHost + "/oidc",
+				AccountID:    testHMAccountID,
+				WorkspaceID:  testHMWorkspaceID,
+				Cloud:        "AWS",
+			}, nil
 		},
 	}
 	err := cfg.EnsureResolved()
@@ -775,25 +765,17 @@ func TestEnsureResolved_UsesCustomHostMetadataResolver(t *testing.T) {
 	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
 }
 
-func TestEnsureResolved_CustomResolver_ReceivesDefaultFetch(t *testing.T) {
+func TestEnsureResolved_CustomResolver_FullReplacement(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:    testHMHost,
 		Loaders: []Loader{noopLoader},
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:       "GET",
-				Resource:     "/.well-known/databricks-config",
-				ReuseRequest: true,
-				Status:       200,
-				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
-			},
-		},
-		HostMetadataResolver: &mockHostMetadataResolver{
-			resolveFn: func(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error) {
-				assert.Equal(t, testHMHost, host)
-				return fetch(ctx, host)
-			},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			assert.Equal(t, testHMHost, host)
+			return &HostMetadata{
+				AccountID:   testHMAccountID,
+				WorkspaceID: testHMWorkspaceID,
+			}, nil
 		},
 	}
 	err := cfg.EnsureResolved()
@@ -807,10 +789,8 @@ func TestEnsureResolved_CustomResolver_NilMetadata_NoBackfill(t *testing.T) {
 	cfg := &Config{
 		Host:    testHMHost,
 		Loaders: []Loader{noopLoader},
-		HostMetadataResolver: &mockHostMetadataResolver{
-			resolveFn: func(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error) {
-				return nil, nil
-			},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			return nil, nil
 		},
 	}
 	err := cfg.EnsureResolved()
@@ -824,10 +804,8 @@ func TestEnsureResolved_CustomResolver_Error_NonFatal(t *testing.T) {
 	cfg := &Config{
 		Host:    testHMHost,
 		Loaders: []Loader{noopLoader},
-		HostMetadataResolver: &mockHostMetadataResolver{
-			resolveFn: func(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error) {
-				return nil, fmt.Errorf("resolver error")
-			},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			return nil, fmt.Errorf("resolver error")
 		},
 	}
 	err := cfg.EnsureResolved()

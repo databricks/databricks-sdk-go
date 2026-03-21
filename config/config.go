@@ -668,17 +668,12 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		return
 	}
 
-	canonicalHost := c.CanonicalHostName()
-	defaultFetch := func(ctx context.Context, host string) (*HostMetadata, error) {
-		return getHostMetadata(ctx, host, c.refreshClient)
-	}
-
 	var meta *HostMetadata
 	var err error
 	if c.HostMetadataResolver != nil {
-		meta, err = c.HostMetadataResolver.Resolve(ctx, canonicalHost, defaultFetch)
+		meta, err = c.HostMetadataResolver(ctx, c.CanonicalHostName())
 	} else {
-		meta, err = defaultFetch(ctx, canonicalHost)
+		meta, err = getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
 	}
 	if err != nil {
 		logger.Warnf(ctx, "Failed to resolve host metadata: %v. Falling back to user config.", err)

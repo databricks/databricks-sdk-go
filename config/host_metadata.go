@@ -24,16 +24,11 @@ type HostMetadata struct {
 	Cloud environment.Cloud `json:"cloud"`
 }
 
-// HostMetadataFetchFunc is the SDK's default function for fetching host metadata via HTTP.
-type HostMetadataFetchFunc func(ctx context.Context, host string) (*HostMetadata, error)
-
-// HostMetadataResolver controls how host metadata is fetched during config resolution.
-// Resolve receives the canonical host and a fetch function that performs the SDK's default
-// HTTP fetch. Implementations can wrap fetch with caching, modify the result, etc.
-// A nil return with no error is treated as "no metadata available".
-type HostMetadataResolver interface {
-	Resolve(ctx context.Context, host string, fetch HostMetadataFetchFunc) (*HostMetadata, error)
-}
+// HostMetadataResolver, when set on [Config], overrides the default HTTP fetch
+// of /.well-known/databricks-config during config resolution. The function
+// receives the canonical host and returns metadata (or nil, nil if unavailable).
+// This allows callers to provide cached metadata without the SDK making an HTTP call.
+type HostMetadataResolver func(ctx context.Context, host string) (*HostMetadata, error)
 
 // getHostMetadata fetches the raw Databricks well-known configuration from
 // {host}/.well-known/databricks-config. The returned HostMetadata contains

@@ -8,7 +8,7 @@
 
 ### New Features and Improvements
 
-* Added `HostMetadataResolver` interface to allow callers to customize host metadata resolution, e.g. with caching ([#1572](https://github.com/databricks/databricks-sdk-go/pull/1572)).
+* Added `HostMetadataResolver` hook to allow callers to customize host metadata resolution, e.g. with caching ([#1572](https://github.com/databricks/databricks-sdk-go/pull/1572)).
 * Added `NewLimitIterator` to `listing` package for lazy iteration with a cap on output items ([#1555](https://github.com/databricks/databricks-sdk-go/pull/1555)).
 
 ### Bug Fixes
