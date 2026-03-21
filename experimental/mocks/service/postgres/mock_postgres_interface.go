@@ -82,6 +82,65 @@ func (_c *MockPostgresInterface_CreateBranch_Call) RunAndReturn(run func(context
 	return _c
 }
 
+// CreateCatalog provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) CreateCatalog(ctx context.Context, request postgres.CreateCatalogRequest) (postgres.CreateCatalogOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateCatalog")
+	}
+
+	var r0 postgres.CreateCatalogOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateCatalogRequest) (postgres.CreateCatalogOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateCatalogRequest) postgres.CreateCatalogOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateCatalogOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.CreateCatalogRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateCatalog_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateCatalog'
+type MockPostgresInterface_CreateCatalog_Call struct {
+	*mock.Call
+}
+
+// CreateCatalog is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateCatalogRequest
+func (_e *MockPostgresInterface_Expecter) CreateCatalog(ctx interface{}, request interface{}) *MockPostgresInterface_CreateCatalog_Call {
+	return &MockPostgresInterface_CreateCatalog_Call{Call: _e.mock.On("CreateCatalog", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateCatalog_Call) Run(run func(ctx context.Context, request postgres.CreateCatalogRequest)) *MockPostgresInterface_CreateCatalog_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.CreateCatalogRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateCatalog_Call) Return(_a0 postgres.CreateCatalogOperationInterface, _a1 error) *MockPostgresInterface_CreateCatalog_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateCatalog_Call) RunAndReturn(run func(context.Context, postgres.CreateCatalogRequest) (postgres.CreateCatalogOperationInterface, error)) *MockPostgresInterface_CreateCatalog_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateDatabase provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) CreateDatabase(ctx context.Context, request postgres.CreateDatabaseRequest) (postgres.CreateDatabaseOperationInterface, error) {
 	ret := _m.Called(ctx, request)
@@ -318,6 +377,65 @@ func (_c *MockPostgresInterface_CreateRole_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
+// CreateSyncedTable provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) CreateSyncedTable(ctx context.Context, request postgres.CreateSyncedTableRequest) (postgres.CreateSyncedTableOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateSyncedTable")
+	}
+
+	var r0 postgres.CreateSyncedTableOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateSyncedTableRequest) (postgres.CreateSyncedTableOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateSyncedTableRequest) postgres.CreateSyncedTableOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateSyncedTableOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.CreateSyncedTableRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateSyncedTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateSyncedTable'
+type MockPostgresInterface_CreateSyncedTable_Call struct {
+	*mock.Call
+}
+
+// CreateSyncedTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateSyncedTableRequest
+func (_e *MockPostgresInterface_Expecter) CreateSyncedTable(ctx interface{}, request interface{}) *MockPostgresInterface_CreateSyncedTable_Call {
+	return &MockPostgresInterface_CreateSyncedTable_Call{Call: _e.mock.On("CreateSyncedTable", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateSyncedTable_Call) Run(run func(ctx context.Context, request postgres.CreateSyncedTableRequest)) *MockPostgresInterface_CreateSyncedTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.CreateSyncedTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateSyncedTable_Call) Return(_a0 postgres.CreateSyncedTableOperationInterface, _a1 error) *MockPostgresInterface_CreateSyncedTable_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateSyncedTable_Call) RunAndReturn(run func(context.Context, postgres.CreateSyncedTableRequest) (postgres.CreateSyncedTableOperationInterface, error)) *MockPostgresInterface_CreateSyncedTable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteBranch provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) DeleteBranch(ctx context.Context, request postgres.DeleteBranchRequest) (postgres.DeleteBranchOperationInterface, error) {
 	ret := _m.Called(ctx, request)
@@ -373,6 +491,65 @@ func (_c *MockPostgresInterface_DeleteBranch_Call) Return(_a0 postgres.DeleteBra
 }
 
 func (_c *MockPostgresInterface_DeleteBranch_Call) RunAndReturn(run func(context.Context, postgres.DeleteBranchRequest) (postgres.DeleteBranchOperationInterface, error)) *MockPostgresInterface_DeleteBranch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteCatalog provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) DeleteCatalog(ctx context.Context, request postgres.DeleteCatalogRequest) (postgres.DeleteCatalogOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteCatalog")
+	}
+
+	var r0 postgres.DeleteCatalogOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteCatalogRequest) (postgres.DeleteCatalogOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteCatalogRequest) postgres.DeleteCatalogOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteCatalogOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteCatalogRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteCatalog_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteCatalog'
+type MockPostgresInterface_DeleteCatalog_Call struct {
+	*mock.Call
+}
+
+// DeleteCatalog is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteCatalogRequest
+func (_e *MockPostgresInterface_Expecter) DeleteCatalog(ctx interface{}, request interface{}) *MockPostgresInterface_DeleteCatalog_Call {
+	return &MockPostgresInterface_DeleteCatalog_Call{Call: _e.mock.On("DeleteCatalog", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteCatalog_Call) Run(run func(ctx context.Context, request postgres.DeleteCatalogRequest)) *MockPostgresInterface_DeleteCatalog_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.DeleteCatalogRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteCatalog_Call) Return(_a0 postgres.DeleteCatalogOperationInterface, _a1 error) *MockPostgresInterface_DeleteCatalog_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteCatalog_Call) RunAndReturn(run func(context.Context, postgres.DeleteCatalogRequest) (postgres.DeleteCatalogOperationInterface, error)) *MockPostgresInterface_DeleteCatalog_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -613,6 +790,65 @@ func (_c *MockPostgresInterface_DeleteRole_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
+// DeleteSyncedTable provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) DeleteSyncedTable(ctx context.Context, request postgres.DeleteSyncedTableRequest) (postgres.DeleteSyncedTableOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSyncedTable")
+	}
+
+	var r0 postgres.DeleteSyncedTableOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteSyncedTableRequest) (postgres.DeleteSyncedTableOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteSyncedTableRequest) postgres.DeleteSyncedTableOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteSyncedTableOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteSyncedTableRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteSyncedTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSyncedTable'
+type MockPostgresInterface_DeleteSyncedTable_Call struct {
+	*mock.Call
+}
+
+// DeleteSyncedTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteSyncedTableRequest
+func (_e *MockPostgresInterface_Expecter) DeleteSyncedTable(ctx interface{}, request interface{}) *MockPostgresInterface_DeleteSyncedTable_Call {
+	return &MockPostgresInterface_DeleteSyncedTable_Call{Call: _e.mock.On("DeleteSyncedTable", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteSyncedTable_Call) Run(run func(ctx context.Context, request postgres.DeleteSyncedTableRequest)) *MockPostgresInterface_DeleteSyncedTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.DeleteSyncedTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteSyncedTable_Call) Return(_a0 postgres.DeleteSyncedTableOperationInterface, _a1 error) *MockPostgresInterface_DeleteSyncedTable_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteSyncedTable_Call) RunAndReturn(run func(context.Context, postgres.DeleteSyncedTableRequest) (postgres.DeleteSyncedTableOperationInterface, error)) *MockPostgresInterface_DeleteSyncedTable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GenerateDatabaseCredential provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) GenerateDatabaseCredential(ctx context.Context, request postgres.GenerateDatabaseCredentialRequest) (*postgres.DatabaseCredential, error) {
 	ret := _m.Called(ctx, request)
@@ -727,6 +963,65 @@ func (_c *MockPostgresInterface_GetBranch_Call) Return(_a0 *postgres.Branch, _a1
 }
 
 func (_c *MockPostgresInterface_GetBranch_Call) RunAndReturn(run func(context.Context, postgres.GetBranchRequest) (*postgres.Branch, error)) *MockPostgresInterface_GetBranch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetCatalog provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetCatalog(ctx context.Context, request postgres.GetCatalogRequest) (*postgres.Catalog, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCatalog")
+	}
+
+	var r0 *postgres.Catalog
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetCatalogRequest) (*postgres.Catalog, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetCatalogRequest) *postgres.Catalog); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.Catalog)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetCatalogRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetCatalog_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCatalog'
+type MockPostgresInterface_GetCatalog_Call struct {
+	*mock.Call
+}
+
+// GetCatalog is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetCatalogRequest
+func (_e *MockPostgresInterface_Expecter) GetCatalog(ctx interface{}, request interface{}) *MockPostgresInterface_GetCatalog_Call {
+	return &MockPostgresInterface_GetCatalog_Call{Call: _e.mock.On("GetCatalog", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetCatalog_Call) Run(run func(ctx context.Context, request postgres.GetCatalogRequest)) *MockPostgresInterface_GetCatalog_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetCatalogRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetCatalog_Call) Return(_a0 *postgres.Catalog, _a1 error) *MockPostgresInterface_GetCatalog_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetCatalog_Call) RunAndReturn(run func(context.Context, postgres.GetCatalogRequest) (*postgres.Catalog, error)) *MockPostgresInterface_GetCatalog_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1022,6 +1317,65 @@ func (_c *MockPostgresInterface_GetRole_Call) Return(_a0 *postgres.Role, _a1 err
 }
 
 func (_c *MockPostgresInterface_GetRole_Call) RunAndReturn(run func(context.Context, postgres.GetRoleRequest) (*postgres.Role, error)) *MockPostgresInterface_GetRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetSyncedTable provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetSyncedTable(ctx context.Context, request postgres.GetSyncedTableRequest) (*postgres.SyncedTable, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSyncedTable")
+	}
+
+	var r0 *postgres.SyncedTable
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetSyncedTableRequest) (*postgres.SyncedTable, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetSyncedTableRequest) *postgres.SyncedTable); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.SyncedTable)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetSyncedTableRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetSyncedTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSyncedTable'
+type MockPostgresInterface_GetSyncedTable_Call struct {
+	*mock.Call
+}
+
+// GetSyncedTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetSyncedTableRequest
+func (_e *MockPostgresInterface_Expecter) GetSyncedTable(ctx interface{}, request interface{}) *MockPostgresInterface_GetSyncedTable_Call {
+	return &MockPostgresInterface_GetSyncedTable_Call{Call: _e.mock.On("GetSyncedTable", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetSyncedTable_Call) Run(run func(ctx context.Context, request postgres.GetSyncedTableRequest)) *MockPostgresInterface_GetSyncedTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetSyncedTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetSyncedTable_Call) Return(_a0 *postgres.SyncedTable, _a1 error) *MockPostgresInterface_GetSyncedTable_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetSyncedTable_Call) RunAndReturn(run func(context.Context, postgres.GetSyncedTableRequest) (*postgres.SyncedTable, error)) *MockPostgresInterface_GetSyncedTable_Call {
 	_c.Call.Return(run)
 	return _c
 }

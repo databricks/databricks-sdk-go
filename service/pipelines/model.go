@@ -452,6 +452,10 @@ func (f *DayOfWeek) Type() string {
 }
 
 type DeletePipelineRequest struct {
+	// If false, pipeline deletion will not cascade to its datasets (MVs, STs,
+	// Views). By default, this parameter will be true and all tables will be
+	// deleted with the pipeline.
+	Cascade bool `json:"-" url:"cascade,omitempty"`
 	// If true, deletion will proceed even if resource cleanup fails. By
 	// default, deletion will fail if resources cleanup is required but fails.
 	Force bool `json:"-" url:"force,omitempty"`

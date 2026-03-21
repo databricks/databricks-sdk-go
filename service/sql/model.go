@@ -4440,7 +4440,9 @@ func (f *QueryStatementType) Type() string {
 	return "QueryStatementType"
 }
 
-// Statuses which are also used by OperationStatus in runtime
+// Statuses which are also used by OperationStatus in runtime. When adding a new
+// QueryStatus, make sure to update
+// com.databricks.sqlgateway.history.QueryStatusOrdering
 type QueryStatus string
 
 const QueryStatusCanceled QueryStatus = `CANCELED`

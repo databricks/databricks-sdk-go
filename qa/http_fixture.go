@@ -42,8 +42,34 @@ var HTTPFailures = []HTTPFixture{
 
 type HTTPFixtures []HTTPFixture
 
+// hostMetadataFixture is auto-injected by the qa framework to prevent tests
+// from making real HTTP calls to the /.well-known/databricks-config endpoint
+// during config resolution. Tests that need to mock host metadata should
+// provide their own fixture for this endpoint.
+var hostMetadataFixture = HTTPFixture{
+	Method:       "GET",
+	Resource:     "/.well-known/databricks-config",
+	ReuseRequest: true,
+	Status:       404,
+	Response: apierr.APIError{
+		ErrorCode:  "NOT_FOUND",
+		StatusCode: 404,
+		Message:    "host metadata endpoint auto-stubbed by qa framework",
+	},
+}
+
+func (fixtures HTTPFixtures) withHostMetadata() HTTPFixtures {
+	for _, f := range fixtures {
+		if f.Method == "GET" && f.Resource == "/.well-known/databricks-config" {
+			return fixtures
+		}
+	}
+	return append(HTTPFixtures{hostMetadataFixture}, fixtures...)
+}
+
 // Client creates DatabricksClient for emulated HTTP server
 func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Server) {
+	fixtures = fixtures.withHostMetadata()
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		found := false
 		for i, fixture := range fixtures {

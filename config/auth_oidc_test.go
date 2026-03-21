@@ -74,6 +74,9 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 						"expires_in":   3600,
 					})
 
+				case "/.well-known/databricks-config":
+					http.Error(w, "Not found", http.StatusNotFound)
+
 				default:
 					t.Errorf("Unexpected request: %s %s", r.Method, r.URL.Path)
 					http.Error(w, "Not found", http.StatusNotFound)

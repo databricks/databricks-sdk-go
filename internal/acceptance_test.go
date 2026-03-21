@@ -131,24 +131,6 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	assert.NotEmpty(t, v)
 }
 
-func TestAccErrNotAccountClient(t *testing.T) {
-	workspaceTest(t)
-
-	// Confirm that we get an error when trying to create an account client
-	// if the configuration indicates a workspace.
-	_, err := databricks.NewAccountClient()
-	assert.ErrorIs(t, err, databricks.ErrNotAccountClient)
-}
-
-func TestAccErrNotWorkspaceClient(t *testing.T) {
-	accountTest(t)
-
-	// Confirm that we get an error when trying to create a workspace client
-	// if the configuration indicates an account.
-	_, err := databricks.NewWorkspaceClient()
-	assert.ErrorIs(t, err, databricks.ErrNotWorkspaceClient)
-}
-
 // Confirm that we can access the account IP access lists using MSI credentials.
 func TestAccAccountsMsiCredentials(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "ARM_USE_MSI"))

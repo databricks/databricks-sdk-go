@@ -242,3 +242,42 @@ func (s *SliceIterator[T]) Next(_ context.Context) (T, error) {
 	*s = (*s)[1:]
 	return v, nil
 }
+
+type limitIterator[T any] struct {
+	it        Iterator[T]
+	remaining int
+}
+
+// NewLimitIterator wraps an iterator and yields at most n items. If n <= 0,
+// the inner iterator is returned unchanged (no limit is applied). Note that
+// this differs from ToSliceN, where n == 0 means unlimited but negative n
+// yields zero items.
+func NewLimitIterator[T any](iter Iterator[T], n int) Iterator[T] {
+	if n <= 0 {
+		return iter
+	}
+	return &limitIterator[T]{
+		it:        iter,
+		remaining: n,
+	}
+}
+
+func (i *limitIterator[T]) HasNext(ctx context.Context) bool {
+	if i.remaining <= 0 {
+		return false
+	}
+	return i.it.HasNext(ctx)
+}
+
+func (i *limitIterator[T]) Next(ctx context.Context) (T, error) {
+	var t T
+	if i.remaining <= 0 {
+		return t, ErrNoMoreItems
+	}
+	t, err := i.it.Next(ctx)
+	if err != nil {
+		return t, err
+	}
+	i.remaining--
+	return t, nil
+}

@@ -1257,6 +1257,11 @@ type CreateExternalLocation struct {
 	// The effective value of `enable_file_events` after applying server-side
 	// defaults.
 	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
+	// The effective file event queue configuration after applying server-side
+	// defaults. Always populated when a queue is provisioned, regardless of
+	// whether the user explicitly set `enable_file_events`. Use this field
+	// instead of `file_event_queue` for reading the actual queue state.
+	EffectiveFileEventQueue *FileEventQueue `json:"effective_file_event_queue,omitempty"`
 	// Whether to enable file events on this external location. Default to
 	// `true`. Set to `false` to disable file events. The actual applied value
 	// may differ due to server-side defaults; check
@@ -3004,6 +3009,11 @@ type ExternalLocationInfo struct {
 	// The effective value of `enable_file_events` after applying server-side
 	// defaults.
 	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
+	// The effective file event queue configuration after applying server-side
+	// defaults. Always populated when a queue is provisioned, regardless of
+	// whether the user explicitly set `enable_file_events`. Use this field
+	// instead of `file_event_queue` for reading the actual queue state.
+	EffectiveFileEventQueue *FileEventQueue `json:"effective_file_event_queue,omitempty"`
 	// Whether to enable file events on this external location. Default to
 	// `true`. Set to `false` to disable file events. The actual applied value
 	// may differ due to server-side defaults; check
@@ -8186,6 +8196,11 @@ type UpdateExternalLocation struct {
 	// The effective value of `enable_file_events` after applying server-side
 	// defaults.
 	EffectiveEnableFileEvents bool `json:"effective_enable_file_events,omitempty"`
+	// The effective file event queue configuration after applying server-side
+	// defaults. Always populated when a queue is provisioned, regardless of
+	// whether the user explicitly set `enable_file_events`. Use this field
+	// instead of `file_event_queue` for reading the actual queue state.
+	EffectiveFileEventQueue *FileEventQueue `json:"effective_file_event_queue,omitempty"`
 	// Whether to enable file events on this external location. Default to
 	// `true`. Set to `false` to disable file events. The actual applied value
 	// may differ due to server-side defaults; check
