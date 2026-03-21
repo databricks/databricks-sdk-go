@@ -266,7 +266,7 @@ type Config struct {
 
 	// HostMetadataResolver, if set, overrides the default HTTP fetch of
 	// /.well-known/databricks-config during config resolution. This allows
-	// callers (e.g., the CLI) to wrap the lookup with caching.
+	// callers (e.g., the CLI) to provide cached metadata directly.
 	HostMetadataResolver HostMetadataResolver `auth:"-"`
 }
 
