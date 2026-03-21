@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/idtoken"
@@ -41,8 +42,32 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credenti
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
+	// Disable async token refresh for GCP credential providers.
+	//
+	// Google's idtoken.NewTokenSource and google.CredentialsFromJSON internally
+	// wrap their token sources in oauth2.ReuseTokenSource (with a 10-second
+	// expiryDelta). These inner sources are unexported types, so we cannot
+	// bypass the caching the way we did for M2M OAuth (#1550) and Azure Client
+	// Secret (#1573).
+	//
+	// With async refresh enabled, the SDK's cachedTokenSource fires a proactive
+	// refresh ~20 minutes before expiry, but the call is swallowed by the inner
+	// ReuseTokenSource which returns its own cached token -- making the async
+	// refresh entirely wasted work (see #1549).
+	//
+	// Recreating the token source on each refresh is not viable either because
+	// creation is expensive (credential discovery, HTTP client setup with TLS).
+	//
+	// The Google library's own ReuseTokenSource still provides some token
+	// renewal before expiry (10-second window), so tokens are refreshed without
+	// the SDK's async mechanism.
+	//
+	// Do NOT re-enable async refresh here unless the Google libraries expose an
+	// uncached token source or a way to control their internal caching.
+	opts := append(cacheOptions(cfg), auth.WithAsyncRefresh(false))
+
 	logger.Infof(ctx, "Using Google Credentials")
-	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token", true, cacheOptions(cfg)...)
+	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token", true, opts...)
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 

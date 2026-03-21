@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/impersonate"
@@ -28,7 +29,32 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 	if err != nil {
 		return nil, err
 	}
-	opts := cacheOptions(cfg)
+
+	// Disable async token refresh for GCP credential providers.
+	//
+	// Google's impersonate.IDTokenSource and impersonate.CredentialsTokenSource
+	// internally wrap their token sources in oauth2.ReuseTokenSource (with a
+	// 10-second expiryDelta). These inner sources are unexported types, so we
+	// cannot bypass the caching the way we did for M2M OAuth (#1550) and Azure
+	// Client Secret (#1573).
+	//
+	// With async refresh enabled, the SDK's cachedTokenSource fires a proactive
+	// refresh ~20 minutes before expiry, but the call is swallowed by the inner
+	// ReuseTokenSource which returns its own cached token -- making the async
+	// refresh entirely wasted work (see #1549).
+	//
+	// Recreating the token source on each refresh is not viable either because
+	// creation is expensive (credential discovery, GCE metadata probes, HTTP
+	// client setup with TLS).
+	//
+	// The Google library's own ReuseTokenSource still provides some token
+	// renewal before expiry (10-second window), so tokens are refreshed without
+	// the SDK's async mechanism.
+	//
+	// Do NOT re-enable async refresh here unless the Google libraries expose an
+	// uncached token source or a way to control their internal caching.
+	opts := append(cacheOptions(cfg), auth.WithAsyncRefresh(false))
+
 	// Always attempt to create SA token source for the secondary header.
 	// If it fails, fall back to refreshableVisitor with a warning.
 	platform, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
