@@ -267,6 +267,10 @@ type Config struct {
 	// HostMetadataResolver, if set, overrides the default HTTP fetch of
 	// /.well-known/databricks-config during config resolution. This allows
 	// callers (e.g., the CLI) to provide cached metadata directly.
+	// Use [Config.DefaultHostMetadataResolver] to delegate to the SDK's
+	// built-in fetch on cache miss.
+	//
+	// Experimental: subject to change.
 	HostMetadataResolver HostMetadataResolver `auth:"-"`
 }
 
@@ -719,6 +723,22 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		discoveryURL := oidcRoot + "/.well-known/oauth-authorization-server"
 		logger.Debugf(ctx, "Resolved discovery_url from host metadata: %q", discoveryURL)
 		c.DiscoveryURL = discoveryURL
+	}
+}
+
+// DefaultHostMetadataResolver returns a [HostMetadataResolver] that fetches
+// host metadata from the /.well-known/databricks-config endpoint using the
+// SDK's internal HTTP client (with retries, proxy support, and debug logging).
+//
+// This is intended for use inside a custom [Config.HostMetadataResolver] to
+// delegate to the SDK's default fetch on cache miss. It must only be called
+// from within a resolver during [Config.EnsureResolved], when the internal
+// HTTP client is guaranteed to be initialized.
+//
+// Experimental: subject to change.
+func (c *Config) DefaultHostMetadataResolver() HostMetadataResolver {
+	return func(ctx context.Context, host string) (*HostMetadata, error) {
+		return getHostMetadata(ctx, host, c.refreshClient)
 	}
 }
 
