@@ -44,6 +44,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
   - [Logging](#logging)
 - [Testing](#testing)
   - [Interface stability](#interface-stability)
+  - [Go version support](#go-version-support)
 
 ## Getting started
 
@@ -64,7 +65,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
    ```go
    module sample
 
-   go 1.18
+   go 1.24
 
    require github.com/databricks/databricks-sdk-go v0.9.0
 
@@ -694,3 +695,13 @@ func TestDatabricksSDK_helpers(t *testing.T) {
 ## Interface stability
 
 During the [Beta](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Go's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) where Databricks documents the changes. Some types of interfaces are more stable than others. For those interfaces that are not yet [nightly tested](https://github.com/databricks/databricks-sdk-go/tree/main/internal), Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) backward-incompatible changes, such as fixing mapping correctness from `int` to `int64` or renaming some type names to bring more consistency.
+
+## Go version support
+
+This SDK follows the [Go release policy](https://go.dev/doc/devel/release#policy):
+the two most recent major Go releases are supported. For example, if the latest
+release is Go 1.26, the SDK is tested against Go 1.25 and Go 1.26.
+
+The minimum Go version in `go.mod` may be slightly older than the two supported
+releases. While the SDK may work on older versions, only the two most recent
+releases receive testing and support.

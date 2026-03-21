@@ -19,7 +19,7 @@ For scoped coding rules, skills, and prompt templates, see the `.agent/` directo
 
 ## Development
 
-Prerequisites: Go 1.18+ (see `go.mod`), `goimports`, `staticcheck`, `gotestsum`.
+Prerequisites: Go 1.24+ (see `go.mod`), `goimports`, `staticcheck`, `gotestsum`.
 
 ```bash
 make build      # go build ./...
@@ -32,8 +32,8 @@ make coverage   # View HTML coverage report
 make codegen    # Regenerate service/ from OpenAPI specs
 ```
 
-CI runs `make test` across Go 1.19, 1.20, 1.21, 1.22, and 1.23; lint and fmt run on Go 1.23.
-Code must compile on all CI versions — do not use stdlib APIs newer than Go 1.18
+CI runs `make test` across Go 1.24, 1.25, and 1.26; lint and fmt run on Go 1.26.
+Code must compile on all CI versions — do not use stdlib APIs newer than Go 1.24
 (the module's minimum version in `go.mod`) without a local shim.
 
 ## Architecture

@@ -16,7 +16,7 @@ lint: vendor
 
 test: vendor
 	@echo "✓ Running tests ..."
-	@go run gotest.tools/gotestsum@v1.12.2 --format pkgname-and-test-fails \
+	@go run gotest.tools/gotestsum@v1.13.0 --format pkgname-and-test-fails \
 		--no-summary=skipped --raw-command go test -v \
 		-json -short -coverprofile=coverage.txt ./...
 

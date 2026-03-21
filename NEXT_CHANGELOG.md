@@ -4,6 +4,8 @@
 
 ### Breaking Changes
 
+ * Raise minimum Go version from 1.18 to 1.24 ([#XXXX](https://github.com/databricks/databricks-sdk-go/pull/XXXX)).
+
 ### New Features and Improvements
 
 * Added `NewLimitIterator` to `listing` package for lazy iteration with a cap on output items ([#1555](https://github.com/databricks/databricks-sdk-go/pull/1555)).
