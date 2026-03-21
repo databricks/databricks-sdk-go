@@ -263,6 +263,11 @@ type Config struct {
 	//
 	// Experimental: subject to change.
 	DiscoveryURL string `name:"discovery_url" env:"DATABRICKS_DISCOVERY_URL" auth:"-"`
+
+	// HostMetadataResolver, if set, overrides the default HTTP fetch of
+	// /.well-known/databricks-config during config resolution. This allows
+	// callers (e.g., the CLI) to wrap the lookup with caching.
+	HostMetadataResolver HostMetadataResolver
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to
@@ -662,9 +667,24 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		logger.Warnf(ctx, "Failed to fix host for metadata resolution: %v", err)
 		return
 	}
-	meta, err := getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
+
+	canonicalHost := c.CanonicalHostName()
+	defaultFetch := func(ctx context.Context, host string) (*HostMetadata, error) {
+		return getHostMetadata(ctx, host, c.refreshClient)
+	}
+
+	var meta *HostMetadata
+	var err error
+	if c.HostMetadataResolver != nil {
+		meta, err = c.HostMetadataResolver.Resolve(ctx, canonicalHost, defaultFetch)
+	} else {
+		meta, err = defaultFetch(ctx, canonicalHost)
+	}
 	if err != nil {
 		logger.Warnf(ctx, "Failed to resolve host metadata: %v. Falling back to user config.", err)
+		return
+	}
+	if meta == nil {
 		return
 	}
 	if c.AccountID == "" && meta.AccountID != "" {
