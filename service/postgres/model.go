@@ -170,6 +170,106 @@ func (f *BranchStatusState) Type() string {
 	return "BranchStatusState"
 }
 
+type Catalog struct {
+	// A timestamp indicating when the catalog was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Output only. The full resource path of the catalog.
+	//
+	// Format: "catalogs/{catalog_id}".
+	Name string `json:"name,omitempty"`
+	// The desired state of the Catalog.
+	Spec *CatalogCatalogSpec `json:"spec,omitempty"`
+	// The observed state of the Catalog.
+	Status *CatalogCatalogStatus `json:"status,omitempty"`
+	// System-generated unique identifier for the catalog.
+	Uid string `json:"uid,omitempty"`
+	// A timestamp indicating when the catalog was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Catalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Catalog) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The desired state of the Catalog.
+type CatalogCatalogSpec struct {
+	// The resource path of the branch associated with the catalog.
+	//
+	// Format: projects/{project_id}/branches/{branch_id}.
+	Branch string `json:"branch,omitempty"`
+	// If set to true, the specified postgres_database is created on behalf of
+	// the calling user if it does not already exist. In this case, the calling
+	// user has a role created for them in Postgres if they do not already have
+	// one.
+	//
+	// Defaults to false, meaning that the request fails if the specified
+	// postgres_database does not already exist.
+	CreateDatabaseIfMissing bool `json:"create_database_if_missing,omitempty"`
+	// The name of the Postgres database inside the specified Lakebase project
+	// and branch to be associated with the UC catalog. This database must
+	// already exist, unless create_database_if_missing is set to true on
+	// creation.
+	//
+	// A database can only be registered with one UC catalog at a time. To
+	// re-register a database with a different catalog, the existing catalog
+	// must be deleted first.
+	//
+	// A child branch inherits the fact of parent's registration. This means the
+	// same-named database in a child branch cannot be registered with a second
+	// catalog while the parent's registration exists. To allow registering the
+	// database of a child branch, drop and recreate the database on the child
+	// branch. This removes the fact of parent's registration from this branch
+	// only.
+	//
+	// Doing Point In Time Restore (PITR) prior to the moment before the
+	// Postgres DB was registered in the Catalog drops the fact of registration
+	// of the database. So the user should avoid doing so.
+	PostgresDatabase string `json:"postgres_database"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CatalogCatalogSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CatalogCatalogSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The observed state of the Catalog.
+type CatalogCatalogStatus struct {
+	// The resource path of the branch associated with the catalog.
+	//
+	// Format: projects/{project_id}/branches/{branch_id}.
+	Branch string `json:"branch,omitempty"`
+	// The name of the Postgres database associated with the catalog.
+	PostgresDatabase string `json:"postgres_database,omitempty"`
+	// The resource path of the project associated with the catalog.
+	//
+	// Format: projects/{project_id}.
+	Project string `json:"project,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CatalogCatalogStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CatalogCatalogStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CatalogOperationMetadata struct {
+}
+
 type CreateBranchRequest struct {
 	// The Branch to create.
 	Branch Branch `json:"branch"`
@@ -182,6 +282,13 @@ type CreateBranchRequest struct {
 	// The Project where this Branch will be created. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
+}
+
+type CreateCatalogRequest struct {
+	Catalog Catalog `json:"catalog"`
+	// The ID in the Unity Catalog. It becomes the full resource name, for
+	// example "my_catalog" becomes "catalogs/my_catalog".
+	CatalogId string `json:"-" url:"catalog_id"`
 }
 
 type CreateDatabaseRequest struct {
@@ -261,6 +368,23 @@ func (s *CreateRoleRequest) UnmarshalJSON(b []byte) error {
 
 func (s CreateRoleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type CreateSyncedTableRequest struct {
+	SyncedTable SyncedTable `json:"synced_table"`
+	// The ID to use for the Synced Table. This becomes the final component of
+	// the SyncedTable's resource name. ID is required and is the synced table
+	// name, containing (catalog, schema, table) tuple. Elements of the tuple
+	// are the UC entity names.
+	//
+	// Example: "{catalog}.{schema}.{table}"
+	//
+	// synced_table_id represents both of the following:
+	//
+	// 1. An online VIEW virtual table in the Unity Catalog accessible via the
+	// Lakehouse Federation. 2. Postgres table named "{table}" in schema
+	// "{schema}" in the connected Postgres database
+	SyncedTableId string `json:"-" url:"synced_table_id"`
 }
 
 // Database represents a Postgres database within a Branch.
@@ -386,6 +510,13 @@ type DeleteBranchRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type DeleteCatalogRequest struct {
+	// The full resource path of the catalog to delete.
+	//
+	// Format: "catalogs/{catalog_id}".
+	Name string `json:"-" url:"-"`
+}
+
 type DeleteDatabaseRequest struct {
 	// The resource name of the postgres database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
@@ -423,6 +554,32 @@ func (s *DeleteRoleRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s DeleteRoleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DeleteSyncedTableRequest struct {
+	// The Full resource name of the synced table, of the format
+	// "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema,
+	// table) are the UC entity names.
+	Name string `json:"-" url:"-"`
+}
+
+type DeltaTableSyncInfo struct {
+	// The timestamp when the above Delta version was committed in the source
+	// Delta table. Note: This is the Delta commit time, not the time the data
+	// was written to the synced table.
+	DeltaCommitTime *time.Time `json:"delta_commit_time,omitempty"`
+	// The Delta Lake commit version that was last successfully synced.
+	DeltaCommitVersion int64 `json:"delta_commit_version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeltaTableSyncInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -984,6 +1141,13 @@ type GetBranchRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetCatalogRequest struct {
+	// The full resource path of the catalog to retrieve.
+	//
+	// Format: "catalogs/{catalog_id}".
+	Name string `json:"-" url:"-"`
+}
+
 type GetDatabaseRequest struct {
 	// The name of the Database to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
@@ -1010,6 +1174,12 @@ type GetProjectRequest struct {
 type GetRoleRequest struct {
 	// The full resource path of the role to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Name string `json:"-" url:"-"`
+}
+
+type GetSyncedTableRequest struct {
+	// Format: "synced_tables/{catalog}.{schema}.{table}", where (catalog,
+	// schema, table) are the entity names in the Unity Catalog.
 	Name string `json:"-" url:"-"`
 }
 
@@ -1207,6 +1377,29 @@ func (s ListRolesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type NewPipelineSpec struct {
+	// Budget policy to set on the newly created pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// UC catalog for the pipeline to store intermediate files (checkpoints,
+	// event logs etc). This needs to be a standard catalog where the user has
+	// permissions to create Delta tables.
+	StorageCatalog string `json:"storage_catalog,omitempty"`
+	// UC schema for the pipeline to store intermediate files (checkpoints,
+	// event logs etc). This needs to be in the standard catalog where the user
+	// has permissions to create Delta tables.
+	StorageSchema string `json:"storage_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // This resource represents a long-running operation that is the result of a
 // network API call.
 type Operation struct {
@@ -1332,6 +1525,9 @@ type ProjectSpec struct {
 	// existing tags, omit this field from the update_mask (or use wildcard "*"
 	// which auto-excludes empty tags).
 	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
+	// The full resource path for the default branch of the project Format:
+	// projects/{project_id}/branches/{branch_id}
+	DefaultBranch string `json:"default_branch,omitempty"`
 
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// Human-readable project name. Length should be between 1 and 256
@@ -1365,6 +1561,8 @@ type ProjectStatus struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The effective custom tags associated with the project.
 	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
+	// The full resource path of the default branch of the project
+	DefaultBranch string `json:"default_branch,omitempty"`
 	// The effective default endpoint settings.
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// The effective human-readable project name.
@@ -1391,6 +1589,96 @@ func (s *ProjectStatus) UnmarshalJSON(b []byte) error {
 
 func (s ProjectStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ProvisioningInfoState string
+
+const ProvisioningInfoStateActive ProvisioningInfoState = `ACTIVE`
+
+const ProvisioningInfoStateDegraded ProvisioningInfoState = `DEGRADED`
+
+const ProvisioningInfoStateDeleting ProvisioningInfoState = `DELETING`
+
+const ProvisioningInfoStateFailed ProvisioningInfoState = `FAILED`
+
+const ProvisioningInfoStateProvisioning ProvisioningInfoState = `PROVISIONING`
+
+const ProvisioningInfoStateUpdating ProvisioningInfoState = `UPDATING`
+
+// String representation for [fmt.Print]
+func (f *ProvisioningInfoState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ProvisioningInfoState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DEGRADED`, `DELETING`, `FAILED`, `PROVISIONING`, `UPDATING`:
+		*f = ProvisioningInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DEGRADED", "DELETING", "FAILED", "PROVISIONING", "UPDATING"`, v)
+	}
+}
+
+// Values returns all possible values for ProvisioningInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ProvisioningInfoState) Values() []ProvisioningInfoState {
+	return []ProvisioningInfoState{
+		ProvisioningInfoStateActive,
+		ProvisioningInfoStateDegraded,
+		ProvisioningInfoStateDeleting,
+		ProvisioningInfoStateFailed,
+		ProvisioningInfoStateProvisioning,
+		ProvisioningInfoStateUpdating,
+	}
+}
+
+// Type always returns ProvisioningInfoState to satisfy [pflag.Value] interface
+func (f *ProvisioningInfoState) Type() string {
+	return "ProvisioningInfoState"
+}
+
+// Copied from database_table_statuses.proto to decouple SDK packages.
+type ProvisioningPhase string
+
+const ProvisioningPhaseProvisioningPhaseIndexScan ProvisioningPhase = `PROVISIONING_PHASE_INDEX_SCAN`
+
+const ProvisioningPhaseProvisioningPhaseIndexSort ProvisioningPhase = `PROVISIONING_PHASE_INDEX_SORT`
+
+const ProvisioningPhaseProvisioningPhaseMain ProvisioningPhase = `PROVISIONING_PHASE_MAIN`
+
+// String representation for [fmt.Print]
+func (f *ProvisioningPhase) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ProvisioningPhase) Set(v string) error {
+	switch v {
+	case `PROVISIONING_PHASE_INDEX_SCAN`, `PROVISIONING_PHASE_INDEX_SORT`, `PROVISIONING_PHASE_MAIN`:
+		*f = ProvisioningPhase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PROVISIONING_PHASE_INDEX_SCAN", "PROVISIONING_PHASE_INDEX_SORT", "PROVISIONING_PHASE_MAIN"`, v)
+	}
+}
+
+// Values returns all possible values for ProvisioningPhase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ProvisioningPhase) Values() []ProvisioningPhase {
+	return []ProvisioningPhase{
+		ProvisioningPhaseProvisioningPhaseIndexScan,
+		ProvisioningPhaseProvisioningPhaseIndexSort,
+		ProvisioningPhaseProvisioningPhaseMain,
+	}
+}
+
+// Type always returns ProvisioningPhase to satisfy [pflag.Value] interface
+func (f *ProvisioningPhase) Type() string {
+	return "ProvisioningPhase"
 }
 
 type RequestedClaims struct {
@@ -1688,6 +1976,294 @@ func (s *RoleRoleStatus) UnmarshalJSON(b []byte) error {
 }
 
 func (s RoleRoleStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SyncedTable struct {
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Output only. The Full resource name of the synced table in Postgres where
+	// (catalog, schema, table) are the UC entity names.
+	//
+	// Format "synced_tables/{catalog}.{schema}.{table}"
+	//
+	// For the corresponding source table in the Unity catalog look for the
+	// "source_table_full_name" attribute.
+	Name string `json:"name,omitempty"`
+	// Configuration details of the synced table, such as the source table,
+	// scheduling policy, etc. This attribute is specified at creation time and
+	// most fields are returned as is on subsequent queries.
+	Spec *SyncedTableSyncedTableSpec `json:"spec,omitempty"`
+	// Synced Table data synchronization status.
+	Status *SyncedTableSyncedTableStatus `json:"status,omitempty"`
+
+	Uid string `json:"uid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Metadata for SyncedTable long-running operations.
+type SyncedTableOperationMetadata struct {
+}
+
+// Progress information of the Synced Table data synchronization pipeline.
+type SyncedTablePipelineProgress struct {
+	// The estimated time remaining to complete this update in seconds.
+	EstimatedCompletionTimeSeconds float64 `json:"estimated_completion_time_seconds,omitempty"`
+	// The source table Delta version that was last processed by the pipeline.
+	// The pipeline may not have completely processed this version yet.
+	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
+	// The completion ratio of this update. This is a number between 0 and 1.
+	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
+	// The number of rows that have been synced in this update.
+	SyncedRowCount int64 `json:"synced_row_count,omitempty"`
+	// The total number of rows that need to be synced in this update. This
+	// number may be an estimate.
+	TotalRowCount int64 `json:"total_row_count,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTablePipelineProgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTablePipelineProgress) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SyncedTablePosition struct {
+	DeltaTableSyncInfo *DeltaTableSyncInfo `json:"delta_table_sync_info,omitempty"`
+	// The end timestamp of the most recent successful synchronization. This is
+	// the time when the data is available in the synced table.
+	SyncEndTime *time.Time `json:"sync_end_time,omitempty"`
+	// The starting timestamp of the most recent successful synchronization from
+	// the source table to the destination (synced) table. Note this is the
+	// starting timestamp of the sync operation, not the end time. E.g., for a
+	// batch, this is the time when the sync operation started.
+	SyncStartTime *time.Time `json:"sync_start_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTablePosition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTablePosition) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The state of a synced table. Copied from database_table_statuses.proto to
+// decouple SDK packages.
+type SyncedTableState string
+
+const SyncedTableStateSyncedTableOffline SyncedTableState = `SYNCED_TABLE_OFFLINE`
+
+const SyncedTableStateSyncedTableOfflineFailed SyncedTableState = `SYNCED_TABLE_OFFLINE_FAILED`
+
+const SyncedTableStateSyncedTableOnline SyncedTableState = `SYNCED_TABLE_ONLINE`
+
+const SyncedTableStateSyncedTableOnlineContinuousUpdate SyncedTableState = `SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE`
+
+const SyncedTableStateSyncedTableOnlineNoPendingUpdate SyncedTableState = `SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE`
+
+const SyncedTableStateSyncedTableOnlinePipelineFailed SyncedTableState = `SYNCED_TABLE_ONLINE_PIPELINE_FAILED`
+
+const SyncedTableStateSyncedTableOnlineTriggeredUpdate SyncedTableState = `SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE`
+
+const SyncedTableStateSyncedTableOnlineUpdatingPipelineResources SyncedTableState = `SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES`
+
+const SyncedTableStateSyncedTableProvisioning SyncedTableState = `SYNCED_TABLE_PROVISIONING`
+
+const SyncedTableStateSyncedTableProvisioningInitialSnapshot SyncedTableState = `SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT`
+
+const SyncedTableStateSyncedTableProvisioningPipelineResources SyncedTableState = `SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES`
+
+// String representation for [fmt.Print]
+func (f *SyncedTableState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SyncedTableState) Set(v string) error {
+	switch v {
+	case `SYNCED_TABLE_OFFLINE`, `SYNCED_TABLE_OFFLINE_FAILED`, `SYNCED_TABLE_ONLINE`, `SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE`, `SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE`, `SYNCED_TABLE_ONLINE_PIPELINE_FAILED`, `SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE`, `SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES`, `SYNCED_TABLE_PROVISIONING`, `SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT`, `SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES`:
+		*f = SyncedTableState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SYNCED_TABLE_OFFLINE", "SYNCED_TABLE_OFFLINE_FAILED", "SYNCED_TABLE_ONLINE", "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE", "SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE", "SYNCED_TABLE_ONLINE_PIPELINE_FAILED", "SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE", "SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES", "SYNCED_TABLE_PROVISIONING", "SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT", "SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES"`, v)
+	}
+}
+
+// Values returns all possible values for SyncedTableState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SyncedTableState) Values() []SyncedTableState {
+	return []SyncedTableState{
+		SyncedTableStateSyncedTableOffline,
+		SyncedTableStateSyncedTableOfflineFailed,
+		SyncedTableStateSyncedTableOnline,
+		SyncedTableStateSyncedTableOnlineContinuousUpdate,
+		SyncedTableStateSyncedTableOnlineNoPendingUpdate,
+		SyncedTableStateSyncedTableOnlinePipelineFailed,
+		SyncedTableStateSyncedTableOnlineTriggeredUpdate,
+		SyncedTableStateSyncedTableOnlineUpdatingPipelineResources,
+		SyncedTableStateSyncedTableProvisioning,
+		SyncedTableStateSyncedTableProvisioningInitialSnapshot,
+		SyncedTableStateSyncedTableProvisioningPipelineResources,
+	}
+}
+
+// Type always returns SyncedTableState to satisfy [pflag.Value] interface
+func (f *SyncedTableState) Type() string {
+	return "SyncedTableState"
+}
+
+type SyncedTableSyncedTableSpec struct {
+	// The full resource name the branch associated with the table.
+	//
+	// Format: "projects/{project_id}/branches/{branch_id}".
+	Branch string `json:"branch,omitempty"`
+	// If true, the synced table's logical database and schema resources in PG
+	// will be created if they do not already exist. The request will fail if
+	// this is false and the database/schema do not exist.
+	//
+	// Defaults to true if omitted.
+	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
+	// ID of an existing pipeline to bin-pack this synced table into. At most
+	// one of existing_pipeline_id and new_pipeline_spec should be defined.
+	//
+	// The pipeline used for the synced table is returned via the top level
+	// pipeline_id attribute.
+	ExistingPipelineId string `json:"existing_pipeline_id,omitempty"`
+	// Specification for creating a new pipeline. At most one of
+	// existing_pipeline_id and new_pipeline_spec should be defined.
+	//
+	// The pipeline used for the synced table is returned via the top level
+	// pipeline_id attribute.
+	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
+	// The Postgres database name where the synced table will be created in.
+	//
+	// If this synced table is created inside a Lakebase Catalog, this attribute
+	// can be omitted on creation and is inferred from the postgres_database
+	// associated with the Lakebase Catalog. If specified when inside a Lakebase
+	// Catalog, the value must match.
+	//
+	// A value must be specified when creating a synced table inside a Standard
+	// Catalog.
+	PostgresDatabase string `json:"postgres_database,omitempty"`
+	// Primary Key columns to be used for data insert/update in the destination.
+	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
+	// The full resource name of the project associated with the table.
+	//
+	// Format: "projects/{project_id}".
+	Project string `json:"project,omitempty"`
+	// Scheduling policy of the underlying pipeline.
+	SchedulingPolicy SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
+	// Three-part (catalog, schema, table) name of the source Delta table.
+	//
+	// For the corresponding destination table, use any of the two:
+	//
+	// * synced_table_id used at the creation of the SyncedTable * "name"
+	// consisting of "synced_tables/" prefix and the full name of the
+	// destination table.
+	SourceTableFullName string `json:"source_table_full_name,omitempty"`
+	// Time series key to deduplicate (tie-break) rows with the same primary
+	// key.
+	TimeseriesKey string `json:"timeseries_key,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTableSyncedTableSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTableSyncedTableSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Scheduling policy of the synced table's underlying pipeline.
+type SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy string
+
+const SyncedTableSyncedTableSpecSyncedTableSchedulingPolicyContinuous SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy = `CONTINUOUS`
+
+const SyncedTableSyncedTableSpecSyncedTableSchedulingPolicySnapshot SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy = `SNAPSHOT`
+
+const SyncedTableSyncedTableSpecSyncedTableSchedulingPolicyTriggered SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy = `TRIGGERED`
+
+// String representation for [fmt.Print]
+func (f *SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy) Set(v string) error {
+	switch v {
+	case `CONTINUOUS`, `SNAPSHOT`, `TRIGGERED`:
+		*f = SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "SNAPSHOT", "TRIGGERED"`, v)
+	}
+}
+
+// Values returns all possible values for SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy) Values() []SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy {
+	return []SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy{
+		SyncedTableSyncedTableSpecSyncedTableSchedulingPolicyContinuous,
+		SyncedTableSyncedTableSpecSyncedTableSchedulingPolicySnapshot,
+		SyncedTableSyncedTableSpecSyncedTableSchedulingPolicyTriggered,
+	}
+}
+
+// Type always returns SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy to satisfy [pflag.Value] interface
+func (f *SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy) Type() string {
+	return "SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy"
+}
+
+type SyncedTableSyncedTableStatus struct {
+	// The state of the synced table.
+	DetailedState SyncedTableState `json:"detailed_state,omitempty"`
+	// The last source table Delta version that was successfully synced to the
+	// synced table.
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+	// Summary of the last successful synchronization from source to
+	// destination.
+	LastSync *SyncedTablePosition `json:"last_sync,omitempty"`
+	// The end timestamp of the last time any data was synchronized from the
+	// source table to the synced table. This is when the data is available in
+	// the synced table.
+	LastSyncTime *time.Time `json:"last_sync_time,omitempty"`
+	// A text description of the current state of the synced table.
+	Message string `json:"message,omitempty"`
+
+	OngoingSyncProgress *SyncedTablePipelineProgress `json:"ongoing_sync_progress,omitempty"`
+	// ID of the associated pipeline.
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// The current phase of the data synchronization pipeline.
+	ProvisioningPhase ProvisioningPhase `json:"provisioning_phase,omitempty"`
+	// The provisioning state of the synced table entity in Unity Catalog.
+	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTableSyncedTableStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTableSyncedTableStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

@@ -222,17 +222,17 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 	return p, nil
 }
 
-// Token loads the OAuth2 token for the given OAuthArgument from the cache. If
-// the token is expired or close to expiry, it is refreshed using the refresh
-// token.
-//
+// loadToken loads the cached OAuth2 token for the configured OAuthArgument.
 // When a profile is set, lookup is by profile key first. If the profile key is
 // not found and the OAuthArgument implements HostCacheKeyProvider, a fallback
 // lookup by host key is attempted. If found, the token is returned without
 // being migrated to the profile key (see inline comment for rationale).
-func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
+//
+// The returned token may be expired; callers are responsible for deciding
+// whether and how to refresh it.
+func (a *PersistentAuth) loadToken() (*oauth2.Token, error) {
 	key := a.oAuthArgument.GetCacheKey()
-	t, err = a.cache.Lookup(key)
+	t, err := a.cache.Lookup(key)
 	if errors.Is(err, cache.ErrNotFound) {
 		hostKey := a.hostCacheKey()
 		if hostKey != "" && hostKey != key {
@@ -250,6 +250,18 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
+	return t, nil
+}
+
+// Token loads the OAuth2 token for the given OAuthArgument from the cache. If
+// the token is expired or close to expiry, it is refreshed using the refresh
+// token. When a proactive refresh (token still valid but near expiry) fails,
+// the existing token is returned so the caller is not blocked.
+func (a *PersistentAuth) Token() (*oauth2.Token, error) {
+	t, err := a.loadToken()
+	if err != nil {
+		return nil, err
+	}
 	if needsRefresh(t) {
 		if refreshedToken, err := a.refresh(t); err == nil {
 			t = refreshedToken
@@ -259,9 +271,35 @@ func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
 			logger.Debugf(a.ctx, "proactive token refresh failed, returning existing token: %v", err)
 		}
 	}
+	t.RefreshToken = ""
+	return t, nil
+}
 
-	// Do not include the refresh token for security reasons. Refresh tokens are
-	// long-lived credentials that we do not want to expose unnecessarily.
+// ForceRefreshToken loads the OAuth2 token from the cache and always refreshes
+// it, regardless of its expiry. Unlike Token(), if the refresh fails the error
+// is always returned -- the caller explicitly asked for a fresh token, so
+// silently falling back to a stale one would be incorrect.
+//
+// When the token was loaded via host-key fallback (profile key not found), the
+// refreshed token is dual-written to both the profile key and host key,
+// effectively migrating the token to the profile. Token() has the same
+// migration behavior when it refreshes a host-fallback token (expired or
+// nearly expired); ForceRefreshToken widens this to still-valid tokens because
+// it always refreshes.
+//
+// TODO: Thread provenance out of loadToken() so callers know whether the token
+// came from the primary key or host-key fallback. ForceRefreshToken could then
+// refuse to migrate a fallback token or refresh without writing to the profile
+// key, avoiding the risk of making a wrong-scoped token sticky.
+func (a *PersistentAuth) ForceRefreshToken() (*oauth2.Token, error) {
+	t, err := a.loadToken()
+	if err != nil {
+		return nil, err
+	}
+	t, err = a.refresh(t)
+	if err != nil {
+		return nil, fmt.Errorf("forced token refresh: %w", err)
+	}
 	t.RefreshToken = ""
 	return t, nil
 }
@@ -278,7 +316,20 @@ func needsRefresh(t *oauth2.Token) bool {
 
 // refresh refreshes the token for the given OAuthArgument, storing the new
 // token in the cache.
+//
+// TODO: This read-refresh-write sequence is not coordinated across processes.
+// Because the CLI is stateless, two separate CLI invocations can load the same
+// cached refresh token, both attempt a refresh, and race to update the cache.
+// This should be fixed in a follow-up by adding cross-process coordination
+// around refresh and cache writes.
 func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) {
+	// Fail fast with ErrMissingRefreshToken instead of letting the oauth2
+	// library attempt to refresh and return a misleading error (e.g. "token
+	// expired" when the real problem is that the cached token is not
+	// refresh-capable).
+	if oldToken.RefreshToken == "" {
+		return nil, ErrMissingRefreshToken
+	}
 	cfg, err := a.oauth2Config()
 	if err != nil {
 		return nil, err

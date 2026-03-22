@@ -152,50 +152,13 @@ func TestBuildCliCommands(t *testing.T) {
 			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
 		},
 		{
-			name: "unified host with account ID and workspace ID",
+			name: "former unified host treated as workspace",
 			cfg: &Config{
-				Host:                       unifiedHost,
-				Experimental_IsUnifiedHost: true,
-				AccountID:                  accountID,
-				WorkspaceID:                workspaceID,
+				Host:        unifiedHost,
+				AccountID:   accountID,
+				WorkspaceID: workspaceID,
 			},
-			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--account-id", accountID, "--workspace-id", workspaceID},
-		},
-		{
-			name: "unified host with account ID only",
-			cfg: &Config{
-				Host:                       unifiedHost,
-				Experimental_IsUnifiedHost: true,
-				AccountID:                  accountID,
-			},
-			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--account-id", accountID},
-		},
-		{
-			name: "unified host with workspace ID only",
-			cfg: &Config{
-				Host:                       unifiedHost,
-				Experimental_IsUnifiedHost: true,
-				WorkspaceID:                workspaceID,
-			},
-			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--workspace-id", workspaceID},
-		},
-		{
-			name: "unified host with no account ID or workspace ID",
-			cfg: &Config{
-				Host:                       unifiedHost,
-				Experimental_IsUnifiedHost: true,
-			},
-			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host"},
-		},
-		{
-			// Explicit false should fall back to the standard host type detection
-			name: "unified host false with account host",
-			cfg: &Config{
-				Host:                       accountHost,
-				Experimental_IsUnifiedHost: false,
-				AccountID:                  accountID,
-			},
-			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
+			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost},
 		},
 		{
 			name:        "profile uses --profile with --host fallback",
