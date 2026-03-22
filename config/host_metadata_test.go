@@ -39,7 +39,7 @@ func TestGetHostMetadata_WorkspaceStaticOIDCEndpoint(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := &hostMetadata{
+	want := &HostMetadata{
 		OIDCEndpoint: testHMHost + "/oidc",
 		AccountID:    testHMAccountID,
 		WorkspaceID:  testHMWorkspaceID,
@@ -63,7 +63,7 @@ func TestGetHostMetadata_AccountHostRawOIDCTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := &hostMetadata{
+	want := &HostMetadata{
 		OIDCEndpoint: testHMAccHost + "/oidc/accounts/{account_id}",
 	}
 	if diff := cmp.Diff(want, meta); diff != "" {
