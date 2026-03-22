@@ -1,52 +1,39 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
 
-type mockTokenSource struct {
-	mockedTokenFunc func() (*oauth2.Token, error)
-}
-
-func (m mockTokenSource) Token() (*oauth2.Token, error) {
-	return m.mockedTokenFunc()
-}
-
 func TestAzureReuseTokenSource(t *testing.T) {
-	mockSource := mockTokenSource{
-		mockedTokenFunc: func() (*oauth2.Token, error) {
-			return &oauth2.Token{
-				Expiry: time.Now().Add(35 * time.Second),
-			}, nil
-		},
-	}
+	mockSource := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return &oauth2.Token{
+			Expiry: time.Now().Add(35 * time.Second),
+		}, nil
+	})
 
 	// Assert the token is not valid if it expires in 35 seconds.
 	adjustedSource := azureReuseTokenSource(nil, mockSource)
-	token, err := adjustedSource.Token()
+	token, err := adjustedSource.Token(context.Background())
 	assert.NoError(t, err)
 	assert.False(t, token.Valid())
 }
 
-type staticTokenSource struct {
-	token *oauth2.Token
-	err   error
-}
-
-func (s *staticTokenSource) Token() (*oauth2.Token, error) {
-	return s.token, s.err
-}
-
 func TestServiceToServiceVisitorWithFallback_BothSucceed(t *testing.T) {
-	primary := &staticTokenSource{token: &oauth2.Token{AccessToken: "primary-token"}}
-	secondary := &staticTokenSource{token: &oauth2.Token{AccessToken: "secondary-token"}}
+	primary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return &oauth2.Token{AccessToken: "primary-token"}, nil
+	})
+	secondary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return &oauth2.Token{AccessToken: "secondary-token"}, nil
+	})
 	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", true)
 
 	req, err := http.NewRequest("GET", "https://example.com", nil)
@@ -58,8 +45,12 @@ func TestServiceToServiceVisitorWithFallback_BothSucceed(t *testing.T) {
 }
 
 func TestServiceToServiceVisitorWithFallback_SecondaryFails_SkipsHeader(t *testing.T) {
-	primary := &staticTokenSource{token: &oauth2.Token{AccessToken: "primary-token"}}
-	secondary := &staticTokenSource{err: fmt.Errorf("secondary failed")}
+	primary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return &oauth2.Token{AccessToken: "primary-token"}, nil
+	})
+	secondary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return nil, fmt.Errorf("secondary failed")
+	})
 	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", true)
 
 	req, err := http.NewRequest("GET", "https://example.com", nil)
@@ -71,8 +62,12 @@ func TestServiceToServiceVisitorWithFallback_SecondaryFails_SkipsHeader(t *testi
 }
 
 func TestServiceToServiceVisitor_SecondaryFails_NotOptional_ReturnsError(t *testing.T) {
-	primary := &staticTokenSource{token: &oauth2.Token{AccessToken: "primary-token"}}
-	secondary := &staticTokenSource{err: fmt.Errorf("secondary failed")}
+	primary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return &oauth2.Token{AccessToken: "primary-token"}, nil
+	})
+	secondary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return nil, fmt.Errorf("secondary failed")
+	})
 	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", false)
 
 	req, err := http.NewRequest("GET", "https://example.com", nil)
@@ -83,8 +78,12 @@ func TestServiceToServiceVisitor_SecondaryFails_NotOptional_ReturnsError(t *test
 }
 
 func TestServiceToServiceVisitorWithFallback_PrimaryFails_ReturnsError(t *testing.T) {
-	primary := &staticTokenSource{err: fmt.Errorf("primary failed")}
-	secondary := &staticTokenSource{token: &oauth2.Token{AccessToken: "secondary-token"}}
+	primary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return nil, fmt.Errorf("primary failed")
+	})
+	secondary := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+		return &oauth2.Token{AccessToken: "secondary-token"}, nil
+	})
 	visitor := serviceToServiceVisitor(primary, secondary, "X-Secondary", true)
 
 	req, err := http.NewRequest("GET", "https://example.com", nil)

@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -50,21 +52,25 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID), opts...)
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()), opts...)
 	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken, false, opts...))
-	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
+	return newVisitorOAuthCredentials(visitor, inner), nil
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
-func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
-	return NewAzureMsiTokenSource(cfg.refreshClient, resource, cfg.AzureClientID)
+func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _, resource string) auth.TokenSource {
+	return &azureMsiTokenSource{
+		client:   cfg.refreshClient,
+		resource: resource,
+		clientId: cfg.AzureClientID,
+	}
 }
 
 // NewAzureMsiTokenSource returns [oauth2.TokenSource] for a passwordless authentication via Azure Managed identity
 func NewAzureMsiTokenSource(client *httpclient.ApiClient, resource, clientId string) oauth2.TokenSource {
-	return &azureMsiTokenSource{
+	return authconv.OAuth2TokenSource(&azureMsiTokenSource{
 		client:   client,
 		resource: resource,
 		clientId: clientId,
-	}
+	})
 }
 
 type azureMsiTokenSource struct {
@@ -73,8 +79,8 @@ type azureMsiTokenSource struct {
 	clientId string
 }
 
-func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), azureMsiTimeout)
+func (s azureMsiTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
+	ctx, cancel := context.WithTimeout(ctx, azureMsiTimeout)
 	defer cancel()
 	query := map[string]string{
 		"api-version": "2018-02-01",

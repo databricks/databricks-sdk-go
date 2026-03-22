@@ -8,6 +8,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/idtoken"
@@ -49,9 +50,10 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credenti
 	// handles token renewal.
 	opts := append(cacheOptions(cfg), auth.WithAsyncRefresh(false))
 
+	authInner := authconv.AuthTokenSource(inner)
 	logger.Infof(ctx, "Using Google Credentials")
-	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token", true, opts...)
-	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
+	visitor := serviceToServiceVisitor(authInner, authconv.AuthTokenSource(creds.TokenSource), "X-Databricks-GCP-SA-Access-Token", true, opts...)
+	return newVisitorOAuthCredentials(visitor, authInner), nil
 }
 
 // Reads credentials as JSON. Credentials can be either a path to JSON file,

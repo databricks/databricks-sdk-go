@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/google/go-querystring/query"
 	"golang.org/x/oauth2"
 )
@@ -40,17 +42,24 @@ func WithToken(token *oauth2.Token) DoOption {
 	return visitor
 }
 
-// WithTokenSource uses the specified golang.org/x/oauth2 token source on a request
-func WithTokenSource(ts oauth2.TokenSource) DoOption {
+// WithAuthTokenSource uses the specified auth.TokenSource on a request. The
+// request's context is passed to the token source when fetching the token.
+func WithAuthTokenSource(ts auth.TokenSource) DoOption {
 	return WithRequestVisitor(func(r *http.Request) error {
-		token, err := ts.Token()
+		token, err := ts.Token(r.Context())
 		if err != nil {
 			return fmt.Errorf("token: %w", err)
 		}
-		auth := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
-		r.Header.Set("Authorization", auth)
+		authHeader := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
+		r.Header.Set("Authorization", authHeader)
 		return nil
 	})
+}
+
+// WithTokenSource uses the specified golang.org/x/oauth2 token source on a
+// request.
+func WithTokenSource(ts oauth2.TokenSource) DoOption {
+	return WithAuthTokenSource(authconv.AuthTokenSource(ts))
 }
 
 // WithRequestVisitor applies given function on a request

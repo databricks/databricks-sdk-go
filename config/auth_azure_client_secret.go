@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/url"
 
-	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -20,15 +21,15 @@ func (c AzureClientSecretCredentials) Name() string {
 }
 
 func (c AzureClientSecretCredentials) tokenSourceFor(
-	ctx context.Context, cfg *Config, aadEndpoint, resource string) oauth2.TokenSource {
-	return (&clientcredentials.Config{
+	ctx context.Context, cfg *Config, aadEndpoint, resource string) auth.TokenSource {
+	return authconv.AuthTokenSource((&clientcredentials.Config{
 		ClientID:     cfg.AzureClientID,
 		ClientSecret: cfg.AzureClientSecret,
 		TokenURL:     fmt.Sprintf("%s%s/oauth2/token", aadEndpoint, cfg.AzureTenantID),
 		EndpointParams: url.Values{
 			"resource": []string{resource},
 		},
-	}).TokenSource(ctx)
+	}).TokenSource(ctx))
 }
 
 // TODO: We need to expose which authentication mechanism is used to Terraform,
@@ -58,5 +59,5 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, env.AzureApplicationID), opts...)
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, managementEndpoint), opts...)
 	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken, false, opts...))
-	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
+	return newVisitorOAuthCredentials(visitor, inner), nil
 }

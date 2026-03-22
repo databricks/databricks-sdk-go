@@ -6,8 +6,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/logger"
-	"golang.org/x/oauth2"
 	"google.golang.org/api/impersonate"
 	"google.golang.org/api/option"
 )
@@ -38,7 +38,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 	opts := append(cacheOptions(cfg), auth.WithAsyncRefresh(false))
 
 	// Always attempt to create SA token source for the secondary header.
-	// If it fails, fall back to refreshableVisitor with a warning.
+	// If it fails, fall back to refreshableAuthVisitor with a warning.
 	platform, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
 		TargetPrincipal: cfg.GoogleServiceAccount,
 		Scopes: []string{
@@ -48,16 +48,16 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 	}, c.opts...)
 	if err != nil {
 		logger.Warnf(ctx, "Failed to create GCP SA access token source: %v. Proceeding without SA token.", err)
-		visitor := refreshableVisitor(inner, opts...)
+		visitor := refreshableAuthVisitor(inner, opts...)
 		return credentials.CredentialsProviderFn(visitor), nil
 	}
 	logger.Infof(ctx, "Using Google Default Application Credentials")
-	visitor := serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token", true, opts...)
-	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
+	visitor := serviceToServiceVisitor(inner, authconv.AuthTokenSource(platform), "X-Databricks-GCP-SA-Access-Token", true, opts...)
+	return newVisitorOAuthCredentials(visitor, inner), nil
 }
 
 func (c GoogleDefaultCredentials) idTokenSource(ctx context.Context, host, serviceAccount string,
-	opts ...option.ClientOption) (oauth2.TokenSource, error) {
+	opts ...option.ClientOption) (auth.TokenSource, error) {
 	ts, err := impersonate.IDTokenSource(ctx, impersonate.IDTokenConfig{
 		Audience:        host,
 		TargetPrincipal: serviceAccount,
@@ -67,5 +67,5 @@ func (c GoogleDefaultCredentials) idTokenSource(ctx context.Context, host, servi
 		err = fmt.Errorf("could not obtain OIDC token. %w Running 'gcloud auth application-default login' may help", err)
 		return nil, err
 	}
-	return ts, err
+	return authconv.AuthTokenSource(ts), nil
 }

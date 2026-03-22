@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
-	"golang.org/x/oauth2"
 )
 
 type tokenError struct {
@@ -113,7 +113,7 @@ func (c *Config) mapAzureResourceManagerError(defaultErr *httpclient.HttpError) 
 }
 
 type azureHostResolver interface {
-	tokenSourceFor(ctx context.Context, cfg *Config, aadEndpoint, resource string) oauth2.TokenSource
+	tokenSourceFor(ctx context.Context, cfg *Config, aadEndpoint, resource string) auth.TokenSource
 }
 
 func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResolver) error {
@@ -131,7 +131,7 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 	requestURL := strings.TrimSuffix(azureEnv.ResourceManagerEndpoint, "/") + c.AzureResourceID + "?api-version=2018-04-01"
 	err := c.refreshClient.Do(ctx, "GET", requestURL,
 		httpclient.WithResponseUnmarshal(&workspaceMetadata),
-		httpclient.WithTokenSource(management),
+		httpclient.WithAuthTokenSource(management),
 	)
 	if err != nil {
 		return fmt.Errorf("resolve workspace: %w", err)
