@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/idtoken"
@@ -41,8 +42,15 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credenti
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
+	// Disable async token refresh. Google's token sources cache tokens
+	// internally via oauth2.ReuseTokenSource, and there is no way to
+	// bypass this caching for unexported token source types. Async
+	// refresh would be unnecessary work since Google's cache already
+	// handles token renewal.
+	opts := append(cacheOptions(cfg), auth.WithAsyncRefresh(false))
+
 	logger.Infof(ctx, "Using Google Credentials")
-	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token", true, cacheOptions(cfg)...)
+	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token", true, opts...)
 	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 
