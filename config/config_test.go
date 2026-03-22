@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -742,6 +743,101 @@ func TestApplyHostMetadata_DoesNotOverrideExistingTokenAudience(t *testing.T) {
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
 	assert.Equal(t, "custom-audience", cfg.TokenAudience)
+}
+
+func TestEnsureResolved_UsesCustomHostMetadataResolver(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			return &HostMetadata{
+				OIDCEndpoint: testHMHost + "/oidc",
+				AccountID:    testHMAccountID,
+				WorkspaceID:  testHMWorkspaceID,
+				Cloud:        "AWS",
+			}, nil
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
+}
+
+func TestEnsureResolved_CustomResolver_FullReplacement(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			assert.Equal(t, testHMHost, host)
+			return &HostMetadata{
+				AccountID:   testHMAccountID,
+				WorkspaceID: testHMWorkspaceID,
+			}, nil
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
+}
+
+func TestEnsureResolved_CustomResolver_NilMetadata_NoBackfill(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			return nil, nil
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.AccountID)
+	assert.Empty(t, cfg.WorkspaceID)
+}
+
+func TestEnsureResolved_CustomResolver_Error_NonFatal(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			return nil, fmt.Errorf("resolver error")
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.AccountID)
+	assert.Empty(t, cfg.WorkspaceID)
+}
+
+func TestEnsureResolved_DefaultHostMetadataResolver_Fallback(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	// Simulate cache-with-fallback: cache miss delegates to the SDK's default fetch.
+	cfg.HostMetadataResolver = func(ctx context.Context, host string) (*HostMetadata, error) {
+		// Cache miss: fall back to the SDK's built-in HTTP fetch.
+		return cfg.DefaultHostMetadataResolver()(ctx, host)
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
 }
 
 func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
