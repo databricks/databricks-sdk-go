@@ -42,28 +42,11 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credenti
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
-	// Disable async token refresh for GCP credential providers.
-	//
-	// Google's idtoken.NewTokenSource and google.CredentialsFromJSON internally
-	// wrap their token sources in oauth2.ReuseTokenSource (with a 10-second
-	// expiryDelta). These inner sources are unexported types, so we cannot
-	// bypass the caching the way we did for M2M OAuth (#1550) and Azure Client
-	// Secret (#1573).
-	//
-	// With async refresh enabled, the SDK's cachedTokenSource fires a proactive
-	// refresh ~20 minutes before expiry, but the call is swallowed by the inner
-	// ReuseTokenSource which returns its own cached token -- making the async
-	// refresh entirely wasted work (see #1549).
-	//
-	// Recreating the token source on each refresh is not viable either because
-	// creation is expensive (credential discovery, HTTP client setup with TLS).
-	//
-	// The Google library's own ReuseTokenSource still provides some token
-	// renewal before expiry (10-second window), so tokens are refreshed without
-	// the SDK's async mechanism.
-	//
-	// Do NOT re-enable async refresh here unless the Google libraries expose an
-	// uncached token source or a way to control their internal caching.
+	// Disable async token refresh. Google's token sources cache tokens
+	// internally via oauth2.ReuseTokenSource, and there is no way to
+	// bypass this caching for unexported token source types. Async
+	// refresh would be unnecessary work since Google's cache already
+	// handles token renewal.
 	opts := append(cacheOptions(cfg), auth.WithAsyncRefresh(false))
 
 	logger.Infof(ctx, "Using Google Credentials")
