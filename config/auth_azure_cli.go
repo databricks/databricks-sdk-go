@@ -31,8 +31,7 @@ func (c AzureCliCredentials) Name() string {
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
-func (c AzureCliCredentials) tokenSourceFor(
-	_ context.Context, cfg *Config, _, resource string) auth.TokenSource {
+func (c AzureCliCredentials) tokenSourceFor(_ context.Context, cfg *Config, _, resource string) auth.TokenSource {
 	return &azureCliTokenSource{
 		resource:      resource,
 		azureTenantId: cfg.AzureTenantID,
