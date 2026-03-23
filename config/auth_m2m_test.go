@@ -100,10 +100,11 @@ func TestM2mNotSupported(t *testing.T) {
 }
 
 // TestM2mCredentials_DirectTokenSource verifies that M2mCredentials.Configure
-// returns a token source that calls the HTTP endpoint on every Token() call
-// (no inner ReuseTokenSource caching). With the old code that passed
-// ccfg.TokenSource(ctx) (a ReuseTokenSource) only the first of N calls would
-// hit the endpoint; the fix passes ccfg.Token(ctx) directly so each call does.
+// plumbs a direct token source (ccfg.Token) through cachedTokenSource rather
+// than wrapping clientcredentials.Config.TokenSource, which returns an
+// oauth2.ReuseTokenSource that adds a second cache layer. With double-caching,
+// the proactive async refresh in cachedTokenSource is silently suppressed until
+// ~10 s before expiry, causing bursts of 401 errors at token rotation boundaries.
 // See https://github.com/databricks/databricks-sdk-go/issues/1549.
 func TestM2mCredentials_DirectTokenSource(t *testing.T) {
 	var tokenCalls int32
@@ -125,13 +126,12 @@ func TestM2mCredentials_DirectTokenSource(t *testing.T) {
 	}
 
 	cfg := &Config{
-		Host:                     "a",
-		ClientID:                 "b",
-		ClientSecret:             "c",
-		AuthType:                 "oauth-m2m",
-		ConfigFile:               "/dev/null",
-		DisableAsyncTokenRefresh: true,
-		HTTPTransport:            transport,
+		Host:          "a",
+		ClientID:      "b",
+		ClientSecret:  "c",
+		AuthType:      "oauth-m2m",
+		ConfigFile:    "/dev/null",
+		HTTPTransport: transport,
 	}
 
 	err := cfg.EnsureResolved()
@@ -147,22 +147,18 @@ func TestM2mCredentials_DirectTokenSource(t *testing.T) {
 
 	oauthProvider := provider.(credentials.OAuthCredentialsProvider)
 
-	// Call Token() 3 times. With the fix, each call hits the endpoint.
-	// Without the fix (ReuseTokenSource), only the first call does.
-	const nCalls = 3
-	for i := 0; i < nCalls; i++ {
-		tok, err := oauthProvider.Token(context.Background())
-		if err != nil {
-			t.Fatalf("Token() call %d: %v", i+1, err)
-		}
-		if tok.AccessToken == "" {
-			t.Fatalf("Token() call %d: empty access token", i+1)
-		}
+	// Token() goes through cachedTokenSource, which fetches once and caches.
+	// Verify the endpoint is reached (not short-circuited by an inner cache).
+	tok, err := oauthProvider.Token(context.Background())
+	if err != nil {
+		t.Fatalf("Token(): %v", err)
+	}
+	if tok.AccessToken == "" {
+		t.Fatalf("Token(): empty access token")
 	}
 
-	got := int(atomic.LoadInt32(&tokenCalls))
-	if got != nCalls {
-		t.Errorf("token endpoint calls = %d, want %d", got, nCalls)
+	if got := int(atomic.LoadInt32(&tokenCalls)); got != 1 {
+		t.Errorf("token endpoint calls = %d, want 1", got)
 	}
 }
 

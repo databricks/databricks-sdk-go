@@ -529,4 +529,3 @@ func TestCachedTokenSource_AsyncRefreshSkipsOlderToken(t *testing.T) {
 		t.Errorf("cachedToken = %v, want %v (fresher token from blocking refresh)", cts.cachedToken, cachedToken)
 	}
 }
-
