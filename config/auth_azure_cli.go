@@ -12,6 +12,8 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -29,9 +31,11 @@ func (c AzureCliCredentials) Name() string {
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
-func (c AzureCliCredentials) tokenSourceFor(
-	ctx context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
-	return NewAzureCliTokenSource(ctx, resource, cfg.AzureTenantID)
+func (c AzureCliCredentials) tokenSourceFor(_ context.Context, cfg *Config, _, resource string) auth.TokenSource {
+	return &azureCliTokenSource{
+		resource:      resource,
+		azureTenantId: cfg.AzureTenantID,
+	}
 }
 
 // There are three scenarios:
@@ -43,13 +47,17 @@ func (c AzureCliCredentials) tokenSourceFor(
 //
 // If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
 // management token. Otherwise, we always pass the service management token.
-func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner oauth2.TokenSource) (func(*http.Request) error, error) {
+func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner auth.TokenSource) (func(*http.Request) error, error) {
 	opts := cacheOptions(cfg)
-	ts := &azureCliTokenSource{ctx, cfg.Environment().AzureServiceManagementEndpoint(), cfg.AzureResourceID, cfg.AzureTenantID}
-	t, err := ts.Token()
+	ts := &azureCliTokenSource{
+		resource:            cfg.Environment().AzureServiceManagementEndpoint(),
+		workspaceResourceId: cfg.AzureResourceID,
+		azureTenantId:       cfg.AzureTenantID,
+	}
+	t, err := ts.Token(ctx)
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
-		return azureVisitor(cfg, refreshableVisitor(inner, opts...)), nil
+		return azureVisitor(cfg, refreshableAuthVisitor(inner, opts...)), nil
 	}
 	management := azureReuseTokenSource(t, ts, opts...)
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken, false, opts...)), nil
@@ -65,8 +73,12 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		return nil, fmt.Errorf("load tenant id: %w", err)
 	}
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
-	ts := &azureCliTokenSource{ctx, cfg.Environment().AzureApplicationID, cfg.AzureResourceID, cfg.AzureTenantID}
-	t, err := ts.Token()
+	ts := &azureCliTokenSource{
+		resource:            cfg.Environment().AzureApplicationID,
+		workspaceResourceId: cfg.AzureResourceID,
+		azureTenantId:       cfg.AzureTenantID,
+	}
+	t, err := ts.Token(ctx)
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
 			// auth is not configured
@@ -88,20 +100,18 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		return nil, err
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
+	return newVisitorOAuthCredentials(visitor, ts), nil
 }
 
 // NewAzureCliTokenSource returns [oauth2.TokenSource] for a passwordless authentication via Azure CLI (`az login`)
 func NewAzureCliTokenSource(ctx context.Context, resource, azureTenantId string) oauth2.TokenSource {
-	return &azureCliTokenSource{
-		ctx:           ctx,
+	return authconv.OAuth2TokenSource(&azureCliTokenSource{
 		resource:      resource,
 		azureTenantId: azureTenantId,
-	}
+	})
 }
 
 type azureCliTokenSource struct {
-	ctx                 context.Context
 	resource            string
 	workspaceResourceId string
 	azureTenantId       string
@@ -114,20 +124,20 @@ type internalCliToken struct {
 	ExpiresOn    string `json:"expiresOn"`
 }
 
-func (ts *azureCliTokenSource) getSubscription() string {
+func (ts *azureCliTokenSource) getSubscription(ctx context.Context) string {
 	if ts.workspaceResourceId == "" {
 		return ""
 	}
 	components := strings.Split(ts.workspaceResourceId, "/")
 	if len(components) < 3 {
-		logger.Warnf(context.Background(), "Invalid azure workspace resource ID")
+		logger.Warnf(ctx, "Invalid azure workspace resource ID")
 		return ""
 	}
 	return components[2]
 }
 
-func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
-	tokenBytes, err := ts.getTokenBytes()
+func (ts *azureCliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
+	tokenBytes, err := ts.getTokenBytes(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +154,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	if ts.azureTenantId != "" {
 		tenantIdDebug = fmt.Sprintf(" for tenant %s", ts.azureTenantId)
 	}
-	logger.Infof(context.Background(), "Refreshed OAuth token for %s%s from Azure CLI, which expires on %s",
+	logger.Infof(ctx, "Refreshed OAuth token for %s%s from Azure CLI, which expires on %s",
 		ts.resource, tenantIdDebug, it.ExpiresOn)
 
 	var extra map[string]interface{}
@@ -160,11 +170,11 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	}).WithExtra(extra), nil
 }
 
-func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
+func (ts *azureCliTokenSource) getTokenBytes(ctx context.Context) ([]byte, error) {
 	// When fetching an access token from the CLI with a managed identity, the tenant ID should not be specified.
 	// https://github.com/hashicorp/go-azure-sdk/pull/910/files demonstrates how to detect whether the CLI is authenticated
 	// using a managed identity or federated token.
-	accountRaw, err := runCommand(ts.ctx, "az", []string{"account", "show", "--output", "json"})
+	accountRaw, err := runCommand(ctx, "az", []string{"account", "show", "--output", "json"})
 	if err != nil {
 		return nil, fmt.Errorf("cannot get account info: %w", err)
 	}
@@ -181,37 +191,37 @@ func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 	isMsi := account.User.Type == "servicePrincipal" && (account.User.Name == "systemAssignedIdentity" || account.User.Name == "userAssignedIdentity")
 	if !isMsi {
 		// For regular service principals, try with tenant ID first
-		result, err := ts.getTokenBytesWithTenantId(ts.azureTenantId)
+		result, err := ts.getTokenBytesWithTenantId(ctx, ts.azureTenantId)
 		if err != nil && account.User.Type == "servicePrincipal" {
 			// If it fails for service principals, it might be a federated token scenario
 			// where tenant ID should not be specified. Fall back to no tenant ID.
-			logger.Infof(ts.ctx, "Failed to get token with tenant ID for service principal, trying without tenant ID: %v", err)
-			return ts.getTokenBytesWithTenantId("")
+			logger.Infof(ctx, "Failed to get token with tenant ID for service principal, trying without tenant ID: %v", err)
+			return ts.getTokenBytesWithTenantId(ctx, "")
 		}
 		return result, err
 	}
-	return ts.getTokenBytesWithTenantId("")
+	return ts.getTokenBytesWithTenantId(ctx, "")
 }
 
-func (ts *azureCliTokenSource) getTokenBytesWithTenantId(tenantId string) ([]byte, error) {
+func (ts *azureCliTokenSource) getTokenBytesWithTenantId(ctx context.Context, tenantId string) ([]byte, error) {
 	args := []string{"account", "get-access-token", "--resource",
 		ts.resource, "--output", "json"}
 	if tenantId != "" {
 		args = append(args, "--tenant", tenantId)
 	}
-	subscription := ts.getSubscription()
+	subscription := ts.getSubscription(ctx)
 	if subscription != "" && ts.azureTenantId == "" {
 		// This will fail if the user has access to the workspace, but not to the subscription
 		// itself.
 		// In such case, we fall back to not using the subscription.
 		// This should only be attempted when the tenant ID is not known.
-		result, err := runCommand(ts.ctx, "az", append(args, "--subscription", subscription))
+		result, err := runCommand(ctx, "az", append(args, "--subscription", subscription))
 		if err == nil {
 			return result, nil
 		}
-		logger.Infof(ts.ctx, "Failed to get token for subscription. Using resource only token.")
+		logger.Infof(ctx, "Failed to get token for subscription. Using resource only token.")
 	}
-	result, err := runCommand(ts.ctx, "az", args)
+	result, err := runCommand(ctx, "az", args)
 	if ee, ok := err.(*exec.ExitError); ok {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}
