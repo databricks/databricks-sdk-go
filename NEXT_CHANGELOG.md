@@ -19,7 +19,6 @@
 
 ### Internal Changes
 
- * Add NOTICE file with third-party license attributions.
  * Normalize internal token sources on `auth.TokenSource` for proper context propagation ([#1577](https://github.com/databricks/databricks-sdk-go/pull/1577)).
  * Bump golang.org/x/crypto from 0.21.0 to 0.45.0 in /examples/slog ([#1566](https://github.com/databricks/databricks-sdk-go/pull/1566)).
  * Bump golang.org/x/net from 0.23.0 to 0.33.0 in /examples/slog ([#1127](https://github.com/databricks/databricks-sdk-go/pull/1127)).
