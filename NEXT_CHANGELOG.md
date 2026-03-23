@@ -21,6 +21,7 @@
 ### Internal Changes
 
  * Normalize internal token sources on `auth.TokenSource` for proper context propagation ([#1577](https://github.com/databricks/databricks-sdk-go/pull/1577)).
+ * Fix `TestAzureGithubOIDCCredentials` hang caused by missing `HTTPTransport` stub: `EnsureResolved` now calls `resolveHostMetadata`, which makes a real network request when no transport is set ([#1550](https://github.com/databricks/databricks-sdk-go/pull/1550)).
  * Bump golang.org/x/crypto from 0.21.0 to 0.45.0 in /examples/slog ([#1566](https://github.com/databricks/databricks-sdk-go/pull/1566)).
  * Bump golang.org/x/net from 0.23.0 to 0.33.0 in /examples/slog ([#1127](https://github.com/databricks/databricks-sdk-go/pull/1127)).
  * Bump golang.org/x/oauth2 from 0.20.0 to 0.27.0 ([#1563](https://github.com/databricks/databricks-sdk-go/pull/1563)).
