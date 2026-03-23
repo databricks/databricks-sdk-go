@@ -4,7 +4,7 @@
 
 ### Breaking Changes
 
- * Raise minimum Go version from 1.18 to 1.24 ([#XXXX](https://github.com/databricks/databricks-sdk-go/pull/XXXX)).
+ * Raise minimum Go version from 1.18 to 1.24 ([#1558](https://github.com/databricks/databricks-sdk-go/pull/1558)).
 
 ### New Features and Improvements
 
@@ -19,7 +19,7 @@
 
 ### Internal Changes
 
- * Normalize internal token sources on `auth.TokenSource` for proper context propagation ([#XXXX](https://github.com/databricks/databricks-sdk-go/pull/XXXX)).
+ * Normalize internal token sources on `auth.TokenSource` for proper context propagation ([#1577](https://github.com/databricks/databricks-sdk-go/pull/1577)).
  * Bump golang.org/x/crypto from 0.21.0 to 0.45.0 in /examples/slog ([#1566](https://github.com/databricks/databricks-sdk-go/pull/1566)).
  * Bump golang.org/x/net from 0.23.0 to 0.33.0 in /examples/slog ([#1127](https://github.com/databricks/databricks-sdk-go/pull/1127)).
  * Bump golang.org/x/oauth2 from 0.20.0 to 0.27.0 ([#1563](https://github.com/databricks/databricks-sdk-go/pull/1563)).
