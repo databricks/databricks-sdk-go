@@ -40,6 +40,7 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			r.URL.Scheme = url.Scheme
 			return nil
 		},
+		workspaceIDHeaderVisitor(cfg),
 		authInUserAgentVisitor(cfg),
 		func(r *http.Request) error {
 			// Detect if we are running in a CI/CD environment
