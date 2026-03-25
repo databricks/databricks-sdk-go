@@ -806,6 +806,53 @@ func (s AppResource) MarshalJSON() ([]byte, error) {
 }
 
 type AppResourceApp struct {
+	Name string `json:"name,omitempty"`
+
+	Permission AppResourceAppAppPermission `json:"permission,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppResourceApp) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppResourceApp) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppResourceAppAppPermission string
+
+const AppResourceAppAppPermissionCanUse AppResourceAppAppPermission = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (f *AppResourceAppAppPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceAppAppPermission) Set(v string) error {
+	switch v {
+	case `CAN_USE`:
+		*f = AppResourceAppAppPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_USE"`, v)
+	}
+}
+
+// Values returns all possible values for AppResourceAppAppPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceAppAppPermission) Values() []AppResourceAppAppPermission {
+	return []AppResourceAppAppPermission{
+		AppResourceAppAppPermissionCanUse,
+	}
+}
+
+// Type always returns AppResourceAppAppPermission to satisfy [pflag.Value] interface
+func (f *AppResourceAppAppPermission) Type() string {
+	return "AppResourceAppAppPermission"
 }
 
 type AppResourceDatabase struct {

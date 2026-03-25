@@ -17,6 +17,20 @@ type pipelinesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *pipelinesImpl) ApplyEnvironment(ctx context.Context, request ApplyEnvironmentRequest) (*ApplyEnvironmentRequestResponse, error) {
+	var applyEnvironmentRequestResponse ApplyEnvironmentRequestResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/environment/apply", request.PipelineId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &applyEnvironmentRequestResponse)
+	return &applyEnvironmentRequestResponse, err
+}
+
 func (a *pipelinesImpl) Clone(ctx context.Context, request ClonePipelineRequest) (*ClonePipelineResponse, error) {
 	var clonePipelineResponse ClonePipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/clone", request.PipelineId)
