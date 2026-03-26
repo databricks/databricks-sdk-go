@@ -32,7 +32,7 @@ func TestGetHostMetadata_WorkspaceStaticOIDCEndpoint(t *testing.T) {
 				"account_id":    testHMAccountID,
 				"workspace_id":  testHMWorkspaceID,
 				"cloud":         "AWS",
-				"host_type":     "WORKSPACE_HOST",
+				"host_type":     "workspace",
 			},
 		},
 	})
@@ -95,39 +95,24 @@ func TestGetHostMetadata_WithHostTypeField(t *testing.T) {
 		wantHostType HostType
 	}{
 		{
-			name:         "WORKSPACE_HOST",
-			hostType:     "WORKSPACE_HOST",
-			wantHostType: WorkspaceHost,
-		},
-		{
-			name:         "ACCOUNT_HOST",
-			hostType:     "ACCOUNT_HOST",
-			wantHostType: AccountHost,
-		},
-		{
-			name:         "UNIFIED_HOST",
-			hostType:     "UNIFIED_HOST",
-			wantHostType: UnifiedHost,
-		},
-		{
-			name:         "lowercase workspace_host",
-			hostType:     "workspace_host",
-			wantHostType: WorkspaceHost,
-		},
-		{
-			name:         "API value workspace",
+			name:         "workspace",
 			hostType:     "workspace",
 			wantHostType: WorkspaceHost,
 		},
 		{
-			name:         "API value account",
+			name:         "account",
 			hostType:     "account",
 			wantHostType: AccountHost,
 		},
 		{
-			name:         "API value unified",
+			name:         "unified",
 			hostType:     "unified",
 			wantHostType: UnifiedHost,
+		},
+		{
+			name:         "Workspace uppercase",
+			hostType:     "WORKSPACE",
+			wantHostType: WorkspaceHost,
 		},
 		{
 			name:         "missing host_type field",

@@ -66,12 +66,12 @@ func (h *HostType) UnmarshalJSON(data []byte) error {
 }
 
 func normalizeHostType(hostType string) HostType {
-	switch strings.ToUpper(hostType) {
-	case "WORKSPACE_HOST", "WORKSPACE":
+	switch strings.ToLower(hostType) {
+	case "workspace":
 		return WorkspaceHost
-	case "ACCOUNT_HOST", "ACCOUNT":
+	case "account":
 		return AccountHost
-	case "UNIFIED_HOST", "UNIFIED":
+	case "unified":
 		return UnifiedHost
 	case "":
 		return HostTypeUnknown

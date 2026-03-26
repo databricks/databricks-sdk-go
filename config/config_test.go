@@ -941,7 +941,7 @@ func TestConfig_ResolveHostMetadata_PopulatesHostTypeFromAPI(t *testing.T) {
 				Resource:     "/.well-known/databricks-config",
 				ReuseRequest: true,
 				Status:       200,
-				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "host_type": "UNIFIED_HOST"}`,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "host_type": "unified"}`,
 			},
 		},
 	}
@@ -982,7 +982,7 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingHostType(t *testing.
 				Resource:     "/.well-known/databricks-config",
 				ReuseRequest: true,
 				Status:       200,
-				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "host_type": "ACCOUNT_HOST"}`,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "host_type": "account"}`,
 			},
 		},
 	}
@@ -1000,59 +1000,44 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 		wantHostType string
 	}{
 		{
-			name:         "WORKSPACE_HOST",
-			hostTypeJSON: "WORKSPACE_HOST",
-			wantHostType: "WORKSPACE_HOST",
-		},
-		{
-			name:         "ACCOUNT_HOST",
-			hostTypeJSON: "ACCOUNT_HOST",
-			wantHostType: "ACCOUNT_HOST",
-		},
-		{
-			name:         "UNIFIED_HOST",
-			hostTypeJSON: "UNIFIED_HOST",
-			wantHostType: "UNIFIED_HOST",
-		},
-		{
-			name:         "workspace_host lowercase",
-			hostTypeJSON: "workspace_host",
-			wantHostType: "WORKSPACE_HOST",
-		},
-		{
-			name:         "account_host lowercase",
-			hostTypeJSON: "account_host",
-			wantHostType: "ACCOUNT_HOST",
-		},
-		{
-			name:         "unified_host lowercase",
-			hostTypeJSON: "unified_host",
-			wantHostType: "UNIFIED_HOST",
-		},
-		{
-			name:         "API value workspace",
+			name:         "workspace",
 			hostTypeJSON: "workspace",
 			wantHostType: "WORKSPACE_HOST",
 		},
 		{
-			name:         "API value account",
+			name:         "account",
 			hostTypeJSON: "account",
 			wantHostType: "ACCOUNT_HOST",
 		},
 		{
-			name:         "API value unified",
+			name:         "unified",
 			hostTypeJSON: "unified",
+			wantHostType: "UNIFIED_HOST",
+		},
+		{
+			name:         "Workspace uppercase",
+			hostTypeJSON: "WORKSPACE",
+			wantHostType: "WORKSPACE_HOST",
+		},
+		{
+			name:         "Account uppercase",
+			hostTypeJSON: "ACCOUNT",
+			wantHostType: "ACCOUNT_HOST",
+		},
+		{
+			name:         "Unified uppercase",
+			hostTypeJSON: "UNIFIED",
 			wantHostType: "UNIFIED_HOST",
 		},
 		{
 			name:         "Unknown host type string returns HostTypeUnknown",
 			hostTypeJSON: "CUSTOM_HOST",
-			wantHostType: "", // Unrecognized values map to HostTypeUnknown
+			wantHostType: "",
 		},
 		{
 			name:         "Empty host type returns HostTypeUnknown",
 			hostTypeJSON: "",
-			wantHostType: "", // Endpoint returned empty
+			wantHostType: "",
 		},
 	}
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
