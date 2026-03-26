@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -50,7 +51,35 @@ const (
 	AccountHost HostType = "ACCOUNT_HOST"
 	// UnifiedHost supports both workspace-level and account-level APIs.
 	UnifiedHost HostType = "UNIFIED_HOST"
+	// HostTypeUnknown is the zero value for an unset/empty host type.
+	HostTypeUnknown HostType = ""
 )
+
+// UnmarshalJSON automatically normalizes the host type string when parsing JSON.
+func (h *HostType) UnmarshalJSON(data []byte) error {
+	var rawString string
+	if err := json.Unmarshal(data, &rawString); err != nil {
+		return err
+	}
+	*h = normalizeHostType(rawString)
+	return nil
+}
+
+func normalizeHostType(hostType string) HostType {
+	switch strings.ToUpper(hostType) {
+	case "WORKSPACE_HOST", "WORKSPACE":
+		return WorkspaceHost
+	case "ACCOUNT_HOST", "ACCOUNT":
+		return AccountHost
+	case "UNIFIED_HOST", "UNIFIED":
+		return UnifiedHost
+	case "":
+		return HostTypeUnknown
+	// For forward compatibility with new host types that are not yet supported by the SDK.
+	default:
+		return HostType(hostType)
+	}
+}
 
 // ConfigType represents the type of API this config is valid for.
 type ConfigType string
@@ -221,6 +250,11 @@ type Config struct {
 	TokenAudience string `name:"audience" env:"DATABRICKS_TOKEN_AUDIENCE" auth:"-"`
 
 	Loaders []Loader
+
+	// resolvedHostType is the host type resolved from the /.well-known/databricks-config
+	// discovery endpoint (or from URL-based inference as a fallback). It is checked
+	// by HostType() before falling back to URL pattern matching.
+	resolvedHostType HostType
 
 	// marker for configuration resolving
 	resolved bool
@@ -417,9 +451,13 @@ func normalizedHost(host string) string {
 }
 
 // HostType returns the type of host that the client is configured for.
-// HostType now only returns WorkspaceHost or AccountHost. UnifiedHost is
-// deprecated; host metadata resolution handles unified host behavior.
+// If the host type was resolved from the /.well-known/databricks-config
+// discovery endpoint, that value is returned directly. Otherwise, the host
+// type is inferred from the URL pattern.
 func (c *Config) HostType() HostType {
+	if c.resolvedHostType != HostTypeUnknown {
+		return c.resolvedHostType
+	}
 	// TODO: Remove this after TF updates its code.
 	if c.Experimental_IsUnifiedHost {
 		return UnifiedHost
@@ -701,6 +739,10 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 	if c.Cloud == "" {
 		c.Cloud = c.Environment().Cloud
 		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
+	}
+	if c.resolvedHostType == HostTypeUnknown && meta.HostType != HostTypeUnknown {
+		logger.Debugf(ctx, "Resolved host_type from host metadata: %q", meta.HostType)
+		c.resolvedHostType = meta.HostType
 	}
 	if c.TokenAudience == "" && meta.WorkspaceID == "" && c.AccountID != "" {
 		logger.Debugf(ctx, "Setting token_audience to account_id for account host: %q", c.AccountID)
