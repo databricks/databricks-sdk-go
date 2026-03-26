@@ -25,6 +25,65 @@ func (_m *MockPipelinesInterface) EXPECT() *MockPipelinesInterface_Expecter {
 	return &MockPipelinesInterface_Expecter{mock: &_m.Mock}
 }
 
+// ApplyEnvironment provides a mock function with given fields: ctx, request
+func (_m *MockPipelinesInterface) ApplyEnvironment(ctx context.Context, request pipelines.ApplyEnvironmentRequest) (*pipelines.ApplyEnvironmentRequestResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ApplyEnvironment")
+	}
+
+	var r0 *pipelines.ApplyEnvironmentRequestResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ApplyEnvironmentRequest) (*pipelines.ApplyEnvironmentRequestResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ApplyEnvironmentRequest) *pipelines.ApplyEnvironmentRequestResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pipelines.ApplyEnvironmentRequestResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, pipelines.ApplyEnvironmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPipelinesInterface_ApplyEnvironment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ApplyEnvironment'
+type MockPipelinesInterface_ApplyEnvironment_Call struct {
+	*mock.Call
+}
+
+// ApplyEnvironment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request pipelines.ApplyEnvironmentRequest
+func (_e *MockPipelinesInterface_Expecter) ApplyEnvironment(ctx interface{}, request interface{}) *MockPipelinesInterface_ApplyEnvironment_Call {
+	return &MockPipelinesInterface_ApplyEnvironment_Call{Call: _e.mock.On("ApplyEnvironment", ctx, request)}
+}
+
+func (_c *MockPipelinesInterface_ApplyEnvironment_Call) Run(run func(ctx context.Context, request pipelines.ApplyEnvironmentRequest)) *MockPipelinesInterface_ApplyEnvironment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(pipelines.ApplyEnvironmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockPipelinesInterface_ApplyEnvironment_Call) Return(_a0 *pipelines.ApplyEnvironmentRequestResponse, _a1 error) *MockPipelinesInterface_ApplyEnvironment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPipelinesInterface_ApplyEnvironment_Call) RunAndReturn(run func(context.Context, pipelines.ApplyEnvironmentRequest) (*pipelines.ApplyEnvironmentRequestResponse, error)) *MockPipelinesInterface_ApplyEnvironment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Clone provides a mock function with given fields: ctx, request
 func (_m *MockPipelinesInterface) Clone(ctx context.Context, request pipelines.ClonePipelineRequest) (*pipelines.ClonePipelineResponse, error) {
 	ret := _m.Called(ctx, request)

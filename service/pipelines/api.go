@@ -34,6 +34,10 @@ type PipelinesInterface interface {
 	WaitGetPipelineIdle(ctx context.Context, pipelineId string,
 		timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error)
 
+	// * Applies the current pipeline environment onto the pipeline compute. The
+	// environment applied can be used by subsequent dev-mode updates.
+	ApplyEnvironment(ctx context.Context, request ApplyEnvironmentRequest) (*ApplyEnvironmentRequestResponse, error)
+
 	// Creates a new pipeline using Unity Catalog from a pipeline using Hive
 	// Metastore. This method returns the ID of the newly created clone.
 	// Additionally, this method starts an update for the newly created pipeline.
