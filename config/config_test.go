@@ -1060,4 +1060,3 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 		})
 	}
 }
-
