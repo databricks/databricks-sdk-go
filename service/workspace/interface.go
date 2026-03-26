@@ -350,8 +350,9 @@ type SecretsService interface {
 	PutSecret(ctx context.Context, request PutSecret) error
 }
 
-// The Workspace API allows you to list, import, export, and delete notebooks
-// and folders.
+// The Workspace API allows you to list, import, export, and delete workspace
+// objects such as notebooks, files, folders, and dashboards. Additionally, it
+// provides endpoints to manage permissions for any workspace object.
 //
 // A notebook is a web-based interface to a document that contains runnable
 // code, visualizations, and explanatory text.

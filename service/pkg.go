@@ -346,7 +346,7 @@
 //
 // - [sql.WarehousesAPI]: A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks SQL.
 //
-// - [workspace.WorkspaceAPI]: The Workspace API allows you to list, import, export, and delete notebooks and folders.
+// - [workspace.WorkspaceAPI]: The Workspace API allows you to list, import, export, and delete workspace objects such as notebooks, files, folders, and dashboards.
 //
 // - [iam.WorkspaceAssignmentAPI]: The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your account.
 //

@@ -9,6 +9,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type ApplyEnvironmentRequest struct {
+	PipelineId string `json:"-" url:"-"`
+}
+
+type ApplyEnvironmentRequestResponse struct {
+}
+
 // Policy for auto full refresh.
 type AutoFullRefreshPolicy struct {
 	// (Required, Mutable) Whether to enable auto full refresh or not.
