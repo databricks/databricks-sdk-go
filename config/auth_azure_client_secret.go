@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/url"
 
+	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -20,16 +20,24 @@ func (c AzureClientSecretCredentials) Name() string {
 	return "azure-client-secret"
 }
 
+// tokenSourceFor returns an auth.TokenSource that creates a fresh
+// clientcredentials.Config on each call and uses the provided context for the
+// token exchange. This does not include the inner caching layer from
+// clientcredentials.Config.TokenSource so that caching is purely controlled
+// upstream.
 func (c AzureClientSecretCredentials) tokenSourceFor(
-	ctx context.Context, cfg *Config, aadEndpoint, resource string) auth.TokenSource {
-	return authconv.AuthTokenSource((&clientcredentials.Config{
-		ClientID:     cfg.AzureClientID,
-		ClientSecret: cfg.AzureClientSecret,
-		TokenURL:     fmt.Sprintf("%s%s/oauth2/token", aadEndpoint, cfg.AzureTenantID),
-		EndpointParams: url.Values{
-			"resource": []string{resource},
-		},
-	}).TokenSource(ctx))
+	_ context.Context, cfg *Config, aadEndpoint, resource string) auth.TokenSource {
+	return auth.TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
+		ctx = cfg.refreshClient.InContextForOAuth2(ctx)
+		return (&clientcredentials.Config{
+			ClientID:     cfg.AzureClientID,
+			ClientSecret: cfg.AzureClientSecret,
+			TokenURL:     fmt.Sprintf("%s%s/oauth2/token", aadEndpoint, cfg.AzureTenantID),
+			EndpointParams: url.Values{
+				"resource": []string{resource},
+			},
+		}).Token(ctx)
+	})
 }
 
 // TODO: We need to expose which authentication mechanism is used to Terraform,
