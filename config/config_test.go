@@ -947,10 +947,10 @@ func TestConfig_ResolveHostMetadata_PopulatesHostTypeFromAPI(t *testing.T) {
 	}
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
-	assert.Equal(t, UnifiedHost, cfg.HostType())
+	assert.Equal(t, UnifiedHost, cfg.resolvedHostType)
 }
 
-func TestConfig_ResolveHostMetadata_HostTypeFallbackToURL(t *testing.T) {
+func TestConfig_ResolveHostMetadata_HostTypeEmptyWhenNotInResponse(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:    "https://accounts.cloud.databricks.com",
@@ -967,8 +967,7 @@ func TestConfig_ResolveHostMetadata_HostTypeFallbackToURL(t *testing.T) {
 	}
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
-	// No host_type in response, so HostType() falls back to URL-based detection
-	assert.Equal(t, AccountHost, cfg.HostType())
+	assert.Equal(t, HostTypeUnknown, cfg.resolvedHostType)
 }
 
 func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingHostType(t *testing.T) {
@@ -986,11 +985,10 @@ func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingHostType(t *testing.
 			},
 		},
 	}
-	// Pre-set resolvedHostType to simulate it being set from a previous resolution
 	cfg.resolvedHostType = UnifiedHost
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
-	assert.Equal(t, UnifiedHost, cfg.HostType())
+	assert.Equal(t, UnifiedHost, cfg.resolvedHostType)
 }
 
 func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
@@ -1063,25 +1061,3 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 	}
 }
 
-func TestConfig_HostType_EndpointEmptyFallsBackToURL(t *testing.T) {
-	noopLoader := mockLoader(func(cfg *Config) error { return nil })
-	cfg := &Config{
-		Host:    "https://accounts.cloud.databricks.com",
-		Loaders: []Loader{noopLoader},
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:       "GET",
-				Resource:     "/.well-known/databricks-config",
-				ReuseRequest: true,
-				Status:       200,
-				Response:     `{"oidc_endpoint": "https://accounts.cloud.databricks.com/oidc", "account_id": "` + testHMAccountID + `"}`,
-			},
-		},
-	}
-	err := cfg.EnsureResolved()
-	require.NoError(t, err)
-	// Endpoint returned no host_type, so resolvedHostType is unknown
-	assert.Equal(t, HostTypeUnknown, cfg.resolvedHostType)
-	// HostType() falls back to URL-based inference since endpoint didn't provide it
-	assert.Equal(t, AccountHost, cfg.HostType())
-}

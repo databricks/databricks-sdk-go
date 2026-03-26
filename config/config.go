@@ -73,8 +73,6 @@ func normalizeHostType(hostType string) HostType {
 		return AccountHost
 	case "unified":
 		return UnifiedHost
-	case "":
-		return HostTypeUnknown
 	default:
 		return HostTypeUnknown
 	}
@@ -449,13 +447,9 @@ func normalizedHost(host string) string {
 }
 
 // HostType returns the type of host that the client is configured for.
-// If the host type was resolved from the /.well-known/databricks-config
-// discovery endpoint, that value is returned directly. Otherwise, the host
-// type is inferred from the URL pattern.
+// HostType now only returns WorkspaceHost or AccountHost. UnifiedHost is
+// deprecated; host metadata resolution handles unified host behavior.
 func (c *Config) HostType() HostType {
-	if c.resolvedHostType != HostTypeUnknown {
-		return c.resolvedHostType
-	}
 	// TODO: Remove this after TF updates its code.
 	if c.Experimental_IsUnifiedHost {
 		return UnifiedHost
