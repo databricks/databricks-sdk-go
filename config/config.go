@@ -75,9 +75,8 @@ func normalizeHostType(hostType string) HostType {
 		return UnifiedHost
 	case "":
 		return HostTypeUnknown
-	// For forward compatibility with new host types that are not yet supported by the SDK.
 	default:
-		return HostType(hostType)
+		return HostTypeUnknown
 	}
 }
 
@@ -252,8 +251,7 @@ type Config struct {
 	Loaders []Loader
 
 	// resolvedHostType is the host type resolved from the /.well-known/databricks-config
-	// discovery endpoint (or from URL-based inference as a fallback). It is checked
-	// by HostType() before falling back to URL pattern matching.
+	// discovery endpoint.
 	resolvedHostType HostType
 
 	// marker for configuration resolving

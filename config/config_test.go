@@ -1045,14 +1045,14 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 			wantHostType: "UNIFIED_HOST",
 		},
 		{
-			name:         "Another host type is supported",
+			name:         "Unknown host type string returns HostTypeUnknown",
 			hostTypeJSON: "CUSTOM_HOST",
-			wantHostType: "CUSTOM_HOST",
+			wantHostType: "", // Unrecognized values map to HostTypeUnknown
 		},
 		{
-			name:         "Unknown host type falls back to URL detection",
+			name:         "Empty host type returns HostTypeUnknown",
 			hostTypeJSON: "",
-			wantHostType: "WORKSPACE_HOST", // Falls back to URL-based detection for testHMHost
+			wantHostType: "", // Endpoint returned empty
 		},
 	}
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
@@ -1073,7 +1073,30 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 			}
 			err := cfg.EnsureResolved()
 			require.NoError(t, err)
-			assert.Equal(t, tc.wantHostType, string(cfg.HostType()))
+			assert.Equal(t, tc.wantHostType, string(cfg.resolvedHostType))
 		})
 	}
+}
+
+func TestConfig_HostType_EndpointEmptyFallsBackToURL(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    "https://accounts.cloud.databricks.com",
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "https://accounts.cloud.databricks.com/oidc", "account_id": "` + testHMAccountID + `"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// Endpoint returned no host_type, so resolvedHostType is unknown
+	assert.Equal(t, HostTypeUnknown, cfg.resolvedHostType)
+	// HostType() falls back to URL-based inference since endpoint didn't provide it
+	assert.Equal(t, AccountHost, cfg.HostType())
 }
