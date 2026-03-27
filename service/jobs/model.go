@@ -4418,7 +4418,8 @@ type RunStatus struct {
 
 // Used when outputting a child run, in GetRun or ListRuns.
 type RunTask struct {
-	// New alert v2 task
+	// The task evaluates a Databricks alert and sends notifications to
+	// subscribers when the `alert_task` field is present.
 	AlertTask *AlertTask `json:"alert_task,omitempty"`
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0. If the initial run
@@ -5252,7 +5253,8 @@ func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
 }
 
 type SubmitTask struct {
-	// New alert v2 task
+	// The task evaluates a Databricks alert and sends notifications to
+	// subscribers when the `alert_task` field is present.
 	AlertTask *AlertTask `json:"alert_task,omitempty"`
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
@@ -5483,7 +5485,8 @@ func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type Task struct {
-	// New alert v2 task
+	// The task evaluates a Databricks alert and sends notifications to
+	// subscribers when the `alert_task` field is present.
 	AlertTask *AlertTask `json:"alert_task,omitempty"`
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
