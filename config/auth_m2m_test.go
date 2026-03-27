@@ -108,7 +108,7 @@ func TestM2mNotSupported(t *testing.T) {
 // See https://github.com/databricks/databricks-sdk-go/issues/1549.
 func TestM2mCredentials_DirectTokenSource(t *testing.T) {
 	var tokenCalls int32
-	transport := &tokenCountingTransport{
+	transport := &postCountingTransport{
 		calls: &tokenCalls,
 		inner: fixtures.MappingTransport{
 			"GET /oidc/.well-known/oauth-authorization-server": {
@@ -162,19 +162,19 @@ func TestM2mCredentials_DirectTokenSource(t *testing.T) {
 	}
 }
 
-type tokenCountingTransport struct {
+type postCountingTransport struct {
 	calls *int32
 	inner http.RoundTripper
 }
 
-func (t *tokenCountingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t *postCountingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if req.Method == "POST" {
 		atomic.AddInt32(t.calls, 1)
 	}
 	return t.inner.RoundTrip(req)
 }
 
-func (t *tokenCountingTransport) SkipRetryOnIO() bool { return true }
+func (t *postCountingTransport) SkipRetryOnIO() bool { return true }
 
 func TestM2M_Scopes(t *testing.T) {
 	tests := []struct {
