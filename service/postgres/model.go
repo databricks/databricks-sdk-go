@@ -1995,7 +1995,7 @@ type SyncedTable struct {
 	Spec *SyncedTableSyncedTableSpec `json:"spec,omitempty"`
 	// Synced Table data synchronization status.
 	Status *SyncedTableSyncedTableStatus `json:"status,omitempty"`
-
+	// The Unity Catalog table ID for this synced table.
 	Uid string `json:"uid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2162,10 +2162,6 @@ type SyncedTableSyncedTableSpec struct {
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// Primary Key columns to be used for data insert/update in the destination.
 	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
-	// The full resource name of the project associated with the table.
-	//
-	// Format: "projects/{project_id}".
-	Project string `json:"project,omitempty"`
 	// Scheduling policy of the underlying pipeline.
 	SchedulingPolicy SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
