@@ -41,6 +41,12 @@ type AccountNetworkPolicy struct {
 	AccountId string `json:"account_id,omitempty"`
 	// The network policies applying for egress traffic.
 	Egress *NetworkPolicyEgress `json:"egress,omitempty"`
+	// The network policies applying for ingress traffic.
+	Ingress *CustomerFacingIngressNetworkPolicy `json:"ingress,omitempty"`
+	// The ingress policy for dry run mode. Dry run will always run even if the
+	// request is allowed by the ingress policy. When this field is set, the
+	// policy will be evaluated and emit logs only without blocking requests.
+	IngressDryRun *CustomerFacingIngressNetworkPolicy `json:"ingress_dry_run,omitempty"`
 	// The unique identifier for the network policy.
 	NetworkPolicyId string `json:"network_policy_id,omitempty"`
 
@@ -622,6 +628,8 @@ type CreatePrivateEndpointRule struct {
 	EndpointService string `json:"endpoint_service,omitempty"`
 
 	ErrorMessage string `json:"error_message,omitempty"`
+
+	GcpEndpoint *GcpEndpoint `json:"gcp_endpoint,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
@@ -736,6 +744,279 @@ func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
 }
 
 func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// This proto is under development. The network policies applying for ingress
+// traffic. Any changes here should also be synced to
+// estore/namespaces/lakehousenetworkmanager/latest.proto.
+type CustomerFacingIngressNetworkPolicy struct {
+	PublicAccess *CustomerFacingIngressNetworkPolicyPublicAccess `json:"public_access,omitempty"`
+}
+
+type CustomerFacingIngressNetworkPolicyAppsDestination struct {
+	// Must be set to true.
+	AllDestinations bool `json:"all_destinations,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyAppsDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyAppsDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyAuthentication struct {
+	// Valid only when IdentityType is IDENTITY_TYPE_SELECTED_IDENTITIES.
+	Identities []CustomerFacingIngressNetworkPolicyAuthenticationIdentity `json:"identities,omitempty"`
+
+	IdentityType CustomerFacingIngressNetworkPolicyAuthenticationIdentityType `json:"identity_type,omitempty"`
+}
+
+type CustomerFacingIngressNetworkPolicyAuthenticationIdentity struct {
+	PrincipalId int64 `json:"principal_id,omitempty"`
+
+	PrincipalType CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType `json:"principal_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyAuthenticationIdentity) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyAuthenticationIdentity) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType string
+
+const CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalTypePrincipalTypeServicePrincipal CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType = `PRINCIPAL_TYPE_SERVICE_PRINCIPAL`
+
+const CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalTypePrincipalTypeUser CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType = `PRINCIPAL_TYPE_USER`
+
+// String representation for [fmt.Print]
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType) Set(v string) error {
+	switch v {
+	case `PRINCIPAL_TYPE_SERVICE_PRINCIPAL`, `PRINCIPAL_TYPE_USER`:
+		*f = CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PRINCIPAL_TYPE_SERVICE_PRINCIPAL", "PRINCIPAL_TYPE_USER"`, v)
+	}
+}
+
+// Values returns all possible values for CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType) Values() []CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType {
+	return []CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType{
+		CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalTypePrincipalTypeServicePrincipal,
+		CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalTypePrincipalTypeUser,
+	}
+}
+
+// Type always returns CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType to satisfy [pflag.Value] interface
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType) Type() string {
+	return "CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType"
+}
+
+type CustomerFacingIngressNetworkPolicyAuthenticationIdentityType string
+
+const CustomerFacingIngressNetworkPolicyAuthenticationIdentityTypeIdentityTypeAllServicePrincipals CustomerFacingIngressNetworkPolicyAuthenticationIdentityType = `IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS`
+
+const CustomerFacingIngressNetworkPolicyAuthenticationIdentityTypeIdentityTypeAllUsers CustomerFacingIngressNetworkPolicyAuthenticationIdentityType = `IDENTITY_TYPE_ALL_USERS`
+
+const CustomerFacingIngressNetworkPolicyAuthenticationIdentityTypeIdentityTypeSelectedIdentities CustomerFacingIngressNetworkPolicyAuthenticationIdentityType = `IDENTITY_TYPE_SELECTED_IDENTITIES`
+
+// String representation for [fmt.Print]
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) Set(v string) error {
+	switch v {
+	case `IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS`, `IDENTITY_TYPE_ALL_USERS`, `IDENTITY_TYPE_SELECTED_IDENTITIES`:
+		*f = CustomerFacingIngressNetworkPolicyAuthenticationIdentityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS", "IDENTITY_TYPE_ALL_USERS", "IDENTITY_TYPE_SELECTED_IDENTITIES"`, v)
+	}
+}
+
+// Values returns all possible values for CustomerFacingIngressNetworkPolicyAuthenticationIdentityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) Values() []CustomerFacingIngressNetworkPolicyAuthenticationIdentityType {
+	return []CustomerFacingIngressNetworkPolicyAuthenticationIdentityType{
+		CustomerFacingIngressNetworkPolicyAuthenticationIdentityTypeIdentityTypeAllServicePrincipals,
+		CustomerFacingIngressNetworkPolicyAuthenticationIdentityTypeIdentityTypeAllUsers,
+		CustomerFacingIngressNetworkPolicyAuthenticationIdentityTypeIdentityTypeSelectedIdentities,
+	}
+}
+
+// Type always returns CustomerFacingIngressNetworkPolicyAuthenticationIdentityType to satisfy [pflag.Value] interface
+func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) Type() string {
+	return "CustomerFacingIngressNetworkPolicyAuthenticationIdentityType"
+}
+
+type CustomerFacingIngressNetworkPolicyIpRanges struct {
+	// We only support IPv4 and IPv4 CIDR notation for now.
+	IpRanges []string `json:"ip_ranges,omitempty"`
+}
+
+type CustomerFacingIngressNetworkPolicyLakebaseDestination struct {
+	// Must be set to true.
+	AllDestinations bool `json:"all_destinations,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyLakebaseDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyLakebaseDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyPublicAccess struct {
+	AllowRules []CustomerFacingIngressNetworkPolicyPublicIngressRule `json:"allow_rules,omitempty"`
+
+	DenyRules []CustomerFacingIngressNetworkPolicyPublicIngressRule `json:"deny_rules,omitempty"`
+
+	RestrictionMode CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode `json:"restriction_mode"`
+}
+
+type CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode string
+
+const CustomerFacingIngressNetworkPolicyPublicAccessRestrictionModeFullAccess CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode = `FULL_ACCESS`
+
+const CustomerFacingIngressNetworkPolicyPublicAccessRestrictionModeRestrictedAccess CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode = `RESTRICTED_ACCESS`
+
+// String representation for [fmt.Print]
+func (f *CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode) Set(v string) error {
+	switch v {
+	case `FULL_ACCESS`, `RESTRICTED_ACCESS`:
+		*f = CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "RESTRICTED_ACCESS"`, v)
+	}
+}
+
+// Values returns all possible values for CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode) Values() []CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode {
+	return []CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode{
+		CustomerFacingIngressNetworkPolicyPublicAccessRestrictionModeFullAccess,
+		CustomerFacingIngressNetworkPolicyPublicAccessRestrictionModeRestrictedAccess,
+	}
+}
+
+// Type always returns CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode to satisfy [pflag.Value] interface
+func (f *CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode) Type() string {
+	return "CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode"
+}
+
+// An ingress rule is enforced when a request satisfies all specified attributes
+// — including request origin, destination, and authentication.
+type CustomerFacingIngressNetworkPolicyPublicIngressRule struct {
+	Authentication *CustomerFacingIngressNetworkPolicyAuthentication `json:"authentication,omitempty"`
+
+	Destination *CustomerFacingIngressNetworkPolicyRequestDestination `json:"destination,omitempty"`
+	// User-provided name for this ingress rule. Helps identify which rule
+	// caused a request to be denied or dry-run denied.
+	Label string `json:"label,omitempty"`
+
+	Origin *CustomerFacingIngressNetworkPolicyPublicRequestOrigin `json:"origin,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyPublicIngressRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyPublicIngressRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyPublicRequestOrigin struct {
+	// Matches all IPv4 and IPv6 ranges (both public and private).
+	AllIpRanges bool `json:"all_ip_ranges,omitempty"`
+	// Excluded means: all public IP ranges except this one.
+	ExcludedIpRanges *CustomerFacingIngressNetworkPolicyIpRanges `json:"excluded_ip_ranges,omitempty"`
+	// Will not allow IP ranges with private IPs.
+	IncludedIpRanges *CustomerFacingIngressNetworkPolicyIpRanges `json:"included_ip_ranges,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyPublicRequestOrigin) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyPublicRequestOrigin) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyRequestDestination struct {
+	// When true, match all destinations, no other destination fields can be
+	// set. When not set or false, at least one specific destination must be
+	// provided.
+	AllDestinations bool `json:"all_destinations,omitempty"`
+
+	Apps *CustomerFacingIngressNetworkPolicyAppsDestination `json:"apps,omitempty"`
+
+	Lakebase *CustomerFacingIngressNetworkPolicyLakebaseDestination `json:"lakebase,omitempty"`
+
+	WorkspaceApi *CustomerFacingIngressNetworkPolicyWorkspaceApiDestination `json:"workspace_api,omitempty"`
+
+	WorkspaceUi *CustomerFacingIngressNetworkPolicyWorkspaceUiDestination `json:"workspace_ui,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyRequestDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyRequestDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyWorkspaceApiDestination struct {
+	Scopes []string `json:"scopes,omitempty"`
+}
+
+type CustomerFacingIngressNetworkPolicyWorkspaceUiDestination struct {
+	// Must be set to true.
+	AllDestinations bool `json:"all_destinations,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyWorkspaceUiDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyWorkspaceUiDestination) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2360,6 +2641,24 @@ type FetchIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
+type GcpEndpoint struct {
+	// Output only. The URI of the created PSC endpoint.
+	PscEndpointUri string `json:"psc_endpoint_uri,omitempty"`
+	// The full url of the target service attachment. Example:
+	// projects/my-gcp-project/regions/us-east4/serviceAttachments/my-service-attachment
+	ServiceAttachment string `json:"service_attachment,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GcpEndpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpEndpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenericWebhookConfig struct {
 	// [Input-Only][Optional] Password for webhook.
 	Password string `json:"password,omitempty"`
@@ -3468,6 +3767,8 @@ type NccPrivateEndpointRule struct {
 	EndpointService string `json:"endpoint_service,omitempty"`
 
 	ErrorMessage string `json:"error_message,omitempty"`
+
+	GcpEndpoint *GcpEndpoint `json:"gcp_endpoint,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
@@ -4671,6 +4972,8 @@ type UpdatePrivateEndpointRule struct {
 	Enabled bool `json:"enabled,omitempty"`
 
 	ErrorMessage string `json:"error_message,omitempty"`
+
+	GcpEndpoint *GcpEndpoint `json:"gcp_endpoint,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
 	// The globally unique S3 bucket names that will be accessed via the VPC
