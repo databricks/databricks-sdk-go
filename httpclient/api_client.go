@@ -380,7 +380,12 @@ func (c *ApiClient) recordRequestLog(
 	logger.Debugf(ctx, "%s", message)
 }
 
-// RoundTrip implements http.RoundTripper to integrate with golang.org/x/oauth2
+// RoundTrip implements http.RoundTripper to integrate with golang.org/x/oauth2.
+//
+// Warning: This implementation violates the standard http.RoundTripper contract
+// by retrying failed requests and interpreting HTTP status codes as errors.
+// Specifically, retry logic should live at the application level rather than
+// the transport level.
 func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 	ctx := request.Context()
 	requestURL := request.URL.String()

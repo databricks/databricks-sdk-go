@@ -22,6 +22,11 @@ func (r *HttpError) Unwrap() error {
 	return r.err
 }
 
+// HTTPStatusCode returns the HTTP status code of the error response.
+func (r *HttpError) HTTPStatusCode() int {
+	return r.Response.StatusCode
+}
+
 func (r *HttpError) Error() string {
 	return fmt.Sprintf("http %d: %s", r.StatusCode, r.Message)
 }

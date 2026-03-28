@@ -294,6 +294,41 @@ func (e errorOption) Apply(*Options) error {
 	return e.err
 }
 
+func TestExecuteWithResult(t *testing.T) {
+	testErr := errors.New("fail")
+
+	testCases := []struct {
+		name       string
+		fn         func(context.Context) (int, error)
+		wantResult int
+		wantErr    error
+	}{
+		{
+			name:       "returns value on success",
+			fn:         func(ctx context.Context) (int, error) { return 42, nil },
+			wantResult: 42,
+		},
+		{
+			name:       "returns zero value on error",
+			fn:         func(ctx context.Context) (int, error) { return 0, testErr },
+			wantResult: 0,
+			wantErr:    testErr,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result, err := ExecuteWithResult(context.Background(), tc.fn)
+			if !errors.Is(err, tc.wantErr) {
+				t.Errorf("got error %v, want %v", err, tc.wantErr)
+			}
+			if result != tc.wantResult {
+				t.Errorf("got result %v, want %v", result, tc.wantResult)
+			}
+		})
+	}
+}
+
 func TestExecute_optionErrors(t *testing.T) {
 	testErr := errors.New("option error")
 

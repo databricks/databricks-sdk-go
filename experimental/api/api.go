@@ -22,6 +22,23 @@ func Execute(ctx context.Context, call Call, opts ...Option) error {
 	return execute(ctx, call, options, sleep)
 }
 
+// ExecuteWithResult returns the result of calling op with the given options.
+// It is a convenience wrapper around Execute for operations that return a
+// value. In case of error, the zero value of T is returned.
+func ExecuteWithResult[T any](ctx context.Context, op func(context.Context) (T, error), opts ...Option) (T, error) {
+	var result T
+	err := Execute(ctx, func(ctx context.Context) error {
+		var err error
+		result, err = op(ctx)
+		return err
+	}, opts...)
+	if err != nil {
+		var zero T // guarantee zero value on error
+		return zero, err
+	}
+	return result, nil
+}
+
 // sleep sleeps for the given duration. It is mostly equivalent to time.Sleep,
 // but can be interrupted by ctx.Done() if the context completes before the
 // duration elapses.

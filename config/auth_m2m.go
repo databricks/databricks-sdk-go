@@ -50,6 +50,6 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return ccfg.Token(ctx)
 	})
 	return credentials.NewOAuthCredentialsProviderFromTokenSource(
-		auth.NewCachedTokenSource(directTS, cacheOptions(cfg)...),
+		auth.NewCachedTokenSource(auth.NewRetryingTokenSource(directTS), cacheOptions(cfg)...),
 	), nil
 }
