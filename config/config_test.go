@@ -745,6 +745,89 @@ func TestApplyHostMetadata_DoesNotOverrideExistingTokenAudience(t *testing.T) {
 	assert.Equal(t, "custom-audience", cfg.TokenAudience)
 }
 
+func TestApplyHostMetadata_SetsTokenAudienceFromDefaultOIDCAudience(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS", "default_oidc_audience": "` + testHMHost + `/oidc/v1/token"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMHost+"/oidc/v1/token", cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_DefaultOIDCAudienceTakesPriorityOverAccountIDFallback(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "default_oidc_audience": "custom-audience-from-server"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// default_oidc_audience should take priority over the account_id fallback
+	assert.Equal(t, "custom-audience-from-server", cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_DefaultOIDCAudienceDoesNotOverrideExisting(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:          testHMHost,
+		TokenAudience: "user-set-audience",
+		Loaders:       []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "default_oidc_audience": "` + testHMHost + `/oidc/v1/token"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, "user-set-audience", cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_FallsBackToAccountIDWhenNoDefaultOIDCAudience(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// No default_oidc_audience and no workspace_id → falls back to account_id
+	assert.Equal(t, testHMAccountID, cfg.TokenAudience)
+}
+
 func TestEnsureResolved_UsesCustomHostMetadataResolver(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
