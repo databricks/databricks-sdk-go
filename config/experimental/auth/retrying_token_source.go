@@ -3,7 +3,9 @@ package auth
 import (
 	"context"
 	"errors"
+	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"time"
 
@@ -50,12 +52,19 @@ type httpStatusCoder interface {
 	HTTPStatusCode() int
 }
 
+var retriableCodes = []int{
+	http.StatusTooManyRequests,    // 429
+	http.StatusBadGateway,         // 502
+	http.StatusServiceUnavailable, // 503
+	http.StatusGatewayTimeout,     // 504
+}
+
 // isRetriableTokenError returns true if the error is a transient failure that
 // should be retried. This covers HTTP errors from the SDK's transport layer,
 // OAuth2 token endpoint errors, and transient network errors.
 func isRetriableTokenError(err error) bool {
 	if code := httpStatusCode(err); code != 0 {
-		return code == 429 || code == 503
+		return slices.Contains(retriableCodes, code)
 	}
 	var urlErr *url.Error
 	if errors.As(err, &urlErr) {

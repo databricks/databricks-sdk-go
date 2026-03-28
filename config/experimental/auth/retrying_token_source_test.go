@@ -146,8 +146,18 @@ func TestIsRetriableTokenError(t *testing.T) {
 			want: false,
 		},
 		{
+			name: "http 502",
+			err:  &testHTTPError{code: 502},
+			want: true,
+		},
+		{
 			name: "http 503",
 			err:  &testHTTPError{code: 503},
+			want: true,
+		},
+		{
+			name: "http 504",
+			err:  &testHTTPError{code: 504},
 			want: true,
 		},
 		{
