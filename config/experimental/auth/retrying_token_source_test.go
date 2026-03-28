@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
-	"time"
 
 	"golang.org/x/oauth2"
 )
@@ -23,23 +22,22 @@ func (e *testHTTPError) Error() string       { return fmt.Sprintf("http %d: %s",
 func (e *testHTTPError) HTTPStatusCode() int { return e.code }
 
 func TestRetryingTokenSource(t *testing.T) {
-	validToken := &oauth2.Token{
-		AccessToken: "test-token",
-		Expiry:      time.Now().Add(time.Hour),
-	}
+	err401 := &testHTTPError{code: 401, message: "unauthorized"}
+	err400 := &testHTTPError{code: 400, message: "bad request"}
+	token := &oauth2.Token{AccessToken: "test-token"}
 
 	testCases := []struct {
-		name       string
-		callErrors []error
-		wantToken  bool
-		wantErr    bool
-		wantCalls  int
+		name         string
+		callErrors   []error
+		wantToken    *oauth2.Token
+		wantErr      error
+		wantNumCalls int
 	}{
 		{
-			name:       "success on first call",
-			callErrors: []error{nil},
-			wantToken:  true,
-			wantCalls:  1,
+			name:         "success on first call",
+			callErrors:   []error{nil},
+			wantToken:    token,
+			wantNumCalls: 1,
 		},
 		{
 			name: "retry on http 429 then succeed",
@@ -47,8 +45,8 @@ func TestRetryingTokenSource(t *testing.T) {
 				&testHTTPError{code: 429, message: "rate limited"},
 				nil,
 			},
-			wantToken: true,
-			wantCalls: 2,
+			wantToken:    token,
+			wantNumCalls: 2,
 		},
 		{
 			name: "retry on http 503 then succeed",
@@ -56,8 +54,8 @@ func TestRetryingTokenSource(t *testing.T) {
 				&testHTTPError{code: 503, message: "service unavailable"},
 				nil,
 			},
-			wantToken: true,
-			wantCalls: 2,
+			wantToken:    token,
+			wantNumCalls: 2,
 		},
 		{
 			name: "retry on oauth2 retrieve error 429",
@@ -65,8 +63,8 @@ func TestRetryingTokenSource(t *testing.T) {
 				&oauth2.RetrieveError{Response: &http.Response{StatusCode: 429}},
 				nil,
 			},
-			wantToken: true,
-			wantCalls: 2,
+			wantToken:    token,
+			wantNumCalls: 2,
 		},
 		{
 			name: "retry on transient network error",
@@ -74,56 +72,50 @@ func TestRetryingTokenSource(t *testing.T) {
 				&url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("connection reset by peer")},
 				nil,
 			},
-			wantToken: true,
-			wantCalls: 2,
+			wantToken:    token,
+			wantNumCalls: 2,
 		},
 		{
 			name: "no retry on http 401",
 			callErrors: []error{
-				&testHTTPError{code: 401, message: "unauthorized"},
+				err401,
 			},
-			wantErr:   true,
-			wantCalls: 1,
+			wantErr:      err401,
+			wantNumCalls: 1,
 		},
 		{
 			name: "no retry on http 400",
 			callErrors: []error{
-				&testHTTPError{code: 400, message: "bad request"},
+				err400,
 			},
-			wantErr:   true,
-			wantCalls: 1,
+			wantErr:      err400,
+			wantNumCalls: 1,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			callCount := 0
+			gotNumCalls := 0
 			inner := TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
-				err := tc.callErrors[callCount]
-				callCount++
+				err := tc.callErrors[gotNumCalls]
+				gotNumCalls++
 				if err != nil {
 					return nil, err
 				}
-				return validToken, nil
+				return token, nil
 			})
 
 			ts := NewRetryingTokenSource(inner)
-			tok, err := ts.Token(context.Background())
+			gotToken, gotErr := ts.Token(context.Background())
 
-			if callCount != tc.wantCalls {
-				t.Errorf("got %d calls, want %d", callCount, tc.wantCalls)
+			if gotNumCalls != tc.wantNumCalls {
+				t.Errorf("got %d calls, want %d", gotNumCalls, tc.wantNumCalls)
 			}
-			if tc.wantErr && err == nil {
-				t.Error("got nil error, want error")
+			if !errors.Is(gotErr, tc.wantErr) {
+				t.Errorf("got error %v, want %v", gotErr, tc.wantErr)
 			}
-			if !tc.wantErr && err != nil {
-				t.Errorf("got error %v, want nil", err)
-			}
-			if tc.wantToken && tok == nil {
-				t.Error("got nil token, want token")
-			}
-			if !tc.wantToken && tok != nil {
-				t.Errorf("got token %v, want nil", tok)
+			if gotToken != tc.wantToken {
+				t.Errorf("got token %v, want %v", gotToken, tc.wantToken)
 			}
 		})
 	}
