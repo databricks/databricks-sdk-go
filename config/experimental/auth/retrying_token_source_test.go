@@ -51,9 +51,9 @@ func TestRetryingTokenSource(t *testing.T) {
 			wantCalls: 2,
 		},
 		{
-			name: "retry on http 500 then succeed",
+			name: "retry on http 503 then succeed",
 			callErrors: []error{
-				&testHTTPError{code: 500, message: "server error"},
+				&testHTTPError{code: 503, message: "service unavailable"},
 				nil,
 			},
 			wantToken: true,
@@ -143,7 +143,7 @@ func TestIsRetriableTokenError(t *testing.T) {
 		{
 			name: "http 500",
 			err:  &testHTTPError{code: 500},
-			want: true,
+			want: false,
 		},
 		{
 			name: "http 503",
@@ -168,7 +168,7 @@ func TestIsRetriableTokenError(t *testing.T) {
 		{
 			name: "oauth2 retrieve error 500",
 			err:  &oauth2.RetrieveError{Response: &http.Response{StatusCode: 500}},
-			want: true,
+			want: false,
 		},
 		{
 			name: "oauth2 retrieve error 400",

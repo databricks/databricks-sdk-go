@@ -55,7 +55,7 @@ type httpStatusCoder interface {
 // OAuth2 token endpoint errors, and transient network errors.
 func isRetriableTokenError(err error) bool {
 	if code := httpStatusCode(err); code != 0 {
-		return code == 429 || code >= 500
+		return code == 429 || code == 503
 	}
 	var urlErr *url.Error
 	if errors.As(err, &urlErr) {
