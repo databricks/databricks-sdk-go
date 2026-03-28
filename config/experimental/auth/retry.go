@@ -3,10 +3,10 @@ package auth
 import (
 	"context"
 	"errors"
+	"net"
 	"net/http"
-	"net/url"
 	"slices"
-	"strings"
+	"syscall"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/experimental/api"
@@ -66,16 +66,7 @@ func isRetriableTokenError(err error) bool {
 	if code := httpStatusCode(err); code != 0 {
 		return slices.Contains(retriableCodes, code)
 	}
-	var urlErr *url.Error
-	if errors.As(err, &urlErr) {
-		msg := urlErr.Error()
-		for _, s := range transientNetworkErrors {
-			if strings.Contains(msg, s) {
-				return true
-			}
-		}
-	}
-	return false
+	return isTransientNetworkError(err)
 }
 
 // httpStatusCode extracts the HTTP status code from an error, if available.
@@ -93,12 +84,18 @@ func httpStatusCode(err error) int {
 	return 0
 }
 
-// transientNetworkErrors is the list of error substrings that indicate a
-// transient network failure. These mirror the checks in
-// httpclient/errors.go isRetriableUrlError.
-var transientNetworkErrors = []string{
-	"connection reset by peer",
-	"TLS handshake timeout",
-	"connection refused",
-	"i/o timeout",
+// isTransientNetworkError reports whether err represents a transient network
+// condition that is likely to resolve on retry.
+func isTransientNetworkError(err error) bool {
+	if errors.Is(err, syscall.ECONNRESET) {
+		return true
+	}
+	if errors.Is(err, syscall.ECONNREFUSED) {
+		return true
+	}
+	var netErr net.Error
+	if errors.As(err, &netErr) && netErr.Timeout() {
+		return true
+	}
+	return false
 }

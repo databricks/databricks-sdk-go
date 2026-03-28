@@ -4,12 +4,22 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"syscall"
 	"testing"
 
 	"golang.org/x/oauth2"
 )
+
+// timeoutError is a test error that implements net.Error with Timeout() == true.
+type timeoutError struct{}
+
+func (e timeoutError) Error() string   { return "i/o timeout" }
+func (e timeoutError) Timeout() bool   { return true }
+func (e timeoutError) Temporary() bool { return false }
 
 // testHTTPError is a test error that implements the httpStatusCoder interface,
 // mirroring httpclient.HttpError without importing it.
@@ -69,7 +79,10 @@ func TestRetryingTokenSource(t *testing.T) {
 		{
 			name: "retry on transient network error",
 			callErrors: []error{
-				&url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("connection reset by peer")},
+				&url.Error{Op: "Post", URL: "https://host/token", Err: &net.OpError{
+					Op: "read", Net: "tcp",
+					Err: &os.SyscallError{Syscall: "read", Err: syscall.ECONNRESET},
+				}},
 				nil,
 			},
 			wantToken:    token,
@@ -179,22 +192,26 @@ func TestIsRetriableTokenError(t *testing.T) {
 		},
 		{
 			name: "connection reset",
-			err:  &url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("connection reset by peer")},
-			want: true,
-		},
-		{
-			name: "tls handshake timeout",
-			err:  &url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("TLS handshake timeout")},
+			err: &url.Error{Op: "Post", URL: "https://host/token", Err: &net.OpError{
+				Op: "read", Net: "tcp",
+				Err: &os.SyscallError{Syscall: "read", Err: syscall.ECONNRESET},
+			}},
 			want: true,
 		},
 		{
 			name: "connection refused",
-			err:  &url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("connection refused")},
+			err: &url.Error{Op: "Post", URL: "https://host/token", Err: &net.OpError{
+				Op: "dial", Net: "tcp",
+				Err: &os.SyscallError{Syscall: "connect", Err: syscall.ECONNREFUSED},
+			}},
 			want: true,
 		},
 		{
 			name: "i/o timeout",
-			err:  &url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("i/o timeout")},
+			err: &url.Error{Op: "Post", URL: "https://host/token", Err: &net.OpError{
+				Op: "read", Net: "tcp",
+				Err: timeoutError{},
+			}},
 			want: true,
 		},
 		{
