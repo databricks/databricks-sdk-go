@@ -13,7 +13,7 @@ const authDocURL = "https://docs.databricks.com/en/dev-tools/auth.html#databrick
 
 // ErrCannotConfigureDefault indicates that no credentials strategy in the
 // chain was able to provide valid credentials.
-var ErrCannotConfigureDefault = fmt.Errorf("cannot configure default credentials, please check %s to configure credentials for your preferred authentication method", authDocURL)
+var ErrCannotConfigureDefault = fmt.Errorf("cannot configure default credentials, set auth_type for a specific error message. See %s", authDocURL)
 
 // NewCredentialsChain returns a new CredentialsStrategy that tries the given
 // strategies in order and returns the first one that succeeds. If

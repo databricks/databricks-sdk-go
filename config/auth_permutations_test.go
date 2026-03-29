@@ -45,8 +45,8 @@ var dumpTo string = ""
 var dumpToMu sync.Mutex
 
 var defaultAuthBaseErrorMessage = "default auth: cannot configure default credentials, " +
-	"please check https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication " +
-	"to configure credentials for your preferred authentication method"
+	"set auth_type for a specific error message. See " +
+	"https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication"
 
 func (cf configFixture) dump(t *testing.T) error {
 	if dumpTo == "" {
