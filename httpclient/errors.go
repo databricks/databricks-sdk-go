@@ -27,6 +27,11 @@ func (r *HttpError) HTTPStatusCode() int {
 	return r.Response.StatusCode
 }
 
+// Header returns the HTTP headers of the error response.
+func (r *HttpError) Header() http.Header {
+	return r.Response.Header
+}
+
 func (r *HttpError) Error() string {
 	return fmt.Sprintf("http %d: %s", r.StatusCode, r.Message)
 }

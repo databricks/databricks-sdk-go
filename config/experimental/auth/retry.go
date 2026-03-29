@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"slices"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -15,24 +16,20 @@ import (
 
 // retryingTokenSource wraps a TokenSource with retry logic for transient
 // failures during token acquisition. Each retry calls the underlying Token()
-// method, which creates a fresh HTTP request -- avoiding the body-rewinding
-// problems that occur when retrying at the transport level.
+// method, which creates a fresh HTTP request.
 type retryingTokenSource struct {
 	inner TokenSource
 	opts  []api.Option
 }
 
-var defaultOptions = []api.Option{
-	api.WithTimeout(1 * time.Minute),
-	api.WithRetrier(func() api.Retrier {
-		return api.RetryOn(api.BackoffPolicy{}, isRetriableTokenError)
-	}),
-}
-
 // NewRetryingTokenSource wraps inner with retry logic for transient failures.
-// By default it uses exponential backoff with a 1-minute timeout and a 30-second maximum delay.
-// Additional api.Option values can be provided to override the defaults.
+// The provided options are applied after the default options, allowing callers
+// to override the default timeout and retry behavior.
 func NewRetryingTokenSource(inner TokenSource, opts ...api.Option) TokenSource {
+	defaultOptions := []api.Option{
+		api.WithTimeout(1 * time.Minute),
+		api.WithRetrier(func() api.Retrier { return &httpRetrier{} }),
+	}
 	return &retryingTokenSource{
 		inner: inner,
 		opts:  append(defaultOptions, opts...),
@@ -45,11 +42,77 @@ func (r *retryingTokenSource) Token(ctx context.Context) (*oauth2.Token, error) 
 	return api.ExecuteWithResult(ctx, r.inner.Token, r.opts...)
 }
 
-// httpStatusCoder is implemented by errors that carry an HTTP status code.
-// This interface avoids importing httpclient (which would create a cycle)
-// while still allowing to classify httpclient.HttpError by status code.
-type httpStatusCoder interface {
+// httpRetrier classifies errors from HTTP-based token endpoints and determines
+// whether they should be retried and with what delay.
+//
+// An error is retriable if it carries an HTTP status code in retriableCodes
+// (429, 502, 503, 504) or is a transient network error (ECONNRESET,
+// ECONNREFUSED, timeout). All other errors, including 4xx client errors, are
+// not retriable regardless of headers.
+//
+// For retriable HTTP errors, the Retry-After header is used as a hint: the
+// delay is the maximum of the exponential backoff and the Retry-After value,
+// so we never retry sooner than the server asked. No upper cap is applied,
+// the context timeout already bounds total retry duration.
+//
+// TODO: this retrier encodes logic (retriable status codes, Retry-After
+// parsing, network error classification) that is also needed by the main HTTP
+// retry loop in httpclient/. Consider moving it to a shared location so both
+// token acquisition and regular API calls use the same retry classification.
+type httpRetrier struct {
+	backoff api.BackoffPolicy
+}
+
+// IsRetriable reports whether err is a transient failure that should be
+// retried, and if so, how long the caller should wait before retrying.
+func (r *httpRetrier) IsRetriable(err error) (time.Duration, bool) {
+	if code, header := httpResponse(err); code != 0 {
+		if !slices.Contains(retriableCodes, code) {
+			return 0, false
+		}
+		delay := r.backoff.Delay()
+		if d, ok := parseRetryAfter(header); ok && d > delay {
+			delay = d // context timeout already bounds total retry duration
+		}
+		return delay, true
+	}
+	if isTransientNetworkError(err) {
+		return r.backoff.Delay(), true
+	}
+	return 0, false
+}
+
+// parseRetryAfter parses a Retry-After header value as either a delay in
+// seconds or an HTTP-date.
+func parseRetryAfter(header http.Header) (time.Duration, bool) {
+	if header == nil {
+		return 0, false
+	}
+	v := header.Get("Retry-After")
+	if v == "" {
+		return 0, false
+	}
+	if seconds, parseErr := strconv.Atoi(v); parseErr == nil && seconds >= 0 {
+		return time.Duration(seconds) * time.Second, true
+	}
+	if t, parseErr := http.ParseTime(v); parseErr == nil {
+		if d := time.Until(t); d > 0 {
+			return d, true
+		}
+	}
+	return 0, false
+}
+
+// httpResponseError is implemented by errors that carry HTTP response
+// metadata. This interface avoids importing httpclient (which would create a
+// cycle) while still allowing classification of httpclient.HttpError by status
+// code and headers.
+//
+// TODO: This is meant to be temporary and should move this to a shared location
+// so both token acquisition and regular API calls use the same classification.
+type httpResponseError interface {
 	HTTPStatusCode() int
+	Header() http.Header
 }
 
 var retriableCodes = []int{
@@ -59,29 +122,17 @@ var retriableCodes = []int{
 	http.StatusGatewayTimeout,     // 504
 }
 
-// isRetriableTokenError returns true if the error is a transient failure that
-// should be retried. This covers HTTP errors from the SDK's transport layer,
-// OAuth2 token endpoint errors, and transient network errors.
-func isRetriableTokenError(err error) bool {
-	if code := httpStatusCode(err); code != 0 {
-		return slices.Contains(retriableCodes, code)
-	}
-	return isTransientNetworkError(err)
-}
-
-// httpStatusCode extracts the HTTP status code from an error, if available.
-func httpStatusCode(err error) int {
-	// Check oauth2.RetrieveError (has Response field with StatusCode).
+// httpResponse extracts HTTP response metadata from an error, if available.
+func httpResponse(err error) (statusCode int, header http.Header) {
 	var retrieveErr *oauth2.RetrieveError
 	if errors.As(err, &retrieveErr) && retrieveErr.Response != nil {
-		return retrieveErr.Response.StatusCode
+		return retrieveErr.Response.StatusCode, retrieveErr.Response.Header
 	}
-	// Check for any error that exposes a StatusCode() method.
-	var sc httpStatusCoder
-	if errors.As(err, &sc) {
-		return sc.HTTPStatusCode()
+	var re httpResponseError
+	if errors.As(err, &re) {
+		return re.HTTPStatusCode(), re.Header()
 	}
-	return 0
+	return 0, nil
 }
 
 // isTransientNetworkError reports whether err represents a transient network

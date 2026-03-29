@@ -10,7 +10,9 @@ import (
 	"os"
 	"syscall"
 	"testing"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/experimental/api"
 	"golang.org/x/oauth2"
 )
 
@@ -21,15 +23,17 @@ func (e timeoutError) Error() string   { return "i/o timeout" }
 func (e timeoutError) Timeout() bool   { return true }
 func (e timeoutError) Temporary() bool { return false }
 
-// testHTTPError is a test error that implements the httpStatusCoder interface,
-// mirroring httpclient.HttpError without importing it.
+// testHTTPError is a test error that implements the httpResponseError
+// interface, mirroring httpclient.HttpError without importing it.
 type testHTTPError struct {
 	code    int
+	header  http.Header
 	message string
 }
 
 func (e *testHTTPError) Error() string       { return fmt.Sprintf("http %d: %s", e.code, e.message) }
 func (e *testHTTPError) HTTPStatusCode() int { return e.code }
+func (e *testHTTPError) Header() http.Header { return e.header }
 
 func TestRetryingTokenSource(t *testing.T) {
 	err401 := &testHTTPError{code: 401, message: "unauthorized"}
@@ -134,61 +138,61 @@ func TestRetryingTokenSource(t *testing.T) {
 	}
 }
 
-func TestIsRetriableTokenError(t *testing.T) {
+func TestHTTPRetrier_IsRetriable(t *testing.T) {
 	testCases := []struct {
-		name string
-		err  error
-		want bool
+		name          string
+		err           error
+		wantRetriable bool
 	}{
 		{
-			name: "http 429",
-			err:  &testHTTPError{code: 429},
-			want: true,
+			name:          "http 429",
+			err:           &testHTTPError{code: 429},
+			wantRetriable: true,
 		},
 		{
-			name: "http 500",
-			err:  &testHTTPError{code: 500},
-			want: false,
+			name:          "http 500",
+			err:           &testHTTPError{code: 500},
+			wantRetriable: false,
 		},
 		{
-			name: "http 502",
-			err:  &testHTTPError{code: 502},
-			want: true,
+			name:          "http 502",
+			err:           &testHTTPError{code: 502},
+			wantRetriable: true,
 		},
 		{
-			name: "http 503",
-			err:  &testHTTPError{code: 503},
-			want: true,
+			name:          "http 503",
+			err:           &testHTTPError{code: 503},
+			wantRetriable: true,
 		},
 		{
-			name: "http 504",
-			err:  &testHTTPError{code: 504},
-			want: true,
+			name:          "http 504",
+			err:           &testHTTPError{code: 504},
+			wantRetriable: true,
 		},
 		{
-			name: "http 401",
-			err:  &testHTTPError{code: 401},
-			want: false,
+			name:          "http 401",
+			err:           &testHTTPError{code: 401},
+			wantRetriable: false,
 		},
 		{
-			name: "http 403",
-			err:  &testHTTPError{code: 403},
-			want: false,
+			name:          "http 403",
+			err:           &testHTTPError{code: 403},
+			wantRetriable: false,
 		},
 		{
-			name: "oauth2 retrieve error 429",
-			err:  &oauth2.RetrieveError{Response: &http.Response{StatusCode: 429}},
-			want: true,
+			name:          "oauth2 retrieve error 429",
+			err:           &oauth2.RetrieveError{Response: &http.Response{StatusCode: 429}},
+			wantRetriable: true,
 		},
 		{
-			name: "oauth2 retrieve error 500",
-			err:  &oauth2.RetrieveError{Response: &http.Response{StatusCode: 500}},
-			want: false,
+			name:          "oauth2 retrieve error 500",
+			err:           &oauth2.RetrieveError{Response: &http.Response{StatusCode: 500}},
+			wantRetriable: false,
 		},
 		{
-			name: "oauth2 retrieve error 400",
-			err:  &oauth2.RetrieveError{Response: &http.Response{StatusCode: 400}},
-			want: false,
+			name:          "oauth2 retrieve error 400",
+			err:           &oauth2.RetrieveError{Response: &http.Response{StatusCode: 400}},
+			wantRetriable: false,
 		},
 		{
 			name: "connection reset",
@@ -196,7 +200,7 @@ func TestIsRetriableTokenError(t *testing.T) {
 				Op: "read", Net: "tcp",
 				Err: &os.SyscallError{Syscall: "read", Err: syscall.ECONNRESET},
 			}},
-			want: true,
+			wantRetriable: true,
 		},
 		{
 			name: "connection refused",
@@ -204,7 +208,7 @@ func TestIsRetriableTokenError(t *testing.T) {
 				Op: "dial", Net: "tcp",
 				Err: &os.SyscallError{Syscall: "connect", Err: syscall.ECONNREFUSED},
 			}},
-			want: true,
+			wantRetriable: true,
 		},
 		{
 			name: "i/o timeout",
@@ -212,25 +216,125 @@ func TestIsRetriableTokenError(t *testing.T) {
 				Op: "read", Net: "tcp",
 				Err: timeoutError{},
 			}},
-			want: true,
+			wantRetriable: true,
 		},
 		{
-			name: "url error non-transient",
-			err:  &url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("no such host")},
-			want: false,
+			name:          "url error non-transient",
+			err:           &url.Error{Op: "Post", URL: "https://host/token", Err: fmt.Errorf("no such host")},
+			wantRetriable: false,
 		},
 		{
-			name: "generic error",
-			err:  errors.New("something went wrong"),
-			want: false,
+			name:          "generic error",
+			err:           errors.New("something went wrong"),
+			wantRetriable: false,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := isRetriableTokenError(tc.err)
-			if got != tc.want {
-				t.Errorf("isRetriableTokenError(%v) = %v, want %v", tc.err, got, tc.want)
+			r := &httpRetrier{}
+			_, got := r.IsRetriable(tc.err)
+			if got != tc.wantRetriable {
+				t.Errorf("httpRetrier.IsRetriable(%v) retriable = %v, want %v", tc.err, got, tc.wantRetriable)
+			}
+		})
+	}
+}
+
+func TestHTTPRetrier_RetryAfterDelay(t *testing.T) {
+	// Backoff with Initial=1s, Maximum=2s so Delay() returns [0, 1s] on the
+	// first call. Both Retry-After values below exceed that range, so the
+	// delay is exactly the Retry-After value in both cases.
+	backoff := api.BackoffPolicy{Initial: 1 * time.Second, Maximum: 2 * time.Second}
+
+	testCases := []struct {
+		name      string
+		err       error
+		wantDelay time.Duration
+	}{
+		{
+			name: "retry-after raises delay above backoff",
+			err: &testHTTPError{
+				code:   429,
+				header: http.Header{"Retry-After": []string{"10"}},
+			},
+			wantDelay: 10 * time.Second,
+		},
+		{
+			name: "retry-after is not capped by backoff maximum",
+			err: &testHTTPError{
+				code:   429,
+				header: http.Header{"Retry-After": []string{"120"}},
+			},
+			wantDelay: 120 * time.Second,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			r := &httpRetrier{backoff: backoff}
+			delay, _ := r.IsRetriable(tc.err)
+			if delay != tc.wantDelay {
+				t.Errorf("delay = %v, want %v", delay, tc.wantDelay)
+			}
+		})
+	}
+}
+
+func TestParseRetryAfter(t *testing.T) {
+	testCases := []struct {
+		name      string
+		header    http.Header
+		wantOK    bool
+		wantDelay time.Duration
+	}{
+		{
+			name:   "nil header",
+			header: nil,
+			wantOK: false,
+		},
+		{
+			name:   "empty header",
+			header: http.Header{},
+			wantOK: false,
+		},
+		{
+			name:      "delay in seconds",
+			header:    http.Header{"Retry-After": []string{"30"}},
+			wantOK:    true,
+			wantDelay: 30 * time.Second,
+		},
+		{
+			name:      "delay zero seconds",
+			header:    http.Header{"Retry-After": []string{"0"}},
+			wantOK:    true,
+			wantDelay: 0,
+		},
+		{
+			name:   "negative seconds",
+			header: http.Header{"Retry-After": []string{"-5"}},
+			wantOK: false,
+		},
+		{
+			name:   "non-numeric string",
+			header: http.Header{"Retry-After": []string{"not-a-number"}},
+			wantOK: false,
+		},
+		{
+			name:   "http-date in the past",
+			header: http.Header{"Retry-After": []string{"Mon, 01 Jan 2024 00:00:00 GMT"}},
+			wantOK: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			gotDelay, gotOK := parseRetryAfter(tc.header)
+			if gotOK != tc.wantOK {
+				t.Errorf("ok = %v, want %v", gotOK, tc.wantOK)
+			}
+			if gotDelay != tc.wantDelay {
+				t.Errorf("delay = %v, want %v", gotDelay, tc.wantDelay)
 			}
 		})
 	}
