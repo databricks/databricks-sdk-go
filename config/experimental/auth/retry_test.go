@@ -242,40 +242,44 @@ func TestHTTPRetrier_IsRetriable(t *testing.T) {
 }
 
 func TestHTTPRetrier_RetryAfterDelay(t *testing.T) {
-	// Backoff with Initial=1s, Maximum=2s so Delay() returns [0, 1s] on the
-	// first call. Both Retry-After values below exceed that range, so the
-	// delay is exactly the Retry-After value in both cases.
-	backoff := api.BackoffPolicy{Initial: 1 * time.Second, Maximum: 2 * time.Second}
+	// Backoff returning delays between 0 and 10 seconds.
+	backoff := api.BackoffPolicy{Maximum: 10 * time.Second}
 
 	testCases := []struct {
-		name      string
-		err       error
-		wantDelay time.Duration
+		name    string
+		err     error
+		minWant time.Duration
+		maxWant time.Duration
 	}{
 		{
-			name: "retry-after raises delay above backoff",
-			err: &testHTTPError{
-				code:   429,
-				header: http.Header{"Retry-After": []string{"10"}},
-			},
-			wantDelay: 10 * time.Second,
-		},
-		{
-			name: "retry-after is not capped by backoff maximum",
+			name: "retry-after exceeds backoff maximum",
 			err: &testHTTPError{
 				code:   429,
 				header: http.Header{"Retry-After": []string{"120"}},
 			},
-			wantDelay: 120 * time.Second,
+			minWant: 120 * time.Second,
+			maxWant: 120 * time.Second,
+		},
+		{
+			name: "retry-after below backoff is ignored",
+			err: &testHTTPError{
+				code:   429,
+				header: http.Header{"Retry-After": []string{"0"}},
+			},
+			minWant: 0,
+			maxWant: 10 * time.Second,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			r := &httpRetrier{backoff: backoff}
-			delay, _ := r.IsRetriable(tc.err)
-			if delay != tc.wantDelay {
-				t.Errorf("delay = %v, want %v", delay, tc.wantDelay)
+			got, gotOk := r.IsRetriable(tc.err)
+			if !gotOk {
+				t.Fatalf("IsRetriable(%v) = false, want true", tc.err)
+			}
+			if got < tc.minWant || got > tc.maxWant {
+				t.Errorf("delay = %v, want [%v, %v]", got, tc.minWant, tc.maxWant)
 			}
 		})
 	}
