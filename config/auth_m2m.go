@@ -28,26 +28,29 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	}
 	logger.Debugf(ctx, "Generating Databricks OAuth token for Service Principal (%s)", cfg.ClientID)
 
-	// This already implements the auth.TokenSource interface. There is no need
-	// to wrap it in auth.TokenSourceFn.
-	//
-	// IMPORTANT: the code should not rely on Config.TokenSource which returns
-	// a oauth2.TokenSource that is already wrapped in a cache. This leads to
-	// double-caching issues that defeats the proactive async refresh provided
-	// by NewCachedTokenSource (see [issue1549] for context).
-	//
-	// Using clientcredentials.Config.Token directly avoids that issue at the
-	// expense of allocating (and then discarding) a reusable token source at
-	// each call.
+	// IMPORTANT: do not use Config.TokenSource, which returns an
+	// oauth2.TokenSource already wrapped in a cache. This leads to
+	// double-caching that defeats the proactive async refresh provided by
+	// NewCachedTokenSource (see [issue1549] for context).
 	//
 	// [issue1549]: https://github.com/databricks/databricks-sdk-go/issues/1549
-	ts := &clientcredentials.Config{
+	ccfg := &clientcredentials.Config{
 		ClientID:     cfg.ClientID,
 		ClientSecret: cfg.ClientSecret,
 		AuthStyle:    oauth2.AuthStyleInHeader,
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       cfg.GetScopes(),
 	}
+	ts := auth.TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
+		// Callers like CredentialsProvider.SetHeaders pass context.Background()
+		// rather than the actual context from the HTTP client. Because of this,
+		// the request would bypass the configured transport. 
+		//
+		// The following is a workaround to ensure the refresh client's 
+		// transport is always used.
+		ctx = cfg.refreshClient.InContextForOAuth2(ctx)
+		return ccfg.Token(ctx)
+	})
 
 	return credentials.NewOAuthCredentialsProviderFromTokenSource(
 		auth.NewCachedTokenSource(auth.NewRetryingTokenSource(ts), cacheOptions(cfg)...),
