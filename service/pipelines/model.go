@@ -197,6 +197,14 @@ func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Wrapper message for source-specific options to support multiple connector
+// types
+type ConnectorOptions struct {
+	GdriveOptions *GoogleDriveOptions `json:"gdrive_options,omitempty"`
+
+	SharepointOptions *SharepointOptions `json:"sharepoint_options,omitempty"`
+}
+
 // For certain database sources LakeFlow Connect offers both query based and cdc
 // ingestion, ConnectorType can bse used to convey the type of ingestion. If
 // connection_name is provided for database sources, we default to Query Based
@@ -689,6 +697,171 @@ func (s EventLogSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FileFilter struct {
+	// Include files with modification times occurring after the specified time.
+	// Timestamp format: YYYY-MM-DDTHH:mm:ss (e.g. 2020-06-01T13:00:00) Based on
+	// https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#modification-time-path-filters
+	ModifiedAfter string `json:"modified_after,omitempty"`
+	// Include files with modification times occurring before the specified
+	// time. Timestamp format: YYYY-MM-DDTHH:mm:ss (e.g. 2020-06-01T13:00:00)
+	// Based on
+	// https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#modification-time-path-filters
+	ModifiedBefore string `json:"modified_before,omitempty"`
+	// Include files with file names matching the pattern Based on
+	// https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#path-glob-filter
+	PathFilter string `json:"path_filter,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FileFilter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FileFilter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FileIngestionOptions struct {
+	CorruptRecordColumn string `json:"corrupt_record_column,omitempty"`
+	// Generic options
+	FileFilters []FileFilter `json:"file_filters,omitempty"`
+	// required for TableSpec
+	Format FileIngestionOptionsFileFormat `json:"format,omitempty"`
+	// Format-specific options Based on
+	// https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/options#file-format-options
+	FormatOptions map[string]string `json:"format_options,omitempty"`
+
+	IgnoreCorruptFiles bool `json:"ignore_corrupt_files,omitempty"`
+
+	InferColumnTypes bool `json:"infer_column_types,omitempty"`
+	// Column name case sensitivity
+	// https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#change-case-sensitive-behavior
+	ReaderCaseSensitive bool `json:"reader_case_sensitive,omitempty"`
+
+	RescuedDataColumn string `json:"rescued_data_column,omitempty"`
+
+	SchemaEvolutionMode FileIngestionOptionsSchemaEvolutionMode `json:"schema_evolution_mode,omitempty"`
+	// Override inferred schema of specific columns Based on
+	// https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#override-schema-inference-with-schema-hints
+	SchemaHints string `json:"schema_hints,omitempty"`
+
+	SingleVariantColumn string `json:"single_variant_column,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FileIngestionOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FileIngestionOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FileIngestionOptionsFileFormat string
+
+const FileIngestionOptionsFileFormatAvro FileIngestionOptionsFileFormat = `AVRO`
+
+const FileIngestionOptionsFileFormatBinaryfile FileIngestionOptionsFileFormat = `BINARYFILE`
+
+const FileIngestionOptionsFileFormatCsv FileIngestionOptionsFileFormat = `CSV`
+
+const FileIngestionOptionsFileFormatExcel FileIngestionOptionsFileFormat = `EXCEL`
+
+const FileIngestionOptionsFileFormatJson FileIngestionOptionsFileFormat = `JSON`
+
+const FileIngestionOptionsFileFormatOrc FileIngestionOptionsFileFormat = `ORC`
+
+const FileIngestionOptionsFileFormatParquet FileIngestionOptionsFileFormat = `PARQUET`
+
+const FileIngestionOptionsFileFormatXml FileIngestionOptionsFileFormat = `XML`
+
+// String representation for [fmt.Print]
+func (f *FileIngestionOptionsFileFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *FileIngestionOptionsFileFormat) Set(v string) error {
+	switch v {
+	case `AVRO`, `BINARYFILE`, `CSV`, `EXCEL`, `JSON`, `ORC`, `PARQUET`, `XML`:
+		*f = FileIngestionOptionsFileFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AVRO", "BINARYFILE", "CSV", "EXCEL", "JSON", "ORC", "PARQUET", "XML"`, v)
+	}
+}
+
+// Values returns all possible values for FileIngestionOptionsFileFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FileIngestionOptionsFileFormat) Values() []FileIngestionOptionsFileFormat {
+	return []FileIngestionOptionsFileFormat{
+		FileIngestionOptionsFileFormatAvro,
+		FileIngestionOptionsFileFormatBinaryfile,
+		FileIngestionOptionsFileFormatCsv,
+		FileIngestionOptionsFileFormatExcel,
+		FileIngestionOptionsFileFormatJson,
+		FileIngestionOptionsFileFormatOrc,
+		FileIngestionOptionsFileFormatParquet,
+		FileIngestionOptionsFileFormatXml,
+	}
+}
+
+// Type always returns FileIngestionOptionsFileFormat to satisfy [pflag.Value] interface
+func (f *FileIngestionOptionsFileFormat) Type() string {
+	return "FileIngestionOptionsFileFormat"
+}
+
+// Based on
+// https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
+type FileIngestionOptionsSchemaEvolutionMode string
+
+const FileIngestionOptionsSchemaEvolutionModeAddNewColumns FileIngestionOptionsSchemaEvolutionMode = `ADD_NEW_COLUMNS`
+
+const FileIngestionOptionsSchemaEvolutionModeAddNewColumnsWithTypeWidening FileIngestionOptionsSchemaEvolutionMode = `ADD_NEW_COLUMNS_WITH_TYPE_WIDENING`
+
+const FileIngestionOptionsSchemaEvolutionModeFailOnNewColumns FileIngestionOptionsSchemaEvolutionMode = `FAIL_ON_NEW_COLUMNS`
+
+const FileIngestionOptionsSchemaEvolutionModeNone FileIngestionOptionsSchemaEvolutionMode = `NONE`
+
+const FileIngestionOptionsSchemaEvolutionModeRescue FileIngestionOptionsSchemaEvolutionMode = `RESCUE`
+
+// String representation for [fmt.Print]
+func (f *FileIngestionOptionsSchemaEvolutionMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *FileIngestionOptionsSchemaEvolutionMode) Set(v string) error {
+	switch v {
+	case `ADD_NEW_COLUMNS`, `ADD_NEW_COLUMNS_WITH_TYPE_WIDENING`, `FAIL_ON_NEW_COLUMNS`, `NONE`, `RESCUE`:
+		*f = FileIngestionOptionsSchemaEvolutionMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ADD_NEW_COLUMNS", "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING", "FAIL_ON_NEW_COLUMNS", "NONE", "RESCUE"`, v)
+	}
+}
+
+// Values returns all possible values for FileIngestionOptionsSchemaEvolutionMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FileIngestionOptionsSchemaEvolutionMode) Values() []FileIngestionOptionsSchemaEvolutionMode {
+	return []FileIngestionOptionsSchemaEvolutionMode{
+		FileIngestionOptionsSchemaEvolutionModeAddNewColumns,
+		FileIngestionOptionsSchemaEvolutionModeAddNewColumnsWithTypeWidening,
+		FileIngestionOptionsSchemaEvolutionModeFailOnNewColumns,
+		FileIngestionOptionsSchemaEvolutionModeNone,
+		FileIngestionOptionsSchemaEvolutionModeRescue,
+	}
+}
+
+// Type always returns FileIngestionOptionsSchemaEvolutionMode to satisfy [pflag.Value] interface
+func (f *FileIngestionOptionsSchemaEvolutionMode) Type() string {
+	return "FileIngestionOptionsSchemaEvolutionMode"
+}
+
 type FileLibrary struct {
 	// The absolute path of the source code.
 	Path string `json:"path,omitempty"`
@@ -824,6 +997,64 @@ type GetUpdateRequest struct {
 type GetUpdateResponse struct {
 	// The current update info.
 	Update *UpdateInfo `json:"update,omitempty"`
+}
+
+type GoogleDriveOptions struct {
+	EntityType GoogleDriveOptionsGoogleDriveEntityType `json:"entity_type,omitempty"`
+
+	FileIngestionOptions *FileIngestionOptions `json:"file_ingestion_options,omitempty"`
+	// Required. Google Drive URL.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GoogleDriveOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GoogleDriveOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GoogleDriveOptionsGoogleDriveEntityType string
+
+const GoogleDriveOptionsGoogleDriveEntityTypeFile GoogleDriveOptionsGoogleDriveEntityType = `FILE`
+
+const GoogleDriveOptionsGoogleDriveEntityTypeFileMetadata GoogleDriveOptionsGoogleDriveEntityType = `FILE_METADATA`
+
+const GoogleDriveOptionsGoogleDriveEntityTypePermission GoogleDriveOptionsGoogleDriveEntityType = `PERMISSION`
+
+// String representation for [fmt.Print]
+func (f *GoogleDriveOptionsGoogleDriveEntityType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GoogleDriveOptionsGoogleDriveEntityType) Set(v string) error {
+	switch v {
+	case `FILE`, `FILE_METADATA`, `PERMISSION`:
+		*f = GoogleDriveOptionsGoogleDriveEntityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FILE", "FILE_METADATA", "PERMISSION"`, v)
+	}
+}
+
+// Values returns all possible values for GoogleDriveOptionsGoogleDriveEntityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GoogleDriveOptionsGoogleDriveEntityType) Values() []GoogleDriveOptionsGoogleDriveEntityType {
+	return []GoogleDriveOptionsGoogleDriveEntityType{
+		GoogleDriveOptionsGoogleDriveEntityTypeFile,
+		GoogleDriveOptionsGoogleDriveEntityTypeFileMetadata,
+		GoogleDriveOptionsGoogleDriveEntityTypePermission,
+	}
+}
+
+// Type always returns GoogleDriveOptionsGoogleDriveEntityType to satisfy [pflag.Value] interface
+func (f *GoogleDriveOptionsGoogleDriveEntityType) Type() string {
+	return "GoogleDriveOptionsGoogleDriveEntityType"
 }
 
 type IngestionConfig struct {
@@ -1029,6 +1260,8 @@ const IngestionSourceTypeForeignCatalog IngestionSourceType = `FOREIGN_CATALOG`
 
 const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
+const IngestionSourceTypeGoogleDrive IngestionSourceType = `GOOGLE_DRIVE`
+
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
 
 const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
@@ -1059,11 +1292,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -1076,6 +1309,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeForeignCatalog,
 		IngestionSourceTypeGa4RawData,
+		IngestionSourceTypeGoogleDrive,
 		IngestionSourceTypeManagedPostgresql,
 		IngestionSourceTypeMysql,
 		IngestionSourceTypeNetsuite,
@@ -2264,6 +2498,8 @@ func (s RunAs) MarshalJSON() ([]byte, error) {
 }
 
 type SchemaSpec struct {
+	// (Optional) Source Specific Connector Options
+	ConnectorOptions *ConnectorOptions `json:"connector_options,omitempty"`
 	// Required. Destination catalog to store tables.
 	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store tables in. Tables with the same
@@ -2325,6 +2561,69 @@ func (s *SerializedException) UnmarshalJSON(b []byte) error {
 
 func (s SerializedException) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type SharepointOptions struct {
+	// (Optional) The type of SharePoint entity to ingest. If not specified,
+	// defaults to FILE.
+	EntityType SharepointOptionsSharepointEntityType `json:"entity_type,omitempty"`
+	// (Optional) File ingestion options for processing files.
+	FileIngestionOptions *FileIngestionOptions `json:"file_ingestion_options,omitempty"`
+	// Required. The SharePoint URL.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SharepointOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SharepointOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SharepointOptionsSharepointEntityType string
+
+const SharepointOptionsSharepointEntityTypeFile SharepointOptionsSharepointEntityType = `FILE`
+
+const SharepointOptionsSharepointEntityTypeFileMetadata SharepointOptionsSharepointEntityType = `FILE_METADATA`
+
+const SharepointOptionsSharepointEntityTypeList SharepointOptionsSharepointEntityType = `LIST`
+
+const SharepointOptionsSharepointEntityTypePermission SharepointOptionsSharepointEntityType = `PERMISSION`
+
+// String representation for [fmt.Print]
+func (f *SharepointOptionsSharepointEntityType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SharepointOptionsSharepointEntityType) Set(v string) error {
+	switch v {
+	case `FILE`, `FILE_METADATA`, `LIST`, `PERMISSION`:
+		*f = SharepointOptionsSharepointEntityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FILE", "FILE_METADATA", "LIST", "PERMISSION"`, v)
+	}
+}
+
+// Values returns all possible values for SharepointOptionsSharepointEntityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SharepointOptionsSharepointEntityType) Values() []SharepointOptionsSharepointEntityType {
+	return []SharepointOptionsSharepointEntityType{
+		SharepointOptionsSharepointEntityTypeFile,
+		SharepointOptionsSharepointEntityTypeFileMetadata,
+		SharepointOptionsSharepointEntityTypeList,
+		SharepointOptionsSharepointEntityTypePermission,
+	}
+}
+
+// Type always returns SharepointOptionsSharepointEntityType to satisfy [pflag.Value] interface
+func (f *SharepointOptionsSharepointEntityType) Type() string {
+	return "SharepointOptionsSharepointEntityType"
 }
 
 // SourceCatalogConfig contains catalog-level custom configuration parameters
@@ -2489,6 +2788,8 @@ type StopRequest struct {
 }
 
 type TableSpec struct {
+	// (Optional) Source Specific Connector Options
+	ConnectorOptions *ConnectorOptions `json:"connector_options,omitempty"`
 	// Required. Destination catalog to store table.
 	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store table.

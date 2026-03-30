@@ -1,11 +1,14 @@
 package config
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"net/url"
+	"sync/atomic"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"golang.org/x/oauth2"
@@ -95,6 +98,83 @@ func TestM2mNotSupported(t *testing.T) {
 		t.Errorf("got error %v, want %v", err, u2m.ErrOAuthNotSupported)
 	}
 }
+
+// TestM2mCredentials_DirectTokenSource verifies that M2mCredentials.Configure
+// plumbs a direct token source (ccfg.Token) through cachedTokenSource rather
+// than wrapping clientcredentials.Config.TokenSource, which returns an
+// oauth2.ReuseTokenSource that adds a second cache layer. With double-caching,
+// the proactive async refresh in cachedTokenSource is silently suppressed until
+// ~10 s before expiry, causing bursts of 401 errors at token rotation boundaries.
+// See https://github.com/databricks/databricks-sdk-go/issues/1549.
+func TestM2mCredentials_DirectTokenSource(t *testing.T) {
+	var tokenCalls int32
+	transport := &postCountingTransport{
+		calls: &tokenCalls,
+		inner: fixtures.MappingTransport{
+			"GET /oidc/.well-known/oauth-authorization-server": {
+				Response: u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://localhost/token",
+				},
+			},
+			"POST /token": {
+				Response: oauth2.Token{
+					TokenType:   "Bearer",
+					AccessToken: "test-token",
+				},
+			},
+		},
+	}
+
+	cfg := &Config{
+		Host:          "a",
+		ClientID:      "b",
+		ClientSecret:  "c",
+		AuthType:      "oauth-m2m",
+		ConfigFile:    "/dev/null",
+		HTTPTransport: transport,
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		t.Fatalf("EnsureResolved(): %v", err)
+	}
+
+	ctx := cfg.refreshClient.InContextForOAuth2(cfg.refreshCtx)
+	provider, err := M2mCredentials{}.Configure(ctx, cfg)
+	if err != nil {
+		t.Fatalf("Configure(): %v", err)
+	}
+
+	oauthProvider := provider.(credentials.OAuthCredentialsProvider)
+
+	// Token() goes through cachedTokenSource, which fetches once and caches.
+	// Verify the endpoint is reached (not short-circuited by an inner cache).
+	tok, err := oauthProvider.Token(context.Background())
+	if err != nil {
+		t.Fatalf("Token(): %v", err)
+	}
+	if tok.AccessToken == "" {
+		t.Fatalf("Token(): empty access token")
+	}
+
+	if got := int(atomic.LoadInt32(&tokenCalls)); got != 1 {
+		t.Errorf("token endpoint calls = %d, want 1", got)
+	}
+}
+
+type postCountingTransport struct {
+	calls *int32
+	inner http.RoundTripper
+}
+
+func (t *postCountingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if req.Method == "POST" {
+		atomic.AddInt32(t.calls, 1)
+	}
+	return t.inner.RoundTrip(req)
+}
+
+func (t *postCountingTransport) SkipRetryOnIO() bool { return true }
 
 func TestM2M_Scopes(t *testing.T) {
 	tests := []struct {

@@ -25,6 +25,11 @@ type HostMetadata struct {
 
 	// HostType is the type of host (WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED_HOST).
 	HostType HostType `json:"host_type"`
+
+	// DefaultOIDCAudience is the default OIDC audience for token requests.
+	// For workspace hosts: "https://<workspace_host>/oidc/v1/token"
+	// For account/unified hosts: the resolved account ID.
+	DefaultOIDCAudience string `json:"default_oidc_audience"`
 }
 
 // HostMetadataResolver, when set on [Config], overrides the default HTTP fetch
