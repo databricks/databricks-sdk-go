@@ -86,6 +86,54 @@ func TestGetHostMetadata_HTTPError(t *testing.T) {
 	}
 }
 
+func TestGetHostMetadata_WithDefaultOIDCAudience(t *testing.T) {
+	tests := []struct {
+		name         string
+		audience     string
+		wantAudience string
+	}{
+		{
+			name:         "workspace audience",
+			audience:     testHMHost + "/oidc/v1/token",
+			wantAudience: testHMHost + "/oidc/v1/token",
+		},
+		{
+			name:         "account audience",
+			audience:     testHMAccountID,
+			wantAudience: testHMAccountID,
+		},
+		{
+			name:         "missing field",
+			audience:     "",
+			wantAudience: "",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			response := map[string]string{
+				"oidc_endpoint": testHMHost + "/oidc",
+				"account_id":    testHMAccountID,
+			}
+			if tc.audience != "" {
+				response["default_oidc_audience"] = tc.audience
+			}
+			client := newTestAPIClient(fixtures.MappingTransport{
+				"GET /.well-known/databricks-config": {
+					Status:   200,
+					Response: response,
+				},
+			})
+			meta, err := getHostMetadata(context.Background(), testHMHost, client)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if meta.DefaultOIDCAudience != tc.wantAudience {
+				t.Errorf("DefaultOIDCAudience mismatch: got %q, want %q", meta.DefaultOIDCAudience, tc.wantAudience)
+			}
+		})
+	}
+}
+
 func TestGetHostMetadata_WithCloudField(t *testing.T) {
 	tests := []struct {
 		name      string

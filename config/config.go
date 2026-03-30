@@ -702,6 +702,10 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		c.Cloud = c.Environment().Cloud
 		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
 	}
+	if c.TokenAudience == "" && meta.DefaultOIDCAudience != "" {
+		logger.Debugf(ctx, "Resolved token_audience from host metadata default_oidc_audience: %q", meta.DefaultOIDCAudience)
+		c.TokenAudience = meta.DefaultOIDCAudience
+	}
 	if c.TokenAudience == "" && meta.WorkspaceID == "" && c.AccountID != "" {
 		logger.Debugf(ctx, "Setting token_audience to account_id for account host: %q", c.AccountID)
 		c.TokenAudience = c.AccountID
