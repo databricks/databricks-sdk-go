@@ -44,9 +44,9 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	ts := auth.TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
 		// Callers like CredentialsProvider.SetHeaders pass context.Background()
 		// rather than the actual context from the HTTP client. Because of this,
-		// the request would bypass the configured transport. 
+		// the request would bypass the configured transport.
 		//
-		// The following is a workaround to ensure the refresh client's 
+		// The following is a workaround to ensure the refresh client's
 		// transport is always used.
 		ctx = cfg.refreshClient.InContextForOAuth2(ctx)
 		return ccfg.Token(ctx)
