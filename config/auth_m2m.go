@@ -27,7 +27,21 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, fmt.Errorf("oidc: %w", err)
 	}
 	logger.Debugf(ctx, "Generating Databricks OAuth token for Service Principal (%s)", cfg.ClientID)
-	ccfg := &clientcredentials.Config{
+
+	// This already implements the auth.TokenSource interface. There is no need
+	// to wrap it in auth.TokenSourceFn.
+	//
+	// IMPORTANT: the code should not rely on Config.TokenSource which returns
+	// a oauth2.TokenSource that is already wrapped in a cache. This leads to
+	// double-caching issues that defeats the proactive async refresh provided
+	// by NewCachedTokenSource (see [issue1549] for context).
+	//
+	// Using clientcredentials.Config.Token directly avoids that issue at the
+	// expense of allocating (and then discarding) a reusable token source at
+	// each call.
+	//
+	// [issue1549]: https://github.com/databricks/databricks-sdk-go/issues/1549
+	ts := &clientcredentials.Config{
 		ClientID:     cfg.ClientID,
 		ClientSecret: cfg.ClientSecret,
 		AuthStyle:    oauth2.AuthStyleInHeader,
@@ -35,21 +49,7 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		Scopes:       cfg.GetScopes(),
 	}
 
-	// Use a direct (non-caching) token source so that cachedTokenSource is the
-	// single cache layer. clientcredentials.Config.TokenSource returns an
-	// oauth2.ReuseTokenSource which adds a second cache with a 10 s expiryDelta.
-	// With double-caching the async refresh in cachedTokenSource calls through to
-	// ReuseTokenSource, which returns its own cached token without making an HTTP
-	// request until only ~10 s remain — defeating the proactive 20-min refresh
-	// window and causing a burst of 401s at token expiry.
-	// See https://github.com/databricks/databricks-sdk-go/issues/1549.
-	//
-	// ctx is captured from Configure; the oauth2 HTTP client is bound to it via
-	// InContextForOAuth2 and must be used for all token requests.
-	directTS := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
-		return ccfg.Token(ctx)
-	})
 	return credentials.NewOAuthCredentialsProviderFromTokenSource(
-		auth.NewCachedTokenSource(auth.NewRetryingTokenSource(directTS), cacheOptions(cfg)...),
+		auth.NewCachedTokenSource(auth.NewRetryingTokenSource(ts), cacheOptions(cfg)...),
 	), nil
 }
