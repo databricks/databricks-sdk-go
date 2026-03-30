@@ -32,6 +32,7 @@ func TestGetHostMetadata_WorkspaceStaticOIDCEndpoint(t *testing.T) {
 				"account_id":    testHMAccountID,
 				"workspace_id":  testHMWorkspaceID,
 				"cloud":         "AWS",
+				"host_type":     "workspace",
 			},
 		},
 	})
@@ -44,6 +45,7 @@ func TestGetHostMetadata_WorkspaceStaticOIDCEndpoint(t *testing.T) {
 		AccountID:    testHMAccountID,
 		WorkspaceID:  testHMWorkspaceID,
 		Cloud:        "AWS",
+		HostType:     WorkspaceHost,
 	}
 	if diff := cmp.Diff(want, meta); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
@@ -83,6 +85,64 @@ func TestGetHostMetadata_HTTPError(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "fetching host metadata from") {
 		t.Errorf("expected error containing %q, got %q", "fetching host metadata from", err.Error())
+	}
+}
+
+func TestGetHostMetadata_WithHostTypeField(t *testing.T) {
+	tests := []struct {
+		name         string
+		hostType     string
+		wantHostType HostType
+	}{
+		{
+			name:         "workspace",
+			hostType:     "workspace",
+			wantHostType: WorkspaceHost,
+		},
+		{
+			name:         "account",
+			hostType:     "account",
+			wantHostType: AccountHost,
+		},
+		{
+			name:         "unified",
+			hostType:     "unified",
+			wantHostType: UnifiedHost,
+		},
+		{
+			name:         "Workspace uppercase",
+			hostType:     "WORKSPACE",
+			wantHostType: WorkspaceHost,
+		},
+		{
+			name:         "missing host_type field",
+			hostType:     "",
+			wantHostType: HostTypeUnknown,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			response := map[string]string{
+				"oidc_endpoint": testHMHost + "/oidc",
+				"account_id":    testHMAccountID,
+			}
+			if tc.hostType != "" {
+				response["host_type"] = tc.hostType
+			}
+			client := newTestAPIClient(fixtures.MappingTransport{
+				"GET /.well-known/databricks-config": {
+					Status:   200,
+					Response: response,
+				},
+			})
+			meta, err := getHostMetadata(context.Background(), testHMHost, client)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if meta.HostType != tc.wantHostType {
+				t.Errorf("HostType field mismatch: got %q, want %q", meta.HostType, tc.wantHostType)
+			}
+		})
 	}
 }
 

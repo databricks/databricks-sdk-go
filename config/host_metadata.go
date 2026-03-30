@@ -23,6 +23,9 @@ type HostMetadata struct {
 	// Cloud is the cloud provider for this Databricks deployment (AWS, Azure, or GCP).
 	Cloud environment.Cloud `json:"cloud"`
 
+	// HostType is the type of host (WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED_HOST).
+	HostType HostType `json:"host_type"`
+
 	// DefaultOIDCAudience is the default OIDC audience for token requests.
 	// For workspace hosts: "https://<workspace_host>/oidc/v1/token"
 	// For account/unified hosts: the resolved account ID.

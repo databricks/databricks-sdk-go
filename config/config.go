@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -50,7 +51,32 @@ const (
 	AccountHost HostType = "ACCOUNT_HOST"
 	// UnifiedHost supports both workspace-level and account-level APIs.
 	UnifiedHost HostType = "UNIFIED_HOST"
+	// HostTypeUnknown is the zero value for an unset/empty host type.
+	HostTypeUnknown HostType = ""
 )
+
+// UnmarshalJSON automatically normalizes the host type string when parsing JSON.
+func (h *HostType) UnmarshalJSON(data []byte) error {
+	var rawString string
+	if err := json.Unmarshal(data, &rawString); err != nil {
+		return err
+	}
+	*h = normalizeHostType(rawString)
+	return nil
+}
+
+func normalizeHostType(hostType string) HostType {
+	switch strings.ToLower(hostType) {
+	case "workspace":
+		return WorkspaceHost
+	case "account":
+		return AccountHost
+	case "unified":
+		return UnifiedHost
+	default:
+		return HostTypeUnknown
+	}
+}
 
 // ConfigType represents the type of API this config is valid for.
 type ConfigType string
@@ -221,6 +247,10 @@ type Config struct {
 	TokenAudience string `name:"audience" env:"DATABRICKS_TOKEN_AUDIENCE" auth:"-"`
 
 	Loaders []Loader
+
+	// resolvedHostType is the host type resolved from the /.well-known/databricks-config
+	// discovery endpoint.
+	resolvedHostType HostType
 
 	// marker for configuration resolving
 	resolved bool
@@ -701,6 +731,10 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 	if c.Cloud == "" {
 		c.Cloud = c.Environment().Cloud
 		logger.Debugf(ctx, "Resolved cloud from hostname: %q", c.Cloud)
+	}
+	if c.resolvedHostType == HostTypeUnknown && meta.HostType != HostTypeUnknown {
+		logger.Debugf(ctx, "Resolved host_type from host metadata: %q", meta.HostType)
+		c.resolvedHostType = meta.HostType
 	}
 	if c.TokenAudience == "" && meta.DefaultOIDCAudience != "" {
 		logger.Debugf(ctx, "Resolved token_audience from host metadata default_oidc_audience: %q", meta.DefaultOIDCAudience)
