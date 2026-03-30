@@ -745,6 +745,89 @@ func TestApplyHostMetadata_DoesNotOverrideExistingTokenAudience(t *testing.T) {
 	assert.Equal(t, "custom-audience", cfg.TokenAudience)
 }
 
+func TestApplyHostMetadata_SetsTokenAudienceFromDefaultOIDCAudience(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS", "default_oidc_audience": "` + testHMHost + `/oidc/v1/token"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, testHMHost+"/oidc/v1/token", cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_DefaultOIDCAudienceTakesPriorityOverAccountIDFallback(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "default_oidc_audience": "custom-audience-from-server"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// default_oidc_audience should take priority over the account_id fallback
+	assert.Equal(t, "custom-audience-from-server", cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_DefaultOIDCAudienceDoesNotOverrideExisting(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:          testHMHost,
+		TokenAudience: "user-set-audience",
+		Loaders:       []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "default_oidc_audience": "` + testHMHost + `/oidc/v1/token"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, "user-set-audience", cfg.TokenAudience)
+}
+
+func TestApplyHostMetadata_FallsBackToAccountIDWhenNoDefaultOIDCAudience(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	// No default_oidc_audience and no workspace_id → falls back to account_id
+	assert.Equal(t, testHMAccountID, cfg.TokenAudience)
+}
+
 func TestEnsureResolved_UsesCustomHostMetadataResolver(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
@@ -926,6 +1009,137 @@ func TestConfig_ResolveHostMetadata_Clouds(t *testing.T) {
 			err := cfg.EnsureResolved()
 			require.NoError(t, err)
 			assert.Equal(t, tc.wantCloud, string(cfg.Cloud))
+		})
+	}
+}
+
+func TestConfig_ResolveHostMetadata_PopulatesHostTypeFromAPI(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "host_type": "unified"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, UnifiedHost, cfg.resolvedHostType)
+}
+
+func TestConfig_ResolveHostMetadata_HostTypeEmptyWhenNotInResponse(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    "https://accounts.cloud.databricks.com",
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "https://accounts.cloud.databricks.com/oidc", "account_id": "` + testHMAccountID + `"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, HostTypeUnknown, cfg.resolvedHostType)
+}
+
+func TestConfig_ResolveHostMetadata_DoesNotOverwriteExistingHostType(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "host_type": "account"}`,
+			},
+		},
+	}
+	cfg.resolvedHostType = UnifiedHost
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, UnifiedHost, cfg.resolvedHostType)
+}
+
+func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
+	tests := []struct {
+		name         string
+		hostTypeJSON string
+		wantHostType string
+	}{
+		{
+			name:         "workspace",
+			hostTypeJSON: "workspace",
+			wantHostType: "WORKSPACE_HOST",
+		},
+		{
+			name:         "account",
+			hostTypeJSON: "account",
+			wantHostType: "ACCOUNT_HOST",
+		},
+		{
+			name:         "unified",
+			hostTypeJSON: "unified",
+			wantHostType: "UNIFIED_HOST",
+		},
+		{
+			name:         "Workspace uppercase",
+			hostTypeJSON: "WORKSPACE",
+			wantHostType: "WORKSPACE_HOST",
+		},
+		{
+			name:         "Account uppercase",
+			hostTypeJSON: "ACCOUNT",
+			wantHostType: "ACCOUNT_HOST",
+		},
+		{
+			name:         "Unified uppercase",
+			hostTypeJSON: "UNIFIED",
+			wantHostType: "UNIFIED_HOST",
+		},
+		{
+			name:         "Unknown host type string returns HostTypeUnknown",
+			hostTypeJSON: "CUSTOM_HOST",
+			wantHostType: "",
+		},
+		{
+			name:         "Empty host type returns HostTypeUnknown",
+			hostTypeJSON: "",
+			wantHostType: "",
+		},
+	}
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg := &Config{
+				Host:    testHMHost,
+				Loaders: []Loader{noopLoader},
+				HTTPTransport: fixtures.SliceTransport{
+					{
+						Method:       "GET",
+						Resource:     "/.well-known/databricks-config",
+						ReuseRequest: true,
+						Status:       200,
+						Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "host_type": "` + tc.hostTypeJSON + `"}`,
+					},
+				},
+			}
+			err := cfg.EnsureResolved()
+			require.NoError(t, err)
+			assert.Equal(t, tc.wantHostType, string(cfg.resolvedHostType))
 		})
 	}
 }
