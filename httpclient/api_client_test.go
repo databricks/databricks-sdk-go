@@ -3,6 +3,7 @@ package httpclient
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"testing/iotest"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
@@ -589,19 +591,29 @@ func (c customReader) Read(p []byte) (n int, err error) {
 }
 
 func TestCannotRetryArbitraryReader(t *testing.T) {
+	// Body error triggered by the request body reset.
+	wantErr := fmt.Errorf("cannot reset reader of type httpclient.customReader")
+
 	client := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 429,
 				Request:    r,
-				Body:       io.NopCloser(strings.NewReader("")),
+				Body:       io.NopCloser(iotest.ErrReader(wantErr)),
 			}, nil
 		}),
 	})
-	err := client.Do(context.Background(), "POST", "/a",
-		WithRequestData(customReader{}))
-	require.ErrorContains(t, err, "cannot reset reader of type httpclient.customReader")
-	require.ErrorContains(t, err, "http 429")
+
+	gotErr := client.Do(context.Background(), "POST", "/a", WithRequestData(customReader{}))
+
+	// The error should be both the body error and the HTTP error.
+	if !errors.Is(gotErr, wantErr) {
+		t.Fatalf("expected error %v, got %v", wantErr, gotErr)
+	}
+	var httpErr *HttpError
+	if !errors.As(gotErr, &httpErr) {
+		t.Fatalf("expected HttpError, got %v", gotErr)
+	}
 }
 
 func TestRetryGetRequest(t *testing.T) {
