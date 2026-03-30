@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 )
 
@@ -100,7 +101,7 @@ func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsSt
 	}
 	oidcConfig.SetScopes(cfg.GetScopes())
 	tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
-	return NewTokenSourceStrategy(name, tokenSource)
+	return NewTokenSourceStrategy(name, auth.NewRetryingTokenSource(tokenSource))
 }
 
 // failedStrategy is a CredentialsStrategy that always fails.

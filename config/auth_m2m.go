@@ -27,6 +27,13 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, fmt.Errorf("oidc: %w", err)
 	}
 	logger.Debugf(ctx, "Generating Databricks OAuth token for Service Principal (%s)", cfg.ClientID)
+
+	// IMPORTANT: do not use Config.TokenSource, which returns an
+	// oauth2.TokenSource already wrapped in a cache. This leads to
+	// double-caching that defeats the proactive async refresh provided by
+	// NewCachedTokenSource (see [issue1549] for context).
+	//
+	// [issue1549]: https://github.com/databricks/databricks-sdk-go/issues/1549
 	ccfg := &clientcredentials.Config{
 		ClientID:     cfg.ClientID,
 		ClientSecret: cfg.ClientSecret,
@@ -34,22 +41,18 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       cfg.GetScopes(),
 	}
-
-	// Use a direct (non-caching) token source so that cachedTokenSource is the
-	// single cache layer. clientcredentials.Config.TokenSource returns an
-	// oauth2.ReuseTokenSource which adds a second cache with a 10 s expiryDelta.
-	// With double-caching the async refresh in cachedTokenSource calls through to
-	// ReuseTokenSource, which returns its own cached token without making an HTTP
-	// request until only ~10 s remain — defeating the proactive 20-min refresh
-	// window and causing a burst of 401s at token expiry.
-	// See https://github.com/databricks/databricks-sdk-go/issues/1549.
-	//
-	// ctx is captured from Configure; the oauth2 HTTP client is bound to it via
-	// InContextForOAuth2 and must be used for all token requests.
-	directTS := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+	ts := auth.TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
+		// Callers like CredentialsProvider.SetHeaders pass context.Background()
+		// rather than the actual context from the HTTP client. Because of this,
+		// the request would bypass the configured transport.
+		//
+		// The following is a workaround to ensure the refresh client's
+		// transport is always used.
+		ctx = cfg.refreshClient.InContextForOAuth2(ctx)
 		return ccfg.Token(ctx)
 	})
+
 	return credentials.NewOAuthCredentialsProviderFromTokenSource(
-		auth.NewCachedTokenSource(directTS, cacheOptions(cfg)...),
+		auth.NewCachedTokenSource(auth.NewRetryingTokenSource(ts), cacheOptions(cfg)...),
 	), nil
 }
