@@ -328,7 +328,11 @@ func (s AuthConfig) MarshalJSON() ([]byte, error) {
 
 // Computes the average of values.
 type AvgFunction struct {
-	// The input column from which the average is computed.
+	// The input column from which the average is computed. For Kafka sources,
+	// use dot-prefixed path notation (e.g., "value.amount"). For nested fields,
+	// the leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
+	// "value:amount") is supported for backwards compatibility but is
+	// deprecated; migrate to dot notation.
 	Input string `json:"input"`
 }
 
@@ -350,10 +354,11 @@ type BatchCreateMaterializedFeaturesResponse struct {
 }
 
 type ColumnIdentifier struct {
-	// String representation of the column name or variant expression path. For
-	// nested fields, the leaf value is what will be present in materialized
-	// tables and expected to match at query time. For example, the leaf node of
-	// value:trip_details.location_details.pickup_zip is pickup_zip.
+	// String representation of the column name using dot-prefixed path
+	// notation. For nested fields, the leaf value is what will be present in
+	// materialized tables and expected to match at query time. For example, the
+	// leaf node of value.trip_details.location_details.pickup_zip is
+	// pickup_zip.
 	VariantExprPath string `json:"variant_expr_path"`
 }
 
@@ -476,7 +481,11 @@ func (s ContinuousWindow) MarshalJSON() ([]byte, error) {
 
 // Computes the count of values.
 type CountFunction struct {
-	// The input column from which the count is computed.
+	// The input column from which the count is computed. For Kafka sources, use
+	// dot-prefixed path notation (e.g., "value.amount"). For nested fields, the
+	// leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
+	// "value:amount") is supported for backwards compatibility but is
+	// deprecated; migrate to dot notation.
 	Input string `json:"input"`
 }
 
@@ -1135,7 +1144,14 @@ func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
 }
 
 type EntityColumn struct {
-	// The name of the entity column.
+	// The name of the entity column. For Kafka sources, use dot-prefixed path
+	// notation to reference fields within the key or value schema (e.g.,
+	// "value.user_id", "key.partition_key"). For nested fields, the leaf node
+	// name (e.g., "user_id" from "value.trip_details.user_id") is what will be
+	// present in materialized tables and expected to match at query time.
+	// TODO(FS-939): Colon-prefixed notation (e.g., "value:user_id") is
+	// supported for backwards compatibility but is deprecated; migrate to dot
+	// notation.
 	Name string `json:"name"`
 }
 
@@ -4433,7 +4449,10 @@ func (f *Status) Type() string {
 // Computes the population standard deviation.
 type StddevPopFunction struct {
 	// The input column from which the population standard deviation is
-	// computed.
+	// computed. For Kafka sources, use dot-prefixed path notation (e.g.,
+	// "value.amount"). For nested fields, the leaf node name is used.
+	// TODO(FS-939): Colon-prefixed notation (e.g., "value:amount") is supported
+	// for backwards compatibility but is deprecated; migrate to dot notation.
 	Input string `json:"input"`
 }
 
@@ -4468,7 +4487,11 @@ func (s SubscriptionMode) MarshalJSON() ([]byte, error) {
 
 // Computes the sum of values.
 type SumFunction struct {
-	// The input column from which the sum is computed.
+	// The input column from which the sum is computed. For Kafka sources, use
+	// dot-prefixed path notation (e.g., "value.amount"). For nested fields, the
+	// leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
+	// "value:amount") is supported for backwards compatibility but is
+	// deprecated; migrate to dot notation.
 	Input string `json:"input"`
 }
 
@@ -4508,7 +4531,14 @@ type TimeWindow struct {
 }
 
 type TimeseriesColumn struct {
-	// The name of the timeseries column.
+	// The name of the timeseries column. For Kafka sources, use dot-prefixed
+	// path notation to reference fields within the key or value schema (e.g.,
+	// "value.event_timestamp"). For nested fields, the leaf node name (e.g.,
+	// "event_timestamp" from "value.event_details.event_timestamp") is what
+	// will be present in materialized tables and expected to match at query
+	// time. TODO(FS-939): Colon-prefixed notation (e.g.,
+	// "value:event_timestamp") is supported for backwards compatibility but is
+	// deprecated; migrate to dot notation.
 	Name string `json:"name"`
 }
 

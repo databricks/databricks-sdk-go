@@ -16,12 +16,14 @@
 
  * Fix double-caching of OAuth tokens in Azure client secret credentials ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
  * Disable async token refresh for GCP credential providers to avoid wasted refresh attempts caused by double-caching with Google's internal `oauth2.ReuseTokenSource` ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
+ * Fixed double-caching in M2M OAuth that prevented the proactive async token refresh from reaching the HTTP endpoint until ~10s before expiry, causing bursts of 401 errors at token rotation boundaries ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
 
 ### Documentation
 
 ### Internal Changes
 
  * Normalize internal token sources on `auth.TokenSource` for proper context propagation ([#1577](https://github.com/databricks/databricks-sdk-go/pull/1577)).
+ * Fix `TestAzureGithubOIDCCredentials` hang caused by missing `HTTPTransport` stub: `EnsureResolved` now calls `resolveHostMetadata`, which makes a real network request when no transport is set ([#1550](https://github.com/databricks/databricks-sdk-go/pull/1550)).
  * Bump golang.org/x/crypto from 0.21.0 to 0.45.0 in /examples/slog ([#1566](https://github.com/databricks/databricks-sdk-go/pull/1566)).
  * Bump golang.org/x/net from 0.23.0 to 0.33.0 in /examples/slog ([#1127](https://github.com/databricks/databricks-sdk-go/pull/1127)).
  * Bump golang.org/x/oauth2 from 0.20.0 to 0.27.0 ([#1563](https://github.com/databricks/databricks-sdk-go/pull/1563)).
@@ -47,3 +49,7 @@
 * Add `GcpEndpoint` field for [settings.NccPrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccPrivateEndpointRule).
 * Add `GcpEndpoint` field for [settings.UpdatePrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdatePrivateEndpointRule).
 * Add `TableDeltaUniformIcebergExternalDeltasharing` enum value for [catalog.SecurableKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableKind).
+* Add `ConnectorOptions` field for [pipelines.SchemaSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SchemaSpec).
+* Add `ConnectorOptions` field for [pipelines.TableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpec).
+* Add `GoogleDrive` enum value for [pipelines.IngestionSourceType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionSourceType).
+* [Breaking] Remove `Project` field for [postgres.SyncedTableSyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpec).
