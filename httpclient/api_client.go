@@ -259,6 +259,7 @@ func (c *ApiClient) handleError(ctx context.Context, err error, body common.Requ
 		return nil, retries.Halt(err)
 	}
 	if resetErr := body.Reset(); resetErr != nil {
+		// Important: this needs to wrap the original error to not lose it.
 		return nil, retries.Halt(fmt.Errorf("%w (could not retry: %w)", err, resetErr))
 	}
 	return nil, retries.Continue(err)
