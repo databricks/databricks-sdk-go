@@ -41,6 +41,9 @@ jobs:
           go-version: ${{ matrix.goVersion }}
 
       - name: Run tests
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_URL: ""
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ""
         run: make test
 
       - name: Publish test coverage
