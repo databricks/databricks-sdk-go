@@ -38,7 +38,31 @@ func TestNewAzureDevOpsIDTokenSource_success(t *testing.T) {
 		HostType:                    "test-host-type",
 	}
 
-	got, gotErr := NewAzureDevOpsIDTokenSource(nil)
+	got, gotErr := NewAzureDevOpsIDTokenSource(nil, "")
+	if gotErr != nil {
+		t.Fatalf("NewAzureDevOpsIDTokenSource() want no error, got error: %v", gotErr)
+	}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("NewAzureDevOpsIDTokenSource() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestNewAzureDevOpsIDTokenSource_successWithServiceConnectionID(t *testing.T) {
+	for k, v := range defaultEnv {
+		t.Setenv(k, v)
+	}
+
+	want := &azureDevOpsIDTokenSource{
+		AccessToken:                 "test-access-token",
+		TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
+		PlanID:                      "test-plan-id",
+		JobID:                       "test-job-id",
+		TeamProjectID:               "test-team-project-id",
+		HostType:                    "test-host-type",
+		ServiceConnectionID:         "test-service-connection-id",
+	}
+
+	got, gotErr := NewAzureDevOpsIDTokenSource(nil, "test-service-connection-id")
 	if gotErr != nil {
 		t.Fatalf("NewAzureDevOpsIDTokenSource() want no error, got error: %v", gotErr)
 	}
@@ -69,7 +93,7 @@ func TestNewAzureDevOpsIDTokenSource_missingEnv(t *testing.T) {
 				wantErr = errMissingAccessToken
 			}
 
-			got, gotErr := NewAzureDevOpsIDTokenSource(nil)
+			got, gotErr := NewAzureDevOpsIDTokenSource(nil, "")
 
 			if !errors.Is(gotErr, wantErr) {
 				t.Fatalf("NewAzureDevOpsIDTokenSource() want error %v, got %v", wantErr, gotErr)
@@ -145,7 +169,7 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 				Transport: tc.httpTransport,
 			})
 
-			tokenSource, err := NewAzureDevOpsIDTokenSource(client)
+			tokenSource, err := NewAzureDevOpsIDTokenSource(client, "")
 			if err != nil {
 				t.Fatalf("NewAzureDevOpsIDTokenSource() failed: %v", err)
 			}
@@ -162,5 +186,41 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 				t.Errorf("IDToken(): mismatch (-want +got):\n%s", diff)
 			}
 		})
+	}
+}
+
+func TestNewAzureDevOpsIDTokenSource_IDTokenWithServiceConnectionID(t *testing.T) {
+	for k, v := range defaultEnv {
+		t.Setenv(k, v)
+	}
+
+	transport := fixtures.MappingTransport{
+		"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/test-host-type/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1&serviceConnectionId=test-sc-id": {
+			Status: http.StatusOK,
+			ExpectedHeaders: map[string]string{
+				"Authorization": "Bearer test-access-token",
+				"Accept":        "application/json",
+			},
+			Response: `{"oidcToken": "azure-devops-sc-token-42"}`,
+		},
+	}
+
+	client := httpclient.NewApiClient(httpclient.ClientConfig{
+		Transport: transport,
+	})
+
+	tokenSource, err := NewAzureDevOpsIDTokenSource(client, "test-sc-id")
+	if err != nil {
+		t.Fatalf("NewAzureDevOpsIDTokenSource() failed: %v", err)
+	}
+
+	got, gotErr := tokenSource.IDToken(context.Background(), "test-audience")
+	if gotErr != nil {
+		t.Errorf("IDToken(): got error %q, want none", gotErr)
+	}
+
+	want := &IDToken{Value: "azure-devops-sc-token-42"}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("IDToken(): mismatch (-want +got):\n%s", diff)
 	}
 }
