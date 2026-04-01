@@ -33,3 +33,10 @@ runs:
         jf go mod download
         jf go install gotest.tools/gotestsum@v1.13.0
         jf go install honnef.co/go/tools/cmd/staticcheck@v0.6.1
+
+        # After pre-caching, disable proxy access for native go commands.
+        # go run pkg@version always contacts the proxy for metadata even
+        # when the module is cached. GOPROXY=off forces cache-only mode.
+        echo "GOPROXY=off" >> $GITHUB_ENV
+        echo "GONOSUMCHECK=*" >> $GITHUB_ENV
+        echo "GONOSUMDB=*" >> $GITHUB_ENV
