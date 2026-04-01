@@ -6,17 +6,17 @@ build: vendor
 
 fmt:
 	@echo "✓ Formatting source code with goimports ..."
-	@go run golang.org/x/tools/cmd/goimports@v0.34.0 -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+	@go run -mod=mod -modfile=tools/go.mod golang.org/x/tools/cmd/goimports -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 	@echo "✓ Formatting source code with gofmt ..."
 	@gofmt -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
 lint: vendor
 	@echo "✓ Linting source code with https://staticcheck.io/ ..."
-	@go run honnef.co/go/tools/cmd/staticcheck@v0.6.1 ./...
+	@go run -mod=mod -modfile=tools/go.mod honnef.co/go/tools/cmd/staticcheck ./...
 
 test: vendor
 	@echo "✓ Running tests ..."
-	@go run gotest.tools/gotestsum@v1.13.0 --format pkgname-and-test-fails \
+	@go run -mod=mod -modfile=tools/go.mod gotest.tools/gotestsum --format pkgname-and-test-fails \
 		--no-summary=skipped --raw-command go test -v \
 		-json -short -coverprofile=coverage.txt ./...
 
