@@ -42,6 +42,10 @@ jobs:
 
       - name: Run tests
         env:
+          # The id-token: write permission (needed for JFrog OIDC) causes
+          # GitHub Actions to inject these variables into the environment.
+          # Clear them so they don't interfere with OIDC credential tests
+          # that assert behavior when these variables are absent.
           ACTIONS_ID_TOKEN_REQUEST_URL: ""
           ACTIONS_ID_TOKEN_REQUEST_TOKEN: ""
         run: make test
