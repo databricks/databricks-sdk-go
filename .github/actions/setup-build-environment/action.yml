@@ -31,8 +31,8 @@ runs:
       run: |
         jf goc --repo-resolve=db-golang
         jf go mod download
-        jf go install gotest.tools/gotestsum@v1.13.0
-        jf go install honnef.co/go/tools/cmd/staticcheck@v0.6.1
+        jf go install gotest.tools/gotestsum@c4a0df2e75a225d979a444342dd3db752b53619f # v1.13.0
+        jf go install honnef.co/go/tools/cmd/staticcheck@b8ec13ce4d00445d75da053c47498e6f9ec5d7d6 # v0.6.1
 
         # Point native go commands at the local module cache instead of
         # the network. go run pkg@version needs module lookups even when
