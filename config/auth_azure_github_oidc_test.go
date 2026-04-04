@@ -255,6 +255,15 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
+			// Clear OIDC env vars that GitHub Actions injects when id-token: write
+			// is set. Without this, Config picks them up via the env: struct tag
+			// and tests that assert "not configured" fail.
+			if tc.cfg.ActionsIDTokenRequestURL == "" {
+				t.Setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "")
+			}
+			if tc.cfg.ActionsIDTokenRequestToken == "" {
+				t.Setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "")
+			}
 			tc.cfg.Credentials = &AzureGithubOIDCCredentials{} // only test this credential strategy
 			tc.cfg.DebugHeaders = true
 			if tc.wantHeaders == nil {
