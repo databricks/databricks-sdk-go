@@ -31,12 +31,22 @@ type cliTokenResponse struct {
 	Expiry      string `json:"expiry"`
 }
 
+// CliTokenSource fetches OAuth tokens by shelling out to the Databricks CLI.
+// Commands are tried in order: forceCmd -> profileCmd -> hostCmd, progressively
+// falling back to simpler invocations for older CLI versions.
 type CliTokenSource struct {
-	// cmd is the primary command to execute (--profile when available, --host otherwise).
-	cmd []string
+	// forceCmd appends --force-refresh to the base command (profileCmd when a
+	// profile is configured, hostCmd otherwise) to bypass the CLI's token cache.
+	// Nil when neither profile nor host is set.
+	// CLI support: >= v0.296.0 (databricks/cli#4767).
+	forceCmd []string
 
-	// hostCmd is a fallback command using --host, used when the primary --profile
-	// command fails because the CLI is too old to support --profile.
+	// profileCmd uses --profile for token lookup. Nil when cfg.Profile is empty.
+	// CLI support: >= v0.207.1 (databricks/cli#855).
+	profileCmd []string
+
+	// hostCmd uses --host as a fallback for CLIs that predate --profile support.
+	// Nil when cfg.Host is empty.
 	hostCmd []string
 }
 
@@ -45,25 +55,29 @@ func NewCliTokenSource(cfg *Config) (*CliTokenSource, error) {
 	if err != nil {
 		return nil, err
 	}
-	profileCmd, hostCmd := buildCliCommands(cliPath, cfg)
-	return &CliTokenSource{cmd: profileCmd, hostCmd: hostCmd}, nil
+	forceCmd, profileCmd, hostCmd := buildCliCommands(cliPath, cfg)
+	return &CliTokenSource{forceCmd: forceCmd, profileCmd: profileCmd, hostCmd: hostCmd}, nil
 }
 
 // buildCliCommands constructs the CLI commands for fetching an auth token.
-// When cfg.Profile is set, the primary command uses --profile and a fallback
-// --host command is also returned for compatibility with older CLIs.
-// When cfg.Profile is empty, the primary command uses --host and no fallback
-// is needed.
-func buildCliCommands(cliPath string, cfg *Config) (primaryCmd []string, hostCmd []string) {
+// When cfg.Profile is set, three commands are built: a --force-refresh variant
+// (based on profileCmd), a plain --profile variant, and (when host is available)
+// a --host fallback. When cfg.Profile is empty, --force-refresh is based on the
+// --host command instead.
+func buildCliCommands(cliPath string, cfg *Config) ([]string, []string, []string) {
+	var forceCmd, profileCmd, hostCmd []string
 	if cfg.Profile != "" {
-		primary := []string{cliPath, "auth", "token", "--profile", cfg.Profile}
-		if cfg.Host != "" {
-			// Build a --host fallback for old CLIs that don't support --profile.
-			return primary, buildHostCommand(cliPath, cfg)
-		}
-		return primary, nil
+		profileCmd = []string{cliPath, "auth", "token", "--profile", cfg.Profile}
 	}
-	return buildHostCommand(cliPath, cfg), nil
+	if cfg.Host != "" {
+		hostCmd = buildHostCommand(cliPath, cfg)
+	}
+	if profileCmd != nil {
+		forceCmd = append(profileCmd, "--force-refresh")
+	} else if hostCmd != nil {
+		forceCmd = append(hostCmd, "--force-refresh")
+	}
+	return forceCmd, profileCmd, hostCmd
 }
 
 // buildHostCommand constructs the legacy --host based CLI command.
@@ -77,16 +91,36 @@ func buildHostCommand(cliPath string, cfg *Config) []string {
 }
 
 // Token fetches an OAuth token by shelling out to the Databricks CLI.
-// When a --profile command is configured, it is tried first. If the CLI
-// returns "unknown flag: --profile" (indicating an older CLI version),
-// the fallback --host command is used instead.
+// Commands are tried in order: forceCmd -> profileCmd -> hostCmd, skipping nil
+// entries. Each command falls through to the next on "unknown flag" errors,
+// logging a warning about the unsupported feature.
 func (c *CliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
-	tok, err := c.execCliCommand(ctx, c.cmd)
-	if err != nil && c.hostCmd != nil && isUnknownFlagError(err) {
-		logger.Warnf(ctx, "Databricks CLI does not support --profile flag. Falling back to --host. Please upgrade your CLI to the latest version.")
-		return c.execCliCommand(ctx, c.hostCmd)
+	if c.forceCmd != nil {
+		tok, err := c.execCliCommand(ctx, c.forceCmd)
+		if err == nil {
+			return tok, nil
+		}
+		if !isUnknownFlagError(err, "--force-refresh") && !isUnknownFlagError(err, "--profile") {
+			return nil, err
+		}
+		logger.Warnf(ctx, "Databricks CLI does not support --force-refresh flag. The CLI's token cache may provide stale tokens. Please upgrade your CLI to the latest version.")
 	}
-	return tok, err
+
+	if c.profileCmd != nil {
+		tok, err := c.execCliCommand(ctx, c.profileCmd)
+		if err == nil {
+			return tok, nil
+		}
+		if !isUnknownFlagError(err, "--profile") {
+			return nil, err
+		}
+		logger.Warnf(ctx, "Databricks CLI does not support --profile flag. Falling back to --host. Please upgrade your CLI to the latest version.")
+	}
+
+	if c.hostCmd == nil {
+		return nil, fmt.Errorf("cannot get access token: no CLI commands available")
+	}
+	return c.execCliCommand(ctx, c.hostCmd)
 }
 
 func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oauth2.Token, error) {
@@ -95,7 +129,7 @@ func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oa
 	if err != nil {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {
-			return nil, fmt.Errorf("cannot get access token: %s", strings.TrimSpace(string(exitErr.Stderr)))
+			return nil, fmt.Errorf("cannot get access token: %q", strings.TrimSpace(string(exitErr.Stderr)))
 		}
 		return nil, fmt.Errorf("cannot get access token: %w", err)
 	}
@@ -115,10 +149,9 @@ func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oa
 }
 
 // isUnknownFlagError returns true if the error indicates the CLI does not
-// recognize the --profile flag. This happens with older CLI versions that
-// predate profile-based token lookup.
-func isUnknownFlagError(err error) bool {
-	return strings.Contains(err.Error(), "unknown flag: --profile")
+// recognize the given flag (e.g. "--profile", "--force-refresh").
+func isUnknownFlagError(err error, flag string) bool {
+	return strings.Contains(err.Error(), "unknown flag: "+flag)
 }
 
 // parseExpiry parses an expiry time string in multiple formats for cross-SDK compatibility.

@@ -136,20 +136,23 @@ func TestBuildCliCommands(t *testing.T) {
 	)
 
 	testCases := []struct {
-		name        string
-		cfg         *Config
-		wantCmd     []string
-		wantHostCmd []string
+		name           string
+		cfg            *Config
+		wantForceCmd   []string
+		wantProfileCmd []string
+		wantHostCmd    []string
 	}{
 		{
-			name:    "workspace host",
-			cfg:     &Config{Host: host},
-			wantCmd: []string{cliPath, "auth", "token", "--host", host},
+			name:         "workspace host only — force-refresh based on host",
+			cfg:          &Config{Host: host},
+			wantForceCmd: []string{cliPath, "auth", "token", "--host", host, "--force-refresh"},
+			wantHostCmd:  []string{cliPath, "auth", "token", "--host", host},
 		},
 		{
-			name:    "account host",
-			cfg:     &Config{Host: accountHost, AccountID: accountID},
-			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
+			name:         "account host only — force-refresh based on host with account-id",
+			cfg:          &Config{Host: accountHost, AccountID: accountID},
+			wantForceCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID, "--force-refresh"},
+			wantHostCmd:  []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
 		},
 		{
 			name: "former unified host treated as workspace",
@@ -158,26 +161,32 @@ func TestBuildCliCommands(t *testing.T) {
 				AccountID:   accountID,
 				WorkspaceID: workspaceID,
 			},
-			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost},
+			wantForceCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--force-refresh"},
+			wantHostCmd:  []string{cliPath, "auth", "token", "--host", unifiedHost},
 		},
 		{
-			name:        "profile uses --profile with --host fallback",
-			cfg:         &Config{Profile: "my-profile", Host: host},
-			wantCmd:     []string{cliPath, "auth", "token", "--profile", "my-profile"},
-			wantHostCmd: []string{cliPath, "auth", "token", "--host", host},
+			name:           "profile with host — force-refresh based on profile",
+			cfg:            &Config{Profile: "my-profile", Host: host},
+			wantForceCmd:   []string{cliPath, "auth", "token", "--profile", "my-profile", "--force-refresh"},
+			wantProfileCmd: []string{cliPath, "auth", "token", "--profile", "my-profile"},
+			wantHostCmd:    []string{cliPath, "auth", "token", "--host", host},
 		},
 		{
-			name:    "profile without host — no fallback",
-			cfg:     &Config{Profile: "my-profile"},
-			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile"},
+			name:           "profile without host — no host fallback",
+			cfg:            &Config{Profile: "my-profile"},
+			wantForceCmd:   []string{cliPath, "auth", "token", "--profile", "my-profile", "--force-refresh"},
+			wantProfileCmd: []string{cliPath, "auth", "token", "--profile", "my-profile"},
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			gotCmd, gotHostCmd := buildCliCommands(cliPath, tc.cfg)
-			if !slices.Equal(gotCmd, tc.wantCmd) {
-				t.Errorf("primary cmd = %v, want %v", gotCmd, tc.wantCmd)
+			gotForceCmd, gotProfileCmd, gotHostCmd := buildCliCommands(cliPath, tc.cfg)
+			if !slices.Equal(gotForceCmd, tc.wantForceCmd) {
+				t.Errorf("force cmd = %v, want %v", gotForceCmd, tc.wantForceCmd)
+			}
+			if !slices.Equal(gotProfileCmd, tc.wantProfileCmd) {
+				t.Errorf("profile cmd = %v, want %v", gotProfileCmd, tc.wantProfileCmd)
 			}
 			if !slices.Equal(gotHostCmd, tc.wantHostCmd) {
 				t.Errorf("host cmd = %v, want %v", gotHostCmd, tc.wantHostCmd)
@@ -204,9 +213,8 @@ func TestNewCliTokenSource(t *testing.T) {
 		if err != nil {
 			t.Fatalf("NewCliTokenSource() unexpected error: %v", err)
 		}
-		// Verify CLI path was resolved and used
-		if ts.cmd[0] != validCliPath {
-			t.Errorf("cmd[0] = %q, want %q", ts.cmd[0], validCliPath)
+		if ts.hostCmd[0] != validCliPath {
+			t.Errorf("hostCmd[0] = %q, want %q", ts.hostCmd[0], validCliPath)
 		}
 	})
 
@@ -262,7 +270,7 @@ func TestCliTokenSource_Token(t *testing.T) {
 				t.Fatalf("failed to create mock script: %v", err)
 			}
 
-			ts := &CliTokenSource{cmd: []string{mockScript}}
+			ts := &CliTokenSource{hostCmd: []string{mockScript}}
 			token, err := ts.Token(context.Background())
 
 			if tc.wantErrMsg != "" {
@@ -281,73 +289,119 @@ func TestCliTokenSource_Token(t *testing.T) {
 	}
 }
 
-func TestCliTokenSource_Token_FallbackOnUnknownFlag(t *testing.T) {
+func TestCliTokenSource_Token_Fallback(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("Skipping shell script test on Windows")
 	}
 
 	expiry := time.Now().Add(1 * time.Hour).Format(time.RFC3339)
-	validResponse, _ := json.Marshal(cliTokenResponse{
-		AccessToken: "fallback-token",
+	successResponse, _ := json.Marshal(cliTokenResponse{
+		AccessToken: "test-token",
 		TokenType:   "Bearer",
 		Expiry:      expiry,
 	})
 
-	tempDir := t.TempDir()
+	success := "#!/bin/sh\necho '" + string(successResponse) + "'"
+	unknownForceRefresh := "#!/bin/sh\necho 'Error: unknown flag: --force-refresh' >&2\nexit 1"
+	unknownProfile := "#!/bin/sh\necho 'Error: unknown flag: --profile' >&2\nexit 1"
+	realError := "#!/bin/sh\necho 'cache: databricks OAuth is not configured for this host' >&2\nexit 1"
+	unreachable := "#!/bin/sh\necho 'should not reach here' >&2\nexit 1"
 
-	// Primary script simulates an old CLI that doesn't know --profile.
-	profileScript := filepath.Join(tempDir, "profile_cli.sh")
-	if err := os.WriteFile(profileScript, []byte("#!/bin/sh\necho 'Error: unknown flag: --profile' >&2\nexit 1"), 0755); err != nil {
-		t.Fatalf("failed to create profile script: %v", err)
+	testCases := []struct {
+		name          string
+		forceScript   string // empty means nil forceCmd
+		profileScript string // empty means nil profileCmd
+		hostScript    string // empty means nil hostCmd
+		wantToken     string
+		wantErrMsg    string
+	}{
+		{
+			name:          "force-refresh succeeds",
+			forceScript:   success,
+			profileScript: unreachable,
+			hostScript:    unreachable,
+			wantToken:     "test-token",
+		},
+		{
+			name:          "force-refresh falls back to profile",
+			forceScript:   unknownForceRefresh,
+			profileScript: success,
+			wantToken:     "test-token",
+		},
+		{
+			name:        "force-refresh falls back to host (no profile)",
+			forceScript: unknownForceRefresh,
+			hostScript:  success,
+			wantToken:   "test-token",
+		},
+		{
+			name:          "profile falls back to host",
+			profileScript: unknownProfile,
+			hostScript:    success,
+			wantToken:     "test-token",
+		},
+		{
+			name:          "full fallback chain: force -> profile -> host",
+			forceScript:   unknownProfile,
+			profileScript: unknownProfile,
+			hostScript:    success,
+			wantToken:     "test-token",
+		},
+		{
+			name:          "real error stops fallback",
+			forceScript:   realError,
+			profileScript: unreachable,
+			hostScript:    unreachable,
+			wantErrMsg:    "databricks OAuth is not configured",
+		},
+		{
+			name:          "nil hostCmd after profile failure returns error",
+			forceScript:   unknownProfile,
+			profileScript: unknownProfile,
+			wantErrMsg:    "no CLI commands available",
+		},
 	}
 
-	// Fallback script succeeds with --host.
-	hostScript := filepath.Join(tempDir, "host_cli.sh")
-	if err := os.WriteFile(hostScript, []byte("#!/bin/sh\necho '"+string(validResponse)+"'"), 0755); err != nil {
-		t.Fatalf("failed to create host script: %v", err)
-	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			tempDir := t.TempDir()
+			var ts CliTokenSource
 
-	ts := &CliTokenSource{
-		cmd:     []string{profileScript},
-		hostCmd: []string{hostScript},
-	}
-	token, err := ts.Token(context.Background())
-	if err != nil {
-		t.Fatalf("Token() error = %v, want fallback to succeed", err)
-	}
-	if token.AccessToken != "fallback-token" {
-		t.Errorf("AccessToken = %q, want %q", token.AccessToken, "fallback-token")
-	}
-}
+			if tc.forceScript != "" {
+				path := filepath.Join(tempDir, "force_cli.sh")
+				if err := os.WriteFile(path, []byte(tc.forceScript), 0755); err != nil {
+					t.Fatalf("failed to create force script: %v", err)
+				}
+				ts.forceCmd = []string{path}
+			}
+			if tc.profileScript != "" {
+				path := filepath.Join(tempDir, "profile_cli.sh")
+				if err := os.WriteFile(path, []byte(tc.profileScript), 0755); err != nil {
+					t.Fatalf("failed to create profile script: %v", err)
+				}
+				ts.profileCmd = []string{path}
+			}
+			if tc.hostScript != "" {
+				path := filepath.Join(tempDir, "host_cli.sh")
+				if err := os.WriteFile(path, []byte(tc.hostScript), 0755); err != nil {
+					t.Fatalf("failed to create host script: %v", err)
+				}
+				ts.hostCmd = []string{path}
+			}
 
-func TestCliTokenSource_Token_NoFallbackOnRealError(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("Skipping shell script test on Windows")
-	}
-
-	tempDir := t.TempDir()
-
-	// Primary script fails with a real auth error (not unknown flag).
-	profileScript := filepath.Join(tempDir, "profile_cli.sh")
-	if err := os.WriteFile(profileScript, []byte("#!/bin/sh\necho 'cache: databricks OAuth is not configured for this host' >&2\nexit 1"), 0755); err != nil {
-		t.Fatalf("failed to create profile script: %v", err)
-	}
-
-	// Fallback script would succeed, but should not be called.
-	hostScript := filepath.Join(tempDir, "host_cli.sh")
-	if err := os.WriteFile(hostScript, []byte("#!/bin/sh\necho 'should not reach here' >&2\nexit 1"), 0755); err != nil {
-		t.Fatalf("failed to create host script: %v", err)
-	}
-
-	ts := &CliTokenSource{
-		cmd:     []string{profileScript},
-		hostCmd: []string{hostScript},
-	}
-	_, err := ts.Token(context.Background())
-	if err == nil {
-		t.Fatal("Token() error = nil, want error")
-	}
-	if !strings.Contains(err.Error(), "databricks OAuth is not configured") {
-		t.Errorf("Token() error = %v, want error containing original auth failure", err)
+			token, err := ts.Token(context.Background())
+			if tc.wantErrMsg != "" {
+				if err == nil || !strings.Contains(err.Error(), tc.wantErrMsg) {
+					t.Errorf("Token() error = %v, want error containing %q", err, tc.wantErrMsg)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("Token() error = %v", err)
+			}
+			if token.AccessToken != tc.wantToken {
+				t.Errorf("AccessToken = %q, want %q", token.AccessToken, tc.wantToken)
+			}
+		})
 	}
 }
