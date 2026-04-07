@@ -698,7 +698,7 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 // resolveHostMetadata populates missing config fields from the host's
 // /.well-known/databricks-config discovery endpoint. It back-fills AccountID,
 // WorkspaceID, Cloud, and DiscoveryURL (with any {account_id} placeholder substituted)
-// if those fields are not already set.
+// if those fields are not already set. Some change
 //
 // Errors from the metadata endpoint are non-fatal: a warning is logged and the
 // method returns without modifying the config. This mirrors the Python SDK
