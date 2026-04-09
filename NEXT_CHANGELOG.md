@@ -18,6 +18,7 @@
  * Fix double-caching of OAuth tokens in Azure client secret credentials ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
  * Disable async token refresh for GCP credential providers to avoid wasted refresh attempts caused by double-caching with Google's internal `oauth2.ReuseTokenSource` ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
  * Fixed double-caching in M2M OAuth that prevented the proactive async token refresh from reaching the HTTP endpoint until ~10s before expiry, causing bursts of 401 errors at token rotation boundaries ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
+ * Fix data race when lazily initializing `credentialsProvider`: always take `Config.mu` before reading the field so concurrent `Authenticate` / `GetTokenSource` calls are safe ([#1310](https://github.com/databricks/databricks-sdk-go/issues/1310)).
 
 ### Documentation
 
