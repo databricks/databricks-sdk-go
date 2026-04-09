@@ -153,6 +153,13 @@ func TestGetResolvedHostType_AccountHost(t *testing.T) {
 	assert.Equal(t, AccountHost, c.GetResolvedHostType())
 }
 
+func TestGetResolvedHostType_UnifiedHost(t *testing.T) {
+	c := &Config{
+		resolvedHostType: UnifiedHost,
+	}
+	assert.Equal(t, UnifiedHost, c.GetResolvedHostType())
+}
+
 func TestHostType_EndToEnd_MetadataResolvesHostType(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
