@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sync"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/common/environment"
@@ -194,6 +195,34 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 	require.NoError(t, err)
 	err = c.Authenticate(req)
 	assert.ErrorIs(t, err, ErrNoHostConfigured)
+}
+
+// TestAuthenticate_concurrentLazyInit verifies that concurrent first-time
+// authentication does not race on credentialsProvider (see issue #1310).
+func TestAuthenticate_concurrentLazyInit(t *testing.T) {
+	noopLoader := mockLoader(func(*Config) error { return nil })
+	cfg := &Config{
+		Host:          "https://accounts.cloud.databricks.com",
+		AccountID:     "123e4567-e89b-12d3-a456-426614174000",
+		Token:         "dapi_test_token",
+		Loaders:       []Loader{noopLoader},
+		HTTPTransport: metadataNotFoundTransport,
+	}
+	require.NoError(t, cfg.EnsureResolved())
+
+	const goroutines = 32
+	var wg sync.WaitGroup
+	wg.Add(goroutines)
+	for i := 0; i < goroutines; i++ {
+		go func() {
+			defer wg.Done()
+			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://accounts.cloud.databricks.com/api/2.0/preview/scim/v2/Me", nil)
+			require.NoError(t, err)
+			err = cfg.Authenticate(req)
+			assert.NoError(t, err)
+		}()
+	}
+	wg.Wait()
 }
 
 func TestConfig_getOidcEndpoints_account(t *testing.T) {

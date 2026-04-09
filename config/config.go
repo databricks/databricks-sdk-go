@@ -590,9 +590,6 @@ func (c *Config) wrapDebug(err error) error {
 
 // authenticateIfNeeded lazily authenticates across authorizers or returns error
 func (c *Config) authenticateIfNeeded() error {
-	if c.credentialsProvider != nil {
-		return nil
-	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.credentialsProvider != nil {
