@@ -331,6 +331,10 @@ func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &group)
 	return &group, err
 }
@@ -339,6 +343,10 @@ func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) err
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -349,6 +357,10 @@ func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &group)
 	return &group, err
 }
@@ -400,6 +412,10 @@ func (a *groupsImpl) internalList(ctx context.Context, request ListGroupsRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listGroupsResponse)
 	return &listGroupsResponse, err
 }
@@ -409,6 +425,10 @@ func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -418,6 +438,10 @@ func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -434,6 +458,10 @@ func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrinc
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
@@ -442,6 +470,10 @@ func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServic
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -452,6 +484,10 @@ func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrinc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
@@ -503,6 +539,10 @@ func (a *servicePrincipalsImpl) internalList(ctx context.Context, request ListSe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalResponse)
 	return &listServicePrincipalResponse, err
 }
@@ -512,6 +552,10 @@ func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -521,6 +565,10 @@ func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrinc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -537,6 +585,10 @@ func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &user)
 	return &user, err
 }
@@ -545,6 +597,10 @@ func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -555,6 +611,10 @@ func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, err
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &user)
 	return &user, err
 }
@@ -565,6 +625,10 @@ func (a *usersImpl) GetPermissionLevels(ctx context.Context) (*GetPasswordPermis
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getPasswordPermissionLevelsResponse)
 	return &getPasswordPermissionLevelsResponse, err
 }
@@ -575,6 +639,10 @@ func (a *usersImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, e
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &passwordPermissions)
 	return &passwordPermissions, err
 }
@@ -626,6 +694,10 @@ func (a *usersImpl) internalList(ctx context.Context, request ListUsersRequest) 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUsersResponse)
 	return &listUsersResponse, err
 }
@@ -635,6 +707,10 @@ func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -646,6 +722,10 @@ func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &passwordPermissions)
 	return &passwordPermissions, err
 }
@@ -655,6 +735,10 @@ func (a *usersImpl) Update(ctx context.Context, request User) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -666,6 +750,10 @@ func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &passwordPermissions)
 	return &passwordPermissions, err
 }

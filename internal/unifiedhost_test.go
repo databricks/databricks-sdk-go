@@ -9,6 +9,23 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestAccUnifiedHostWorkspaceGroups(t *testing.T) {
+	ctx, _, w := unifiedHostAccountTest(t)
+
+	group, err := w.Groups.Create(ctx, iam.Group{
+		DisplayName: RandomName("go-sdk-"),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Groups.DeleteById(ctx, group.Id)
+		require.True(t, err == nil || apierr.IsMissing(err))
+	})
+
+	fetch, err := w.Groups.GetById(ctx, group.Id)
+	require.NoError(t, err)
+	assert.Equal(t, group.DisplayName, fetch.DisplayName)
+}
+
 func TestAccUnifiedHost(t *testing.T) {
 	ctx, a, w := unifiedHostAccountTest(t)
 
