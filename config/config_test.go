@@ -134,6 +134,25 @@ func TestHostType_MetadataOverridesExperimentalFlag(t *testing.T) {
 	assert.Equal(t, AccountHost, c.HostType())
 }
 
+func TestGetResolvedHostType_ReturnsUnknownByDefault(t *testing.T) {
+	c := &Config{}
+	assert.Equal(t, HostTypeUnknown, c.GetResolvedHostType())
+}
+
+func TestGetResolvedHostType_ReturnsResolvedValue(t *testing.T) {
+	c := &Config{
+		resolvedHostType: WorkspaceHost,
+	}
+	assert.Equal(t, WorkspaceHost, c.GetResolvedHostType())
+}
+
+func TestGetResolvedHostType_AccountHost(t *testing.T) {
+	c := &Config{
+		resolvedHostType: AccountHost,
+	}
+	assert.Equal(t, AccountHost, c.GetResolvedHostType())
+}
+
 func TestHostType_EndToEnd_MetadataResolvesHostType(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{

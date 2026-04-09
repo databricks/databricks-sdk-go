@@ -487,6 +487,13 @@ func (c *Config) HostType() HostType {
 	return WorkspaceHost
 }
 
+// GetResolvedHostType returns the host type resolved from the host's
+// /.well-known/databricks-config discovery endpoint. Unlike HostType(),
+// this method does not fall back to URL pattern matching or other heuristics.
+func (c *Config) GetResolvedHostType() HostType {
+	return c.resolvedHostType
+}
+
 // ConfigType returns the type of config that the client is configured for.
 // Returns InvalidConfig if the config is invalid.
 // Use of this function should be avoided where possible, because we plan

@@ -8,6 +8,7 @@
 
 ### New Features and Improvements
 
+* Added `GetResolvedHostType()` getter on `Config` to expose the host type resolved from host metadata discovery, without URL pattern matching fallback.
 * Added `HostMetadataResolver` hook to allow callers to customize host metadata resolution, e.g. with caching ([#1572](https://github.com/databricks/databricks-sdk-go/pull/1572)).
 * Added `NewLimitIterator` to `listing` package for lazy iteration with a cap on output items ([#1555](https://github.com/databricks/databricks-sdk-go/pull/1555)).
 * Resolve `TokenAudience` from `default_oidc_audience` in host metadata discovery endpoint.
