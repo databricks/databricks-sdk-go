@@ -203,9 +203,8 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 func TestAuthenticate_concurrentLazyInit(t *testing.T) {
 	noopLoader := mockLoader(func(*Config) error { return nil })
 	cfg := &Config{
-		Host:          "https://accounts.cloud.databricks.com",
-		AccountID:     "123e4567-e89b-12d3-a456-426614174000",
-		Token:         "dapi_test_token",
+		Host:          "http://localhost",
+		Token:         "x",
 		Loaders:       []Loader{noopLoader},
 		HTTPTransport: metadataNotFoundTransport,
 	}
