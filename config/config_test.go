@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sync"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/common/environment"
@@ -194,6 +195,39 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 	require.NoError(t, err)
 	err = c.Authenticate(req)
 	assert.ErrorIs(t, err, ErrNoHostConfigured)
+}
+
+// TestAuthenticate_concurrentLazyInit verifies that concurrent first-time
+// authentication does not race on credentialsProvider (see #1310).
+// This test requires -race to detect regressions.
+func TestAuthenticate_concurrentLazyInit(t *testing.T) {
+	noopLoader := mockLoader(func(*Config) error { return nil })
+	cfg := &Config{
+		Host:          "https://accounts.cloud.databricks.com",
+		AccountID:     "123e4567-e89b-12d3-a456-426614174000",
+		Token:         "dapi_test_token",
+		Loaders:       []Loader{noopLoader},
+		HTTPTransport: metadataNotFoundTransport,
+	}
+	require.NoError(t, cfg.EnsureResolved())
+
+	const goroutines = 32
+	var wg sync.WaitGroup
+	wg.Add(goroutines)
+	errs := make([]error, goroutines)
+	for i := range goroutines {
+		go func() {
+			defer wg.Done()
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://localhost", nil)
+			errs[i] = cfg.Authenticate(req)
+		}()
+	}
+	wg.Wait()
+	for i, err := range errs {
+		if err != nil {
+			t.Errorf("goroutine %d: %v", i, err)
+		}
+	}
 }
 
 func TestConfig_getOidcEndpoints_account(t *testing.T) {
