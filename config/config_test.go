@@ -209,7 +209,9 @@ func TestAuthenticate_concurrentLazyInit(t *testing.T) {
 		Loaders:       []Loader{noopLoader},
 		HTTPTransport: metadataNotFoundTransport,
 	}
-	require.NoError(t, cfg.EnsureResolved())
+	if err := cfg.EnsureResolved(); err != nil {
+		t.Fatal(err)
+	}
 
 	const goroutines = 32
 	var wg sync.WaitGroup
