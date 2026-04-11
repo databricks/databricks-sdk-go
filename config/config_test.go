@@ -197,15 +197,14 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 	assert.ErrorIs(t, err, ErrNoHostConfigured)
 }
 
-// TestAuthenticate_concurrentLazyInit verifies that concurrent first-time
-// authentication does not race on credentialsProvider (see #1310).
-// This test requires -race to detect regressions.
-func TestAuthenticate_concurrentLazyInit(t *testing.T) {
-	noopLoader := mockLoader(func(*Config) error { return nil })
+// TestAuthenticateIfNeeded_concurrentLazyInit aims at exercising
+// authenticateIfNeeded in parallel to catch potential race conditions when
+// running the test with -race (see #1310).
+func TestAuthenticateIfNeeded_concurrentLazyInit(t *testing.T) {
 	cfg := &Config{
 		Host:          "http://localhost",
 		Token:         "x",
-		Loaders:       []Loader{noopLoader},
+		Loaders:       []Loader{mockLoader(func(*Config) error { return nil })},
 		HTTPTransport: metadataNotFoundTransport,
 	}
 	if err := cfg.EnsureResolved(); err != nil {
