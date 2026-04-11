@@ -218,7 +218,7 @@ func TestAuthenticate_concurrentLazyInit(t *testing.T) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			cfg.GetTokenSource()
+			cfg.authenticateIfNeeded()
 		}()
 	}
 	wg.Wait()
