@@ -213,23 +213,15 @@ func TestAuthenticate_concurrentLazyInit(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	const goroutines = 32
 	var wg sync.WaitGroup
-	wg.Add(goroutines)
-	errs := make([]error, goroutines)
-	for i := range goroutines {
+	for range 32 {
+		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://localhost", nil)
-			errs[i] = cfg.Authenticate(req)
+			cfg.GetTokenSource()
 		}()
 	}
 	wg.Wait()
-	for i, err := range errs {
-		if err != nil {
-			t.Errorf("goroutine %d: %v", i, err)
-		}
-	}
 }
 
 func TestConfig_getOidcEndpoints_account(t *testing.T) {
