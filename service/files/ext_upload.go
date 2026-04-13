@@ -7,12 +7,15 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"os"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 const (
@@ -233,7 +236,17 @@ func (a *FilesAPI) getUploadPartURLs(ctx context.Context, filePath, sessionToken
 	return resp.UploadPartURLs, nil
 }
 
+// isURLExpiredResponse returns true if the HTTP response indicates the presigned URL has expired.
+func isURLExpiredResponse(statusCode int, body []byte) bool {
+	if statusCode != http.StatusForbidden {
+		return false
+	}
+	s := string(body)
+	return strings.Contains(s, "AccessDenied") || strings.Contains(s, "AuthenticationFailed")
+}
+
 // uploadOnePart uploads a single part to a presigned URL and returns the ETag.
+// It retries up to maxURLExpirationRetries times if the presigned URL has expired.
 func (a *FilesAPI) uploadOnePart(ctx context.Context, presigned presignedURL, partData io.ReadSeeker) (string, error) {
 	// Determine content length
 	currentPos, err := partData.Seek(0, io.SeekCurrent)
@@ -249,30 +262,47 @@ func (a *FilesAPI) uploadOnePart(ctx context.Context, presigned presignedURL, pa
 		return "", fmt.Errorf("failed to seek back: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, presigned.URL, partData)
-	if err != nil {
-		return "", fmt.Errorf("failed to create request: %w", err)
-	}
-	req.ContentLength = contentLength
-	req.Header.Set("Content-Type", "application/octet-stream")
-	for _, h := range presigned.Headers {
-		req.Header.Set(h.Name, h.Value)
-	}
+	for attempt := 0; attempt < maxURLExpirationRetries; attempt++ {
+		if attempt > 0 {
+			if _, err := partData.Seek(0, io.SeekStart); err != nil {
+				return "", fmt.Errorf("failed to rewind part data: %w", err)
+			}
+		}
 
-	httpClient := &http.Client{Timeout: uploadInactivityTimeout}
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return "", fmt.Errorf("upload part %d failed: %w", presigned.PartNumber, err)
-	}
-	defer resp.Body.Close()
+		req, err := http.NewRequestWithContext(ctx, http.MethodPut, presigned.URL, partData)
+		if err != nil {
+			return "", fmt.Errorf("failed to create request: %w", err)
+		}
+		req.ContentLength = contentLength
+		req.Header.Set("Content-Type", "application/octet-stream")
+		for _, h := range presigned.Headers {
+			req.Header.Set(h.Name, h.Value)
+		}
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		httpClient := &http.Client{Timeout: uploadInactivityTimeout}
+		resp, err := httpClient.Do(req)
+		if err != nil {
+			return "", fmt.Errorf("upload part %d failed: %w", presigned.PartNumber, err)
+		}
+
+		if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
+			etag := resp.Header.Get("ETag")
+			resp.Body.Close()
+			return etag, nil
+		}
+
 		body, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+
+		if isURLExpiredResponse(resp.StatusCode, body) {
+			logger.Debugf(ctx, "presigned URL expired for part %d (attempt %d/%d), retrying", presigned.PartNumber, attempt+1, maxURLExpirationRetries)
+			continue
+		}
+
 		return "", fmt.Errorf("upload part %d failed with status %d: %s", presigned.PartNumber, resp.StatusCode, string(body))
 	}
 
-	etag := resp.Header.Get("ETag")
-	return etag, nil
+	return "", fmt.Errorf("upload part %d failed: presigned URL expired after %d retries", presigned.PartNumber, maxURLExpirationRetries)
 }
 
 // completeMultipartUpload finalizes a multipart upload with the given ETags.
@@ -301,15 +331,8 @@ func (a *FilesAPI) completeMultipartUpload(ctx context.Context, filePath, sessio
 	return a.filesImpl.client.Do(ctx, http.MethodPost, apiPath, headers, queryParams, req, nil)
 }
 
-// uploadPartResult holds the result of uploading a single part.
-type uploadPartResult struct {
-	PartNumber int
-	ETag       string
-	Err        error
-}
-
 // uploadMultipart orchestrates a full multipart upload.
-func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content io.ReadSeeker, contentLength int64, cfg *UploadConfig) error {
+func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content io.ReadSeeker, _ int64, cfg *UploadConfig) error {
 	// Phase 1: Initiate
 	initResp, err := a.initiateMultipartUpload(ctx, filePath, cfg.Overwrite)
 	if err != nil {
@@ -420,4 +443,49 @@ func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content
 	// Phase 3: Complete
 	logger.Debugf(ctx, "completing multipart upload with %d parts", len(etags))
 	return a.completeMultipartUpload(ctx, filePath, sessionToken, etags)
+}
+
+// UploadWithChunking uploads a file to the given path, automatically choosing
+// between single-shot and multipart upload based on the content length.
+// For files smaller than 50 MiB, a single PUT request is used. For larger files,
+// a multipart upload is performed with configurable part size and parallelism.
+func (a *FilesAPI) UploadWithChunking(ctx context.Context, filePath string, content io.ReadSeeker, contentLength int64, opts ...UploadOption) error {
+	ctx = useragent.InContext(ctx, "sdk-feature", "multipart-upload")
+
+	cfg := &UploadConfig{
+		Parallelism: defaultParallelism,
+	}
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
+	// Auto-select part size if not explicitly set
+	cfg.PartSize, _ = optimizePartSize(contentLength, cfg.PartSize)
+
+	if contentLength < minMultipartUploadSize {
+		return a.Upload(ctx, UploadRequest{
+			FilePath:  filePath,
+			Contents:  io.NopCloser(content),
+			Overwrite: cfg.Overwrite,
+		})
+	}
+
+	return a.uploadMultipart(ctx, filePath, content, contentLength, cfg)
+}
+
+// UploadFromFile uploads a local file to the given path, automatically choosing
+// between single-shot and multipart upload based on the file size.
+func (a *FilesAPI) UploadFromFile(ctx context.Context, filePath string, sourcePath string, opts ...UploadOption) error {
+	f, err := os.Open(sourcePath)
+	if err != nil {
+		return fmt.Errorf("failed to open source file: %w", err)
+	}
+	defer f.Close()
+
+	info, err := f.Stat()
+	if err != nil {
+		return fmt.Errorf("failed to stat source file: %w", err)
+	}
+
+	return a.UploadWithChunking(ctx, filePath, f, info.Size(), opts...)
 }

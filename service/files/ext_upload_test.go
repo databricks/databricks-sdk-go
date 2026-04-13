@@ -7,9 +7,11 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -102,8 +104,22 @@ func newMultipartMockServer() *multipartMockServer {
 func (m *multipartMockServer) handler(srv *httptest.Server) http.Handler {
 	mux := http.NewServeMux()
 
-	// Initiate upload
+	// Initiate upload / complete upload / single-shot PUT
 	mux.HandleFunc("/api/2.0/fs/files/", func(w http.ResponseWriter, r *http.Request) {
+		// Single-shot PUT upload (no action query parameter)
+		if r.Method == http.MethodPut {
+			data, err := io.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			m.mu.Lock()
+			m.parts[1] = data
+			m.completed = true
+			m.mu.Unlock()
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 		action := r.URL.Query().Get("action")
 		switch action {
 		case "initiate-upload":
@@ -240,4 +256,104 @@ func TestUploadMultipart_FullFlow(t *testing.T) {
 		assert.True(t, mock.completeParts[i].PartNumber > mock.completeParts[i-1].PartNumber,
 			"parts should be sorted by part number")
 	}
+}
+
+func TestUploadWithChunking_SmallFile_UsesSingleShot(t *testing.T) {
+	var receivedBody []byte
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPut && strings.HasPrefix(r.URL.Path, "/api/2.0/fs/files/") {
+			body, err := io.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			receivedBody = body
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		http.Error(w, "not found", http.StatusNotFound)
+	}))
+	defer srv.Close()
+
+	api := newTestFilesAPI(t, srv.URL)
+
+	content := []byte("hello multipart!!")
+	reader := strings.NewReader(string(content))
+
+	ctx := context.Background()
+	err := api.UploadWithChunking(ctx, "/test/small.txt", reader, int64(len(content)))
+	require.NoError(t, err)
+	assert.Equal(t, content, receivedBody)
+}
+
+func TestUploadOnePart_RetriesOnExpiredURL(t *testing.T) {
+	var attempts atomic.Int32
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		n := attempts.Add(1)
+		if n == 1 {
+			w.WriteHeader(http.StatusForbidden)
+			w.Write([]byte("<Error><Code>AccessDenied</Code></Error>"))
+			return
+		}
+		w.Header().Set("ETag", "etag-success")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer srv.Close()
+
+	api := newTestFilesAPI(t, srv.URL)
+
+	presigned := presignedURL{
+		URL:        srv.URL + "/upload-part/1",
+		PartNumber: 1,
+	}
+	data := strings.NewReader("test data")
+
+	ctx := context.Background()
+	etag, err := api.uploadOnePart(ctx, presigned, data)
+	require.NoError(t, err)
+	assert.Equal(t, "etag-success", etag)
+	assert.Equal(t, int32(2), attempts.Load())
+}
+
+func TestUploadFromFile(t *testing.T) {
+	mock := newMultipartMockServer()
+
+	srv := httptest.NewServer(http.NotFoundHandler())
+	defer srv.Close()
+	srv.Config.Handler = mock.handler(srv)
+
+	api := newTestFilesAPI(t, srv.URL)
+
+	// Create a temp file with 100 KiB content
+	contentSize := 100 * 1024
+	content := make([]byte, contentSize)
+	for i := range content {
+		content[i] = byte(i % 256)
+	}
+
+	tmpFile, err := os.CreateTemp("", "upload-test-*")
+	require.NoError(t, err)
+	defer os.Remove(tmpFile.Name())
+
+	_, err = tmpFile.Write(content)
+	require.NoError(t, err)
+	require.NoError(t, tmpFile.Close())
+
+	ctx := context.Background()
+	err = api.UploadFromFile(ctx, "/test/fromfile.bin", tmpFile.Name(),
+		WithPartSize(25*1024),
+		WithParallelism(2),
+		WithOverwrite(true),
+	)
+	require.NoError(t, err)
+
+	mock.mu.Lock()
+	defer mock.mu.Unlock()
+
+	// File is 100 KiB < 50 MiB threshold, so single-shot upload is used
+	assert.True(t, mock.completed, "upload should be completed")
+	assert.Equal(t, 1, len(mock.parts), "single-shot upload stores as one part")
+	assert.Equal(t, contentSize, len(mock.parts[1]), "uploaded bytes should match content size")
+	assert.Equal(t, content, mock.parts[1], "uploaded content should match")
 }
