@@ -372,3 +372,230 @@ func TestUploadFromFile(t *testing.T) {
 	assert.Equal(t, contentSize, len(mock.parts[1]), "uploaded bytes should match content size")
 	assert.Equal(t, content, mock.parts[1], "uploaded content should match")
 }
+
+func TestUploadMultipart_FirstChunkFallback(t *testing.T) {
+	// Simulate: initiate-upload succeeds, but the first presigned URL upload
+	// returns 403 (Azure firewall). uploadMultipart should return
+	// errFallbackToSingleShot so the caller can retry with single-shot.
+
+	mux := http.NewServeMux()
+	srv := httptest.NewServer(http.NotFoundHandler())
+	defer srv.Close()
+
+	// initiate-upload — succeed with a session token.
+	mux.HandleFunc("/api/2.0/fs/files/", func(w http.ResponseWriter, r *http.Request) {
+		action := r.URL.Query().Get("action")
+		if action == "initiate-upload" {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(initiateUploadResponse{
+				MultipartUpload: &multipartUploadSession{SessionToken: "tok"},
+			})
+			return
+		}
+		http.Error(w, "unexpected", http.StatusBadRequest)
+	})
+
+	// create-upload-part-urls — return a URL that will fail.
+	mux.HandleFunc("/api/2.0/fs/create-upload-part-urls", func(w http.ResponseWriter, r *http.Request) {
+		var req createUploadPartURLsRequest
+		json.NewDecoder(r.Body).Decode(&req)
+		resp := createUploadPartURLsResponse{
+			UploadPartURLs: []presignedURL{{
+				URL:        fmt.Sprintf("%s/upload-part/%d", srv.URL, req.StartPartNumber),
+				PartNumber: req.StartPartNumber,
+			}},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
+	})
+
+	// upload-part — always return 403 to simulate firewall block.
+	mux.HandleFunc("/upload-part/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("<Error><Code>AccessDenied</Code></Error>"))
+	})
+
+	// abort upload URL (best-effort cleanup).
+	mux.HandleFunc("/api/2.0/fs/create-abort-upload-url", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"abort_upload_url":{"url":""}}`))
+	})
+
+	srv.Config.Handler = mux
+	api := newTestFilesAPI(t, srv.URL)
+
+	content := strings.NewReader("test data for fallback")
+	cfg := &UploadConfig{PartSize: 1024, Parallelism: 1, Overwrite: true}
+
+	err := api.uploadMultipart(context.Background(), "/test/fallback.bin", content, int64(len("test data for fallback")), cfg)
+
+	var fallback *errFallbackToSingleShot
+	require.ErrorAs(t, err, &fallback, "should return errFallbackToSingleShot")
+	assert.Contains(t, fallback.reason.Error(), "AccessDenied")
+}
+
+func TestUploadWithChunking_FallbackToSingleShot(t *testing.T) {
+	// End-to-end test: UploadWithChunking triggers multipart (content > threshold),
+	// first chunk fails, falls back to single-shot Upload which succeeds.
+
+	var receivedBody []byte
+	var singleShotCalled atomic.Int32
+	var initiateCount atomic.Int32
+
+	mux := http.NewServeMux()
+	srv := httptest.NewServer(http.NotFoundHandler())
+	defer srv.Close()
+
+	mux.HandleFunc("/api/2.0/fs/files/", func(w http.ResponseWriter, r *http.Request) {
+		action := r.URL.Query().Get("action")
+		switch {
+		case r.Method == http.MethodPut && action == "":
+			// Single-shot PUT fallback.
+			singleShotCalled.Add(1)
+			body, _ := io.ReadAll(r.Body)
+			receivedBody = body
+			w.WriteHeader(http.StatusOK)
+		case action == "initiate-upload":
+			initiateCount.Add(1)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(initiateUploadResponse{
+				MultipartUpload: &multipartUploadSession{SessionToken: "tok"},
+			})
+		default:
+			http.Error(w, "unexpected", http.StatusBadRequest)
+		}
+	})
+
+	mux.HandleFunc("/api/2.0/fs/create-upload-part-urls", func(w http.ResponseWriter, r *http.Request) {
+		var req createUploadPartURLsRequest
+		json.NewDecoder(r.Body).Decode(&req)
+		resp := createUploadPartURLsResponse{
+			UploadPartURLs: []presignedURL{{
+				URL:        fmt.Sprintf("%s/upload-part/%d", srv.URL, req.StartPartNumber),
+				PartNumber: req.StartPartNumber,
+			}},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
+	})
+
+	// First chunk always fails.
+	mux.HandleFunc("/upload-part/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("<Error><Code>AccessDenied</Code></Error>"))
+	})
+
+	mux.HandleFunc("/api/2.0/fs/create-abort-upload-url", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"abort_upload_url":{"url":""}}`))
+	})
+
+	srv.Config.Handler = mux
+	api := newTestFilesAPI(t, srv.URL)
+
+	// Content must be >= minMultipartUploadSize to trigger multipart path.
+	// We use a small threshold override via the internal config.
+	// Instead, we call uploadMultipart + fallback directly through UploadWithChunking
+	// by crafting content that exceeds minMultipartUploadSize.
+	// For a practical test, we override the threshold by testing the full flow
+	// with a content size that's large enough. But 50 MiB is too large for a unit test.
+	// Instead, test the fallback path by calling uploadMultipart directly and
+	// verifying that UploadWithChunking handles the error correctly.
+
+	// Direct test: call UploadWithChunking with a content size that looks large
+	// to pass the threshold. We fake contentLength to be above threshold.
+	contentData := "hello fallback data"
+	content := strings.NewReader(contentData)
+	fakeLength := int64(minMultipartUploadSize + 1) // Trick threshold check
+
+	err := api.UploadWithChunking(context.Background(), "/test/fallback.bin", content, fakeLength, WithOverwrite(true))
+	require.NoError(t, err)
+	assert.Equal(t, int32(1), singleShotCalled.Load(), "single-shot upload should have been called as fallback")
+	assert.Equal(t, int32(1), initiateCount.Load(), "multipart initiate should have been called once")
+	assert.Equal(t, []byte(contentData), receivedBody, "single-shot should have received the full content")
+}
+
+func TestUploadMultipart_ContentLengthMismatch(t *testing.T) {
+	mock := newMultipartMockServer()
+	srv := httptest.NewServer(http.NotFoundHandler())
+	defer srv.Close()
+	srv.Config.Handler = mock.handler(srv)
+
+	api := newTestFilesAPI(t, srv.URL)
+
+	content := strings.NewReader("short")
+	// Declare a much larger contentLength than actual data.
+	cfg := &UploadConfig{PartSize: 1024, Parallelism: 1, Overwrite: true}
+
+	err := api.uploadMultipart(context.Background(), "/test/mismatch.bin", content, 999999, cfg)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "content length mismatch")
+}
+
+func TestUploadMultipart_RejectsNonPositiveContentLength(t *testing.T) {
+	api := &FilesAPI{}
+	cfg := &UploadConfig{PartSize: 1024, Parallelism: 1}
+
+	err := api.uploadMultipart(context.Background(), "/test/file.bin", strings.NewReader("data"), 0, cfg)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "contentLength must be positive")
+
+	err = api.uploadMultipart(context.Background(), "/test/file.bin", strings.NewReader("data"), -1, cfg)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "contentLength must be positive")
+}
+
+func TestUploadWithChunking_LargeFileUsesMultipart(t *testing.T) {
+	mock := newMultipartMockServer()
+	srv := httptest.NewServer(http.NotFoundHandler())
+	defer srv.Close()
+	srv.Config.Handler = mock.handler(srv)
+
+	api := newTestFilesAPI(t, srv.URL)
+
+	// Create content just above the multipart threshold.
+	// We can't use 50 MiB in a unit test, so we use a smaller content but
+	// fake the content length to exceed the threshold. The mock server will
+	// accept whatever we send.
+	contentSize := 100 * 1024 // 100 KiB actual data
+	content := make([]byte, contentSize)
+	for i := range content {
+		content[i] = byte(i % 256)
+	}
+
+	ctx := context.Background()
+	// Use UploadWithChunking with contentLength > minMultipartUploadSize
+	// but actual data is smaller. The content length mismatch will cause
+	// an error because we validate it. Instead, let's test the multipart
+	// path directly through uploadMultipart, which we know works from
+	// TestUploadMultipart_FullFlow. The key thing to test here is that
+	// UploadWithChunking dispatches to multipart when length >= threshold.
+
+	// We verify this by checking that initiate-upload was called (multipart
+	// path) rather than a direct PUT (single-shot).
+	// To do this properly without 50 MiB, we check mock state.
+
+	// For the threshold test, we can just verify that small files go single-shot
+	// (already covered by TestUploadWithChunking_SmallFile_UsesSingleShot)
+	// and that the routing logic is correct by calling uploadMultipart directly.
+	// The full multipart flow is tested by TestUploadMultipart_FullFlow.
+
+	// Test that uploadMultipart is called when length >= threshold by verifying
+	// the mock received multiple parts.
+	err := api.UploadWithChunking(ctx, "/test/large.bin",
+		strings.NewReader(string(content)),
+		int64(minMultipartUploadSize+1), // Declare as "large" to trigger multipart
+		WithPartSize(30*1024),
+		WithParallelism(2),
+		WithOverwrite(true),
+	)
+	// This will fail with content length mismatch since actual < declared,
+	// but it proves the multipart path was taken (initiate was called).
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "content length mismatch")
+
+	mock.mu.Lock()
+	defer mock.mu.Unlock()
+	// The multipart upload was initiated (proves the routing went to multipart).
+	assert.True(t, len(mock.parts) > 0, "multipart path should have been taken")
+}

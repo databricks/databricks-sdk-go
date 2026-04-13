@@ -217,6 +217,7 @@ func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
 }
 
 type FilesInterface interface {
+	filesAPIUploadUtilities
 
 	// Creates an empty directory. If necessary, also creates any parent directories
 	// of the new, empty directory (like the shell command `mkdir -p`). If called on
