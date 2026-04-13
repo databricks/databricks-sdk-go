@@ -25,11 +25,11 @@ func TestOptimizePartSize(t *testing.T) {
 	const GiB = 1024 * MiB
 
 	tests := []struct {
-		name              string
-		contentLength     int64
-		explicitPartSize  int64
-		wantPartSize      int64
-		wantBatchSize     int
+		name             string
+		contentLength    int64
+		explicitPartSize int64
+		wantPartSize     int64
+		wantBatchSize    int
 	}{
 		{
 			// 5 MiB / 10 MiB = 1 part; ceil(sqrt(1)) = 1
@@ -87,11 +87,11 @@ func TestOptimizePartSize(t *testing.T) {
 
 // multipartMockServer simulates the multipart upload protocol for testing.
 type multipartMockServer struct {
-	mu             sync.Mutex
-	parts          map[int][]byte
-	completed      bool
-	completeParts  []completeUploadPart
-	sessionToken   string
+	mu            sync.Mutex
+	parts         map[int][]byte
+	completed     bool
+	completeParts []completeUploadPart
+	sessionToken  string
 }
 
 func newMultipartMockServer() *multipartMockServer {

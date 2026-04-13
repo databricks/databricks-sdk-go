@@ -46,15 +46,15 @@ const (
 
 // partSizeOptions lists the candidate part sizes in ascending order.
 var partSizeOptions = []int64{
-	10 * 1024 * 1024,         // 10 MiB
-	20 * 1024 * 1024,         // 20 MiB
-	50 * 1024 * 1024,         // 50 MiB
-	100 * 1024 * 1024,        // 100 MiB
-	200 * 1024 * 1024,        // 200 MiB
-	500 * 1024 * 1024,        // 500 MiB
-	1 * 1024 * 1024 * 1024,   // 1 GiB
-	2 * 1024 * 1024 * 1024,   // 2 GiB
-	4 * 1024 * 1024 * 1024,   // 4 GiB
+	10 * 1024 * 1024,       // 10 MiB
+	20 * 1024 * 1024,       // 20 MiB
+	50 * 1024 * 1024,       // 50 MiB
+	100 * 1024 * 1024,      // 100 MiB
+	200 * 1024 * 1024,      // 200 MiB
+	500 * 1024 * 1024,      // 500 MiB
+	1 * 1024 * 1024 * 1024, // 1 GiB
+	2 * 1024 * 1024 * 1024, // 2 GiB
+	4 * 1024 * 1024 * 1024, // 4 GiB
 }
 
 // UploadConfig holds configuration for a multipart upload.
@@ -90,8 +90,8 @@ func WithOverwrite(overwrite bool) UploadOption {
 
 // initiateUploadResponse is the response from initiating a multipart upload.
 type initiateUploadResponse struct {
-	MultipartUpload  *multipartUploadSession  `json:"multipart_upload,omitempty"`
-	ResumableUpload  *resumableUploadSession  `json:"resumable_upload,omitempty"`
+	MultipartUpload *multipartUploadSession `json:"multipart_upload,omitempty"`
+	ResumableUpload *resumableUploadSession `json:"resumable_upload,omitempty"`
 }
 
 // multipartUploadSession holds the state for a multipart upload session.
@@ -106,8 +106,8 @@ type resumableUploadSession struct {
 
 // presignedURL represents a presigned URL for uploading a part.
 type presignedURL struct {
-	URL        string           `json:"url"`
-	PartNumber int              `json:"part_number"`
+	URL        string            `json:"url"`
+	PartNumber int               `json:"part_number"`
 	Headers    []presignedHeader `json:"headers"`
 }
 
