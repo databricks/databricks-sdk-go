@@ -3,6 +3,7 @@ package files
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -39,9 +40,6 @@ const (
 
 	// maxURLExpirationRetries is the maximum number of retries for URL expiration.
 	maxURLExpirationRetries = 3
-
-	// uploadInactivityTimeout is the timeout for upload inactivity.
-	uploadInactivityTimeout = 60 * time.Second
 )
 
 // partSizeOptions lists the candidate part sizes in ascending order.
@@ -246,63 +244,88 @@ func isURLExpiredResponse(statusCode int, body []byte) bool {
 }
 
 // uploadOnePart uploads a single part to a presigned URL and returns the ETag.
-// It retries up to maxURLExpirationRetries times if the presigned URL has expired.
-func (a *FilesAPI) uploadOnePart(ctx context.Context, presigned presignedURL, partData io.ReadSeeker) (string, error) {
-	// Determine content length
-	currentPos, err := partData.Seek(0, io.SeekCurrent)
+func (a *FilesAPI) uploadOnePart(ctx context.Context, presigned presignedURL, partData io.ReadSeeker, contentLength int64) (string, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, presigned.URL, partData)
 	if err != nil {
-		return "", fmt.Errorf("failed to get current position: %w", err)
+		return "", fmt.Errorf("failed to create request: %w", err)
 	}
-	endPos, err := partData.Seek(0, io.SeekEnd)
-	if err != nil {
-		return "", fmt.Errorf("failed to seek to end: %w", err)
-	}
-	contentLength := endPos - currentPos
-	if _, err := partData.Seek(currentPos, io.SeekStart); err != nil {
-		return "", fmt.Errorf("failed to seek back: %w", err)
+	req.ContentLength = contentLength
+	req.Header.Set("Content-Type", "application/octet-stream")
+	for _, h := range presigned.Headers {
+		req.Header.Set(h.Name, h.Value)
 	}
 
-	for attempt := 0; attempt < maxURLExpirationRetries; attempt++ {
+	// Use a client without a total timeout — context cancellation handles
+	// overall deadline, and large parts may legitimately take a long time.
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("upload part %d failed: %w", presigned.PartNumber, err)
+	}
+
+	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
+		etag := resp.Header.Get("ETag")
+		resp.Body.Close()
+		return etag, nil
+	}
+
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	return "", &partUploadError{
+		partNumber: presigned.PartNumber,
+		statusCode: resp.StatusCode,
+		body:       body,
+	}
+}
+
+// partUploadError represents a failed part upload with status and body.
+type partUploadError struct {
+	partNumber int
+	statusCode int
+	body       []byte
+}
+
+func (e *partUploadError) Error() string {
+	return fmt.Sprintf("upload part %d failed with status %d: %s", e.partNumber, e.statusCode, string(e.body))
+}
+
+func (e *partUploadError) isExpiredURL() bool {
+	return isURLExpiredResponse(e.statusCode, e.body)
+}
+
+// uploadOnePartWithRetry uploads a part, re-fetching the presigned URL if it expires.
+func (a *FilesAPI) uploadOnePartWithRetry(ctx context.Context, filePath, sessionToken string, partNumber int, partData io.ReadSeeker, contentLength int64) (string, error) {
+	for attempt := 0; attempt <= maxURLExpirationRetries; attempt++ {
+		// Rewind reader for retries.
 		if attempt > 0 {
 			if _, err := partData.Seek(0, io.SeekStart); err != nil {
 				return "", fmt.Errorf("failed to rewind part data: %w", err)
 			}
 		}
 
-		req, err := http.NewRequestWithContext(ctx, http.MethodPut, presigned.URL, partData)
+		// Fetch a (fresh) presigned URL.
+		urls, err := a.getUploadPartURLs(ctx, filePath, sessionToken, partNumber, 1)
 		if err != nil {
-			return "", fmt.Errorf("failed to create request: %w", err)
+			return "", fmt.Errorf("failed to get upload URL for part %d: %w", partNumber, err)
 		}
-		req.ContentLength = contentLength
-		req.Header.Set("Content-Type", "application/octet-stream")
-		for _, h := range presigned.Headers {
-			req.Header.Set(h.Name, h.Value)
+		if len(urls) == 0 {
+			return "", fmt.Errorf("no upload URL returned for part %d", partNumber)
 		}
 
-		httpClient := &http.Client{Timeout: uploadInactivityTimeout}
-		resp, err := httpClient.Do(req)
+		etag, err := a.uploadOnePart(ctx, urls[0], partData, contentLength)
 		if err != nil {
-			return "", fmt.Errorf("upload part %d failed: %w", presigned.PartNumber, err)
+			var pErr *partUploadError
+			if errors.As(err, &pErr) && pErr.isExpiredURL() && attempt < maxURLExpirationRetries {
+				logger.Debugf(ctx, "presigned URL expired for part %d (attempt %d/%d), fetching new URL",
+					partNumber, attempt+1, maxURLExpirationRetries)
+				continue
+			}
+			return "", err
 		}
-
-		if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
-			etag := resp.Header.Get("ETag")
-			resp.Body.Close()
-			return etag, nil
-		}
-
-		body, _ := io.ReadAll(resp.Body)
-		resp.Body.Close()
-
-		if isURLExpiredResponse(resp.StatusCode, body) {
-			logger.Debugf(ctx, "presigned URL expired for part %d (attempt %d/%d), retrying", presigned.PartNumber, attempt+1, maxURLExpirationRetries)
-			continue
-		}
-
-		return "", fmt.Errorf("upload part %d failed with status %d: %s", presigned.PartNumber, resp.StatusCode, string(body))
+		return etag, nil
 	}
 
-	return "", fmt.Errorf("upload part %d failed: presigned URL expired after %d retries", presigned.PartNumber, maxURLExpirationRetries)
+	return "", fmt.Errorf("upload part %d: presigned URL expired after %d retries", partNumber, maxURLExpirationRetries)
 }
 
 // completeMultipartUpload finalizes a multipart upload with the given ETags.
@@ -358,7 +381,10 @@ func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content
 
 	partNumber := 1
 	for {
-		// Check if a previous upload failed
+		// Check context cancellation and prior upload errors.
+		if err := ctx.Err(); err != nil {
+			break
+		}
 		mu.Lock()
 		if uploadErr != nil {
 			mu.Unlock()
@@ -366,13 +392,14 @@ func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content
 		}
 		mu.Unlock()
 
-		// Read the next part
+		// Read the next part.
 		buf := make([]byte, partSize)
 		n, readErr := io.ReadFull(content, buf)
 		if n == 0 && readErr != nil {
 			break
 		}
 		buf = buf[:n]
+		partDataLen := int64(n)
 
 		currentPartNumber := partNumber
 		partNumber++
@@ -381,39 +408,23 @@ func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content
 		go func(pn int, data []byte) {
 			defer func() { <-sem }()
 
-			// Check for prior error
+			// Check for prior error or context cancellation.
 			mu.Lock()
 			if uploadErr != nil {
 				mu.Unlock()
 				return
 			}
 			mu.Unlock()
-
-			// Get presigned URL for this part
-			urls, err := a.getUploadPartURLs(ctx, filePath, sessionToken, pn, 1)
-			if err != nil {
-				mu.Lock()
-				if uploadErr == nil {
-					uploadErr = fmt.Errorf("failed to get upload URL for part %d: %w", pn, err)
-				}
-				mu.Unlock()
-				return
-			}
-			if len(urls) == 0 {
-				mu.Lock()
-				if uploadErr == nil {
-					uploadErr = fmt.Errorf("no upload URL returned for part %d", pn)
-				}
-				mu.Unlock()
+			if ctx.Err() != nil {
 				return
 			}
 
-			// Upload the part
-			etag, err := a.uploadOnePart(ctx, urls[0], bytes.NewReader(data))
+			// Upload the part with automatic URL refresh on expiration.
+			etag, err := a.uploadOnePartWithRetry(ctx, filePath, sessionToken, pn, bytes.NewReader(data), partDataLen)
 			if err != nil {
 				mu.Lock()
 				if uploadErr == nil {
-					uploadErr = fmt.Errorf("failed to upload part %d: %w", pn, err)
+					uploadErr = err
 				}
 				mu.Unlock()
 				return
