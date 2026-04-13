@@ -51,11 +51,11 @@ func (v cliVersion) String() string {
 	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
 }
 
-// Minimum CLI versions for flags that require version-based detection.
-// --profile is a global Cobra flag — old CLIs accept it silently but fail
-// with "cannot fetch credentials" instead of "unknown flag", so we cannot
-// use error-based detection.
-var cliVersionForProfile = cliVersion{0, 207, 1}
+// Minimum CLI versions for flag support.
+var (
+	cliVersionForProfile      = cliVersion{0, 207, 1} // databricks/cli#855
+	cliVersionForForceRefresh = cliVersion{0, 296, 0} // databricks/cli#4767
+)
 
 // getCliVersion runs "databricks version" and parses the output.
 func getCliVersion(ctx context.Context, cliPath string) (cliVersion, error) {
@@ -113,14 +113,15 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 // buildCliCommand constructs the CLI command for fetching an auth token.
 // The CLI version determines which flags are used.
 func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver cliVersion) []string {
+	var cmd []string
+
 	// --profile is a global Cobra flag — old CLIs accept it silently but
 	// fail with "cannot fetch credentials" instead of "unknown flag".
 	// We use version detection to decide --profile vs --host.
 	if cfg.Profile != "" && ver.AtLeast(cliVersionForProfile) {
-		return []string{cliPath, "auth", "token", "--profile", cfg.Profile}
-	}
-	if cfg.Host != "" {
-		cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
+		cmd = []string{cliPath, "auth", "token", "--profile", cfg.Profile}
+	} else if cfg.Host != "" {
+		cmd = []string{cliPath, "auth", "token", "--host", cfg.Host}
 		switch cfg.HostType() {
 		case AccountHost:
 			cmd = append(cmd, "--account-id", cfg.AccountID)
@@ -128,9 +129,19 @@ func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver cliVe
 		if cfg.Profile != "" && !ver.AtLeast(cliVersionForProfile) {
 			logger.Warnf(ctx, "Databricks CLI v%s does not support --profile flag. Falling back to --host. Please upgrade your CLI to the latest version.", ver)
 		}
-		return cmd
 	}
-	return nil
+
+	if cmd == nil {
+		return nil
+	}
+
+	if ver.AtLeast(cliVersionForForceRefresh) {
+		cmd = append(cmd, "--force-refresh")
+	} else {
+		logger.Warnf(ctx, "Databricks CLI does not support --force-refresh flag. The CLI's token cache may provide stale tokens. Please upgrade your CLI to the latest version.")
+	}
+
+	return cmd
 }
 
 // Token fetches an OAuth token by shelling out to the Databricks CLI.

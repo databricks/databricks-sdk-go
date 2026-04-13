@@ -226,13 +226,25 @@ func TestBuildCliCommand(t *testing.T) {
 		wantCmd []string
 	}{
 		{
-			name:    "host only — any version",
+			name:    "host only — old CLI, no force-refresh",
 			cfg:     &Config{Host: host},
 			ver:     cliVersion{0, 200, 0},
 			wantCmd: []string{cliPath, "auth", "token", "--host", host},
 		},
 		{
-			name:    "account host",
+			name:    "host only — new CLI, with force-refresh",
+			cfg:     &Config{Host: host},
+			ver:     cliVersion{0, 296, 0},
+			wantCmd: []string{cliPath, "auth", "token", "--host", host, "--force-refresh"},
+		},
+		{
+			name:    "account host — with force-refresh",
+			cfg:     &Config{Host: accountHost, AccountID: accountID},
+			ver:     cliVersion{0, 296, 0},
+			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID, "--force-refresh"},
+		},
+		{
+			name:    "account host — without force-refresh",
 			cfg:     &Config{Host: accountHost, AccountID: accountID},
 			ver:     cliVersion{0, 200, 0},
 			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
@@ -248,13 +260,19 @@ func TestBuildCliCommand(t *testing.T) {
 			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost},
 		},
 		{
-			name:    "profile with new CLI — uses --profile",
+			name:    "profile with new CLI — uses --profile, no force-refresh",
 			cfg:     &Config{Profile: "my-profile", Host: host},
 			ver:     cliVersion{0, 207, 1},
 			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile"},
 		},
 		{
-			name:    "profile with old CLI — falls back to --host",
+			name:    "profile with newest CLI — uses --profile and --force-refresh",
+			cfg:     &Config{Profile: "my-profile", Host: host},
+			ver:     cliVersion{0, 296, 0},
+			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile", "--force-refresh"},
+		},
+		{
+			name:    "profile with old CLI — falls back to --host, no force-refresh",
 			cfg:     &Config{Profile: "my-profile", Host: host},
 			ver:     cliVersion{0, 207, 0},
 			wantCmd: []string{cliPath, "auth", "token", "--host", host},
@@ -272,7 +290,13 @@ func TestBuildCliCommand(t *testing.T) {
 			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile"},
 		},
 		{
-			name:    "zero version (detection failed) — falls back to --host",
+			name:    "profile without host and newest CLI — --profile and --force-refresh",
+			cfg:     &Config{Profile: "my-profile"},
+			ver:     cliVersion{0, 296, 0},
+			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile", "--force-refresh"},
+		},
+		{
+			name:    "zero version (detection failed) — falls back to --host, no force-refresh",
 			cfg:     &Config{Profile: "my-profile", Host: host},
 			ver:     cliVersion{},
 			wantCmd: []string{cliPath, "auth", "token", "--host", host},
@@ -280,7 +304,7 @@ func TestBuildCliCommand(t *testing.T) {
 		{
 			name:    "neither profile nor host — nil",
 			cfg:     &Config{},
-			ver:     cliVersion{0, 295, 0},
+			ver:     cliVersion{0, 296, 0},
 			wantCmd: nil,
 		},
 	}
