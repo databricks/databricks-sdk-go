@@ -286,11 +286,31 @@ func TestUploadWithChunking_SmallFile_UsesSingleShot(t *testing.T) {
 	assert.Equal(t, content, receivedBody)
 }
 
-func TestUploadOnePart_RetriesOnExpiredURL(t *testing.T) {
-	var attempts atomic.Int32
+func TestUploadOnePartWithRetry_RefreshesExpiredURL(t *testing.T) {
+	var uploadAttempts atomic.Int32
 
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		n := attempts.Add(1)
+	srv := httptest.NewServer(http.NotFoundHandler())
+	defer srv.Close()
+
+	mux := http.NewServeMux()
+
+	// create-upload-part-urls — always returns a URL pointing to /upload-part/1
+	mux.HandleFunc("/api/2.0/fs/create-upload-part-urls", func(w http.ResponseWriter, r *http.Request) {
+		var req createUploadPartURLsRequest
+		json.NewDecoder(r.Body).Decode(&req)
+		resp := createUploadPartURLsResponse{
+			UploadPartURLs: []presignedURL{{
+				URL:        fmt.Sprintf("%s/upload-part/%d", srv.URL, req.StartPartNumber),
+				PartNumber: req.StartPartNumber,
+			}},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
+	})
+
+	// upload-part — first attempt returns expired URL error, second succeeds
+	mux.HandleFunc("/upload-part/", func(w http.ResponseWriter, r *http.Request) {
+		n := uploadAttempts.Add(1)
 		if n == 1 {
 			w.WriteHeader(http.StatusForbidden)
 			w.Write([]byte("<Error><Code>AccessDenied</Code></Error>"))
@@ -298,22 +318,17 @@ func TestUploadOnePart_RetriesOnExpiredURL(t *testing.T) {
 		}
 		w.Header().Set("ETag", "etag-success")
 		w.WriteHeader(http.StatusOK)
-	}))
-	defer srv.Close()
+	})
 
+	srv.Config.Handler = mux
 	api := newTestFilesAPI(t, srv.URL)
 
-	presigned := presignedURL{
-		URL:        srv.URL + "/upload-part/1",
-		PartNumber: 1,
-	}
 	data := strings.NewReader("test data")
-
 	ctx := context.Background()
-	etag, err := api.uploadOnePart(ctx, presigned, data)
+	etag, err := api.uploadOnePartWithRetry(ctx, "/test/file.bin", "session-tok", 1, data, int64(len("test data")))
 	require.NoError(t, err)
 	assert.Equal(t, "etag-success", etag)
-	assert.Equal(t, int32(2), attempts.Load())
+	assert.Equal(t, int32(2), uploadAttempts.Load())
 }
 
 func TestUploadFromFile(t *testing.T) {
