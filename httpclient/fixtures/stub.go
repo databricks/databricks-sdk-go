@@ -6,9 +6,27 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-
-	"github.com/databricks/databricks-sdk-go/openapi/code"
+	"strings"
+	"unicode"
 )
+
+func toPascalCase(s string) string {
+	var sb strings.Builder
+	upper := true
+	for _, r := range s {
+		if r == '_' || r == '-' || r == ' ' {
+			upper = true
+			continue
+		}
+		if upper {
+			sb.WriteRune(unicode.ToUpper(r))
+			upper = false
+		} else {
+			sb.WriteRune(r)
+		}
+	}
+	return sb.String()
+}
 
 func resourceFromRequest(req *http.Request) string {
 	resource := req.RequestURI
@@ -57,7 +75,7 @@ func bodyStub(req *http.Request) (string, error) {
 	// which is not something i'm willing to write on my weekend
 	expectedRequest += "ExpectedRequest: XXX {\n"
 	for key, value := range receivedRequest {
-		camel := (&code.Named{Name: key}).PascalName()
+		camel := toPascalCase(key)
 		expectedRequest += fmt.Sprintf("\t\t\t%s: %#v,\n", camel, value)
 	}
 	expectedRequest += "\t\t},\n"
