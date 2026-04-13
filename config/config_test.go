@@ -860,27 +860,6 @@ func TestApplyHostMetadata_SetsTokenAudienceFromTokenFederationDefaultOIDCAudien
 	assert.Equal(t, testHMHost+"/oidc/v1/token", cfg.TokenAudience)
 }
 
-func TestApplyHostMetadata_TokenFederationDefaultOIDCAudiencesTakesPriorityOverAccountIDFallback(t *testing.T) {
-	noopLoader := mockLoader(func(cfg *Config) error { return nil })
-	cfg := &Config{
-		Host:    testHMHost,
-		Loaders: []Loader{noopLoader},
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:       "GET",
-				Resource:     "/.well-known/databricks-config",
-				ReuseRequest: true,
-				Status:       200,
-				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "token_federation_default_oidc_audiences": ["custom-audience-from-server"]}`,
-			},
-		},
-	}
-	err := cfg.EnsureResolved()
-	require.NoError(t, err)
-	// token_federation_default_oidc_audiences should take priority over the account_id fallback
-	assert.Equal(t, "custom-audience-from-server", cfg.TokenAudience)
-}
-
 func TestApplyHostMetadata_TokenFederationDefaultOIDCAudiencesDoesNotOverrideExisting(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
@@ -902,7 +881,7 @@ func TestApplyHostMetadata_TokenFederationDefaultOIDCAudiencesDoesNotOverrideExi
 	assert.Equal(t, "user-set-audience", cfg.TokenAudience)
 }
 
-func TestApplyHostMetadata_FallsBackToAccountIDWhenNoTokenFederationDefaultOIDCAudiences(t *testing.T) {
+func TestApplyHostMetadata_DoesNotFallBackToAccountIDWhenNoTokenFederationDefaultOIDCAudiences(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:    testHMHost,
@@ -919,8 +898,8 @@ func TestApplyHostMetadata_FallsBackToAccountIDWhenNoTokenFederationDefaultOIDCA
 	}
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
-	// No token_federation_default_oidc_audiences and no workspace_id → falls back to account_id
-	assert.Equal(t, testHMAccountID, cfg.TokenAudience)
+	// No token_federation_default_oidc_audiences → TokenAudience stays empty (no account_id fallback)
+	assert.Equal(t, "", cfg.TokenAudience)
 }
 
 func TestEnsureResolved_UsesCustomHostMetadataResolver(t *testing.T) {

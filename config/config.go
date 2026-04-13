@@ -747,10 +747,6 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		logger.Debugf(ctx, "Resolved token_audience from host metadata token_federation_default_oidc_audiences: %q", meta.TokenFederationDefaultOIDCAudiences[0])
 		c.TokenAudience = meta.TokenFederationDefaultOIDCAudiences[0]
 	}
-	if c.TokenAudience == "" && meta.WorkspaceID == "" && c.AccountID != "" {
-		logger.Debugf(ctx, "Setting token_audience to account_id for account host: %q", c.AccountID)
-		c.TokenAudience = c.AccountID
-	}
 	if c.DiscoveryURL == "" {
 		if meta.OIDCEndpoint == "" {
 			logger.Warnf(ctx, "Host metadata missing oidc_endpoint; skipping discovery URL resolution")

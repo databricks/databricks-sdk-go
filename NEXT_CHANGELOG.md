@@ -25,6 +25,7 @@
 
 ### Internal Changes
 
+ * Remove `AccountID` fallback for `TokenAudience` in host metadata resolution; audience is now only set from `token_federation_default_oidc_audiences`.
  * Use resolved host type from host metadata in `HostType()` method, falling back to URL pattern matching when metadata is unavailable.
  * Normalize internal token sources on `auth.TokenSource` for proper context propagation ([#1577](https://github.com/databricks/databricks-sdk-go/pull/1577)).
  * Fix `TestAzureGithubOIDCCredentials` hang caused by missing `HTTPTransport` stub: `EnsureResolved` now calls `resolveHostMetadata`, which makes a real network request when no transport is set ([#1550](https://github.com/databricks/databricks-sdk-go/pull/1550)).
