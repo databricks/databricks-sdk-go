@@ -55,6 +55,27 @@ var partSizeOptions = []int64{
 	4 * 1024 * 1024 * 1024, // 4 GiB
 }
 
+// filesAPIUploadUtilities defines the hand-written upload extension methods
+// for FilesAPI. This interface is embedded in FilesInterface (in api.go) so
+// that the methods are accessible through WorkspaceClient.Files.
+type filesAPIUploadUtilities interface {
+	// UploadWithChunking uploads a file to a Unity Catalog volume path. For
+	// files smaller than 50 MiB it uses the standard single-shot Upload. For
+	// larger files it uses the multipart chunked upload protocol with parallel
+	// part uploads. If the first chunk of a multipart upload fails, it falls
+	// back to single-shot upload automatically.
+	//
+	// filePath is the absolute remote path (e.g. /Volumes/catalog/schema/volume/file.bin).
+	// content must be an io.ReadSeeker so the SDK can read parts for parallel upload.
+	// contentLength is the total file size in bytes.
+	UploadWithChunking(ctx context.Context, filePath string, content io.ReadSeeker, contentLength int64, opts ...UploadOption) error
+
+	// UploadFromFile uploads a local file to a Unity Catalog volume path. It
+	// automatically detects the file size and uses multipart chunked upload for
+	// files larger than 50 MiB.
+	UploadFromFile(ctx context.Context, filePath string, sourcePath string, opts ...UploadOption) error
+}
+
 // UploadConfig holds configuration for a multipart upload.
 type UploadConfig struct {
 	PartSize    int64
@@ -354,8 +375,24 @@ func (a *FilesAPI) completeMultipartUpload(ctx context.Context, filePath, sessio
 	return a.filesImpl.client.Do(ctx, http.MethodPost, apiPath, headers, queryParams, req, nil)
 }
 
-// uploadMultipart orchestrates a full multipart upload.
-func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content io.ReadSeeker, _ int64, cfg *UploadConfig) error {
+// errFallbackToSingleShot signals that multipart upload failed on the first
+// chunk and the caller should retry with single-shot upload.
+type errFallbackToSingleShot struct {
+	reason error
+}
+
+func (e *errFallbackToSingleShot) Error() string {
+	return fmt.Sprintf("falling back to single-shot upload: %v", e.reason)
+}
+
+// uploadMultipart orchestrates a full multipart upload. If the first part
+// fails (e.g., 403 from Azure firewall), it returns errFallbackToSingleShot
+// so the caller can retry with the standard Upload method.
+func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content io.ReadSeeker, contentLength int64, cfg *UploadConfig) error {
+	if contentLength <= 0 {
+		return fmt.Errorf("contentLength must be positive, got %d", contentLength)
+	}
+
 	// Phase 1: Initiate
 	initResp, err := a.initiateMultipartUpload(ctx, filePath, cfg.Overwrite)
 	if err != nil {
@@ -373,83 +410,109 @@ func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content
 		parallelism = defaultParallelism
 	}
 
-	// Phase 2: Upload parts in parallel
-	sem := make(chan struct{}, parallelism)
-	var mu sync.Mutex
+	// Phase 2a: Upload first part synchronously to detect early failures.
+	// If the first part fails (e.g. Azure firewall 403), signal fallback to
+	// single-shot upload so the caller can retry without multipart.
 	etags := make(map[int]string)
-	var uploadErr error
+	var totalBytes int64
 
-	partNumber := 1
-	for {
-		// Check context cancellation and prior upload errors.
-		if err := ctx.Err(); err != nil {
-			break
-		}
-		mu.Lock()
-		if uploadErr != nil {
-			mu.Unlock()
-			break
-		}
-		mu.Unlock()
+	firstBuf := make([]byte, partSize)
+	firstN, firstReadErr := io.ReadFull(content, firstBuf)
+	if firstN == 0 && firstReadErr != nil {
+		// Empty content — nothing to upload. Complete with zero parts.
+		return a.completeMultipartUpload(ctx, filePath, sessionToken, etags)
+	}
+	firstBuf = firstBuf[:firstN]
+	totalBytes += int64(firstN)
 
-		// Read the next part.
-		buf := make([]byte, partSize)
-		n, readErr := io.ReadFull(content, buf)
-		if n == 0 && readErr != nil {
-			break
-		}
-		buf = buf[:n]
-		partDataLen := int64(n)
+	firstEtag, err := a.uploadOnePartWithRetry(ctx, filePath, sessionToken, 1, bytes.NewReader(firstBuf), int64(firstN))
+	if err != nil {
+		a.abortMultipartUpload(ctx, filePath, sessionToken)
+		return &errFallbackToSingleShot{reason: err}
+	}
+	etags[1] = firstEtag
+	logger.Debugf(ctx, "uploaded part 1 (first chunk validated)")
 
-		currentPartNumber := partNumber
-		partNumber++
+	// Phase 2b: Upload remaining parts in parallel.
+	if firstReadErr == nil {
+		sem := make(chan struct{}, parallelism)
+		var mu sync.Mutex
+		var uploadErr error
 
-		sem <- struct{}{}
-		go func(pn int, data []byte) {
-			defer func() { <-sem }()
-
-			// Check for prior error or context cancellation.
+		partNumber := 2
+		for {
+			if err := ctx.Err(); err != nil {
+				break
+			}
 			mu.Lock()
 			if uploadErr != nil {
 				mu.Unlock()
-				return
+				break
 			}
 			mu.Unlock()
-			if ctx.Err() != nil {
-				return
-			}
 
-			// Upload the part with automatic URL refresh on expiration.
-			etag, err := a.uploadOnePartWithRetry(ctx, filePath, sessionToken, pn, bytes.NewReader(data), partDataLen)
-			if err != nil {
+			buf := make([]byte, partSize)
+			n, readErr := io.ReadFull(content, buf)
+			if n == 0 && readErr != nil {
+				break
+			}
+			buf = buf[:n]
+			partDataLen := int64(n)
+			totalBytes += partDataLen
+
+			currentPartNumber := partNumber
+			partNumber++
+
+			sem <- struct{}{}
+			go func(pn int, data []byte) {
+				defer func() { <-sem }()
+
 				mu.Lock()
-				if uploadErr == nil {
-					uploadErr = err
+				if uploadErr != nil {
+					mu.Unlock()
+					return
 				}
 				mu.Unlock()
-				return
+				if ctx.Err() != nil {
+					return
+				}
+
+				etag, err := a.uploadOnePartWithRetry(ctx, filePath, sessionToken, pn, bytes.NewReader(data), partDataLen)
+				if err != nil {
+					mu.Lock()
+					if uploadErr == nil {
+						uploadErr = err
+					}
+					mu.Unlock()
+					return
+				}
+
+				mu.Lock()
+				etags[pn] = etag
+				mu.Unlock()
+				logger.Debugf(ctx, "uploaded part %d", pn)
+			}(currentPartNumber, buf)
+
+			if readErr != nil {
+				break
 			}
+		}
 
-			mu.Lock()
-			etags[pn] = etag
-			mu.Unlock()
+		// Wait for all goroutines to finish.
+		for i := 0; i < parallelism; i++ {
+			sem <- struct{}{}
+		}
 
-			logger.Debugf(ctx, "uploaded part %d", pn)
-		}(currentPartNumber, buf)
-
-		if readErr != nil {
-			break
+		if uploadErr != nil {
+			a.abortMultipartUpload(ctx, filePath, sessionToken)
+			return uploadErr
 		}
 	}
 
-	// Wait for all goroutines to finish
-	for i := 0; i < parallelism; i++ {
-		sem <- struct{}{}
-	}
-
-	if uploadErr != nil {
+	// Verify total bytes read matches the declared content length.
+	if totalBytes != contentLength {
 		a.abortMultipartUpload(ctx, filePath, sessionToken)
-		return uploadErr
+		return fmt.Errorf("content length mismatch: declared %d bytes but read %d bytes", contentLength, totalBytes)
 	}
 
 	// Phase 3: Complete
@@ -531,7 +594,20 @@ func (a *FilesAPI) UploadWithChunking(ctx context.Context, filePath string, cont
 		})
 	}
 
-	return a.uploadMultipart(ctx, filePath, content, contentLength, cfg)
+	err := a.uploadMultipart(ctx, filePath, content, contentLength, cfg)
+	var fallback *errFallbackToSingleShot
+	if errors.As(err, &fallback) {
+		logger.Debugf(ctx, "multipart first-chunk failed (%v), falling back to single-shot upload", fallback.reason)
+		if _, seekErr := content.Seek(0, io.SeekStart); seekErr != nil {
+			return fmt.Errorf("failed to rewind content for single-shot fallback: %w", seekErr)
+		}
+		return a.Upload(ctx, UploadRequest{
+			FilePath:  filePath,
+			Contents:  io.NopCloser(content),
+			Overwrite: cfg.Overwrite,
+		})
+	}
+	return err
 }
 
 // UploadFromFile uploads a local file to the given path, automatically choosing
