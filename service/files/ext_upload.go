@@ -437,12 +437,62 @@ func (a *FilesAPI) uploadMultipart(ctx context.Context, filePath string, content
 	}
 
 	if uploadErr != nil {
+		a.abortMultipartUpload(ctx, filePath, sessionToken)
 		return uploadErr
 	}
 
 	// Phase 3: Complete
 	logger.Debugf(ctx, "completing multipart upload with %d parts", len(etags))
 	return a.completeMultipartUpload(ctx, filePath, sessionToken, etags)
+}
+
+// abortMultipartUpload attempts to abort an in-progress multipart upload.
+// This is a best-effort cleanup; errors are logged but not returned.
+func (a *FilesAPI) abortMultipartUpload(ctx context.Context, filePath, sessionToken string) {
+	apiPath := "/api/2.0/fs/create-abort-upload-url"
+	headers := map[string]string{
+		"Content-Type": "application/json",
+		"Accept":       "application/json",
+	}
+	body := map[string]string{
+		"path":          filePath,
+		"session_token": sessionToken,
+		"expire_time":   uploadURLExpireTime(),
+	}
+
+	var resp struct {
+		AbortUploadURL struct {
+			URL     string            `json:"url"`
+			Headers []presignedHeader `json:"headers,omitempty"`
+		} `json:"abort_upload_url"`
+	}
+	err := a.filesImpl.client.Do(ctx, http.MethodPost, apiPath, headers, nil, body, &resp)
+	if err != nil {
+		logger.Debugf(ctx, "failed to get abort URL: %v", err)
+		return
+	}
+	if resp.AbortUploadURL.URL == "" {
+		logger.Debugf(ctx, "no abort URL returned")
+		return
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, resp.AbortUploadURL.URL, nil)
+	if err != nil {
+		logger.Debugf(ctx, "failed to create abort request: %v", err)
+		return
+	}
+	for _, h := range resp.AbortUploadURL.Headers {
+		req.Header.Set(h.Name, h.Value)
+	}
+
+	httpClient := &http.Client{Timeout: 30 * time.Second}
+	abortResp, err := httpClient.Do(req)
+	if err != nil {
+		logger.Debugf(ctx, "failed to abort multipart upload: %v", err)
+		return
+	}
+	abortResp.Body.Close()
+	logger.Debugf(ctx, "aborted multipart upload (status %d)", abortResp.StatusCode)
 }
 
 // UploadWithChunking uploads a file to the given path, automatically choosing
