@@ -743,13 +743,9 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		logger.Debugf(ctx, "Resolved host_type from host metadata: %q", meta.HostType)
 		c.resolvedHostType = meta.HostType
 	}
-	if c.TokenAudience == "" && meta.DefaultOIDCAudience != "" {
-		logger.Debugf(ctx, "Resolved token_audience from host metadata default_oidc_audience: %q", meta.DefaultOIDCAudience)
-		c.TokenAudience = meta.DefaultOIDCAudience
-	}
-	if c.TokenAudience == "" && meta.WorkspaceID == "" && c.AccountID != "" {
-		logger.Debugf(ctx, "Setting token_audience to account_id for account host: %q", c.AccountID)
-		c.TokenAudience = c.AccountID
+	if c.TokenAudience == "" && len(meta.TokenFederationDefaultOIDCAudiences) > 0 {
+		logger.Debugf(ctx, "Resolved token_audience from host metadata token_federation_default_oidc_audiences: %q", meta.TokenFederationDefaultOIDCAudiences[0])
+		c.TokenAudience = meta.TokenFederationDefaultOIDCAudiences[0]
 	}
 	if c.DiscoveryURL == "" {
 		if meta.OIDCEndpoint == "" {
