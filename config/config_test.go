@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sync"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/common/environment"
@@ -194,6 +195,31 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 	require.NoError(t, err)
 	err = c.Authenticate(req)
 	assert.ErrorIs(t, err, ErrNoHostConfigured)
+}
+
+// TestAuthenticateIfNeeded_concurrentLazyInit aims at exercising
+// authenticateIfNeeded in parallel to catch potential race conditions when
+// running the test with -race (see #1310).
+func TestAuthenticateIfNeeded_concurrentLazyInit(t *testing.T) {
+	cfg := &Config{
+		Host:          "http://localhost",
+		Token:         "x",
+		Loaders:       []Loader{mockLoader(func(*Config) error { return nil })},
+		HTTPTransport: metadataNotFoundTransport,
+	}
+	if err := cfg.EnsureResolved(); err != nil {
+		t.Fatal(err)
+	}
+
+	var wg sync.WaitGroup
+	for range 32 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			cfg.authenticateIfNeeded()
+		}()
+	}
+	wg.Wait()
 }
 
 func TestConfig_getOidcEndpoints_account(t *testing.T) {
