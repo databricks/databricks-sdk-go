@@ -14,6 +14,7 @@
 
 ### Bug Fixes
 
+ * Handle `NaN`, `Inf`, and `-Inf` string values when deserializing float fields; fixes deserialization failures for MLflow metric responses that encode special float values as JSON strings ([#1498](https://github.com/databricks/databricks-sdk-go/issues/1498)).
  * Add `X-Databricks-Org-Id` header to deprecated workspace SCIM APIs (Groups, ServicePrincipals, Users) for SPOG host compatibility.
  * Add retry logic to token acquisition for OIDC, M2M, and Azure client secret credentials ([#1398](https://github.com/databricks/databricks-sdk-go/issues/1398), [#1072](https://github.com/databricks/databricks-sdk-go/issues/1072)).
  * Fix double-caching of OAuth tokens in Azure client secret credentials ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
