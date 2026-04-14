@@ -3,8 +3,6 @@
 package databricks
 
 import (
-	"errors"
-
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/httpclient"
@@ -1395,8 +1393,6 @@ type WorkspaceClient struct {
 	// Deprecated: Use the UsersV2 API instead.
 	Users iam.UsersInterface
 }
-
-var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration - host is not a workspace host")
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
 // returns error in case configuration is wrong

@@ -146,36 +146,36 @@ func TestGetHostMetadata_WithHostTypeField(t *testing.T) {
 	}
 }
 
-func TestGetHostMetadata_WithDefaultOIDCAudience(t *testing.T) {
+func TestGetHostMetadata_WithTokenFederationDefaultOIDCAudiences(t *testing.T) {
 	tests := []struct {
-		name         string
-		audience     string
-		wantAudience string
+		name          string
+		audiences     []string
+		wantAudiences []string
 	}{
 		{
-			name:         "workspace audience",
-			audience:     testHMHost + "/oidc/v1/token",
-			wantAudience: testHMHost + "/oidc/v1/token",
+			name:          "workspace audience",
+			audiences:     []string{testHMHost + "/oidc/v1/token"},
+			wantAudiences: []string{testHMHost + "/oidc/v1/token"},
 		},
 		{
-			name:         "account audience",
-			audience:     testHMAccountID,
-			wantAudience: testHMAccountID,
+			name:          "account audience",
+			audiences:     []string{testHMAccountID},
+			wantAudiences: []string{testHMAccountID},
 		},
 		{
-			name:         "missing field",
-			audience:     "",
-			wantAudience: "",
+			name:          "missing field",
+			audiences:     nil,
+			wantAudiences: nil,
 		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			response := map[string]string{
+			response := map[string]any{
 				"oidc_endpoint": testHMHost + "/oidc",
 				"account_id":    testHMAccountID,
 			}
-			if tc.audience != "" {
-				response["default_oidc_audience"] = tc.audience
+			if tc.audiences != nil {
+				response["token_federation_default_oidc_audiences"] = tc.audiences
 			}
 			client := newTestAPIClient(fixtures.MappingTransport{
 				"GET /.well-known/databricks-config": {
@@ -187,8 +187,8 @@ func TestGetHostMetadata_WithDefaultOIDCAudience(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if meta.DefaultOIDCAudience != tc.wantAudience {
-				t.Errorf("DefaultOIDCAudience mismatch: got %q, want %q", meta.DefaultOIDCAudience, tc.wantAudience)
+			if diff := cmp.Diff(tc.wantAudiences, meta.TokenFederationDefaultOIDCAudiences); diff != "" {
+				t.Errorf("TokenFederationDefaultOIDCAudiences mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}

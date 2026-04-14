@@ -586,6 +586,8 @@ type CreateOboTokenRequest struct {
 	// The number of seconds before the token expires.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
+	Scopes []string `json:"scopes,omitempty"`
+
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
@@ -671,6 +673,8 @@ type CreateTokenRequest struct {
 	//
 	// If the lifetime is not specified, this token remains valid for 2 years.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
+	// Optional scopes of the token.
+	Scopes []string `json:"scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -752,21 +756,6 @@ func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
 // estore/namespaces/lakehousenetworkmanager/latest.proto.
 type CustomerFacingIngressNetworkPolicy struct {
 	PublicAccess *CustomerFacingIngressNetworkPolicyPublicAccess `json:"public_access,omitempty"`
-}
-
-type CustomerFacingIngressNetworkPolicyAppsDestination struct {
-	// Must be set to true.
-	AllDestinations bool `json:"all_destinations,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CustomerFacingIngressNetworkPolicyAppsDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CustomerFacingIngressNetworkPolicyAppsDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CustomerFacingIngressNetworkPolicyAuthentication struct {
@@ -874,21 +863,6 @@ type CustomerFacingIngressNetworkPolicyIpRanges struct {
 	IpRanges []string `json:"ip_ranges,omitempty"`
 }
 
-type CustomerFacingIngressNetworkPolicyLakebaseDestination struct {
-	// Must be set to true.
-	AllDestinations bool `json:"all_destinations,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CustomerFacingIngressNetworkPolicyLakebaseDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CustomerFacingIngressNetworkPolicyLakebaseDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type CustomerFacingIngressNetworkPolicyPublicAccess struct {
 	AllowRules []CustomerFacingIngressNetworkPolicyPublicIngressRule `json:"allow_rules,omitempty"`
 
@@ -982,12 +956,8 @@ type CustomerFacingIngressNetworkPolicyRequestDestination struct {
 	// provided.
 	AllDestinations bool `json:"all_destinations,omitempty"`
 
-	Apps *CustomerFacingIngressNetworkPolicyAppsDestination `json:"apps,omitempty"`
-
-	Lakebase *CustomerFacingIngressNetworkPolicyLakebaseDestination `json:"lakebase,omitempty"`
-
 	WorkspaceApi *CustomerFacingIngressNetworkPolicyWorkspaceApiDestination `json:"workspace_api,omitempty"`
-
+	// Workspace destinations
 	WorkspaceUi *CustomerFacingIngressNetworkPolicyWorkspaceUiDestination `json:"workspace_ui,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

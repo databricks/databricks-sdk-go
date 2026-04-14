@@ -10,7 +10,7 @@
 
 * Added `HostMetadataResolver` hook to allow callers to customize host metadata resolution, e.g. with caching ([#1572](https://github.com/databricks/databricks-sdk-go/pull/1572)).
 * Added `NewLimitIterator` to `listing` package for lazy iteration with a cap on output items ([#1555](https://github.com/databricks/databricks-sdk-go/pull/1555)).
-* Resolve `TokenAudience` from `default_oidc_audience` in host metadata discovery endpoint.
+* Resolve `TokenAudience` from `token_federation_default_oidc_audiences` in host metadata discovery endpoint.
 
 ### Bug Fixes
 
@@ -19,6 +19,7 @@
  * Fix double-caching of OAuth tokens in Azure client secret credentials ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
  * Disable async token refresh for GCP credential providers to avoid wasted refresh attempts caused by double-caching with Google's internal `oauth2.ReuseTokenSource` ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
  * Fixed double-caching in M2M OAuth that prevented the proactive async token refresh from reaching the HTTP endpoint until ~10s before expiry, causing bursts of 401 errors at token rotation boundaries ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
+ * Fix data race in `authenticateIfNeeded` when lazily initializing `credentialsProvider` ([#1310](https://github.com/databricks/databricks-sdk-go/issues/1310)).
 
 ### Documentation
 
@@ -56,3 +57,25 @@
 * Add `ConnectorOptions` field for [pipelines.TableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpec).
 * Add `GoogleDrive` enum value for [pipelines.IngestionSourceType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionSourceType).
 * [Breaking] Remove `Project` field for [postgres.SyncedTableSyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpec).
+* Add `DeleteAppThumbnail` and `UpdateAppThumbnail` methods for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppsAPI) workspace-level service.
+* Add `CreateMessageComment`, `ListConversationComments` and `ListMessageComments` methods for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service.
+* Add `ManagedEncryptionSettings` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+* Add `ManagedEncryptionSettings` field for [catalog.CreateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCatalog).
+* Add `ManagedEncryptionSettings` field for [catalog.UpdateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCatalog).
+* Add `Comment` field for [dashboards.GenieFeedback](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieFeedback).
+* Add `Thoughts` field for [dashboards.GenieQueryAttachment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieQueryAttachment).
+* Add `Comment` field for [dashboards.GenieSendMessageFeedbackRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieSendMessageFeedbackRequest).
+* Add `RequestSource` field for [ml.DataSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DataSource).
+* Add `IsOnline` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `GoogleAdsOptions` and `TiktokAdsOptions` fields for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
+* Add `Scopes` field for [settings.CreateOboTokenRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateOboTokenRequest).
+* Add `Scopes` field for [settings.CreateTokenRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateTokenRequest).
+* Add `SqlState` field for [sql.StatementStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#StatementStatus).
+* Add `UsagePolicyId` field for [vectorsearch.CreateEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateEndpoint).
+* Add `IndexSubtype` field for [vectorsearch.CreateVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateVectorIndexRequest).
+* Add `BudgetPolicyId` field for [vectorsearch.EndpointInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointInfo).
+* Add `IndexSubtype` field for [vectorsearch.MiniVectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#MiniVectorIndex).
+* Add `BudgetPolicyId` field for [vectorsearch.PatchEndpointBudgetPolicyResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#PatchEndpointBudgetPolicyResponse).
+* Add `IndexSubtype` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+* Add `StorageOptimized` enum value for [vectorsearch.EndpointType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointType).
+* [Breaking] Remove `Apps` and `Lakebase` fields for [settings.CustomerFacingIngressNetworkPolicyRequestDestination](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingIngressNetworkPolicyRequestDestination).
