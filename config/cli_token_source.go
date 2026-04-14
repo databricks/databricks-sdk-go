@@ -31,62 +31,115 @@ type cliTokenResponse struct {
 	Expiry      string `json:"expiry"`
 }
 
-type CliTokenSource struct {
-	// cmd is the primary command to execute (--profile when available, --host otherwise).
-	cmd []string
-
-	// hostCmd is a fallback command using --host, used when the primary --profile
-	// command fails because the CLI is too old to support --profile.
-	hostCmd []string
+// cliVersion represents a parsed Databricks CLI semver version.
+type cliVersion struct {
+	Major, Minor, Patch int
 }
 
-func NewCliTokenSource(cfg *Config) (*CliTokenSource, error) {
+// AtLeast returns true if v is greater than or equal to other.
+func (v cliVersion) AtLeast(other cliVersion) bool {
+	if v.Major != other.Major {
+		return v.Major > other.Major
+	}
+	if v.Minor != other.Minor {
+		return v.Minor > other.Minor
+	}
+	return v.Patch >= other.Patch
+}
+
+func (v cliVersion) String() string {
+	if v == (cliVersion{}) {
+		return "unknown"
+	}
+	return fmt.Sprintf("v%d.%d.%d", v.Major, v.Minor, v.Patch)
+}
+
+// Minimum CLI versions for flag support.
+var cliVersionForProfile = cliVersion{0, 207, 1} // https://github.com/databricks/cli/pull/855
+
+// getCliVersion runs "databricks version" and parses the output.
+func getCliVersion(ctx context.Context, cliPath string) (cliVersion, error) {
+	cmd := exec.CommandContext(ctx, cliPath, "version")
+	out, err := cmd.Output()
+	if err != nil {
+		return cliVersion{}, fmt.Errorf("cannot get CLI version: %w", err)
+	}
+	return parseCliVersion(strings.TrimSpace(string(out)))
+}
+
+// parseCliVersion parses a version string like "Databricks CLI v0.207.1".
+func parseCliVersion(s string) (cliVersion, error) {
+	s = strings.TrimPrefix(s, "Databricks CLI v")
+	var v cliVersion
+	_, err := fmt.Sscanf(s, "%d.%d.%d", &v.Major, &v.Minor, &v.Patch)
+	if err != nil {
+		return cliVersion{}, fmt.Errorf("cannot parse CLI version %q: %w", s, err)
+	}
+	return v, nil
+}
+
+// CliTokenSource fetches OAuth tokens by shelling out to the Databricks CLI.
+type CliTokenSource struct {
+	cmd []string
+}
+
+// NewCliTokenSource creates a [CliTokenSource] by detecting the installed CLI
+// version and building the appropriate auth token command.
+func NewCliTokenSource(ctx context.Context, cfg *Config) (*CliTokenSource, error) {
 	cliPath, err := findDatabricksCli(cfg.DatabricksCliPath)
 	if err != nil {
 		return nil, err
 	}
-	profileCmd, hostCmd := buildCliCommands(cliPath, cfg)
-	return &CliTokenSource{cmd: profileCmd, hostCmd: hostCmd}, nil
+	cmd, err := resolveCliCommand(ctx, cliPath, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return &CliTokenSource{cmd: cmd}, nil
 }
 
-// buildCliCommands constructs the CLI commands for fetching an auth token.
-// When cfg.Profile is set, the primary command uses --profile and a fallback
-// --host command is also returned for compatibility with older CLIs.
-// When cfg.Profile is empty, the primary command uses --host and no fallback
-// is needed.
-func buildCliCommands(cliPath string, cfg *Config) (primaryCmd []string, hostCmd []string) {
+// resolveCliCommand detects the CLI version and builds the command to execute.
+func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]string, error) {
+	ver, err := getCliVersion(ctx, cliPath)
+	if err != nil {
+		logger.Warnf(ctx, "Failed to detect Databricks CLI version: %v. Falling back to conservative flag set.", err)
+		ver = cliVersion{}
+	}
+	cmd := buildCliCommand(ctx, cliPath, cfg, ver)
+	if cmd == nil {
+		return nil, fmt.Errorf("cannot configure CLI token source: neither profile nor host is set")
+	}
+	return cmd, nil
+}
+
+// buildCliCommand constructs the CLI command for fetching an auth token.
+// The CLI version determines which flags are used.
+func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver cliVersion) []string {
+	var cmd []string
+
+	// --profile is a global Cobra flag — old CLIs accept it silently but
+	// fail with "cannot fetch credentials" instead of "unknown flag".
+	// We use version detection to decide --profile vs --host.
 	if cfg.Profile != "" {
-		primary := []string{cliPath, "auth", "token", "--profile", cfg.Profile}
-		if cfg.Host != "" {
-			// Build a --host fallback for old CLIs that don't support --profile.
-			return primary, buildHostCommand(cliPath, cfg)
+		if ver.AtLeast(cliVersionForProfile) {
+			cmd = []string{cliPath, "auth", "token", "--profile", cfg.Profile}
+		} else {
+			logger.Warnf(ctx, "Profile %q was specified but Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.", cfg.Profile, ver, cliVersionForProfile)
 		}
-		return primary, nil
 	}
-	return buildHostCommand(cliPath, cfg), nil
-}
 
-// buildHostCommand constructs the legacy --host based CLI command.
-func buildHostCommand(cliPath string, cfg *Config) []string {
-	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
-	switch cfg.HostType() {
-	case AccountHost:
-		cmd = append(cmd, "--account-id", cfg.AccountID)
+	if cmd == nil && cfg.Host != "" {
+		cmd = []string{cliPath, "auth", "token", "--host", cfg.Host}
+		if cfg.HostType() == AccountHost {
+			cmd = append(cmd, "--account-id", cfg.AccountID)
+		}
 	}
+
 	return cmd
 }
 
 // Token fetches an OAuth token by shelling out to the Databricks CLI.
-// When a --profile command is configured, it is tried first. If the CLI
-// returns "unknown flag: --profile" (indicating an older CLI version),
-// the fallback --host command is used instead.
 func (c *CliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
-	tok, err := c.execCliCommand(ctx, c.cmd)
-	if err != nil && c.hostCmd != nil && isUnknownFlagError(err) {
-		logger.Warnf(ctx, "Databricks CLI does not support --profile flag. Falling back to --host. Please upgrade your CLI to the latest version.")
-		return c.execCliCommand(ctx, c.hostCmd)
-	}
-	return tok, err
+	return c.execCliCommand(ctx, c.cmd)
 }
 
 func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oauth2.Token, error) {
@@ -95,6 +148,8 @@ func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oa
 	if err != nil {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {
+			// We intentionally discard exec.ExitError — the stderr text is the
+			// CLI's error contract; exit codes and process state are not useful.
 			return nil, fmt.Errorf("cannot get access token: %s", strings.TrimSpace(string(exitErr.Stderr)))
 		}
 		return nil, fmt.Errorf("cannot get access token: %w", err)
@@ -112,13 +167,6 @@ func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oa
 		TokenType:   resp.TokenType,
 		Expiry:      expiry,
 	}, nil
-}
-
-// isUnknownFlagError returns true if the error indicates the CLI does not
-// recognize the --profile flag. This happens with older CLI versions that
-// predate profile-based token lookup.
-func isUnknownFlagError(err error) bool {
-	return strings.Contains(err.Error(), "unknown flag: --profile")
 }
 
 // parseExpiry parses an expiry time string in multiple formats for cross-SDK compatibility.
