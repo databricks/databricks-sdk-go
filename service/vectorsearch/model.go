@@ -36,6 +36,8 @@ type CreateEndpoint struct {
 	MinQps int64 `json:"min_qps,omitempty"`
 	// Name of the vector search endpoint
 	Name string `json:"name"`
+	// The usage policy id to be applied once we've migrated to usage policies
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -57,6 +59,9 @@ type CreateVectorIndexRequest struct {
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint to be used for serving the index
 	EndpointName string `json:"endpoint_name"`
+	// The subtype of the index. Use `HYBRID` or `FULL_TEXT`. `VECTOR` is not
+	// supported.
+	IndexSubtype IndexSubtype `json:"index_subtype,omitempty"`
 
 	IndexType VectorIndexType `json:"index_type"`
 	// Name of the index
@@ -293,6 +298,10 @@ func (s EmbeddingVectorColumn) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointInfo struct {
+	// Discussed here: https://databricks.atlassian.net/wiki/x/OQDlCQE
+	// Additional documentation: https://aip.dev.databricks.com/129 the user
+	// selected budget policy id for the endpoint (client-side)
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Timestamp of endpoint creation
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Creator of the endpoint
@@ -419,6 +428,8 @@ type EndpointType string
 
 const EndpointTypeStandard EndpointType = `STANDARD`
 
+const EndpointTypeStorageOptimized EndpointType = `STORAGE_OPTIMIZED`
+
 // String representation for [fmt.Print]
 func (f *EndpointType) String() string {
 	return string(*f)
@@ -427,11 +438,11 @@ func (f *EndpointType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointType) Set(v string) error {
 	switch v {
-	case `STANDARD`:
+	case `STANDARD`, `STORAGE_OPTIMIZED`:
 		*f = EndpointType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "STANDARD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "STANDARD", "STORAGE_OPTIMIZED"`, v)
 	}
 }
 
@@ -441,6 +452,7 @@ func (f *EndpointType) Set(v string) error {
 func (f *EndpointType) Values() []EndpointType {
 	return []EndpointType{
 		EndpointTypeStandard,
+		EndpointTypeStorageOptimized,
 	}
 }
 
@@ -473,6 +485,54 @@ func (s *GetIndexRequest) UnmarshalJSON(b []byte) error {
 
 func (s GetIndexRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The subtype of the vector search index, determining the indexing and
+// retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. -
+// `FULL_TEXT`: An index that uses full-text search without vector embeddings. -
+// `HYBRID`: An index that uses vector embeddings for similarity search and
+// hybrid search.
+type IndexSubtype string
+
+// An index that uses full-text search without vector embeddings.
+const IndexSubtypeFullText IndexSubtype = `FULL_TEXT`
+
+// An index that uses vector embeddings for similarity search and hybrid search.
+const IndexSubtypeHybrid IndexSubtype = `HYBRID`
+
+// Not supported. Use `HYBRID` instead.
+const IndexSubtypeVector IndexSubtype = `VECTOR`
+
+// String representation for [fmt.Print]
+func (f *IndexSubtype) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IndexSubtype) Set(v string) error {
+	switch v {
+	case `FULL_TEXT`, `HYBRID`, `VECTOR`:
+		*f = IndexSubtype(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FULL_TEXT", "HYBRID", "VECTOR"`, v)
+	}
+}
+
+// Values returns all possible values for IndexSubtype.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IndexSubtype) Values() []IndexSubtype {
+	return []IndexSubtype{
+		IndexSubtypeFullText,
+		IndexSubtypeHybrid,
+		IndexSubtypeVector,
+	}
+}
+
+// Type always returns IndexSubtype to satisfy [pflag.Value] interface
+func (f *IndexSubtype) Type() string {
+	return "IndexSubtype"
 }
 
 type ListEndpointResponse struct {
@@ -635,6 +695,8 @@ type MiniVectorIndex struct {
 	Creator string `json:"creator,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
+	// The subtype of the index.
+	IndexSubtype IndexSubtype `json:"index_subtype,omitempty"`
 
 	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index
@@ -661,6 +723,7 @@ type PatchEndpointBudgetPolicyRequest struct {
 }
 
 type PatchEndpointBudgetPolicyResponse struct {
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The budget policy applied to the vector search endpoint.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 
@@ -1148,6 +1211,8 @@ type VectorIndex struct {
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
+	// The subtype of the index.
+	IndexSubtype IndexSubtype `json:"index_subtype,omitempty"`
 
 	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index

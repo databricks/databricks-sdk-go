@@ -879,10 +879,15 @@ type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
+// Specifies the data source backing a feature. Exactly one source type must be
+// set.
 type DataSource struct {
+	// A Delta table data source.
 	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
-
+	// A Kafka stream data source.
 	KafkaSource *KafkaSource `json:"kafka_source,omitempty"`
+	// A request-time data source.
+	RequestSource *RequestSource `json:"request_source,omitempty"`
 }
 
 // Dataset. Represents a reference to data used for training, testing, or
@@ -1471,6 +1476,16 @@ func (s FeatureTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A single field definition within a FlatSchema, specifying the field name and
+// its scalar data type. Does not support nested or complex types (arrays, maps,
+// structs).
+type FieldDefinition struct {
+	// The scalar data type of the field.
+	DataType ScalarDataType `json:"data_type"`
+	// The name of the field.
+	Name string `json:"name"`
+}
+
 // Metadata of a single artifact file or directory.
 type FileInfo struct {
 	// The size in bytes of the file. Unset for directories.
@@ -1509,6 +1524,13 @@ type FinalizeLoggedModelResponse struct {
 type FirstFunction struct {
 	// The input column from which the first value is returned.
 	Input string `json:"input"`
+}
+
+// A flat (non-nested) schema for request-time fields, defined as an ordered
+// list of field definitions. This schema only supports scalar types.
+type FlatSchema struct {
+	// The list of fields in this schema.
+	Fields []FieldDefinition `json:"fields"`
 }
 
 // Represents a forecasting experiment with its unique identifier, URL, and
@@ -2775,6 +2797,9 @@ type MaterializedFeature struct {
 	CronSchedule string `json:"cron_schedule,omitempty"`
 	// The full name of the feature in Unity Catalog.
 	FeatureName string `json:"feature_name"`
+	// True if this is an online materialized feature. False if it is an offline
+	// materialized feature.
+	IsOnline bool `json:"is_online,omitempty"`
 	// The timestamp when the pipeline last ran and updated the materialized
 	// feature values. If the pipeline has not run yet, this field will be null.
 	LastMaterializationTime string `json:"last_materialization_time,omitempty"`
@@ -3835,6 +3860,13 @@ type RenameModelResponse struct {
 	RegisteredModel *Model `json:"registered_model,omitempty"`
 }
 
+// A request-time data source whose value is provided at inference time: offline
+// batch scoring or online serving endpoint
+type RequestSource struct {
+	// A flat schema with scalar-typed fields only.
+	FlatSchema *FlatSchema `json:"flat_schema,omitempty"`
+}
+
 type RestoreExperiment struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
@@ -4013,6 +4045,72 @@ func (s *RunTag) UnmarshalJSON(b []byte) error {
 
 func (s RunTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Scalar data types for request-time field definitions. Only flat (non-nested)
+// types are supported.
+type ScalarDataType string
+
+const ScalarDataTypeBinary ScalarDataType = `BINARY`
+
+const ScalarDataTypeBoolean ScalarDataType = `BOOLEAN`
+
+const ScalarDataTypeDate ScalarDataType = `DATE`
+
+const ScalarDataTypeDecimal ScalarDataType = `DECIMAL`
+
+const ScalarDataTypeDouble ScalarDataType = `DOUBLE`
+
+const ScalarDataTypeFloat ScalarDataType = `FLOAT`
+
+const ScalarDataTypeInteger ScalarDataType = `INTEGER`
+
+const ScalarDataTypeLong ScalarDataType = `LONG`
+
+const ScalarDataTypeShort ScalarDataType = `SHORT`
+
+const ScalarDataTypeString ScalarDataType = `STRING`
+
+const ScalarDataTypeTimestamp ScalarDataType = `TIMESTAMP`
+
+// String representation for [fmt.Print]
+func (f *ScalarDataType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ScalarDataType) Set(v string) error {
+	switch v {
+	case `BINARY`, `BOOLEAN`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INTEGER`, `LONG`, `SHORT`, `STRING`, `TIMESTAMP`:
+		*f = ScalarDataType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BINARY", "BOOLEAN", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INTEGER", "LONG", "SHORT", "STRING", "TIMESTAMP"`, v)
+	}
+}
+
+// Values returns all possible values for ScalarDataType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ScalarDataType) Values() []ScalarDataType {
+	return []ScalarDataType{
+		ScalarDataTypeBinary,
+		ScalarDataTypeBoolean,
+		ScalarDataTypeDate,
+		ScalarDataTypeDecimal,
+		ScalarDataTypeDouble,
+		ScalarDataTypeFloat,
+		ScalarDataTypeInteger,
+		ScalarDataTypeLong,
+		ScalarDataTypeShort,
+		ScalarDataTypeString,
+		ScalarDataTypeTimestamp,
+	}
+}
+
+// Type always returns ScalarDataType to satisfy [pflag.Value] interface
+func (f *ScalarDataType) Type() string {
+	return "ScalarDataType"
 }
 
 type SchemaConfig struct {

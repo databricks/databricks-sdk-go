@@ -5149,6 +5149,9 @@ func (f *StatementState) Type() string {
 // information.
 type StatementStatus struct {
 	Error *ServiceError `json:"error,omitempty"`
+	// SQLSTATE error code returned when the statement execution fails. Only
+	// populated when the statement status is `FAILED`.
+	SqlState string `json:"sql_state,omitempty"`
 	// Statement execution state: - `PENDING`: waiting for warehouse -
 	// `RUNNING`: running - `SUCCEEDED`: execution was successful, result data
 	// available for fetch - `FAILED`: execution failed; reason for failure
@@ -5157,6 +5160,16 @@ type StatementStatus struct {
 	// - `CLOSED`: execution successful, and statement closed; result no longer
 	// available for fetch
 	State StatementState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *StatementStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StatementStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Status string

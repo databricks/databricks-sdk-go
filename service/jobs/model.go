@@ -5801,7 +5801,9 @@ func (f *TaskRetryMode) Type() string {
 // level queue size limit. * `DISABLED`: The run was never executed because it
 // was disabled explicitly by the user. * `BREAKING_CHANGE`: Run failed because
 // of an intentional breaking change in Spark, but it will be retried with a
-// mitigation config.
+// mitigation config. * `CLUSTER_TERMINATED_BY_USER`: The run failed because the
+// externally managed cluster entered an unusable state, likely due to the user
+// terminating or restarting it outside the jobs service.
 //
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string
