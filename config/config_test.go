@@ -840,7 +840,7 @@ func TestApplyHostMetadata_DoesNotOverrideExistingTokenAudience(t *testing.T) {
 	assert.Equal(t, "custom-audience", cfg.TokenAudience)
 }
 
-func TestApplyHostMetadata_SetsTokenAudienceFromDefaultOIDCAudience(t *testing.T) {
+func TestApplyHostMetadata_SetsTokenAudienceFromTokenFederationDefaultOIDCAudiences(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:    testHMHost,
@@ -851,7 +851,7 @@ func TestApplyHostMetadata_SetsTokenAudienceFromDefaultOIDCAudience(t *testing.T
 				Resource:     "/.well-known/databricks-config",
 				ReuseRequest: true,
 				Status:       200,
-				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS", "default_oidc_audience": "` + testHMHost + `/oidc/v1/token"}`,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "workspace_id": "` + testHMWorkspaceID + `", "cloud": "AWS", "token_federation_default_oidc_audiences": ["` + testHMHost + `/oidc/v1/token"]}`,
 			},
 		},
 	}
@@ -860,7 +860,7 @@ func TestApplyHostMetadata_SetsTokenAudienceFromDefaultOIDCAudience(t *testing.T
 	assert.Equal(t, testHMHost+"/oidc/v1/token", cfg.TokenAudience)
 }
 
-func TestApplyHostMetadata_DefaultOIDCAudienceTakesPriorityOverAccountIDFallback(t *testing.T) {
+func TestApplyHostMetadata_TokenFederationDefaultOIDCAudiencesTakesPriorityOverAccountIDFallback(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:    testHMHost,
@@ -871,17 +871,17 @@ func TestApplyHostMetadata_DefaultOIDCAudienceTakesPriorityOverAccountIDFallback
 				Resource:     "/.well-known/databricks-config",
 				ReuseRequest: true,
 				Status:       200,
-				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "default_oidc_audience": "custom-audience-from-server"}`,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "token_federation_default_oidc_audiences": ["custom-audience-from-server"]}`,
 			},
 		},
 	}
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
-	// default_oidc_audience should take priority over the account_id fallback
+	// token_federation_default_oidc_audiences should take priority over the account_id fallback
 	assert.Equal(t, "custom-audience-from-server", cfg.TokenAudience)
 }
 
-func TestApplyHostMetadata_DefaultOIDCAudienceDoesNotOverrideExisting(t *testing.T) {
+func TestApplyHostMetadata_TokenFederationDefaultOIDCAudiencesDoesNotOverrideExisting(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:          testHMHost,
@@ -893,7 +893,7 @@ func TestApplyHostMetadata_DefaultOIDCAudienceDoesNotOverrideExisting(t *testing
 				Resource:     "/.well-known/databricks-config",
 				ReuseRequest: true,
 				Status:       200,
-				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "default_oidc_audience": "` + testHMHost + `/oidc/v1/token"}`,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `", "cloud": "AWS", "token_federation_default_oidc_audiences": ["` + testHMHost + `/oidc/v1/token"]}`,
 			},
 		},
 	}
@@ -902,7 +902,7 @@ func TestApplyHostMetadata_DefaultOIDCAudienceDoesNotOverrideExisting(t *testing
 	assert.Equal(t, "user-set-audience", cfg.TokenAudience)
 }
 
-func TestApplyHostMetadata_FallsBackToAccountIDWhenNoDefaultOIDCAudience(t *testing.T) {
+func TestApplyHostMetadata_FallsBackToAccountIDWhenNoTokenFederationDefaultOIDCAudiences(t *testing.T) {
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
 		Host:    testHMHost,
@@ -919,7 +919,7 @@ func TestApplyHostMetadata_FallsBackToAccountIDWhenNoDefaultOIDCAudience(t *test
 	}
 	err := cfg.EnsureResolved()
 	require.NoError(t, err)
-	// No default_oidc_audience and no workspace_id → falls back to account_id
+	// No token_federation_default_oidc_audiences and no workspace_id → falls back to account_id
 	assert.Equal(t, testHMAccountID, cfg.TokenAudience)
 }
 
