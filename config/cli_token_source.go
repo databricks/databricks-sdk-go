@@ -52,7 +52,10 @@ func (v cliVersion) String() string {
 }
 
 // Minimum CLI versions for flag support.
-var cliVersionForProfile = cliVersion{0, 207, 1} // https://github.com/databricks/cli/pull/855
+var (
+	cliVersionForProfile      = cliVersion{0, 207, 1} // https://github.com/databricks/cli/pull/855
+	cliVersionForForceRefresh = cliVersion{0, 296, 0} // https://github.com/databricks/cli/pull/4767
+)
 
 // getCliVersion runs "databricks version" and parses the output.
 func getCliVersion(ctx context.Context, cliPath string) (cliVersion, error) {
@@ -128,6 +131,16 @@ func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver cliVe
 		if cfg.HostType() == AccountHost {
 			cmd = append(cmd, "--account-id", cfg.AccountID)
 		}
+	}
+
+	if cmd == nil {
+		return nil
+	}
+
+	if ver.AtLeast(cliVersionForForceRefresh) {
+		cmd = append(cmd, "--force-refresh")
+	} else {
+		logger.Warnf(ctx, "Databricks CLI v%s does not support --force-refresh (requires >= v%s). The CLI's token cache may provide stale tokens.", ver, cliVersionForForceRefresh)
 	}
 
 	return cmd

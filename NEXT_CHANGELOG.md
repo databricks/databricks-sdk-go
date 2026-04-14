@@ -26,6 +26,7 @@
 
 ### Internal Changes
 
+ * Pass `--force-refresh` to Databricks CLI `auth token` command to bypass the CLI's internal token cache.
  * Use resolved host type from host metadata in `HostType()` method, falling back to URL pattern matching when metadata is unavailable.
  * Normalize internal token sources on `auth.TokenSource` for proper context propagation ([#1577](https://github.com/databricks/databricks-sdk-go/pull/1577)).
  * Fix `TestAzureGithubOIDCCredentials` hang caused by missing `HTTPTransport` stub: `EnsureResolved` now calls `resolveHostMetadata`, which makes a real network request when no transport is set ([#1550](https://github.com/databricks/databricks-sdk-go/pull/1550)).
