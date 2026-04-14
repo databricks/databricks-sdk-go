@@ -3,7 +3,10 @@ package marshal
 import (
 	"encoding/json"
 	"errors"
+	"math"
 	"reflect"
+	"strconv"
+	"strings"
 )
 
 // Unmarshals a JSON element and fills in the ForceSendFields field if
@@ -71,6 +74,32 @@ func setField(field reflect.Value, value []byte) error {
 	if err == nil {
 		return nil
 	}
+
+	// MLflow and some other Databricks APIs encode special float values
+	// (NaN, Inf) as JSON strings rather than numbers.  Handle these before
+	// falling through to the YAML-string heuristic below.
+	k := field.Kind()
+	if k == reflect.Float32 || k == reflect.Float64 {
+		// Strip surrounding quotes if present ("NaN" → NaN).
+		unquoted := strings.Trim(string(value), `"`)
+		switch strings.ToLower(unquoted) {
+		case "nan":
+			field.SetFloat(math.NaN())
+			return nil
+		case "inf", "+inf", "infinity", "+infinity":
+			field.SetFloat(math.Inf(1))
+			return nil
+		case "-inf", "-infinity":
+			field.SetFloat(math.Inf(-1))
+			return nil
+		default:
+			if f, parseErr := strconv.ParseFloat(unquoted, 64); parseErr == nil {
+				field.SetFloat(f)
+				return nil
+			}
+		}
+	}
+
 	// We use godss/yaml to convert YAML into JSON.
 	// This library stops converting when it finds a custom Marshaller,
 	// Since strings in YAML may not have quotes, they won't be added.
