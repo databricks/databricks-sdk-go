@@ -14,6 +14,7 @@
 
 ### Bug Fixes
 
+ * Preserve the original request error when request body reset fails during retry ([#1243](https://github.com/databricks/databricks-sdk-go/issues/1243), [#1363](https://github.com/databricks/databricks-sdk-go/pull/1363)).
  * Add `X-Databricks-Org-Id` header to deprecated workspace SCIM APIs (Groups, ServicePrincipals, Users) for SPOG host compatibility.
  * Add retry logic to token acquisition for OIDC, M2M, and Azure client secret credentials ([#1398](https://github.com/databricks/databricks-sdk-go/issues/1398), [#1072](https://github.com/databricks/databricks-sdk-go/issues/1072)).
  * Fix double-caching of OAuth tokens in Azure client secret credentials ([#1549](https://github.com/databricks/databricks-sdk-go/issues/1549)).
