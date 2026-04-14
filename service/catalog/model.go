@@ -358,6 +358,24 @@ func (s AzureActiveDirectoryToken) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AzureEncryptionSettings struct {
+	AzureCmkAccessConnectorId string `json:"azure_cmk_access_connector_id,omitempty"`
+
+	AzureCmkManagedIdentityId string `json:"azure_cmk_managed_identity_id,omitempty"`
+
+	AzureTenantId string `json:"azure_tenant_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AzureEncryptionSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureEncryptionSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // The Azure managed identity configuration.
 type AzureManagedIdentity struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
@@ -542,6 +560,8 @@ type CatalogInfo struct {
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
+	// Control CMK encryption for managed catalog data
+	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
@@ -895,7 +915,7 @@ func (s ConnectionDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next ID: 24
+// Next ID: 25
 type ConnectionInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -945,7 +965,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 72
+// Next Id: 75
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1155,6 +1175,8 @@ type CreateCatalog struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Control CMK encryption for managed catalog data
+	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1898,7 +1920,7 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 17
+// Next Id: 18
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
@@ -2257,8 +2279,7 @@ func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 type DeleteEntityTagAssignmentRequest struct {
 	// The fully qualified name of the entity to which the tag is assigned
 	EntityName string `json:"-" url:"-"`
-	// The type of the entity to which the tag is assigned. Allowed values are:
-	// catalogs, schemas, tables, columns, volumes.
+	// The type of the entity to which the tag is assigned.
 	EntityType string `json:"-" url:"-"`
 	// Required. The key of the tag to delete
 	TagKey string `json:"-" url:"-"`
@@ -2740,12 +2761,33 @@ type EncryptionDetails struct {
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
 }
 
+// Encryption Settings are used to carry metadata for securable encryption at
+// rest. Currently used for catalogs, we can use the information supplied here
+// to interact with a CMK.
+type EncryptionSettings struct {
+	// optional Azure settings - only required if an Azure CMK is used.
+	AzureEncryptionSettings *AzureEncryptionSettings `json:"azure_encryption_settings,omitempty"`
+	// the AKV URL in Azure, null otherwise.
+	AzureKeyVaultKeyId string `json:"azure_key_vault_key_id,omitempty"`
+	// the CMK uuid in AWS and GCP, null otherwise.
+	CustomerManagedKeyId string `json:"customer_managed_key_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EncryptionSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EncryptionSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Represents a tag assignment to an entity
 type EntityTagAssignment struct {
 	// The fully qualified name of the entity to which the tag is assigned
 	EntityName string `json:"entity_name"`
-	// The type of the entity to which the tag is assigned. Allowed values are:
-	// catalogs, schemas, tables, columns, volumes.
+	// The type of the entity to which the tag is assigned.
 	EntityType string `json:"entity_type"`
 	// The source type of the tag assignment, e.g., user-assigned or
 	// system-assigned
@@ -3823,8 +3865,7 @@ func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
 type GetEntityTagAssignmentRequest struct {
 	// The fully qualified name of the entity to which the tag is assigned
 	EntityName string `json:"-" url:"-"`
-	// The type of the entity to which the tag is assigned. Allowed values are:
-	// catalogs, schemas, tables, columns, volumes.
+	// The type of the entity to which the tag is assigned.
 	EntityType string `json:"-" url:"-"`
 	// Required. The key of the tag
 	TagKey string `json:"-" url:"-"`
@@ -4374,8 +4415,7 @@ func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
 type ListEntityTagAssignmentsRequest struct {
 	// The fully qualified name of the entity to which the tag is assigned
 	EntityName string `json:"-" url:"-"`
-	// The type of the entity to which the tag is assigned. Allowed values are:
-	// catalogs, schemas, tables, columns, volumes.
+	// The type of the entity to which the tag is assigned.
 	EntityType string `json:"-" url:"-"`
 	// Optional. Maximum number of tag assignments to return in a single page
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -6985,7 +7025,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: PIPELINE_FEATURE_STORE_BATCH = 304; Next id: 305
+// Latest kind: CONNECTION_VEEVA_VAULT_OAUTH_M2M = 311; Next id: 312
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -8061,6 +8101,8 @@ type UpdateCatalog struct {
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
+	// Control CMK encryption for managed catalog data
+	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
 	// New name for the catalog.
@@ -8154,8 +8196,7 @@ func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
 type UpdateEntityTagAssignmentRequest struct {
 	// The fully qualified name of the entity to which the tag is assigned
 	EntityName string `json:"-" url:"-"`
-	// The type of the entity to which the tag is assigned. Allowed values are:
-	// catalogs, schemas, tables, columns, volumes.
+	// The type of the entity to which the tag is assigned.
 	EntityType string `json:"-" url:"-"`
 
 	TagAssignment EntityTagAssignment `json:"tag_assignment"`

@@ -33,6 +33,21 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	return &genieMessage, err
 }
 
+func (a *genieImpl) CreateMessageComment(ctx context.Context, request GenieCreateMessageCommentRequest) (*GenieMessageComment, error) {
+	var genieMessageComment GenieMessageComment
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/comments", request.SpaceId, request.ConversationId, request.MessageId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieMessageComment)
+	return &genieMessageComment, err
+}
+
 func (a *genieImpl) CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error) {
 	var genieSpace GenieSpace
 	path := "/api/2.0/genie/spaces"
@@ -271,6 +286,20 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	return &genieSpace, err
 }
 
+func (a *genieImpl) ListConversationComments(ctx context.Context, request GenieListConversationCommentsRequest) (*GenieListConversationCommentsResponse, error) {
+	var genieListConversationCommentsResponse GenieListConversationCommentsResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/list-comments", request.SpaceId, request.ConversationId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationCommentsResponse)
+	return &genieListConversationCommentsResponse, err
+}
+
 func (a *genieImpl) ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error) {
 	var genieListConversationMessagesResponse GenieListConversationMessagesResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
@@ -297,6 +326,20 @@ func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConv
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationsResponse)
 	return &genieListConversationsResponse, err
+}
+
+func (a *genieImpl) ListMessageComments(ctx context.Context, request GenieListMessageCommentsRequest) (*GenieListMessageCommentsResponse, error) {
+	var genieListMessageCommentsResponse GenieListMessageCommentsResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/comments", request.SpaceId, request.ConversationId, request.MessageId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListMessageCommentsResponse)
+	return &genieListMessageCommentsResponse, err
 }
 
 func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error) {

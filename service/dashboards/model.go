@@ -362,6 +362,17 @@ type GenieCreateEvalRunRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieCreateMessageCommentRequest struct {
+	// Comment text content.
+	Content string `json:"content"`
+	// The ID associated with the conversation.
+	ConversationId string `json:"-" url:"-"`
+	// The ID associated with the message.
+	MessageId string `json:"-" url:"-"`
+	// The ID associated with the Genie space.
+	SpaceId string `json:"-" url:"-"`
+}
+
 type GenieCreateSpaceRequest struct {
 	// Optional description
 	Description string `json:"description,omitempty"`
@@ -538,6 +549,56 @@ type GenieEvalResultDetails struct {
 	// Assessment of the evaluation result: good, bad, or needs review
 	Assessment GenieEvalAssessment `json:"assessment,omitempty"`
 	// Reasons for the assessment score.
+	//
+	// Assessment reasons describe why a Genie response was scored as BAD.
+	//
+	// Deterministic values (compared against the ground truth result): -
+	// EMPTY_RESULT: Genie's generated SQL results were empty for this benchmark
+	// question. - RESULT_MISSING_ROWS: Genie's generated SQL response is
+	// missing rows from the provided ground truth SQL. - RESULT_EXTRA_ROWS:
+	// Genie's generated SQL response has more rows than the provided ground
+	// truth SQL. - RESULT_MISSING_COLUMNS: Genie's generated SQL response is
+	// missing columns from the provided ground truth SQL. -
+	// RESULT_EXTRA_COLUMNS: Genie's generated SQL response has more columns
+	// than the provided ground truth SQL. - SINGLE_CELL_DIFFERENCE: Single
+	// value result was produced but differs from ground truth result. -
+	// EMPTY_GOOD_SQL: The benchmark SQL returned an empty result. -
+	// COLUMN_TYPE_DIFFERENCE: The values between the results match but the
+	// column type is different.
+	//
+	// LLM judge ratings explain the factors driving BAD results: -
+	// LLM_JUDGE_MISSING_OR_INCORRECT_FILTER: Genie's generated SQL is missing a
+	// WHERE clause condition or has incorrect filter logic that
+	// excludes/includes wrong data. - LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT:
+	// Genie's generated SQL returns only some of the requested data or columns,
+	// missing parts of what the ground truth SQL returns. -
+	// LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST: Genie's generated SQL
+	// fundamentally misunderstands what the user is asking for, addressing the
+	// wrong question or goal. -
+	// LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC: Genie's
+	// generated SQL fails to apply specified instructions or business logic
+	// that should be followed. - LLM_JUDGE_INCORRECT_METRIC_CALCULATION:
+	// Genie's generated SQL uses incorrect logic or makes wrong assumptions
+	// when calculating metrics. - LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE:
+	// Genie's generated SQL references wrong tables, columns, or uses fields
+	// that don't match the ground truth SQL's intent. -
+	// LLM_JUDGE_INCORRECT_FUNCTION_USAGE: Genie's generated SQL uses SQL
+	// functions incorrectly or inappropriately (wrong parameters, wrong
+	// function for the task, etc.). - LLM_JUDGE_MISSING_OR_INCORRECT_JOIN:
+	// Genie's generated SQL is missing necessary joins between tables or has
+	// incorrect join conditions/types that produce wrong results. -
+	// LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION: Genie's generated SQL is
+	// missing GROUP BY clauses or has incorrect grouping that doesn't match the
+	// requested aggregation level. - LLM_JUDGE_FORMATTING_ERROR: Genie's
+	// generated SQL output has incorrect formatting, ordering (ORDER BY), or
+	// presentation issues that don't match expectations. - LLM_JUDGE_OTHER: LLM
+	// judge identified an error that doesn't fall into other categories.
+	//
+	// Deprecated LLM judge values (kept for backward compatibility, do not
+	// use): - LLM_JUDGE_MISSING_JOIN (deprecated) - LLM_JUDGE_WRONG_FILTER
+	// (deprecated) - LLM_JUDGE_WRONG_AGGREGATION (deprecated) -
+	// LLM_JUDGE_WRONG_COLUMNS (deprecated) - LLM_JUDGE_SYNTAX_ERROR
+	// (deprecated) - LLM_JUDGE_SEMANTIC_ERROR (deprecated)
 	AssessmentReasons []ScoreReason `json:"assessment_reasons,omitempty"`
 	// The ID of the benchmark question that was evaluated.
 	BenchmarkQuestionId string `json:"benchmark_question_id"`
@@ -617,8 +678,20 @@ type GenieExecuteMessageQueryRequest struct {
 
 // Feedback containing rating and optional comment
 type GenieFeedback struct {
+	// Optional feedback comment text
+	Comment string `json:"comment,omitempty"`
 	// The feedback rating
 	Rating GenieFeedbackRating `json:"rating,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieFeedback) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieFeedback) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Feedback rating for Genie messages
@@ -798,6 +871,44 @@ func (s GenieGetSpaceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GenieListConversationCommentsRequest struct {
+	// The ID associated with the conversation.
+	ConversationId string `json:"-" url:"-"`
+	// Maximum number of comments to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token for getting the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The ID associated with the Genie space.
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListConversationCommentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListConversationCommentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListConversationCommentsResponse struct {
+	// List of comments in the conversation.
+	Comments []GenieMessageComment `json:"comments,omitempty"`
+	// Token to get the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListConversationCommentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListConversationCommentsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieListConversationMessagesRequest struct {
 	// The ID of the conversation to list messages from
 	ConversationId string `json:"-" url:"-"`
@@ -951,6 +1062,46 @@ func (s GenieListEvalRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GenieListMessageCommentsRequest struct {
+	// The ID associated with the conversation.
+	ConversationId string `json:"-" url:"-"`
+	// The ID associated with the message.
+	MessageId string `json:"-" url:"-"`
+	// Maximum number of comments to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token for getting the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The ID associated with the Genie space.
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListMessageCommentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListMessageCommentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListMessageCommentsResponse struct {
+	// List of comments on the message.
+	Comments []GenieMessageComment `json:"comments,omitempty"`
+	// Token to get the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListMessageCommentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListMessageCommentsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieListSpacesRequest struct {
 	// Maximum number of spaces to return per page
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -1026,6 +1177,34 @@ func (s GenieMessage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A comment on a Genie conversation message.
+type GenieMessageComment struct {
+	// Comment text content
+	Content string `json:"content"`
+	// Conversation ID
+	ConversationId string `json:"conversation_id"`
+	// Timestamp when the comment was created
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
+	// Comment ID
+	MessageCommentId string `json:"message_comment_id"`
+	// Message ID
+	MessageId string `json:"message_id"`
+	// Genie space ID
+	SpaceId string `json:"space_id"`
+	// ID of the user who created the comment
+	UserId int64 `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieMessageComment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieMessageComment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieQueryAttachment struct {
 	// Description of the query
 	Description string `json:"description,omitempty"`
@@ -1043,6 +1222,8 @@ type GenieQueryAttachment struct {
 	// result first chunk](:method:statementexecution/getstatement) to get the
 	// full result data.
 	StatementId string `json:"statement_id,omitempty"`
+	// Insights into how Genie came to generate the SQL.
+	Thoughts []Thought `json:"thoughts,omitempty"`
 	// Name of the query
 	Title string `json:"title,omitempty"`
 
@@ -1075,6 +1256,8 @@ func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSendMessageFeedbackRequest struct {
+	// Optional text feedback that will be stored as a comment.
+	Comment string `json:"comment,omitempty"`
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the message to provide feedback for.
@@ -1083,6 +1266,16 @@ type GenieSendMessageFeedbackRequest struct {
 	Rating GenieFeedbackRating `json:"rating"`
 	// The ID associated with the Genie space where the message is located.
 	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieSendMessageFeedbackRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GenieSpace struct {
@@ -2114,6 +2307,84 @@ func (f *TextAttachmentPurpose) Values() []TextAttachmentPurpose {
 // Type always returns TextAttachmentPurpose to satisfy [pflag.Value] interface
 func (f *TextAttachmentPurpose) Type() string {
 	return "TextAttachmentPurpose"
+}
+
+// A single thought in the AI's reasoning process for a query.
+type Thought struct {
+	// The md formatted content for this thought.
+	Content string `json:"content,omitempty"`
+	// The category of this thought.
+	ThoughtType ThoughtType `json:"thought_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Thought) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Thought) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// ThoughtType. The possible values are: * `THOUGHT_TYPE_UNSPECIFIED`: Default
+// value that should not be used. * `THOUGHT_TYPE_DESCRIPTION`: A high-level
+// description of how the question was interpreted. *
+// `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were
+// resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were
+// identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined
+// instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken
+// to compute the answer. The category of a Thought. Additional values may be
+// added in the future.
+type ThoughtType string
+
+// Which tables or datasets were identified as relevant.
+const ThoughtTypeThoughtTypeDataSourcing ThoughtType = `THOUGHT_TYPE_DATA_SOURCING`
+
+// A high-level description of how the question was interpreted.
+const ThoughtTypeThoughtTypeDescription ThoughtType = `THOUGHT_TYPE_DESCRIPTION`
+
+// Which author-defined instructions were referenced.
+const ThoughtTypeThoughtTypeInstructions ThoughtType = `THOUGHT_TYPE_INSTRUCTIONS`
+
+// The logical steps taken to compute the answer.
+const ThoughtTypeThoughtTypeSteps ThoughtType = `THOUGHT_TYPE_STEPS`
+
+// How ambiguous parts of the question were resolved.
+const ThoughtTypeThoughtTypeUnderstanding ThoughtType = `THOUGHT_TYPE_UNDERSTANDING`
+
+// String representation for [fmt.Print]
+func (f *ThoughtType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ThoughtType) Set(v string) error {
+	switch v {
+	case `THOUGHT_TYPE_DATA_SOURCING`, `THOUGHT_TYPE_DESCRIPTION`, `THOUGHT_TYPE_INSTRUCTIONS`, `THOUGHT_TYPE_STEPS`, `THOUGHT_TYPE_UNDERSTANDING`:
+		*f = ThoughtType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "THOUGHT_TYPE_DATA_SOURCING", "THOUGHT_TYPE_DESCRIPTION", "THOUGHT_TYPE_INSTRUCTIONS", "THOUGHT_TYPE_STEPS", "THOUGHT_TYPE_UNDERSTANDING"`, v)
+	}
+}
+
+// Values returns all possible values for ThoughtType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ThoughtType) Values() []ThoughtType {
+	return []ThoughtType{
+		ThoughtTypeThoughtTypeDataSourcing,
+		ThoughtTypeThoughtTypeDescription,
+		ThoughtTypeThoughtTypeInstructions,
+		ThoughtTypeThoughtTypeSteps,
+		ThoughtTypeThoughtTypeUnderstanding,
+	}
+}
+
+// Type always returns ThoughtType to satisfy [pflag.Value] interface
+func (f *ThoughtType) Type() string {
+	return "ThoughtType"
 }
 
 type TrashDashboardRequest struct {

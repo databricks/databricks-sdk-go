@@ -360,10 +360,11 @@ type SecretsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceService interface {
 
-	// Deletes an object or a directory (and optionally recursively deletes all
-	// objects in the directory). * If `path` does not exist, this call returns
-	// an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a non-empty directory
-	// and `recursive` is set to `false`, this call returns an error
+	// Deprecated: use WorkspaceHierarchyService.DeleteTreeNode instead. Deletes
+	// an object or a directory (and optionally recursively deletes all objects
+	// in the directory). * If `path` does not exist, this call returns an error
+	// `RESOURCE_DOES_NOT_EXIST`. * If `path` is a non-empty directory and
+	// `recursive` is set to `false`, this call returns an error
 	// `DIRECTORY_NOT_EMPTY`.
 	//
 	// Object deletion cannot be undone and deleting a directory recursively is
@@ -387,8 +388,9 @@ type WorkspaceService interface {
 	// permissions from their parent objects or root object.
 	GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
 
-	// Gets the status of an object or a directory. If `path` does not exist,
-	// this call returns an error `RESOURCE_DOES_NOT_EXIST`.
+	// Deprecated: use WorkspaceHierarchyService.GetTreeNode instead. Gets the
+	// status of an object or a directory. If `path` does not exist, this call
+	// returns an error `RESOURCE_DOES_NOT_EXIST`.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error)
 
 	// Imports a workspace object (for example, a notebook or file) or the
@@ -400,14 +402,16 @@ type WorkspaceService interface {
 	// directories are not supported.
 	Import(ctx context.Context, request Import) error
 
-	// Lists the contents of a directory, or the object if it is not a
-	// directory. If the input path does not exist, this call returns an error
+	// Deprecated: use WorkspaceHierarchyService.ListTreeNodes instead. Lists
+	// the contents of a directory, or the object if it is not a directory. If
+	// the input path does not exist, this call returns an error
 	// `RESOURCE_DOES_NOT_EXIST`.
 	List(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error)
 
-	// Creates the specified directory (and necessary parent directories if they
-	// do not exist). If there is an object (not a directory) at any prefix of
-	// the input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
+	// Deprecated: use WorkspaceHierarchyService.CreateTreeNode instead. Creates
+	// the specified directory (and necessary parent directories if they do not
+	// exist). If there is an object (not a directory) at any prefix of the
+	// input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 	//
 	// Note that if this operation fails it may have succeeded in creating some
 	// of the necessary parent directories.
