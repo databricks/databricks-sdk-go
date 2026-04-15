@@ -26,3 +26,4 @@ out/**
 *.log
 .databricks/
 .DS_Store
+.jfrog/
