@@ -456,11 +456,6 @@ func (c *Config) HostType() HostType {
 	if c.Experimental_IsUnifiedHost {
 		return UnifiedHost
 	}
-	// TODO: Refactor tests so that this is not needed.
-	if c.AccountID != "" && c.isTesting {
-		return AccountHost
-	}
-
 	// Normalize the host to ensure the scheme is present before checking
 	// prefixes. Profiles saved without "https://" (e.g. from user input)
 	// would otherwise fail the prefix check and be misclassified as
