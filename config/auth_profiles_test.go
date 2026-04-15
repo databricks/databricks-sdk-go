@@ -120,25 +120,6 @@ var allProfiles = []hostProfile{
 	},
 }
 
-var workspaceProfiles []hostProfile
-var accountProfiles []hostProfile
-
-func init() {
-	for _, p := range allProfiles {
-		if p.metadata.HostType == WorkspaceHost || p.metadata.HostType == UnifiedHost {
-			workspaceProfiles = append(workspaceProfiles, p)
-		}
-		if p.metadata.HostType == AccountHost {
-			accountProfiles = append(accountProfiles, p)
-		}
-	}
-}
-
-// noopProfileLoader is a Loader that does nothing, preventing the default
-// loaders (ConfigAttributes, ConfigFile) from reading environment variables
-// or config files during tests.
-var noopProfileLoader = mockLoader(func(*Config) error { return nil })
-
 // profileConfig returns a Config pre-populated for the given profile, with the
 // host metadata resolver injected. Callers add auth-specific fields and
 // HTTPTransport before calling Authenticate.
@@ -147,7 +128,7 @@ func profileConfig(p hostProfile) *Config {
 		Host:        p.host,
 		AccountID:   p.accountID,
 		WorkspaceID: p.workspaceID,
-		Loaders:     []Loader{noopProfileLoader},
+		Loaders:     []Loader{noopLoader{}},
 		HostMetadataResolver: func(_ context.Context, _ string) (*HostMetadata, error) {
 			return p.metadata, nil
 		},
@@ -374,6 +355,13 @@ func TestProfileAuth_FileOIDC(t *testing.T) {
 // --- Metadata Service (workspace profiles only) ------------------------------
 
 func TestProfileAuth_MetadataService(t *testing.T) {
+	// Metadata service auth is only available for workspace-level profiles.
+	var workspaceProfiles []hostProfile
+	for _, p := range allProfiles {
+		if p.metadata.HostType == WorkspaceHost || p.metadata.HostType == UnifiedHost {
+			workspaceProfiles = append(workspaceProfiles, p)
+		}
+	}
 	for _, p := range workspaceProfiles {
 		t.Run(p.name, func(t *testing.T) {
 			cfg := profileConfig(p)
@@ -1019,19 +1007,12 @@ func TestProfileAuth_AzureCli(t *testing.T) {
 			env.CleanupEnvironment(t)
 			os.Setenv("PATH", testdataPath())
 
-			cfg := &Config{
-				Host:        p.host,
-				AccountID:   p.accountID,
-				WorkspaceID: p.workspaceID,
-				AuthType:    "azure-cli",
-				HostMetadataResolver: func(_ context.Context, _ string) (*HostMetadata, error) {
-					return p.metadata, nil
-				},
-				azureTenantIdFetchClient: makeClient(&http.Response{
-					StatusCode: http.StatusTemporaryRedirect,
-					Header:     http.Header{"Location": []string{"https://login.microsoftonline.com/test-tenant-id/oauth2/token"}},
-				}),
-			}
+			cfg := profileConfig(p)
+			cfg.AuthType = "azure-cli"
+			cfg.azureTenantIdFetchClient = makeClient(&http.Response{
+				StatusCode: http.StatusTemporaryRedirect,
+				Header:     http.Header{"Location": []string{"https://login.microsoftonline.com/test-tenant-id/oauth2/token"}},
+			})
 
 			req, err := authenticateRequest(cfg)
 			if err != nil {
