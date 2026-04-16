@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+ * Add `X-Databricks-Org-Id` header to `Workspace.Download()` and `Workspace.Upload()` for SPOG host compatibility.
+
 ### Documentation
 
 ### Internal Changes

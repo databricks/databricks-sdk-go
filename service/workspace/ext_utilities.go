@@ -207,6 +207,10 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 	headers := map[string]string{
 		"Content-Type": w.FormDataContentType(),
 	}
+	cfg := a.workspaceImpl.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	return a.workspaceImpl.client.Do(ctx, "POST", "/api/2.0/workspace/import", headers, nil, buf.Bytes(), nil)
 }
 
@@ -241,6 +245,10 @@ func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...Downlo
 		v(query)
 	}
 	headers := map[string]string{"Content-Type": "application/json"}
+	cfg := a.workspaceImpl.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.workspaceImpl.client.Do(ctx, "GET", "/api/2.0/workspace/export", headers, nil, query, &buf)
 	if err != nil {
 		return nil, err
