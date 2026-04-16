@@ -40,15 +40,6 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			r.URL.Scheme = url.Scheme
 			return nil
 		},
-		// SPOG hosts serve multiple workspaces from a single URL and need the
-		// X-Databricks-Org-Id header to route workspace API requests to the
-		// correct workspace. Skip for account-level clients.
-		func(r *http.Request) error {
-			if cfg.WorkspaceID != "" && !cfg.IsAccountClient() {
-				r.Header.Set("X-Databricks-Org-Id", cfg.WorkspaceID)
-			}
-			return nil
-		},
 		authInUserAgentVisitor(cfg),
 		func(r *http.Request) error {
 			// Detect if we are running in a CI/CD environment
