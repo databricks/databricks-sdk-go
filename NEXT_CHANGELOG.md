@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+ * Add `X-Databricks-Org-Id` header to all API requests when `WorkspaceID` is configured, fixing SPOG host compatibility for hand-written extension methods and direct API calls.
+
 ### Documentation
 
 ### Internal Changes
