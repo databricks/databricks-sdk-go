@@ -1173,8 +1173,8 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 
 // withDefaultHostMetadataResolverFactory installs factory for the duration of
 // the current test, restoring whatever was previously registered on cleanup.
-// This avoids clobbering another test's registration if tests ever share the
-// package-level default.
+// Capture/set/restore are not atomic — do not use with t.Parallel across
+// multiple tests that touch the package-level default.
 func withDefaultHostMetadataResolverFactory(t *testing.T, factory func(*Config) HostMetadataResolver) {
 	t.Helper()
 	prev := getDefaultHostMetadataResolverFactory()
