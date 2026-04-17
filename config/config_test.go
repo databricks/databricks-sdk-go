@@ -1171,16 +1171,25 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 	}
 }
 
-func TestDefaultHostMetadataResolverFactory_UsedWhenConfigHasNoResolver(t *testing.T) {
-	t.Cleanup(func() { DefaultHostMetadataResolverFactory = nil })
+// withDefaultHostMetadataResolverFactory installs factory for the duration of
+// the current test, restoring whatever was previously registered on cleanup.
+// This avoids clobbering another test's registration if tests ever share the
+// package-level default.
+func withDefaultHostMetadataResolverFactory(t *testing.T, factory func(*Config) HostMetadataResolver) {
+	t.Helper()
+	prev := getDefaultHostMetadataResolverFactory()
+	SetDefaultHostMetadataResolverFactory(factory)
+	t.Cleanup(func() { SetDefaultHostMetadataResolverFactory(prev) })
+}
 
+func TestSetDefaultHostMetadataResolverFactory_UsedWhenConfigHasNoResolver(t *testing.T) {
 	var factoryCalls atomic.Int32
-	DefaultHostMetadataResolverFactory = func(c *Config) HostMetadataResolver {
+	withDefaultHostMetadataResolverFactory(t, func(c *Config) HostMetadataResolver {
 		factoryCalls.Add(1)
 		return func(ctx context.Context, host string) (*HostMetadata, error) {
 			return &HostMetadata{AccountID: testHMAccountID, WorkspaceID: testHMWorkspaceID}, nil
 		}
-	}
+	})
 
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{Host: testHMHost, Loaders: []Loader{noopLoader}}
@@ -1191,16 +1200,14 @@ func TestDefaultHostMetadataResolverFactory_UsedWhenConfigHasNoResolver(t *testi
 	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
 }
 
-func TestDefaultHostMetadataResolverFactory_PerConfigResolverTakesPrecedence(t *testing.T) {
-	t.Cleanup(func() { DefaultHostMetadataResolverFactory = nil })
-
+func TestSetDefaultHostMetadataResolverFactory_PerConfigResolverTakesPrecedence(t *testing.T) {
 	var factoryCalls atomic.Int32
-	DefaultHostMetadataResolverFactory = func(c *Config) HostMetadataResolver {
+	withDefaultHostMetadataResolverFactory(t, func(c *Config) HostMetadataResolver {
 		factoryCalls.Add(1)
 		return func(ctx context.Context, host string) (*HostMetadata, error) {
 			return &HostMetadata{AccountID: "factory-account"}, nil
 		}
-	}
+	})
 
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{
@@ -1216,12 +1223,10 @@ func TestDefaultHostMetadataResolverFactory_PerConfigResolverTakesPrecedence(t *
 	assert.Equal(t, testHMAccountID, cfg.AccountID)
 }
 
-func TestDefaultHostMetadataResolverFactory_NilResolverFromFactoryFallsThroughToHTTP(t *testing.T) {
-	t.Cleanup(func() { DefaultHostMetadataResolverFactory = nil })
-
-	DefaultHostMetadataResolverFactory = func(c *Config) HostMetadataResolver {
+func TestSetDefaultHostMetadataResolverFactory_NilResolverFromFactoryFallsThroughToHTTP(t *testing.T) {
+	withDefaultHostMetadataResolverFactory(t, func(c *Config) HostMetadataResolver {
 		return nil
-	}
+	})
 
 	noopLoader := mockLoader(func(cfg *Config) error { return nil })
 	cfg := &Config{

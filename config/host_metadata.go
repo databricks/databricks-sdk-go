@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/httpclient"
@@ -38,22 +39,38 @@ type HostMetadata struct {
 // This allows callers to provide cached metadata without the SDK making an HTTP call.
 type HostMetadataResolver func(ctx context.Context, host string) (*HostMetadata, error)
 
-// DefaultHostMetadataResolverFactory is consulted by [Config.EnsureResolved]
-// when [Config.HostMetadataResolver] is nil. When non-nil, the factory is
-// invoked with the resolving Config and must return the resolver to use for
-// that Config (or nil to fall through to the SDK's default HTTP fetch).
+var (
+	defaultHostMetadataResolverFactoryMu sync.RWMutex
+	defaultHostMetadataResolverFactory   func(*Config) HostMetadataResolver
+)
+
+// SetDefaultHostMetadataResolverFactory registers a factory used by
+// [Config.EnsureResolved] when [Config.HostMetadataResolver] is nil. The
+// factory is invoked with the resolving Config and must return the resolver
+// to use for that Config (or nil to fall through to the SDK's default HTTP
+// fetch).
 //
-// Intended to be set once during program initialization — typically from an
-// init() block in a package that is blank-imported by the main binary — so
-// that every Config the program constructs picks up the same resolver policy
-// (for example, a disk-cached resolver in the Databricks CLI) without
-// per-site wiring.
+// Intended for programs that want a single hook to install a caching or
+// otherwise-customised resolver across every Config they construct, without
+// per-site wiring. Typically called once from an init() block in a package
+// that is blank-imported by the main binary — the canonical Go idiom for
+// library-registered defaults, as used by [database/sql] drivers and the
+// [image] package codecs.
 //
-// Not safe for concurrent modification after initialization. Setting and
-// reading is a plain variable access, consistent with [Config.HostMetadataResolver].
+// Pass nil to clear. Safe for concurrent use.
 //
 // Experimental: subject to change.
-var DefaultHostMetadataResolverFactory func(*Config) HostMetadataResolver
+func SetDefaultHostMetadataResolverFactory(factory func(*Config) HostMetadataResolver) {
+	defaultHostMetadataResolverFactoryMu.Lock()
+	defer defaultHostMetadataResolverFactoryMu.Unlock()
+	defaultHostMetadataResolverFactory = factory
+}
+
+func getDefaultHostMetadataResolverFactory() func(*Config) HostMetadataResolver {
+	defaultHostMetadataResolverFactoryMu.RLock()
+	defer defaultHostMetadataResolverFactoryMu.RUnlock()
+	return defaultHostMetadataResolverFactory
+}
 
 // getHostMetadata fetches the raw Databricks well-known configuration from
 // {host}/.well-known/databricks-config. The returned HostMetadata contains
