@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/common/environment"
@@ -1168,4 +1169,75 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 			assert.Equal(t, tc.wantHostType, string(cfg.resolvedHostType))
 		})
 	}
+}
+
+func TestDefaultHostMetadataResolverFactory_UsedWhenConfigHasNoResolver(t *testing.T) {
+	t.Cleanup(func() { DefaultHostMetadataResolverFactory = nil })
+
+	var factoryCalls atomic.Int32
+	DefaultHostMetadataResolverFactory = func(c *Config) HostMetadataResolver {
+		factoryCalls.Add(1)
+		return func(ctx context.Context, host string) (*HostMetadata, error) {
+			return &HostMetadata{AccountID: testHMAccountID, WorkspaceID: testHMWorkspaceID}, nil
+		}
+	}
+
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{Host: testHMHost, Loaders: []Loader{noopLoader}}
+	require.NoError(t, cfg.EnsureResolved())
+
+	assert.Equal(t, int32(1), factoryCalls.Load(), "factory must be invoked exactly once per resolve")
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
+}
+
+func TestDefaultHostMetadataResolverFactory_PerConfigResolverTakesPrecedence(t *testing.T) {
+	t.Cleanup(func() { DefaultHostMetadataResolverFactory = nil })
+
+	var factoryCalls atomic.Int32
+	DefaultHostMetadataResolverFactory = func(c *Config) HostMetadataResolver {
+		factoryCalls.Add(1)
+		return func(ctx context.Context, host string) (*HostMetadata, error) {
+			return &HostMetadata{AccountID: "factory-account"}, nil
+		}
+	}
+
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HostMetadataResolver: func(ctx context.Context, host string) (*HostMetadata, error) {
+			return &HostMetadata{AccountID: testHMAccountID}, nil
+		},
+	}
+	require.NoError(t, cfg.EnsureResolved())
+
+	assert.Equal(t, int32(0), factoryCalls.Load(), "factory must not be consulted when Config has its own resolver")
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
+}
+
+func TestDefaultHostMetadataResolverFactory_NilResolverFromFactoryFallsThroughToHTTP(t *testing.T) {
+	t.Cleanup(func() { DefaultHostMetadataResolverFactory = nil })
+
+	DefaultHostMetadataResolverFactory = func(c *Config) HostMetadataResolver {
+		return nil
+	}
+
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    testHMHost,
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "` + testHMHost + `/oidc", "account_id": "` + testHMAccountID + `"}`,
+			},
+		},
+	}
+	require.NoError(t, cfg.EnsureResolved())
+
+	assert.Equal(t, testHMAccountID, cfg.AccountID)
 }
