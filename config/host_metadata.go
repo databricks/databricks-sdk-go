@@ -53,9 +53,7 @@ var (
 // Intended for programs that want a single hook to install a caching or
 // otherwise-customised resolver across every Config they construct, without
 // per-site wiring. Typically called once from an init() block in a package
-// that is blank-imported by the main binary — the canonical Go idiom for
-// library-registered defaults, as used by [database/sql] drivers and the
-// [image] package codecs.
+// that is blank-imported by the main binary.
 //
 // Pass nil to clear. Safe for concurrent use.
 //
