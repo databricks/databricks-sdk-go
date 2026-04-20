@@ -32,6 +32,7 @@ func listKnownAgents() []knownAgent {
 		{
 			product: "amp",
 			matchAny: []envMatcher{
+				// https://ampcode.com/ (sets AMP_CURRENT_THREAD_ID and AGENT=amp)
 				{envVar: "AMP_CURRENT_THREAD_ID"},
 				{envVar: agentEnvVar, value: "amp"},
 			},
@@ -45,7 +46,7 @@ func listKnownAgents() []knownAgent {
 		{
 			product: "augment",
 			matchAny: []envMatcher{
-				{envVar: "AUGMENT_AGENT"},
+				{envVar: "AUGMENT_AGENT"}, // https://www.augmentcode.com/
 			},
 		},
 		{
@@ -75,7 +76,8 @@ func listKnownAgents() []knownAgent {
 		{
 			product: "copilot-vscode",
 			matchAny: []envMatcher{
-				{envVar: "COPILOT_MODEL"}, // VS Code Copilot
+				// VS Code Copilot terminal, best-effort heuristic, not officially identified
+				{envVar: "COPILOT_MODEL"},
 			},
 		},
 		{
@@ -93,6 +95,7 @@ func listKnownAgents() []knownAgent {
 		{
 			product: "goose",
 			matchAny: []envMatcher{
+				// https://block.github.io/goose/ (sets GOOSE_TERMINAL and AGENT=goose)
 				{envVar: "GOOSE_TERMINAL"},
 				{envVar: agentEnvVar, value: "goose"},
 			},
@@ -100,13 +103,7 @@ func listKnownAgents() []knownAgent {
 		{
 			product: "kiro",
 			matchAny: []envMatcher{
-				{envVar: "KIRO"},
-			},
-		},
-		{
-			product: "opencode",
-			matchAny: []envMatcher{
-				{envVar: "OPENCODE"}, // https://github.com/opencode-ai/opencode
+				{envVar: "KIRO"}, // https://kiro.dev/ (Amazon)
 			},
 		},
 		{
@@ -116,9 +113,15 @@ func listKnownAgents() []knownAgent {
 			},
 		},
 		{
+			product: "opencode",
+			matchAny: []envMatcher{
+				{envVar: "OPENCODE"}, // https://github.com/opencode-ai/opencode
+			},
+		},
+		{
 			product: "windsurf",
 			matchAny: []envMatcher{
-				{envVar: "WINDSURF_AGENT"},
+				{envVar: "WINDSURF_AGENT"}, // https://codeium.com/windsurf (Codeium)
 			},
 		},
 	}
@@ -144,15 +147,17 @@ func matcherFires(m envMatcher) bool {
 //   - Exactly one agent matched: return its product name.
 //   - More than one agent matched: return "" (ambiguity).
 //   - Zero agents matched: if the agents.md standard AGENT env var is set to
-//     any non-empty value, return "unknown". Otherwise return "".
+//     a non-empty value, return that value if it matches a known product name,
+//     or "unknown" otherwise. If AGENT is not set, return "".
 //
 // Unlike CI/CD detection (which returns the first match), agent detection
 // uses an ambiguity guard because agent env vars can be stacked (e.g., running
 // Cline inside Cursor).
 func lookupAgentProvider() string {
+	agents := listKnownAgents()
 	var detected string
 	count := 0
-	for _, a := range listKnownAgents() {
+	for _, a := range agents {
 		fired := false
 		for _, m := range a.matchAny {
 			if matcherFires(m) {
@@ -173,6 +178,13 @@ func lookupAgentProvider() string {
 	}
 	if count == 0 {
 		if v, ok := os.LookupEnv(agentEnvVar); ok && v != "" {
+			// Honor the agents.md standard: if AGENT is set to a known product
+			// name that wasn't caught by any explicit matcher, report it directly.
+			for _, a := range agents {
+				if a.product == v {
+					return v
+				}
+			}
 			return "unknown"
 		}
 	}

@@ -134,6 +134,21 @@ func TestLookupAgentProvider(t *testing.T) {
 			envs:   map[string]string{"AGENT": ""},
 			expect: "",
 		},
+		{
+			name:   "AGENT=cursor falls back to cursor via known product name",
+			envs:   map[string]string{"AGENT": "cursor"},
+			expect: "cursor",
+		},
+		{
+			name:   "AGENT=claude-code falls back to claude-code via known product name",
+			envs:   map[string]string{"AGENT": "claude-code"},
+			expect: "claude-code",
+		},
+		{
+			name:   "known matcher wins over AGENT fallback",
+			envs:   map[string]string{"AGENT": "somethingunknown", "CLAUDECODE": "1"},
+			expect: "claude-code",
+		},
 		// Cross-agent ambiguity cases.
 		{
 			name:   "AGENT=goose and CLAUDECODE is ambiguous",
