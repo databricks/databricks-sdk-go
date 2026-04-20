@@ -49,14 +49,13 @@ func listKnownAgents() []knownAgent {
 //
 // The function counts how many distinct agents matched via explicit env vars:
 //   - Exactly one agent matched: return its product name.
-//   - More than one agent matched: return "" (ambiguity).
+//   - More than one agent matched: return "multiple". Agent env vars can be
+//     stacked when one agent invokes another as a subagent (e.g. Claude Code
+//     spawning a Cursor CLI subprocess), so the child process inherits env
+//     vars from multiple layers.
 //   - Zero agents matched: if the agents.md standard AGENT env var is set to
 //     a non-empty value, return that value if it matches a known product name,
 //     or "unknown" otherwise. If AGENT is not set, return "".
-//
-// Unlike CI/CD detection (which returns the first match), agent detection
-// uses an ambiguity guard because agent env vars can be stacked (e.g., running
-// Cline inside Cursor).
 func lookupAgentProvider() string {
 	agents := listKnownAgents()
 
@@ -67,14 +66,42 @@ func lookupAgentProvider() string {
 		}
 	}
 
+	// Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
+	// alongside COPILOT_CLI. That is a single copilot-cli signal, not a
+	// stacked multi-agent setup, so drop the copilot-vscode match.
+	matches = collapseCopilotBYOK(matches)
+
 	switch len(matches) {
 	case 1:
 		return matches[0]
 	case 0:
 		return agentEnvFallback(agents)
 	default:
-		return "" // ambiguity: multiple distinct agents matched
+		return "multiple"
 	}
+}
+
+func collapseCopilotBYOK(matches []string) []string {
+	hasCLI, hasVSCode := false, false
+	for _, m := range matches {
+		if m == "copilot-cli" {
+			hasCLI = true
+		}
+		if m == "copilot-vscode" {
+			hasVSCode = true
+		}
+	}
+	if !hasCLI || !hasVSCode {
+		return matches
+	}
+	filtered := make([]string, 0, len(matches)-1)
+	for _, m := range matches {
+		if m == "copilot-vscode" {
+			continue
+		}
+		filtered = append(filtered, m)
+	}
+	return filtered
 }
 
 // agentEnvFallback honors the agents.md AGENT=<name> standard.
@@ -103,10 +130,12 @@ var (
 //   - the known product name when exactly one agent is detected via explicit
 //     env matchers, or when AGENT is set to a known product name and no
 //     explicit matcher fired;
+//   - "multiple" when multiple explicit matchers fire for different agents
+//     (typically nested agents, e.g. Cursor CLI running as a Claude Code
+//     subagent);
 //   - "unknown" when no explicit matcher fired and AGENT is set to a value
 //     that is not a known product name;
-//   - "" when no agent is detected, or when multiple explicit matchers fire
-//     for different agents (ambiguity).
+//   - "" when no agent is detected.
 func AgentProvider() string {
 	agentOnce.Do(func() {
 		agentName = lookupAgentProvider()

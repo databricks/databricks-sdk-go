@@ -63,9 +63,14 @@ func TestLookupAgentProvider(t *testing.T) {
 			expect: "openclaw",
 		},
 		{
-			name:   "multiple agents",
+			name:   "multiple agents stacked (e.g. Cursor CLI subagent invoked by Claude Code)",
 			envs:   map[string]string{"CLAUDECODE": "1", "CURSOR_AGENT": "1"},
-			expect: "",
+			expect: "multiple",
+		},
+		{
+			name:   "three stacked agents also report multiple",
+			envs:   map[string]string{"CLAUDECODE": "1", "CURSOR_AGENT": "1", "AUGMENT_AGENT": "1"},
+			expect: "multiple",
 		},
 		{
 			name:   "empty value still counts as set",
@@ -160,13 +165,18 @@ func TestLookupAgentProvider(t *testing.T) {
 			envs:   map[string]string{"GOOSE_TERMINAL": "1", "AGENT": "cursor"},
 			expect: "goose",
 		},
-		// Cross-agent ambiguity: two explicit matchers fire on different
-		// products. This pins the known ambiguity for Copilot CLI BYOK users
-		// who set COPILOT_MODEL alongside COPILOT_CLI.
+		// Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
+		// alongside COPILOT_CLI. The pair is treated as a single copilot-cli
+		// signal rather than a stacked multi-agent setup.
 		{
-			name:   "COPILOT_CLI and COPILOT_MODEL together is ambiguous",
+			name:   "COPILOT_CLI + COPILOT_MODEL collapses to copilot-cli (BYOK)",
 			envs:   map[string]string{"COPILOT_CLI": "1", "COPILOT_MODEL": "gpt-4"},
-			expect: "",
+			expect: "copilot-cli",
+		},
+		{
+			name:   "COPILOT_CLI + COPILOT_MODEL + CLAUDECODE still reports multiple after BYOK collapse",
+			envs:   map[string]string{"COPILOT_CLI": "1", "COPILOT_MODEL": "gpt-4", "CLAUDECODE": "1"},
+			expect: "multiple",
 		},
 	}
 
