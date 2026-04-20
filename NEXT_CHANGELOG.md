@@ -16,4 +16,6 @@
 
 ### Internal Changes
 
+ * Pass `--force-refresh` to Databricks CLI `auth token` command to bypass the CLI's internal token cache ([#1628](https://github.com/databricks/databricks-sdk-go/pull/1628)).
+
 ### API Changes
