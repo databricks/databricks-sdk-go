@@ -5,19 +5,12 @@ import (
 	"sync"
 )
 
-// envMatcher matches an environment variable. If value is empty, matching is
-// presence-only (any value, including empty string, counts as a match). If
-// value is non-empty, the env var must be set to exactly that value.
-type envMatcher struct {
-	envVar string
-	value  string
-}
-
-// knownAgent describes a single AI coding agent and the environment matchers
-// that identify it. The agent is detected if ANY matcher in matchAny fires.
+// knownAgent describes a single AI coding agent and the environment variable
+// that identifies it. The agent is detected if envVar is set (any value,
+// including the empty string, counts as a match).
 type knownAgent struct {
-	product  string
-	matchAny []envMatcher
+	envVar  string
+	product string
 }
 
 // agentEnvVar is the agents.md standard env var. When set to a value we
@@ -29,115 +22,22 @@ const agentEnvVar = "AGENT"
 // Agents are listed alphabetically by product name.
 func listKnownAgents() []knownAgent {
 	return []knownAgent{
-		{
-			product: "amp",
-			matchAny: []envMatcher{
-				// https://ampcode.com/ (also sets AGENT=amp, handled by the
-				// central fallback in lookupAgentProvider).
-				{envVar: "AMP_CURRENT_THREAD_ID"},
-			},
-		},
-		{
-			product: "antigravity",
-			matchAny: []envMatcher{
-				{envVar: "ANTIGRAVITY_AGENT"}, // Closed source (Google)
-			},
-		},
-		{
-			product: "augment",
-			matchAny: []envMatcher{
-				{envVar: "AUGMENT_AGENT"}, // https://www.augmentcode.com/
-			},
-		},
-		{
-			product: "claude-code",
-			matchAny: []envMatcher{
-				{envVar: "CLAUDECODE"}, // https://github.com/anthropics/claude-code
-			},
-		},
-		{
-			product: "cline",
-			matchAny: []envMatcher{
-				{envVar: "CLINE_ACTIVE"}, // https://github.com/cline/cline (v3.24.0+)
-			},
-		},
-		{
-			product: "codex",
-			matchAny: []envMatcher{
-				{envVar: "CODEX_CI"}, // https://github.com/openai/codex
-			},
-		},
-		{
-			product: "copilot-cli",
-			matchAny: []envMatcher{
-				{envVar: "COPILOT_CLI"}, // https://github.com/features/copilot
-			},
-		},
-		{
-			product: "copilot-vscode",
-			matchAny: []envMatcher{
-				// VS Code Copilot terminal, best-effort heuristic, not officially identified
-				{envVar: "COPILOT_MODEL"},
-			},
-		},
-		{
-			product: "cursor",
-			matchAny: []envMatcher{
-				{envVar: "CURSOR_AGENT"}, // Closed source
-			},
-		},
-		{
-			product: "gemini-cli",
-			matchAny: []envMatcher{
-				{envVar: "GEMINI_CLI"}, // https://google-gemini.github.io/gemini-cli
-			},
-		},
-		{
-			product: "goose",
-			matchAny: []envMatcher{
-				// https://block.github.io/goose/ (also sets AGENT=goose, handled
-				// by the central fallback in lookupAgentProvider).
-				{envVar: "GOOSE_TERMINAL"},
-			},
-		},
-		{
-			product: "kiro",
-			matchAny: []envMatcher{
-				{envVar: "KIRO"}, // https://kiro.dev/ (Amazon)
-			},
-		},
-		{
-			product: "openclaw",
-			matchAny: []envMatcher{
-				{envVar: "OPENCLAW_SHELL"}, // https://github.com/anthropics/openclaw
-			},
-		},
-		{
-			product: "opencode",
-			matchAny: []envMatcher{
-				{envVar: "OPENCODE"}, // https://github.com/opencode-ai/opencode
-			},
-		},
-		{
-			product: "windsurf",
-			matchAny: []envMatcher{
-				{envVar: "WINDSURF_AGENT"}, // https://codeium.com/windsurf (Codeium)
-			},
-		},
+		{envVar: "AMP_CURRENT_THREAD_ID", product: "amp"},     // https://ampcode.com/ (also sets AGENT=amp, handled by the central fallback in lookupAgentProvider)
+		{envVar: "ANTIGRAVITY_AGENT", product: "antigravity"}, // Closed source (Google)
+		{envVar: "AUGMENT_AGENT", product: "augment"},         // https://www.augmentcode.com/
+		{envVar: "CLAUDECODE", product: "claude-code"},        // https://github.com/anthropics/claude-code
+		{envVar: "CLINE_ACTIVE", product: "cline"},            // https://github.com/cline/cline (v3.24.0+)
+		{envVar: "CODEX_CI", product: "codex"},                // https://github.com/openai/codex
+		{envVar: "COPILOT_CLI", product: "copilot-cli"},       // https://github.com/features/copilot
+		{envVar: "COPILOT_MODEL", product: "copilot-vscode"},  // VS Code Copilot terminal, best-effort heuristic, not officially identified
+		{envVar: "CURSOR_AGENT", product: "cursor"},           // Closed source
+		{envVar: "GEMINI_CLI", product: "gemini-cli"},         // https://google-gemini.github.io/gemini-cli
+		{envVar: "GOOSE_TERMINAL", product: "goose"},          // https://block.github.io/goose/ (also sets AGENT=goose, handled by the central fallback in lookupAgentProvider)
+		{envVar: "KIRO", product: "kiro"},                     // https://kiro.dev/ (Amazon)
+		{envVar: "OPENCLAW_SHELL", product: "openclaw"},       // https://github.com/anthropics/openclaw
+		{envVar: "OPENCODE", product: "opencode"},             // https://github.com/opencode-ai/opencode
+		{envVar: "WINDSURF_AGENT", product: "windsurf"},       // https://codeium.com/windsurf (Codeium)
 	}
-}
-
-// matcherFires returns true if the matcher's env var is set (for presence
-// checks) or set to the exact expected value (for value checks).
-func matcherFires(m envMatcher) bool {
-	v, ok := os.LookupEnv(m.envVar)
-	if !ok {
-		return false
-	}
-	if m.value == "" {
-		return true
-	}
-	return v == m.value
 }
 
 // lookupAgentProvider checks environment variables for known AI agents.
@@ -147,8 +47,7 @@ func matcherFires(m envMatcher) bool {
 // explicit matcher fires, so that an explicit signal (e.g. CLAUDECODE=1)
 // always wins over a conflicting AGENT=<name> value.
 //
-// For each agent, it fires if ANY of its matchers fires. The function counts
-// how many distinct agents matched via explicit matchers:
+// The function counts how many distinct agents matched via explicit env vars:
 //   - Exactly one agent matched: return its product name.
 //   - More than one agent matched: return "" (ambiguity).
 //   - Zero agents matched: if the agents.md standard AGENT env var is set to
@@ -160,40 +59,38 @@ func matcherFires(m envMatcher) bool {
 // Cline inside Cursor).
 func lookupAgentProvider() string {
 	agents := listKnownAgents()
-	var detected string
-	count := 0
+
+	var matches []string
 	for _, a := range agents {
-		fired := false
-		for _, m := range a.matchAny {
-			if matcherFires(m) {
-				fired = true
-				break
-			}
-		}
-		if fired {
-			detected = a.product
-			count++
-			if count > 1 {
-				break
-			}
+		if _, ok := os.LookupEnv(a.envVar); ok {
+			matches = append(matches, a.product)
 		}
 	}
-	if count == 1 {
-		return detected
+
+	switch len(matches) {
+	case 1:
+		return matches[0]
+	case 0:
+		return agentEnvFallback(agents)
+	default:
+		return "" // ambiguity: multiple distinct agents matched
 	}
-	if count == 0 {
-		if v, ok := os.LookupEnv(agentEnvVar); ok && v != "" {
-			// Honor the agents.md standard: if AGENT is set to a known product
-			// name that wasn't caught by any explicit matcher, report it directly.
-			for _, a := range agents {
-				if a.product == v {
-					return v
-				}
-			}
-			return "unknown"
+}
+
+// agentEnvFallback honors the agents.md AGENT=<name> standard.
+// Returns the value if it matches a known product name, "unknown" if AGENT
+// is set to any other non-empty value, and "" if AGENT is unset or empty.
+func agentEnvFallback(agents []knownAgent) string {
+	v, ok := os.LookupEnv(agentEnvVar)
+	if !ok || v == "" {
+		return ""
+	}
+	for _, a := range agents {
+		if a.product == v {
+			return v
 		}
 	}
-	return ""
+	return "unknown"
 }
 
 var (
