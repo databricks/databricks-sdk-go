@@ -71,6 +71,10 @@ func (a *SharesAPI) internalList(ctx context.Context, request ListSharesRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSharesResponse)
 	return &listSharesResponse, err
 }

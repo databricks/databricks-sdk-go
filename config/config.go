@@ -696,10 +696,17 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		return
 	}
 
+	resolver := c.HostMetadataResolver
+	if resolver == nil {
+		if factory := DefaultHostMetadataResolverFactory; factory != nil {
+			resolver = factory(c)
+		}
+	}
+
 	var meta *HostMetadata
 	var err error
-	if c.HostMetadataResolver != nil {
-		meta, err = c.HostMetadataResolver(ctx, c.CanonicalHostName())
+	if resolver != nil {
+		meta, err = resolver(ctx, c.CanonicalHostName())
 	} else {
 		meta, err = getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
 	}
