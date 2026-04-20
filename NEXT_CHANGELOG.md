@@ -6,6 +6,8 @@
 
 ### New Features and Improvements
 
+ * Add `config.DefaultHostMetadataResolverFactory`: a package-level variable consulted when `Config.HostMetadataResolver` is unset. Lets programs install a shared resolver (e.g. a caching one) once from an `init()` block (typically in a blank-imported package) instead of wiring per-Config. Experimental.
+
 ### Bug Fixes
 
  * Add `X-Databricks-Org-Id` header to `Workspace.Download()` and `Workspace.Upload()` for SPOG host compatibility.
