@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/mod/semver"
 	"golang.org/x/oauth2"
 )
 
@@ -31,51 +32,38 @@ type cliTokenResponse struct {
 	Expiry      string `json:"expiry"`
 }
 
-// cliVersion represents a parsed Databricks CLI semver version.
-type cliVersion struct {
-	Major, Minor, Patch int
-}
+// Minimum CLI versions for flag support. Versions are in the format accepted
+// by [golang.org/x/mod/semver] (with leading "v").
+const cliVersionForProfile = "v0.207.1" // https://github.com/databricks/cli/pull/855
 
-// AtLeast returns true if v is greater than or equal to other.
-func (v cliVersion) AtLeast(other cliVersion) bool {
-	if v.Major != other.Major {
-		return v.Major > other.Major
-	}
-	if v.Minor != other.Minor {
-		return v.Minor > other.Minor
-	}
-	return v.Patch >= other.Patch
-}
-
-func (v cliVersion) String() string {
-	if v == (cliVersion{}) {
-		return "unknown"
-	}
-	return fmt.Sprintf("v%d.%d.%d", v.Major, v.Minor, v.Patch)
-}
-
-// Minimum CLI versions for flag support.
-var cliVersionForProfile = cliVersion{0, 207, 1} // https://github.com/databricks/cli/pull/855
-
-// getCliVersion runs "databricks version" and parses the output.
-func getCliVersion(ctx context.Context, cliPath string) (cliVersion, error) {
+// getCliVersion runs "databricks version" and returns the parsed semver string
+// (e.g., "v0.207.1"). Returns an empty string and an error if the version
+// cannot be determined.
+func getCliVersion(ctx context.Context, cliPath string) (string, error) {
 	cmd := exec.CommandContext(ctx, cliPath, "version")
 	out, err := cmd.Output()
 	if err != nil {
-		return cliVersion{}, fmt.Errorf("cannot get CLI version: %w", err)
+		return "", fmt.Errorf("cannot get CLI version: %w", err)
 	}
 	return parseCliVersion(strings.TrimSpace(string(out)))
 }
 
-// parseCliVersion parses a version string like "Databricks CLI v0.207.1".
-func parseCliVersion(s string) (cliVersion, error) {
-	s = strings.TrimPrefix(s, "Databricks CLI v")
-	var v cliVersion
-	_, err := fmt.Sscanf(s, "%d.%d.%d", &v.Major, &v.Minor, &v.Patch)
-	if err != nil {
-		return cliVersion{}, fmt.Errorf("cannot parse CLI version %q: %w", s, err)
+// parseCliVersion extracts the semver from an output like "Databricks CLI v0.207.1".
+func parseCliVersion(s string) (string, error) {
+	v := strings.TrimPrefix(s, "Databricks CLI ")
+	if !semver.IsValid(v) {
+		return "", fmt.Errorf("cannot parse CLI version %q", s)
 	}
 	return v, nil
+}
+
+// displayVersion returns a human-readable version string, or "unknown" when
+// version detection failed (indicated by an empty string).
+func displayVersion(ver string) string {
+	if ver == "" {
+		return "unknown"
+	}
+	return ver
 }
 
 // CliTokenSource fetches OAuth tokens by shelling out to the Databricks CLI.
@@ -102,7 +90,7 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 	ver, err := getCliVersion(ctx, cliPath)
 	if err != nil {
 		logger.Warnf(ctx, "Failed to detect Databricks CLI version: %v. Falling back to conservative flag set.", err)
-		ver = cliVersion{}
+		ver = ""
 	}
 	cmd := buildCliCommand(ctx, cliPath, cfg, ver)
 	if cmd == nil {
@@ -113,21 +101,21 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 
 // buildCliCommand constructs the CLI command for fetching an auth token.
 // The CLI version determines which flags are used.
-func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver cliVersion) []string {
+func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver string) []string {
 	var cmd []string
 
-	// --profile is a global Cobra flag — old CLIs accept it silently but
-	// fail with "cannot fetch credentials" instead of "unknown flag".
-	// We use version detection to decide --profile vs --host.
+	// Flag --profile is a global CLI flag and is recognized for all commands even
+	// the ones that do not support it. Only use flag --profile in CLI versions that
+	// are known to support it in command `auth token`.
 	if cfg.Profile != "" {
-		if ver.AtLeast(cliVersionForProfile) {
+		if semver.Compare(ver, cliVersionForProfile) >= 0 {
 			cmd = []string{cliPath, "auth", "token", "--profile", cfg.Profile}
 		} else {
-			logger.Warnf(ctx, "Profile %q was specified but Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.", cfg.Profile, ver, cliVersionForProfile)
+			logger.Warnf(ctx, "Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.", displayVersion(ver), cliVersionForProfile)
 		}
 	}
 
-	if cmd == nil && cfg.Host != "" {
+	if len(cmd) == 0 && cfg.Host != "" {
 		cmd = []string{cliPath, "auth", "token", "--host", cfg.Host}
 		if cfg.HostType() == AccountHost {
 			cmd = append(cmd, "--account-id", cfg.AccountID)
@@ -148,9 +136,10 @@ func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oa
 	if err != nil {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {
-			// We intentionally discard exec.ExitError — the stderr text is the
-			// CLI's error contract; exit codes and process state are not useful.
-			return nil, fmt.Errorf("cannot get access token: %s", strings.TrimSpace(string(exitErr.Stderr)))
+			// Surface the CLI's stderr explicitly — exec.ExitError's own
+			// message is just "exit status N". Wrap err with %w so callers
+			// can still recover the *exec.ExitError via errors.As.
+			return nil, fmt.Errorf("cannot get access token: %s: %w", strings.TrimSpace(string(exitErr.Stderr)), err)
 		}
 		return nil, fmt.Errorf("cannot get access token: %w", err)
 	}
