@@ -1172,17 +1172,17 @@ func TestConfig_ResolveHostMetadata_HostTypes(t *testing.T) {
 }
 
 // withDefaultHostMetadataResolverFactory installs factory for the duration of
-// the current test, restoring whatever was previously registered on cleanup.
+// the current test, restoring whatever was previously set on cleanup.
 // Capture/set/restore are not atomic — do not use with t.Parallel across
 // multiple tests that touch the package-level default.
 func withDefaultHostMetadataResolverFactory(t *testing.T, factory func(*Config) HostMetadataResolver) {
 	t.Helper()
-	prev := getDefaultHostMetadataResolverFactory()
-	SetDefaultHostMetadataResolverFactory(factory)
-	t.Cleanup(func() { SetDefaultHostMetadataResolverFactory(prev) })
+	prev := DefaultHostMetadataResolverFactory
+	DefaultHostMetadataResolverFactory = factory
+	t.Cleanup(func() { DefaultHostMetadataResolverFactory = prev })
 }
 
-func TestSetDefaultHostMetadataResolverFactory_UsedWhenConfigHasNoResolver(t *testing.T) {
+func TestDefaultHostMetadataResolverFactory_UsedWhenConfigHasNoResolver(t *testing.T) {
 	var factoryCalls atomic.Int32
 	withDefaultHostMetadataResolverFactory(t, func(c *Config) HostMetadataResolver {
 		factoryCalls.Add(1)
@@ -1200,7 +1200,7 @@ func TestSetDefaultHostMetadataResolverFactory_UsedWhenConfigHasNoResolver(t *te
 	assert.Equal(t, testHMWorkspaceID, cfg.WorkspaceID)
 }
 
-func TestSetDefaultHostMetadataResolverFactory_PerConfigResolverTakesPrecedence(t *testing.T) {
+func TestDefaultHostMetadataResolverFactory_PerConfigResolverTakesPrecedence(t *testing.T) {
 	var factoryCalls atomic.Int32
 	withDefaultHostMetadataResolverFactory(t, func(c *Config) HostMetadataResolver {
 		factoryCalls.Add(1)
@@ -1223,7 +1223,7 @@ func TestSetDefaultHostMetadataResolverFactory_PerConfigResolverTakesPrecedence(
 	assert.Equal(t, testHMAccountID, cfg.AccountID)
 }
 
-func TestSetDefaultHostMetadataResolverFactory_NilResolverFromFactoryFallsThroughToHTTP(t *testing.T) {
+func TestDefaultHostMetadataResolverFactory_NilResolverFromFactoryFallsThroughToHTTP(t *testing.T) {
 	withDefaultHostMetadataResolverFactory(t, func(c *Config) HostMetadataResolver {
 		return nil
 	})

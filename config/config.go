@@ -703,7 +703,7 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 
 	resolver := c.HostMetadataResolver
 	if resolver == nil {
-		if factory := getDefaultHostMetadataResolverFactory(); factory != nil {
+		if factory := DefaultHostMetadataResolverFactory; factory != nil {
 			resolver = factory(c)
 		}
 	}
