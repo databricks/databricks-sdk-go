@@ -72,6 +72,74 @@ func TestLookupAgentProvider(t *testing.T) {
 			envs:   map[string]string{"CLAUDECODE": ""},
 			expect: "claude-code",
 		},
+		// New agent detections.
+		{
+			name:   "goose via GOOSE_TERMINAL",
+			envs:   map[string]string{"GOOSE_TERMINAL": "1"},
+			expect: "goose",
+		},
+		{
+			name:   "goose via AGENT",
+			envs:   map[string]string{"AGENT": "goose"},
+			expect: "goose",
+		},
+		{
+			name:   "goose via both GOOSE_TERMINAL and AGENT is not ambiguous",
+			envs:   map[string]string{"GOOSE_TERMINAL": "1", "AGENT": "goose"},
+			expect: "goose",
+		},
+		{
+			name:   "amp via AMP_CURRENT_THREAD_ID",
+			envs:   map[string]string{"AMP_CURRENT_THREAD_ID": "abc123"},
+			expect: "amp",
+		},
+		{
+			name:   "amp via AGENT",
+			envs:   map[string]string{"AGENT": "amp"},
+			expect: "amp",
+		},
+		{
+			name:   "amp via both AMP_CURRENT_THREAD_ID and AGENT is not ambiguous",
+			envs:   map[string]string{"AMP_CURRENT_THREAD_ID": "abc123", "AGENT": "amp"},
+			expect: "amp",
+		},
+		{
+			name:   "augment",
+			envs:   map[string]string{"AUGMENT_AGENT": "1"},
+			expect: "augment",
+		},
+		{
+			name:   "copilot vscode",
+			envs:   map[string]string{"COPILOT_MODEL": "gpt-4"},
+			expect: "copilot-vscode",
+		},
+		{
+			name:   "kiro",
+			envs:   map[string]string{"KIRO": "1"},
+			expect: "kiro",
+		},
+		{
+			name:   "windsurf",
+			envs:   map[string]string{"WINDSURF_AGENT": "1"},
+			expect: "windsurf",
+		},
+		// AGENT fallback behavior.
+		{
+			name:   "AGENT with unknown value falls back to unknown",
+			envs:   map[string]string{"AGENT": "someweirdthing"},
+			expect: "unknown",
+		},
+		{
+			name:   "AGENT empty string does not trigger fallback",
+			envs:   map[string]string{"AGENT": ""},
+			expect: "",
+		},
+		// Cross-agent ambiguity cases.
+		{
+			name:   "AGENT=goose and CLAUDECODE is ambiguous",
+			envs:   map[string]string{"AGENT": "goose", "CLAUDECODE": "1"},
+			expect: "",
+		},
 	}
 
 	for _, tt := range tests {
