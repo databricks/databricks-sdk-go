@@ -149,10 +149,23 @@ func TestLookupAgentProvider(t *testing.T) {
 			envs:   map[string]string{"AGENT": "somethingunknown", "CLAUDECODE": "1"},
 			expect: "claude-code",
 		},
-		// Cross-agent ambiguity cases.
+		// Explicit env var always wins over the generic AGENT env var.
 		{
-			name:   "AGENT=goose and CLAUDECODE is ambiguous",
+			name:   "explicit CLAUDECODE wins over AGENT=goose",
 			envs:   map[string]string{"AGENT": "goose", "CLAUDECODE": "1"},
+			expect: "claude-code",
+		},
+		{
+			name:   "explicit GOOSE_TERMINAL wins over AGENT=cursor",
+			envs:   map[string]string{"GOOSE_TERMINAL": "1", "AGENT": "cursor"},
+			expect: "goose",
+		},
+		// Cross-agent ambiguity: two explicit matchers fire on different
+		// products. This pins the known ambiguity for Copilot CLI BYOK users
+		// who set COPILOT_MODEL alongside COPILOT_CLI.
+		{
+			name:   "COPILOT_CLI and COPILOT_MODEL together is ambiguous",
+			envs:   map[string]string{"COPILOT_CLI": "1", "COPILOT_MODEL": "gpt-4"},
 			expect: "",
 		},
 	}

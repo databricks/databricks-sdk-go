@@ -32,9 +32,9 @@ func listKnownAgents() []knownAgent {
 		{
 			product: "amp",
 			matchAny: []envMatcher{
-				// https://ampcode.com/ (sets AMP_CURRENT_THREAD_ID and AGENT=amp)
+				// https://ampcode.com/ (also sets AGENT=amp, handled by the
+				// central fallback in lookupAgentProvider).
 				{envVar: "AMP_CURRENT_THREAD_ID"},
-				{envVar: agentEnvVar, value: "amp"},
 			},
 		},
 		{
@@ -95,9 +95,9 @@ func listKnownAgents() []knownAgent {
 		{
 			product: "goose",
 			matchAny: []envMatcher{
-				// https://block.github.io/goose/ (sets GOOSE_TERMINAL and AGENT=goose)
+				// https://block.github.io/goose/ (also sets AGENT=goose, handled
+				// by the central fallback in lookupAgentProvider).
 				{envVar: "GOOSE_TERMINAL"},
-				{envVar: agentEnvVar, value: "goose"},
 			},
 		},
 		{
@@ -142,8 +142,13 @@ func matcherFires(m envMatcher) bool {
 
 // lookupAgentProvider checks environment variables for known AI agents.
 //
+// Explicit product-specific env vars always take precedence over the generic
+// agents.md AGENT env var. AGENT is consulted only as a fallback when no
+// explicit matcher fires, so that an explicit signal (e.g. CLAUDECODE=1)
+// always wins over a conflicting AGENT=<name> value.
+//
 // For each agent, it fires if ANY of its matchers fires. The function counts
-// how many distinct agents matched:
+// how many distinct agents matched via explicit matchers:
 //   - Exactly one agent matched: return its product name.
 //   - More than one agent matched: return "" (ambiguity).
 //   - Zero agents matched: if the agents.md standard AGENT env var is set to
@@ -197,7 +202,14 @@ var (
 )
 
 // AgentProvider returns the detected AI agent name, cached for the process lifetime.
-// Returns empty string if no agent or multiple agents detected.
+// Returns one of:
+//   - the known product name when exactly one agent is detected via explicit
+//     env matchers, or when AGENT is set to a known product name and no
+//     explicit matcher fired;
+//   - "unknown" when no explicit matcher fired and AGENT is set to a value
+//     that is not a known product name;
+//   - "" when no agent is detected, or when multiple explicit matchers fire
+//     for different agents (ambiguity).
 func AgentProvider() string {
 	agentOnce.Do(func() {
 		agentName = lookupAgentProvider()
