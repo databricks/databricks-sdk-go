@@ -13,11 +13,22 @@ jobs:
       group: databricks-deco-testing-runner-group
       labels: ubuntu-latest-deco
 
+    permissions:
+      id-token: write
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+
+      - name: Setup JFrog CLI with OIDC
+        uses: jfrog/setup-jfrog-cli@279b1f629f43dd5bc658d8361ac4802a7ef8d2d5 # v4.9.1
+        env:
+          JF_URL: https://databricks.jfrog.io
+        with:
+          oidc-provider-name: github-actions
 
       - name: Setup Go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
@@ -31,6 +42,17 @@ jobs:
             go.sum
             .goreleaser.yml
 
+      - name: Download Go modules via JFrog
+        run: |
+          jf goc --repo-resolve=db-golang
+          jf go mod download
+
+          # Point native go commands at the local module cache instead of
+          # the network. go run pkg@version needs module lookups even when
+          # cached; file:// satisfies these from disk without network access.
+          echo "GOPROXY=file://$(go env GOMODCACHE)/cache/download" >> $GITHUB_ENV
+          echo "GONOSUMCHECK=*" >> $GITHUB_ENV
+          echo "GONOSUMDB=*" >> $GITHUB_ENV
 
       - name: Write release notes to file
         run: |

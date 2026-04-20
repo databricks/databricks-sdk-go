@@ -38,6 +38,20 @@ type HostMetadata struct {
 // This allows callers to provide cached metadata without the SDK making an HTTP call.
 type HostMetadataResolver func(ctx context.Context, host string) (*HostMetadata, error)
 
+// DefaultHostMetadataResolverFactory is consulted by [Config.EnsureResolved]
+// when [Config.HostMetadataResolver] is nil. When set, the factory is invoked
+// with the resolving Config and must return the resolver to use for that
+// Config (or nil to fall through to the SDK's default HTTP fetch).
+//
+// Intended for programs that want a single hook to install a caching or
+// otherwise-customised resolver across every Config they construct, without
+// per-site wiring. Set once from an init() block in a package that is
+// blank-imported by the main binary. Callers needing a per-Config resolver
+// should use [Config.HostMetadataResolver] instead.
+//
+// Experimental: subject to change.
+var DefaultHostMetadataResolverFactory func(*Config) HostMetadataResolver
+
 // getHostMetadata fetches the raw Databricks well-known configuration from
 // {host}/.well-known/databricks-config. The returned HostMetadata contains
 // raw values with no substitution (e.g., {account_id} placeholders are left
