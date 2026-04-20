@@ -63,14 +63,120 @@ func TestLookupAgentProvider(t *testing.T) {
 			expect: "openclaw",
 		},
 		{
-			name:   "multiple agents",
+			name:   "multiple agents stacked (e.g. Cursor CLI subagent invoked by Claude Code)",
 			envs:   map[string]string{"CLAUDECODE": "1", "CURSOR_AGENT": "1"},
-			expect: "",
+			expect: "multiple",
+		},
+		{
+			name:   "three stacked agents also report multiple",
+			envs:   map[string]string{"CLAUDECODE": "1", "CURSOR_AGENT": "1", "AUGMENT_AGENT": "1"},
+			expect: "multiple",
 		},
 		{
 			name:   "empty value still counts as set",
 			envs:   map[string]string{"CLAUDECODE": ""},
 			expect: "claude-code",
+		},
+		// New agent detections.
+		{
+			name:   "goose via GOOSE_TERMINAL",
+			envs:   map[string]string{"GOOSE_TERMINAL": "1"},
+			expect: "goose",
+		},
+		{
+			name:   "goose via AGENT",
+			envs:   map[string]string{"AGENT": "goose"},
+			expect: "goose",
+		},
+		{
+			name:   "goose via both GOOSE_TERMINAL and AGENT is not ambiguous",
+			envs:   map[string]string{"GOOSE_TERMINAL": "1", "AGENT": "goose"},
+			expect: "goose",
+		},
+		{
+			name:   "amp via AMP_CURRENT_THREAD_ID",
+			envs:   map[string]string{"AMP_CURRENT_THREAD_ID": "abc123"},
+			expect: "amp",
+		},
+		{
+			name:   "amp via AGENT",
+			envs:   map[string]string{"AGENT": "amp"},
+			expect: "amp",
+		},
+		{
+			name:   "amp via both AMP_CURRENT_THREAD_ID and AGENT is not ambiguous",
+			envs:   map[string]string{"AMP_CURRENT_THREAD_ID": "abc123", "AGENT": "amp"},
+			expect: "amp",
+		},
+		{
+			name:   "augment",
+			envs:   map[string]string{"AUGMENT_AGENT": "1"},
+			expect: "augment",
+		},
+		{
+			name:   "copilot vscode",
+			envs:   map[string]string{"COPILOT_MODEL": "gpt-4"},
+			expect: "copilot-vscode",
+		},
+		{
+			name:   "kiro",
+			envs:   map[string]string{"KIRO": "1"},
+			expect: "kiro",
+		},
+		{
+			name:   "windsurf",
+			envs:   map[string]string{"WINDSURF_AGENT": "1"},
+			expect: "windsurf",
+		},
+		// AGENT fallback behavior.
+		{
+			name:   "AGENT with unknown value falls back to unknown",
+			envs:   map[string]string{"AGENT": "someweirdthing"},
+			expect: "unknown",
+		},
+		{
+			name:   "AGENT empty string does not trigger fallback",
+			envs:   map[string]string{"AGENT": ""},
+			expect: "",
+		},
+		{
+			name:   "AGENT=cursor falls back to cursor via known product name",
+			envs:   map[string]string{"AGENT": "cursor"},
+			expect: "cursor",
+		},
+		{
+			name:   "AGENT=claude-code falls back to claude-code via known product name",
+			envs:   map[string]string{"AGENT": "claude-code"},
+			expect: "claude-code",
+		},
+		{
+			name:   "known matcher wins over AGENT fallback",
+			envs:   map[string]string{"AGENT": "somethingunknown", "CLAUDECODE": "1"},
+			expect: "claude-code",
+		},
+		// Explicit env var always wins over the generic AGENT env var.
+		{
+			name:   "explicit CLAUDECODE wins over AGENT=goose",
+			envs:   map[string]string{"AGENT": "goose", "CLAUDECODE": "1"},
+			expect: "claude-code",
+		},
+		{
+			name:   "explicit GOOSE_TERMINAL wins over AGENT=cursor",
+			envs:   map[string]string{"GOOSE_TERMINAL": "1", "AGENT": "cursor"},
+			expect: "goose",
+		},
+		// Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
+		// alongside COPILOT_CLI. The pair is treated as a single copilot-cli
+		// signal rather than a stacked multi-agent setup.
+		{
+			name:   "COPILOT_CLI + COPILOT_MODEL collapses to copilot-cli (BYOK)",
+			envs:   map[string]string{"COPILOT_CLI": "1", "COPILOT_MODEL": "gpt-4"},
+			expect: "copilot-cli",
+		},
+		{
+			name:   "COPILOT_CLI + COPILOT_MODEL + CLAUDECODE still reports multiple after BYOK collapse",
+			envs:   map[string]string{"COPILOT_CLI": "1", "COPILOT_MODEL": "gpt-4", "CLAUDECODE": "1"},
+			expect: "multiple",
 		},
 	}
 

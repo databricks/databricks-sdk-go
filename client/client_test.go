@@ -578,8 +578,10 @@ func TestUserAgentForMultipleAgents(t *testing.T) {
 
 	userAgent := captureUserAgent(t)
 
-	// When multiple agent env vars are set, no agent/ entry should appear.
-	assert.NotContains(t, userAgent, "agent/")
+	// Nested agents (e.g. Claude Code spawning a Cursor CLI subagent) set
+	// multiple explicit matchers on the same process. Report "multiple" so
+	// the stacked case is visible in telemetry.
+	assert.Contains(t, userAgent, "agent/multiple")
 }
 
 func TestUserAgentForAgentNotSet(t *testing.T) {
