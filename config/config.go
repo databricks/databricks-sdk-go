@@ -460,10 +460,6 @@ func (c *Config) HostType() HostType {
 		return c.resolvedHostType
 	}
 
-	// TODO: Remove this after TF updates its code.
-	if c.Experimental_IsUnifiedHost {
-		return UnifiedHost
-	}
 	// Normalize the host to ensure the scheme is present before checking
 	// prefixes. Profiles saved without "https://" (e.g. from user input)
 	// would otherwise fail the prefix check and be misclassified as

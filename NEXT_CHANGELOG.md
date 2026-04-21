@@ -14,6 +14,7 @@
 
 ### Internal Changes
 
+ * Remove `Experimental_IsUnifiedHost` flag from `HostType()` resolution. The method is deprecated and the Terraform provider will use its own host type detection.
  * Expanded AI agent detection: added Goose, Amp, Augment, Copilot (VS Code), Kiro, Windsurf. Honors the `AGENT=<name>` standard and falls back to `unknown` for unrecognized values. When multiple agent env vars are present (e.g. a Cursor CLI subagent invoked from Claude Code), the user-agent reports `agent/multiple`.
  * Use resolved host type from host metadata in `HostType()` method, falling back to URL pattern matching when metadata is unavailable.
 
