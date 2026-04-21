@@ -6,6 +6,8 @@
 
 ### New Features and Improvements
 
+ * Add `u2m.WithDiscoveryHost` option to override the default `https://login.databricks.com` host used by the discovery login flow. Intended for testing and development against non-production environments.
+
 ### Bug Fixes
 
 ### Documentation

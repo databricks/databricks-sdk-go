@@ -165,6 +165,62 @@ func TestBuildDiscoveryAuthorizeURL(t *testing.T) {
 	}
 }
 
+func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
+	pkce := PKCEParams{
+		Challenge:       "c",
+		ChallengeMethod: "S256",
+		Verifier:        "v",
+	}
+	scopes := []string{"offline_access", "all-apis"}
+	tests := []struct {
+		name string
+		host string
+	}{
+		{
+			name: "custom host",
+			host: "https://login.dev.databricks.com",
+		},
+		{
+			name: "custom host with trailing slash",
+			host: "https://login.dev.databricks.com/",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes)
+			u, err := url.Parse(got)
+			if err != nil {
+				t.Fatalf("parsing URL: %v", err)
+			}
+			if u.Host != "login.dev.databricks.com" {
+				t.Errorf("host = %q, want login.dev.databricks.com", u.Host)
+			}
+		})
+	}
+}
+
+func TestWithDiscoveryHost_NormalizesScheme(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{name: "empty stays empty", input: "", want: ""},
+		{name: "https preserved", input: "https://login.dev.databricks.com", want: "https://login.dev.databricks.com"},
+		{name: "http preserved", input: "http://localhost:8080", want: "http://localhost:8080"},
+		{name: "no scheme gets https", input: "login.dev.databricks.com", want: "https://login.dev.databricks.com"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var a PersistentAuth
+			WithDiscoveryHost(tc.input)(&a)
+			if a.discoveryHost != tc.want {
+				t.Errorf("discoveryHost = %q, want %q", a.discoveryHost, tc.want)
+			}
+		})
+	}
+}
+
 func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 	// Create a mock token server that responds to POST /oidc/v1/token.
 	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
