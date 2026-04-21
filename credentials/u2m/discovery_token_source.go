@@ -8,7 +8,9 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const loginDatabricksHost = "https://login.databricks.com"
+// defaultLoginDatabricksHost is the production host used for discovery login
+// when no override is configured via WithDiscoveryHost.
+const defaultLoginDatabricksHost = "https://login.databricks.com"
 
 // DeriveHostFromIssuer extracts the workspace host (scheme + host) from an
 // issuer URL returned in the OAuth callback iss parameter.
@@ -50,6 +52,13 @@ func DeriveTokenEndpoint(issuer string) string {
 // the discovery OAuth flow. The OIDC authorize path with all OAuth query params
 // is URL-encoded as the destination_url parameter.
 func BuildDiscoveryAuthorizeURL(redirectAddr, state string, pkce PKCEParams, scopes []string) string {
+	return buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, redirectAddr, state, pkce, scopes)
+}
+
+// buildDiscoveryAuthorizeURL builds the discovery authorize URL against the
+// given host. Trailing slashes on host are trimmed so the result is
+// well-formed regardless of how an override is written.
+func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParams, scopes []string) string {
 	// Build the nested OIDC authorize path with query parameters.
 	authParams := url.Values{}
 	authParams.Set("client_id", appClientID)
@@ -61,11 +70,11 @@ func BuildDiscoveryAuthorizeURL(redirectAddr, state string, pkce PKCEParams, sco
 	authParams.Set("code_challenge_method", pkce.ChallengeMethod)
 	destinationURL := "/oidc/v1/authorize?" + authParams.Encode()
 
-	// Wrap the authorize path as the destination_url query parameter on
-	// login.databricks.com.
+	// Wrap the authorize path as the destination_url query parameter on the
+	// discovery host.
 	topParams := url.Values{}
 	topParams.Set("destination_url", destinationURL)
-	return loginDatabricksHost + "/?" + topParams.Encode()
+	return strings.TrimRight(host, "/") + "/?" + topParams.Encode()
 }
 
 // PKCEParams holds the PKCE challenge parameters used to build the discovery
@@ -82,6 +91,8 @@ type PKCEParams struct {
 // until the callback provides the iss parameter identifying the workspace.
 type discoveryTokenSource struct {
 	pa *PersistentAuth
+	// host overrides defaultLoginDatabricksHost when non-empty.
+	host string
 }
 
 // challenge initiates the discovery OAuth flow through login.databricks.com.
@@ -107,7 +118,11 @@ func (d *discoveryTokenSource) challenge() error {
 		ChallengeMethod: authPKCE.ChallengeMethod,
 		Verifier:        authPKCE.Verifier,
 	}
-	authorizeURL := BuildDiscoveryAuthorizeURL(d.pa.redirectAddr, state, pkce, scopes)
+	host := d.host
+	if host == "" {
+		host = defaultLoginDatabricksHost
+	}
+	authorizeURL := buildDiscoveryAuthorizeURL(host, d.pa.redirectAddr, state, pkce, scopes)
 
 	// Use cb.Handler to open the browser and wait for the callback.
 	code, returnedState, err := cb.Handler(authorizeURL)
@@ -126,7 +141,7 @@ func (d *discoveryTokenSource) challenge() error {
 	}
 
 	// Derive host and token endpoint from the issuer.
-	host, err := DeriveHostFromIssuer(issuer)
+	discoveredHost, err := DeriveHostFromIssuer(issuer)
 	if err != nil {
 		return fmt.Errorf("deriving host from issuer: %w", err)
 	}
@@ -152,7 +167,7 @@ func (d *discoveryTokenSource) challenge() error {
 	if !ok {
 		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", d.pa.oAuthArgument)
 	}
-	discoveryArg.SetDiscoveredHost(host)
+	discoveryArg.SetDiscoveredHost(discoveredHost)
 
 	// Cache the token using both the profile key and the discovered host key.
 	if err := d.pa.dualWrite(token); err != nil {

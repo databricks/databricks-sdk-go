@@ -399,6 +399,65 @@ func (_c *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call) RunAndRet
 	return _c
 }
 
+// Update provides a mock function with given fields: ctx, request
+func (_m *MockTokensInterface) Update(ctx context.Context, request settings.UpdateTokenRequest) (*settings.UpdateTokenResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 *settings.UpdateTokenResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateTokenRequest) (*settings.UpdateTokenResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateTokenRequest) *settings.UpdateTokenResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.UpdateTokenResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateTokenRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockTokensInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
+type MockTokensInterface_Update_Call struct {
+	*mock.Call
+}
+
+// Update is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.UpdateTokenRequest
+func (_e *MockTokensInterface_Expecter) Update(ctx interface{}, request interface{}) *MockTokensInterface_Update_Call {
+	return &MockTokensInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
+}
+
+func (_c *MockTokensInterface_Update_Call) Run(run func(ctx context.Context, request settings.UpdateTokenRequest)) *MockTokensInterface_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.UpdateTokenRequest))
+	})
+	return _c
+}
+
+func (_c *MockTokensInterface_Update_Call) Return(_a0 *settings.UpdateTokenResponse, _a1 error) *MockTokensInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockTokensInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateTokenRequest) (*settings.UpdateTokenResponse, error)) *MockTokensInterface_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockTokensInterface creates a new instance of MockTokensInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockTokensInterface(t interface {

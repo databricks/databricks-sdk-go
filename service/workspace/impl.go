@@ -675,9 +675,9 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	return err
 }
 
-// Deprecated: use WorkspaceHierarchyService.ListTreeNodes instead. Lists the
-// contents of a directory, or the object if it is not a directory. If the input
-// path does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
+// Lists the contents of a directory, or the object if it is not a directory. If
+// the input path does not exist, this call returns an error
+// `RESOURCE_DOES_NOT_EXIST`.
 func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) listing.Iterator[ObjectInfo] {
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceRequest) (*ListResponse, error) {
@@ -696,9 +696,9 @@ func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) 
 	return iterator
 }
 
-// Deprecated: use WorkspaceHierarchyService.ListTreeNodes instead. Lists the
-// contents of a directory, or the object if it is not a directory. If the input
-// path does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
+// Lists the contents of a directory, or the object if it is not a directory. If
+// the input path does not exist, this call returns an error
+// `RESOURCE_DOES_NOT_EXIST`.
 func (a *workspaceImpl) ListAll(ctx context.Context, request ListWorkspaceRequest) ([]ObjectInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ObjectInfo](ctx, iterator)
