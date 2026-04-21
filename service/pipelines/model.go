@@ -204,6 +204,8 @@ type ConnectorOptions struct {
 
 	GoogleAdsOptions *GoogleAdsOptions `json:"google_ads_options,omitempty"`
 
+	JiraOptions *JiraConnectorOptions `json:"jira_options,omitempty"`
+
 	SharepointOptions *SharepointOptions `json:"sharepoint_options,omitempty"`
 
 	TiktokAdsOptions *TikTokAdsOptions `json:"tiktok_ads_options,omitempty"`
@@ -1359,6 +1361,12 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 // Type always returns IngestionSourceType to satisfy [pflag.Value] interface
 func (f *IngestionSourceType) Type() string {
 	return "IngestionSourceType"
+}
+
+// Jira specific options for ingestion
+type JiraConnectorOptions struct {
+	// (Optional) Projects to filter Jira data on
+	IncludeJiraSpaces []string `json:"include_jira_spaces,omitempty"`
 }
 
 type ListPipelineEventsRequest struct {

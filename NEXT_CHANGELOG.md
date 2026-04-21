@@ -43,3 +43,5 @@
 * [Breaking] Change `UpdateKnowledgeAssistant` method for [w.KnowledgeAssistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants#KnowledgeAssistantsAPI) workspace-level service. Method path has changed.
 * [Breaking] Change `UpdateBranch`, `UpdateDatabase`, `UpdateEndpoint`, `UpdateProject` and `UpdateRole` methods for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service. Method path has changed.
 * [Breaking] Change `UpdateDefaultWarehouseOverride` method for [w.Warehouses](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousesAPI) workspace-level service. Method path has changed.
+* Add [w.TemporaryVolumeCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TemporaryVolumeCredentialsAPI) workspace-level service.
+* Add `JiraOptions` field for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
