@@ -278,6 +278,46 @@ func TestBuildCliCommand(t *testing.T) {
 	}
 }
 
+func TestBuildHostCommand(t *testing.T) {
+	const (
+		cliPath     = "/path/to/databricks"
+		host        = "https://workspace.cloud.databricks.com"
+		accountHost = "https://accounts.cloud.databricks.com"
+		accountID   = "abc-123"
+	)
+
+	testCases := []struct {
+		name    string
+		cfg     *Config
+		wantCmd []string
+	}{
+		{
+			name:    "workspace host",
+			cfg:     &Config{Host: host},
+			wantCmd: []string{cliPath, "auth", "token", "--host", host},
+		},
+		{
+			name:    "account host appends --account-id",
+			cfg:     &Config{Host: accountHost, AccountID: accountID},
+			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
+		},
+		{
+			name:    "no host — nil",
+			cfg:     &Config{},
+			wantCmd: nil,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := buildHostCommand(cliPath, tc.cfg)
+			if !slices.Equal(got, tc.wantCmd) {
+				t.Errorf("buildHostCommand() = %v, want %v", got, tc.wantCmd)
+			}
+		})
+	}
+}
+
 // writeMockCli creates a shell script that passes the file-size check in
 // findDatabricksCli and executes body when run.
 func writeMockCli(t *testing.T, dir, body string) string {

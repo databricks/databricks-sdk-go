@@ -113,28 +113,34 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 }
 
 // buildCliCommand constructs the CLI command for fetching an auth token.
-// The CLI version determines which flags are used.
+// The CLI version determines which flags are used. Returns nil when neither
+// profile nor host is usable.
 func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver string) []string {
-	var cmd []string
-
-	// Flag --profile is a global CLI flag and is recognized for all commands even
-	// the ones that do not support it. Only use flag --profile in CLI versions that
-	// are known to support it in command `auth token`.
-	if cfg.Profile != "" {
-		if semver.Compare(ver, cliVersionForProfile) >= 0 {
-			cmd = []string{cliPath, "auth", "token", "--profile", cfg.Profile}
-		} else {
-			logger.Warnf(ctx, "Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.", displayVersion(ver), cliVersionForProfile)
-		}
+	// Flag --profile is a global CLI flag and is recognized for all commands
+	// even the ones that do not support it. Only use flag --profile in CLI
+	// versions that are known to support it in command `auth token`.
+	if cfg.Profile == "" {
+		return buildHostCommand(cliPath, cfg)
 	}
-
-	if len(cmd) == 0 && cfg.Host != "" {
-		cmd = []string{cliPath, "auth", "token", "--host", cfg.Host}
-		if cfg.HostType() == AccountHost {
-			cmd = append(cmd, "--account-id", cfg.AccountID)
-		}
+	if semver.Compare(ver, cliVersionForProfile) < 0 {
+		logger.Warnf(ctx, "Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.",
+			displayVersion(ver), cliVersionForProfile)
+		return buildHostCommand(cliPath, cfg)
 	}
+	return []string{cliPath, "auth", "token", "--profile", cfg.Profile}
+}
 
+// buildHostCommand constructs the --host based auth token command. Returns
+// nil when cfg.Host is unset, which signals the caller that no command is
+// available.
+func buildHostCommand(cliPath string, cfg *Config) []string {
+	if cfg.Host == "" {
+		return nil
+	}
+	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
+	if cfg.HostType() == AccountHost {
+		cmd = append(cmd, "--account-id", cfg.AccountID)
+	}
 	return cmd
 }
 
