@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,8 +13,28 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/exp/slices"
 )
+
+// captureLogger records Info/Warn messages for assertion in tests.
+// Trace/Debug/Error are no-ops as they are not exercised by the CLI
+// token source logic under test.
+type captureLogger struct {
+	infos []string
+	warns []string
+}
+
+func (l *captureLogger) Enabled(context.Context, logger.Level) bool { return true }
+func (l *captureLogger) Tracef(context.Context, string, ...any)     {}
+func (l *captureLogger) Debugf(context.Context, string, ...any)     {}
+func (l *captureLogger) Infof(_ context.Context, format string, v ...any) {
+	l.infos = append(l.infos, fmt.Sprintf(format, v...))
+}
+func (l *captureLogger) Warnf(_ context.Context, format string, v ...any) {
+	l.warns = append(l.warns, fmt.Sprintf(format, v...))
+}
+func (l *captureLogger) Errorf(context.Context, string, ...any) {}
 
 func TestParseExpiry(t *testing.T) {
 	testCases := []struct {
@@ -136,6 +157,8 @@ func TestParseCliVersion(t *testing.T) {
 		{"standard version", "Databricks CLI v0.295.0", "v0.295.0", false},
 		{"patch version", "Databricks CLI v0.207.1", "v0.207.1", false},
 		{"major version", "Databricks CLI v1.0.0", "v1.0.0", false},
+		{"dev build bare", "Databricks CLI v0.0.0-dev", "v0.0.0-dev", false},
+		{"dev build with commit", "Databricks CLI v0.0.0-dev+abc123def456", "v0.0.0-dev+abc123def456", false},
 		{"empty string", "", "", true},
 		{"malformed", "not a version", "", true},
 		{"missing v prefix", "Databricks CLI 0.207.1", "", true},
@@ -326,6 +349,68 @@ func TestNewCliTokenSource(t *testing.T) {
 			}
 			if tc.wantCmdFlag != "" && !slices.Contains(ts.cmd, tc.wantCmdFlag) {
 				t.Errorf("cmd = %v, expected %q flag", ts.cmd, tc.wantCmdFlag)
+			}
+		})
+	}
+}
+
+func TestNewCliTokenSource_DevBuildInfoLog(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping shell script test on Windows")
+	}
+
+	testCases := []struct {
+		name             string
+		versionOutput    string
+		wantInfoContains string // empty => expect no info log
+	}{
+		{
+			name:             "dev build bare",
+			versionOutput:    "Databricks CLI v0.0.0-dev",
+			wantInfoContains: "v0.0.0-dev",
+		},
+		{
+			name:             "dev build with commit",
+			versionOutput:    "Databricks CLI v0.0.0-dev+abc123def456",
+			wantInfoContains: "v0.0.0-dev+abc123def456",
+		},
+		{
+			name:          "released version",
+			versionOutput: "Databricks CLI v0.295.0",
+		},
+		{
+			name:          "pre-release on recent base",
+			versionOutput: "Databricks CLI v0.296.0-rc1",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			tempDir := t.TempDir()
+			cliScript := writeMockCli(t, tempDir, "#!/bin/sh\necho '"+tc.versionOutput+"'")
+
+			log := &captureLogger{}
+			ctx := logger.NewContext(context.Background(), log)
+			cfg := &Config{DatabricksCliPath: cliScript, Host: "https://example.databricks.com"}
+
+			if _, err := NewCliTokenSource(ctx, cfg); err != nil {
+				t.Fatalf("NewCliTokenSource() unexpected error: %v", err)
+			}
+
+			if tc.wantInfoContains == "" {
+				if len(log.infos) != 0 {
+					t.Errorf("expected no info log, got: %v", log.infos)
+				}
+				return
+			}
+			if len(log.infos) != 1 {
+				t.Fatalf("expected exactly one info log, got %d: %v", len(log.infos), log.infos)
+			}
+			if !strings.Contains(log.infos[0], tc.wantInfoContains) {
+				t.Errorf("info log = %q, want it to contain %q", log.infos[0], tc.wantInfoContains)
+			}
+			if !strings.Contains(log.infos[0], "-ldflags") {
+				t.Errorf("info log = %q, want it to mention -ldflags as the resolution", log.infos[0])
 			}
 		})
 	}

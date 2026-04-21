@@ -36,6 +36,13 @@ type cliTokenResponse struct {
 // by [golang.org/x/mod/semver] (with leading "v").
 const cliVersionForProfile = "v0.207.1" // https://github.com/databricks/cli/pull/855
 
+// devBuildVersionPrefix is the sentinel the Databricks CLI uses when
+// buildVersion wasn't injected by goreleaser (e.g. a plain `go build`).
+// Such builds always compare less than any real release, which would disable
+// every feature gate; we surface an informational hint instead.
+// See https://github.com/databricks/cli/blob/main/internal/build/info.go.
+const devBuildVersionPrefix = "v0.0.0-dev"
+
 // getCliVersion runs "databricks version" and returns the parsed semver string
 // (e.g., "v0.207.1"). Returns an empty string and an error if the version
 // cannot be determined.
@@ -91,6 +98,12 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 	if err != nil {
 		logger.Warnf(ctx, "Failed to detect Databricks CLI version: %v. Falling back to conservative flag set.", err)
 		ver = ""
+	} else if strings.HasPrefix(ver, devBuildVersionPrefix) {
+		logger.Infof(ctx,
+			"Databricks CLI %s is a development build; feature detection will use conservative fallbacks. "+
+				"Rebuild the CLI with an explicit version to enable capability-based flag selection, "+
+				"e.g. `go build -ldflags '-X github.com/databricks/cli/internal/build.buildVersion=0.296.0'`.",
+			ver)
 	}
 	cmd := buildCliCommand(ctx, cliPath, cfg, ver)
 	if cmd == nil {
