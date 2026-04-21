@@ -83,6 +83,19 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, 
 	return &app, err
 }
 
+func (a *appsImpl) DeleteAppThumbnail(ctx context.Context, request DeleteAppThumbnailRequest) error {
+	path := fmt.Sprintf("/api/2.0/apps/%v/thumbnail", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *appsImpl) DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/app-spaces/%v", request.Name)
@@ -403,6 +416,21 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.App, &app)
 	return &app, err
+}
+
+func (a *appsImpl) UpdateAppThumbnail(ctx context.Context, request UpdateAppThumbnailRequest) (*AppThumbnail, error) {
+	var appThumbnail AppThumbnail
+	path := fmt.Sprintf("/api/2.0/apps/%v/thumbnail", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &appThumbnail)
+	return &appThumbnail, err
 }
 
 func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {

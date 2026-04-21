@@ -67,6 +67,9 @@ type AppsInterface interface {
 	// Deletes an app.
 	DeleteByName(ctx context.Context, name string) (*App, error)
 
+	// Deletes the thumbnail for an app.
+	DeleteAppThumbnail(ctx context.Context, request DeleteAppThumbnailRequest) error
+
 	DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (DeleteSpaceOperationInterface, error)
 
 	// Creates an app deployment for the app with the supplied name.
@@ -179,6 +182,9 @@ type AppsInterface interface {
 
 	// Updates the app with the supplied name.
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
+
+	// Updates the thumbnail for an app.
+	UpdateAppThumbnail(ctx context.Context, request UpdateAppThumbnailRequest) (*AppThumbnail, error)
 
 	// Updates the permissions on an app. Apps can inherit permissions from their
 	// root object.

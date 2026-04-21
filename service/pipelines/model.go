@@ -84,7 +84,7 @@ type ClonePipelineRequest struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// The type of clone to perform. Currently, only deep copies are supported
 	CloneMode CloneMode `json:"clone_mode,omitempty"`
@@ -202,7 +202,11 @@ func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
 type ConnectorOptions struct {
 	GdriveOptions *GoogleDriveOptions `json:"gdrive_options,omitempty"`
 
+	GoogleAdsOptions *GoogleAdsOptions `json:"google_ads_options,omitempty"`
+
 	SharepointOptions *SharepointOptions `json:"sharepoint_options,omitempty"`
+
+	TiktokAdsOptions *TikTokAdsOptions `json:"tiktok_ads_options,omitempty"`
 }
 
 // For certain database sources LakeFlow Connect offers both query based and cdc
@@ -258,7 +262,7 @@ type CreatePipeline struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
@@ -536,7 +540,7 @@ type EditPipeline struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
@@ -999,11 +1003,39 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
+// Google Ads specific options for ingestion (object-level). When set, these
+// values override the corresponding fields in GoogleAdsConfig
+// (source_configurations).
+type GoogleAdsOptions struct {
+	// (Optional) Number of days to look back for report tables to capture
+	// late-arriving data. If not specified, defaults to 30 days.
+	LookbackWindowDays int `json:"lookback_window_days,omitempty"`
+	// (Optional at this level) Manager Account ID (also called MCC Account ID)
+	// used to list and access customer accounts under this manager account.
+	// Overrides GoogleAdsConfig.manager_account_id from source_configurations
+	// when set.
+	ManagerAccountId string `json:"manager_account_id"`
+	// (Optional) Start date for the initial sync of report tables in YYYY-MM-DD
+	// format. This determines the earliest date from which to sync historical
+	// data. If not specified, defaults to 2 years of historical data.
+	SyncStartDate string `json:"sync_start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GoogleAdsOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GoogleAdsOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GoogleDriveOptions struct {
 	EntityType GoogleDriveOptionsGoogleDriveEntityType `json:"entity_type,omitempty"`
 
 	FileIngestionOptions *FileIngestionOptions `json:"file_ingestion_options,omitempty"`
-	// Required. Google Drive URL.
+	// Google Drive URL.
 	Url string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2053,7 +2085,7 @@ type PipelineSpec struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
@@ -2260,7 +2292,7 @@ type PipelineTrigger struct {
 }
 
 // The environment entity used to preserve serverless environment side panel,
-// jobs' environment for non-notebook task, and DLT's environment for classic
+// jobs' environment for non-notebook task, and SDP's environment for classic
 // and serverless pipelines. In this minimal environment spec, only pip
 // dependencies are supported.
 type PipelinesEnvironment struct {
@@ -2851,7 +2883,7 @@ type TableSpecificConfig struct {
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`
-	// The SCD type to use to ingest the table.
+
 	ScdType TableSpecificConfigScdType `json:"scd_type,omitempty"`
 	// The column names specifying the logical order of events in the source
 	// data. Spark Declarative Pipelines uses this sequencing to handle change
@@ -2910,6 +2942,141 @@ func (f *TableSpecificConfigScdType) Values() []TableSpecificConfigScdType {
 // Type always returns TableSpecificConfigScdType to satisfy [pflag.Value] interface
 func (f *TableSpecificConfigScdType) Type() string {
 	return "TableSpecificConfigScdType"
+}
+
+// TikTok Ads specific options for ingestion
+type TikTokAdsOptions struct {
+	// (Optional) Data level for the report. If not specified, defaults to
+	// AUCTION_CAMPAIGN.
+	DataLevel TikTokAdsOptionsTikTokDataLevel `json:"data_level,omitempty"`
+	// (Optional) Dimensions to include in the report. Examples: "campaign_id",
+	// "adgroup_id", "ad_id", "stat_time_day", "stat_time_hour" If not
+	// specified, defaults to campaign_id.
+	Dimensions []string `json:"dimensions,omitempty"`
+	// (Optional) Number of days to look back for report tables during
+	// incremental sync to capture late-arriving conversions and attribution
+	// data. If not specified, defaults to 7 days.
+	LookbackWindowDays int `json:"lookback_window_days,omitempty"`
+	// (Optional) Metrics to include in the report. Examples: "spend",
+	// "impressions", "clicks", "conversion", "cpc" If not specified, defaults
+	// to basic metrics (spend, impressions, clicks, etc.)
+	Metrics []string `json:"metrics,omitempty"`
+	// (Optional) Whether to request lifetime metrics (all-time aggregated
+	// data). When true, the report returns all-time data. If not specified,
+	// defaults to false.
+	QueryLifetime bool `json:"query_lifetime,omitempty"`
+	// (Optional) Report type for the TikTok Ads API. If not specified, defaults
+	// to BASIC.
+	ReportType TikTokAdsOptionsTikTokReportType `json:"report_type,omitempty"`
+	// (Optional) Start date for the initial sync of report tables in YYYY-MM-DD
+	// format. This determines the earliest date from which to sync historical
+	// data. If not specified, defaults to 1 year of historical data for daily
+	// reports and 30 days for hourly reports.
+	SyncStartDate string `json:"sync_start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TikTokAdsOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TikTokAdsOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Data level for TikTok Ads report aggregation.
+type TikTokAdsOptionsTikTokDataLevel string
+
+const TikTokAdsOptionsTikTokDataLevelAuctionAd TikTokAdsOptionsTikTokDataLevel = `AUCTION_AD`
+
+const TikTokAdsOptionsTikTokDataLevelAuctionAdgroup TikTokAdsOptionsTikTokDataLevel = `AUCTION_ADGROUP`
+
+const TikTokAdsOptionsTikTokDataLevelAuctionAdvertiser TikTokAdsOptionsTikTokDataLevel = `AUCTION_ADVERTISER`
+
+const TikTokAdsOptionsTikTokDataLevelAuctionCampaign TikTokAdsOptionsTikTokDataLevel = `AUCTION_CAMPAIGN`
+
+// String representation for [fmt.Print]
+func (f *TikTokAdsOptionsTikTokDataLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TikTokAdsOptionsTikTokDataLevel) Set(v string) error {
+	switch v {
+	case `AUCTION_AD`, `AUCTION_ADGROUP`, `AUCTION_ADVERTISER`, `AUCTION_CAMPAIGN`:
+		*f = TikTokAdsOptionsTikTokDataLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUCTION_AD", "AUCTION_ADGROUP", "AUCTION_ADVERTISER", "AUCTION_CAMPAIGN"`, v)
+	}
+}
+
+// Values returns all possible values for TikTokAdsOptionsTikTokDataLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TikTokAdsOptionsTikTokDataLevel) Values() []TikTokAdsOptionsTikTokDataLevel {
+	return []TikTokAdsOptionsTikTokDataLevel{
+		TikTokAdsOptionsTikTokDataLevelAuctionAd,
+		TikTokAdsOptionsTikTokDataLevelAuctionAdgroup,
+		TikTokAdsOptionsTikTokDataLevelAuctionAdvertiser,
+		TikTokAdsOptionsTikTokDataLevelAuctionCampaign,
+	}
+}
+
+// Type always returns TikTokAdsOptionsTikTokDataLevel to satisfy [pflag.Value] interface
+func (f *TikTokAdsOptionsTikTokDataLevel) Type() string {
+	return "TikTokAdsOptionsTikTokDataLevel"
+}
+
+// Report type for TikTok Ads API.
+type TikTokAdsOptionsTikTokReportType string
+
+const TikTokAdsOptionsTikTokReportTypeAudience TikTokAdsOptionsTikTokReportType = `AUDIENCE`
+
+const TikTokAdsOptionsTikTokReportTypeBasic TikTokAdsOptionsTikTokReportType = `BASIC`
+
+const TikTokAdsOptionsTikTokReportTypeBusinessCenter TikTokAdsOptionsTikTokReportType = `BUSINESS_CENTER`
+
+const TikTokAdsOptionsTikTokReportTypeDsa TikTokAdsOptionsTikTokReportType = `DSA`
+
+const TikTokAdsOptionsTikTokReportTypeGmvMax TikTokAdsOptionsTikTokReportType = `GMV_MAX`
+
+const TikTokAdsOptionsTikTokReportTypePlayableAd TikTokAdsOptionsTikTokReportType = `PLAYABLE_AD`
+
+// String representation for [fmt.Print]
+func (f *TikTokAdsOptionsTikTokReportType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TikTokAdsOptionsTikTokReportType) Set(v string) error {
+	switch v {
+	case `AUDIENCE`, `BASIC`, `BUSINESS_CENTER`, `DSA`, `GMV_MAX`, `PLAYABLE_AD`:
+		*f = TikTokAdsOptionsTikTokReportType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUDIENCE", "BASIC", "BUSINESS_CENTER", "DSA", "GMV_MAX", "PLAYABLE_AD"`, v)
+	}
+}
+
+// Values returns all possible values for TikTokAdsOptionsTikTokReportType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TikTokAdsOptionsTikTokReportType) Values() []TikTokAdsOptionsTikTokReportType {
+	return []TikTokAdsOptionsTikTokReportType{
+		TikTokAdsOptionsTikTokReportTypeAudience,
+		TikTokAdsOptionsTikTokReportTypeBasic,
+		TikTokAdsOptionsTikTokReportTypeBusinessCenter,
+		TikTokAdsOptionsTikTokReportTypeDsa,
+		TikTokAdsOptionsTikTokReportTypeGmvMax,
+		TikTokAdsOptionsTikTokReportTypePlayableAd,
+	}
+}
+
+// Type always returns TikTokAdsOptionsTikTokReportType to satisfy [pflag.Value] interface
+func (f *TikTokAdsOptionsTikTokReportType) Type() string {
+	return "TikTokAdsOptionsTikTokReportType"
 }
 
 // Information about truncations applied to this event.

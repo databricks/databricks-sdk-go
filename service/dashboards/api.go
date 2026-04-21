@@ -33,6 +33,9 @@ type GenieInterface interface {
 	// Deprecated: use [GenieAPIInterface.CreateMessage].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	CreateMessageAndWait(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
 
+	// Create a comment on a conversation message.
+	CreateMessageComment(ctx context.Context, request GenieCreateMessageCommentRequest) (*GenieMessageComment, error)
+
 	// Creates a Genie space from a serialized payload.
 	CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error)
 
@@ -183,6 +186,9 @@ type GenieInterface interface {
 	// Get details of a Genie Space.
 	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
 
+	// List all comments across all messages in a conversation.
+	ListConversationComments(ctx context.Context, request GenieListConversationCommentsRequest) (*GenieListConversationCommentsResponse, error)
+
 	// List messages in a conversation
 	ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error)
 
@@ -191,6 +197,9 @@ type GenieInterface interface {
 
 	// Get a list of conversations in a Genie Space.
 	ListConversationsBySpaceId(ctx context.Context, spaceId string) (*GenieListConversationsResponse, error)
+
+	// List comments on a specific conversation message.
+	ListMessageComments(ctx context.Context, request GenieListMessageCommentsRequest) (*GenieListMessageCommentsResponse, error)
 
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)

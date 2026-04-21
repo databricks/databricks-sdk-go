@@ -409,6 +409,53 @@ func (_c *MockAppsInterface_Delete_Call) RunAndReturn(run func(context.Context, 
 	return _c
 }
 
+// DeleteAppThumbnail provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) DeleteAppThumbnail(ctx context.Context, request apps.DeleteAppThumbnailRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteAppThumbnail")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.DeleteAppThumbnailRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAppsInterface_DeleteAppThumbnail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteAppThumbnail'
+type MockAppsInterface_DeleteAppThumbnail_Call struct {
+	*mock.Call
+}
+
+// DeleteAppThumbnail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.DeleteAppThumbnailRequest
+func (_e *MockAppsInterface_Expecter) DeleteAppThumbnail(ctx interface{}, request interface{}) *MockAppsInterface_DeleteAppThumbnail_Call {
+	return &MockAppsInterface_DeleteAppThumbnail_Call{Call: _e.mock.On("DeleteAppThumbnail", ctx, request)}
+}
+
+func (_c *MockAppsInterface_DeleteAppThumbnail_Call) Run(run func(ctx context.Context, request apps.DeleteAppThumbnailRequest)) *MockAppsInterface_DeleteAppThumbnail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.DeleteAppThumbnailRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_DeleteAppThumbnail_Call) Return(_a0 error) *MockAppsInterface_DeleteAppThumbnail_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAppsInterface_DeleteAppThumbnail_Call) RunAndReturn(run func(context.Context, apps.DeleteAppThumbnailRequest) error) *MockAppsInterface_DeleteAppThumbnail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteByName provides a mock function with given fields: ctx, name
 func (_m *MockAppsInterface) DeleteByName(ctx context.Context, name string) (*apps.App, error) {
 	ret := _m.Called(ctx, name)
@@ -2073,6 +2120,65 @@ func (_c *MockAppsInterface_Update_Call) Return(_a0 *apps.App, _a1 error) *MockA
 }
 
 func (_c *MockAppsInterface_Update_Call) RunAndReturn(run func(context.Context, apps.UpdateAppRequest) (*apps.App, error)) *MockAppsInterface_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateAppThumbnail provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) UpdateAppThumbnail(ctx context.Context, request apps.UpdateAppThumbnailRequest) (*apps.AppThumbnail, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateAppThumbnail")
+	}
+
+	var r0 *apps.AppThumbnail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.UpdateAppThumbnailRequest) (*apps.AppThumbnail, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.UpdateAppThumbnailRequest) *apps.AppThumbnail); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.AppThumbnail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.UpdateAppThumbnailRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_UpdateAppThumbnail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateAppThumbnail'
+type MockAppsInterface_UpdateAppThumbnail_Call struct {
+	*mock.Call
+}
+
+// UpdateAppThumbnail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.UpdateAppThumbnailRequest
+func (_e *MockAppsInterface_Expecter) UpdateAppThumbnail(ctx interface{}, request interface{}) *MockAppsInterface_UpdateAppThumbnail_Call {
+	return &MockAppsInterface_UpdateAppThumbnail_Call{Call: _e.mock.On("UpdateAppThumbnail", ctx, request)}
+}
+
+func (_c *MockAppsInterface_UpdateAppThumbnail_Call) Run(run func(ctx context.Context, request apps.UpdateAppThumbnailRequest)) *MockAppsInterface_UpdateAppThumbnail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.UpdateAppThumbnailRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_UpdateAppThumbnail_Call) Return(_a0 *apps.AppThumbnail, _a1 error) *MockAppsInterface_UpdateAppThumbnail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_UpdateAppThumbnail_Call) RunAndReturn(run func(context.Context, apps.UpdateAppThumbnailRequest) (*apps.AppThumbnail, error)) *MockAppsInterface_UpdateAppThumbnail_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -4,12 +4,15 @@ name: Check for NEXT_CHANGELOG.md Changes
 on:
   # Use pull_request_target to have access to GitHub API
   pull_request_target:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   check-next-changelog:
+    # Allow Dependabot PRs to pass without a changelog entry
+    if: github.actor != 'dependabot[bot]'
     runs-on:
-      group: databricks-deco-testing-runner-group
-      labels: ubuntu-latest-deco
+      group: databricks-protected-runner-group
+      labels: linux-ubuntu-latest
 
     steps:
       - name: Checkout code

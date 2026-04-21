@@ -33,6 +33,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sql"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/tags"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/workspace"
@@ -151,6 +152,7 @@ func NewMockWorkspaceClient(t interface {
 			Rfa:                                 catalog.NewMockRfaInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
+			SecretsUc:                           catalog.NewMockSecretsUcInterface(t),
 			ServicePrincipalSecretsProxy:        oauth2.NewMockServicePrincipalSecretsProxyInterface(t),
 			ServicePrincipalsV2:                 iam.NewMockServicePrincipalsV2Interface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
@@ -159,6 +161,7 @@ func NewMockWorkspaceClient(t interface {
 			Shares:                              sharing.NewMockSharesInterface(t),
 			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
 			StorageCredentials:                  catalog.NewMockStorageCredentialsInterface(t),
+			SupervisorAgents:                    supervisoragents.NewMockSupervisorAgentsInterface(t),
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
 			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
 			Tables:                              catalog.NewMockTablesInterface(t),
@@ -1149,6 +1152,14 @@ func (m *MockWorkspaceClient) GetMockSecretsAPI() *workspace.MockSecretsInterfac
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockSecretsUcAPI() *catalog.MockSecretsUcInterface {
+	api, ok := m.WorkspaceClient.SecretsUc.(*catalog.MockSecretsUcInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected SecretsUc to be *catalog.MockSecretsUcInterface, actual was %T", m.WorkspaceClient.SecretsUc))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockServicePrincipalSecretsProxyAPI() *oauth2.MockServicePrincipalSecretsProxyInterface {
 	api, ok := m.WorkspaceClient.ServicePrincipalSecretsProxy.(*oauth2.MockServicePrincipalSecretsProxyInterface)
 	if !ok {
@@ -1209,6 +1220,14 @@ func (m *MockWorkspaceClient) GetMockStorageCredentialsAPI() *catalog.MockStorag
 	api, ok := m.WorkspaceClient.StorageCredentials.(*catalog.MockStorageCredentialsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected StorageCredentials to be *catalog.MockStorageCredentialsInterface, actual was %T", m.WorkspaceClient.StorageCredentials))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockSupervisorAgentsAPI() *supervisoragents.MockSupervisorAgentsInterface {
+	api, ok := m.WorkspaceClient.SupervisorAgents.(*supervisoragents.MockSupervisorAgentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected SupervisorAgents to be *supervisoragents.MockSupervisorAgentsInterface, actual was %T", m.WorkspaceClient.SupervisorAgents))
 	}
 	return api
 }

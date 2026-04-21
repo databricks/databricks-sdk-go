@@ -5801,10 +5801,16 @@ func (f *TaskRetryMode) Type() string {
 // level queue size limit. * `DISABLED`: The run was never executed because it
 // was disabled explicitly by the user. * `BREAKING_CHANGE`: Run failed because
 // of an intentional breaking change in Spark, but it will be retried with a
-// mitigation config.
+// mitigation config. * `CLUSTER_TERMINATED_BY_USER`: The run failed because the
+// externally managed cluster entered an unusable state, likely due to the user
+// terminating or restarting it outside the jobs service.
 //
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string
+
+// Run failed because of an intentional breaking change in Spark, but it will be
+// retried with a mitigation config.
+const TerminationCodeCodeBreakingChange TerminationCodeCode = `BREAKING_CHANGE`
 
 const TerminationCodeCodeBudgetPolicyLimitExceeded TerminationCodeCode = `BUDGET_POLICY_LIMIT_EXCEEDED`
 
@@ -5911,11 +5917,11 @@ func (f *TerminationCodeCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationCodeCode) Set(v string) error {
 	switch v {
-	case `BUDGET_POLICY_LIMIT_EXCEEDED`, `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DISABLED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
+	case `BREAKING_CHANGE`, `BUDGET_POLICY_LIMIT_EXCEEDED`, `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DISABLED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
 		*f = TerminationCodeCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BUDGET_POLICY_LIMIT_EXCEEDED", "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DISABLED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "SUCCESS_WITH_FAILURES", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BREAKING_CHANGE", "BUDGET_POLICY_LIMIT_EXCEEDED", "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DISABLED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "SUCCESS_WITH_FAILURES", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
 	}
 }
 
@@ -5924,6 +5930,7 @@ func (f *TerminationCodeCode) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *TerminationCodeCode) Values() []TerminationCodeCode {
 	return []TerminationCodeCode{
+		TerminationCodeCodeBreakingChange,
 		TerminationCodeCodeBudgetPolicyLimitExceeded,
 		TerminationCodeCodeCanceled,
 		TerminationCodeCodeCloudFailure,

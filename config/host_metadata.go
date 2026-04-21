@@ -26,10 +26,10 @@ type HostMetadata struct {
 	// HostType is the type of host (WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED_HOST).
 	HostType HostType `json:"host_type"`
 
-	// DefaultOIDCAudience is the default OIDC audience for token requests.
+	// TokenFederationDefaultOIDCAudiences is the default OIDC audience for token requests.
 	// For workspace hosts: "https://<workspace_host>/oidc/v1/token"
 	// For account/unified hosts: the resolved account ID.
-	DefaultOIDCAudience string `json:"default_oidc_audience"`
+	TokenFederationDefaultOIDCAudiences []string `json:"token_federation_default_oidc_audiences"`
 }
 
 // HostMetadataResolver, when set on [Config], overrides the default HTTP fetch
@@ -37,6 +37,20 @@ type HostMetadata struct {
 // receives the canonical host and returns metadata (or nil, nil if unavailable).
 // This allows callers to provide cached metadata without the SDK making an HTTP call.
 type HostMetadataResolver func(ctx context.Context, host string) (*HostMetadata, error)
+
+// DefaultHostMetadataResolverFactory is consulted by [Config.EnsureResolved]
+// when [Config.HostMetadataResolver] is nil. When set, the factory is invoked
+// with the resolving Config and must return the resolver to use for that
+// Config (or nil to fall through to the SDK's default HTTP fetch).
+//
+// Intended for programs that want a single hook to install a caching or
+// otherwise-customised resolver across every Config they construct, without
+// per-site wiring. Set once from an init() block in a package that is
+// blank-imported by the main binary. Callers needing a per-Config resolver
+// should use [Config.HostMetadataResolver] instead.
+//
+// Experimental: subject to change.
+var DefaultHostMetadataResolverFactory func(*Config) HostMetadataResolver
 
 // getHostMetadata fetches the raw Databricks well-known configuration from
 // {host}/.well-known/databricks-config. The returned HostMetadata contains

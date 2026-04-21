@@ -20,6 +20,9 @@ type GenieService interface {
 	// to respond.
 	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
 
+	// Create a comment on a conversation message.
+	CreateMessageComment(ctx context.Context, request GenieCreateMessageCommentRequest) (*GenieMessageComment, error)
+
 	// Creates a Genie space from a serialized payload.
 	CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error)
 
@@ -125,11 +128,17 @@ type GenieService interface {
 	// Get details of a Genie Space.
 	GetSpace(ctx context.Context, request GenieGetSpaceRequest) (*GenieSpace, error)
 
+	// List all comments across all messages in a conversation.
+	ListConversationComments(ctx context.Context, request GenieListConversationCommentsRequest) (*GenieListConversationCommentsResponse, error)
+
 	// List messages in a conversation
 	ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error)
 
 	// Get a list of conversations in a Genie Space.
 	ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error)
+
+	// List comments on a specific conversation message.
+	ListMessageComments(ctx context.Context, request GenieListMessageCommentsRequest) (*GenieListMessageCommentsResponse, error)
 
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)

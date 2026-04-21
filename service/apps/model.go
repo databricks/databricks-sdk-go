@@ -1358,6 +1358,22 @@ func (f *AppResourceUcSecurableUcSecurableType) Type() string {
 	return "AppResourceUcSecurableUcSecurableType"
 }
 
+// The thumbnail for an app.
+type AppThumbnail struct {
+	// The thumbnail image bytes.
+	Thumbnail string `json:"thumbnail,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppThumbnail) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppThumbnail) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AppUpdate struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 
@@ -1715,6 +1731,11 @@ func (s DatabricksServiceExceptionWithDetailsProto) MarshalJSON() ([]byte, error
 }
 
 type DeleteAppRequest struct {
+	// The name of the app.
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteAppThumbnailRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
@@ -2516,6 +2537,13 @@ type UpdateAppRequest struct {
 	App App `json:"app"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
+	Name string `json:"-" url:"-"`
+}
+
+type UpdateAppThumbnailRequest struct {
+	// The app thumbnail to set.
+	AppThumbnail *AppThumbnail `json:"app_thumbnail,omitempty"`
+	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 

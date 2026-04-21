@@ -27,6 +27,9 @@ type AppsService interface {
 	// Deletes an app.
 	Delete(ctx context.Context, request DeleteAppRequest) (*App, error)
 
+	// Deletes the thumbnail for an app.
+	DeleteAppThumbnail(ctx context.Context, request DeleteAppThumbnailRequest) error
+
 	// Deletes an app space.
 	DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (*Operation, error)
 
@@ -78,6 +81,9 @@ type AppsService interface {
 
 	// Updates the app with the supplied name.
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
+
+	// Updates the thumbnail for an app.
+	UpdateAppThumbnail(ctx context.Context, request UpdateAppThumbnailRequest) (*AppThumbnail, error)
 
 	// Updates the permissions on an app. Apps can inherit permissions from
 	// their root object.

@@ -87,6 +87,16 @@ func (s BranchSpec) MarshalJSON() ([]byte, error) {
 }
 
 type BranchStatus struct {
+	// The short identifier of the branch, suitable for showing to the users.
+	// For a branch with name `projects/my-project/branches/my-branch`, the
+	// branch_id is `my-branch`.
+	//
+	// Use this field when building UI components that display branches to users
+	// (e.g., a drop-down selector). Prefer showing `branch_id` instead of the
+	// full resource name from `Branch.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}` format and is not
+	// user-friendly.
+	BranchId string `json:"branch_id,omitempty"`
 	// The branch's state, indicating if it is initializing, ready for use, or
 	// archived.
 	CurrentState BranchStatusState `json:"current_state,omitempty"`
@@ -249,6 +259,15 @@ type CatalogCatalogStatus struct {
 	//
 	// Format: projects/{project_id}/branches/{branch_id}.
 	Branch string `json:"branch,omitempty"`
+	// The short identifier of the catalog, suitable for showing to the users.
+	// For a catalog with name `catalogs/my-catalog`, the catalog_id is
+	// `my-catalog`.
+	//
+	// Use this field when building UI components that display catalogs to users
+	// (e.g., a drop-down selector). Prefer showing `catalog_id` instead of the
+	// full resource name from `Catalog.name`, which follows the
+	// `catalogs/{catalog_id}` format and is not user-friendly.
+	CatalogId string `json:"catalog_id,omitempty"`
 	// The name of the Postgres database associated with the catalog.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// The resource path of the project associated with the catalog.
@@ -463,6 +482,17 @@ func (s DatabaseDatabaseSpec) MarshalJSON() ([]byte, error) {
 }
 
 type DatabaseDatabaseStatus struct {
+	// The short identifier of the database, suitable for showing to the users.
+	// For a database with name
+	// `projects/my-project/branches/my-branch/databases/my-db`, the database_id
+	// is `my-db`.
+	//
+	// Use this field when building UI components that display databases to
+	// users (e.g., a drop-down selector). Prefer showing `database_id` instead
+	// of the full resource name from `Database.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}/databases/{database_id}`
+	// format and is not user-friendly.
+	DatabaseId string `json:"database_id,omitempty"`
 	// The name of the Postgres database.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// The name of the role that owns the database. Format:
@@ -742,6 +772,17 @@ type EndpointStatus struct {
 	// option schedules a suspend compute operation. A disabled compute endpoint
 	// cannot be enabled by a connection or console action.
 	Disabled bool `json:"disabled,omitempty"`
+	// The short identifier of the endpoint, suitable for showing to the users.
+	// For an endpoint with name
+	// `projects/my-project/branches/my-branch/endpoints/my-endpoint`, the
+	// endpoint_id is `my-endpoint`.
+	//
+	// Use this field when building UI components that display endpoints to
+	// users (e.g., a drop-down selector). Prefer showing `endpoint_id` instead
+	// of the full resource name from `Endpoint.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
+	// format and is not user-friendly.
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
 	// Details on the HA configuration of the endpoint.
@@ -1577,6 +1618,15 @@ type ProjectStatus struct {
 	Owner string `json:"owner,omitempty"`
 	// The effective major Postgres version number.
 	PgVersion int `json:"pg_version,omitempty"`
+	// The short identifier of the project, suitable for showing to the users.
+	// For a project with name `projects/my-project`, the project_id is
+	// `my-project`.
+	//
+	// Use this field when building UI components that display projects to users
+	// (e.g., a drop-down selector). Prefer showing `project_id` instead of the
+	// full resource name from `Project.name`, which follows the
+	// `projects/{project_id}` format and is not user-friendly.
+	ProjectId string `json:"project_id,omitempty"`
 	// The current space occupied by the project in storage.
 	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
 
@@ -1920,8 +1970,8 @@ type RoleRoleSpec struct {
 	// used. * For the regular postgres roles, authentication based on postgres
 	// passwords is used.
 	//
-	// NOTE: this is ignored for the Databricks identity type GROUP, and
-	// NO_LOGIN is implicitly assumed instead for the GROUP identity type.
+	// NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the
+	// default auth method (group can login as well).
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
 	// The type of role. When specifying a managed-identity, the chosen role_id
 	// must be a valid:
@@ -1967,6 +2017,16 @@ type RoleRoleStatus struct {
 	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	PostgresRole string `json:"postgres_role,omitempty"`
+	// The short identifier of the role, suitable for showing to the users. For
+	// a role with name `projects/my-project/branches/my-branch/roles/my-role`,
+	// the role_id is `my-role`.
+	//
+	// Use this field when building UI components that display roles to users
+	// (e.g., a drop-down selector). Prefer showing `role_id` instead of the
+	// full resource name from `Role.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}/roles/{role_id}` format and
+	// is not user-friendly.
+	RoleId string `json:"role_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2247,6 +2307,10 @@ type SyncedTableSyncedTableStatus struct {
 	OngoingSyncProgress *SyncedTablePipelineProgress `json:"ongoing_sync_progress,omitempty"`
 	// ID of the associated pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
+	// The full resource name of the project associated with the table.
+	//
+	// Format: "projects/{project_id}".
+	Project string `json:"project,omitempty"`
 	// The current phase of the data synchronization pipeline.
 	ProvisioningPhase ProvisioningPhase `json:"provisioning_phase,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog.

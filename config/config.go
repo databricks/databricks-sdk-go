@@ -460,11 +460,6 @@ func (c *Config) HostType() HostType {
 		return c.resolvedHostType
 	}
 
-	// TODO: Refactor tests so that this is not needed.
-	if c.AccountID != "" && c.isTesting {
-		return AccountHost
-	}
-
 	// Normalize the host to ensure the scheme is present before checking
 	// prefixes. Profiles saved without "https://" (e.g. from user input)
 	// would otherwise fail the prefix check and be misclassified as
@@ -586,9 +581,6 @@ func (c *Config) wrapDebug(err error) error {
 
 // authenticateIfNeeded lazily authenticates across authorizers or returns error
 func (c *Config) authenticateIfNeeded() error {
-	if c.credentialsProvider != nil {
-		return nil
-	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.credentialsProvider != nil {
@@ -708,10 +700,17 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		return
 	}
 
+	resolver := c.HostMetadataResolver
+	if resolver == nil {
+		if factory := DefaultHostMetadataResolverFactory; factory != nil {
+			resolver = factory(c)
+		}
+	}
+
 	var meta *HostMetadata
 	var err error
-	if c.HostMetadataResolver != nil {
-		meta, err = c.HostMetadataResolver(ctx, c.CanonicalHostName())
+	if resolver != nil {
+		meta, err = resolver(ctx, c.CanonicalHostName())
 	} else {
 		meta, err = getHostMetadata(ctx, c.CanonicalHostName(), c.refreshClient)
 	}
@@ -742,9 +741,9 @@ func (c *Config) resolveHostMetadata(ctx context.Context) {
 		logger.Debugf(ctx, "Resolved host_type from host metadata: %q", meta.HostType)
 		c.resolvedHostType = meta.HostType
 	}
-	if c.TokenAudience == "" && meta.DefaultOIDCAudience != "" {
-		logger.Debugf(ctx, "Resolved token_audience from host metadata default_oidc_audience: %q", meta.DefaultOIDCAudience)
-		c.TokenAudience = meta.DefaultOIDCAudience
+	if c.TokenAudience == "" && len(meta.TokenFederationDefaultOIDCAudiences) > 0 {
+		logger.Debugf(ctx, "Resolved token_audience from host metadata token_federation_default_oidc_audiences: %q", meta.TokenFederationDefaultOIDCAudiences[0])
+		c.TokenAudience = meta.TokenFederationDefaultOIDCAudiences[0]
 	}
 	if c.TokenAudience == "" && meta.WorkspaceID == "" && c.AccountID != "" {
 		logger.Debugf(ctx, "Setting token_audience to account_id for account host: %q", c.AccountID)

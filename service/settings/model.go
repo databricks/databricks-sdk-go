@@ -5,6 +5,7 @@ package settings
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -586,6 +587,8 @@ type CreateOboTokenRequest struct {
 	// The number of seconds before the token expires.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
+	Scopes []string `json:"scopes,omitempty"`
+
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
@@ -671,6 +674,8 @@ type CreateTokenRequest struct {
 	//
 	// If the lifetime is not specified, this token remains valid for 2 years.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
+	// Optional scopes of the token.
+	Scopes []string `json:"scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -754,18 +759,18 @@ type CustomerFacingIngressNetworkPolicy struct {
 	PublicAccess *CustomerFacingIngressNetworkPolicyPublicAccess `json:"public_access,omitempty"`
 }
 
-type CustomerFacingIngressNetworkPolicyAppsDestination struct {
+type CustomerFacingIngressNetworkPolicyAppsRuntimeDestination struct {
 	// Must be set to true.
 	AllDestinations bool `json:"all_destinations,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CustomerFacingIngressNetworkPolicyAppsDestination) UnmarshalJSON(b []byte) error {
+func (s *CustomerFacingIngressNetworkPolicyAppsRuntimeDestination) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s CustomerFacingIngressNetworkPolicyAppsDestination) MarshalJSON() ([]byte, error) {
+func (s CustomerFacingIngressNetworkPolicyAppsRuntimeDestination) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -874,18 +879,18 @@ type CustomerFacingIngressNetworkPolicyIpRanges struct {
 	IpRanges []string `json:"ip_ranges,omitempty"`
 }
 
-type CustomerFacingIngressNetworkPolicyLakebaseDestination struct {
+type CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination struct {
 	// Must be set to true.
 	AllDestinations bool `json:"all_destinations,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CustomerFacingIngressNetworkPolicyLakebaseDestination) UnmarshalJSON(b []byte) error {
+func (s *CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s CustomerFacingIngressNetworkPolicyLakebaseDestination) MarshalJSON() ([]byte, error) {
+func (s CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -940,8 +945,7 @@ type CustomerFacingIngressNetworkPolicyPublicIngressRule struct {
 	Authentication *CustomerFacingIngressNetworkPolicyAuthentication `json:"authentication,omitempty"`
 
 	Destination *CustomerFacingIngressNetworkPolicyRequestDestination `json:"destination,omitempty"`
-	// User-provided name for this ingress rule. Helps identify which rule
-	// caused a request to be denied or dry-run denied.
+	// The label for this ingress rule.
 	Label string `json:"label,omitempty"`
 
 	Origin *CustomerFacingIngressNetworkPolicyPublicRequestOrigin `json:"origin,omitempty"`
@@ -982,12 +986,12 @@ type CustomerFacingIngressNetworkPolicyRequestDestination struct {
 	// provided.
 	AllDestinations bool `json:"all_destinations,omitempty"`
 
-	Apps *CustomerFacingIngressNetworkPolicyAppsDestination `json:"apps,omitempty"`
+	AppsRuntime *CustomerFacingIngressNetworkPolicyAppsRuntimeDestination `json:"apps_runtime,omitempty"`
 
-	Lakebase *CustomerFacingIngressNetworkPolicyLakebaseDestination `json:"lakebase,omitempty"`
+	LakebaseRuntime *CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination `json:"lakebase_runtime,omitempty"`
 
 	WorkspaceApi *CustomerFacingIngressNetworkPolicyWorkspaceApiDestination `json:"workspace_api,omitempty"`
-
+	// Workspace destinations
 	WorkspaceUi *CustomerFacingIngressNetworkPolicyWorkspaceUiDestination `json:"workspace_ui,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2153,6 +2157,11 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 	// List of storage destinations that serverless workloads are allowed to
 	// access when in RESTRICTED_ACCESS mode.
 	AllowedStorageDestinations []EgressNetworkPolicyNetworkAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
+	// List of internet destinations that serverless workloads are blocked from
+	// accessing. These destinations are enforced when restriction mode is
+	// RESTRICTED_ACCESS or DRY_RUN. Currently supports DNS_NAME type only;
+	// IP_RANGE support is planned.
+	BlockedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination `json:"blocked_internet_destinations,omitempty"`
 	// Optional. When policy_enforcement is not provided, we default to
 	// ENFORCE_MODE_ALL_SERVICES
 	PolicyEnforcement *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement `json:"policy_enforcement,omitempty"`
@@ -5033,6 +5042,30 @@ type UpdateSqlResultsDownloadRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting SqlResultsDownload `json:"setting"`
+}
+
+type UpdateTokenRequest struct {
+	Token PublicTokenInfo `json:"token"`
+	// The SHA-256 hash of the token to be updated.
+	TokenId string `json:"-" url:"-"`
+	// A list of field name under PublicTokenInfo, For example in request use
+	// {"update_mask": "comment,scopes"}
+	//
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask fieldmask.FieldMask `json:"update_mask"`
+}
+
+type UpdateTokenResponse struct {
 }
 
 type UpdateWorkspaceNetworkOptionRequest struct {

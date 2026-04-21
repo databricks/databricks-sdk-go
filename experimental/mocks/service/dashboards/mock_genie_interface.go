@@ -157,6 +157,65 @@ func (_c *MockGenieInterface_CreateMessageAndWait_Call) RunAndReturn(run func(co
 	return _c
 }
 
+// CreateMessageComment provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) CreateMessageComment(ctx context.Context, request dashboards.GenieCreateMessageCommentRequest) (*dashboards.GenieMessageComment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateMessageComment")
+	}
+
+	var r0 *dashboards.GenieMessageComment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieCreateMessageCommentRequest) (*dashboards.GenieMessageComment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieCreateMessageCommentRequest) *dashboards.GenieMessageComment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieMessageComment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieCreateMessageCommentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_CreateMessageComment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMessageComment'
+type MockGenieInterface_CreateMessageComment_Call struct {
+	*mock.Call
+}
+
+// CreateMessageComment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieCreateMessageCommentRequest
+func (_e *MockGenieInterface_Expecter) CreateMessageComment(ctx interface{}, request interface{}) *MockGenieInterface_CreateMessageComment_Call {
+	return &MockGenieInterface_CreateMessageComment_Call{Call: _e.mock.On("CreateMessageComment", ctx, request)}
+}
+
+func (_c *MockGenieInterface_CreateMessageComment_Call) Run(run func(ctx context.Context, request dashboards.GenieCreateMessageCommentRequest)) *MockGenieInterface_CreateMessageComment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieCreateMessageCommentRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_CreateMessageComment_Call) Return(_a0 *dashboards.GenieMessageComment, _a1 error) *MockGenieInterface_CreateMessageComment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_CreateMessageComment_Call) RunAndReturn(run func(context.Context, dashboards.GenieCreateMessageCommentRequest) (*dashboards.GenieMessageComment, error)) *MockGenieInterface_CreateMessageComment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateSpace provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) CreateSpace(ctx context.Context, request dashboards.GenieCreateSpaceRequest) (*dashboards.GenieSpace, error) {
 	ret := _m.Called(ctx, request)
@@ -1552,6 +1611,65 @@ func (_c *MockGenieInterface_GetSpaceBySpaceId_Call) RunAndReturn(run func(conte
 	return _c
 }
 
+// ListConversationComments provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) ListConversationComments(ctx context.Context, request dashboards.GenieListConversationCommentsRequest) (*dashboards.GenieListConversationCommentsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListConversationComments")
+	}
+
+	var r0 *dashboards.GenieListConversationCommentsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListConversationCommentsRequest) (*dashboards.GenieListConversationCommentsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListConversationCommentsRequest) *dashboards.GenieListConversationCommentsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieListConversationCommentsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieListConversationCommentsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_ListConversationComments_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListConversationComments'
+type MockGenieInterface_ListConversationComments_Call struct {
+	*mock.Call
+}
+
+// ListConversationComments is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieListConversationCommentsRequest
+func (_e *MockGenieInterface_Expecter) ListConversationComments(ctx interface{}, request interface{}) *MockGenieInterface_ListConversationComments_Call {
+	return &MockGenieInterface_ListConversationComments_Call{Call: _e.mock.On("ListConversationComments", ctx, request)}
+}
+
+func (_c *MockGenieInterface_ListConversationComments_Call) Run(run func(ctx context.Context, request dashboards.GenieListConversationCommentsRequest)) *MockGenieInterface_ListConversationComments_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieListConversationCommentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_ListConversationComments_Call) Return(_a0 *dashboards.GenieListConversationCommentsResponse, _a1 error) *MockGenieInterface_ListConversationComments_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_ListConversationComments_Call) RunAndReturn(run func(context.Context, dashboards.GenieListConversationCommentsRequest) (*dashboards.GenieListConversationCommentsResponse, error)) *MockGenieInterface_ListConversationComments_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListConversationMessages provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) ListConversationMessages(ctx context.Context, request dashboards.GenieListConversationMessagesRequest) (*dashboards.GenieListConversationMessagesResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -1725,6 +1843,65 @@ func (_c *MockGenieInterface_ListConversationsBySpaceId_Call) Return(_a0 *dashbo
 }
 
 func (_c *MockGenieInterface_ListConversationsBySpaceId_Call) RunAndReturn(run func(context.Context, string) (*dashboards.GenieListConversationsResponse, error)) *MockGenieInterface_ListConversationsBySpaceId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListMessageComments provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) ListMessageComments(ctx context.Context, request dashboards.GenieListMessageCommentsRequest) (*dashboards.GenieListMessageCommentsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListMessageComments")
+	}
+
+	var r0 *dashboards.GenieListMessageCommentsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListMessageCommentsRequest) (*dashboards.GenieListMessageCommentsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListMessageCommentsRequest) *dashboards.GenieListMessageCommentsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieListMessageCommentsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieListMessageCommentsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_ListMessageComments_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMessageComments'
+type MockGenieInterface_ListMessageComments_Call struct {
+	*mock.Call
+}
+
+// ListMessageComments is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieListMessageCommentsRequest
+func (_e *MockGenieInterface_Expecter) ListMessageComments(ctx interface{}, request interface{}) *MockGenieInterface_ListMessageComments_Call {
+	return &MockGenieInterface_ListMessageComments_Call{Call: _e.mock.On("ListMessageComments", ctx, request)}
+}
+
+func (_c *MockGenieInterface_ListMessageComments_Call) Run(run func(ctx context.Context, request dashboards.GenieListMessageCommentsRequest)) *MockGenieInterface_ListMessageComments_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieListMessageCommentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_ListMessageComments_Call) Return(_a0 *dashboards.GenieListMessageCommentsResponse, _a1 error) *MockGenieInterface_ListMessageComments_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_ListMessageComments_Call) RunAndReturn(run func(context.Context, dashboards.GenieListMessageCommentsRequest) (*dashboards.GenieListMessageCommentsResponse, error)) *MockGenieInterface_ListMessageComments_Call {
 	_c.Call.Return(run)
 	return _c
 }
