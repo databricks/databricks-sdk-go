@@ -116,17 +116,19 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 // The CLI version determines which flags are used. Returns nil when neither
 // profile nor host is usable.
 func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver string) []string {
-	// Flag --profile is a global CLI flag and is recognized for all commands
-	// even the ones that do not support it. Only use flag --profile in CLI
-	// versions that are known to support it in command `auth token`.
 	if cfg.Profile == "" {
 		return buildHostCommand(cliPath, cfg)
 	}
+
+	// Flag --profile is a global CLI flag and is recognized for all commands
+	// even the ones that do not support it. Only use flag --profile in CLI
+	// versions that are known to support it in command `auth token`.
 	if semver.Compare(ver, cliVersionForProfile) < 0 {
 		logger.Warnf(ctx, "Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.",
 			displayVersion(ver), cliVersionForProfile)
 		return buildHostCommand(cliPath, cfg)
 	}
+
 	return []string{cliPath, "auth", "token", "--profile", cfg.Profile}
 }
 
