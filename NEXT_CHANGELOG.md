@@ -5,6 +5,7 @@
 ### Breaking Changes
 
 * Remove the `Experimental_IsUnifiedHost` field (and the `DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST` environment variable) from `Config`. Unified host detection is now automatic via the `/.well-known/databricks-config` endpoint.
+* Remove the unused `ErrWorkspaceIDInAccountClient` exported variable. It was never returned from any production path, and its message contradicted the unified host workflow where a single profile with both `AccountID` and `WorkspaceID` produces both clients.
 
 ### New Features and Improvements
 
