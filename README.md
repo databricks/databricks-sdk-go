@@ -171,7 +171,7 @@ To force a specific authentication method instead of relying on auto-detection, 
 w, err := databricks.NewWorkspaceClient(&databricks.Config{
     Host:     "https://mycompany.databricks.com",
     AuthType: "azure-cli",
-    Cloud:    "AZURE",
+    Cloud:    "Azure",
 })
 ```
 This is useful when your environment has credentials for multiple authentication methods and you want to ensure a specific one is used or when auto detection is not accurate.
@@ -236,7 +236,7 @@ During initialization, the SDK automatically resolves missing configuration fiel
 | `Host`                        | _(String)_ The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint.                                                                                                            | `DATABRICKS_HOST` / `host`                         |
 | `AccountID`                   | _(String)_ The Databricks account ID for the Databricks accounts endpoint. Auto-discovered if not provided.                                                                                                                     | `DATABRICKS_ACCOUNT_ID` / `account_id`             |
 | `WorkspaceID`                 | _(String)_ The Databricks workspace ID for the Databricks workspace endpoint. Auto-discovered if not provided.                                                                                                                  | `DATABRICKS_WORKSPACE_ID` / `workspace_id`         |
-| `Cloud`                       | _(String)_ The cloud provider for the Databricks workspace (`AWS`, `AZURE`, or `GCP`). Auto-discovered if not provided. When set, `IsAws`, `IsAzure`, and `IsGcp` use this value directly instead of inferring from hostname.   | `DATABRICKS_CLOUD` / `cloud`                       |
+| `Cloud`                       | _(String)_ The cloud provider for the Databricks workspace (`AWS`, `Azure`, or `GCP`). Auto-discovered if not provided. When set, `IsAws`, `IsAzure`, and `IsGcp` use this value directly instead of inferring from hostname.   | `DATABRICKS_CLOUD` / `cloud`                       |
 | `DiscoveryURL`                | _(String)_ The OpenID Connect discovery URL. Auto-discovered if not provided. When set, OIDC endpoints are fetched directly from this URL instead of using the default host-based well-known endpoint logic.                   | `DATABRICKS_DISCOVERY_URL` / `discovery_url`       |
 | `Token`                       | _(String)_ The Databricks personal access token (PAT) _(AWS, Azure, and GCP)_ or Azure Active Directory (Azure AD) token _(Azure)_.                                                                                             | `DATABRICKS_TOKEN` / `token`                       |
 | `TokenAudience`               | _(String)_ When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.                                                                                               | `DATABRICKS_TOKEN_AUDIENCE` / `token_audience`     |
