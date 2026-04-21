@@ -106,6 +106,10 @@ type PersistentAuth struct {
 	// When true, Challenge() uses the discovery token source instead of
 	// the standard authhandler flow.
 	discoveryMode bool
+
+	// discoveryHost overrides the default login.databricks.com host used by
+	// the discovery flow. Empty means the production host.
+	discoveryHost string
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -178,6 +182,16 @@ func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
 func WithDiscoveryLogin() PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.discoveryMode = true
+	}
+}
+
+// WithDiscoveryHost overrides the default https://login.databricks.com host
+// used by the discovery login flow. Intended for testing and development
+// against non-production environments; has no effect unless WithDiscoveryLogin
+// is also set. Trailing slashes on host are trimmed.
+func WithDiscoveryHost(host string) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.discoveryHost = host
 	}
 }
 
@@ -440,7 +454,7 @@ func (a *PersistentAuth) discoveryChallenge() error {
 		return fmt.Errorf("starting listener: %w", err)
 	}
 	defer a.Close()
-	ds := &discoveryTokenSource{pa: a}
+	ds := &discoveryTokenSource{pa: a, host: a.discoveryHost}
 	return ds.challenge()
 }
 

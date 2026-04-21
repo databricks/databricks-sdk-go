@@ -165,6 +165,143 @@ func TestBuildDiscoveryAuthorizeURL(t *testing.T) {
 	}
 }
 
+func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
+	pkce := PKCEParams{
+		Challenge:       "c",
+		ChallengeMethod: "S256",
+		Verifier:        "v",
+	}
+	scopes := []string{"offline_access", "all-apis"}
+	tests := []struct {
+		name     string
+		host     string
+		wantHost string
+	}{
+		{
+			name:     "default host",
+			host:     defaultLoginDatabricksHost,
+			wantHost: "login.databricks.com",
+		},
+		{
+			name:     "custom host",
+			host:     "https://login.dev.databricks.com",
+			wantHost: "login.dev.databricks.com",
+		},
+		{
+			name:     "custom host with trailing slash",
+			host:     "https://login.dev.databricks.com/",
+			wantHost: "login.dev.databricks.com",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes)
+			u, err := url.Parse(got)
+			if err != nil {
+				t.Fatalf("parsing URL: %v", err)
+			}
+			if u.Host != tc.wantHost {
+				t.Errorf("host = %q, want %q", u.Host, tc.wantHost)
+			}
+			if u.Query().Get("destination_url") == "" {
+				t.Error("destination_url is empty")
+			}
+		})
+	}
+}
+
+func TestDiscoveryTokenSource_Challenge_HostOverride(t *testing.T) {
+	// Mock token server stands in for the workspace OIDC token endpoint.
+	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"access_token":"a","refresh_token":"r","token_type":"Bearer","expires_in":3600}`)
+	}))
+	defer tokenServer.Close()
+	issuer := tokenServer.URL + "/oidc"
+
+	browserOpened := make(chan string, 1)
+	browserMock := func(u string) error {
+		browserOpened <- u
+		return nil
+	}
+
+	cacheMock := &tokenCacheMock{
+		store: func(key string, tok *oauth2.Token) error { return nil },
+	}
+
+	arg, err := NewBasicDiscoveryOAuthArgument("test-profile")
+	if err != nil {
+		t.Fatalf("NewBasicDiscoveryOAuthArgument(): %v", err)
+	}
+
+	const override = "https://login.dev.databricks.com"
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(cacheMock),
+		WithBrowser(browserMock),
+		WithHttpClient(tokenServer.Client()),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+		WithDiscoveryLogin(),
+		WithDiscoveryHost(override),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+
+	if p.discoveryHost != override {
+		t.Errorf("discoveryHost = %q, want %q", p.discoveryHost, override)
+	}
+
+	if err := p.startListener(context.Background()); err != nil {
+		t.Fatalf("startListener(): %v", err)
+	}
+	defer p.Close()
+
+	dts := &discoveryTokenSource{pa: p, host: p.discoveryHost}
+
+	errc := make(chan error, 1)
+	go func() {
+		errc <- dts.challenge()
+	}()
+
+	var state string
+	select {
+	case authURL := <-browserOpened:
+		u, err := url.Parse(authURL)
+		if err != nil {
+			t.Fatalf("parsing auth URL: %v", err)
+		}
+		if u.Scheme != "https" || u.Host != "login.dev.databricks.com" {
+			t.Errorf("authorize URL host = %s://%s, want https://login.dev.databricks.com", u.Scheme, u.Host)
+		}
+		dest, err := url.Parse(u.Query().Get("destination_url"))
+		if err != nil {
+			t.Fatalf("parsing destination_url: %v", err)
+		}
+		state = dest.Query().Get("state")
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for browser to be called")
+	}
+
+	callbackURL := fmt.Sprintf("http://%s?code=test-code&state=%s&iss=%s",
+		p.redirectAddr, url.QueryEscape(state), url.QueryEscape(issuer))
+	resp, err := http.Get(callbackURL)
+	if err != nil {
+		t.Fatalf("callback GET: %v", err)
+	}
+	resp.Body.Close()
+
+	select {
+	case err := <-errc:
+		if err != nil {
+			t.Fatalf("challenge(): %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for challenge to complete")
+	}
+}
+
 func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 	// Create a mock token server that responds to POST /oidc/v1/token.
 	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
