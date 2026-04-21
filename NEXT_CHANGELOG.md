@@ -4,9 +4,12 @@
 
 ### Breaking Changes
 
+* Remove the `Experimental_IsUnifiedHost` field (and the `DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST` environment variable) from `Config`. Unified host detection is now automatic via the `/.well-known/databricks-config` endpoint.
+
 ### New Features and Improvements
 
- * Add `u2m.WithDiscoveryHost` option to override the default `https://login.databricks.com` host used by the discovery login flow. Intended for testing and development against non-production environments.
+* Add `u2m.WithDiscoveryHost` option to override the default `https://login.databricks.com` host used by the discovery login flow. Intended for testing and development against non-production environments.
+* Add support for unified hosts. A single configuration profile can now be used for both account-level and workspace-level operations when the host supports it and both `AccountID` and `WorkspaceID` are available.
 
 ### Bug Fixes
 

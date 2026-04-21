@@ -284,9 +284,6 @@ type Config struct {
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
 
-	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
-	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
-
 	// OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
 	// from this URL instead of the default host-type-based well-known endpoint logic.
 	// Mirrors discoveryUrl in the Java SDK.
@@ -452,10 +449,6 @@ func normalizedHost(host string) string {
 // patterns are no longer used to determine client capabilities. This method is
 // retained for backwards compatibility but should not be used in new code.
 func (c *Config) HostType() HostType {
-	// TODO: Remove this after TF updates its code.
-	if c.Experimental_IsUnifiedHost {
-		return UnifiedHost
-	}
 	// Normalize the host to ensure the scheme is present before checking
 	// prefixes. Profiles saved without "https://" (e.g. from user input)
 	// would otherwise fail the prefix check and be misclassified as

@@ -20,6 +20,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
   - [Authentication](#authentication)
     - [In this section](#in-this-section)
     - [Default authentication flow](#default-authentication-flow)
+    - [Unified host support](#unified-host-support)
     - [Databricks native authentication](#databricks-native-authentication)
     - [Azure native authentication](#azure-native-authentication)
     - [Google Cloud Platform native authentication](#google-cloud-platform-native-authentication)
@@ -144,6 +145,7 @@ The conventional name for the variable that holds the workspace-level client of 
 ### In this section
 
 - [Default authentication flow](#default-authentication-flow)
+- [Unified host support](#unified-host-support)
 - [Databricks native authentication](#databricks-native-authentication)
 - [Azure native authentication](#azure-native-authentication)
 - [Google Cloud Platform native authentication](#google-cloud-platform-native-authentication)
@@ -160,7 +162,19 @@ If you run the [Databricks Terraform Provider](https://registry.terraform.io/pro
 3. [Google Cloud Platform native authentication](#google-cloud-platform-native-authentication)
 4. If the SDK is unsuccessful at this point, it returns an authentication error and stops running.
 
-You can instruct the Databricks SDK for Go to use a specific authentication method by setting the `AuthType` field in `*databricks.Config` as described in the following sections.
+Each authentication method requires specific configuration attributes (e.g., `Token` for PAT auth, `AzureClientID` for Azure service principal auth). The SDK automatically detects the cloud provider and skips authentication methods whose required configuration attributes are not present. This means that Azure-specific methods like `azure-cli` are automatically skipped when connecting to an AWS or GCP workspace, and vice versa for GCP-specific methods.
+
+To force a specific authentication method instead of relying on auto-detection, set the `AuthType` field in `*databricks.Config`:
+
+```go
+// Force Azure CLI authentication — skip all other methods
+w, err := databricks.NewWorkspaceClient(&databricks.Config{
+    Host:     "https://mycompany.databricks.com",
+    AuthType: "azure-cli",
+    Cloud:    "AZURE",
+})
+```
+This is useful when your environment has credentials for multiple authentication methods and you want to ensure a specific one is used or when auto detection is not accurate.
 
 For each authentication method, the SDK searches for compatible authentication credentials in the following locations, in the following order. Once the SDK finds a compatible set of credentials that it can use, it stops searching:
 
@@ -174,6 +188,39 @@ For each authentication method, the SDK searches for compatible authentication c
 
 Depending on the Databricks authentication method, the SDK uses the following information. Presented are the `*databricks.Config` arguments, their descriptions, any corresponding environment variables, and any corresponding `.databrickscfg` file fields, respectively.
 
+### Unified host support
+
+Certain Databricks host types support both account-level and workspace-level API operations from a single endpoint. When using such a unified host, a single configuration profile can be used to create both `WorkspaceClient` and `AccountClient` instances without changing the `Host`.
+
+For this to work, the following conditions must be met:
+
+1. The host must support unified operations.
+2. Both `AccountID` and `WorkspaceID` must be available — either set explicitly in the configuration or auto-discovered.
+
+When both values are present, the SDK uses `WorkspaceID` to route workspace-level requests and `AccountID` to route account-level requests, all through the same host.
+
+```ini
+# .databrickscfg
+[unified]
+host         = https://mycompany.databricks.com
+account_id   = 00000000-0000-0000-0000-000000000000
+workspace_id = 1234567890
+```
+
+```go
+// Both clients share the same host and profile
+w, _ := databricks.NewWorkspaceClient(&databricks.Config{Profile: "unified"})
+a, _ := databricks.NewAccountClient(&databricks.Config{Profile: "unified"})
+
+// A WorkspaceClient for a different workspace under the same host and account
+w, _ = databricks.NewWorkspaceClient(&databricks.Config{
+    Profile:     "unified",
+    WorkspaceID: "2345678901",
+})
+```
+
+If the host supports it, `AccountID` and `WorkspaceID` may be auto-discovered, reducing the required explicit configuration.
+
 ### Databricks native authentication
 
 By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF). See [Supported WIF](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-federation-provider) for the supported JWT token providers.
@@ -182,12 +229,17 @@ By default, the Databricks SDK for Go initially tries Databricks token authentic
 - For Databricks OIDC authentication, you must provide the `Host`, `ClientId` and `TokenAudience` _(optional)_ either directly, through the corresponding environment variables, or in your `.databrickscfg` configuration file. More information can be found in [Databricks Documentation](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-federation#workload-identity-federation)
 - For Azure DevOps OIDC authentication, the `TokenAudience` is irrelevant as the audience is always set to `api://AzureADTokenExchange`. Also, the `System.AccessToken` pipeline variable required for OIDC request must be exposed as the `SYSTEM_ACCESSTOKEN` environment variable, following [Pipeline variables](https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken)
 
-| `*databricks.Config` argument | Description                                                                                                                                                                                                                                                              | Environment variable / `.databrickscfg` file field |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
-| `Host`                        | _(String)_ The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint.                                                                                                                                                     | `DATABRICKS_HOST` / `host`                         |
-| `AccountID`                   | _(String)_ The Databricks account ID for the Databricks accounts endpoint. Only has effect when `Host` is either `https://accounts.cloud.databricks.com/` _(AWS)_, `https://accounts.azuredatabricks.net/` _(Azure)_, or `https://accounts.gcp.databricks.com/` _(GCP)_. | `DATABRICKS_ACCOUNT_ID` / `account_id`             |
-| `Token`                       | _(String)_ The Databricks personal access token (PAT) _(AWS, Azure, and GCP)_ or Azure Active Directory (Azure AD) token _(Azure)_.                                                                                                                                      | `DATABRICKS_TOKEN` / `token`                       |
-| `TokenAudience`               | _(String)_ When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.                                                                                                                               | `DATABRICKS_TOKEN_AUDIENCE` / `token_audience`     |
+During initialization, the SDK automatically resolves missing configuration fields (`AccountID`, `WorkspaceID`, `Cloud`, and `DiscoveryURL`). Any explicitly provided values take precedence and are never overwritten. If the auto discovery fails, the SDK falls back to the explicit configuration. It is recommended to always set explicit configuration.
+
+| `*databricks.Config` argument | Description                                                                                                                                                                                                                     | Environment variable / `.databrickscfg` file field |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `Host`                        | _(String)_ The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint.                                                                                                            | `DATABRICKS_HOST` / `host`                         |
+| `AccountID`                   | _(String)_ The Databricks account ID for the Databricks accounts endpoint. Auto-discovered if not provided.                                                                                                                     | `DATABRICKS_ACCOUNT_ID` / `account_id`             |
+| `WorkspaceID`                 | _(String)_ The Databricks workspace ID for the Databricks workspace endpoint. Auto-discovered if not provided.                                                                                                                  | `DATABRICKS_WORKSPACE_ID` / `workspace_id`         |
+| `Cloud`                       | _(String)_ The cloud provider for the Databricks workspace (`AWS`, `AZURE`, or `GCP`). Auto-discovered if not provided. When set, `IsAws`, `IsAzure`, and `IsGcp` use this value directly instead of inferring from hostname.   | `DATABRICKS_CLOUD` / `cloud`                       |
+| `DiscoveryURL`                | _(String)_ The OpenID Connect discovery URL. Auto-discovered if not provided. When set, OIDC endpoints are fetched directly from this URL instead of using the default host-based well-known endpoint logic.                   | `DATABRICKS_DISCOVERY_URL` / `discovery_url`       |
+| `Token`                       | _(String)_ The Databricks personal access token (PAT) _(AWS, Azure, and GCP)_ or Azure Active Directory (Azure AD) token _(Azure)_.                                                                                             | `DATABRICKS_TOKEN` / `token`                       |
+| `TokenAudience`               | _(String)_ When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.                                                                                               | `DATABRICKS_TOKEN_AUDIENCE` / `token_audience`     |
 
 For example, to use Databricks token authentication:
 
