@@ -224,9 +224,9 @@ type PermissionMigrationService interface {
 // * **[Cluster permissions](:service:clusters)** — Manage which users can
 // manage, restart, or attach to clusters. * **[Cluster policy
 // permissions](:service:clusterpolicies)** — Manage which users can use
-// cluster policies. * **[Delta Live Tables pipeline
+// cluster policies. * **[Spark Declarative Pipelines
 // permissions](:service:pipelines)** — Manage which users can view, manage,
-// run, cancel, or own a Delta Live Tables pipeline. * **[Job
+// run, cancel, or own a Spark Declarative Pipeline. * **[Job
 // permissions](:service:jobs)** — Manage which users can view, manage,
 // trigger, cancel, or own a job. * **[MLflow experiment
 // permissions](:service:experiments)** — Manage which users can read, edit,

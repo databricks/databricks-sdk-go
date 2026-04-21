@@ -84,7 +84,7 @@ type ClonePipelineRequest struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// The type of clone to perform. Currently, only deep copies are supported
 	CloneMode CloneMode `json:"clone_mode,omitempty"`
@@ -262,7 +262,7 @@ type CreatePipeline struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
@@ -540,7 +540,7 @@ type EditPipeline struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
@@ -2085,7 +2085,7 @@ type PipelineSpec struct {
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
-	// DLT Release Channel that specifies which version to use.
+	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
@@ -2292,7 +2292,7 @@ type PipelineTrigger struct {
 }
 
 // The environment entity used to preserve serverless environment side panel,
-// jobs' environment for non-notebook task, and DLT's environment for classic
+// jobs' environment for non-notebook task, and SDP's environment for classic
 // and serverless pipelines. In this minimal environment spec, only pip
 // dependencies are supported.
 type PipelinesEnvironment struct {

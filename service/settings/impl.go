@@ -1749,6 +1749,21 @@ func (a *tokensImpl) internalList(ctx context.Context) (*ListPublicTokensRespons
 	return &listPublicTokensResponse, err
 }
 
+func (a *tokensImpl) Update(ctx context.Context, request UpdateTokenRequest) (*UpdateTokenResponse, error) {
+	var updateTokenResponse UpdateTokenResponse
+	path := fmt.Sprintf("/api/2.0/token/%v", request.TokenId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateTokenResponse)
+	return &updateTokenResponse, err
+}
+
 // unexported type that holds implementations of just WorkspaceConf API methods
 type workspaceConfImpl struct {
 	client *client.DatabricksClient

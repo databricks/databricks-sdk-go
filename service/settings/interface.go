@@ -841,6 +841,12 @@ type TokensService interface {
 
 	// Lists all the valid tokens for a user-workspace pair.
 	List(ctx context.Context) (*ListPublicTokensResponse, error)
+
+	// Updates the comment or scopes of a token.
+	//
+	// If a token with the specified ID is not valid, this call returns an error
+	// **RESOURCE_DOES_NOT_EXIST**.
+	Update(ctx context.Context, request UpdateTokenRequest) (*UpdateTokenResponse, error)
 }
 
 // This API allows updating known workspace settings for advanced users.
