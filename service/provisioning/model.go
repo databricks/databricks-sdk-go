@@ -148,6 +148,20 @@ type CreateGcpKeyInfo struct {
 	// Globally unique kms key resource id of the form
 	// projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4
 	KmsKeyId string `json:"kms_key_id"`
+	// When true, Databricks will not use OAuth to grant the service account
+	// access to the KMS key. The customer is responsible for granting access
+	// manually.
+	Manual bool `json:"manual,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateGcpKeyInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateGcpKeyInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateNetworkRequest struct {
@@ -649,6 +663,20 @@ type GcpKeyInfo struct {
 	// Globally unique kms key resource id of the form
 	// projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4
 	KmsKeyId string `json:"kms_key_id"`
+	// When true, Databricks will not use OAuth to grant the service account
+	// access to the KMS key. The customer is responsible for granting access
+	// manually.
+	Manual bool `json:"manual,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GcpKeyInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpKeyInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The network configuration for the workspace.

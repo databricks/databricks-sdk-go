@@ -476,7 +476,7 @@ type PolicyComplianceForClustersService interface {
 	// `TERMINATED`. The next time the cluster is started, the new attributes
 	// will take effect.
 	//
-	// Clusters created by the Databricks Jobs, DLT, or Models services cannot
+	// Clusters created by the Databricks Jobs, SDP, or Models services cannot
 	// be enforced by this API. Instead, use the "Enforce job policy compliance"
 	// API to enforce policy compliance on jobs.
 	EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error)

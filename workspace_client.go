@@ -33,6 +33,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -395,11 +396,6 @@ type WorkspaceClient struct {
 	// HEAD, PUT, and DELETE to manage files and directories specified using
 	// their URI path. The path is always absolute.
 	//
-	// Some Files API client features are currently experimental. To enable
-	// them, set `enable_experimental_files_api_client = True` in your
-	// configuration profile or use the environment variable
-	// `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
-	//
 	// Use of Files API may incur Databricks data transfer charges.
 	//
 	// [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
@@ -634,9 +630,9 @@ type WorkspaceClient struct {
 	// apps. * **[Cluster permissions](:service:clusters)** — Manage which
 	// users can manage, restart, or attach to clusters. * **[Cluster policy
 	// permissions](:service:clusterpolicies)** — Manage which users can use
-	// cluster policies. * **[Delta Live Tables pipeline
+	// cluster policies. * **[Spark Declarative Pipelines
 	// permissions](:service:pipelines)** — Manage which users can view,
-	// manage, run, cancel, or own a Delta Live Tables pipeline. * **[Job
+	// manage, run, cancel, or own a Spark Declarative Pipeline. * **[Job
 	// permissions](:service:jobs)** — Manage which users can view, manage,
 	// trigger, cancel, or own a job. * **[MLflow experiment
 	// permissions](:service:experiments)** — Manage which users can read,
@@ -977,6 +973,14 @@ type WorkspaceClient struct {
 	// prevent such users from reading secrets.
 	Secrets workspace.SecretsInterface
 
+	// A secret is a Unity Catalog securable object that stores sensitive
+	// credential data (such as passwords, tokens, and keys) within a
+	// three-level namespace (**catalog_name.schema_name.secret_name**).
+	//
+	// Secrets can be managed using standard Unity Catalog permissions and are
+	// scoped to a schema within a catalog.
+	SecretsUc catalog.SecretsUcInterface
+
 	// These APIs enable administrators to manage service principal secrets at
 	// the workspace level. To use these APIs, the service principal must be
 	// first added to the current workspace.
@@ -1163,6 +1167,9 @@ type WorkspaceClient struct {
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials catalog.StorageCredentialsInterface
 
+	// Manage Supervisor Agents and related resources.
+	SupervisorAgents supervisoragents.SupervisorAgentsInterface
+
 	// A system schema is a schema that lives within the system catalog. A
 	// system schema may contain information about customer usage of Unity
 	// Catalog such as audit-logs, billing-logs, lineage information, etc.
@@ -1220,10 +1227,10 @@ type WorkspaceClient struct {
 	// user needs to be granted the EXTERNAL USE LOCATION permission by external
 	// location owner. For requests on existing external tables, user also needs
 	// to be granted the EXTERNAL USE SCHEMA permission at the schema level by
-	// catalog admin.
+	// catalog owner.
 	//
 	// Note that EXTERNAL USE SCHEMA is a schema level permission that can only
-	// be granted by catalog admin explicitly and is not included in schema
+	// be granted by catalog owner explicitly and is not included in schema
 	// ownership or ALL PRIVILEGES on the schema for security reasons.
 	// Similarly, EXTERNAL USE LOCATION is an external location level permission
 	// that can only be granted by external location owner explicitly and is not
@@ -1248,8 +1255,8 @@ type WorkspaceClient struct {
 	// the temporary table credentials API, a metastore admin needs to enable
 	// the external_access_enabled flag (off by default) at the metastore level,
 	// and user needs to be granted the EXTERNAL USE SCHEMA permission at the
-	// schema level by catalog admin. Note that EXTERNAL USE SCHEMA is a schema
-	// level permission that can only be granted by catalog admin explicitly and
+	// schema level by catalog owner. Note that EXTERNAL USE SCHEMA is a schema
+	// level permission that can only be granted by catalog owner explicitly and
 	// is not included in schema ownership or ALL PRIVILEGES on the schema for
 	// security reasons.
 	TemporaryTableCredentials catalog.TemporaryTableCredentialsInterface
@@ -1521,6 +1528,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Rfa:                                 catalog.NewRfa(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
+		SecretsUc:                           catalog.NewSecretsUc(databricksClient),
 		ServicePrincipalSecretsProxy:        oauth2.NewServicePrincipalSecretsProxy(databricksClient),
 		ServicePrincipalsV2:                 iam.NewServicePrincipalsV2(databricksClient),
 		ServingEndpoints:                    servingEndpoints,
@@ -1529,6 +1537,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Shares:                              sharing.NewShares(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),
 		StorageCredentials:                  catalog.NewStorageCredentials(databricksClient),
+		SupervisorAgents:                    supervisoragents.NewSupervisorAgents(databricksClient),
 		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),
 		TableConstraints:                    catalog.NewTableConstraints(databricksClient),
 		Tables:                              catalog.NewTables(databricksClient),
