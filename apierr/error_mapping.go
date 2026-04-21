@@ -23,11 +23,15 @@ var (
 	ErrResourceDoesNotExist   = inheritErr(ErrNotFound, "operation was performed on a resource that does not exist")
 	ErrAborted                = inheritErr(ErrResourceConflict, "the operation was aborted, typically due to a concurrency issue such as a sequencer check failure")
 	ErrAlreadyExists          = inheritErr(ErrResourceConflict, "operation was rejected due a conflict with an existing resource")
-	ErrResourceAlreadyExists  = inheritErr(ErrResourceConflict, "operation was rejected due a conflict with an existing resource")
-	ErrResourceExhausted      = inheritErr(ErrTooManyRequests, "operation is rejected due to per-user rate limiting")
-	ErrRequestLimitExceeded   = inheritErr(ErrTooManyRequests, "cluster request was rejected because it would exceed a resource limit")
-	ErrUnknown                = inheritErr(ErrInternalError, "this error is used as a fallback if the platform-side mapping is missing some reason")
-	ErrDataLoss               = inheritErr(ErrInternalError, "unrecoverable data loss or corruption")
+	// ErrResourceAlreadyExists is an alias for ErrAlreadyExists so errors.Is
+	// matches both the gRPC-canonical ALREADY_EXISTS and the Databricks-specific
+	// RESOURCE_ALREADY_EXISTS error codes regardless of which one the backend
+	// happens to return.
+	ErrResourceAlreadyExists = ErrAlreadyExists
+	ErrResourceExhausted     = inheritErr(ErrTooManyRequests, "operation is rejected due to per-user rate limiting")
+	ErrRequestLimitExceeded  = inheritErr(ErrTooManyRequests, "cluster request was rejected because it would exceed a resource limit")
+	ErrUnknown               = inheritErr(ErrInternalError, "this error is used as a fallback if the platform-side mapping is missing some reason")
+	ErrDataLoss              = inheritErr(ErrInternalError, "unrecoverable data loss or corruption")
 
 	statusCodeMapping = map[int]error{
 		400: ErrBadRequest,
