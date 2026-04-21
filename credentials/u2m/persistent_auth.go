@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	cache "github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
@@ -188,9 +189,13 @@ func WithDiscoveryLogin() PersistentAuthOption {
 // WithDiscoveryHost overrides the default https://login.databricks.com host
 // used by the discovery login flow. Intended for testing and development
 // against non-production environments; has no effect unless WithDiscoveryLogin
-// is also set. Trailing slashes on host are trimmed.
+// is also set. If host has no scheme, https:// is prepended. Trailing slashes
+// are trimmed.
 func WithDiscoveryHost(host string) PersistentAuthOption {
 	return func(a *PersistentAuth) {
+		if host != "" && !strings.Contains(host, "://") {
+			host = "https://" + host
+		}
 		a.discoveryHost = host
 	}
 }

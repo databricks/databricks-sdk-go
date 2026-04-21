@@ -199,6 +199,28 @@ func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
 	}
 }
 
+func TestWithDiscoveryHost_NormalizesScheme(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{name: "empty stays empty", input: "", want: ""},
+		{name: "https preserved", input: "https://login.dev.databricks.com", want: "https://login.dev.databricks.com"},
+		{name: "http preserved", input: "http://localhost:8080", want: "http://localhost:8080"},
+		{name: "no scheme gets https", input: "login.dev.databricks.com", want: "https://login.dev.databricks.com"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var a PersistentAuth
+			WithDiscoveryHost(tc.input)(&a)
+			if a.discoveryHost != tc.want {
+				t.Errorf("discoveryHost = %q, want %q", a.discoveryHost, tc.want)
+			}
+		})
+	}
+}
+
 func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 	// Create a mock token server that responds to POST /oidc/v1/token.
 	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
