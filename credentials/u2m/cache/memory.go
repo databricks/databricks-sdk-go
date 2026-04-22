@@ -21,6 +21,14 @@ type inMemoryTokenCache struct {
 	tokens map[string]*oauth2.Token
 }
 
+func cloneToken(t *oauth2.Token) *oauth2.Token {
+	if t == nil {
+		return nil
+	}
+	clone := *t
+	return &clone
+}
+
 // Store implements TokenCache. A nil token deletes the key.
 func (c *inMemoryTokenCache) Store(key string, t *oauth2.Token) error {
 	c.mu.Lock()
@@ -29,7 +37,7 @@ func (c *inMemoryTokenCache) Store(key string, t *oauth2.Token) error {
 		delete(c.tokens, key)
 		return nil
 	}
-	c.tokens[key] = t
+	c.tokens[key] = cloneToken(t)
 	return nil
 }
 
@@ -41,5 +49,5 @@ func (c *inMemoryTokenCache) Lookup(key string) (*oauth2.Token, error) {
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return t, nil
+	return cloneToken(t), nil
 }

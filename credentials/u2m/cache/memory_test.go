@@ -27,6 +27,34 @@ func TestInMemoryTokenCache_StoreAndLookup(t *testing.T) {
 	}
 }
 
+func TestInMemoryTokenCache_StoreAndLookupUseCopies(t *testing.T) {
+	c := NewInMemoryTokenCache()
+	tok := &oauth2.Token{AccessToken: "abc", RefreshToken: "def"}
+	if err := c.Store("key1", tok); err != nil {
+		t.Fatalf("Store: %v", err)
+	}
+
+	tok.RefreshToken = "mutated-after-store"
+
+	got, err := c.Lookup("key1")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+	if got.RefreshToken != "def" {
+		t.Fatalf("RefreshToken after store mutation: want %q, got %q", "def", got.RefreshToken)
+	}
+
+	got.RefreshToken = "mutated-after-lookup"
+
+	gotAgain, err := c.Lookup("key1")
+	if err != nil {
+		t.Fatalf("Lookup after lookup mutation: %v", err)
+	}
+	if gotAgain.RefreshToken != "def" {
+		t.Fatalf("RefreshToken after lookup mutation: want %q, got %q", "def", gotAgain.RefreshToken)
+	}
+}
+
 func TestInMemoryTokenCache_StoreNilDeletesKey(t *testing.T) {
 	c := NewInMemoryTokenCache()
 	if err := c.Store("key1", &oauth2.Token{AccessToken: "abc"}); err != nil {

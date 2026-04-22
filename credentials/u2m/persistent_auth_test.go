@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"golang.org/x/oauth2"
 )
@@ -614,6 +615,60 @@ func TestForceRefreshToken_RefreshesValidToken(t *testing.T) {
 	}
 	if !refreshCalled {
 		t.Error("ForceRefreshToken(): want refresh to be called for valid token, but it was not")
+	}
+}
+
+func TestForceRefreshToken_WithInMemoryCachePreservesCachedRefreshToken(t *testing.T) {
+	tokenCache := cache.NewInMemoryTokenCache()
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	if err := tokenCache.Store(arg.GetCacheKey(), &oauth2.Token{
+		AccessToken:  "still-valid",
+		RefreshToken: "refresh-me",
+		Expiry:       time.Now().Add(1 * time.Hour),
+	}); err != nil {
+		t.Fatalf("Store(): %v", err)
+	}
+
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(tokenCache),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `access_token=force-refreshed&refresh_token=new-refresh`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/x-www-form-urlencoded"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if err != nil {
+		t.Fatalf("ForceRefreshToken(): want no error, got %v", err)
+	}
+	if tok.RefreshToken != "" {
+		t.Fatalf("ForceRefreshToken(): want refresh token redacted, got %q", tok.RefreshToken)
+	}
+
+	cached, err := tokenCache.Lookup(arg.GetCacheKey())
+	if err != nil {
+		t.Fatalf("Lookup(): want cached token, got %v", err)
+	}
+	if cached.RefreshToken != "new-refresh" {
+		t.Fatalf("Lookup(): want cached refresh token %q, got %q", "new-refresh", cached.RefreshToken)
 	}
 }
 
