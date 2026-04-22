@@ -207,6 +207,7 @@ func TestBuildCliCommand(t *testing.T) {
 		cfg     *Config
 		ver     string
 		wantCmd []string
+		wantErr string // substring; empty => expect no error
 	}{
 		{
 			name:    "host only",
@@ -243,10 +244,10 @@ func TestBuildCliCommand(t *testing.T) {
 			wantCmd: []string{cliPath, "auth", "token", "--host", host},
 		},
 		{
-			name:    "profile without host and old CLI — nil",
+			name:    "profile without host and old CLI — error",
 			cfg:     &Config{Profile: "my-profile"},
 			ver:     "v0.207.0",
-			wantCmd: nil,
+			wantErr: "does not support --profile",
 		},
 		{
 			name:    "profile without host and new CLI — uses --profile",
@@ -261,16 +262,28 @@ func TestBuildCliCommand(t *testing.T) {
 			wantCmd: []string{cliPath, "auth", "token", "--host", host},
 		},
 		{
-			name:    "neither profile nor host — nil",
+			name:    "neither profile nor host — error",
 			cfg:     &Config{},
 			ver:     "v0.295.0",
-			wantCmd: nil,
+			wantErr: "neither profile nor host is configured",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildCliCommand(context.Background(), cliPath, tc.cfg, tc.ver)
+			got, err := buildCliCommand(context.Background(), cliPath, tc.cfg, tc.ver)
+			if tc.wantErr != "" {
+				if err == nil {
+					t.Fatalf("buildCliCommand() error = nil, want error containing %q", tc.wantErr)
+				}
+				if !strings.Contains(err.Error(), tc.wantErr) {
+					t.Errorf("buildCliCommand() error = %v, want containing %q", err, tc.wantErr)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("buildCliCommand() unexpected error: %v", err)
+			}
 			if !slices.Equal(got, tc.wantCmd) {
 				t.Errorf("buildCliCommand() = %v, want %v", got, tc.wantCmd)
 			}
@@ -290,6 +303,7 @@ func TestBuildHostCommand(t *testing.T) {
 		name    string
 		cfg     *Config
 		wantCmd []string
+		wantErr bool
 	}{
 		{
 			name:    "workspace host",
@@ -302,15 +316,24 @@ func TestBuildHostCommand(t *testing.T) {
 			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
 		},
 		{
-			name:    "no host — nil",
+			name:    "no host — error",
 			cfg:     &Config{},
-			wantCmd: nil,
+			wantErr: true,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildHostCommand(cliPath, tc.cfg)
+			got, err := buildHostCommand(cliPath, tc.cfg)
+			if tc.wantErr {
+				if err == nil {
+					t.Errorf("buildHostCommand() expected error, got nil")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("buildHostCommand() unexpected error: %v", err)
+			}
 			if !slices.Equal(got, tc.wantCmd) {
 				t.Errorf("buildHostCommand() = %v, want %v", got, tc.wantCmd)
 			}

@@ -38,8 +38,6 @@ const cliVersionForProfile = "v0.207.1" // https://github.com/databricks/cli/pul
 
 // devBuildVersionPrefix is the sentinel the Databricks CLI uses when
 // buildVersion wasn't injected by goreleaser (e.g. a plain `go build`).
-// Such builds always compare less than any real release, which would disable
-// every feature gate; we surface an informational hint instead.
 // See https://github.com/databricks/cli/blob/main/internal/build/info.go.
 const devBuildVersionPrefix = "v0.0.0-dev"
 
@@ -99,51 +97,64 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 		logger.Warnf(ctx, "Failed to detect Databricks CLI version: %v. Falling back to conservative flag set.", err)
 		ver = ""
 	} else if strings.HasPrefix(ver, devBuildVersionPrefix) {
+		// Dev builds always compare less than any real release, which would
+		// disable every feature gate; surface an informational hint instead.
 		logger.Infof(ctx,
 			"Databricks CLI %s is a development build; feature detection will use conservative fallbacks. "+
 				"Rebuild the CLI with an explicit version to enable capability-based flag selection, "+
 				"e.g. `go build -ldflags '-X github.com/databricks/cli/internal/build.buildVersion=0.296.0'`.",
 			ver)
 	}
-	cmd := buildCliCommand(ctx, cliPath, cfg, ver)
-	if cmd == nil {
-		return nil, fmt.Errorf("cannot configure CLI token source: neither profile nor host is set")
+	cmd, err := buildCliCommand(ctx, cliPath, cfg, ver)
+	if err != nil {
+		return nil, fmt.Errorf("cannot configure CLI token source: %w", err)
 	}
 	return cmd, nil
 }
 
 // buildCliCommand constructs the CLI command for fetching an auth token.
-// The CLI version determines which flags are used. Returns nil when neither
-// profile nor host is usable.
-func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver string) []string {
+// The CLI version determines which flags are used. Returns a precise error
+// describing which piece of configuration is missing when the command cannot
+// be built.
+func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver string) ([]string, error) {
 	if cfg.Profile == "" {
-		return buildHostCommand(cliPath, cfg)
+		cmd, err := buildHostCommand(cliPath, cfg)
+		if err != nil {
+			return nil, fmt.Errorf("neither profile nor host is configured: %w", err)
+		}
+
+		return cmd, nil
 	}
 
 	// Flag --profile is a global CLI flag and is recognized for all commands
 	// even the ones that do not support it. Only use flag --profile in CLI
 	// versions that are known to support it in command `auth token`.
 	if semver.Compare(ver, cliVersionForProfile) < 0 {
-		logger.Warnf(ctx, "Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.",
-			displayVersion(ver), cliVersionForProfile)
-		return buildHostCommand(cliPath, cfg)
+		logger.Warnf(ctx, "Databricks CLI %s does not support --profile (requires >= %s). Falling back to --host.", displayVersion(ver), cliVersionForProfile)
+
+		cmd, err := buildHostCommand(cliPath, cfg)
+		if err != nil {
+			return nil, fmt.Errorf("databricks CLI %s does not support --profile (requires >= %s) and no host fallback is configured: %w",
+				displayVersion(ver), cliVersionForProfile, err)
+		}
+
+		return cmd, nil
 	}
 
-	return []string{cliPath, "auth", "token", "--profile", cfg.Profile}
+	return []string{cliPath, "auth", "token", "--profile", cfg.Profile}, nil
 }
 
-// buildHostCommand constructs the --host based auth token command. Returns
-// nil when cfg.Host is unset, which signals the caller that no command is
-// available.
-func buildHostCommand(cliPath string, cfg *Config) []string {
+// buildHostCommand constructs the --host based auth token command.
+// Returns an error when cfg.Host is unset.
+func buildHostCommand(cliPath string, cfg *Config) ([]string, error) {
 	if cfg.Host == "" {
-		return nil
+		return nil, errors.New("host is not set")
 	}
 	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
 	if cfg.HostType() == AccountHost {
 		cmd = append(cmd, "--account-id", cfg.AccountID)
 	}
-	return cmd
+	return cmd, nil
 }
 
 // Token fetches an OAuth token by shelling out to the Databricks CLI.
@@ -157,9 +168,9 @@ func (c *CliTokenSource) execCliCommand(ctx context.Context, args []string) (*oa
 	if err != nil {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {
-			// Surface the CLI's stderr explicitly — exec.ExitError's own
-			// message is just "exit status N". Wrap err with %w so callers
-			// can still recover the *exec.ExitError via errors.As.
+			// %s prints exitErr.Stderr (CLI's message). %w prints err.Error(),
+			// which for *exec.ExitError is just "exit status N" — complementary,
+			// not duplicated. %w also preserves the type for errors.As.
 			return nil, fmt.Errorf("cannot get access token: %s: %w", strings.TrimSpace(string(exitErr.Stderr)), err)
 		}
 		return nil, fmt.Errorf("cannot get access token: %w", err)
