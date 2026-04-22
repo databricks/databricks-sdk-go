@@ -1261,6 +1261,26 @@ type WorkspaceClient struct {
 	// security reasons.
 	TemporaryTableCredentials catalog.TemporaryTableCredentialsInterface
 
+	// Temporary Volume Credentials refer to short-lived, downscoped credentials
+	// used to access cloud storage locations where volume data is stored in
+	// Databricks. These credentials are employed to provide secure and
+	// time-limited access to data in cloud environments such as AWS, Azure, and
+	// Google Cloud. Each cloud provider has its own type of credentials: AWS
+	// uses temporary session tokens via AWS Security Token Service (STS), Azure
+	// utilizes Shared Access Signatures (SAS) for its data storage services,
+	// and Google Cloud supports temporary credentials through OAuth 2.0.
+	//
+	// Temporary volume credentials ensure that data access is limited in scope
+	// and duration, reducing the risk of unauthorized access or misuse. To use
+	// the temporary volume credentials API, a metastore admin needs to enable
+	// the external_access_enabled flag (off by default) at the metastore level,
+	// and user needs to be granted the EXTERNAL USE SCHEMA permission at the
+	// schema level by catalog owner. Note that EXTERNAL USE SCHEMA is a schema
+	// level permission that can only be granted by catalog owner explicitly and
+	// is not included in schema ownership or ALL PRIVILEGES on the schema for
+	// security reasons.
+	TemporaryVolumeCredentials catalog.TemporaryVolumeCredentialsInterface
+
 	// Enables administrators to get all tokens and delete tokens for other
 	// users. Admins can either get every token, get a specific token by ID, or
 	// get all tokens for a particular user.
@@ -1544,6 +1564,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		TagPolicies:                         tags.NewTagPolicies(databricksClient),
 		TemporaryPathCredentials:            catalog.NewTemporaryPathCredentials(databricksClient),
 		TemporaryTableCredentials:           catalog.NewTemporaryTableCredentials(databricksClient),
+		TemporaryVolumeCredentials:          catalog.NewTemporaryVolumeCredentials(databricksClient),
 		TokenManagement:                     settings.NewTokenManagement(databricksClient),
 		Tokens:                              settings.NewTokens(databricksClient),
 		UsersV2:                             iam.NewUsersV2(databricksClient),

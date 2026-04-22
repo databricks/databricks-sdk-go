@@ -4115,7 +4115,7 @@ func (f *ScalarDataType) Type() string {
 
 type SchemaConfig struct {
 	// Schema of the JSON object in standard IETF JSON schema format
-	// (https://json-schema.org/)
+	// (https://json-schema.org/).
 	JsonSchema string `json:"json_schema,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

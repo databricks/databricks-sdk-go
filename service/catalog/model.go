@@ -3731,6 +3731,53 @@ func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) 
 	return marshal.Marshal(s)
 }
 
+// Generate volume credentials RPC
+type GenerateTemporaryVolumeCredentialRequest struct {
+	// The operation performed against the volume data, either READ_VOLUME or
+	// WRITE_VOLUME. If WRITE_VOLUME is specified, the credentials returned will
+	// have write permissions, otherwise, it will be read only.
+	Operation VolumeOperation `json:"operation,omitempty"`
+	// Id of the volume to read or write.
+	VolumeId string `json:"volume_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenerateTemporaryVolumeCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryVolumeCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryVolumeCredentialResponse struct {
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+
+	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+
+	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
+	// Server time when the credential will expire, in epoch milliseconds. The
+	// API client is advised to cache the credential given this expiration time.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
+
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+
+	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+	// The URL of the storage path accessible by the temporary credential.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenerateTemporaryVolumeCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryVolumeCredentialResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetAccessRequestDestinationsRequest struct {
 	// The full name of the securable.
 	FullName string `json:"-" url:"-"`
@@ -9206,6 +9253,43 @@ func (s *VolumeInfo) UnmarshalJSON(b []byte) error {
 
 func (s VolumeInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type VolumeOperation string
+
+const VolumeOperationReadVolume VolumeOperation = `READ_VOLUME`
+
+const VolumeOperationWriteVolume VolumeOperation = `WRITE_VOLUME`
+
+// String representation for [fmt.Print]
+func (f *VolumeOperation) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *VolumeOperation) Set(v string) error {
+	switch v {
+	case `READ_VOLUME`, `WRITE_VOLUME`:
+		*f = VolumeOperation(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ_VOLUME", "WRITE_VOLUME"`, v)
+	}
+}
+
+// Values returns all possible values for VolumeOperation.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *VolumeOperation) Values() []VolumeOperation {
+	return []VolumeOperation{
+		VolumeOperationReadVolume,
+		VolumeOperationWriteVolume,
+	}
+}
+
+// Type always returns VolumeOperation to satisfy [pflag.Value] interface
+func (f *VolumeOperation) Type() string {
+	return "VolumeOperation"
 }
 
 type VolumeType string
