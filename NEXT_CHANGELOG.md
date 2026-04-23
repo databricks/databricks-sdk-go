@@ -21,6 +21,8 @@
 
 ### Internal Changes
 
+ * Pass `--force-refresh` to Databricks CLI `auth token` command to bypass the CLI's internal token cache ([#1628](https://github.com/databricks/databricks-sdk-go/pull/1628)).
+
 ### API Changes
 * Add [w.TemporaryVolumeCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TemporaryVolumeCredentialsAPI) workspace-level service.
 * Add `GetPermissionLevels`, `GetPermissions`, `SetPermissions` and `UpdatePermissions` methods for [w.KnowledgeAssistants](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants#KnowledgeAssistantsAPI) workspace-level service.

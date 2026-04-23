@@ -34,7 +34,10 @@ type cliTokenResponse struct {
 
 // Minimum CLI versions for flag support. Versions are in the format accepted
 // by [golang.org/x/mod/semver] (with leading "v").
-const cliVersionForProfile = "v0.207.1" // https://github.com/databricks/cli/pull/855
+const (
+	cliVersionForProfile      = "v0.207.1" // https://github.com/databricks/cli/pull/855
+	cliVersionForForceRefresh = "v0.296.0" // https://github.com/databricks/cli/pull/4767
+)
 
 // devBuildVersionPrefix is the sentinel the Databricks CLI uses when
 // buildVersion wasn't injected by goreleaser (e.g. a plain `go build`).
@@ -112,11 +115,30 @@ func resolveCliCommand(ctx context.Context, cliPath string, cfg *Config) ([]stri
 	return cmd, nil
 }
 
-// buildCliCommand constructs the CLI command for fetching an auth token.
-// The CLI version determines which flags are used. Returns a precise error
-// describing which piece of configuration is missing when the command cannot
-// be built.
+// buildCliCommand constructs the full CLI command for fetching an auth
+// token, including capability-gated flags. Returns a precise error
+// describing which piece of configuration is missing when the command
+// cannot be built.
 func buildCliCommand(ctx context.Context, cliPath string, cfg *Config, ver string) ([]string, error) {
+	cmd, err := buildCoreCliCommand(ctx, cliPath, cfg, ver)
+	if err != nil {
+		return nil, err
+	}
+	if semver.Compare(ver, cliVersionForForceRefresh) >= 0 {
+		cmd = append(cmd, "--force-refresh")
+	} else {
+		logger.Warnf(ctx, "Databricks CLI %s does not support --force-refresh (requires >= %s). The CLI's token cache may provide stale tokens.",
+			displayVersion(ver), cliVersionForForceRefresh)
+	}
+	return cmd, nil
+}
+
+// buildCoreCliCommand constructs the base `auth token` command without any
+// capability-gated flags. Falls back to --host when --profile is either not
+// configured or not supported by the installed CLI. Returns a precise error
+// describing which piece of configuration is missing when the command
+// cannot be built.
+func buildCoreCliCommand(ctx context.Context, cliPath string, cfg *Config, ver string) ([]string, error) {
 	if cfg.Profile == "" {
 		cmd, err := buildHostCommand(cliPath, cfg)
 		if err != nil {
