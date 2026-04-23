@@ -29,11 +29,23 @@ type KnowledgeAssistantsService interface {
 	// Gets a Knowledge Source.
 	GetKnowledgeSource(ctx context.Context, request GetKnowledgeSourceRequest) (*KnowledgeSource, error)
 
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevels(ctx context.Context, request GetKnowledgeAssistantPermissionLevelsRequest) (*GetKnowledgeAssistantPermissionLevelsResponse, error)
+
+	// Gets the permissions of a knowledge assistant. Knowledge assistants can
+	// inherit permissions from their root object.
+	GetPermissions(ctx context.Context, request GetKnowledgeAssistantPermissionsRequest) (*KnowledgeAssistantPermissions, error)
+
 	// List Knowledge Assistants
 	ListKnowledgeAssistants(ctx context.Context, request ListKnowledgeAssistantsRequest) (*ListKnowledgeAssistantsResponse, error)
 
 	// Lists Knowledge Sources under a Knowledge Assistant.
 	ListKnowledgeSources(ctx context.Context, request ListKnowledgeSourcesRequest) (*ListKnowledgeSourcesResponse, error)
+
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
+	SetPermissions(ctx context.Context, request KnowledgeAssistantPermissionsRequest) (*KnowledgeAssistantPermissions, error)
 
 	// Sync all non-index Knowledge Sources for a Knowledge Assistant (index
 	// sources do not require sync)
@@ -44,4 +56,8 @@ type KnowledgeAssistantsService interface {
 
 	// Updates a Knowledge Source.
 	UpdateKnowledgeSource(ctx context.Context, request UpdateKnowledgeSourceRequest) (*KnowledgeSource, error)
+
+	// Updates the permissions on a knowledge assistant. Knowledge assistants
+	// can inherit permissions from their root object.
+	UpdatePermissions(ctx context.Context, request KnowledgeAssistantPermissionsRequest) (*KnowledgeAssistantPermissions, error)
 }

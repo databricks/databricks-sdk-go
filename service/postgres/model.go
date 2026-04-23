@@ -301,6 +301,19 @@ type CreateBranchRequest struct {
 	// The Project where this Branch will be created. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
+	// If true, update the branch if it already exists instead of returning an
+	// error.
+	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBranchRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateCatalogRequest struct {
@@ -350,6 +363,19 @@ type CreateEndpointRequest struct {
 	// The Branch where this Endpoint will be created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
+	// If true, update the endpoint if it already exists instead of returning an
+	// error.
+	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateEndpointRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateProjectRequest struct {
