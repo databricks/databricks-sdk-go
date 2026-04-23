@@ -284,9 +284,6 @@ type Config struct {
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
 
-	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
-	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
-
 	// OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
 	// from this URL instead of the default host-type-based well-known endpoint logic.
 	// Mirrors discoveryUrl in the Java SDK.
