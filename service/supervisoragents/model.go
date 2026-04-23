@@ -208,7 +208,7 @@ type Tool struct {
 	ToolId string `json:"tool_id,omitempty"`
 	// Tool type. Must be one of: "genie_space", "knowledge_assistant",
 	// "uc_function", "connection", "app", "volume", "lakeview_dashboard",
-	// "serving_endpoint".
+	// "serving_endpoint", "uc_table", "vector_search_index".
 	ToolType string `json:"tool_type"`
 
 	UcFunction *UcFunction `json:"uc_function,omitempty"`

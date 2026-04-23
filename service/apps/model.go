@@ -67,6 +67,8 @@ type App struct {
 	Space string `json:"space,omitempty"`
 
 	TelemetryExportDestinations []TelemetryExportDestination `json:"telemetry_export_destinations,omitempty"`
+	// The URL of the thumbnail image for the app.
+	ThumbnailUrl string `json:"thumbnail_url,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The email of the user that last updated the app.

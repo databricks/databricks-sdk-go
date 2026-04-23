@@ -225,11 +225,7 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 		}
 	}
 	if p.cache == nil {
-		var err error
-		p.cache, err = cache.NewFileTokenCache()
-		if err != nil {
-			return nil, fmt.Errorf("cache: %w", err)
-		}
+		p.cache = cache.NewInMemoryTokenCache()
 	}
 	if err := p.validateArg(); err != nil {
 		return nil, err
@@ -241,31 +237,11 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 	return p, nil
 }
 
-// loadToken loads the cached OAuth2 token for the configured OAuthArgument.
-// When a profile is set, lookup is by profile key first. If the profile key is
-// not found and the OAuthArgument implements HostCacheKeyProvider, a fallback
-// lookup by host key is attempted. If found, the token is returned without
-// being migrated to the profile key (see inline comment for rationale).
-//
-// The returned token may be expired; callers are responsible for deciding
-// whether and how to refresh it.
+// loadToken loads the cached OAuth2 token for the configured OAuthArgument
+// using GetCacheKey(). The returned token may be expired; callers are
+// responsible for deciding whether and how to refresh it.
 func (a *PersistentAuth) loadToken() (*oauth2.Token, error) {
-	key := a.oAuthArgument.GetCacheKey()
-	t, err := a.cache.Lookup(key)
-	if errors.Is(err, cache.ErrNotFound) {
-		hostKey := a.hostCacheKey()
-		if hostKey != "" && hostKey != key {
-			t, err = a.cache.Lookup(hostKey)
-			if err == nil {
-				// Return the host-keyed token so the caller isn't blocked,
-				// but don't migrate it to the profile key. The host key may
-				// contain a token from a different profile with different
-				// scopes. The next `auth login --profile` will write the
-				// correct token under the profile key.
-				logger.Debugf(a.ctx, "token cache: profile key %q not found, using legacy host key %q (run 'databricks auth login --profile <name>' to migrate)", key, hostKey)
-			}
-		}
-	}
+	t, err := a.cache.Lookup(a.oAuthArgument.GetCacheKey())
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
@@ -294,22 +270,11 @@ func (a *PersistentAuth) Token() (*oauth2.Token, error) {
 	return t, nil
 }
 
-// ForceRefreshToken loads the OAuth2 token from the cache and always refreshes
-// it, regardless of its expiry. Unlike Token(), if the refresh fails the error
-// is always returned -- the caller explicitly asked for a fresh token, so
-// silently falling back to a stale one would be incorrect.
-//
-// When the token was loaded via host-key fallback (profile key not found), the
-// refreshed token is dual-written to both the profile key and host key,
-// effectively migrating the token to the profile. Token() has the same
-// migration behavior when it refreshes a host-fallback token (expired or
-// nearly expired); ForceRefreshToken widens this to still-valid tokens because
-// it always refreshes.
-//
-// TODO: Thread provenance out of loadToken() so callers know whether the token
-// came from the primary key or host-key fallback. ForceRefreshToken could then
-// refuse to migrate a fallback token or refresh without writing to the profile
-// key, avoiding the risk of making a wrong-scoped token sticky.
+// ForceRefreshToken loads the OAuth2 token from the cache by GetCacheKey(),
+// refreshes it unconditionally, and stores the refreshed token back under the
+// same key. Unlike Token(), if the refresh fails the error is always returned
+// -- the caller explicitly asked for a fresh token, so silently falling back
+// to a stale one would be incorrect.
 func (a *PersistentAuth) ForceRefreshToken() (*oauth2.Token, error) {
 	t, err := a.loadToken()
 	if err != nil {
@@ -397,7 +362,7 @@ func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) 
 		}
 		return nil, err
 	}
-	err = a.dualWrite(t)
+	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
 	if err != nil {
 		return nil, fmt.Errorf("cache update: %w", err)
 	}
@@ -442,8 +407,7 @@ func (a *PersistentAuth) Challenge() error {
 	if err != nil {
 		return fmt.Errorf("authorize: %w", err)
 	}
-	// cache token identified by profile (primary) and host (dual-write for backward compat)
-	err = a.dualWrite(t)
+	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
 	if err != nil {
 		return fmt.Errorf("store: %w", err)
 	}
@@ -614,43 +578,6 @@ func (a *PersistentAuth) randomString(size int) (string, error) {
 		return "", fmt.Errorf("rand.Read: %w", err)
 	}
 	return base64.RawURLEncoding.EncodeToString(raw), nil
-}
-
-// dualWrite stores the token under both the primary cache key (profile name)
-// and the legacy host-based cache key. If the primary key and the host key are
-// the same (i.e. no profile is set), no extra write is performed.
-//
-// The host-based write exists for cross-SDK compatibility: older versions of
-// the Python and Java SDKs look up tokens exclusively by host URL. Removing
-// the host write would break users who have a newer Go CLI but an older
-// Python/Java SDK sharing the same token cache. Once the other SDKs adopt
-// profile-based cache keys, dualWrite can be replaced with a single write to
-// the primary key. See also HostCacheKeyProvider in oauth_argument.go.
-func (a *PersistentAuth) dualWrite(t *oauth2.Token) error {
-	primaryKey := a.oAuthArgument.GetCacheKey()
-	if err := a.cache.Store(primaryKey, t); err != nil {
-		return err
-	}
-	hostKey := a.hostCacheKey()
-	if hostKey != "" && hostKey != primaryKey {
-		if err := a.cache.Store(hostKey, t); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// hostCacheKey returns the legacy host-based cache key used for cross-SDK
-// token sharing. Discovery logins learn their host from the callback, so the
-// host key comes from the discovered host instead of a static OAuth argument.
-func (a *PersistentAuth) hostCacheKey() string {
-	if discoveryArg, ok := a.oAuthArgument.(DiscoveryOAuthArgument); ok {
-		return discoveryArg.GetDiscoveredHost()
-	}
-	if hcp, ok := a.oAuthArgument.(HostCacheKeyProvider); ok {
-		return hcp.GetHostCacheKey()
-	}
-	return ""
 }
 
 func (a *PersistentAuth) setOAuthContext(ctx context.Context) context.Context {

@@ -169,8 +169,7 @@ func (d *discoveryTokenSource) challenge() error {
 	}
 	discoveryArg.SetDiscoveredHost(discoveredHost)
 
-	// Cache the token using both the profile key and the discovered host key.
-	if err := d.pa.dualWrite(token); err != nil {
+	if err := d.pa.cache.Store(d.pa.oAuthArgument.GetCacheKey(), token); err != nil {
 		return fmt.Errorf("storing token: %w", err)
 	}
 	return nil

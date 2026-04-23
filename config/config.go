@@ -444,11 +444,19 @@ func normalizedHost(host string) string {
 }
 
 // HostType returns the type of host that the client is configured for.
+// When host metadata has been resolved (via /.well-known/databricks-config),
+// the resolved host type is returned directly. Otherwise, the host type is
+// inferred from URL patterns as a fallback.
 //
 // Deprecated: The SDK is moving towards host-agnostic behavior where host URL
 // patterns are no longer used to determine client capabilities. This method is
 // retained for backwards compatibility but should not be used in new code.
 func (c *Config) HostType() HostType {
+	// If host metadata resolved a known host type, use it.
+	if c.resolvedHostType != HostTypeUnknown {
+		return c.resolvedHostType
+	}
+
 	// Normalize the host to ensure the scheme is present before checking
 	// prefixes. Profiles saved without "https://" (e.g. from user input)
 	// would otherwise fail the prefix check and be misclassified as

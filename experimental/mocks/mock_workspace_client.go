@@ -168,6 +168,7 @@ func NewMockWorkspaceClient(t interface {
 			TagPolicies:                         tags.NewMockTagPoliciesInterface(t),
 			TemporaryPathCredentials:            catalog.NewMockTemporaryPathCredentialsInterface(t),
 			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
+			TemporaryVolumeCredentials:          catalog.NewMockTemporaryVolumeCredentialsInterface(t),
 			TokenManagement:                     settings.NewMockTokenManagementInterface(t),
 			Tokens:                              settings.NewMockTokensInterface(t),
 			UsersV2:                             iam.NewMockUsersV2Interface(t),
@@ -1276,6 +1277,14 @@ func (m *MockWorkspaceClient) GetMockTemporaryTableCredentialsAPI() *catalog.Moc
 	api, ok := m.WorkspaceClient.TemporaryTableCredentials.(*catalog.MockTemporaryTableCredentialsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected TemporaryTableCredentials to be *catalog.MockTemporaryTableCredentialsInterface, actual was %T", m.WorkspaceClient.TemporaryTableCredentials))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockTemporaryVolumeCredentialsAPI() *catalog.MockTemporaryVolumeCredentialsInterface {
+	api, ok := m.WorkspaceClient.TemporaryVolumeCredentials.(*catalog.MockTemporaryVolumeCredentialsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected TemporaryVolumeCredentials to be *catalog.MockTemporaryVolumeCredentialsInterface, actual was %T", m.WorkspaceClient.TemporaryVolumeCredentials))
 	}
 	return api
 }

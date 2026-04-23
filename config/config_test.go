@@ -88,6 +88,66 @@ func TestHostType_NonAccountsHostIsWorkspace(t *testing.T) {
 	assert.Equal(t, WorkspaceHost, c.HostType())
 }
 
+func TestHostType_UsesMetadataFirst_Workspace(t *testing.T) {
+	c := &Config{
+		Host:             "https://accounts.cloud.databricks.com",
+		resolvedHostType: WorkspaceHost,
+	}
+	assert.Equal(t, WorkspaceHost, c.HostType())
+}
+
+func TestHostType_UsesMetadataFirst_Account(t *testing.T) {
+	c := &Config{
+		Host:             "https://my-workspace.cloud.databricks.com",
+		resolvedHostType: AccountHost,
+	}
+	assert.Equal(t, AccountHost, c.HostType())
+}
+
+func TestHostType_UsesMetadataFirst_Unified(t *testing.T) {
+	c := &Config{
+		Host:             "https://my-workspace.cloud.databricks.com",
+		resolvedHostType: UnifiedHost,
+	}
+	assert.Equal(t, UnifiedHost, c.HostType())
+}
+
+func TestHostType_FallsBackToURLWhenMetadataUnknown(t *testing.T) {
+	c := &Config{
+		Host:             "https://accounts.cloud.databricks.com",
+		resolvedHostType: HostTypeUnknown,
+	}
+	assert.Equal(t, AccountHost, c.HostType())
+}
+
+func TestHostType_FallsBackToURLWhenMetadataUnknown_Workspace(t *testing.T) {
+	c := &Config{
+		Host:             "https://my-workspace.cloud.databricks.com",
+		resolvedHostType: HostTypeUnknown,
+	}
+	assert.Equal(t, WorkspaceHost, c.HostType())
+}
+
+func TestHostType_EndToEnd_MetadataResolvesHostType(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    "https://my-workspace.cloud.databricks.com",
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "https://my-workspace.cloud.databricks.com/oidc", "account_id": "` + testHMAccountID + `", "host_type": "account"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, AccountHost, cfg.HostType())
+}
+
 func TestIsAccountClient_DoesNotPanicOnNonAccountsHost(t *testing.T) {
 	c := &Config{
 		Host:      "https://unified.cloud.databricks.com",

@@ -330,6 +330,8 @@
 //
 // - [catalog.TemporaryTableCredentialsAPI]: Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks.
 //
+// - [catalog.TemporaryVolumeCredentialsAPI]: Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks.
+//
 // - [settings.TokenManagementAPI]: Enables administrators to get all tokens and delete tokens for other users.
 //
 // - [settings.TokensAPI]: The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access Databricks REST APIs.
@@ -575,6 +577,7 @@ var (
 	_ *tags.TagPoliciesAPI                                = nil
 	_ *catalog.TemporaryPathCredentialsAPI                = nil
 	_ *catalog.TemporaryTableCredentialsAPI               = nil
+	_ *catalog.TemporaryVolumeCredentialsAPI              = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
 	_ *billing.UsageDashboardsAPI                         = nil

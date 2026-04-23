@@ -25,8 +25,12 @@ func (a *postgresImpl) CreateBranch(ctx context.Context, request CreateBranchReq
 	path := fmt.Sprintf("/api/2.0/postgres/%v/branches", request.Parent)
 	queryParams := make(map[string]any)
 
-	if request.BranchId != "" {
+	if request.BranchId != "" || slices.Contains(request.ForceSendFields, "BranchId") {
 		queryParams["branch_id"] = request.BranchId
+	}
+
+	if request.ReplaceExisting != false || slices.Contains(request.ForceSendFields, "ReplaceExisting") {
+		queryParams["replace_existing"] = request.ReplaceExisting
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -82,8 +86,12 @@ func (a *postgresImpl) CreateEndpoint(ctx context.Context, request CreateEndpoin
 	path := fmt.Sprintf("/api/2.0/postgres/%v/endpoints", request.Parent)
 	queryParams := make(map[string]any)
 
-	if request.EndpointId != "" {
+	if request.EndpointId != "" || slices.Contains(request.ForceSendFields, "EndpointId") {
 		queryParams["endpoint_id"] = request.EndpointId
+	}
+
+	if request.ReplaceExisting != false || slices.Contains(request.ForceSendFields, "ReplaceExisting") {
+		queryParams["replace_existing"] = request.ReplaceExisting
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

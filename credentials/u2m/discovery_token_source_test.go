@@ -335,19 +335,17 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 	if arg.GetDiscoveredHost() != expectedHost {
 		t.Errorf("discovered host = %q, want %q", arg.GetDiscoveredHost(), expectedHost)
 	}
-	if len(storedTokens) != 2 {
-		t.Fatalf("store count: want 2 keys (profile and host), got %d", len(storedTokens))
+	if len(storedTokens) != 1 {
+		t.Fatalf("store count: want 1 key (profile), got %d", len(storedTokens))
 	}
-	for _, key := range []string{"test-profile", expectedHost} {
-		storedToken := storedTokens[key]
-		if storedToken == nil {
-			t.Fatalf("stored token for key %q is nil", key)
-		}
-		if storedToken.AccessToken != "test-access-token" {
-			t.Errorf("access token for key %q = %q, want %q", key, storedToken.AccessToken, "test-access-token")
-		}
-		if storedToken.RefreshToken != "test-refresh-token" {
-			t.Errorf("refresh token for key %q = %q, want %q", key, storedToken.RefreshToken, "test-refresh-token")
-		}
+	storedToken := storedTokens["test-profile"]
+	if storedToken == nil {
+		t.Fatalf("stored token for profile key is nil")
+	}
+	if storedToken.AccessToken != "test-access-token" {
+		t.Errorf("access token = %q, want %q", storedToken.AccessToken, "test-access-token")
+	}
+	if storedToken.RefreshToken != "test-refresh-token" {
+		t.Errorf("refresh token = %q, want %q", storedToken.RefreshToken, "test-refresh-token")
 	}
 }

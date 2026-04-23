@@ -13,16 +13,10 @@ type OAuthArgument interface {
 // HostCacheKeyProvider is an interface for OAuthArgument implementations that
 // can return a host-based cache key regardless of whether a profile is set.
 //
-// This is used in two places:
-//  1. dualWrite: writing tokens to both the profile key and the legacy host
-//     key so that older Python/Java SDKs (which only know host keys) can
-//     still find the token.
-//  2. Token() fallback: when a profile key miss occurs, the host key is tried
-//     as a read-only fallback for tokens written before profile-based keys
-//     existed.
-//
-// This interface (and the host-key write path) can be removed once all SDKs
-// sharing the token cache have migrated to profile-based keys.
+// PersistentAuth itself no longer uses this key; it is exported so that
+// external token cache implementations (for example, the CLI's file-based
+// cache) can type-assert on it to mirror tokens under the host key for
+// cross-SDK compatibility with older SDKs that only know host keys.
 type HostCacheKeyProvider interface {
 	GetHostCacheKey() string
 }
