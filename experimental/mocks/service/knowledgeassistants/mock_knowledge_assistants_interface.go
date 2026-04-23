@@ -353,6 +353,242 @@ func (_c *MockKnowledgeAssistantsInterface_GetKnowledgeSource_Call) RunAndReturn
 	return _c
 }
 
+// GetPermissionLevels provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) GetPermissionLevels(ctx context.Context, request knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest) (*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionLevels")
+	}
+
+	var r0 *knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest) (*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest) *knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_GetPermissionLevels_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionLevels'
+type MockKnowledgeAssistantsInterface_GetPermissionLevels_Call struct {
+	*mock.Call
+}
+
+// GetPermissionLevels is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) GetPermissionLevels(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_GetPermissionLevels_Call {
+	return &MockKnowledgeAssistantsInterface_GetPermissionLevels_Call{Call: _e.mock.On("GetPermissionLevels", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionLevels_Call) Run(run func(ctx context.Context, request knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest)) *MockKnowledgeAssistantsInterface_GetPermissionLevels_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionLevels_Call) Return(_a0 *knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, _a1 error) *MockKnowledgeAssistantsInterface_GetPermissionLevels_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionLevels_Call) RunAndReturn(run func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionLevelsRequest) (*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, error)) *MockKnowledgeAssistantsInterface_GetPermissionLevels_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissionLevelsByKnowledgeAssistantId provides a mock function with given fields: ctx, knowledgeAssistantId
+func (_m *MockKnowledgeAssistantsInterface) GetPermissionLevelsByKnowledgeAssistantId(ctx context.Context, knowledgeAssistantId string) (*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, error) {
+	ret := _m.Called(ctx, knowledgeAssistantId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionLevelsByKnowledgeAssistantId")
+	}
+
+	var r0 *knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, error)); ok {
+		return rf(ctx, knowledgeAssistantId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse); ok {
+		r0 = rf(ctx, knowledgeAssistantId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, knowledgeAssistantId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionLevelsByKnowledgeAssistantId'
+type MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call struct {
+	*mock.Call
+}
+
+// GetPermissionLevelsByKnowledgeAssistantId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - knowledgeAssistantId string
+func (_e *MockKnowledgeAssistantsInterface_Expecter) GetPermissionLevelsByKnowledgeAssistantId(ctx interface{}, knowledgeAssistantId interface{}) *MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call {
+	return &MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call{Call: _e.mock.On("GetPermissionLevelsByKnowledgeAssistantId", ctx, knowledgeAssistantId)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call) Run(run func(ctx context.Context, knowledgeAssistantId string)) *MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call) Return(_a0 *knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, _a1 error) *MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call) RunAndReturn(run func(context.Context, string) (*knowledgeassistants.GetKnowledgeAssistantPermissionLevelsResponse, error)) *MockKnowledgeAssistantsInterface_GetPermissionLevelsByKnowledgeAssistantId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissions provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) GetPermissions(ctx context.Context, request knowledgeassistants.GetKnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissions")
+	}
+
+	var r0 *knowledgeassistants.KnowledgeAssistantPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionsRequest) *knowledgeassistants.KnowledgeAssistantPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.KnowledgeAssistantPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_GetPermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissions'
+type MockKnowledgeAssistantsInterface_GetPermissions_Call struct {
+	*mock.Call
+}
+
+// GetPermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.GetKnowledgeAssistantPermissionsRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) GetPermissions(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_GetPermissions_Call {
+	return &MockKnowledgeAssistantsInterface_GetPermissions_Call{Call: _e.mock.On("GetPermissions", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissions_Call) Run(run func(ctx context.Context, request knowledgeassistants.GetKnowledgeAssistantPermissionsRequest)) *MockKnowledgeAssistantsInterface_GetPermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.GetKnowledgeAssistantPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissions_Call) Return(_a0 *knowledgeassistants.KnowledgeAssistantPermissions, _a1 error) *MockKnowledgeAssistantsInterface_GetPermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissions_Call) RunAndReturn(run func(context.Context, knowledgeassistants.GetKnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error)) *MockKnowledgeAssistantsInterface_GetPermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissionsByKnowledgeAssistantId provides a mock function with given fields: ctx, knowledgeAssistantId
+func (_m *MockKnowledgeAssistantsInterface) GetPermissionsByKnowledgeAssistantId(ctx context.Context, knowledgeAssistantId string) (*knowledgeassistants.KnowledgeAssistantPermissions, error) {
+	ret := _m.Called(ctx, knowledgeAssistantId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionsByKnowledgeAssistantId")
+	}
+
+	var r0 *knowledgeassistants.KnowledgeAssistantPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*knowledgeassistants.KnowledgeAssistantPermissions, error)); ok {
+		return rf(ctx, knowledgeAssistantId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *knowledgeassistants.KnowledgeAssistantPermissions); ok {
+		r0 = rf(ctx, knowledgeAssistantId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.KnowledgeAssistantPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, knowledgeAssistantId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionsByKnowledgeAssistantId'
+type MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call struct {
+	*mock.Call
+}
+
+// GetPermissionsByKnowledgeAssistantId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - knowledgeAssistantId string
+func (_e *MockKnowledgeAssistantsInterface_Expecter) GetPermissionsByKnowledgeAssistantId(ctx interface{}, knowledgeAssistantId interface{}) *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call {
+	return &MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call{Call: _e.mock.On("GetPermissionsByKnowledgeAssistantId", ctx, knowledgeAssistantId)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call) Run(run func(ctx context.Context, knowledgeAssistantId string)) *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call) Return(_a0 *knowledgeassistants.KnowledgeAssistantPermissions, _a1 error) *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call) RunAndReturn(run func(context.Context, string) (*knowledgeassistants.KnowledgeAssistantPermissions, error)) *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListKnowledgeAssistants provides a mock function with given fields: ctx, request
 func (_m *MockKnowledgeAssistantsInterface) ListKnowledgeAssistants(ctx context.Context, request knowledgeassistants.ListKnowledgeAssistantsRequest) listing.Iterator[knowledgeassistants.KnowledgeAssistant] {
 	ret := _m.Called(ctx, request)
@@ -569,6 +805,65 @@ func (_c *MockKnowledgeAssistantsInterface_ListKnowledgeSourcesAll_Call) RunAndR
 	return _c
 }
 
+// SetPermissions provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) SetPermissions(ctx context.Context, request knowledgeassistants.KnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetPermissions")
+	}
+
+	var r0 *knowledgeassistants.KnowledgeAssistantPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) *knowledgeassistants.KnowledgeAssistantPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.KnowledgeAssistantPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_SetPermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetPermissions'
+type MockKnowledgeAssistantsInterface_SetPermissions_Call struct {
+	*mock.Call
+}
+
+// SetPermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.KnowledgeAssistantPermissionsRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) SetPermissions(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_SetPermissions_Call {
+	return &MockKnowledgeAssistantsInterface_SetPermissions_Call{Call: _e.mock.On("SetPermissions", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_SetPermissions_Call) Run(run func(ctx context.Context, request knowledgeassistants.KnowledgeAssistantPermissionsRequest)) *MockKnowledgeAssistantsInterface_SetPermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.KnowledgeAssistantPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_SetPermissions_Call) Return(_a0 *knowledgeassistants.KnowledgeAssistantPermissions, _a1 error) *MockKnowledgeAssistantsInterface_SetPermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_SetPermissions_Call) RunAndReturn(run func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error)) *MockKnowledgeAssistantsInterface_SetPermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SyncKnowledgeSources provides a mock function with given fields: ctx, request
 func (_m *MockKnowledgeAssistantsInterface) SyncKnowledgeSources(ctx context.Context, request knowledgeassistants.SyncKnowledgeSourcesRequest) error {
 	ret := _m.Called(ctx, request)
@@ -730,6 +1025,65 @@ func (_c *MockKnowledgeAssistantsInterface_UpdateKnowledgeSource_Call) Return(_a
 }
 
 func (_c *MockKnowledgeAssistantsInterface_UpdateKnowledgeSource_Call) RunAndReturn(run func(context.Context, knowledgeassistants.UpdateKnowledgeSourceRequest) (*knowledgeassistants.KnowledgeSource, error)) *MockKnowledgeAssistantsInterface_UpdateKnowledgeSource_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdatePermissions provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) UpdatePermissions(ctx context.Context, request knowledgeassistants.KnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdatePermissions")
+	}
+
+	var r0 *knowledgeassistants.KnowledgeAssistantPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) *knowledgeassistants.KnowledgeAssistantPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.KnowledgeAssistantPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_UpdatePermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdatePermissions'
+type MockKnowledgeAssistantsInterface_UpdatePermissions_Call struct {
+	*mock.Call
+}
+
+// UpdatePermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.KnowledgeAssistantPermissionsRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) UpdatePermissions(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_UpdatePermissions_Call {
+	return &MockKnowledgeAssistantsInterface_UpdatePermissions_Call{Call: _e.mock.On("UpdatePermissions", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_UpdatePermissions_Call) Run(run func(ctx context.Context, request knowledgeassistants.KnowledgeAssistantPermissionsRequest)) *MockKnowledgeAssistantsInterface_UpdatePermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.KnowledgeAssistantPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_UpdatePermissions_Call) Return(_a0 *knowledgeassistants.KnowledgeAssistantPermissions, _a1 error) *MockKnowledgeAssistantsInterface_UpdatePermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, knowledgeassistants.KnowledgeAssistantPermissionsRequest) (*knowledgeassistants.KnowledgeAssistantPermissions, error)) *MockKnowledgeAssistantsInterface_UpdatePermissions_Call {
 	_c.Call.Return(run)
 	return _c
 }

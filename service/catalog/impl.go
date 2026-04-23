@@ -3131,6 +3131,26 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 	return &generateTemporaryTableCredentialResponse, err
 }
 
+// unexported type that holds implementations of just TemporaryVolumeCredentials API methods
+type temporaryVolumeCredentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *temporaryVolumeCredentialsImpl) GenerateTemporaryVolumeCredentials(ctx context.Context, request GenerateTemporaryVolumeCredentialRequest) (*GenerateTemporaryVolumeCredentialResponse, error) {
+	var generateTemporaryVolumeCredentialResponse GenerateTemporaryVolumeCredentialResponse
+	path := "/api/2.0/unity-catalog/temporary-volume-credentials"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &generateTemporaryVolumeCredentialResponse)
+	return &generateTemporaryVolumeCredentialResponse, err
+}
+
 // unexported type that holds implementations of just Volumes API methods
 type volumesImpl struct {
 	client *client.DatabricksClient

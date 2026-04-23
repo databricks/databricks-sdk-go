@@ -49,6 +49,21 @@ type FilesSpec struct {
 	Path string `json:"path"`
 }
 
+type GetKnowledgeAssistantPermissionLevelsRequest struct {
+	// The knowledge assistant for which to get or manage permissions.
+	KnowledgeAssistantId string `json:"-" url:"-"`
+}
+
+type GetKnowledgeAssistantPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []KnowledgeAssistantPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type GetKnowledgeAssistantPermissionsRequest struct {
+	// The knowledge assistant for which to get or manage permissions.
+	KnowledgeAssistantId string `json:"-" url:"-"`
+}
+
 type GetKnowledgeAssistantRequest struct {
 	// The resource name of the knowledge assistant. Format:
 	// knowledge-assistants/{knowledge_assistant_id}
@@ -116,6 +131,146 @@ func (s *KnowledgeAssistant) UnmarshalJSON(b []byte) error {
 
 func (s KnowledgeAssistant) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type KnowledgeAssistantAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel KnowledgeAssistantPermissionLevel `json:"permission_level,omitempty"`
+	// application ID of a service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KnowledgeAssistantAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KnowledgeAssistantAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type KnowledgeAssistantAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []KnowledgeAssistantPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KnowledgeAssistantAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KnowledgeAssistantAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type KnowledgeAssistantPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel KnowledgeAssistantPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KnowledgeAssistantPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KnowledgeAssistantPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Permission level
+type KnowledgeAssistantPermissionLevel string
+
+const KnowledgeAssistantPermissionLevelCanManage KnowledgeAssistantPermissionLevel = `CAN_MANAGE`
+
+const KnowledgeAssistantPermissionLevelCanQuery KnowledgeAssistantPermissionLevel = `CAN_QUERY`
+
+// String representation for [fmt.Print]
+func (f *KnowledgeAssistantPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *KnowledgeAssistantPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_QUERY`:
+		*f = KnowledgeAssistantPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY"`, v)
+	}
+}
+
+// Values returns all possible values for KnowledgeAssistantPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *KnowledgeAssistantPermissionLevel) Values() []KnowledgeAssistantPermissionLevel {
+	return []KnowledgeAssistantPermissionLevel{
+		KnowledgeAssistantPermissionLevelCanManage,
+		KnowledgeAssistantPermissionLevelCanQuery,
+	}
+}
+
+// Type always returns KnowledgeAssistantPermissionLevel to satisfy [pflag.Value] interface
+func (f *KnowledgeAssistantPermissionLevel) Type() string {
+	return "KnowledgeAssistantPermissionLevel"
+}
+
+type KnowledgeAssistantPermissions struct {
+	AccessControlList []KnowledgeAssistantAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KnowledgeAssistantPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KnowledgeAssistantPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type KnowledgeAssistantPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel KnowledgeAssistantPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KnowledgeAssistantPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KnowledgeAssistantPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type KnowledgeAssistantPermissionsRequest struct {
+	AccessControlList []KnowledgeAssistantAccessControlRequest `json:"access_control_list,omitempty"`
+	// The knowledge assistant for which to get or manage permissions.
+	KnowledgeAssistantId string `json:"-" url:"-"`
 }
 
 type KnowledgeAssistantState string

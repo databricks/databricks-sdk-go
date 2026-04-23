@@ -204,7 +204,13 @@ type ConnectorOptions struct {
 
 	GoogleAdsOptions *GoogleAdsOptions `json:"google_ads_options,omitempty"`
 
+	JiraOptions *JiraConnectorOptions `json:"jira_options,omitempty"`
+
+	OutlookOptions *OutlookOptions `json:"outlook_options,omitempty"`
+
 	SharepointOptions *SharepointOptions `json:"sharepoint_options,omitempty"`
+
+	SmartsheetOptions *SmartsheetOptions `json:"smartsheet_options,omitempty"`
 
 	TiktokAdsOptions *TikTokAdsOptions `json:"tiktok_ads_options,omitempty"`
 }
@@ -1003,6 +1009,26 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
+type GoogleAdsConfig struct {
+	// (Required) Manager Account ID (also called MCC Account ID) used to list
+	// and access customer accounts under this manager account. This is required
+	// for fetching the list of customer accounts during source selection. If
+	// the same field is also set in the object-level GoogleAdsOptions
+	// (connector_options), the object-level value takes precedence over this
+	// top-level config.
+	ManagerAccountId string `json:"manager_account_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GoogleAdsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GoogleAdsConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Google Ads specific options for ingestion (object-level). When set, these
 // values override the corresponding fields in GoogleAdsConfig
 // (source_configurations).
@@ -1361,6 +1387,12 @@ func (f *IngestionSourceType) Type() string {
 	return "IngestionSourceType"
 }
 
+// Jira specific options for ingestion
+type JiraConnectorOptions struct {
+	// (Optional) Projects to filter Jira data on
+	IncludeJiraSpaces []string `json:"include_jira_spaces,omitempty"`
+}
+
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
 	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
@@ -1665,6 +1697,141 @@ func (s *Origin) UnmarshalJSON(b []byte) error {
 }
 
 func (s Origin) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Attachment behavior mode for Outlook ingestion
+type OutlookAttachmentMode string
+
+const OutlookAttachmentModeAll OutlookAttachmentMode = `ALL`
+
+const OutlookAttachmentModeInlineOnly OutlookAttachmentMode = `INLINE_ONLY`
+
+const OutlookAttachmentModeNone OutlookAttachmentMode = `NONE`
+
+const OutlookAttachmentModeNonInlineOnly OutlookAttachmentMode = `NON_INLINE_ONLY`
+
+// String representation for [fmt.Print]
+func (f *OutlookAttachmentMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OutlookAttachmentMode) Set(v string) error {
+	switch v {
+	case `ALL`, `INLINE_ONLY`, `NONE`, `NON_INLINE_ONLY`:
+		*f = OutlookAttachmentMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL", "INLINE_ONLY", "NONE", "NON_INLINE_ONLY"`, v)
+	}
+}
+
+// Values returns all possible values for OutlookAttachmentMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OutlookAttachmentMode) Values() []OutlookAttachmentMode {
+	return []OutlookAttachmentMode{
+		OutlookAttachmentModeAll,
+		OutlookAttachmentModeInlineOnly,
+		OutlookAttachmentModeNone,
+		OutlookAttachmentModeNonInlineOnly,
+	}
+}
+
+// Type always returns OutlookAttachmentMode to satisfy [pflag.Value] interface
+func (f *OutlookAttachmentMode) Type() string {
+	return "OutlookAttachmentMode"
+}
+
+// Body format for Outlook email content
+type OutlookBodyFormat string
+
+const OutlookBodyFormatTextHtml OutlookBodyFormat = `TEXT_HTML`
+
+const OutlookBodyFormatTextPlain OutlookBodyFormat = `TEXT_PLAIN`
+
+// String representation for [fmt.Print]
+func (f *OutlookBodyFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OutlookBodyFormat) Set(v string) error {
+	switch v {
+	case `TEXT_HTML`, `TEXT_PLAIN`:
+		*f = OutlookBodyFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TEXT_HTML", "TEXT_PLAIN"`, v)
+	}
+}
+
+// Values returns all possible values for OutlookBodyFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OutlookBodyFormat) Values() []OutlookBodyFormat {
+	return []OutlookBodyFormat{
+		OutlookBodyFormatTextHtml,
+		OutlookBodyFormatTextPlain,
+	}
+}
+
+// Type always returns OutlookBodyFormat to satisfy [pflag.Value] interface
+func (f *OutlookBodyFormat) Type() string {
+	return "OutlookBodyFormat"
+}
+
+// Outlook specific options for ingestion
+type OutlookOptions struct {
+	// (Optional) Controls which attachments to ingest. If not specified,
+	// defaults to ALL.
+	AttachmentMode OutlookAttachmentMode `json:"attachment_mode,omitempty"`
+	// (Optional) Defines how the body_content column is populated. TEXT_HTML:
+	// Preserves full formatting, links, and styling. TEXT_PLAIN: Converts body
+	// to plain text. Recommended for AI/RAG pipelines to reduce token usage and
+	// noise.
+	BodyFormat OutlookBodyFormat `json:"body_format,omitempty"`
+	// Deprecated. Use include_folders instead.
+	FolderFilter []string `json:"folder_filter,omitempty"`
+	// (Optional) Filter mail folders to include in the sync. If not specified,
+	// all folders will be synced. Examples: Inbox, Sent Items, Custom_Folder
+	// Filter semantics: OR between different folders.
+	IncludeFolders []string `json:"include_folders,omitempty"`
+	// (Optional) List of mailboxes to sync (e.g. mailbox email addresses or
+	// identifiers). If not specified, all accessible mailboxes are ingested.
+	// Filter semantics: OR between different mailboxes.
+	IncludeMailboxes []string `json:"include_mailboxes,omitempty"`
+	// (Optional) Filter emails by sender address. Uses exact email match.
+	// Examples: user@vendor.com, alerts@system.io, noreply@company.com If not
+	// specified, emails from all senders will be synced. Filter semantics: OR
+	// between different senders.
+	IncludeSenders []string `json:"include_senders,omitempty"`
+	// (Optional) Filter emails by subject line. Values ending with "*" use
+	// prefix match (subject starts with the part before "*"); otherwise
+	// substring match (subject contains the value). Examples: "Invoice"
+	// (substring), "Re:*" (prefix), "Support Ticket", "URGENT*" If not
+	// specified, emails with all subjects will be synced. Filter semantics: OR
+	// between different subjects.
+	IncludeSubjects []string `json:"include_subjects,omitempty"`
+	// Deprecated. Use include_senders instead.
+	SenderFilter []string `json:"sender_filter,omitempty"`
+	// (Optional) Start date for the initial sync in YYYY-MM-DD format. Format:
+	// YYYY-MM-DD (e.g., 2024-01-01) This determines the earliest date from
+	// which to sync historical data. If not specified, complete history is
+	// ingested.
+	StartDate string `json:"start_date,omitempty"`
+	// Deprecated. Use include_subjects instead.
+	SubjectFilter []string `json:"subject_filter,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *OutlookOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OutlookOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2658,6 +2825,26 @@ func (f *SharepointOptionsSharepointEntityType) Type() string {
 	return "SharepointOptionsSharepointEntityType"
 }
 
+// Smartsheet specific options for ingestion
+type SmartsheetOptions struct {
+	// (Optional) When true, maps each column to its Smartsheet-declared type
+	// (Text/Number/Date/ Checkbox/etc.). Cells that do not conform to the
+	// declared type are set to NULL. When false, all columns land as STRING.
+	// Use false for sheets with irregular data or columns that frequently
+	// violate their own declared type. If not specified, defaults to true.
+	EnforceSchema bool `json:"enforce_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SmartsheetOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SmartsheetOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // SourceCatalogConfig contains catalog-level custom configuration parameters
 // for each source
 type SourceCatalogConfig struct {
@@ -2680,6 +2867,8 @@ func (s SourceCatalogConfig) MarshalJSON() ([]byte, error) {
 type SourceConfig struct {
 	// Catalog-level source configuration parameters
 	Catalog *SourceCatalogConfig `json:"catalog,omitempty"`
+
+	GoogleAdsConfig *GoogleAdsConfig `json:"google_ads_config,omitempty"`
 }
 
 type StackFrame struct {
