@@ -9,15 +9,20 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCurrentWorkspaceIDShortCircuitsWhenConfigHasWorkspaceID(t *testing.T) {
-	// When Config.WorkspaceID is already populated (from profile, ?o= query
-	// param, env var, or host metadata), CurrentWorkspaceID returns it without
-	// hitting the API. This avoids a round-trip and sidesteps SPOG's routing
-	// requirement that requests to /api/2.0/preview/scim/v2/Me carry an
-	// X-Databricks-Org-Id header.
+func TestCurrentWorkspaceIDSendsOrgIdHeaderWhenConfigHasWorkspaceID(t *testing.T) {
+	// On unified (SPOG) hosts, requests to /api/2.0/preview/scim/v2/Me must
+	// carry an X-Databricks-Org-Id header so the gateway can route them to the
+	// correct workspace. When Config.WorkspaceID is set we forward it on the
+	// request, and the server echoes it back on the response header.
+	var meCalls int
+	var gotOrgIdHeader string
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/api/2.0/preview/scim/v2/Me" {
-			t.Errorf("Me() should not be called when Config.WorkspaceID is set")
+			meCalls++
+			gotOrgIdHeader = r.Header.Get("X-Databricks-Org-Id")
+			w.Header().Set("X-Databricks-Org-Id", "7474644166319138")
+			w.Write([]byte(`{}`))
+			return
 		}
 		http.NotFound(w, r)
 	}))
@@ -33,13 +38,21 @@ func TestCurrentWorkspaceIDShortCircuitsWhenConfigHasWorkspaceID(t *testing.T) {
 	got, err := w.CurrentWorkspaceID(t.Context())
 	require.NoError(t, err)
 	assert.Equal(t, int64(7474644166319138), got)
+	assert.Equal(t, 1, meCalls)
+	assert.Equal(t, "7474644166319138", gotOrgIdHeader)
 }
 
-func TestCurrentWorkspaceIDFallsBackToAPIWhenConfigMissingWorkspaceID(t *testing.T) {
+func TestCurrentWorkspaceIDOmitsOrgIdHeaderWhenConfigMissingWorkspaceID(t *testing.T) {
+	// On legacy workspace hosts the host itself identifies the workspace, so
+	// no routing header is needed. When Config.WorkspaceID is empty we send
+	// the request without X-Databricks-Org-Id and read the ID from the
+	// response header.
 	var meCalls int
+	var gotOrgIdHeader string
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/api/2.0/preview/scim/v2/Me" {
 			meCalls++
+			gotOrgIdHeader = r.Header.Get("X-Databricks-Org-Id")
 			w.Header().Set("X-Databricks-Org-Id", "7474644166319138")
 			w.Write([]byte(`{}`))
 			return
@@ -60,4 +73,5 @@ func TestCurrentWorkspaceIDFallsBackToAPIWhenConfigMissingWorkspaceID(t *testing
 	require.NoError(t, err)
 	assert.Equal(t, int64(7474644166319138), got)
 	assert.Equal(t, 1, meCalls)
+	assert.Empty(t, gotOrgIdHeader)
 }
