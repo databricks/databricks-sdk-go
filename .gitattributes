@@ -44,6 +44,7 @@ experimental/mocks/service/catalog/mock_table_constraints_interface.go linguist-
 experimental/mocks/service/catalog/mock_tables_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_temporary_path_credentials_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_temporary_table_credentials_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_temporary_volume_credentials_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_volumes_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_workspace_bindings_interface.go linguist-generated=true
 experimental/mocks/service/cleanrooms/mock_clean_room_asset_revisions_interface.go linguist-generated=true

@@ -15,7 +15,7 @@ type SupervisorAgentsService interface {
 	CreateSupervisorAgent(ctx context.Context, request CreateSupervisorAgentRequest) (*SupervisorAgent, error)
 
 	// Creates a Tool under a Supervisor Agent. Specify one of "genie_space",
-	// "knowledge_assistant", "uc_function", "connection", "app", "volume",
+	// "knowledge_assistant", "uc_function", "uc_connection", "app", "volume",
 	// "lakeview_dashboard", "uc_table", "vector_search_index" in the request
 	// body.
 	CreateTool(ctx context.Context, request CreateToolRequest) (*Tool, error)

@@ -388,11 +388,13 @@ func (s ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON()
 	return marshal.Marshal(s)
 }
 
-// SHIELD feature: CSP
+// SHIELD feature: CSP Compliance Security Profile (CSP) enables enhanced
+// compliance controls on the workspace.
 type ComplianceSecurityProfile struct {
-	// Set by customers when they request Compliance Security Profile (CSP)
+	// Compliance standards selected by the customer for this Compliance
+	// Security Profile.
 	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
-
+	// Whether Compliance Security Profile (CSP) is enabled on the workspace.
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2519,8 +2521,10 @@ func (s EnableResultsDownloading) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// SHIELD feature: ESM
+// SHIELD feature: ESM Enhanced Security Monitoring (ESM) enables additional
+// security monitoring on the workspace.
 type EnhancedSecurityMonitoring struct {
+	// Whether Enhanced Security Monitoring (ESM) is enabled on the workspace.
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

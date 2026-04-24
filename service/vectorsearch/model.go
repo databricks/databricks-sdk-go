@@ -30,9 +30,10 @@ type CreateEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Type of endpoint
 	EndpointType EndpointType `json:"endpoint_type"`
-	// Min QPS for the endpoint. Mutually exclusive with num_replicas. The
-	// actual replica count is calculated at index creation/sync time based on
-	// this value.
+	// Deprecated: use target_qps. Min QPS for the endpoint. Mutually exclusive
+	// with num_replicas. Kept at PUBLIC_BETA with deprecated = true so
+	// generated SDK surfaces keep the field with a deprecation marker; hiding
+	// completely is a follow-up PR.
 	MinQps int64 `json:"min_qps,omitempty"`
 	// Name of the vector search endpoint
 	Name string `json:"name"`
@@ -344,7 +345,11 @@ func (s EndpointInfo) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointScalingInfo struct {
-	// The minimum QPS target requested for the endpoint.
+	// Deprecated: use requested_target_qps. Kept at PUBLIC_BETA with deprecated
+	// = true so generated SDK surfaces (Go, Java, TypeScript, Terraform) keep
+	// exposing the field with a deprecation marker rather than losing it on
+	// next regeneration. Hiding completely (visibility = PUBLIC_UNDOCUMENTED)
+	// is a follow-up PR once downstream consumers have migrated.
 	RequestedMinQps int64 `json:"requested_min_qps,omitempty"`
 	// The current state of the scaling change request.
 	State ScalingChangeState `json:"state,omitempty"`
@@ -746,8 +751,10 @@ func (s PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
 type PatchEndpointRequest struct {
 	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
-	// Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to
-	// default scaling behavior.
+	// Deprecated: use target_qps. Min QPS for the endpoint. Positive integer
+	// sets QPS target; -1 resets to default scaling behavior. Kept at
+	// PUBLIC_BETA with deprecated = true so generated SDK surfaces keep the
+	// field with a deprecation marker; hiding completely is a follow-up PR.
 	MinQps int64 `json:"min_qps,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

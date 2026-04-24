@@ -613,6 +613,21 @@ func (a *postgresImpl) internalListRoles(ctx context.Context, request ListRolesR
 	return &listRolesResponse, err
 }
 
+func (a *postgresImpl) UndeleteProject(ctx context.Context, request UndeleteProjectRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) UpdateBranch(ctx context.Context, request UpdateBranchRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
