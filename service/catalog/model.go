@@ -965,7 +965,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 77
+// Next Id: 123
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`

@@ -589,6 +589,19 @@ type DeleteProjectRequest struct {
 	// The full resource path of the project to delete. Format:
 	// projects/{project_id}
 	Name string `json:"-" url:"-"`
+	// If true, permanently deletes the project (hard delete). If false or
+	// unset, performs a soft delete.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteProjectRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteProjectRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteRoleRequest struct {
@@ -752,7 +765,9 @@ type EndpointSettings struct {
 }
 
 type EndpointSpec struct {
-	// The maximum number of Compute Units. Minimum value is 0.5.
+	// The maximum number of Compute Units. The maximum value is 64. The
+	// difference between the minimum and maximum Compute Units (max - min) must
+	// not exceed 16.
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
 	// The minimum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
@@ -788,7 +803,9 @@ func (s EndpointSpec) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointStatus struct {
-	// The maximum number of Compute Units.
+	// The maximum number of Compute Units. The maximum value is 64. The
+	// difference between the minimum and maximum Compute Units (max - min) must
+	// not exceed 16.
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
 	// The minimum number of Compute Units.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
@@ -1250,8 +1267,10 @@ type GetSyncedTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Configuration for the initial Read/Write endpoint created during project
+// creation.
 type InitialEndpointSpec struct {
-	// Settings for HA configuration of the endpoint
+	// Settings for HA configuration of the endpoint.
 	Group *EndpointGroupSpec `json:"group,omitempty"`
 }
 
@@ -1376,6 +1395,10 @@ type ListProjectsRequest struct {
 	// Page token from a previous response. If not provided, returns the first
 	// page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Whether to include soft-deleted projects in the response. When true,
+	// soft-deleted projects are included alongside active projects.
+	// Hard-deleted and already-purged projects are never returned.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1501,6 +1524,9 @@ func (s Operation) MarshalJSON() ([]byte, error) {
 type Project struct {
 	// A timestamp indicating when the project was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// A timestamp indicating when the project was soft-deleted. Empty if the
+	// project is not deleted, otherwise set to a timestamp in the past.
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Configuration settings for the initial Read/Write endpoint created inside
 	// the default branch for a newly created project. If omitted, the initial
 	// endpoint created will have default settings, without high availability
@@ -1511,6 +1537,10 @@ type Project struct {
 	// Output only. The full resource path of the project. Format:
 	// projects/{project_id}
 	Name string `json:"name,omitempty"`
+	// A timestamp indicating when the project is scheduled for permanent
+	// deletion. Empty if the project is not deleted, otherwise set to a
+	// timestamp in the future.
+	PurgeTime *time.Time `json:"purge_time,omitempty"`
 	// The spec contains the project configuration, including display_name,
 	// pg_version (Postgres version), history_retention_duration, and
 	// default_endpoint_settings.
@@ -1605,7 +1635,7 @@ type ProjectSpec struct {
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
 	// recovery for all branches in this project. Value should be between
-	// 172800s (2 days) and 2592000s (30 days).
+	// 172800s (2 days) and 3024000s (35 days).
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
 	// The major Postgres version number. Supported versions are 16 and 17.
 	PgVersion int `json:"pg_version,omitempty"`
@@ -2351,6 +2381,13 @@ func (s *SyncedTableSyncedTableStatus) UnmarshalJSON(b []byte) error {
 
 func (s SyncedTableSyncedTableStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Request to restore a soft-deleted project within its retention period.
+type UndeleteProjectRequest struct {
+	// The full resource path of the project to undelete. Format:
+	// projects/{project_id}
+	Name string `json:"-" url:"-"`
 }
 
 type UpdateBranchRequest struct {

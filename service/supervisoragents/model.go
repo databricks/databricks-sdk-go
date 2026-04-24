@@ -14,9 +14,20 @@ type App struct {
 	Name string `json:"name"`
 }
 
-// Databricks connection. Supported connection: external mcp server.
+// Deprecated: Use UcConnection instead. Databricks connection. Supported
+// connection: external mcp server.
 type Connection struct {
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Connection) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Connection) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateSupervisorAgentRequest struct {
@@ -191,7 +202,7 @@ func (s SupervisorAgent) MarshalJSON() ([]byte, error) {
 
 type Tool struct {
 	App *App `json:"app,omitempty"`
-
+	// Deprecated: Use uc_connection instead.
 	Connection *Connection `json:"connection,omitempty"`
 	// Description of what this tool does (user-facing).
 	Description string `json:"description"`
@@ -207,9 +218,11 @@ type Tool struct {
 	// User specified id of the Tool.
 	ToolId string `json:"tool_id,omitempty"`
 	// Tool type. Must be one of: "genie_space", "knowledge_assistant",
-	// "uc_function", "connection", "app", "volume", "lakeview_dashboard",
+	// "uc_function", "uc_connection", "app", "volume", "lakeview_dashboard",
 	// "serving_endpoint", "uc_table", "vector_search_index".
 	ToolType string `json:"tool_type"`
+
+	UcConnection *UcConnection `json:"uc_connection,omitempty"`
 
 	UcFunction *UcFunction `json:"uc_function,omitempty"`
 
@@ -224,6 +237,11 @@ func (s *Tool) UnmarshalJSON(b []byte) error {
 
 func (s Tool) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Databricks UC connection. Supported connection: external mcp server.
+type UcConnection struct {
+	Name string `json:"name"`
 }
 
 type UcFunction struct {

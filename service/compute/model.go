@@ -1507,6 +1507,47 @@ func (s CommandStatusResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Confidential computing technology for GCP instances. Aligns with gcloud's
+// --confidential-compute-type flag and the REST API's
+// confidentialInstanceConfig.confidentialInstanceType field. See:
+// https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance
+type ConfidentialComputeType string
+
+const ConfidentialComputeTypeConfidentialComputeTypeNone ConfidentialComputeType = `CONFIDENTIAL_COMPUTE_TYPE_NONE`
+
+const ConfidentialComputeTypeSevSnp ConfidentialComputeType = `SEV_SNP`
+
+// String representation for [fmt.Print]
+func (f *ConfidentialComputeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ConfidentialComputeType) Set(v string) error {
+	switch v {
+	case `CONFIDENTIAL_COMPUTE_TYPE_NONE`, `SEV_SNP`:
+		*f = ConfidentialComputeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONFIDENTIAL_COMPUTE_TYPE_NONE", "SEV_SNP"`, v)
+	}
+}
+
+// Values returns all possible values for ConfidentialComputeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ConfidentialComputeType) Values() []ConfidentialComputeType {
+	return []ConfidentialComputeType{
+		ConfidentialComputeTypeConfidentialComputeTypeNone,
+		ConfidentialComputeTypeSevSnp,
+	}
+}
+
+// Type always returns ConfidentialComputeType to satisfy [pflag.Value] interface
+func (f *ConfidentialComputeType) Type() string {
+	return "ConfidentialComputeType"
+}
+
 type ContextStatus string
 
 const ContextStatusError ContextStatus = `Error`
@@ -2980,6 +3021,10 @@ type GcpAttributes struct {
 	Availability GcpAvailability `json:"availability,omitempty"`
 	// Boot disk size in GB
 	BootDiskSize int `json:"boot_disk_size,omitempty"`
+	// The confidential computing technology for this cluster's instances.
+	// Currently only SEV_SNP is supported, and only on N2D instance types. When
+	// not set, no confidential computing is applied.
+	ConfidentialComputeType ConfidentialComputeType `json:"confidential_compute_type,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
 	// the cluster driver node is placed on an on-demand instance. If this value

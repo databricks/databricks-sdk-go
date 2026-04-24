@@ -114,6 +114,9 @@ type PostgresService interface {
 	// Returns a paginated list of Postgres roles in the branch.
 	ListRoles(ctx context.Context, request ListRolesRequest) (*ListRolesResponse, error)
 
+	// Undeletes a soft-deleted project.
+	UndeleteProject(ctx context.Context, request UndeleteProjectRequest) (*Operation, error)
+
 	// Updates the specified database branch. You can set this branch as the
 	// project's default branch, or protect/unprotect it.
 	UpdateBranch(ctx context.Context, request UpdateBranchRequest) (*Operation, error)
