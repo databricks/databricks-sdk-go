@@ -165,6 +165,62 @@ func TestBuildDiscoveryAuthorizeURL(t *testing.T) {
 	}
 }
 
+func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
+	pkce := PKCEParams{
+		Challenge:       "c",
+		ChallengeMethod: "S256",
+		Verifier:        "v",
+	}
+	scopes := []string{"offline_access", "all-apis"}
+	tests := []struct {
+		name string
+		host string
+	}{
+		{
+			name: "custom host",
+			host: "https://login.dev.databricks.com",
+		},
+		{
+			name: "custom host with trailing slash",
+			host: "https://login.dev.databricks.com/",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes)
+			u, err := url.Parse(got)
+			if err != nil {
+				t.Fatalf("parsing URL: %v", err)
+			}
+			if u.Host != "login.dev.databricks.com" {
+				t.Errorf("host = %q, want login.dev.databricks.com", u.Host)
+			}
+		})
+	}
+}
+
+func TestWithDiscoveryHost_NormalizesScheme(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{name: "empty stays empty", input: "", want: ""},
+		{name: "https preserved", input: "https://login.dev.databricks.com", want: "https://login.dev.databricks.com"},
+		{name: "http preserved", input: "http://localhost:8080", want: "http://localhost:8080"},
+		{name: "no scheme gets https", input: "login.dev.databricks.com", want: "https://login.dev.databricks.com"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var a PersistentAuth
+			WithDiscoveryHost(tc.input)(&a)
+			if a.discoveryHost != tc.want {
+				t.Errorf("discoveryHost = %q, want %q", a.discoveryHost, tc.want)
+			}
+		})
+	}
+}
+
 func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 	// Create a mock token server that responds to POST /oidc/v1/token.
 	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -279,19 +335,17 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 	if arg.GetDiscoveredHost() != expectedHost {
 		t.Errorf("discovered host = %q, want %q", arg.GetDiscoveredHost(), expectedHost)
 	}
-	if len(storedTokens) != 2 {
-		t.Fatalf("store count: want 2 keys (profile and host), got %d", len(storedTokens))
+	if len(storedTokens) != 1 {
+		t.Fatalf("store count: want 1 key (profile), got %d", len(storedTokens))
 	}
-	for _, key := range []string{"test-profile", expectedHost} {
-		storedToken := storedTokens[key]
-		if storedToken == nil {
-			t.Fatalf("stored token for key %q is nil", key)
-		}
-		if storedToken.AccessToken != "test-access-token" {
-			t.Errorf("access token for key %q = %q, want %q", key, storedToken.AccessToken, "test-access-token")
-		}
-		if storedToken.RefreshToken != "test-refresh-token" {
-			t.Errorf("refresh token for key %q = %q, want %q", key, storedToken.RefreshToken, "test-refresh-token")
-		}
+	storedToken := storedTokens["test-profile"]
+	if storedToken == nil {
+		t.Fatalf("stored token for profile key is nil")
+	}
+	if storedToken.AccessToken != "test-access-token" {
+		t.Errorf("access token = %q, want %q", storedToken.AccessToken, "test-access-token")
+	}
+	if storedToken.RefreshToken != "test-refresh-token" {
+		t.Errorf("refresh token = %q, want %q", storedToken.RefreshToken, "test-refresh-token")
 	}
 }

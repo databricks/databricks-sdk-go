@@ -1140,6 +1140,62 @@ type SchemasService interface {
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
 }
 
+// A secret is a Unity Catalog securable object that stores sensitive credential
+// data (such as passwords, tokens, and keys) within a three-level namespace
+// (**catalog_name.schema_name.secret_name**).
+//
+// Secrets can be managed using standard Unity Catalog permissions and are
+// scoped to a schema within a catalog.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type SecretsUcService interface {
+
+	// Creates a new secret in Unity Catalog.
+	//
+	// You must be the owner of the parent schema or have the **CREATE_SECRET**
+	// and **USE SCHEMA** privileges on the parent schema and **USE CATALOG** on
+	// the parent catalog.
+	//
+	// The secret is stored in the specified catalog and schema, and the
+	// **value** field contains the sensitive data to be securely stored.
+	CreateSecret(ctx context.Context, request CreateSecretRequest) (*Secret, error)
+
+	// Deletes a secret by its three-level (fully qualified) name.
+	//
+	// You must be the owner of the secret or a metastore admin.
+	DeleteSecret(ctx context.Context, request DeleteSecretRequest) error
+
+	// Gets a secret by its three-level (fully qualified) name.
+	//
+	// You must be a metastore admin, the owner of the secret, or have the
+	// **MANAGE** privilege on the secret.
+	//
+	// The secret value isn't returned by default. To retrieve it, you must also
+	// have the **READ_SECRET** privilege and set **include_value** to true in
+	// the request.
+	GetSecret(ctx context.Context, request GetSecretRequest) (*Secret, error)
+
+	// Lists secrets in Unity Catalog.
+	//
+	// You must be a metastore admin, the owner of the secret, or have the
+	// **MANAGE** privilege on the secret.
+	//
+	// Both **catalog_name** and **schema_name** must be specified together to
+	// filter secrets within a specific schema. Results are paginated; use the
+	// **page_token** field from the response to retrieve subsequent pages.
+	ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error)
+
+	// Updates an existing secret in Unity Catalog.
+	//
+	// You must be the owner of the secret or a metastore admin. If you are a
+	// metastore admin, only the **owner** field can be changed.
+	//
+	// Use the **update_mask** field to specify which fields to update.
+	// Supported updatable fields include **value**, **comment**, **owner**, and
+	// **expire_time**.
+	UpdateSecret(ctx context.Context, request UpdateSecretRequest) (*Secret, error)
+}
+
 // A storage credential represents an authentication and authorization mechanism
 // for accessing data stored on your cloud tenant. Each storage credential is
 // subject to Unity Catalog access-control policies that control which users and
@@ -1412,10 +1468,10 @@ type TablesService interface {
 // needs to be granted the EXTERNAL USE LOCATION permission by external location
 // owner. For requests on existing external tables, user also needs to be
 // granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
-// admin.
+// owner.
 //
 // Note that EXTERNAL USE SCHEMA is a schema level permission that can only be
-// granted by catalog admin explicitly and is not included in schema ownership
+// granted by catalog owner explicitly and is not included in schema ownership
 // or ALL PRIVILEGES on the schema for security reasons. Similarly, EXTERNAL USE
 // LOCATION is an external location level permission that can only be granted by
 // external location owner explicitly and is not included in external location
@@ -1455,8 +1511,8 @@ type TemporaryPathCredentialsService interface {
 // temporary table credentials API, a metastore admin needs to enable the
 // external_access_enabled flag (off by default) at the metastore level, and
 // user needs to be granted the EXTERNAL USE SCHEMA permission at the schema
-// level by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level
-// permission that can only be granted by catalog admin explicitly and is not
+// level by catalog owner. Note that EXTERNAL USE SCHEMA is a schema level
+// permission that can only be granted by catalog owner explicitly and is not
 // included in schema ownership or ALL PRIVILEGES on the schema for security
 // reasons.
 //
@@ -1469,6 +1525,36 @@ type TemporaryTableCredentialsService interface {
 	// **EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege
 	// can only be granted by catalog owners.
 	GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error)
+}
+
+// Temporary Volume Credentials refer to short-lived, downscoped credentials
+// used to access cloud storage locations where volume data is stored in
+// Databricks. These credentials are employed to provide secure and time-limited
+// access to data in cloud environments such as AWS, Azure, and Google Cloud.
+// Each cloud provider has its own type of credentials: AWS uses temporary
+// session tokens via AWS Security Token Service (STS), Azure utilizes Shared
+// Access Signatures (SAS) for its data storage services, and Google Cloud
+// supports temporary credentials through OAuth 2.0.
+//
+// Temporary volume credentials ensure that data access is limited in scope and
+// duration, reducing the risk of unauthorized access or misuse. To use the
+// temporary volume credentials API, a metastore admin needs to enable the
+// external_access_enabled flag (off by default) at the metastore level, and
+// user needs to be granted the EXTERNAL USE SCHEMA permission at the schema
+// level by catalog owner. Note that EXTERNAL USE SCHEMA is a schema level
+// permission that can only be granted by catalog owner explicitly and is not
+// included in schema ownership or ALL PRIVILEGES on the schema for security
+// reasons.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type TemporaryVolumeCredentialsService interface {
+
+	// Get a short-lived credential for directly accessing the volume data on
+	// cloud storage. The metastore must have **external_access_enabled** flag
+	// set to true (default false). The caller must have the
+	// **EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege
+	// can only be granted by catalog owners.
+	GenerateTemporaryVolumeCredentials(ctx context.Context, request GenerateTemporaryVolumeCredentialRequest) (*GenerateTemporaryVolumeCredentialResponse, error)
 }
 
 // Volumes are a Unity Catalog (UC) capability for accessing, storing,

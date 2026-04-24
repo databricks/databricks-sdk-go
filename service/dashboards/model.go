@@ -1281,6 +1281,9 @@ func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
 type GenieSpace struct {
 	// Description of the Genie Space
 	Description string `json:"description,omitempty"`
+	// ETag for this space. Pass this value back in the update request to
+	// prevent overwriting concurrent changes.
+	Etag string `json:"etag,omitempty"`
 	// Parent folder path of the Genie Space
 	ParentPath string `json:"parent_path,omitempty"`
 	// The contents of the Genie Space in serialized string form. This field is
@@ -1339,6 +1342,10 @@ type GenieTrashSpaceRequest struct {
 type GenieUpdateSpaceRequest struct {
 	// Optional description
 	Description string `json:"description,omitempty"`
+	// ETag returned by a previous GET or UPDATE. When set, the update will fail
+	// if the space has been modified since. Omit to apply the update
+	// unconditionally.
+	Etag string `json:"etag,omitempty"`
 	// The contents of the Genie Space in serialized string form (full
 	// replacement). Use the [Get Genie Space](:method:genie/getspace) API to
 	// retrieve an example response, which includes the `serialized_space`
@@ -2313,7 +2320,13 @@ func (f *TextAttachmentPurpose) Type() string {
 type Thought struct {
 	// The md formatted content for this thought.
 	Content string `json:"content,omitempty"`
-	// The category of this thought.
+	// The category of this thought. The possible values are: *
+	// `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question
+	// was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of
+	// the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables
+	// or datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`:
+	// Which author-defined instructions were referenced. *
+	// `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer.
 	ThoughtType ThoughtType `json:"thought_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

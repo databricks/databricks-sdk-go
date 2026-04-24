@@ -32,7 +32,7 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, err
 	}
 
-	ts, err := NewCliTokenSource(cfg)
+	ts, err := NewCliTokenSource(ctx, cfg)
 	if err != nil {
 		return nil, err
 	}

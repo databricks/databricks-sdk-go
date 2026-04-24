@@ -97,363 +97,6 @@ func TestToken_WithProfile(t *testing.T) {
 	}
 }
 
-func TestToken_WithProfile_FallbackToHostKey(t *testing.T) {
-	// When a profile is set but the profile key is not found, Token() falls
-	// back to the host key and returns the token. It does NOT migrate (write)
-	// the token to the profile key — the host key may hold a token from a
-	// different profile with different scopes.
-	profileKey := "my-profile"
-	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
-	c := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			if key == profileKey {
-				return nil, cache.ErrNotFound
-			}
-			if key == hostKey {
-				return &oauth2.Token{
-					AccessToken: "host-token",
-					Expiry:      time.Now().Add(1 * time.Hour),
-				}, nil
-			}
-			t.Fatalf("lookup(): unexpected key %q", key)
-			return nil, nil
-		},
-		store: func(key string, tok *oauth2.Token) error {
-			t.Fatalf("store(): unexpected call with key %q — fallback must not persist", key)
-			return nil
-		},
-	}
-	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz", profileKey)
-	if err != nil {
-		t.Fatalf("NewProfileAccountOAuthArgument(): want no error, got %v", err)
-	}
-	p, err := NewPersistentAuth(context.Background(), WithTokenCache(c), WithOAuthArgument(arg))
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p.Close()
-
-	tok, err := p.Token()
-	if err != nil {
-		t.Fatalf("p.Token(): want no error, got %v", err)
-	}
-	if tok.AccessToken != "host-token" {
-		t.Errorf("p.Token(): want access token %q, got %q", "host-token", tok.AccessToken)
-	}
-}
-
-func TestToken_WithProfile_BothKeysMiss(t *testing.T) {
-	// When both the profile key and host key miss, Token() returns ErrNotFound.
-	profileKey := "my-profile"
-	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
-	c := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			if key == profileKey || key == hostKey {
-				return nil, cache.ErrNotFound
-			}
-			t.Fatalf("lookup(): unexpected key %q", key)
-			return nil, nil
-		},
-	}
-	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz", profileKey)
-	if err != nil {
-		t.Fatalf("NewProfileAccountOAuthArgument(): want no error, got %v", err)
-	}
-	p, err := NewPersistentAuth(context.Background(), WithTokenCache(c), WithOAuthArgument(arg))
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p.Close()
-
-	_, err = p.Token()
-	if err == nil {
-		t.Fatal("p.Token(): want error for missing token, got nil")
-	}
-	if !strings.Contains(err.Error(), "cache:") {
-		t.Errorf("p.Token(): want cache error, got %v", err)
-	}
-}
-
-func TestToken_NoProfile_NoFallbackAttempted(t *testing.T) {
-	// When no profile is set, the primary key is the host key. No fallback
-	// is attempted because the primary and host keys are the same.
-	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
-	lookupCount := 0
-	c := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			lookupCount++
-			if key != hostKey {
-				t.Fatalf("lookup(): want key %q, got %q", hostKey, key)
-			}
-			return &oauth2.Token{
-				AccessToken: "host-token",
-				Expiry:      time.Now().Add(1 * time.Hour),
-			}, nil
-		},
-	}
-	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-	if err != nil {
-		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
-	}
-	p, err := NewPersistentAuth(context.Background(), WithTokenCache(c), WithOAuthArgument(arg))
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p.Close()
-
-	tok, err := p.Token()
-	if err != nil {
-		t.Fatalf("p.Token(): want no error, got %v", err)
-	}
-	if tok.AccessToken != "host-token" {
-		t.Errorf("p.Token(): want access token %q, got %q", "host-token", tok.AccessToken)
-	}
-	// Only one lookup should have been made (no fallback)
-	if lookupCount != 1 {
-		t.Errorf("lookup count: want 1, got %d", lookupCount)
-	}
-}
-
-func TestDualWrite_WithProfile(t *testing.T) {
-	storedKeys := map[string]*oauth2.Token{}
-	profileKey := "my-profile"
-	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
-	cache := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			if key != profileKey {
-				t.Fatalf("lookup(): want key %q, got %q", profileKey, key)
-			}
-			return &oauth2.Token{
-				AccessToken:  "expired",
-				RefreshToken: "cde",
-				Expiry:       time.Now().Add(-1 * time.Minute),
-			}, nil
-		},
-		store: func(key string, tok *oauth2.Token) error {
-			storedKeys[key] = tok
-			return nil
-		},
-	}
-	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz", profileKey)
-	if err != nil {
-		t.Fatalf("NewProfileAccountOAuthArgument(): want no error, got %v", err)
-	}
-	p, err := NewPersistentAuth(
-		context.Background(),
-		WithTokenCache(cache),
-		WithHttpClient(&http.Client{
-			Transport: fixtures.SliceTransport{
-				{
-					Method:   "POST",
-					Resource: "/oidc/accounts/xyz/v1/token",
-					Response: `access_token=refreshed&refresh_token=def`,
-					ResponseHeaders: map[string][]string{
-						"Content-Type": {"application/x-www-form-urlencoded"},
-					},
-				},
-			},
-		}),
-		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
-		WithOAuthArgument(arg),
-	)
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p.Close()
-
-	tok, err := p.Token()
-	if err != nil {
-		t.Fatalf("p.Token(): want no error, got %v", err)
-	}
-	if tok.AccessToken != "refreshed" {
-		t.Errorf("p.Token(): want access token 'refreshed', got %s", tok.AccessToken)
-	}
-
-	// Verify dual-write: both profile key and host key should have been stored
-	if _, ok := storedKeys[profileKey]; !ok {
-		t.Errorf("dualWrite: want store under profile key %q", profileKey)
-	}
-	if _, ok := storedKeys[hostKey]; !ok {
-		t.Errorf("dualWrite: want store under host key %q", hostKey)
-	}
-	if len(storedKeys) != 2 {
-		t.Errorf("dualWrite: want 2 store calls, got %d", len(storedKeys))
-	}
-}
-
-func TestDualWrite_WithoutProfile(t *testing.T) {
-	storeCount := 0
-	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
-	cache := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			if key != hostKey {
-				t.Fatalf("lookup(): want key %q, got %q", hostKey, key)
-			}
-			return &oauth2.Token{
-				AccessToken:  "expired",
-				RefreshToken: "cde",
-				Expiry:       time.Now().Add(-1 * time.Minute),
-			}, nil
-		},
-		store: func(key string, tok *oauth2.Token) error {
-			if key != hostKey {
-				t.Fatalf("store(): want key %q, got %q", hostKey, key)
-			}
-			storeCount++
-			return nil
-		},
-	}
-	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-	if err != nil {
-		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
-	}
-	p, err := NewPersistentAuth(
-		context.Background(),
-		WithTokenCache(cache),
-		WithHttpClient(&http.Client{
-			Transport: fixtures.SliceTransport{
-				{
-					Method:   "POST",
-					Resource: "/oidc/accounts/xyz/v1/token",
-					Response: `access_token=refreshed&refresh_token=def`,
-					ResponseHeaders: map[string][]string{
-						"Content-Type": {"application/x-www-form-urlencoded"},
-					},
-				},
-			},
-		}),
-		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
-		WithOAuthArgument(arg),
-	)
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p.Close()
-
-	_, err = p.Token()
-	if err != nil {
-		t.Fatalf("p.Token(): want no error, got %v", err)
-	}
-
-	// Without profile, primary key == host key, so only one store call
-	if storeCount != 1 {
-		t.Errorf("dualWrite: want 1 store call (no duplicate), got %d", storeCount)
-	}
-}
-
-func TestDualWrite_TwoProfilesSameHost(t *testing.T) {
-	// Simulates two profiles pointing to the same host: each should get
-	// its own profile key, plus the shared host key.
-	storedTokens := map[string]string{}
-	host := "https://accounts.cloud.databricks.com"
-	accountID := "xyz"
-	hostKey := host + "/oidc/accounts/" + accountID
-
-	// Profile A
-	argA, err := NewProfileAccountOAuthArgument(host, accountID, "profile-a")
-	if err != nil {
-		t.Fatalf("NewProfileAccountOAuthArgument(A): %v", err)
-	}
-	cacheA := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			return &oauth2.Token{
-				AccessToken:  "expired-a",
-				RefreshToken: "refresh-a",
-				Expiry:       time.Now().Add(-1 * time.Minute),
-			}, nil
-		},
-		store: func(key string, tok *oauth2.Token) error {
-			storedTokens[key] = tok.AccessToken
-			return nil
-		},
-	}
-	pA, err := NewPersistentAuth(
-		context.Background(),
-		WithTokenCache(cacheA),
-		WithHttpClient(&http.Client{
-			Transport: fixtures.SliceTransport{
-				{
-					Method:   "POST",
-					Resource: "/oidc/accounts/xyz/v1/token",
-					Response: `access_token=token-a&refresh_token=ref-a`,
-					ResponseHeaders: map[string][]string{
-						"Content-Type": {"application/x-www-form-urlencoded"},
-					},
-				},
-			},
-		}),
-		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
-		WithOAuthArgument(argA),
-	)
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(A): %v", err)
-	}
-	defer pA.Close()
-
-	_, err = pA.Token()
-	if err != nil {
-		t.Fatalf("pA.Token(): %v", err)
-	}
-
-	// Profile B
-	argB, err := NewProfileAccountOAuthArgument(host, accountID, "profile-b")
-	if err != nil {
-		t.Fatalf("NewProfileAccountOAuthArgument(B): %v", err)
-	}
-	cacheB := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			return &oauth2.Token{
-				AccessToken:  "expired-b",
-				RefreshToken: "refresh-b",
-				Expiry:       time.Now().Add(-1 * time.Minute),
-			}, nil
-		},
-		store: func(key string, tok *oauth2.Token) error {
-			storedTokens[key] = tok.AccessToken
-			return nil
-		},
-	}
-	pB, err := NewPersistentAuth(
-		context.Background(),
-		WithTokenCache(cacheB),
-		WithHttpClient(&http.Client{
-			Transport: fixtures.SliceTransport{
-				{
-					Method:   "POST",
-					Resource: "/oidc/accounts/xyz/v1/token",
-					Response: `access_token=token-b&refresh_token=ref-b`,
-					ResponseHeaders: map[string][]string{
-						"Content-Type": {"application/x-www-form-urlencoded"},
-					},
-				},
-			},
-		}),
-		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
-		WithOAuthArgument(argB),
-	)
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(B): %v", err)
-	}
-	defer pB.Close()
-
-	_, err = pB.Token()
-	if err != nil {
-		t.Fatalf("pB.Token(): %v", err)
-	}
-
-	// profile-a and profile-b should have their own tokens
-	if storedTokens["profile-a"] != "token-a" {
-		t.Errorf("want profile-a token 'token-a', got %q", storedTokens["profile-a"])
-	}
-	if storedTokens["profile-b"] != "token-b" {
-		t.Errorf("want profile-b token 'token-b', got %q", storedTokens["profile-b"])
-	}
-	// The host key should have been written by both (last write wins)
-	if _, ok := storedTokens[hostKey]; !ok {
-		t.Errorf("want host key %q to be stored", hostKey)
-	}
-}
-
 type MockOAuthEndpointSupplier struct{}
 
 func (m MockOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error) {
@@ -975,6 +618,60 @@ func TestForceRefreshToken_RefreshesValidToken(t *testing.T) {
 	}
 }
 
+func TestForceRefreshToken_WithInMemoryCachePreservesCachedRefreshToken(t *testing.T) {
+	tokenCache := cache.NewInMemoryTokenCache()
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	if err := tokenCache.Store(arg.GetCacheKey(), &oauth2.Token{
+		AccessToken:  "still-valid",
+		RefreshToken: "refresh-me",
+		Expiry:       time.Now().Add(1 * time.Hour),
+	}); err != nil {
+		t.Fatalf("Store(): %v", err)
+	}
+
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(tokenCache),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `access_token=force-refreshed&refresh_token=new-refresh`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/x-www-form-urlencoded"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if err != nil {
+		t.Fatalf("ForceRefreshToken(): want no error, got %v", err)
+	}
+	if tok.RefreshToken != "" {
+		t.Fatalf("ForceRefreshToken(): want refresh token redacted, got %q", tok.RefreshToken)
+	}
+
+	cached, err := tokenCache.Lookup(arg.GetCacheKey())
+	if err != nil {
+		t.Fatalf("Lookup(): want cached token, got %v", err)
+	}
+	if cached.RefreshToken != "new-refresh" {
+		t.Fatalf("Lookup(): want cached refresh token %q, got %q", "new-refresh", cached.RefreshToken)
+	}
+}
+
 func TestForceRefreshToken_FailsWithoutRefreshToken(t *testing.T) {
 	c := &tokenCacheMock{
 		lookup: func(key string) (*oauth2.Token, error) {
@@ -1118,75 +815,6 @@ func TestForceRefreshToken_InvalidRefreshTokenError(t *testing.T) {
 	target := &InvalidRefreshTokenError{}
 	if !errors.As(err, &target) {
 		t.Fatalf("ForceRefreshToken(): want InvalidRefreshTokenError, got %v", err)
-	}
-}
-
-func TestForceRefreshToken_WithProfileFallbackToHostKey(t *testing.T) {
-	profileKey := "my-profile"
-	hostKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
-	storedKeys := map[string]bool{}
-	c := &tokenCacheMock{
-		lookup: func(key string) (*oauth2.Token, error) {
-			if key == profileKey {
-				return nil, cache.ErrNotFound
-			}
-			if key == hostKey {
-				return &oauth2.Token{
-					AccessToken:  "host-token",
-					RefreshToken: "host-refresh",
-					Expiry:       time.Now().Add(1 * time.Hour),
-				}, nil
-			}
-			t.Fatalf("lookup(): unexpected key %q", key)
-			return nil, nil
-		},
-		store: func(key string, tok *oauth2.Token) error {
-			storedKeys[key] = true
-			return nil
-		},
-	}
-	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz", profileKey)
-	if err != nil {
-		t.Fatalf("NewProfileAccountOAuthArgument(): %v", err)
-	}
-	p, err := NewPersistentAuth(
-		context.Background(),
-		WithTokenCache(c),
-		WithHttpClient(&http.Client{
-			Transport: fixtures.SliceTransport{
-				{
-					Method:   "POST",
-					Resource: "/oidc/accounts/xyz/v1/token",
-					Response: `access_token=force-refreshed&refresh_token=new-ref`,
-					ResponseHeaders: map[string][]string{
-						"Content-Type": {"application/x-www-form-urlencoded"},
-					},
-				},
-			},
-		}),
-		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
-		WithOAuthArgument(arg),
-	)
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): %v", err)
-	}
-	defer p.Close()
-
-	tok, err := p.ForceRefreshToken()
-	if err != nil {
-		t.Fatalf("ForceRefreshToken(): want no error, got %v", err)
-	}
-	if tok.AccessToken != "force-refreshed" {
-		t.Errorf("ForceRefreshToken(): want access token 'force-refreshed', got %s", tok.AccessToken)
-	}
-	if tok.RefreshToken != "" {
-		t.Errorf("ForceRefreshToken(): want refresh token redacted, got %s", tok.RefreshToken)
-	}
-	if !storedKeys[profileKey] {
-		t.Error("ForceRefreshToken(): want dual-write to profile key after forced refresh")
-	}
-	if !storedKeys[hostKey] {
-		t.Error("ForceRefreshToken(): want dual-write to host key after forced refresh")
 	}
 }
 
@@ -1692,19 +1320,17 @@ func TestChallenge_Discovery(t *testing.T) {
 	if arg.GetDiscoveredHost() != expectedHost {
 		t.Errorf("discovered host = %q, want %q", arg.GetDiscoveredHost(), expectedHost)
 	}
-	if len(storedTokens) != 2 {
-		t.Fatalf("store count: want 2 keys (profile and host), got %d", len(storedTokens))
+	if len(storedTokens) != 1 {
+		t.Fatalf("store count: want 1 key (profile), got %d", len(storedTokens))
 	}
-	for _, key := range []string{"discovery-profile", expectedHost} {
-		storedToken := storedTokens[key]
-		if storedToken == nil {
-			t.Fatalf("stored token for key %q is nil", key)
-		}
-		if storedToken.AccessToken != "discovery-access-token" {
-			t.Errorf("access token for key %q = %q, want %q", key, storedToken.AccessToken, "discovery-access-token")
-		}
-		if storedToken.RefreshToken != "discovery-refresh-token" {
-			t.Errorf("refresh token for key %q = %q, want %q", key, storedToken.RefreshToken, "discovery-refresh-token")
-		}
+	storedToken := storedTokens["discovery-profile"]
+	if storedToken == nil {
+		t.Fatalf("stored token for profile key is nil")
+	}
+	if storedToken.AccessToken != "discovery-access-token" {
+		t.Errorf("access token = %q, want %q", storedToken.AccessToken, "discovery-access-token")
+	}
+	if storedToken.RefreshToken != "discovery-refresh-token" {
+		t.Errorf("refresh token = %q, want %q", storedToken.RefreshToken, "discovery-refresh-token")
 	}
 }

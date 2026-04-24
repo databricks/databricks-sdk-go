@@ -4,8 +4,10 @@ package catalog
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -2454,6 +2456,134 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	return &schemaInfo, err
 }
 
+// unexported type that holds implementations of just SecretsUc API methods
+type secretsUcImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *secretsUcImpl) CreateSecret(ctx context.Context, request CreateSecretRequest) (*Secret, error) {
+	var secret Secret
+	path := "/api/2.1/unity-catalog/secrets"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Secret, &secret)
+	return &secret, err
+}
+
+func (a *secretsUcImpl) DeleteSecret(ctx context.Context, request DeleteSecretRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *secretsUcImpl) GetSecret(ctx context.Context, request GetSecretRequest) (*Secret, error) {
+	var secret Secret
+	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &secret)
+	return &secret, err
+}
+
+// Lists secrets in Unity Catalog.
+//
+// You must be a metastore admin, the owner of the secret, or have the
+// **MANAGE** privilege on the secret.
+//
+// Both **catalog_name** and **schema_name** must be specified together to
+// filter secrets within a specific schema. Results are paginated; use the
+// **page_token** field from the response to retrieve subsequent pages.
+func (a *secretsUcImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) listing.Iterator[Secret] {
+
+	getNextPage := func(ctx context.Context, req ListSecretsRequest) (*ListSecretsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSecrets(ctx, req)
+	}
+	getItems := func(resp *ListSecretsResponse) []Secret {
+		return resp.Secrets
+	}
+	getNextReq := func(resp *ListSecretsResponse) *ListSecretsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists secrets in Unity Catalog.
+//
+// You must be a metastore admin, the owner of the secret, or have the
+// **MANAGE** privilege on the secret.
+//
+// Both **catalog_name** and **schema_name** must be specified together to
+// filter secrets within a specific schema. Results are paginated; use the
+// **page_token** field from the response to retrieve subsequent pages.
+func (a *secretsUcImpl) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]Secret, error) {
+	iterator := a.ListSecrets(ctx, request)
+	return listing.ToSlice[Secret](ctx, iterator)
+}
+
+func (a *secretsUcImpl) internalListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
+	var listSecretsResponse ListSecretsResponse
+	path := "/api/2.1/unity-catalog/secrets"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSecretsResponse)
+	return &listSecretsResponse, err
+}
+
+func (a *secretsUcImpl) UpdateSecret(ctx context.Context, request UpdateSecretRequest) (*Secret, error) {
+	var secret Secret
+	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", request.FullName)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Secret, &secret)
+	return &secret, err
+}
+
 // unexported type that holds implementations of just StorageCredentials API methods
 type storageCredentialsImpl struct {
 	client *client.DatabricksClient
@@ -2999,6 +3129,26 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &generateTemporaryTableCredentialResponse)
 	return &generateTemporaryTableCredentialResponse, err
+}
+
+// unexported type that holds implementations of just TemporaryVolumeCredentials API methods
+type temporaryVolumeCredentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *temporaryVolumeCredentialsImpl) GenerateTemporaryVolumeCredentials(ctx context.Context, request GenerateTemporaryVolumeCredentialRequest) (*GenerateTemporaryVolumeCredentialResponse, error) {
+	var generateTemporaryVolumeCredentialResponse GenerateTemporaryVolumeCredentialResponse
+	path := "/api/2.0/unity-catalog/temporary-volume-credentials"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &generateTemporaryVolumeCredentialResponse)
+	return &generateTemporaryVolumeCredentialResponse, err
 }
 
 // unexported type that holds implementations of just Volumes API methods

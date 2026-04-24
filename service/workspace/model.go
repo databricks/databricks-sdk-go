@@ -832,7 +832,7 @@ type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The language of the object. This value is set only if the object type is
-	// ``NOTEBOOK``.
+	// ``NOTEBOOK``. For Jupyter (.ipynb) notebooks, this is always ``PYTHON``.
 	Language Language `json:"language,omitempty"`
 	// Only applicable to files, the last modified UTC timestamp.
 	ModifiedAt int64 `json:"modified_at,omitempty"`

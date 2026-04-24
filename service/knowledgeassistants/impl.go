@@ -103,6 +103,34 @@ func (a *knowledgeAssistantsImpl) GetKnowledgeSource(ctx context.Context, reques
 	return &knowledgeSource, err
 }
 
+func (a *knowledgeAssistantsImpl) GetPermissionLevels(ctx context.Context, request GetKnowledgeAssistantPermissionLevelsRequest) (*GetKnowledgeAssistantPermissionLevelsResponse, error) {
+	var getKnowledgeAssistantPermissionLevelsResponse GetKnowledgeAssistantPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/knowledge-assistants/%v/permissionLevels", request.KnowledgeAssistantId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getKnowledgeAssistantPermissionLevelsResponse)
+	return &getKnowledgeAssistantPermissionLevelsResponse, err
+}
+
+func (a *knowledgeAssistantsImpl) GetPermissions(ctx context.Context, request GetKnowledgeAssistantPermissionsRequest) (*KnowledgeAssistantPermissions, error) {
+	var knowledgeAssistantPermissions KnowledgeAssistantPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/knowledge-assistants/%v", request.KnowledgeAssistantId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &knowledgeAssistantPermissions)
+	return &knowledgeAssistantPermissions, err
+}
+
 // List Knowledge Assistants
 func (a *knowledgeAssistantsImpl) ListKnowledgeAssistants(ctx context.Context, request ListKnowledgeAssistantsRequest) listing.Iterator[KnowledgeAssistant] {
 
@@ -193,6 +221,21 @@ func (a *knowledgeAssistantsImpl) internalListKnowledgeSources(ctx context.Conte
 	return &listKnowledgeSourcesResponse, err
 }
 
+func (a *knowledgeAssistantsImpl) SetPermissions(ctx context.Context, request KnowledgeAssistantPermissionsRequest) (*KnowledgeAssistantPermissions, error) {
+	var knowledgeAssistantPermissions KnowledgeAssistantPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/knowledge-assistants/%v", request.KnowledgeAssistantId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &knowledgeAssistantPermissions)
+	return &knowledgeAssistantPermissions, err
+}
+
 func (a *knowledgeAssistantsImpl) SyncKnowledgeSources(ctx context.Context, request SyncKnowledgeSourcesRequest) error {
 	path := fmt.Sprintf("/api/2.1/%v/knowledge-sources:sync", request.Name)
 	queryParams := make(map[string]any)
@@ -249,4 +292,19 @@ func (a *knowledgeAssistantsImpl) UpdateKnowledgeSource(ctx context.Context, req
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.KnowledgeSource, &knowledgeSource)
 	return &knowledgeSource, err
+}
+
+func (a *knowledgeAssistantsImpl) UpdatePermissions(ctx context.Context, request KnowledgeAssistantPermissionsRequest) (*KnowledgeAssistantPermissions, error) {
+	var knowledgeAssistantPermissions KnowledgeAssistantPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/knowledge-assistants/%v", request.KnowledgeAssistantId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &knowledgeAssistantPermissions)
+	return &knowledgeAssistantPermissions, err
 }

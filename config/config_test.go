@@ -78,16 +78,77 @@ func TestHostType_AwsWorkspace(t *testing.T) {
 	assert.Equal(t, WorkspaceHost, c.HostType())
 }
 
-func TestHostType_UnifiedFlagNoLongerReturnsUnified(t *testing.T) {
+func TestHostType_NonAccountsHostIsWorkspace(t *testing.T) {
 	c := &Config{
 		Host:      "https://unified.cloud.databricks.com",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	// Unified flag is no longer checked; host type is determined by URL pattern only
+	// Host type is determined by URL pattern; a non-accounts host is a
+	// workspace host even when AccountID is set.
 	assert.Equal(t, WorkspaceHost, c.HostType())
 }
 
-func TestIsAccountClient_NoLongerPanicsOnUnifiedHost(t *testing.T) {
+func TestHostType_UsesMetadataFirst_Workspace(t *testing.T) {
+	c := &Config{
+		Host:             "https://accounts.cloud.databricks.com",
+		resolvedHostType: WorkspaceHost,
+	}
+	assert.Equal(t, WorkspaceHost, c.HostType())
+}
+
+func TestHostType_UsesMetadataFirst_Account(t *testing.T) {
+	c := &Config{
+		Host:             "https://my-workspace.cloud.databricks.com",
+		resolvedHostType: AccountHost,
+	}
+	assert.Equal(t, AccountHost, c.HostType())
+}
+
+func TestHostType_UsesMetadataFirst_Unified(t *testing.T) {
+	c := &Config{
+		Host:             "https://my-workspace.cloud.databricks.com",
+		resolvedHostType: UnifiedHost,
+	}
+	assert.Equal(t, UnifiedHost, c.HostType())
+}
+
+func TestHostType_FallsBackToURLWhenMetadataUnknown(t *testing.T) {
+	c := &Config{
+		Host:             "https://accounts.cloud.databricks.com",
+		resolvedHostType: HostTypeUnknown,
+	}
+	assert.Equal(t, AccountHost, c.HostType())
+}
+
+func TestHostType_FallsBackToURLWhenMetadataUnknown_Workspace(t *testing.T) {
+	c := &Config{
+		Host:             "https://my-workspace.cloud.databricks.com",
+		resolvedHostType: HostTypeUnknown,
+	}
+	assert.Equal(t, WorkspaceHost, c.HostType())
+}
+
+func TestHostType_EndToEnd_MetadataResolvesHostType(t *testing.T) {
+	noopLoader := mockLoader(func(cfg *Config) error { return nil })
+	cfg := &Config{
+		Host:    "https://my-workspace.cloud.databricks.com",
+		Loaders: []Loader{noopLoader},
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:       "GET",
+				Resource:     "/.well-known/databricks-config",
+				ReuseRequest: true,
+				Status:       200,
+				Response:     `{"oidc_endpoint": "https://my-workspace.cloud.databricks.com/oidc", "account_id": "` + testHMAccountID + `", "host_type": "account"}`,
+			},
+		},
+	}
+	err := cfg.EnsureResolved()
+	require.NoError(t, err)
+	assert.Equal(t, AccountHost, cfg.HostType())
+}
+
+func TestIsAccountClient_DoesNotPanicOnNonAccountsHost(t *testing.T) {
 	c := &Config{
 		Host:      "https://unified.cloud.databricks.com",
 		AccountID: "test-account",
@@ -318,9 +379,9 @@ func TestConfig_getOAuthArgument_workspace(t *testing.T) {
 	}
 }
 
-func TestConfig_getOAuthArgument_FormerUnifiedHostTreatedAsWorkspace(t *testing.T) {
-	// With the unified flag no longer checked, a non-accounts host
-	// is treated as a workspace host for OAuth argument purposes.
+func TestConfig_getOAuthArgument_NonAccountsHostUsesWorkspaceArgument(t *testing.T) {
+	// A non-accounts host uses a BasicWorkspaceOAuthArgument for OAuth
+	// even when AccountID is set.
 	c := &Config{
 		Host:      "https://unified.cloud.databricks.com",
 		AccountID: "account-123",
@@ -381,7 +442,7 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 			wantHostKey: "https://accounts.cloud.databricks.com/oidc/accounts/abc",
 		},
 		{
-			name: "former unified without profile (now workspace)",
+			name: "non-accounts host with account_id without profile",
 			config: &Config{
 				Host:      "https://unified.cloud.databricks.com",
 				AccountID: "account-123",
@@ -391,7 +452,7 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 			wantHostKey: "https://unified.cloud.databricks.com",
 		},
 		{
-			name: "former unified with profile (now workspace)",
+			name: "non-accounts host with account_id and profile",
 			config: &Config{
 				Host:      "https://unified.cloud.databricks.com",
 				AccountID: "account-123",

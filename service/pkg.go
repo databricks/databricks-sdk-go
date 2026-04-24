@@ -282,6 +282,8 @@
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
 //
+// - [catalog.SecretsUcAPI]: A secret is a Unity Catalog securable object that stores sensitive credential data (such as passwords, tokens, and keys) within a three-level namespace (**catalog_name.schema_name.secret_name**).
+//
 // - [oauth2.ServicePrincipalFederationPolicyAPI]: These APIs manage service principal federation policies.
 //
 // - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
@@ -314,6 +316,8 @@
 //
 // - [catalog.AccountStorageCredentialsAPI]: These APIs manage storage credentials for a particular metastore.
 //
+// - [supervisoragents.SupervisorAgentsAPI]: Manage Supervisor Agents and related resources.
+//
 // - [catalog.SystemSchemasAPI]: A system schema is a schema that lives within the system catalog.
 //
 // - [catalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
@@ -325,6 +329,8 @@
 // - [catalog.TemporaryPathCredentialsAPI]: Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks.
 //
 // - [catalog.TemporaryTableCredentialsAPI]: Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks.
+//
+// - [catalog.TemporaryVolumeCredentialsAPI]: Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks.
 //
 // - [settings.TokenManagementAPI]: Enables administrators to get all tokens and delete tokens for other users.
 //
@@ -395,6 +401,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -546,6 +553,7 @@ var (
 	_ *catalog.RfaAPI                                     = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
+	_ *catalog.SecretsUcAPI                               = nil
 	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
 	_ *oauth2.ServicePrincipalSecretsProxyAPI             = nil
@@ -562,12 +570,14 @@ var (
 	_ *provisioning.StorageAPI                            = nil
 	_ *catalog.StorageCredentialsAPI                      = nil
 	_ *catalog.AccountStorageCredentialsAPI               = nil
+	_ *supervisoragents.SupervisorAgentsAPI               = nil
 	_ *catalog.SystemSchemasAPI                           = nil
 	_ *catalog.TableConstraintsAPI                        = nil
 	_ *catalog.TablesAPI                                  = nil
 	_ *tags.TagPoliciesAPI                                = nil
 	_ *catalog.TemporaryPathCredentialsAPI                = nil
 	_ *catalog.TemporaryTableCredentialsAPI               = nil
+	_ *catalog.TemporaryVolumeCredentialsAPI              = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
 	_ *billing.UsageDashboardsAPI                         = nil

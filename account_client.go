@@ -471,7 +471,6 @@ type AccountClient struct {
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration - host incorrect or account_id missing")
-var ErrWorkspaceIDInAccountClient = errors.New("WorkspaceID must not be set when using AccountClient")
 
 // NewAccountClient creates new Databricks SDK client for Accounts or returns
 // error in case configuration is wrong

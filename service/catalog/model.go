@@ -5,6 +5,7 @@ package catalog
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -915,7 +916,6 @@ func (s ConnectionDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next ID: 25
 type ConnectionInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -965,7 +965,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 75
+// Next Id: 77
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1724,6 +1724,12 @@ func (s CreateSchema) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateSecretRequest struct {
+	// The secret object to create. The **name**, **catalog_name**,
+	// **schema_name**, and **value** fields are required.
+	Secret Secret `json:"secret"`
+}
+
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
@@ -2420,6 +2426,12 @@ func (s DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteSecretRequest struct {
+	// The three-level (fully qualified) name of the secret (for example,
+	// **catalog_name.schema_name.secret_name**).
+	FullName string `json:"-" url:"-"`
+}
+
 type DeleteStorageCredentialRequest struct {
 	// Force an update even if there are dependent external locations or
 	// external tables (when purpose is **STORAGE**) or dependent services (when
@@ -2506,7 +2518,8 @@ func (f *DeltaSharingScopeEnum) Type() string {
 }
 
 // A dependency of a SQL object. One of the following fields must be defined:
-// __table__, __function__, __connection__, or __credential__.
+// __table__, __function__, __connection__, __credential__, __volume__, or
+// __secret__.
 type Dependency struct {
 	Connection *ConnectionDependency `json:"connection,omitempty"`
 
@@ -3718,6 +3731,53 @@ func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) 
 	return marshal.Marshal(s)
 }
 
+// Generate volume credentials RPC
+type GenerateTemporaryVolumeCredentialRequest struct {
+	// The operation performed against the volume data, either READ_VOLUME or
+	// WRITE_VOLUME. If WRITE_VOLUME is specified, the credentials returned will
+	// have write permissions, otherwise, it will be read only.
+	Operation VolumeOperation `json:"operation,omitempty"`
+	// Id of the volume to read or write.
+	VolumeId string `json:"volume_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenerateTemporaryVolumeCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryVolumeCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryVolumeCredentialResponse struct {
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+
+	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+
+	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
+	// Server time when the credential will expire, in epoch milliseconds. The
+	// API client is advised to cache the credential given this expiration time.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
+
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+
+	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+	// The URL of the storage path accessible by the temporary credential.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenerateTemporaryVolumeCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryVolumeCredentialResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetAccessRequestDestinationsRequest struct {
 	// The full name of the securable.
 	FullName string `json:"-" url:"-"`
@@ -4127,6 +4187,25 @@ func (s *GetSchemaRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetSchemaRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GetSecretRequest struct {
+	// The three-level (fully qualified) name of the secret (for example,
+	// **catalog_name.schema_name.secret_name**).
+	FullName string `json:"-" url:"-"`
+	// Whether to include secrets in the response for which you only have the
+	// **BROWSE** privilege, which limits access to metadata.
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetSecretRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetSecretRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4904,6 +4983,58 @@ func (s *ListSchemasResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListSchemasResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSecretsRequest struct {
+	// The name of the catalog under which to list secrets. Both
+	// **catalog_name** and **schema_name** must be specified together.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Whether to include secrets in the response for which you only have the
+	// **BROWSE** privilege, which limits access to metadata.
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Maximum number of secrets to return.
+	//
+	// - If not specified, at most 10000 secrets are returned. - If set to a
+	// value greater than 0, the page length is the minimum of this value and
+	// 10000. - If set to 0, the page length is set to 10000. - If set to a
+	// value less than 0, an invalid parameter error is returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token to go to the next page based on previous query.
+	// The maximum page length is determined by a server configured value.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The name of the schema under which to list secrets. Both **catalog_name**
+	// and **schema_name** must be specified together.
+	SchemaName string `json:"-" url:"schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSecretsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSecretsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response message for ListSecrets.
+type ListSecretsResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. **page_token** should be set to this value for the next
+	// request.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// An array of secret objects.
+	Secrets []Secret `json:"secrets,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSecretsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSecretsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -7001,6 +7132,70 @@ func (s SchemaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A secret stored in Unity Catalog. Secrets are three-level namespace objects
+// (catalog.schema.secret) that securely store sensitive credential data such as
+// passwords, tokens, and keys.
+type Secret struct {
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the **BROWSE** privilege when
+	// **include_browse** is enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
+	// The name of the catalog where the schema and the secret reside.
+	CatalogName string `json:"catalog_name"`
+	// User-provided free-form text description of the secret.
+	Comment string `json:"comment,omitempty"`
+	// The time at which this secret was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The principal that created the secret.
+	CreatedBy string `json:"created_by,omitempty"`
+	// The effective owner of the secret, which may differ from the directly-set
+	// **owner** due to inheritance.
+	EffectiveOwner string `json:"effective_owner,omitempty"`
+	// The secret value. Only populated in responses when you have the
+	// **READ_SECRET** privilege and **include_value** is set to true in the
+	// request. The maximum size is 60 KiB.
+	EffectiveValue string `json:"effective_value,omitempty"`
+	// User-provided expiration time of the secret. This field indicates when
+	// the secret should no longer be used and may be displayed as a warning in
+	// the UI. It is purely informational and does not trigger any automatic
+	// actions or affect the secret's lifecycle.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
+
+	ExternalSecretId string `json:"external_secret_id,omitempty"`
+	// The three-level (fully qualified) name of the secret, in the form of
+	// **catalog_name.schema_name.secret_name**.
+	FullName string `json:"full_name,omitempty"`
+	// Unique identifier of the metastore hosting the secret.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the secret, relative to its parent schema.
+	Name string `json:"name"`
+	// The owner of the secret. Defaults to the creating principal on creation.
+	// Can be updated to transfer ownership of the secret to another principal.
+	Owner string `json:"owner,omitempty"`
+	// The name of the schema where the secret resides.
+	SchemaName string `json:"schema_name"`
+	// The time at which this secret was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// The principal that last updated the secret.
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// The secret value to store. This field is input-only and is not returned
+	// in responses — use the **effective_value** field (via GetSecret with
+	// **include_value** set to true) to read the secret value. The maximum size
+	// is 60 KiB (pre-encryption). Accepted content includes passwords, tokens,
+	// keys, and other sensitive credential data.
+	Value string `json:"value"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Secret) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Secret) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Generic definition of a securable, which is uniquely defined in a metastore
 // by its type and full name.
 type Securable struct {
@@ -7025,7 +7220,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_VEEVA_VAULT_OAUTH_M2M = 311; Next id: 312
+// Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -8633,6 +8828,18 @@ func (s UpdateSchema) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateSecretRequest struct {
+	// The three-level (fully qualified) name of the secret (for example,
+	// **catalog_name.schema_name.secret_name**).
+	FullName string `json:"-" url:"-"`
+	// The secret object containing the fields to update. Only fields specified
+	// in **update_mask** will be updated.
+	Secret Secret `json:"secret"`
+	// The field mask specifying which fields of the secret to update. Supported
+	// fields: **value**, **comment**, **owner**, **expire_time**.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
@@ -9046,6 +9253,43 @@ func (s *VolumeInfo) UnmarshalJSON(b []byte) error {
 
 func (s VolumeInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type VolumeOperation string
+
+const VolumeOperationReadVolume VolumeOperation = `READ_VOLUME`
+
+const VolumeOperationWriteVolume VolumeOperation = `WRITE_VOLUME`
+
+// String representation for [fmt.Print]
+func (f *VolumeOperation) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *VolumeOperation) Set(v string) error {
+	switch v {
+	case `READ_VOLUME`, `WRITE_VOLUME`:
+		*f = VolumeOperation(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ_VOLUME", "WRITE_VOLUME"`, v)
+	}
+}
+
+// Values returns all possible values for VolumeOperation.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *VolumeOperation) Values() []VolumeOperation {
+	return []VolumeOperation{
+		VolumeOperationReadVolume,
+		VolumeOperationWriteVolume,
+	}
+}
+
+// Type always returns VolumeOperation to satisfy [pflag.Value] interface
+func (f *VolumeOperation) Type() string {
+	return "VolumeOperation"
 }
 
 type VolumeType string

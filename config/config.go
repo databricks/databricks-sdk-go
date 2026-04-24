@@ -284,9 +284,6 @@ type Config struct {
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
 
-	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
-	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
-
 	// OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
 	// from this URL instead of the default host-type-based well-known endpoint logic.
 	// Mirrors discoveryUrl in the Java SDK.
@@ -447,18 +444,17 @@ func normalizedHost(host string) string {
 }
 
 // HostType returns the type of host that the client is configured for.
+// When host metadata has been resolved (via /.well-known/databricks-config),
+// the resolved host type is returned directly. Otherwise, the host type is
+// inferred from URL patterns as a fallback.
 //
 // Deprecated: The SDK is moving towards host-agnostic behavior where host URL
 // patterns are no longer used to determine client capabilities. This method is
 // retained for backwards compatibility but should not be used in new code.
 func (c *Config) HostType() HostType {
-	// TODO: Remove this after TF updates its code.
-	if c.Experimental_IsUnifiedHost {
-		return UnifiedHost
-	}
-	// TODO: Refactor tests so that this is not needed.
-	if c.AccountID != "" && c.isTesting {
-		return AccountHost
+	// If host metadata resolved a known host type, use it.
+	if c.resolvedHostType != HostTypeUnknown {
+		return c.resolvedHostType
 	}
 
 	// Normalize the host to ensure the scheme is present before checking
