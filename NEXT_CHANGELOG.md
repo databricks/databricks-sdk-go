@@ -23,3 +23,6 @@
 * Add `UcConnection` field for [supervisoragents.Tool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/supervisoragents#Tool).
 * Change `Name` field for [supervisoragents.Connection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/supervisoragents#Connection) to no longer be required.
 * [Breaking] Change `Name` field for [supervisoragents.Connection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/supervisoragents#Connection) to no longer be required.
+* Add [disasterrecovery](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery) package.
+* Add [w.DisasterRecovery](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#DisasterRecoveryAPI) workspace-level service.
+* [Breaking] Remove `Connection` field for [supervisoragents.Tool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/supervisoragents#Tool).

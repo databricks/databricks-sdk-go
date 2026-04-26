@@ -14,22 +14,6 @@ type App struct {
 	Name string `json:"name"`
 }
 
-// Deprecated: Use UcConnection instead. Databricks connection. Supported
-// connection: external mcp server.
-type Connection struct {
-	Name string `json:"name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *Connection) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Connection) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type CreateSupervisorAgentRequest struct {
 	// The Supervisor Agent to create.
 	SupervisorAgent SupervisorAgent `json:"supervisor_agent"`
@@ -202,8 +186,6 @@ func (s SupervisorAgent) MarshalJSON() ([]byte, error) {
 
 type Tool struct {
 	App *App `json:"app,omitempty"`
-	// Deprecated: Use uc_connection instead.
-	Connection *Connection `json:"connection,omitempty"`
 	// Description of what this tool does (user-facing).
 	Description string `json:"description"`
 

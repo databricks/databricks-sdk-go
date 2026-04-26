@@ -1528,7 +1528,7 @@ type Project struct {
 	// project is not deleted, otherwise set to a timestamp in the past.
 	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Configuration settings for the initial Read/Write endpoint created inside
-	// the default branch for a newly created project. If omitted, the initial
+	// the initial branch for a newly created project. If omitted, the initial
 	// endpoint created will have default settings, without high availability
 	// configured. This field does not apply to any endpoints created after
 	// project creation. Use spec.default_endpoint_settings to configure default
@@ -2021,6 +2021,20 @@ type RoleRoleSpec struct {
 	// The desired API-exposed Postgres role attribute to associate with the
 	// role. Optional.
 	Attributes *RoleAttributes `json:"attributes,omitempty"`
+	// Controls how the Postgres role authenticates when a client opens a
+	// database connection. Supported values:
+	//
+	// * LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks
+	// OAuth access token derived from the backing managed identity (the
+	// Databricks user, service principal, or group named by the role's
+	// `postgres_role`). No static password exists for roles using this method.
+	// * PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres
+	// password verified server-side using the SCRAM-SHA-256 mechanism. Lakebase
+	// generates a password for the role. * NO_LOGIN: the role cannot open a
+	// Postgres session at all. Useful for roles that exist only to own objects
+	// or to aggregate privileges that are then granted to other, loginable
+	// roles.
+	//
 	// If auth_method is left unspecified, a meaningful authentication method is
 	// derived from the identity_type: * For the managed identities, OAUTH is
 	// used. * For the regular postgres roles, authentication based on postgres

@@ -413,6 +413,9 @@ func (s ApiKeyAuth) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Deprecated: legacy inference table configuration. Please use AI Gateway
+// inference tables instead. See
+// https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
 type AutoCaptureConfigInput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
 	// change the catalog name if the inference table is already enabled.
@@ -437,6 +440,9 @@ func (s AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Deprecated: legacy inference table configuration. Please use AI Gateway
+// inference tables instead. See
+// https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
 type AutoCaptureConfigOutput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
 	// change the catalog name if the inference table is already enabled.
@@ -786,11 +792,10 @@ func (f *EmbeddingsV1ResponseEmbeddingElementObject) Type() string {
 }
 
 type EndpointCoreConfigInput struct {
-	// Configuration for Inference Tables which automatically logs requests and
-	// responses to Unity Catalog. Note: this field is deprecated for creating
-	// new provisioned throughput endpoints, or updating existing provisioned
-	// throughput endpoints that never have inference table configured; in these
-	// cases please use AI Gateway to manage inference tables.
+	// Configuration for legacy Inference Tables which automatically log
+	// requests and responses to Unity Catalog. Deprecated: please use AI
+	// Gateway inference tables instead. See
+	// https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
 	AutoCaptureConfig *AutoCaptureConfigInput `json:"auto_capture_config,omitempty"`
 	// The name of the serving endpoint to update. This field is required.
 	Name string `json:"-" url:"-"`
@@ -804,11 +809,10 @@ type EndpointCoreConfigInput struct {
 }
 
 type EndpointCoreConfigOutput struct {
-	// Configuration for Inference Tables which automatically logs requests and
-	// responses to Unity Catalog. Note: this field is deprecated for creating
-	// new provisioned throughput endpoints, or updating existing provisioned
-	// throughput endpoints that never have inference table configured; in these
-	// cases please use AI Gateway to manage inference tables.
+	// Configuration for legacy Inference Tables which automatically log
+	// requests and responses to Unity Catalog. Deprecated: please use AI
+	// Gateway inference tables instead. See
+	// https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
 	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
 	// The config version that the serving endpoint is currently serving.
 	ConfigVersion int64 `json:"config_version,omitempty"`
@@ -840,11 +844,10 @@ type EndpointCoreConfigSummary struct {
 }
 
 type EndpointPendingConfig struct {
-	// Configuration for Inference Tables which automatically logs requests and
-	// responses to Unity Catalog. Note: this field is deprecated for creating
-	// new provisioned throughput endpoints, or updating existing provisioned
-	// throughput endpoints that never have inference table configured; in these
-	// cases please use AI Gateway to manage inference tables.
+	// Configuration for legacy Inference Tables which automatically log
+	// requests and responses to Unity Catalog. Deprecated: please use AI
+	// Gateway inference tables instead. See
+	// https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
 	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
 	// The config version that the serving endpoint is currently serving.
 	ConfigVersion int `json:"config_version,omitempty"`

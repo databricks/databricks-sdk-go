@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/database"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dataquality"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/disasterrecovery"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/environments"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
@@ -89,6 +90,7 @@ func NewMockWorkspaceClient(t interface {
 			Database:                            database.NewMockDatabaseInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
+			DisasterRecovery:                    disasterrecovery.NewMockDisasterRecoveryInterface(t),
 			EntityTagAssignments:                catalog.NewMockEntityTagAssignmentsInterface(t),
 			Environments:                        environments.NewMockEnvironmentsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
@@ -645,6 +647,14 @@ func (m *MockWorkspaceClient) GetMockDbsqlPermissionsAPI() *sql.MockDbsqlPermiss
 	api, ok := m.WorkspaceClient.DbsqlPermissions.(*sql.MockDbsqlPermissionsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DbsqlPermissions to be *sql.MockDbsqlPermissionsInterface, actual was %T", m.WorkspaceClient.DbsqlPermissions))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDisasterRecoveryAPI() *disasterrecovery.MockDisasterRecoveryInterface {
+	api, ok := m.WorkspaceClient.DisasterRecovery.(*disasterrecovery.MockDisasterRecoveryInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DisasterRecovery to be *disasterrecovery.MockDisasterRecoveryInterface, actual was %T", m.WorkspaceClient.DisasterRecovery))
 	}
 	return api
 }
