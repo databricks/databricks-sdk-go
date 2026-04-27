@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
+	"github.com/databricks/databricks-sdk-go/service/disasterrecovery"
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -308,6 +309,9 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DbsqlPermissions sql.DbsqlPermissionsInterface
+
+	// Manage disaster recovery configurations and execute failover operations.
+	DisasterRecovery disasterrecovery.DisasterRecoveryInterface
 
 	// Tags are attributes that include keys and optional values that you can
 	// use to organize and categorize entities in Unity Catalog. Entity tagging
@@ -1485,6 +1489,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Database:                            database.NewDatabase(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
+		DisasterRecovery:                    disasterrecovery.NewDisasterRecovery(databricksClient),
 		EntityTagAssignments:                catalog.NewEntityTagAssignments(databricksClient),
 		Environments:                        environments.NewEnvironments(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),

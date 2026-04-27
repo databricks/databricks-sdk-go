@@ -104,6 +104,8 @@
 //
 // - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
 //
+// - [disasterrecovery.DisasterRecoveryAPI]: Manage disaster recovery configurations and execute failover operations.
+//
 // - [settings.EnableExportNotebookAPI]: Controls whether users can export notebooks and files from the Workspace UI.
 //
 // - [settings.EnableIpAccessListsAPI]: Controls the enforcement of IP access lists for accessing the account console.
@@ -382,6 +384,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
+	"github.com/databricks/databricks-sdk-go/service/disasterrecovery"
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -464,6 +467,7 @@ var (
 	_ *settings.DisableLegacyAccessAPI                    = nil
 	_ *settings.DisableLegacyDbfsAPI                      = nil
 	_ *settings.DisableLegacyFeaturesAPI                  = nil
+	_ *disasterrecovery.DisasterRecoveryAPI               = nil
 	_ *settings.EnableExportNotebookAPI                   = nil
 	_ *settings.EnableIpAccessListsAPI                    = nil
 	_ *settings.EnableNotebookTableClipboardAPI           = nil
