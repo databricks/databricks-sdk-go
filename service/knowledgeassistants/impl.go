@@ -19,6 +19,21 @@ type knowledgeAssistantsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *knowledgeAssistantsImpl) CreateExample(ctx context.Context, request CreateExampleRequest) (*Example, error) {
+	var example Example
+	path := fmt.Sprintf("/api/2.1/%v/examples", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Example, &example)
+	return &example, err
+}
+
 func (a *knowledgeAssistantsImpl) CreateKnowledgeAssistant(ctx context.Context, request CreateKnowledgeAssistantRequest) (*KnowledgeAssistant, error) {
 	var knowledgeAssistant KnowledgeAssistant
 	path := "/api/2.1/knowledge-assistants"
@@ -49,6 +64,19 @@ func (a *knowledgeAssistantsImpl) CreateKnowledgeSource(ctx context.Context, req
 	return &knowledgeSource, err
 }
 
+func (a *knowledgeAssistantsImpl) DeleteExample(ctx context.Context, request DeleteExampleRequest) error {
+	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *knowledgeAssistantsImpl) DeleteKnowledgeAssistant(ctx context.Context, request DeleteKnowledgeAssistantRequest) error {
 	path := fmt.Sprintf("/api/2.1/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -73,6 +101,20 @@ func (a *knowledgeAssistantsImpl) DeleteKnowledgeSource(ctx context.Context, req
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
+}
+
+func (a *knowledgeAssistantsImpl) GetExample(ctx context.Context, request GetExampleRequest) (*Example, error) {
+	var example Example
+	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &example)
+	return &example, err
 }
 
 func (a *knowledgeAssistantsImpl) GetKnowledgeAssistant(ctx context.Context, request GetKnowledgeAssistantRequest) (*KnowledgeAssistant, error) {
@@ -129,6 +171,51 @@ func (a *knowledgeAssistantsImpl) GetPermissions(ctx context.Context, request Ge
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &knowledgeAssistantPermissions)
 	return &knowledgeAssistantPermissions, err
+}
+
+// Lists examples under a Knowledge Assistant.
+func (a *knowledgeAssistantsImpl) ListExamples(ctx context.Context, request ListExamplesRequest) listing.Iterator[Example] {
+
+	getNextPage := func(ctx context.Context, req ListExamplesRequest) (*ListExamplesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListExamples(ctx, req)
+	}
+	getItems := func(resp *ListExamplesResponse) []Example {
+		return resp.Examples
+	}
+	getNextReq := func(resp *ListExamplesResponse) *ListExamplesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists examples under a Knowledge Assistant.
+func (a *knowledgeAssistantsImpl) ListExamplesAll(ctx context.Context, request ListExamplesRequest) ([]Example, error) {
+	iterator := a.ListExamples(ctx, request)
+	return listing.ToSlice[Example](ctx, iterator)
+}
+
+func (a *knowledgeAssistantsImpl) internalListExamples(ctx context.Context, request ListExamplesRequest) (*ListExamplesResponse, error) {
+	var listExamplesResponse ListExamplesResponse
+	path := fmt.Sprintf("/api/2.1/%v/examples", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExamplesResponse)
+	return &listExamplesResponse, err
 }
 
 // List Knowledge Assistants
@@ -248,6 +335,28 @@ func (a *knowledgeAssistantsImpl) SyncKnowledgeSources(ctx context.Context, requ
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
+}
+
+func (a *knowledgeAssistantsImpl) UpdateExample(ctx context.Context, request UpdateExampleRequest) (*Example, error) {
+	var example Example
+	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Example, &example)
+	return &example, err
 }
 
 func (a *knowledgeAssistantsImpl) UpdateKnowledgeAssistant(ctx context.Context, request UpdateKnowledgeAssistantRequest) (*KnowledgeAssistant, error) {

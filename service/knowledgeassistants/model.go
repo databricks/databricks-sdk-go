@@ -10,6 +10,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type CreateExampleRequest struct {
+	// The example to create under the parent Knowledge Assistant.
+	Example Example `json:"example"`
+	// Parent resource where this example will be created. Format:
+	// knowledge-assistants/{knowledge_assistant_id}
+	Parent string `json:"-" url:"-"`
+}
+
 type CreateKnowledgeAssistantRequest struct {
 	// The Knowledge Assistant to create.
 	KnowledgeAssistant KnowledgeAssistant `json:"knowledge_assistant"`
@@ -22,6 +30,12 @@ type CreateKnowledgeSourceRequest struct {
 	Parent string `json:"-" url:"-"`
 }
 
+type DeleteExampleRequest struct {
+	// The resource name of the example to delete. Format:
+	// knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+	Name string `json:"-" url:"-"`
+}
+
 type DeleteKnowledgeAssistantRequest struct {
 	// The resource name of the knowledge assistant to be deleted. Format:
 	// knowledge-assistants/{knowledge_assistant_id}
@@ -32,6 +46,34 @@ type DeleteKnowledgeSourceRequest struct {
 	// The resource name of the Knowledge Source to delete. Format:
 	// knowledge-assistants/{knowledge_assistant_id}/knowledge-sources/{knowledge_source_id}
 	Name string `json:"-" url:"-"`
+}
+
+// An example associated with a Knowledge Assistant. Contains a question and
+// guidelines for how the assistant should respond.
+type Example struct {
+	// Timestamp when this example was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The universally unique identifier (UUID) of the example.
+	ExampleId string `json:"example_id,omitempty"`
+	// Guidelines for answering the question.
+	Guidelines []string `json:"guidelines"`
+	// Full resource name:
+	// knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+	Name string `json:"name,omitempty"`
+	// The example question.
+	Question string `json:"question"`
+	// Timestamp when this example was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Example) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Example) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // FileTableSpec specifies a file table source configuration.
@@ -47,6 +89,12 @@ type FileTableSpec struct {
 type FilesSpec struct {
 	// A UC volume path that includes a list of files.
 	Path string `json:"path"`
+}
+
+type GetExampleRequest struct {
+	// The resource name of the example. Format:
+	// knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+	Name string `json:"-" url:"-"`
 }
 
 type GetKnowledgeAssistantPermissionLevelsRequest struct {
@@ -400,6 +448,47 @@ func (f *KnowledgeSourceState) Type() string {
 	return "KnowledgeSourceState"
 }
 
+type ListExamplesRequest struct {
+	// The maximum number of examples to return. If unspecified, at most 100
+	// examples will be returned. The maximum value is 100; values above 100
+	// will be coerced to 100.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous `ListExamples` call. Provide this
+	// to retrieve the subsequent page. If unspecified, the first page will be
+	// returned.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Parent resource to list from. Format:
+	// knowledge-assistants/{knowledge_assistant_id}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListExamplesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExamplesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A list of Knowledge Assistant examples.
+type ListExamplesResponse struct {
+	Examples []Example `json:"examples,omitempty"`
+
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListExamplesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExamplesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListKnowledgeAssistantsRequest struct {
 	// The maximum number of knowledge assistants to return. If unspecified, at
 	// most 100 knowledge assistants will be returned. The maximum value is 100;
@@ -478,6 +567,16 @@ type SyncKnowledgeSourcesRequest struct {
 	// The resource name of the Knowledge Assistant. Format:
 	// knowledge-assistants/{knowledge_assistant_id}
 	Name string `json:"-" url:"-"`
+}
+
+type UpdateExampleRequest struct {
+	Example Example `json:"example"`
+	// The resource name of the example to update. Format:
+	// knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+	Name string `json:"-" url:"-"`
+	// Comma-delimited list of fields to update on the example. Allowed values:
+	// `question`, `guidelines`. Examples: - `question` - `question,guidelines`
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
 type UpdateKnowledgeAssistantRequest struct {
