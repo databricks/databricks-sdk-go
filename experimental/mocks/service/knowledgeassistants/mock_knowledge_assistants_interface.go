@@ -23,6 +23,65 @@ func (_m *MockKnowledgeAssistantsInterface) EXPECT() *MockKnowledgeAssistantsInt
 	return &MockKnowledgeAssistantsInterface_Expecter{mock: &_m.Mock}
 }
 
+// CreateExample provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) CreateExample(ctx context.Context, request knowledgeassistants.CreateExampleRequest) (*knowledgeassistants.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateExample")
+	}
+
+	var r0 *knowledgeassistants.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.CreateExampleRequest) (*knowledgeassistants.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.CreateExampleRequest) *knowledgeassistants.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.CreateExampleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_CreateExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateExample'
+type MockKnowledgeAssistantsInterface_CreateExample_Call struct {
+	*mock.Call
+}
+
+// CreateExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.CreateExampleRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) CreateExample(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_CreateExample_Call {
+	return &MockKnowledgeAssistantsInterface_CreateExample_Call{Call: _e.mock.On("CreateExample", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_CreateExample_Call) Run(run func(ctx context.Context, request knowledgeassistants.CreateExampleRequest)) *MockKnowledgeAssistantsInterface_CreateExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.CreateExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_CreateExample_Call) Return(_a0 *knowledgeassistants.Example, _a1 error) *MockKnowledgeAssistantsInterface_CreateExample_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_CreateExample_Call) RunAndReturn(run func(context.Context, knowledgeassistants.CreateExampleRequest) (*knowledgeassistants.Example, error)) *MockKnowledgeAssistantsInterface_CreateExample_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateKnowledgeAssistant provides a mock function with given fields: ctx, request
 func (_m *MockKnowledgeAssistantsInterface) CreateKnowledgeAssistant(ctx context.Context, request knowledgeassistants.CreateKnowledgeAssistantRequest) (*knowledgeassistants.KnowledgeAssistant, error) {
 	ret := _m.Called(ctx, request)
@@ -141,6 +200,53 @@ func (_c *MockKnowledgeAssistantsInterface_CreateKnowledgeSource_Call) RunAndRet
 	return _c
 }
 
+// DeleteExample provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) DeleteExample(ctx context.Context, request knowledgeassistants.DeleteExampleRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteExample")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.DeleteExampleRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockKnowledgeAssistantsInterface_DeleteExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteExample'
+type MockKnowledgeAssistantsInterface_DeleteExample_Call struct {
+	*mock.Call
+}
+
+// DeleteExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.DeleteExampleRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) DeleteExample(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_DeleteExample_Call {
+	return &MockKnowledgeAssistantsInterface_DeleteExample_Call{Call: _e.mock.On("DeleteExample", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_DeleteExample_Call) Run(run func(ctx context.Context, request knowledgeassistants.DeleteExampleRequest)) *MockKnowledgeAssistantsInterface_DeleteExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.DeleteExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_DeleteExample_Call) Return(_a0 error) *MockKnowledgeAssistantsInterface_DeleteExample_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_DeleteExample_Call) RunAndReturn(run func(context.Context, knowledgeassistants.DeleteExampleRequest) error) *MockKnowledgeAssistantsInterface_DeleteExample_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteKnowledgeAssistant provides a mock function with given fields: ctx, request
 func (_m *MockKnowledgeAssistantsInterface) DeleteKnowledgeAssistant(ctx context.Context, request knowledgeassistants.DeleteKnowledgeAssistantRequest) error {
 	ret := _m.Called(ctx, request)
@@ -231,6 +337,65 @@ func (_c *MockKnowledgeAssistantsInterface_DeleteKnowledgeSource_Call) Return(_a
 }
 
 func (_c *MockKnowledgeAssistantsInterface_DeleteKnowledgeSource_Call) RunAndReturn(run func(context.Context, knowledgeassistants.DeleteKnowledgeSourceRequest) error) *MockKnowledgeAssistantsInterface_DeleteKnowledgeSource_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetExample provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) GetExample(ctx context.Context, request knowledgeassistants.GetExampleRequest) (*knowledgeassistants.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExample")
+	}
+
+	var r0 *knowledgeassistants.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.GetExampleRequest) (*knowledgeassistants.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.GetExampleRequest) *knowledgeassistants.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.GetExampleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_GetExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExample'
+type MockKnowledgeAssistantsInterface_GetExample_Call struct {
+	*mock.Call
+}
+
+// GetExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.GetExampleRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) GetExample(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_GetExample_Call {
+	return &MockKnowledgeAssistantsInterface_GetExample_Call{Call: _e.mock.On("GetExample", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetExample_Call) Run(run func(ctx context.Context, request knowledgeassistants.GetExampleRequest)) *MockKnowledgeAssistantsInterface_GetExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.GetExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetExample_Call) Return(_a0 *knowledgeassistants.Example, _a1 error) *MockKnowledgeAssistantsInterface_GetExample_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_GetExample_Call) RunAndReturn(run func(context.Context, knowledgeassistants.GetExampleRequest) (*knowledgeassistants.Example, error)) *MockKnowledgeAssistantsInterface_GetExample_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -589,6 +754,114 @@ func (_c *MockKnowledgeAssistantsInterface_GetPermissionsByKnowledgeAssistantId_
 	return _c
 }
 
+// ListExamples provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) ListExamples(ctx context.Context, request knowledgeassistants.ListExamplesRequest) listing.Iterator[knowledgeassistants.Example] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListExamples")
+	}
+
+	var r0 listing.Iterator[knowledgeassistants.Example]
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.ListExamplesRequest) listing.Iterator[knowledgeassistants.Example]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[knowledgeassistants.Example])
+		}
+	}
+
+	return r0
+}
+
+// MockKnowledgeAssistantsInterface_ListExamples_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListExamples'
+type MockKnowledgeAssistantsInterface_ListExamples_Call struct {
+	*mock.Call
+}
+
+// ListExamples is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.ListExamplesRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) ListExamples(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_ListExamples_Call {
+	return &MockKnowledgeAssistantsInterface_ListExamples_Call{Call: _e.mock.On("ListExamples", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_ListExamples_Call) Run(run func(ctx context.Context, request knowledgeassistants.ListExamplesRequest)) *MockKnowledgeAssistantsInterface_ListExamples_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.ListExamplesRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_ListExamples_Call) Return(_a0 listing.Iterator[knowledgeassistants.Example]) *MockKnowledgeAssistantsInterface_ListExamples_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_ListExamples_Call) RunAndReturn(run func(context.Context, knowledgeassistants.ListExamplesRequest) listing.Iterator[knowledgeassistants.Example]) *MockKnowledgeAssistantsInterface_ListExamples_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListExamplesAll provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) ListExamplesAll(ctx context.Context, request knowledgeassistants.ListExamplesRequest) ([]knowledgeassistants.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListExamplesAll")
+	}
+
+	var r0 []knowledgeassistants.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.ListExamplesRequest) ([]knowledgeassistants.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.ListExamplesRequest) []knowledgeassistants.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]knowledgeassistants.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.ListExamplesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_ListExamplesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListExamplesAll'
+type MockKnowledgeAssistantsInterface_ListExamplesAll_Call struct {
+	*mock.Call
+}
+
+// ListExamplesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.ListExamplesRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) ListExamplesAll(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_ListExamplesAll_Call {
+	return &MockKnowledgeAssistantsInterface_ListExamplesAll_Call{Call: _e.mock.On("ListExamplesAll", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_ListExamplesAll_Call) Run(run func(ctx context.Context, request knowledgeassistants.ListExamplesRequest)) *MockKnowledgeAssistantsInterface_ListExamplesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.ListExamplesRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_ListExamplesAll_Call) Return(_a0 []knowledgeassistants.Example, _a1 error) *MockKnowledgeAssistantsInterface_ListExamplesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_ListExamplesAll_Call) RunAndReturn(run func(context.Context, knowledgeassistants.ListExamplesRequest) ([]knowledgeassistants.Example, error)) *MockKnowledgeAssistantsInterface_ListExamplesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListKnowledgeAssistants provides a mock function with given fields: ctx, request
 func (_m *MockKnowledgeAssistantsInterface) ListKnowledgeAssistants(ctx context.Context, request knowledgeassistants.ListKnowledgeAssistantsRequest) listing.Iterator[knowledgeassistants.KnowledgeAssistant] {
 	ret := _m.Called(ctx, request)
@@ -907,6 +1180,65 @@ func (_c *MockKnowledgeAssistantsInterface_SyncKnowledgeSources_Call) Return(_a0
 }
 
 func (_c *MockKnowledgeAssistantsInterface_SyncKnowledgeSources_Call) RunAndReturn(run func(context.Context, knowledgeassistants.SyncKnowledgeSourcesRequest) error) *MockKnowledgeAssistantsInterface_SyncKnowledgeSources_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateExample provides a mock function with given fields: ctx, request
+func (_m *MockKnowledgeAssistantsInterface) UpdateExample(ctx context.Context, request knowledgeassistants.UpdateExampleRequest) (*knowledgeassistants.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateExample")
+	}
+
+	var r0 *knowledgeassistants.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.UpdateExampleRequest) (*knowledgeassistants.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, knowledgeassistants.UpdateExampleRequest) *knowledgeassistants.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*knowledgeassistants.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, knowledgeassistants.UpdateExampleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockKnowledgeAssistantsInterface_UpdateExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateExample'
+type MockKnowledgeAssistantsInterface_UpdateExample_Call struct {
+	*mock.Call
+}
+
+// UpdateExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request knowledgeassistants.UpdateExampleRequest
+func (_e *MockKnowledgeAssistantsInterface_Expecter) UpdateExample(ctx interface{}, request interface{}) *MockKnowledgeAssistantsInterface_UpdateExample_Call {
+	return &MockKnowledgeAssistantsInterface_UpdateExample_Call{Call: _e.mock.On("UpdateExample", ctx, request)}
+}
+
+func (_c *MockKnowledgeAssistantsInterface_UpdateExample_Call) Run(run func(ctx context.Context, request knowledgeassistants.UpdateExampleRequest)) *MockKnowledgeAssistantsInterface_UpdateExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(knowledgeassistants.UpdateExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_UpdateExample_Call) Return(_a0 *knowledgeassistants.Example, _a1 error) *MockKnowledgeAssistantsInterface_UpdateExample_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockKnowledgeAssistantsInterface_UpdateExample_Call) RunAndReturn(run func(context.Context, knowledgeassistants.UpdateExampleRequest) (*knowledgeassistants.Example, error)) *MockKnowledgeAssistantsInterface_UpdateExample_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/billing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/disasterrecovery"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/networking"
@@ -39,6 +40,7 @@ func NewMockAccountClient(t interface {
 			Budgets:                          billing.NewMockBudgetsInterface(t),
 			Credentials:                      provisioning.NewMockCredentialsInterface(t),
 			CustomAppIntegration:             oauth2.NewMockCustomAppIntegrationInterface(t),
+			DisasterRecovery:                 disasterrecovery.NewMockDisasterRecoveryInterface(t),
 			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
 			Endpoints:                        networking.NewMockEndpointsInterface(t),
 			FederationPolicy:                 oauth2.NewMockAccountFederationPolicyInterface(t),
@@ -199,6 +201,14 @@ func (m *MockAccountClient) GetMockCustomAppIntegrationAPI() *oauth2.MockCustomA
 	api, ok := m.AccountClient.CustomAppIntegration.(*oauth2.MockCustomAppIntegrationInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected CustomAppIntegration to be *oauth2.MockCustomAppIntegrationInterface, actual was %T", m.AccountClient.CustomAppIntegration))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockDisasterRecoveryAPI() *disasterrecovery.MockDisasterRecoveryInterface {
+	api, ok := m.AccountClient.DisasterRecovery.(*disasterrecovery.MockDisasterRecoveryInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DisasterRecovery to be *disasterrecovery.MockDisasterRecoveryInterface, actual was %T", m.AccountClient.DisasterRecovery))
 	}
 	return api
 }

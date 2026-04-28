@@ -337,10 +337,24 @@ type AvgFunction struct {
 }
 
 type BackfillSource struct {
-	// The Delta table source containing the historic data to backfill. Only the
-	// delta table name is used for backfill, the entity columns and timeseries
-	// column are ignored as they are defined by the associated KafkaSource.
+	// The full three-part name (catalog, schema, name) of the Delta table
+	// containing the historical data to backfill.
+	DeltaTableName string `json:"delta_table_name,omitempty"`
+	// Deprecated: Use delta_table_name instead. Kept for backwards
+	// compatibility. The Delta table source containing the historical data to
+	// backfill. Only the delta table name is used for backfill, other fields
+	// are ignored.
 	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BackfillSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BackfillSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type BatchCreateMaterializedFeaturesRequest struct {

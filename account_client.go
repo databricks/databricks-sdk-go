@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/databricks/databricks-sdk-go/service/disasterrecovery"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/networking"
@@ -52,6 +53,9 @@ type AccountClient struct {
 	// which is required for adding/using Custom OAuth App Integration like
 	// Tableau Cloud for Databricks in AWS cloud.
 	CustomAppIntegration oauth2.CustomAppIntegrationInterface
+
+	// Manage disaster recovery configurations and execute failover operations.
+	DisasterRecovery disasterrecovery.DisasterRecoveryInterface
 
 	// These APIs manage encryption key configurations for this workspace
 	// (optional). A key configuration encapsulates the AWS KMS key information
@@ -502,6 +506,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Budgets:                          billing.NewBudgets(apiClient),
 		Credentials:                      provisioning.NewCredentials(apiClient),
 		CustomAppIntegration:             oauth2.NewCustomAppIntegration(apiClient),
+		DisasterRecovery:                 disasterrecovery.NewDisasterRecovery(apiClient),
 		EncryptionKeys:                   provisioning.NewEncryptionKeys(apiClient),
 		Endpoints:                        networking.NewEndpoints(apiClient),
 		FederationPolicy:                 oauth2.NewAccountFederationPolicy(apiClient),
