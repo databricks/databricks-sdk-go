@@ -156,7 +156,7 @@ type SupervisorAgent struct {
 	// The creator of the Supervisor Agent.
 	Creator string `json:"creator,omitempty"`
 	// Description of what this agent can do (user-facing).
-	Description string `json:"description"`
+	Description string `json:"description,omitempty"`
 	// The display name of the Supervisor Agent, unique at workspace level.
 	DisplayName string `json:"display_name"`
 	// The name of the supervisor agent's serving endpoint.

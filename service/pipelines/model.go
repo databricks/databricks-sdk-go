@@ -179,6 +179,12 @@ func (s ClonePipelineResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Confluence specific options for ingestion
+type ConfluenceConnectorOptions struct {
+	// (Optional) Spaces to filter Confluence data on
+	IncludeConfluenceSpaces []string `json:"include_confluence_spaces,omitempty"`
+}
+
 type ConnectionParameters struct {
 	// Source catalog for initial connection. This is necessary for schema
 	// exploration in some database systems like Oracle, and optional but
@@ -200,6 +206,8 @@ func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
 // Wrapper message for source-specific options to support multiple connector
 // types
 type ConnectorOptions struct {
+	ConfluenceOptions *ConfluenceConnectorOptions `json:"confluence_options,omitempty"`
+
 	GdriveOptions *GoogleDriveOptions `json:"gdrive_options,omitempty"`
 
 	GoogleAdsOptions *GoogleAdsOptions `json:"google_ads_options,omitempty"`
@@ -1312,6 +1320,8 @@ type IngestionSourceType string
 
 const IngestionSourceTypeBigquery IngestionSourceType = `BIGQUERY`
 
+const IngestionSourceTypeConfluence IngestionSourceType = `CONFLUENCE`
+
 const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
 
 const IngestionSourceTypeForeignCatalog IngestionSourceType = `FOREIGN_CATALOG`
@@ -1350,11 +1360,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -1364,6 +1374,7 @@ func (f *IngestionSourceType) Set(v string) error {
 func (f *IngestionSourceType) Values() []IngestionSourceType {
 	return []IngestionSourceType{
 		IngestionSourceTypeBigquery,
+		IngestionSourceTypeConfluence,
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeForeignCatalog,
 		IngestionSourceTypeGa4RawData,
