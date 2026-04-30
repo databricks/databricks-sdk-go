@@ -156,7 +156,7 @@ type SupervisorAgent struct {
 	// The creator of the Supervisor Agent.
 	Creator string `json:"creator,omitempty"`
 	// Description of what this agent can do (user-facing).
-	Description string `json:"description"`
+	Description string `json:"description,omitempty"`
 	// The display name of the Supervisor Agent, unique at workspace level.
 	DisplayName string `json:"display_name"`
 	// The name of the supervisor agent's serving endpoint.
@@ -201,7 +201,8 @@ type Tool struct {
 	ToolId string `json:"tool_id,omitempty"`
 	// Tool type. Must be one of: "genie_space", "knowledge_assistant",
 	// "uc_function", "uc_connection", "app", "volume", "lakeview_dashboard",
-	// "serving_endpoint", "uc_table", "vector_search_index".
+	// "serving_endpoint", "uc_table", "vector_search_index", "catalog",
+	// "schema".
 	ToolType string `json:"tool_type"`
 
 	UcConnection *UcConnection `json:"uc_connection,omitempty"`
