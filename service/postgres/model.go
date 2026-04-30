@@ -50,7 +50,8 @@ type BranchOperationMetadata struct {
 
 type BranchSpec struct {
 	// Absolute expiration timestamp. When set, the branch will expire at this
-	// time.
+	// time. Mutually exclusive with `ttl` and `no_expiry`. When updating, use
+	// `spec.expiration` in the update_mask.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
 	// When set to true, protects the branch from deletion and reset. Associated
 	// compute endpoints and the project cannot be deleted while the branch is
@@ -58,7 +59,8 @@ type BranchSpec struct {
 	IsProtected bool `json:"is_protected,omitempty"`
 	// Explicitly disable expiration. When set to true, the branch will not
 	// expire. If set to false, the request is invalid; provide either ttl or
-	// expire_time instead.
+	// expire_time instead. Mutually exclusive with `expire_time` and `ttl`.
+	// When updating, use `spec.expiration` in the update_mask.
 	NoExpiry bool `json:"no_expiry,omitempty"`
 	// The name of the source branch from which this branch was created (data
 	// lineage for point-in-time recovery). If not specified, defaults to the
@@ -72,7 +74,8 @@ type BranchSpec struct {
 	// created.
 	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
 	// Relative time-to-live duration. When set, the branch will expire at
-	// creation_time + ttl.
+	// creation_time + ttl. Mutually exclusive with `expire_time` and
+	// `no_expiry`. When updating, use `spec.expiration` in the update_mask.
 	Ttl *duration.Duration `json:"ttl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -87,6 +90,16 @@ func (s BranchSpec) MarshalJSON() ([]byte, error) {
 }
 
 type BranchStatus struct {
+	// The short identifier of the branch, suitable for showing to the users.
+	// For a branch with name `projects/my-project/branches/my-branch`, the
+	// branch_id is `my-branch`.
+	//
+	// Use this field when building UI components that display branches to users
+	// (e.g., a drop-down selector). Prefer showing `branch_id` instead of the
+	// full resource name from `Branch.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}` format and is not
+	// user-friendly.
+	BranchId string `json:"branch_id,omitempty"`
 	// The branch's state, indicating if it is initializing, ready for use, or
 	// archived.
 	CurrentState BranchStatusState `json:"current_state,omitempty"`
@@ -249,6 +262,15 @@ type CatalogCatalogStatus struct {
 	//
 	// Format: projects/{project_id}/branches/{branch_id}.
 	Branch string `json:"branch,omitempty"`
+	// The short identifier of the catalog, suitable for showing to the users.
+	// For a catalog with name `catalogs/my-catalog`, the catalog_id is
+	// `my-catalog`.
+	//
+	// Use this field when building UI components that display catalogs to users
+	// (e.g., a drop-down selector). Prefer showing `catalog_id` instead of the
+	// full resource name from `Catalog.name`, which follows the
+	// `catalogs/{catalog_id}` format and is not user-friendly.
+	CatalogId string `json:"catalog_id,omitempty"`
 	// The name of the Postgres database associated with the catalog.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// The resource path of the project associated with the catalog.
@@ -282,6 +304,19 @@ type CreateBranchRequest struct {
 	// The Project where this Branch will be created. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
+	// If true, update the branch if it already exists instead of returning an
+	// error.
+	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBranchRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateCatalogRequest struct {
@@ -331,6 +366,19 @@ type CreateEndpointRequest struct {
 	// The Branch where this Endpoint will be created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
+	// If true, update the endpoint if it already exists instead of returning an
+	// error.
+	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateEndpointRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateProjectRequest struct {
@@ -463,6 +511,17 @@ func (s DatabaseDatabaseSpec) MarshalJSON() ([]byte, error) {
 }
 
 type DatabaseDatabaseStatus struct {
+	// The short identifier of the database, suitable for showing to the users.
+	// For a database with name
+	// `projects/my-project/branches/my-branch/databases/my-db`, the database_id
+	// is `my-db`.
+	//
+	// Use this field when building UI components that display databases to
+	// users (e.g., a drop-down selector). Prefer showing `database_id` instead
+	// of the full resource name from `Database.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}/databases/{database_id}`
+	// format and is not user-friendly.
+	DatabaseId string `json:"database_id,omitempty"`
 	// The name of the Postgres database.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// The name of the role that owns the database. Format:
@@ -533,6 +592,19 @@ type DeleteProjectRequest struct {
 	// The full resource path of the project to delete. Format:
 	// projects/{project_id}
 	Name string `json:"-" url:"-"`
+	// If true, permanently deletes the project (hard delete). If false or
+	// unset, performs a soft delete.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteProjectRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteProjectRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteRoleRequest struct {
@@ -696,7 +768,9 @@ type EndpointSettings struct {
 }
 
 type EndpointSpec struct {
-	// The maximum number of Compute Units. Minimum value is 0.5.
+	// The maximum number of Compute Units. The maximum value is 64. The
+	// difference between the minimum and maximum Compute Units (max - min) must
+	// not exceed 16.
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
 	// The minimum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
@@ -711,13 +785,16 @@ type EndpointSpec struct {
 	// the endpoint (and no readable secondaries for Read/Write endpoints).
 	Group *EndpointGroupSpec `json:"group,omitempty"`
 	// When set to true, explicitly disables automatic suspension (never
-	// suspend). Should be set to true when provided.
+	// suspend). Should be set to true when provided. Mutually exclusive with
+	// `suspend_timeout_duration`. When updating, use `spec.suspension` in the
+	// update_mask.
 	NoSuspension bool `json:"no_suspension,omitempty"`
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
 	// suspended. If specified should be between 60s and 604800s (1 minute to 1
-	// week).
+	// week). Mutually exclusive with `no_suspension`. When updating, use
+	// `spec.suspension` in the update_mask.
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -732,7 +809,9 @@ func (s EndpointSpec) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointStatus struct {
-	// The maximum number of Compute Units.
+	// The maximum number of Compute Units. The maximum value is 64. The
+	// difference between the minimum and maximum Compute Units (max - min) must
+	// not exceed 16.
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
 	// The minimum number of Compute Units.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
@@ -742,6 +821,17 @@ type EndpointStatus struct {
 	// option schedules a suspend compute operation. A disabled compute endpoint
 	// cannot be enabled by a connection or console action.
 	Disabled bool `json:"disabled,omitempty"`
+	// The short identifier of the endpoint, suitable for showing to the users.
+	// For an endpoint with name
+	// `projects/my-project/branches/my-branch/endpoints/my-endpoint`, the
+	// endpoint_id is `my-endpoint`.
+	//
+	// Use this field when building UI components that display endpoints to
+	// users (e.g., a drop-down selector). Prefer showing `endpoint_id` instead
+	// of the full resource name from `Endpoint.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
+	// format and is not user-friendly.
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
 	// Details on the HA configuration of the endpoint.
@@ -1178,13 +1268,16 @@ type GetRoleRequest struct {
 }
 
 type GetSyncedTableRequest struct {
-	// Format: "synced_tables/{catalog}.{schema}.{table}", where (catalog,
-	// schema, table) are the entity names in the Unity Catalog.
+	// The Full resource name of the synced table. Format:
+	// "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema,
+	// table) are the entity names in the Unity Catalog.
 	Name string `json:"-" url:"-"`
 }
 
+// Configuration for the initial Read/Write endpoint created during project
+// creation.
 type InitialEndpointSpec struct {
-	// Settings for HA configuration of the endpoint
+	// Settings for HA configuration of the endpoint.
 	Group *EndpointGroupSpec `json:"group,omitempty"`
 }
 
@@ -1309,6 +1402,10 @@ type ListProjectsRequest struct {
 	// Page token from a previous response. If not provided, returns the first
 	// page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Whether to include soft-deleted projects in the response. When true,
+	// soft-deleted projects are included alongside active projects.
+	// Hard-deleted and already-purged projects are never returned.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1434,8 +1531,11 @@ func (s Operation) MarshalJSON() ([]byte, error) {
 type Project struct {
 	// A timestamp indicating when the project was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// A timestamp indicating when the project was soft-deleted. Empty if the
+	// project is not deleted, otherwise set to a timestamp in the past.
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Configuration settings for the initial Read/Write endpoint created inside
-	// the default branch for a newly created project. If omitted, the initial
+	// the initial branch for a newly created project. If omitted, the initial
 	// endpoint created will have default settings, without high availability
 	// configured. This field does not apply to any endpoints created after
 	// project creation. Use spec.default_endpoint_settings to configure default
@@ -1444,6 +1544,10 @@ type Project struct {
 	// Output only. The full resource path of the project. Format:
 	// projects/{project_id}
 	Name string `json:"name,omitempty"`
+	// A timestamp indicating when the project is scheduled for permanent
+	// deletion. Empty if the project is not deleted, otherwise set to a
+	// timestamp in the future.
+	PurgeTime *time.Time `json:"purge_time,omitempty"`
 	// The spec contains the project configuration, including display_name,
 	// pg_version (Postgres version), history_retention_duration, and
 	// default_endpoint_settings.
@@ -1490,13 +1594,16 @@ type ProjectDefaultEndpointSettings struct {
 	// The minimum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
 	// When set to true, explicitly disables automatic suspension (never
-	// suspend). Should be set to true when provided.
+	// suspend). Should be set to true when provided. Mutually exclusive with
+	// `suspend_timeout_duration`. When updating, use
+	// `spec.project_default_settings.suspension` in the update_mask.
 	NoSuspension bool `json:"no_suspension,omitempty"`
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
 	// suspended. If specified should be between 60s and 604800s (1 minute to 1
-	// week).
+	// week). Mutually exclusive with `no_suspension`. When updating, use
+	// `spec.project_default_settings.suspension` in the update_mask.
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1538,7 +1645,7 @@ type ProjectSpec struct {
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
 	// recovery for all branches in this project. Value should be between
-	// 172800s (2 days) and 2592000s (30 days).
+	// 172800s (2 days) and 3024000s (35 days).
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
 	// The major Postgres version number. Supported versions are 16 and 17.
 	PgVersion int `json:"pg_version,omitempty"`
@@ -1577,6 +1684,15 @@ type ProjectStatus struct {
 	Owner string `json:"owner,omitempty"`
 	// The effective major Postgres version number.
 	PgVersion int `json:"pg_version,omitempty"`
+	// The short identifier of the project, suitable for showing to the users.
+	// For a project with name `projects/my-project`, the project_id is
+	// `my-project`.
+	//
+	// Use this field when building UI components that display projects to users
+	// (e.g., a drop-down selector). Prefer showing `project_id` instead of the
+	// full resource name from `Project.name`, which follows the
+	// `projects/{project_id}` format and is not user-friendly.
+	ProjectId string `json:"project_id,omitempty"`
 	// The current space occupied by the project in storage.
 	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
 
@@ -1640,7 +1756,7 @@ func (f *ProvisioningInfoState) Type() string {
 	return "ProvisioningInfoState"
 }
 
-// Copied from database_table_statuses.proto to decouple SDK packages.
+// The current phase of the data synchronization pipeline.
 type ProvisioningPhase string
 
 const ProvisioningPhaseProvisioningPhaseIndexScan ProvisioningPhase = `PROVISIONING_PHASE_INDEX_SCAN`
@@ -1722,6 +1838,7 @@ func (f *RequestedClaimsPermissionSet) Type() string {
 }
 
 type RequestedResource struct {
+	// The full Unity Catalog table name.
 	TableName string `json:"table_name,omitempty"`
 
 	UnspecifiedResourceName string `json:"unspecified_resource_name,omitempty"`
@@ -1915,6 +2032,20 @@ type RoleRoleSpec struct {
 	// The desired API-exposed Postgres role attribute to associate with the
 	// role. Optional.
 	Attributes *RoleAttributes `json:"attributes,omitempty"`
+	// Controls how the Postgres role authenticates when a client opens a
+	// database connection. Supported values:
+	//
+	// * LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks
+	// OAuth access token derived from the backing managed identity (the
+	// Databricks user, service principal, or group named by the role's
+	// `postgres_role`). No static password exists for roles using this method.
+	// * PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres
+	// password verified server-side using the SCRAM-SHA-256 mechanism. Lakebase
+	// generates a password for the role. * NO_LOGIN: the role cannot open a
+	// Postgres session at all. Useful for roles that exist only to own objects
+	// or to aggregate privileges that are then granted to other, loginable
+	// roles.
+	//
 	// If auth_method is left unspecified, a meaningful authentication method is
 	// derived from the identity_type: * For the managed identities, OAUTH is
 	// used. * For the regular postgres roles, authentication based on postgres
@@ -1967,6 +2098,16 @@ type RoleRoleStatus struct {
 	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	PostgresRole string `json:"postgres_role,omitempty"`
+	// The short identifier of the role, suitable for showing to the users. For
+	// a role with name `projects/my-project/branches/my-branch/roles/my-role`,
+	// the role_id is `my-role`.
+	//
+	// Use this field when building UI components that display roles to users
+	// (e.g., a drop-down selector). Prefer showing `role_id` instead of the
+	// full resource name from `Role.name`, which follows the
+	// `projects/{project_id}/branches/{branch_id}/roles/{role_id}` format and
+	// is not user-friendly.
+	RoleId string `json:"role_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2061,8 +2202,7 @@ func (s SyncedTablePosition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The state of a synced table. Copied from database_table_statuses.proto to
-// decouple SDK packages.
+// The state of a synced table.
 type SyncedTableState string
 
 const SyncedTableStateSyncedTableOffline SyncedTableState = `SYNCED_TABLE_OFFLINE`
@@ -2247,6 +2387,10 @@ type SyncedTableSyncedTableStatus struct {
 	OngoingSyncProgress *SyncedTablePipelineProgress `json:"ongoing_sync_progress,omitempty"`
 	// ID of the associated pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
+	// The full resource name of the project associated with the table.
+	//
+	// Format: "projects/{project_id}".
+	Project string `json:"project,omitempty"`
 	// The current phase of the data synchronization pipeline.
 	ProvisioningPhase ProvisioningPhase `json:"provisioning_phase,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog.
@@ -2261,6 +2405,13 @@ func (s *SyncedTableSyncedTableStatus) UnmarshalJSON(b []byte) error {
 
 func (s SyncedTableSyncedTableStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Request to restore a soft-deleted project within its retention period.
+type UndeleteProjectRequest struct {
+	// The full resource path of the project to undelete. Format:
+	// projects/{project_id}
+	Name string `json:"-" url:"-"`
 }
 
 type UpdateBranchRequest struct {
