@@ -1920,6 +1920,65 @@ func (_c *MockPostgresInterface_ListRolesAll_Call) RunAndReturn(run func(context
 	return _c
 }
 
+// UndeleteProject provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) UndeleteProject(ctx context.Context, request postgres.UndeleteProjectRequest) (postgres.UndeleteProjectOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UndeleteProject")
+	}
+
+	var r0 postgres.UndeleteProjectOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UndeleteProjectRequest) (postgres.UndeleteProjectOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UndeleteProjectRequest) postgres.UndeleteProjectOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.UndeleteProjectOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UndeleteProjectRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_UndeleteProject_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UndeleteProject'
+type MockPostgresInterface_UndeleteProject_Call struct {
+	*mock.Call
+}
+
+// UndeleteProject is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.UndeleteProjectRequest
+func (_e *MockPostgresInterface_Expecter) UndeleteProject(ctx interface{}, request interface{}) *MockPostgresInterface_UndeleteProject_Call {
+	return &MockPostgresInterface_UndeleteProject_Call{Call: _e.mock.On("UndeleteProject", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_UndeleteProject_Call) Run(run func(ctx context.Context, request postgres.UndeleteProjectRequest)) *MockPostgresInterface_UndeleteProject_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.UndeleteProjectRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_UndeleteProject_Call) Return(_a0 postgres.UndeleteProjectOperationInterface, _a1 error) *MockPostgresInterface_UndeleteProject_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_UndeleteProject_Call) RunAndReturn(run func(context.Context, postgres.UndeleteProjectRequest) (postgres.UndeleteProjectOperationInterface, error)) *MockPostgresInterface_UndeleteProject_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateBranch provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) UpdateBranch(ctx context.Context, request postgres.UpdateBranchRequest) (postgres.UpdateBranchOperationInterface, error) {
 	ret := _m.Called(ctx, request)
