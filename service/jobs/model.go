@@ -2956,7 +2956,7 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
 }
 
 type PipelineParams struct {
-	// If true, triggers a full refresh on the delta live table.
+	// If true, triggers a full refresh on the spark declarative pipeline.
 	FullRefresh bool `json:"full_refresh,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2971,7 +2971,7 @@ func (s PipelineParams) MarshalJSON() ([]byte, error) {
 }
 
 type PipelineTask struct {
-	// If true, triggers a full refresh on the delta live table.
+	// If true, triggers a full refresh on the spark declarative pipeline.
 	FullRefresh bool `json:"full_refresh,omitempty"`
 	// The full name of the pipeline task to execute.
 	PipelineId string `json:"pipeline_id"`
