@@ -214,6 +214,8 @@ type ConnectorOptions struct {
 
 	JiraOptions *JiraConnectorOptions `json:"jira_options,omitempty"`
 
+	MetaAdsOptions *MetaMarketingOptions `json:"meta_ads_options,omitempty"`
+
 	OutlookOptions *OutlookOptions `json:"outlook_options,omitempty"`
 
 	SharepointOptions *SharepointOptions `json:"sharepoint_options,omitempty"`
@@ -1332,6 +1334,8 @@ const IngestionSourceTypeGoogleDrive IngestionSourceType = `GOOGLE_DRIVE`
 
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
 
+const IngestionSourceTypeMetaMarketing IngestionSourceType = `META_MARKETING`
+
 const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
 
 const IngestionSourceTypeNetsuite IngestionSourceType = `NETSUITE`
@@ -1360,11 +1364,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -1380,6 +1384,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeGa4RawData,
 		IngestionSourceTypeGoogleDrive,
 		IngestionSourceTypeManagedPostgresql,
+		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
 		IngestionSourceTypeNetsuite,
 		IngestionSourceTypeOracle,
@@ -1594,6 +1599,41 @@ func (f *MaturityLevel) Values() []MaturityLevel {
 // Type always returns MaturityLevel to satisfy [pflag.Value] interface
 func (f *MaturityLevel) Type() string {
 	return "MaturityLevel"
+}
+
+// Meta Marketing (Meta Ads) specific options for ingestion
+type MetaMarketingOptions struct {
+	// (Optional) Action attribution windows for insights reporting (e.g.
+	// "28d_click", "1d_view")
+	ActionAttributionWindows []string `json:"action_attribution_windows,omitempty"`
+	// (Optional) Action breakdowns to configure for data aggregation
+	ActionBreakdowns []string `json:"action_breakdowns,omitempty"`
+	// (Optional) Timing used to report action statistics (impression,
+	// conversion, mixed, or lifetime)
+	ActionReportTime string `json:"action_report_time,omitempty"`
+	// (Optional) Breakdowns to configure for data aggregation
+	Breakdowns []string `json:"breakdowns,omitempty"`
+	// (Optional) Window in days to revisit data during sync to capture updated
+	// conversion data from the API.
+	CustomInsightsLookbackWindow int `json:"custom_insights_lookback_window,omitempty"`
+	// (Optional) Granularity of data to pull (account, ad, adset, campaign)
+	Level string `json:"level,omitempty"`
+	// (Optional) Start date in yyyy-MM-dd format (e.g. 2025-01-15). Data added
+	// after this date will be ingested
+	StartDate string `json:"start_date,omitempty"`
+	// (Optional) Value in string by which to aggregate statistics (can take
+	// all_days, monthly or number of days)
+	TimeIncrement string `json:"time_increment,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MetaMarketingOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetaMarketingOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type NotebookLibrary struct {

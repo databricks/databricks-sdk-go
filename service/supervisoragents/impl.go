@@ -19,6 +19,21 @@ type supervisorAgentsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *supervisorAgentsImpl) CreateExample(ctx context.Context, request CreateExampleRequest) (*Example, error) {
+	var example Example
+	path := fmt.Sprintf("/api/2.1/%v/examples", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Example, &example)
+	return &example, err
+}
+
 func (a *supervisorAgentsImpl) CreateSupervisorAgent(ctx context.Context, request CreateSupervisorAgentRequest) (*SupervisorAgent, error) {
 	var supervisorAgent SupervisorAgent
 	path := "/api/2.1/supervisor-agents"
@@ -53,6 +68,19 @@ func (a *supervisorAgentsImpl) CreateTool(ctx context.Context, request CreateToo
 	return &tool, err
 }
 
+func (a *supervisorAgentsImpl) DeleteExample(ctx context.Context, request DeleteExampleRequest) error {
+	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *supervisorAgentsImpl) DeleteSupervisorAgent(ctx context.Context, request DeleteSupervisorAgentRequest) error {
 	path := fmt.Sprintf("/api/2.1/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -77,6 +105,48 @@ func (a *supervisorAgentsImpl) DeleteTool(ctx context.Context, request DeleteToo
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
+}
+
+func (a *supervisorAgentsImpl) GetExample(ctx context.Context, request GetExampleRequest) (*Example, error) {
+	var example Example
+	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &example)
+	return &example, err
+}
+
+func (a *supervisorAgentsImpl) GetPermissionLevels(ctx context.Context, request GetSupervisorAgentPermissionLevelsRequest) (*GetSupervisorAgentPermissionLevelsResponse, error) {
+	var getSupervisorAgentPermissionLevelsResponse GetSupervisorAgentPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v/permissionLevels", request.SupervisorAgentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getSupervisorAgentPermissionLevelsResponse)
+	return &getSupervisorAgentPermissionLevelsResponse, err
+}
+
+func (a *supervisorAgentsImpl) GetPermissions(ctx context.Context, request GetSupervisorAgentPermissionsRequest) (*SupervisorAgentPermissions, error) {
+	var supervisorAgentPermissions SupervisorAgentPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", request.SupervisorAgentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &supervisorAgentPermissions)
+	return &supervisorAgentPermissions, err
 }
 
 func (a *supervisorAgentsImpl) GetSupervisorAgent(ctx context.Context, request GetSupervisorAgentRequest) (*SupervisorAgent, error) {
@@ -105,6 +175,51 @@ func (a *supervisorAgentsImpl) GetTool(ctx context.Context, request GetToolReque
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &tool)
 	return &tool, err
+}
+
+// Lists examples under a Supervisor Agent.
+func (a *supervisorAgentsImpl) ListExamples(ctx context.Context, request ListExamplesRequest) listing.Iterator[Example] {
+
+	getNextPage := func(ctx context.Context, req ListExamplesRequest) (*ListExamplesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListExamples(ctx, req)
+	}
+	getItems := func(resp *ListExamplesResponse) []Example {
+		return resp.Examples
+	}
+	getNextReq := func(resp *ListExamplesResponse) *ListExamplesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists examples under a Supervisor Agent.
+func (a *supervisorAgentsImpl) ListExamplesAll(ctx context.Context, request ListExamplesRequest) ([]Example, error) {
+	iterator := a.ListExamples(ctx, request)
+	return listing.ToSlice[Example](ctx, iterator)
+}
+
+func (a *supervisorAgentsImpl) internalListExamples(ctx context.Context, request ListExamplesRequest) (*ListExamplesResponse, error) {
+	var listExamplesResponse ListExamplesResponse
+	path := fmt.Sprintf("/api/2.1/%v/examples", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExamplesResponse)
+	return &listExamplesResponse, err
 }
 
 // Lists Supervisor Agents.
@@ -195,6 +310,58 @@ func (a *supervisorAgentsImpl) internalListTools(ctx context.Context, request Li
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listToolsResponse)
 	return &listToolsResponse, err
+}
+
+func (a *supervisorAgentsImpl) SetPermissions(ctx context.Context, request SupervisorAgentPermissionsRequest) (*SupervisorAgentPermissions, error) {
+	var supervisorAgentPermissions SupervisorAgentPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", request.SupervisorAgentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &supervisorAgentPermissions)
+	return &supervisorAgentPermissions, err
+}
+
+func (a *supervisorAgentsImpl) UpdateExample(ctx context.Context, request UpdateExampleRequest) (*Example, error) {
+	var example Example
+	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Example, &example)
+	return &example, err
+}
+
+func (a *supervisorAgentsImpl) UpdatePermissions(ctx context.Context, request SupervisorAgentPermissionsRequest) (*SupervisorAgentPermissions, error) {
+	var supervisorAgentPermissions SupervisorAgentPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", request.SupervisorAgentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &supervisorAgentPermissions)
+	return &supervisorAgentPermissions, err
 }
 
 func (a *supervisorAgentsImpl) UpdateSupervisorAgent(ctx context.Context, request UpdateSupervisorAgentRequest) (*SupervisorAgent, error) {

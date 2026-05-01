@@ -527,7 +527,8 @@ type GetPermissionLevelsRequest struct {
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-	// queries, registered-models, repos, serving-endpoints, or warehouses.
+	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
+	// or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -543,7 +544,8 @@ type GetPermissionRequest struct {
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-	// queries, registered-models, repos, serving-endpoints, or warehouses.
+	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
+	// or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1897,7 +1899,8 @@ type SetObjectPermissions struct {
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-	// queries, registered-models, repos, serving-endpoints, or warehouses.
+	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
+	// or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -2023,7 +2026,8 @@ type UpdateObjectPermissions struct {
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-	// queries, registered-models, repos, serving-endpoints, or warehouses.
+	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
+	// or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 

@@ -55,8 +55,10 @@ type Example struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The universally unique identifier (UUID) of the example.
 	ExampleId string `json:"example_id,omitempty"`
-	// Guidelines for answering the question.
-	Guidelines []string `json:"guidelines"`
+	// Guidelines for answering the question. Optional — examples may be
+	// created with just a question; the front-end form does not require
+	// guidelines.
+	Guidelines []string `json:"guidelines,omitempty"`
 	// Full resource name:
 	// knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
 	Name string `json:"name,omitempty"`

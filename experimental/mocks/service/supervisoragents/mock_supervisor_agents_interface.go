@@ -23,6 +23,65 @@ func (_m *MockSupervisorAgentsInterface) EXPECT() *MockSupervisorAgentsInterface
 	return &MockSupervisorAgentsInterface_Expecter{mock: &_m.Mock}
 }
 
+// CreateExample provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) CreateExample(ctx context.Context, request supervisoragents.CreateExampleRequest) (*supervisoragents.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateExample")
+	}
+
+	var r0 *supervisoragents.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.CreateExampleRequest) (*supervisoragents.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.CreateExampleRequest) *supervisoragents.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.CreateExampleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_CreateExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateExample'
+type MockSupervisorAgentsInterface_CreateExample_Call struct {
+	*mock.Call
+}
+
+// CreateExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.CreateExampleRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) CreateExample(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_CreateExample_Call {
+	return &MockSupervisorAgentsInterface_CreateExample_Call{Call: _e.mock.On("CreateExample", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_CreateExample_Call) Run(run func(ctx context.Context, request supervisoragents.CreateExampleRequest)) *MockSupervisorAgentsInterface_CreateExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.CreateExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_CreateExample_Call) Return(_a0 *supervisoragents.Example, _a1 error) *MockSupervisorAgentsInterface_CreateExample_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_CreateExample_Call) RunAndReturn(run func(context.Context, supervisoragents.CreateExampleRequest) (*supervisoragents.Example, error)) *MockSupervisorAgentsInterface_CreateExample_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateSupervisorAgent provides a mock function with given fields: ctx, request
 func (_m *MockSupervisorAgentsInterface) CreateSupervisorAgent(ctx context.Context, request supervisoragents.CreateSupervisorAgentRequest) (*supervisoragents.SupervisorAgent, error) {
 	ret := _m.Called(ctx, request)
@@ -141,6 +200,53 @@ func (_c *MockSupervisorAgentsInterface_CreateTool_Call) RunAndReturn(run func(c
 	return _c
 }
 
+// DeleteExample provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) DeleteExample(ctx context.Context, request supervisoragents.DeleteExampleRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteExample")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.DeleteExampleRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockSupervisorAgentsInterface_DeleteExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteExample'
+type MockSupervisorAgentsInterface_DeleteExample_Call struct {
+	*mock.Call
+}
+
+// DeleteExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.DeleteExampleRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) DeleteExample(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_DeleteExample_Call {
+	return &MockSupervisorAgentsInterface_DeleteExample_Call{Call: _e.mock.On("DeleteExample", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_DeleteExample_Call) Run(run func(ctx context.Context, request supervisoragents.DeleteExampleRequest)) *MockSupervisorAgentsInterface_DeleteExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.DeleteExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_DeleteExample_Call) Return(_a0 error) *MockSupervisorAgentsInterface_DeleteExample_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_DeleteExample_Call) RunAndReturn(run func(context.Context, supervisoragents.DeleteExampleRequest) error) *MockSupervisorAgentsInterface_DeleteExample_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteSupervisorAgent provides a mock function with given fields: ctx, request
 func (_m *MockSupervisorAgentsInterface) DeleteSupervisorAgent(ctx context.Context, request supervisoragents.DeleteSupervisorAgentRequest) error {
 	ret := _m.Called(ctx, request)
@@ -231,6 +337,301 @@ func (_c *MockSupervisorAgentsInterface_DeleteTool_Call) Return(_a0 error) *Mock
 }
 
 func (_c *MockSupervisorAgentsInterface_DeleteTool_Call) RunAndReturn(run func(context.Context, supervisoragents.DeleteToolRequest) error) *MockSupervisorAgentsInterface_DeleteTool_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetExample provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) GetExample(ctx context.Context, request supervisoragents.GetExampleRequest) (*supervisoragents.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExample")
+	}
+
+	var r0 *supervisoragents.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.GetExampleRequest) (*supervisoragents.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.GetExampleRequest) *supervisoragents.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.GetExampleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_GetExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExample'
+type MockSupervisorAgentsInterface_GetExample_Call struct {
+	*mock.Call
+}
+
+// GetExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.GetExampleRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) GetExample(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_GetExample_Call {
+	return &MockSupervisorAgentsInterface_GetExample_Call{Call: _e.mock.On("GetExample", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_GetExample_Call) Run(run func(ctx context.Context, request supervisoragents.GetExampleRequest)) *MockSupervisorAgentsInterface_GetExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.GetExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetExample_Call) Return(_a0 *supervisoragents.Example, _a1 error) *MockSupervisorAgentsInterface_GetExample_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetExample_Call) RunAndReturn(run func(context.Context, supervisoragents.GetExampleRequest) (*supervisoragents.Example, error)) *MockSupervisorAgentsInterface_GetExample_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissionLevels provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) GetPermissionLevels(ctx context.Context, request supervisoragents.GetSupervisorAgentPermissionLevelsRequest) (*supervisoragents.GetSupervisorAgentPermissionLevelsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionLevels")
+	}
+
+	var r0 *supervisoragents.GetSupervisorAgentPermissionLevelsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.GetSupervisorAgentPermissionLevelsRequest) (*supervisoragents.GetSupervisorAgentPermissionLevelsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.GetSupervisorAgentPermissionLevelsRequest) *supervisoragents.GetSupervisorAgentPermissionLevelsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.GetSupervisorAgentPermissionLevelsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.GetSupervisorAgentPermissionLevelsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_GetPermissionLevels_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionLevels'
+type MockSupervisorAgentsInterface_GetPermissionLevels_Call struct {
+	*mock.Call
+}
+
+// GetPermissionLevels is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.GetSupervisorAgentPermissionLevelsRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) GetPermissionLevels(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_GetPermissionLevels_Call {
+	return &MockSupervisorAgentsInterface_GetPermissionLevels_Call{Call: _e.mock.On("GetPermissionLevels", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionLevels_Call) Run(run func(ctx context.Context, request supervisoragents.GetSupervisorAgentPermissionLevelsRequest)) *MockSupervisorAgentsInterface_GetPermissionLevels_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.GetSupervisorAgentPermissionLevelsRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionLevels_Call) Return(_a0 *supervisoragents.GetSupervisorAgentPermissionLevelsResponse, _a1 error) *MockSupervisorAgentsInterface_GetPermissionLevels_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionLevels_Call) RunAndReturn(run func(context.Context, supervisoragents.GetSupervisorAgentPermissionLevelsRequest) (*supervisoragents.GetSupervisorAgentPermissionLevelsResponse, error)) *MockSupervisorAgentsInterface_GetPermissionLevels_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissionLevelsBySupervisorAgentId provides a mock function with given fields: ctx, supervisorAgentId
+func (_m *MockSupervisorAgentsInterface) GetPermissionLevelsBySupervisorAgentId(ctx context.Context, supervisorAgentId string) (*supervisoragents.GetSupervisorAgentPermissionLevelsResponse, error) {
+	ret := _m.Called(ctx, supervisorAgentId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionLevelsBySupervisorAgentId")
+	}
+
+	var r0 *supervisoragents.GetSupervisorAgentPermissionLevelsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*supervisoragents.GetSupervisorAgentPermissionLevelsResponse, error)); ok {
+		return rf(ctx, supervisorAgentId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *supervisoragents.GetSupervisorAgentPermissionLevelsResponse); ok {
+		r0 = rf(ctx, supervisorAgentId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.GetSupervisorAgentPermissionLevelsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, supervisorAgentId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionLevelsBySupervisorAgentId'
+type MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call struct {
+	*mock.Call
+}
+
+// GetPermissionLevelsBySupervisorAgentId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - supervisorAgentId string
+func (_e *MockSupervisorAgentsInterface_Expecter) GetPermissionLevelsBySupervisorAgentId(ctx interface{}, supervisorAgentId interface{}) *MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call {
+	return &MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call{Call: _e.mock.On("GetPermissionLevelsBySupervisorAgentId", ctx, supervisorAgentId)}
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call) Run(run func(ctx context.Context, supervisorAgentId string)) *MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call) Return(_a0 *supervisoragents.GetSupervisorAgentPermissionLevelsResponse, _a1 error) *MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call) RunAndReturn(run func(context.Context, string) (*supervisoragents.GetSupervisorAgentPermissionLevelsResponse, error)) *MockSupervisorAgentsInterface_GetPermissionLevelsBySupervisorAgentId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissions provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) GetPermissions(ctx context.Context, request supervisoragents.GetSupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissions")
+	}
+
+	var r0 *supervisoragents.SupervisorAgentPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.GetSupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.GetSupervisorAgentPermissionsRequest) *supervisoragents.SupervisorAgentPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.SupervisorAgentPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.GetSupervisorAgentPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_GetPermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissions'
+type MockSupervisorAgentsInterface_GetPermissions_Call struct {
+	*mock.Call
+}
+
+// GetPermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.GetSupervisorAgentPermissionsRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) GetPermissions(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_GetPermissions_Call {
+	return &MockSupervisorAgentsInterface_GetPermissions_Call{Call: _e.mock.On("GetPermissions", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissions_Call) Run(run func(ctx context.Context, request supervisoragents.GetSupervisorAgentPermissionsRequest)) *MockSupervisorAgentsInterface_GetPermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.GetSupervisorAgentPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissions_Call) Return(_a0 *supervisoragents.SupervisorAgentPermissions, _a1 error) *MockSupervisorAgentsInterface_GetPermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissions_Call) RunAndReturn(run func(context.Context, supervisoragents.GetSupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error)) *MockSupervisorAgentsInterface_GetPermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissionsBySupervisorAgentId provides a mock function with given fields: ctx, supervisorAgentId
+func (_m *MockSupervisorAgentsInterface) GetPermissionsBySupervisorAgentId(ctx context.Context, supervisorAgentId string) (*supervisoragents.SupervisorAgentPermissions, error) {
+	ret := _m.Called(ctx, supervisorAgentId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionsBySupervisorAgentId")
+	}
+
+	var r0 *supervisoragents.SupervisorAgentPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*supervisoragents.SupervisorAgentPermissions, error)); ok {
+		return rf(ctx, supervisorAgentId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *supervisoragents.SupervisorAgentPermissions); ok {
+		r0 = rf(ctx, supervisorAgentId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.SupervisorAgentPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, supervisorAgentId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionsBySupervisorAgentId'
+type MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call struct {
+	*mock.Call
+}
+
+// GetPermissionsBySupervisorAgentId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - supervisorAgentId string
+func (_e *MockSupervisorAgentsInterface_Expecter) GetPermissionsBySupervisorAgentId(ctx interface{}, supervisorAgentId interface{}) *MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call {
+	return &MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call{Call: _e.mock.On("GetPermissionsBySupervisorAgentId", ctx, supervisorAgentId)}
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call) Run(run func(ctx context.Context, supervisorAgentId string)) *MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call) Return(_a0 *supervisoragents.SupervisorAgentPermissions, _a1 error) *MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call) RunAndReturn(run func(context.Context, string) (*supervisoragents.SupervisorAgentPermissions, error)) *MockSupervisorAgentsInterface_GetPermissionsBySupervisorAgentId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -349,6 +750,114 @@ func (_c *MockSupervisorAgentsInterface_GetTool_Call) Return(_a0 *supervisoragen
 }
 
 func (_c *MockSupervisorAgentsInterface_GetTool_Call) RunAndReturn(run func(context.Context, supervisoragents.GetToolRequest) (*supervisoragents.Tool, error)) *MockSupervisorAgentsInterface_GetTool_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListExamples provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) ListExamples(ctx context.Context, request supervisoragents.ListExamplesRequest) listing.Iterator[supervisoragents.Example] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListExamples")
+	}
+
+	var r0 listing.Iterator[supervisoragents.Example]
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.ListExamplesRequest) listing.Iterator[supervisoragents.Example]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[supervisoragents.Example])
+		}
+	}
+
+	return r0
+}
+
+// MockSupervisorAgentsInterface_ListExamples_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListExamples'
+type MockSupervisorAgentsInterface_ListExamples_Call struct {
+	*mock.Call
+}
+
+// ListExamples is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.ListExamplesRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) ListExamples(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_ListExamples_Call {
+	return &MockSupervisorAgentsInterface_ListExamples_Call{Call: _e.mock.On("ListExamples", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_ListExamples_Call) Run(run func(ctx context.Context, request supervisoragents.ListExamplesRequest)) *MockSupervisorAgentsInterface_ListExamples_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.ListExamplesRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_ListExamples_Call) Return(_a0 listing.Iterator[supervisoragents.Example]) *MockSupervisorAgentsInterface_ListExamples_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_ListExamples_Call) RunAndReturn(run func(context.Context, supervisoragents.ListExamplesRequest) listing.Iterator[supervisoragents.Example]) *MockSupervisorAgentsInterface_ListExamples_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListExamplesAll provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) ListExamplesAll(ctx context.Context, request supervisoragents.ListExamplesRequest) ([]supervisoragents.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListExamplesAll")
+	}
+
+	var r0 []supervisoragents.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.ListExamplesRequest) ([]supervisoragents.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.ListExamplesRequest) []supervisoragents.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]supervisoragents.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.ListExamplesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_ListExamplesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListExamplesAll'
+type MockSupervisorAgentsInterface_ListExamplesAll_Call struct {
+	*mock.Call
+}
+
+// ListExamplesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.ListExamplesRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) ListExamplesAll(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_ListExamplesAll_Call {
+	return &MockSupervisorAgentsInterface_ListExamplesAll_Call{Call: _e.mock.On("ListExamplesAll", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_ListExamplesAll_Call) Run(run func(ctx context.Context, request supervisoragents.ListExamplesRequest)) *MockSupervisorAgentsInterface_ListExamplesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.ListExamplesRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_ListExamplesAll_Call) Return(_a0 []supervisoragents.Example, _a1 error) *MockSupervisorAgentsInterface_ListExamplesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_ListExamplesAll_Call) RunAndReturn(run func(context.Context, supervisoragents.ListExamplesRequest) ([]supervisoragents.Example, error)) *MockSupervisorAgentsInterface_ListExamplesAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -565,6 +1074,183 @@ func (_c *MockSupervisorAgentsInterface_ListToolsAll_Call) Return(_a0 []supervis
 }
 
 func (_c *MockSupervisorAgentsInterface_ListToolsAll_Call) RunAndReturn(run func(context.Context, supervisoragents.ListToolsRequest) ([]supervisoragents.Tool, error)) *MockSupervisorAgentsInterface_ListToolsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetPermissions provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) SetPermissions(ctx context.Context, request supervisoragents.SupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetPermissions")
+	}
+
+	var r0 *supervisoragents.SupervisorAgentPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) *supervisoragents.SupervisorAgentPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.SupervisorAgentPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_SetPermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetPermissions'
+type MockSupervisorAgentsInterface_SetPermissions_Call struct {
+	*mock.Call
+}
+
+// SetPermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.SupervisorAgentPermissionsRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) SetPermissions(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_SetPermissions_Call {
+	return &MockSupervisorAgentsInterface_SetPermissions_Call{Call: _e.mock.On("SetPermissions", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_SetPermissions_Call) Run(run func(ctx context.Context, request supervisoragents.SupervisorAgentPermissionsRequest)) *MockSupervisorAgentsInterface_SetPermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.SupervisorAgentPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_SetPermissions_Call) Return(_a0 *supervisoragents.SupervisorAgentPermissions, _a1 error) *MockSupervisorAgentsInterface_SetPermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_SetPermissions_Call) RunAndReturn(run func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error)) *MockSupervisorAgentsInterface_SetPermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateExample provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) UpdateExample(ctx context.Context, request supervisoragents.UpdateExampleRequest) (*supervisoragents.Example, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateExample")
+	}
+
+	var r0 *supervisoragents.Example
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.UpdateExampleRequest) (*supervisoragents.Example, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.UpdateExampleRequest) *supervisoragents.Example); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.Example)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.UpdateExampleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_UpdateExample_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateExample'
+type MockSupervisorAgentsInterface_UpdateExample_Call struct {
+	*mock.Call
+}
+
+// UpdateExample is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.UpdateExampleRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) UpdateExample(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_UpdateExample_Call {
+	return &MockSupervisorAgentsInterface_UpdateExample_Call{Call: _e.mock.On("UpdateExample", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_UpdateExample_Call) Run(run func(ctx context.Context, request supervisoragents.UpdateExampleRequest)) *MockSupervisorAgentsInterface_UpdateExample_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.UpdateExampleRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_UpdateExample_Call) Return(_a0 *supervisoragents.Example, _a1 error) *MockSupervisorAgentsInterface_UpdateExample_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_UpdateExample_Call) RunAndReturn(run func(context.Context, supervisoragents.UpdateExampleRequest) (*supervisoragents.Example, error)) *MockSupervisorAgentsInterface_UpdateExample_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdatePermissions provides a mock function with given fields: ctx, request
+func (_m *MockSupervisorAgentsInterface) UpdatePermissions(ctx context.Context, request supervisoragents.SupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdatePermissions")
+	}
+
+	var r0 *supervisoragents.SupervisorAgentPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) *supervisoragents.SupervisorAgentPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*supervisoragents.SupervisorAgentPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSupervisorAgentsInterface_UpdatePermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdatePermissions'
+type MockSupervisorAgentsInterface_UpdatePermissions_Call struct {
+	*mock.Call
+}
+
+// UpdatePermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request supervisoragents.SupervisorAgentPermissionsRequest
+func (_e *MockSupervisorAgentsInterface_Expecter) UpdatePermissions(ctx interface{}, request interface{}) *MockSupervisorAgentsInterface_UpdatePermissions_Call {
+	return &MockSupervisorAgentsInterface_UpdatePermissions_Call{Call: _e.mock.On("UpdatePermissions", ctx, request)}
+}
+
+func (_c *MockSupervisorAgentsInterface_UpdatePermissions_Call) Run(run func(ctx context.Context, request supervisoragents.SupervisorAgentPermissionsRequest)) *MockSupervisorAgentsInterface_UpdatePermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(supervisoragents.SupervisorAgentPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_UpdatePermissions_Call) Return(_a0 *supervisoragents.SupervisorAgentPermissions, _a1 error) *MockSupervisorAgentsInterface_UpdatePermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSupervisorAgentsInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, supervisoragents.SupervisorAgentPermissionsRequest) (*supervisoragents.SupervisorAgentPermissions, error)) *MockSupervisorAgentsInterface_UpdatePermissions_Call {
 	_c.Call.Return(run)
 	return _c
 }
