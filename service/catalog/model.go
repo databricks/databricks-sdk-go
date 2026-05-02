@@ -7226,7 +7226,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: RECIPIENT_EMAIL_DATABRICKS = 325; Next id: 326
+// Latest kind: CONNECTION_RABBITMQ = 326; Next id: 327
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

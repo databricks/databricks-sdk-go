@@ -528,7 +528,7 @@ type GetPermissionLevelsRequest struct {
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
 	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
-	// or warehouses.
+	// vector-search-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -545,7 +545,7 @@ type GetPermissionRequest struct {
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
 	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
-	// or warehouses.
+	// vector-search-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1900,7 +1900,7 @@ type SetObjectPermissions struct {
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
 	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
-	// or warehouses.
+	// vector-search-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -2027,7 +2027,7 @@ type UpdateObjectPermissions struct {
 	// database-projects, dbsql-dashboards, directories, experiments, files,
 	// genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
 	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
-	// or warehouses.
+	// vector-search-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
