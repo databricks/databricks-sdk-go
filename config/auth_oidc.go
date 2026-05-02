@@ -67,7 +67,7 @@ func githubOIDC(cfg *Config) CredentialsStrategy {
 func azureDevOpsOIDC(cfg *Config) CredentialsStrategy {
 	// Return a systemically failed strategy if the Azure DevOps ID token source
 	// cannot be created.
-	idts, err := oidc.NewAzureDevOpsIDTokenSource(cfg.refreshClient)
+	idts, err := oidc.NewAzureDevOpsIDTokenSource(cfg.refreshClient, cfg.AzureDevOpsServiceConnectionID)
 	if err != nil {
 		return &failedStrategy{name: "azure-devops-oidc", err: err}
 	}

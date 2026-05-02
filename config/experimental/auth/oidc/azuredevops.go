@@ -20,8 +20,8 @@ var (
 // IDToken from an Azure DevOps environment.
 //
 // This IDTokenSource is only valid when running in Azure DevOps Pipelines.
-func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient) (IDTokenSource, error) {
-	ts := &azureDevOpsIDTokenSource{Client: client}
+func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient, serviceConnectionID string) (IDTokenSource, error) {
+	ts := &azureDevOpsIDTokenSource{Client: client, ServiceConnectionID: serviceConnectionID}
 
 	// Environment variable SYSTEM_ACCESSTOKEN is treated differently from
 	// other environment variables because it is controlled by users within
@@ -71,6 +71,7 @@ type azureDevOpsIDTokenSource struct {
 	JobID                       string
 	TeamProjectID               string
 	HostType                    string
+	ServiceConnectionID         string
 }
 
 // IDToken returns a JWT Token for the specified audience. For Azure DevOps OIDC,
@@ -87,6 +88,9 @@ func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string)
 		a.PlanID,
 		a.JobID,
 	)
+	if a.ServiceConnectionID != "" {
+		requestUrl = fmt.Sprintf("%s&serviceConnectionId=%s", requestUrl, a.ServiceConnectionID)
+	}
 
 	// Azure DevOps returns {"oidcToken":"***"}, not {"value":"***"}.
 	var azureResp struct {

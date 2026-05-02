@@ -162,6 +162,13 @@ type Config struct {
 	ActionsIDTokenRequestURL   string `name:"actions_id_token_request_url" env:"ACTIONS_ID_TOKEN_REQUEST_URL"`
 	ActionsIDTokenRequestToken string `name:"actions_id_token_request_token" env:"ACTIONS_ID_TOKEN_REQUEST_TOKEN"`
 
+	// AzureDevOpsServiceConnectionID is the ID of the Azure DevOps service
+	// connection to use for OIDC authentication. When set, the OIDC token
+	// subject claim will be based on the service connection
+	// (sc://<Org>/<Project>/<ServiceConnection>) instead of the pipeline
+	// (p://<Org>/<Project>/<Pipeline>).
+	AzureDevOpsServiceConnectionID string `name:"azure_devops_service_connection_id" env:"DATABRICKS_AZURE_DEVOPS_SERVICE_CONNECTION_ID"`
+
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.
 	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
