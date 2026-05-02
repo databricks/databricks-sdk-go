@@ -444,7 +444,7 @@ type Tool struct {
 	// Tool type. Must be one of: "genie_space", "knowledge_assistant",
 	// "uc_function", "uc_connection", "app", "volume", "lakeview_dashboard",
 	// "serving_endpoint", "uc_table", "vector_search_index", "catalog",
-	// "schema".
+	// "schema", "supervisor_agent".
 	ToolType string `json:"tool_type"`
 
 	UcConnection *UcConnection `json:"uc_connection,omitempty"`
