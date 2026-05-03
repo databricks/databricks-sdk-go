@@ -25,3 +25,4 @@
 * [Breaking] Change `Guidelines` field for [knowledgeassistants.Example](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/knowledgeassistants#Example) to no longer be required.
 * Change `Description` field for [supervisoragents.Tool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/supervisoragents#Tool) to no longer be required.
 * [Breaking] Change `Description` field for [supervisoragents.Tool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/supervisoragents#Tool) to no longer be required.
+* Add `Zendesk` enum value for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
