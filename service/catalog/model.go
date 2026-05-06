@@ -7229,7 +7229,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_RABBITMQ = 326; Next id: 327
+// Latest kind: MODEL_SERVICE_STANDARD = 327; Next id: 328
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -8171,6 +8171,8 @@ type TemporaryCredentials struct {
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
 
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+
+	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

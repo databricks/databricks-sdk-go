@@ -30,13 +30,13 @@ type CreateEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Type of endpoint
 	EndpointType EndpointType `json:"endpoint_type"`
-	// Deprecated: use target_qps. Min QPS for the endpoint. Mutually exclusive
-	// with num_replicas. Kept at PUBLIC_BETA with deprecated = true so
-	// generated SDK surfaces keep the field with a deprecation marker; hiding
-	// completely is a follow-up PR.
-	MinQps int64 `json:"min_qps,omitempty"`
 	// Name of the vector search endpoint
 	Name string `json:"name"`
+	// Target QPS for the endpoint. Mutually exclusive with num_replicas. The
+	// actual replica count is calculated at index creation/sync time based on
+	// this value. Best-effort target; the system does not guarantee this QPS
+	// will be achieved.
+	TargetQps int64 `json:"target_qps,omitempty"`
 	// The usage policy id to be applied once we've migrated to usage policies
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
@@ -171,6 +171,12 @@ type DeleteIndexRequest struct {
 }
 
 type DeltaSyncVectorIndexSpecRequest struct {
+	// [Optional] Alias for columns_to_sync. Select the columns to include in
+	// the vector index. If you leave this field blank, all columns from the
+	// source table are included. The primary key column and embedding source
+	// column or embedding vector column are always included. Only one of
+	// columns_to_sync or columns_to_index may be specified.
+	ColumnsToIndex []string `json:"columns_to_index,omitempty"`
 	// [Optional] Select the columns to sync with the vector index. If you leave
 	// this field blank, all columns from the source table are synced with the
 	// index. The primary key column and embedding source column or embedding
@@ -206,6 +212,12 @@ func (s DeltaSyncVectorIndexSpecRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeltaSyncVectorIndexSpecResponse struct {
+	// [Optional] Alias for columns_to_sync. Select the columns to include in
+	// the vector index. If you leave this field blank, all columns from the
+	// source table are included. The primary key column and embedding source
+	// column or embedding vector column are always included. Only one of
+	// columns_to_sync or columns_to_index may be specified.
+	ColumnsToIndex []string `json:"columns_to_index,omitempty"`
 	// [Optional] Select the columns to sync with the vector index. If you leave
 	// this field blank, all columns from the source table are synced with the
 	// index. The primary key column and embedding source column or embedding
@@ -304,9 +316,7 @@ func (s EmbeddingVectorColumn) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointInfo struct {
-	// Discussed here: https://databricks.atlassian.net/wiki/x/OQDlCQE
-	// Additional documentation: https://aip.dev.databricks.com/129 the user
-	// selected budget policy id for the endpoint (client-side)
+	// The user-selected budget policy id for the endpoint.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Timestamp of endpoint creation
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
@@ -345,12 +355,9 @@ func (s EndpointInfo) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointScalingInfo struct {
-	// Deprecated: use requested_target_qps. Kept at PUBLIC_BETA with deprecated
-	// = true so generated SDK surfaces (Go, Java, TypeScript, Terraform) keep
-	// exposing the field with a deprecation marker rather than losing it on
-	// next regeneration. Hiding completely (visibility = PUBLIC_UNDOCUMENTED)
-	// is a follow-up PR once downstream consumers have migrated.
-	RequestedMinQps int64 `json:"requested_min_qps,omitempty"`
+	// The requested QPS target for the endpoint. Best-effort; the system does
+	// not guarantee this QPS will be achieved.
+	RequestedTargetQps int64 `json:"requested_target_qps,omitempty"`
 	// The current state of the scaling change request.
 	State ScalingChangeState `json:"state,omitempty"`
 
@@ -751,11 +758,9 @@ func (s PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
 type PatchEndpointRequest struct {
 	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
-	// Deprecated: use target_qps. Min QPS for the endpoint. Positive integer
-	// sets QPS target; -1 resets to default scaling behavior. Kept at
-	// PUBLIC_BETA with deprecated = true so generated SDK surfaces keep the
-	// field with a deprecation marker; hiding completely is a follow-up PR.
-	MinQps int64 `json:"min_qps,omitempty"`
+	// Target QPS for the endpoint. Best-effort; the system does not guarantee
+	// this QPS will be achieved.
+	TargetQps int64 `json:"target_qps,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

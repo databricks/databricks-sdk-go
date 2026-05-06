@@ -3768,10 +3768,9 @@ type NccPrivateEndpointRule struct {
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	DomainNames []string `json:"domain_names,omitempty"`
-	// Only used by private endpoints towards an AWS S3 service.
-	//
 	// Update this field to activate/deactivate this private endpoint to allow
-	// egress access from serverless compute resources.
+	// egress access from serverless compute resources. Only honored for
+	// first-party services on each cloud (e.g. AWS S3).
 	Enabled bool `json:"enabled,omitempty"`
 	// The name of the Azure private endpoint resource.
 	EndpointName string `json:"endpoint_name,omitempty"`
@@ -4978,10 +4977,9 @@ type UpdatePrivateEndpointRule struct {
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	DomainNames []string `json:"domain_names,omitempty"`
-	// Only used by private endpoints towards an AWS S3 service.
-	//
 	// Update this field to activate/deactivate this private endpoint to allow
-	// egress access from serverless compute resources.
+	// egress access from serverless compute resources. Only honored for
+	// first-party services on each cloud (e.g. AWS S3).
 	Enabled bool `json:"enabled,omitempty"`
 
 	ErrorMessage string `json:"error_message,omitempty"`

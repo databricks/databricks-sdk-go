@@ -108,6 +108,33 @@ func (s CreateAwsKeyInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateAzureKeyInfo struct {
+	// The Disk Encryption Set id that is used to represent the key info used
+	// for Managed Disk BYOK use case
+	DiskEncryptionSetId string `json:"disk_encryption_set_id,omitempty"`
+	// The structure to store key access credential This is set if the Managed
+	// Identity is being used to access the Azure Key Vault key.
+	KeyAccessConfiguration *KeyAccessConfiguration `json:"key_access_configuration,omitempty"`
+	// The name of the key in KeyVault.
+	KeyName string `json:"key_name,omitempty"`
+	// The base URI of the KeyVault.
+	KeyVaultUri string `json:"key_vault_uri,omitempty"`
+	// The tenant id where the KeyVault lives.
+	TenantId string `json:"tenant_id,omitempty"`
+	// The current key version.
+	Version string `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAzureKeyInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAzureKeyInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateCredentialAwsCredentials struct {
 	StsRole *CreateCredentialStsRole `json:"sts_role,omitempty"`
 }
@@ -135,6 +162,8 @@ func (s CreateCredentialStsRole) MarshalJSON() ([]byte, error) {
 
 type CreateCustomerManagedKeyRequest struct {
 	AwsKeyInfo *CreateAwsKeyInfo `json:"aws_key_info,omitempty"`
+
+	AzureKeyInfo *CreateAzureKeyInfo `json:"azure_key_info,omitempty"`
 
 	GcpKeyInfo *CreateGcpKeyInfo `json:"gcp_key_info,omitempty"`
 	// The cases that the key can be used for.

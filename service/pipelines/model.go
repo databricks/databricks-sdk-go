@@ -223,6 +223,8 @@ type ConnectorOptions struct {
 	SmartsheetOptions *SmartsheetOptions `json:"smartsheet_options,omitempty"`
 
 	TiktokAdsOptions *TikTokAdsOptions `json:"tiktok_ads_options,omitempty"`
+
+	ZendeskSupportOptions *ZendeskSupportOptions `json:"zendesk_support_options,omitempty"`
 }
 
 // For certain database sources LakeFlow Connect offers both query based and cdc
@@ -1332,6 +1334,8 @@ const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
 const IngestionSourceTypeGoogleDrive IngestionSourceType = `GOOGLE_DRIVE`
 
+const IngestionSourceTypeJira IngestionSourceType = `JIRA`
+
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
 
 const IngestionSourceTypeMetaMarketing IngestionSourceType = `META_MARKETING`
@@ -1356,6 +1360,8 @@ const IngestionSourceTypeTeradata IngestionSourceType = `TERADATA`
 
 const IngestionSourceTypeWorkdayRaas IngestionSourceType = `WORKDAY_RAAS`
 
+const IngestionSourceTypeZendesk IngestionSourceType = `ZENDESK`
+
 // String representation for [fmt.Print]
 func (f *IngestionSourceType) String() string {
 	return string(*f)
@@ -1364,11 +1370,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1383,6 +1389,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeForeignCatalog,
 		IngestionSourceTypeGa4RawData,
 		IngestionSourceTypeGoogleDrive,
+		IngestionSourceTypeJira,
 		IngestionSourceTypeManagedPostgresql,
 		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
@@ -1395,6 +1402,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeSqlserver,
 		IngestionSourceTypeTeradata,
 		IngestionSourceTypeWorkdayRaas,
+		IngestionSourceTypeZendesk,
 	}
 }
 
@@ -3587,4 +3595,21 @@ func (f *UpdateStateInfoState) Values() []UpdateStateInfoState {
 // Type always returns UpdateStateInfoState to satisfy [pflag.Value] interface
 func (f *UpdateStateInfoState) Type() string {
 	return "UpdateStateInfoState"
+}
+
+// Zendesk Support specific options for ingestion
+type ZendeskSupportOptions struct {
+	// (Optional) Start date in YYYY-MM-DD format for the initial sync. This
+	// determines the earliest date from which to sync historical data.
+	StartDate string `json:"start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ZendeskSupportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ZendeskSupportOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
