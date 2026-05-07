@@ -479,6 +479,56 @@ func (f *PersonalComputeMessagePersonalComputeMessageEnum) Type() string {
 	return "PersonalComputeMessagePersonalComputeMessageEnum"
 }
 
+// Preview phase for settings that are feature previews. For settings that are
+// not feature previews, the preview_phase field is left unset. Mirrors only the
+// customer-facing phases surfaced in the UI; internal-only phases (DISABLED,
+// DEV, UNDER_MIGRATION, LAUNCHED, etc.) are not exposed here.
+type PreviewPhase string
+
+const PreviewPhaseBeta PreviewPhase = `BETA`
+
+const PreviewPhaseGa PreviewPhase = `GA`
+
+const PreviewPhaseGaSoon PreviewPhase = `GA_SOON`
+
+const PreviewPhasePrivatePreview PreviewPhase = `PRIVATE_PREVIEW`
+
+const PreviewPhasePublicPreview PreviewPhase = `PUBLIC_PREVIEW`
+
+// String representation for [fmt.Print]
+func (f *PreviewPhase) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PreviewPhase) Set(v string) error {
+	switch v {
+	case `BETA`, `GA`, `GA_SOON`, `PRIVATE_PREVIEW`, `PUBLIC_PREVIEW`:
+		*f = PreviewPhase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BETA", "GA", "GA_SOON", "PRIVATE_PREVIEW", "PUBLIC_PREVIEW"`, v)
+	}
+}
+
+// Values returns all possible values for PreviewPhase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PreviewPhase) Values() []PreviewPhase {
+	return []PreviewPhase{
+		PreviewPhaseBeta,
+		PreviewPhaseGa,
+		PreviewPhaseGaSoon,
+		PreviewPhasePrivatePreview,
+		PreviewPhasePublicPreview,
+	}
+}
+
+// Type always returns PreviewPhase to satisfy [pflag.Value] interface
+func (f *PreviewPhase) Type() string {
+	return "PreviewPhase"
+}
+
 type RestrictWorkspaceAdminsMessage struct {
 	// When true, workspace admins cannot create governance tags. ALLOW_ALL
 	// status does not override this; they are independent.
@@ -609,10 +659,16 @@ func (s Setting) MarshalJSON() ([]byte, error) {
 type SettingsMetadata struct {
 	// Setting description for what this setting controls
 	Description string `json:"description,omitempty"`
+	// Human-readable display name for the setting or feature preview. This
+	// field may be unset if no display name is available.
+	DisplayName string `json:"display_name,omitempty"`
 	// Link to databricks documentation for the setting
 	DocsLink string `json:"docs_link,omitempty"`
 	// Name of the setting.
 	Name string `json:"name,omitempty"`
+	// Preview phase for feature preview settings. This field is not set for
+	// non-preview settings.
+	PreviewPhase PreviewPhase `json:"preview_phase,omitempty"`
 	// Sample message depicting the type of the setting. To set this setting,
 	// the value sent must match this type.
 	Type string `json:"type,omitempty"`

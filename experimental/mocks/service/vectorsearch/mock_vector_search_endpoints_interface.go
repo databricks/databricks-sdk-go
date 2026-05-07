@@ -370,6 +370,242 @@ func (_c *MockVectorSearchEndpointsInterface_GetEndpointByEndpointName_Call) Run
 	return _c
 }
 
+// GetPermissionLevels provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) GetPermissionLevels(ctx context.Context, request vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest) (*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionLevels")
+	}
+
+	var r0 *vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest) (*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest) *vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_GetPermissionLevels_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionLevels'
+type MockVectorSearchEndpointsInterface_GetPermissionLevels_Call struct {
+	*mock.Call
+}
+
+// GetPermissionLevels is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) GetPermissionLevels(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_GetPermissionLevels_Call {
+	return &MockVectorSearchEndpointsInterface_GetPermissionLevels_Call{Call: _e.mock.On("GetPermissionLevels", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionLevels_Call) Run(run func(ctx context.Context, request vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest)) *MockVectorSearchEndpointsInterface_GetPermissionLevels_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionLevels_Call) Return(_a0 *vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, _a1 error) *MockVectorSearchEndpointsInterface_GetPermissionLevels_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionLevels_Call) RunAndReturn(run func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionLevelsRequest) (*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, error)) *MockVectorSearchEndpointsInterface_GetPermissionLevels_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissionLevelsByEndpointId provides a mock function with given fields: ctx, endpointId
+func (_m *MockVectorSearchEndpointsInterface) GetPermissionLevelsByEndpointId(ctx context.Context, endpointId string) (*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, error) {
+	ret := _m.Called(ctx, endpointId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionLevelsByEndpointId")
+	}
+
+	var r0 *vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, error)); ok {
+		return rf(ctx, endpointId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse); ok {
+		r0 = rf(ctx, endpointId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, endpointId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionLevelsByEndpointId'
+type MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call struct {
+	*mock.Call
+}
+
+// GetPermissionLevelsByEndpointId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - endpointId string
+func (_e *MockVectorSearchEndpointsInterface_Expecter) GetPermissionLevelsByEndpointId(ctx interface{}, endpointId interface{}) *MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call {
+	return &MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call{Call: _e.mock.On("GetPermissionLevelsByEndpointId", ctx, endpointId)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call) Run(run func(ctx context.Context, endpointId string)) *MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call) Return(_a0 *vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, _a1 error) *MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call) RunAndReturn(run func(context.Context, string) (*vectorsearch.GetVectorSearchEndpointPermissionLevelsResponse, error)) *MockVectorSearchEndpointsInterface_GetPermissionLevelsByEndpointId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissions provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) GetPermissions(ctx context.Context, request vectorsearch.GetVectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissions")
+	}
+
+	var r0 *vectorsearch.VectorSearchEndpointPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionsRequest) *vectorsearch.VectorSearchEndpointPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.VectorSearchEndpointPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_GetPermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissions'
+type MockVectorSearchEndpointsInterface_GetPermissions_Call struct {
+	*mock.Call
+}
+
+// GetPermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.GetVectorSearchEndpointPermissionsRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) GetPermissions(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_GetPermissions_Call {
+	return &MockVectorSearchEndpointsInterface_GetPermissions_Call{Call: _e.mock.On("GetPermissions", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissions_Call) Run(run func(ctx context.Context, request vectorsearch.GetVectorSearchEndpointPermissionsRequest)) *MockVectorSearchEndpointsInterface_GetPermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.GetVectorSearchEndpointPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissions_Call) Return(_a0 *vectorsearch.VectorSearchEndpointPermissions, _a1 error) *MockVectorSearchEndpointsInterface_GetPermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissions_Call) RunAndReturn(run func(context.Context, vectorsearch.GetVectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error)) *MockVectorSearchEndpointsInterface_GetPermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPermissionsByEndpointId provides a mock function with given fields: ctx, endpointId
+func (_m *MockVectorSearchEndpointsInterface) GetPermissionsByEndpointId(ctx context.Context, endpointId string) (*vectorsearch.VectorSearchEndpointPermissions, error) {
+	ret := _m.Called(ctx, endpointId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPermissionsByEndpointId")
+	}
+
+	var r0 *vectorsearch.VectorSearchEndpointPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*vectorsearch.VectorSearchEndpointPermissions, error)); ok {
+		return rf(ctx, endpointId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *vectorsearch.VectorSearchEndpointPermissions); ok {
+		r0 = rf(ctx, endpointId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.VectorSearchEndpointPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, endpointId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPermissionsByEndpointId'
+type MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call struct {
+	*mock.Call
+}
+
+// GetPermissionsByEndpointId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - endpointId string
+func (_e *MockVectorSearchEndpointsInterface_Expecter) GetPermissionsByEndpointId(ctx interface{}, endpointId interface{}) *MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call {
+	return &MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call{Call: _e.mock.On("GetPermissionsByEndpointId", ctx, endpointId)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call) Run(run func(ctx context.Context, endpointId string)) *MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call) Return(_a0 *vectorsearch.VectorSearchEndpointPermissions, _a1 error) *MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call) RunAndReturn(run func(context.Context, string) (*vectorsearch.VectorSearchEndpointPermissions, error)) *MockVectorSearchEndpointsInterface_GetPermissionsByEndpointId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListEndpoints provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchEndpointsInterface) ListEndpoints(ctx context.Context, request vectorsearch.ListEndpointsRequest) listing.Iterator[vectorsearch.EndpointInfo] {
 	ret := _m.Called(ctx, request)
@@ -596,6 +832,65 @@ func (_c *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call) Ru
 	return _c
 }
 
+// SetPermissions provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) SetPermissions(ctx context.Context, request vectorsearch.VectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetPermissions")
+	}
+
+	var r0 *vectorsearch.VectorSearchEndpointPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) *vectorsearch.VectorSearchEndpointPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.VectorSearchEndpointPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_SetPermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetPermissions'
+type MockVectorSearchEndpointsInterface_SetPermissions_Call struct {
+	*mock.Call
+}
+
+// SetPermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.VectorSearchEndpointPermissionsRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) SetPermissions(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_SetPermissions_Call {
+	return &MockVectorSearchEndpointsInterface_SetPermissions_Call{Call: _e.mock.On("SetPermissions", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_SetPermissions_Call) Run(run func(ctx context.Context, request vectorsearch.VectorSearchEndpointPermissionsRequest)) *MockVectorSearchEndpointsInterface_SetPermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.VectorSearchEndpointPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_SetPermissions_Call) Return(_a0 *vectorsearch.VectorSearchEndpointPermissions, _a1 error) *MockVectorSearchEndpointsInterface_SetPermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_SetPermissions_Call) RunAndReturn(run func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error)) *MockVectorSearchEndpointsInterface_SetPermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateEndpointBudgetPolicy provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchEndpointsInterface) UpdateEndpointBudgetPolicy(ctx context.Context, request vectorsearch.PatchEndpointBudgetPolicyRequest) (*vectorsearch.PatchEndpointBudgetPolicyResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -710,6 +1005,65 @@ func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call) Retu
 }
 
 func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call) RunAndReturn(run func(context.Context, vectorsearch.UpdateEndpointCustomTagsRequest) (*vectorsearch.UpdateEndpointCustomTagsResponse, error)) *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdatePermissions provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) UpdatePermissions(ctx context.Context, request vectorsearch.VectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdatePermissions")
+	}
+
+	var r0 *vectorsearch.VectorSearchEndpointPermissions
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) *vectorsearch.VectorSearchEndpointPermissions); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.VectorSearchEndpointPermissions)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_UpdatePermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdatePermissions'
+type MockVectorSearchEndpointsInterface_UpdatePermissions_Call struct {
+	*mock.Call
+}
+
+// UpdatePermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.VectorSearchEndpointPermissionsRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) UpdatePermissions(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_UpdatePermissions_Call {
+	return &MockVectorSearchEndpointsInterface_UpdatePermissions_Call{Call: _e.mock.On("UpdatePermissions", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdatePermissions_Call) Run(run func(ctx context.Context, request vectorsearch.VectorSearchEndpointPermissionsRequest)) *MockVectorSearchEndpointsInterface_UpdatePermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.VectorSearchEndpointPermissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdatePermissions_Call) Return(_a0 *vectorsearch.VectorSearchEndpointPermissions, _a1 error) *MockVectorSearchEndpointsInterface_UpdatePermissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, vectorsearch.VectorSearchEndpointPermissionsRequest) (*vectorsearch.VectorSearchEndpointPermissions, error)) *MockVectorSearchEndpointsInterface_UpdatePermissions_Call {
 	_c.Call.Return(run)
 	return _c
 }

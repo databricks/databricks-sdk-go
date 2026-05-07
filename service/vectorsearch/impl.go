@@ -59,6 +59,34 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 	return &endpointInfo, err
 }
 
+func (a *vectorSearchEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetVectorSearchEndpointPermissionLevelsRequest) (*GetVectorSearchEndpointPermissionLevelsResponse, error) {
+	var getVectorSearchEndpointPermissionLevelsResponse GetVectorSearchEndpointPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v/permissionLevels", request.EndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getVectorSearchEndpointPermissionLevelsResponse)
+	return &getVectorSearchEndpointPermissionLevelsResponse, err
+}
+
+func (a *vectorSearchEndpointsImpl) GetPermissions(ctx context.Context, request GetVectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error) {
+	var vectorSearchEndpointPermissions VectorSearchEndpointPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", request.EndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &vectorSearchEndpointPermissions)
+	return &vectorSearchEndpointPermissions, err
+}
+
 // List all vector search endpoints in the workspace.
 func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[EndpointInfo] {
 
@@ -134,6 +162,21 @@ func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Conte
 	return &retrieveUserVisibleMetricsResponse, err
 }
 
+func (a *vectorSearchEndpointsImpl) SetPermissions(ctx context.Context, request VectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error) {
+	var vectorSearchEndpointPermissions VectorSearchEndpointPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", request.EndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &vectorSearchEndpointPermissions)
+	return &vectorSearchEndpointPermissions, err
+}
+
 func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error) {
 	var patchEndpointBudgetPolicyResponse PatchEndpointBudgetPolicyResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/budget-policy", request.EndpointName)
@@ -162,6 +205,21 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointCustomTags(ctx context.Context
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateEndpointCustomTagsResponse)
 	return &updateEndpointCustomTagsResponse, err
+}
+
+func (a *vectorSearchEndpointsImpl) UpdatePermissions(ctx context.Context, request VectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error) {
+	var vectorSearchEndpointPermissions VectorSearchEndpointPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", request.EndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &vectorSearchEndpointPermissions)
+	return &vectorSearchEndpointPermissions, err
 }
 
 // unexported type that holds implementations of just VectorSearchIndexes API methods

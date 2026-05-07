@@ -758,7 +758,91 @@ func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
 // traffic. Any changes here should also be synced to
 // estore/namespaces/lakehousenetworkmanager/latest.proto.
 type CustomerFacingIngressNetworkPolicy struct {
+	// The network policy restrictions for private access to the workspace.
+	// Configures how registered private endpoints are allowed or denied access.
+	PrivateAccess *CustomerFacingIngressNetworkPolicyPrivateAccess `json:"private_access,omitempty"`
+	// The network policy restrictions for public access to the workspace.
+	// Configures how public internet traffic is allowed or denied access.
 	PublicAccess *CustomerFacingIngressNetworkPolicyPublicAccess `json:"public_access,omitempty"`
+}
+
+type CustomerFacingIngressNetworkPolicyAccountApiDestination struct {
+	// Qualifies the breadth of API access for the listed scopes. See
+	// ApiScopeQualifier.
+	ScopeQualifier CustomerFacingIngressNetworkPolicyApiScopeQualifier `json:"scope_qualifier,omitempty"`
+
+	Scopes []string `json:"scopes,omitempty"`
+}
+
+type CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination struct {
+	// Must be set to true.
+	AllDestinations bool `json:"all_destinations,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyAccountUiDestination struct {
+	// Must be set to true.
+	AllDestinations bool `json:"all_destinations,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyAccountUiDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyAccountUiDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Qualifies the breadth of API access permitted by an ingress network policy
+// rule. API_SCOPE_QUALIFIER_READ narrows matching to read-only variants of the
+// listed scopes; API_SCOPE_QUALIFIER_ALL matches any scope. When unset, scopes
+// match exactly as listed.
+type CustomerFacingIngressNetworkPolicyApiScopeQualifier string
+
+const CustomerFacingIngressNetworkPolicyApiScopeQualifierApiScopeQualifierAll CustomerFacingIngressNetworkPolicyApiScopeQualifier = `API_SCOPE_QUALIFIER_ALL`
+
+const CustomerFacingIngressNetworkPolicyApiScopeQualifierApiScopeQualifierRead CustomerFacingIngressNetworkPolicyApiScopeQualifier = `API_SCOPE_QUALIFIER_READ`
+
+// String representation for [fmt.Print]
+func (f *CustomerFacingIngressNetworkPolicyApiScopeQualifier) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomerFacingIngressNetworkPolicyApiScopeQualifier) Set(v string) error {
+	switch v {
+	case `API_SCOPE_QUALIFIER_ALL`, `API_SCOPE_QUALIFIER_READ`:
+		*f = CustomerFacingIngressNetworkPolicyApiScopeQualifier(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "API_SCOPE_QUALIFIER_ALL", "API_SCOPE_QUALIFIER_READ"`, v)
+	}
+}
+
+// Values returns all possible values for CustomerFacingIngressNetworkPolicyApiScopeQualifier.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomerFacingIngressNetworkPolicyApiScopeQualifier) Values() []CustomerFacingIngressNetworkPolicyApiScopeQualifier {
+	return []CustomerFacingIngressNetworkPolicyApiScopeQualifier{
+		CustomerFacingIngressNetworkPolicyApiScopeQualifierApiScopeQualifierAll,
+		CustomerFacingIngressNetworkPolicyApiScopeQualifierApiScopeQualifierRead,
+	}
+}
+
+// Type always returns CustomerFacingIngressNetworkPolicyApiScopeQualifier to satisfy [pflag.Value] interface
+func (f *CustomerFacingIngressNetworkPolicyApiScopeQualifier) Type() string {
+	return "CustomerFacingIngressNetworkPolicyApiScopeQualifier"
 }
 
 type CustomerFacingIngressNetworkPolicyAppsRuntimeDestination struct {
@@ -876,6 +960,10 @@ func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) Type() st
 	return "CustomerFacingIngressNetworkPolicyAuthenticationIdentityType"
 }
 
+type CustomerFacingIngressNetworkPolicyEndpoints struct {
+	EndpointIds []string `json:"endpoint_ids,omitempty"`
+}
+
 type CustomerFacingIngressNetworkPolicyIpRanges struct {
 	// We only support IPv4 and IPv4 CIDR notation for now.
 	IpRanges []string `json:"ip_ranges,omitempty"`
@@ -893,6 +981,91 @@ func (s *CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination) Unmarshal
 }
 
 func (s CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyPrivateAccess struct {
+	AllowRules []CustomerFacingIngressNetworkPolicyPrivateIngressRule `json:"allow_rules,omitempty"`
+
+	DenyRules []CustomerFacingIngressNetworkPolicyPrivateIngressRule `json:"deny_rules,omitempty"`
+
+	RestrictionMode CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode `json:"restriction_mode"`
+}
+
+type CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode string
+
+const CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionModeAllowAllRegisteredEndpoints CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode = `ALLOW_ALL_REGISTERED_ENDPOINTS`
+
+const CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionModeRestrictedAccess CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode = `RESTRICTED_ACCESS`
+
+// String representation for [fmt.Print]
+func (f *CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode) Set(v string) error {
+	switch v {
+	case `ALLOW_ALL_REGISTERED_ENDPOINTS`, `RESTRICTED_ACCESS`:
+		*f = CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALLOW_ALL_REGISTERED_ENDPOINTS", "RESTRICTED_ACCESS"`, v)
+	}
+}
+
+// Values returns all possible values for CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode) Values() []CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode {
+	return []CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode{
+		CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionModeAllowAllRegisteredEndpoints,
+		CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionModeRestrictedAccess,
+	}
+}
+
+// Type always returns CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode to satisfy [pflag.Value] interface
+func (f *CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode) Type() string {
+	return "CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode"
+}
+
+type CustomerFacingIngressNetworkPolicyPrivateIngressRule struct {
+	Authentication *CustomerFacingIngressNetworkPolicyAuthentication `json:"authentication,omitempty"`
+
+	Destination *CustomerFacingIngressNetworkPolicyRequestDestination `json:"destination,omitempty"`
+	// The label for this ingress rule.
+	Label string `json:"label,omitempty"`
+
+	Origin *CustomerFacingIngressNetworkPolicyPrivateRequestOrigin `json:"origin,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyPrivateIngressRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyPrivateIngressRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyPrivateRequestOrigin struct {
+	AllPrivateAccess bool `json:"all_private_access,omitempty"`
+
+	AllRegisteredEndpoints bool `json:"all_registered_endpoints,omitempty"`
+
+	AzureWorkspacePrivateLink bool `json:"azure_workspace_private_link,omitempty"`
+
+	Endpoints *CustomerFacingIngressNetworkPolicyEndpoints `json:"endpoints,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyPrivateRequestOrigin) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyPrivateRequestOrigin) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -983,6 +1156,11 @@ func (s CustomerFacingIngressNetworkPolicyPublicRequestOrigin) MarshalJSON() ([]
 }
 
 type CustomerFacingIngressNetworkPolicyRequestDestination struct {
+	AccountApi *CustomerFacingIngressNetworkPolicyAccountApiDestination `json:"account_api,omitempty"`
+
+	AccountDatabricksOne *CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination `json:"account_databricks_one,omitempty"`
+
+	AccountUi *CustomerFacingIngressNetworkPolicyAccountUiDestination `json:"account_ui,omitempty"`
 	// When true, match all destinations, no other destination fields can be
 	// set. When not set or false, at least one specific destination must be
 	// provided.
@@ -993,7 +1171,7 @@ type CustomerFacingIngressNetworkPolicyRequestDestination struct {
 	LakebaseRuntime *CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination `json:"lakebase_runtime,omitempty"`
 
 	WorkspaceApi *CustomerFacingIngressNetworkPolicyWorkspaceApiDestination `json:"workspace_api,omitempty"`
-	// Workspace destinations
+
 	WorkspaceUi *CustomerFacingIngressNetworkPolicyWorkspaceUiDestination `json:"workspace_ui,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1008,6 +1186,10 @@ func (s CustomerFacingIngressNetworkPolicyRequestDestination) MarshalJSON() ([]b
 }
 
 type CustomerFacingIngressNetworkPolicyWorkspaceApiDestination struct {
+	// Qualifies the breadth of API access for the listed scopes. See
+	// ApiScopeQualifier.
+	ScopeQualifier CustomerFacingIngressNetworkPolicyApiScopeQualifier `json:"scope_qualifier,omitempty"`
+
 	Scopes []string `json:"scopes,omitempty"`
 }
 

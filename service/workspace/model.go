@@ -76,9 +76,11 @@ type CreateCredentialsRequest struct {
 	// https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
 	GitEmail string `json:"git_email,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
-	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
-	// `awsCodeCommit`.
+	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure
+	// DevOps Services, including Microsoft Entra ID authentication),
+	// `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`
+	// (deprecated by AWS, not accepting new customers).
 	GitProvider string `json:"git_provider"`
 	// The username provided with your Git provider account and associated with
 	// the credential. For most Git providers it is only used to set the Git
@@ -152,9 +154,11 @@ type CreateRepoRequest struct {
 	// the format `/Repos/{folder}/{repo-name}`.
 	Path string `json:"path,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
-	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
-	// `awsCodeCommit`.
+	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure
+	// DevOps Services, including Microsoft Entra ID authentication),
+	// `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`
+	// (deprecated by AWS, not accepting new customers).
 	Provider string `json:"provider"`
 	// If specified, the repo will be created with sparse checkout enabled. You
 	// cannot enable/disable sparse checkout after the repo is created.
@@ -183,7 +187,10 @@ type CreateRepoResponse struct {
 	Id int64 `json:"id,omitempty"`
 	// Path of the Git folder (repo) in the workspace.
 	Path string `json:"path,omitempty"`
-	// Git provider of the linked Git repository.
+	// Git provider of the linked Git repository, e.g. `gitHub`,
+	// `azureDevOpsServices`, `bitbucketServer` (Bitbucket Data Center),
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`
+	// (deprecated).
 	Provider string `json:"provider,omitempty"`
 	// Sparse checkout settings for the Git folder (repo).
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
@@ -233,7 +240,11 @@ type CredentialInfo struct {
 	// except AWS CodeCommit. Learn more at
 	// https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
 	GitEmail string `json:"git_email,omitempty"`
-	// The Git provider associated with the credential.
+	// The Git provider associated with the credential. One of `gitHub`,
+	// `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services,
+	// including Microsoft Entra ID authentication), `gitHubEnterprise`,
+	// `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition`
+	// (GitLab Self-Managed), or `awsCodeCommit` (deprecated).
 	GitProvider string `json:"git_provider,omitempty"`
 	// The username provided with your Git provider account and associated with
 	// the credential. For most Git providers it is only used to set the Git
@@ -502,7 +513,10 @@ type GetRepoResponse struct {
 	Id int64 `json:"id,omitempty"`
 	// Path of the Git folder (repo) in the workspace.
 	Path string `json:"path,omitempty"`
-	// Git provider of the linked Git repository.
+	// Git provider of the linked Git repository, e.g. `gitHub`,
+	// `azureDevOpsServices`, `bitbucketServer` (Bitbucket Data Center),
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`
+	// (deprecated).
 	Provider string `json:"provider,omitempty"`
 	// Sparse checkout settings for the Git folder (repo).
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
@@ -997,7 +1011,10 @@ type RepoInfo struct {
 	Id int64 `json:"id,omitempty"`
 	// Root path of the git folder (repo) in the Workspace.
 	Path string `json:"path,omitempty"`
-	// Git provider of the remote git repository, e.g. `gitHub`.
+	// Git provider of the remote git repository, e.g. `gitHub`,
+	// `azureDevOpsServices`, `bitbucketServer` (Bitbucket Data Center),
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`
+	// (deprecated).
 	Provider string `json:"provider,omitempty"`
 	// Sparse checkout config for the git folder (repo).
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
@@ -1225,9 +1242,11 @@ type UpdateCredentialsRequest struct {
 	// https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
 	GitEmail string `json:"git_email,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
-	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
-	// `awsCodeCommit`.
+	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure
+	// DevOps Services, including Microsoft Entra ID authentication),
+	// `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`
+	// (deprecated by AWS, not accepting new customers).
 	GitProvider string `json:"git_provider"`
 	// The username provided with your Git provider account and associated with
 	// the credential. For most Git providers it is only used to set the Git

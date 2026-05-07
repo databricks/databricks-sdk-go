@@ -38,3 +38,8 @@
 * [Breaking] Remove `MinQps` field for [vectorsearch.CreateEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateEndpoint).
 * [Breaking] Remove `RequestedMinQps` field for [vectorsearch.EndpointScalingInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointScalingInfo).
 * [Breaking] Remove `MinQps` field for [vectorsearch.PatchEndpointRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#PatchEndpointRequest).
+* Add `GetPermissionLevels`, `GetPermissions`, `SetPermissions` and `UpdatePermissions` methods for [w.VectorSearchEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchEndpointsAPI) workspace-level service.
+* Add `PrivateAccess` field for [settings.CustomerFacingIngressNetworkPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingIngressNetworkPolicy).
+* Add `AccountApi`, `AccountDatabricksOne` and `AccountUi` fields for [settings.CustomerFacingIngressNetworkPolicyRequestDestination](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingIngressNetworkPolicyRequestDestination).
+* Add `ScopeQualifier` field for [settings.CustomerFacingIngressNetworkPolicyWorkspaceApiDestination](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingIngressNetworkPolicyWorkspaceApiDestination).
+* Add `DisplayName` and `PreviewPhase` fields for [settingsv2.SettingsMetadata](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#SettingsMetadata).
