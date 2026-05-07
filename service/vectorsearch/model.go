@@ -504,6 +504,21 @@ func (s GetIndexRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetVectorSearchEndpointPermissionLevelsRequest struct {
+	// The vector search endpoint for which to get or manage permissions.
+	EndpointId string `json:"-" url:"-"`
+}
+
+type GetVectorSearchEndpointPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []VectorSearchEndpointPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type GetVectorSearchEndpointPermissionsRequest struct {
+	// The vector search endpoint for which to get or manage permissions.
+	EndpointId string `json:"-" url:"-"`
+}
+
 // The subtype of the vector search index, determining the indexing and
 // retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. -
 // `FULL_TEXT`: An index that uses full-text search without vector embeddings. -
@@ -1317,4 +1332,147 @@ func (f *VectorIndexType) Values() []VectorIndexType {
 // Type always returns VectorIndexType to satisfy [pflag.Value] interface
 func (f *VectorIndexType) Type() string {
 	return "VectorIndexType"
+}
+
+type VectorSearchEndpointAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel VectorSearchEndpointPermissionLevel `json:"permission_level,omitempty"`
+	// application ID of a service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *VectorSearchEndpointAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VectorSearchEndpointAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type VectorSearchEndpointAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []VectorSearchEndpointPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *VectorSearchEndpointAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VectorSearchEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type VectorSearchEndpointPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel VectorSearchEndpointPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *VectorSearchEndpointPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VectorSearchEndpointPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Permission level
+type VectorSearchEndpointPermissionLevel string
+
+const VectorSearchEndpointPermissionLevelCanCreate VectorSearchEndpointPermissionLevel = `CAN_CREATE`
+
+const VectorSearchEndpointPermissionLevelCanManage VectorSearchEndpointPermissionLevel = `CAN_MANAGE`
+
+const VectorSearchEndpointPermissionLevelCanUse VectorSearchEndpointPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (f *VectorSearchEndpointPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *VectorSearchEndpointPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_CREATE`, `CAN_MANAGE`, `CAN_USE`:
+		*f = VectorSearchEndpointPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_CREATE", "CAN_MANAGE", "CAN_USE"`, v)
+	}
+}
+
+// Values returns all possible values for VectorSearchEndpointPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *VectorSearchEndpointPermissionLevel) Values() []VectorSearchEndpointPermissionLevel {
+	return []VectorSearchEndpointPermissionLevel{
+		VectorSearchEndpointPermissionLevelCanCreate,
+		VectorSearchEndpointPermissionLevelCanManage,
+		VectorSearchEndpointPermissionLevelCanUse,
+	}
+}
+
+// Type always returns VectorSearchEndpointPermissionLevel to satisfy [pflag.Value] interface
+func (f *VectorSearchEndpointPermissionLevel) Type() string {
+	return "VectorSearchEndpointPermissionLevel"
+}
+
+type VectorSearchEndpointPermissions struct {
+	AccessControlList []VectorSearchEndpointAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *VectorSearchEndpointPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VectorSearchEndpointPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type VectorSearchEndpointPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel VectorSearchEndpointPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *VectorSearchEndpointPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VectorSearchEndpointPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type VectorSearchEndpointPermissionsRequest struct {
+	AccessControlList []VectorSearchEndpointAccessControlRequest `json:"access_control_list,omitempty"`
+	// The vector search endpoint for which to get or manage permissions.
+	EndpointId string `json:"-" url:"-"`
 }

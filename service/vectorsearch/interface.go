@@ -20,6 +20,13 @@ type VectorSearchEndpointsService interface {
 	// Get details for a single vector search endpoint.
 	GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error)
 
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevels(ctx context.Context, request GetVectorSearchEndpointPermissionLevelsRequest) (*GetVectorSearchEndpointPermissionLevelsResponse, error)
+
+	// Gets the permissions of a vector search endpoint. Vector search endpoints
+	// can inherit permissions from their root object.
+	GetPermissions(ctx context.Context, request GetVectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error)
+
 	// List all vector search endpoints in the workspace.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error)
 
@@ -29,11 +36,20 @@ type VectorSearchEndpointsService interface {
 	// Retrieve user-visible metrics for an endpoint
 	RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error)
 
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
+	SetPermissions(ctx context.Context, request VectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error)
+
 	// Update the budget policy of an endpoint
 	UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error)
 
 	// Update the custom tags of an endpoint.
 	UpdateEndpointCustomTags(ctx context.Context, request UpdateEndpointCustomTagsRequest) (*UpdateEndpointCustomTagsResponse, error)
+
+	// Updates the permissions on a vector search endpoint. Vector search
+	// endpoints can inherit permissions from their root object.
+	UpdatePermissions(ctx context.Context, request VectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error)
 }
 
 // **Index**: An efficient representation of your embedding vectors that
