@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `KafkaOptions` field for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
