@@ -214,6 +214,8 @@ type ConnectorOptions struct {
 
 	JiraOptions *JiraConnectorOptions `json:"jira_options,omitempty"`
 
+	KafkaOptions *KafkaOptions `json:"kafka_options,omitempty"`
+
 	MetaAdsOptions *MetaMarketingOptions `json:"meta_ads_options,omitempty"`
 
 	OutlookOptions *OutlookOptions `json:"outlook_options,omitempty"`
@@ -1415,6 +1417,64 @@ func (f *IngestionSourceType) Type() string {
 type JiraConnectorOptions struct {
 	// (Optional) Projects to filter Jira data on
 	IncludeJiraSpaces []string `json:"include_jira_spaces,omitempty"`
+}
+
+type JsonTransformerOptions struct {
+	// Parse the entire value as a single Variant column.
+	AsVariant bool `json:"as_variant,omitempty"`
+	// Inline schema string for JSON parsing (Spark DDL format).
+	Schema string `json:"schema,omitempty"`
+	// (Optional) Schema evolution mode for schema inference.
+	SchemaEvolutionMode FileIngestionOptionsSchemaEvolutionMode `json:"schema_evolution_mode,omitempty"`
+	// Path to a schema file (.ddl).
+	SchemaFilePath string `json:"schema_file_path,omitempty"`
+	// (Optional) Schema hints as a comma-separated string of "column_name type"
+	// pairs.
+	SchemaHints string `json:"schema_hints,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JsonTransformerOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JsonTransformerOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type KafkaOptions struct {
+	// Undocumented backdoor mechanism for overriding parameters to pass to the
+	// Kafka client. This is not supported and may break at any time.
+	ClientConfig map[string]string `json:"client_config,omitempty"`
+	// (Optional) Transformer for the message key. If not specified, the key is
+	// left as raw bytes.
+	KeyTransformer *Transformer `json:"key_transformer,omitempty"`
+	// Internal option to control the maximum number of offsets to process per
+	// trigger.
+	MaxOffsetsPerTrigger int64 `json:"max_offsets_per_trigger,omitempty"`
+	// (Optional) Where to begin reading when no checkpoint exists. Valid
+	// values: "latest" and "earliest". Defaults to "latest".
+	StartingOffset string `json:"starting_offset,omitempty"`
+	// Java regex pattern to subscribe to matching topics. Only one of topics or
+	// topic_pattern must be specified.
+	TopicPattern string `json:"topic_pattern,omitempty"`
+	// Topics to subscribe to. Only one of topics or topic_pattern must be
+	// specified.
+	Topics []string `json:"topics,omitempty"`
+	// (Optional) Transformer for the message value. If not specified, the value
+	// is left as raw bytes.
+	ValueTransformer *Transformer `json:"value_transformer,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KafkaOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KafkaOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListPipelineEventsRequest struct {
@@ -2716,7 +2776,8 @@ type RewindSpec struct {
 	// If true, this is a dry run and we should emit the RewindSummary but not
 	// perform the rewind.
 	DryRun bool `json:"dry_run,omitempty"`
-	// The base timestamp to rewind to. Must be specified.
+	// The base timestamp to rewind to. Exactly one of rewind_timestamp or
+	// rewind_point_id must be specified.
 	RewindTimestamp string `json:"rewind_timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3325,6 +3386,51 @@ func (f *TikTokAdsOptionsTikTokReportType) Values() []TikTokAdsOptionsTikTokRepo
 // Type always returns TikTokAdsOptionsTikTokReportType to satisfy [pflag.Value] interface
 func (f *TikTokAdsOptionsTikTokReportType) Type() string {
 	return "TikTokAdsOptionsTikTokReportType"
+}
+
+// Specifies how to transform binary data into structured data.
+type Transformer struct {
+	// Required: the wire format of the data.
+	Format TransformerFormat `json:"format,omitempty"`
+
+	JsonOptions *JsonTransformerOptions `json:"json_options,omitempty"`
+}
+
+type TransformerFormat string
+
+const TransformerFormatJson TransformerFormat = `JSON`
+
+const TransformerFormatString TransformerFormat = `STRING`
+
+// String representation for [fmt.Print]
+func (f *TransformerFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TransformerFormat) Set(v string) error {
+	switch v {
+	case `JSON`, `STRING`:
+		*f = TransformerFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "JSON", "STRING"`, v)
+	}
+}
+
+// Values returns all possible values for TransformerFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TransformerFormat) Values() []TransformerFormat {
+	return []TransformerFormat{
+		TransformerFormatJson,
+		TransformerFormatString,
+	}
+}
+
+// Type always returns TransformerFormat to satisfy [pflag.Value] interface
+func (f *TransformerFormat) Type() string {
+	return "TransformerFormat"
 }
 
 // Information about truncations applied to this event.
