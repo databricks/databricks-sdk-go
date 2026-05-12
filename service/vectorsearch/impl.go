@@ -87,7 +87,7 @@ func (a *vectorSearchEndpointsImpl) GetPermissions(ctx context.Context, request 
 	return &vectorSearchEndpointPermissions, err
 }
 
-// List all vector search endpoints in the workspace.
+// List all AI Search endpoints in the workspace.
 func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[EndpointInfo] {
 
 	getNextPage := func(ctx context.Context, req ListEndpointsRequest) (*ListEndpointResponse, error) {
@@ -112,7 +112,7 @@ func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request L
 	return iterator
 }
 
-// List all vector search endpoints in the workspace.
+// List all AI Search endpoints in the workspace.
 func (a *vectorSearchEndpointsImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error) {
 	iterator := a.ListEndpoints(ctx, request)
 	return listing.ToSlice[EndpointInfo](ctx, iterator)

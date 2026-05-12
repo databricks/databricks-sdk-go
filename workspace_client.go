@@ -1225,9 +1225,9 @@ type WorkspaceClient struct {
 	// the temporary path credentials API, a metastore admin needs to enable the
 	// external_access_enabled flag (off by default) at the metastore level. A
 	// user needs to be granted the EXTERNAL USE LOCATION permission by external
-	// location owner. For requests on existing external tables, user also needs
-	// to be granted the EXTERNAL USE SCHEMA permission at the schema level by
-	// catalog owner.
+	// location owner. For requests on existing external tables and external
+	// volumes, user also needs to be granted the EXTERNAL USE SCHEMA permission
+	// at the schema level by catalog owner.
 	//
 	// Note that EXTERNAL USE SCHEMA is a schema level permission that can only
 	// be granted by catalog owner explicitly and is not included in schema
@@ -1236,9 +1236,6 @@ type WorkspaceClient struct {
 	// that can only be granted by external location owner explicitly and is not
 	// included in external location ownership or ALL PRIVILEGES on the external
 	// location for security reasons.
-	//
-	// This API only supports temporary path credentials for external locations
-	// and external tables, and volumes will be supported in the future.
 	TemporaryPathCredentials catalog.TemporaryPathCredentialsInterface
 
 	// Temporary Table Credentials refer to short-lived, downscoped credentials
@@ -1304,17 +1301,16 @@ type WorkspaceClient struct {
 	// process and prevents unauthorized users from accessing sensitive data.
 	UsersV2 iam.UsersV2Interface
 
-	// **Endpoint**: Represents the compute resources to host vector search
-	// indexes.
+	// **Endpoint**: Represents the compute resources to host AI Search indexes.
 	VectorSearchEndpoints vectorsearch.VectorSearchEndpointsInterface
 
 	// **Index**: An efficient representation of your embedding vectors that
 	// supports real-time and efficient approximate nearest neighbor (ANN)
 	// search queries.
 	//
-	// There are 2 types of Vector Search indexes: - **Delta Sync Index**: An
-	// index that automatically syncs with a source Delta Table, automatically
-	// and incrementally updating the index as the underlying data in the Delta
+	// There are 2 types of AI Search indexes: - **Delta Sync Index**: An index
+	// that automatically syncs with a source Delta Table, automatically and
+	// incrementally updating the index as the underlying data in the Delta
 	// Table changes. - **Direct Vector Access Index**: An index that supports
 	// direct read and write of vectors and metadata through our REST and SDK
 	// APIs. With this model, the user manages index updates.
