@@ -22,6 +22,112 @@ func (_m *MockWorkspaceIamV2Interface) EXPECT() *MockWorkspaceIamV2Interface_Exp
 	return &MockWorkspaceIamV2Interface_Expecter{mock: &_m.Mock}
 }
 
+// CreateWorkspaceAssignmentDetailProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) CreateWorkspaceAssignmentDetailProxy(ctx context.Context, request iamv2.CreateWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateWorkspaceAssignmentDetailProxy")
+	}
+
+	var r0 *iamv2.WorkspaceAssignmentDetail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateWorkspaceAssignmentDetailProxyRequest) *iamv2.WorkspaceAssignmentDetail); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignmentDetail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateWorkspaceAssignmentDetailProxyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateWorkspaceAssignmentDetailProxy'
+type MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call struct {
+	*mock.Call
+}
+
+// CreateWorkspaceAssignmentDetailProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateWorkspaceAssignmentDetailProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) CreateWorkspaceAssignmentDetailProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call {
+	return &MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call{Call: _e.mock.On("CreateWorkspaceAssignmentDetailProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call) Run(run func(ctx context.Context, request iamv2.CreateWorkspaceAssignmentDetailProxyRequest)) *MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateWorkspaceAssignmentDetailProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call) Return(_a0 *iamv2.WorkspaceAssignmentDetail, _a1 error) *MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call) RunAndReturn(run func(context.Context, iamv2.CreateWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error)) *MockWorkspaceIamV2Interface_CreateWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteWorkspaceAssignmentDetailProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) DeleteWorkspaceAssignmentDetailProxy(ctx context.Context, request iamv2.DeleteWorkspaceAssignmentDetailProxyRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteWorkspaceAssignmentDetailProxy")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteWorkspaceAssignmentDetailProxyRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteWorkspaceAssignmentDetailProxy'
+type MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call struct {
+	*mock.Call
+}
+
+// DeleteWorkspaceAssignmentDetailProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteWorkspaceAssignmentDetailProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) DeleteWorkspaceAssignmentDetailProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call {
+	return &MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call{Call: _e.mock.On("DeleteWorkspaceAssignmentDetailProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call) Run(run func(ctx context.Context, request iamv2.DeleteWorkspaceAssignmentDetailProxyRequest)) *MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteWorkspaceAssignmentDetailProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call) Return(_a0 error) *MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call) RunAndReturn(run func(context.Context, iamv2.DeleteWorkspaceAssignmentDetailProxyRequest) error) *MockWorkspaceIamV2Interface_DeleteWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetWorkspaceAccessDetailLocal provides a mock function with given fields: ctx, request
 func (_m *MockWorkspaceIamV2Interface) GetWorkspaceAccessDetailLocal(ctx context.Context, request iamv2.GetWorkspaceAccessDetailLocalRequest) (*iamv2.WorkspaceAccessDetail, error) {
 	ret := _m.Called(ctx, request)
@@ -77,6 +183,124 @@ func (_c *MockWorkspaceIamV2Interface_GetWorkspaceAccessDetailLocal_Call) Return
 }
 
 func (_c *MockWorkspaceIamV2Interface_GetWorkspaceAccessDetailLocal_Call) RunAndReturn(run func(context.Context, iamv2.GetWorkspaceAccessDetailLocalRequest) (*iamv2.WorkspaceAccessDetail, error)) *MockWorkspaceIamV2Interface_GetWorkspaceAccessDetailLocal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetWorkspaceAssignmentDetailProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) GetWorkspaceAssignmentDetailProxy(ctx context.Context, request iamv2.GetWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWorkspaceAssignmentDetailProxy")
+	}
+
+	var r0 *iamv2.WorkspaceAssignmentDetail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetWorkspaceAssignmentDetailProxyRequest) *iamv2.WorkspaceAssignmentDetail); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignmentDetail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetWorkspaceAssignmentDetailProxyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWorkspaceAssignmentDetailProxy'
+type MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call struct {
+	*mock.Call
+}
+
+// GetWorkspaceAssignmentDetailProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetWorkspaceAssignmentDetailProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) GetWorkspaceAssignmentDetailProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call {
+	return &MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call{Call: _e.mock.On("GetWorkspaceAssignmentDetailProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call) Run(run func(ctx context.Context, request iamv2.GetWorkspaceAssignmentDetailProxyRequest)) *MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetWorkspaceAssignmentDetailProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call) Return(_a0 *iamv2.WorkspaceAssignmentDetail, _a1 error) *MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call) RunAndReturn(run func(context.Context, iamv2.GetWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error)) *MockWorkspaceIamV2Interface_GetWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListWorkspaceAssignmentDetailsProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) ListWorkspaceAssignmentDetailsProxy(ctx context.Context, request iamv2.ListWorkspaceAssignmentDetailsProxyRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListWorkspaceAssignmentDetailsProxy")
+	}
+
+	var r0 *iamv2.ListWorkspaceAssignmentDetailsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentDetailsProxyRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentDetailsProxyRequest) *iamv2.ListWorkspaceAssignmentDetailsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ListWorkspaceAssignmentDetailsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListWorkspaceAssignmentDetailsProxyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListWorkspaceAssignmentDetailsProxy'
+type MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call struct {
+	*mock.Call
+}
+
+// ListWorkspaceAssignmentDetailsProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListWorkspaceAssignmentDetailsProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) ListWorkspaceAssignmentDetailsProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call {
+	return &MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call{Call: _e.mock.On("ListWorkspaceAssignmentDetailsProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call) Run(run func(ctx context.Context, request iamv2.ListWorkspaceAssignmentDetailsProxyRequest)) *MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListWorkspaceAssignmentDetailsProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call) Return(_a0 *iamv2.ListWorkspaceAssignmentDetailsResponse, _a1 error) *MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call) RunAndReturn(run func(context.Context, iamv2.ListWorkspaceAssignmentDetailsProxyRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error)) *MockWorkspaceIamV2Interface_ListWorkspaceAssignmentDetailsProxy_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -254,6 +478,65 @@ func (_c *MockWorkspaceIamV2Interface_ResolveUserProxy_Call) Return(_a0 *iamv2.R
 }
 
 func (_c *MockWorkspaceIamV2Interface_ResolveUserProxy_Call) RunAndReturn(run func(context.Context, iamv2.ResolveUserProxyRequest) (*iamv2.ResolveUserResponse, error)) *MockWorkspaceIamV2Interface_ResolveUserProxy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateWorkspaceAssignmentDetailProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) UpdateWorkspaceAssignmentDetailProxy(ctx context.Context, request iamv2.UpdateWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateWorkspaceAssignmentDetailProxy")
+	}
+
+	var r0 *iamv2.WorkspaceAssignmentDetail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailProxyRequest) *iamv2.WorkspaceAssignmentDetail); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignmentDetail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailProxyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateWorkspaceAssignmentDetailProxy'
+type MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call struct {
+	*mock.Call
+}
+
+// UpdateWorkspaceAssignmentDetailProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.UpdateWorkspaceAssignmentDetailProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) UpdateWorkspaceAssignmentDetailProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call {
+	return &MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call{Call: _e.mock.On("UpdateWorkspaceAssignmentDetailProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call) Run(run func(ctx context.Context, request iamv2.UpdateWorkspaceAssignmentDetailProxyRequest)) *MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.UpdateWorkspaceAssignmentDetailProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call) Return(_a0 *iamv2.WorkspaceAssignmentDetail, _a1 error) *MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call) RunAndReturn(run func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailProxyRequest) (*iamv2.WorkspaceAssignmentDetail, error)) *MockWorkspaceIamV2Interface_UpdateWorkspaceAssignmentDetailProxy_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -56,6 +56,10 @@ type AibiDashboardEmbeddingApprovedDomains struct {
 	ApprovedDomains []string `json:"approved_domains,omitempty"`
 }
 
+type AllowedAppsUserApiScopesMessage struct {
+	AllowedScopes []string `json:"allowed_scopes,omitempty"`
+}
+
 type BooleanMessage struct {
 	Value bool `json:"value,omitempty"`
 
@@ -594,6 +598,10 @@ type Setting struct {
 	// effective_aibi_dashboard_embedding_approved_domains for final setting
 	// value.
 	AibiDashboardEmbeddingApprovedDomains *AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains,omitempty"`
+	// Setting value for allowed_apps_user_api_scopes setting. This is the
+	// setting value set by consumers, check
+	// effective_allowed_apps_user_api_scopes for final setting value.
+	AllowedAppsUserApiScopes *AllowedAppsUserApiScopesMessage `json:"allowed_apps_user_api_scopes,omitempty"`
 	// Setting value for automatic_cluster_update_workspace setting. This is the
 	// setting value set by consumers, check
 	// effective_automatic_cluster_update_workspace for final setting value.
@@ -609,6 +617,10 @@ type Setting struct {
 	// setting. This is the final effective value of setting. To set a value use
 	// aibi_dashboard_embedding_approved_domains.
 	EffectiveAibiDashboardEmbeddingApprovedDomains *AibiDashboardEmbeddingApprovedDomains `json:"effective_aibi_dashboard_embedding_approved_domains,omitempty"`
+	// Effective setting value for allowed_apps_user_api_scopes setting. This is
+	// the final effective value of setting. To set a value use
+	// allowed_apps_user_api_scopes.
+	EffectiveAllowedAppsUserApiScopes *AllowedAppsUserApiScopesMessage `json:"effective_allowed_apps_user_api_scopes,omitempty"`
 	// Effective setting value for automatic_cluster_update_workspace setting.
 	// This is the final effective value of setting. To set a value use
 	// automatic_cluster_update_workspace.

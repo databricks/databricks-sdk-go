@@ -22,6 +22,112 @@ func (_m *MockAccountIamV2Interface) EXPECT() *MockAccountIamV2Interface_Expecte
 	return &MockAccountIamV2Interface_Expecter{mock: &_m.Mock}
 }
 
+// CreateWorkspaceAssignmentDetail provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) CreateWorkspaceAssignmentDetail(ctx context.Context, request iamv2.CreateWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateWorkspaceAssignmentDetail")
+	}
+
+	var r0 *iamv2.WorkspaceAssignmentDetail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateWorkspaceAssignmentDetailRequest) *iamv2.WorkspaceAssignmentDetail); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignmentDetail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateWorkspaceAssignmentDetailRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateWorkspaceAssignmentDetail'
+type MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call struct {
+	*mock.Call
+}
+
+// CreateWorkspaceAssignmentDetail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateWorkspaceAssignmentDetailRequest
+func (_e *MockAccountIamV2Interface_Expecter) CreateWorkspaceAssignmentDetail(ctx interface{}, request interface{}) *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call {
+	return &MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call{Call: _e.mock.On("CreateWorkspaceAssignmentDetail", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call) Run(run func(ctx context.Context, request iamv2.CreateWorkspaceAssignmentDetailRequest)) *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateWorkspaceAssignmentDetailRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call) Return(_a0 *iamv2.WorkspaceAssignmentDetail, _a1 error) *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call) RunAndReturn(run func(context.Context, iamv2.CreateWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error)) *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteWorkspaceAssignmentDetail provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) DeleteWorkspaceAssignmentDetail(ctx context.Context, request iamv2.DeleteWorkspaceAssignmentDetailRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteWorkspaceAssignmentDetail")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteWorkspaceAssignmentDetailRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteWorkspaceAssignmentDetail'
+type MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call struct {
+	*mock.Call
+}
+
+// DeleteWorkspaceAssignmentDetail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteWorkspaceAssignmentDetailRequest
+func (_e *MockAccountIamV2Interface_Expecter) DeleteWorkspaceAssignmentDetail(ctx interface{}, request interface{}) *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call {
+	return &MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call{Call: _e.mock.On("DeleteWorkspaceAssignmentDetail", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call) Run(run func(ctx context.Context, request iamv2.DeleteWorkspaceAssignmentDetailRequest)) *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteWorkspaceAssignmentDetailRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call) Return(_a0 error) *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call) RunAndReturn(run func(context.Context, iamv2.DeleteWorkspaceAssignmentDetailRequest) error) *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetWorkspaceAccessDetail provides a mock function with given fields: ctx, request
 func (_m *MockAccountIamV2Interface) GetWorkspaceAccessDetail(ctx context.Context, request iamv2.GetWorkspaceAccessDetailRequest) (*iamv2.WorkspaceAccessDetail, error) {
 	ret := _m.Called(ctx, request)
@@ -77,6 +183,124 @@ func (_c *MockAccountIamV2Interface_GetWorkspaceAccessDetail_Call) Return(_a0 *i
 }
 
 func (_c *MockAccountIamV2Interface_GetWorkspaceAccessDetail_Call) RunAndReturn(run func(context.Context, iamv2.GetWorkspaceAccessDetailRequest) (*iamv2.WorkspaceAccessDetail, error)) *MockAccountIamV2Interface_GetWorkspaceAccessDetail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetWorkspaceAssignmentDetail provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetWorkspaceAssignmentDetail(ctx context.Context, request iamv2.GetWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWorkspaceAssignmentDetail")
+	}
+
+	var r0 *iamv2.WorkspaceAssignmentDetail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetWorkspaceAssignmentDetailRequest) *iamv2.WorkspaceAssignmentDetail); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignmentDetail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetWorkspaceAssignmentDetailRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWorkspaceAssignmentDetail'
+type MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call struct {
+	*mock.Call
+}
+
+// GetWorkspaceAssignmentDetail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetWorkspaceAssignmentDetailRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetWorkspaceAssignmentDetail(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call {
+	return &MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call{Call: _e.mock.On("GetWorkspaceAssignmentDetail", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call) Run(run func(ctx context.Context, request iamv2.GetWorkspaceAssignmentDetailRequest)) *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetWorkspaceAssignmentDetailRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call) Return(_a0 *iamv2.WorkspaceAssignmentDetail, _a1 error) *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call) RunAndReturn(run func(context.Context, iamv2.GetWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error)) *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListWorkspaceAssignmentDetails provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListWorkspaceAssignmentDetails(ctx context.Context, request iamv2.ListWorkspaceAssignmentDetailsRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListWorkspaceAssignmentDetails")
+	}
+
+	var r0 *iamv2.ListWorkspaceAssignmentDetailsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentDetailsRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentDetailsRequest) *iamv2.ListWorkspaceAssignmentDetailsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ListWorkspaceAssignmentDetailsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListWorkspaceAssignmentDetailsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListWorkspaceAssignmentDetails'
+type MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call struct {
+	*mock.Call
+}
+
+// ListWorkspaceAssignmentDetails is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListWorkspaceAssignmentDetailsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListWorkspaceAssignmentDetails(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call {
+	return &MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call{Call: _e.mock.On("ListWorkspaceAssignmentDetails", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call) Run(run func(ctx context.Context, request iamv2.ListWorkspaceAssignmentDetailsRequest)) *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListWorkspaceAssignmentDetailsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call) Return(_a0 *iamv2.ListWorkspaceAssignmentDetailsResponse, _a1 error) *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call) RunAndReturn(run func(context.Context, iamv2.ListWorkspaceAssignmentDetailsRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error)) *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -254,6 +478,65 @@ func (_c *MockAccountIamV2Interface_ResolveUser_Call) Return(_a0 *iamv2.ResolveU
 }
 
 func (_c *MockAccountIamV2Interface_ResolveUser_Call) RunAndReturn(run func(context.Context, iamv2.ResolveUserRequest) (*iamv2.ResolveUserResponse, error)) *MockAccountIamV2Interface_ResolveUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateWorkspaceAssignmentDetail provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) UpdateWorkspaceAssignmentDetail(ctx context.Context, request iamv2.UpdateWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateWorkspaceAssignmentDetail")
+	}
+
+	var r0 *iamv2.WorkspaceAssignmentDetail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailRequest) *iamv2.WorkspaceAssignmentDetail); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignmentDetail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateWorkspaceAssignmentDetail'
+type MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call struct {
+	*mock.Call
+}
+
+// UpdateWorkspaceAssignmentDetail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.UpdateWorkspaceAssignmentDetailRequest
+func (_e *MockAccountIamV2Interface_Expecter) UpdateWorkspaceAssignmentDetail(ctx interface{}, request interface{}) *MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call {
+	return &MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call{Call: _e.mock.On("UpdateWorkspaceAssignmentDetail", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call) Run(run func(ctx context.Context, request iamv2.UpdateWorkspaceAssignmentDetailRequest)) *MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.UpdateWorkspaceAssignmentDetailRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call) Return(_a0 *iamv2.WorkspaceAssignmentDetail, _a1 error) *MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call) RunAndReturn(run func(context.Context, iamv2.UpdateWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error)) *MockAccountIamV2Interface_UpdateWorkspaceAssignmentDetail_Call {
 	_c.Call.Return(run)
 	return _c
 }
