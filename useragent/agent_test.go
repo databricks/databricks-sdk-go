@@ -136,11 +136,6 @@ func TestLookupAgentProvider(t *testing.T) {
 			expect: "cursor",
 		},
 		{
-			name:   "AGENT=claude-code falls back to claude-code",
-			envs:   map[string]string{"AGENT": "claude-code"},
-			expect: "claude-code",
-		},
-		{
 			name:   "AGENT with unrecognized value passes through (sanitized)",
 			envs:   map[string]string{"AGENT": "someweirdthing"},
 			expect: "someweirdthing",
@@ -199,16 +194,6 @@ func TestLookupAgentProvider(t *testing.T) {
 			name:   "AI_AGENT=cursor falls back to cursor",
 			envs:   map[string]string{"AI_AGENT": "cursor"},
 			expect: "cursor",
-		},
-		{
-			name:   "AI_AGENT=claude-code falls back to claude-code",
-			envs:   map[string]string{"AI_AGENT": "claude-code"},
-			expect: "claude-code",
-		},
-		{
-			name:   "AI_AGENT with unrecognized value passes through",
-			envs:   map[string]string{"AI_AGENT": "someweirdthing"},
-			expect: "someweirdthing",
 		},
 		{
 			name:   "AI_AGENT empty string does not trigger fallback",

@@ -22,10 +22,9 @@ const (
 	// only when agentEnvVar is unset or empty.
 	aiAgentEnvVar = "AI_AGENT"
 
-	// maxAgentFallbackLen caps the length of a value surfaced via the
-	// AGENT / AI_AGENT fallbacks. Explicit-matcher products are already
-	// short, known strings; only the fallback path can carry arbitrary
-	// user-supplied lengths into the User-Agent.
+	// maxAgentFallbackLen caps fallback values to keep the User-Agent
+	// bounded. Explicit-matcher products are short by construction; only
+	// the fallback path can carry arbitrary lengths.
 	maxAgentFallbackLen = 64
 )
 
@@ -114,17 +113,14 @@ func collapseCopilotBYOK(matches []string) []string {
 	return filtered
 }
 
-// agentEnvFallback consults the generic AGENT and AI_AGENT env vars and
-// returns a sanitized name suitable for the User-Agent. AGENT (agents.md) is
-// checked first; AI_AGENT (Vercel @vercel/detect-agent) is checked only when
-// AGENT is unset or empty. Empty is treated as unset for both.
+// agentEnvFallback returns a sanitized, length-capped name from AGENT
+// (agents.md) or AI_AGENT (Vercel @vercel/detect-agent), preferring AGENT
+// when both are non-empty. Empty is treated as unset for both.
 //
-// The value is passed through, not matched against the known-agents list:
-// arbitrary tool names (including versioned variants like
-// "claude-code_2-1-141") are valuable telemetry that bucketing belongs
-// downstream, not in the SDK. The value is sanitized so it satisfies the
-// User-Agent allowlist and capped at maxAgentFallbackLen to keep the header
-// bounded.
+// The value is passed through rather than matched against the known agents
+// list: arbitrary tool names (including versioned variants like
+// "claude-code_2-1-141") are valuable telemetry, and bucketing belongs
+// downstream, not in the SDK.
 func agentEnvFallback() string {
 	v := os.Getenv(agentEnvVar)
 	if v == "" {
