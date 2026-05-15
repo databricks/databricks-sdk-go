@@ -114,13 +114,9 @@ func collapseCopilotBYOK(matches []string) []string {
 }
 
 // agentEnvFallback returns a sanitized, length-capped name from AGENT
-// (agents.md) or AI_AGENT (Vercel @vercel/detect-agent), preferring AGENT
-// when both are non-empty. Empty is treated as unset for both.
-//
-// The value is passed through rather than matched against the known agents
-// list: arbitrary tool names (including versioned variants like
-// "claude-code_2-1-141") are valuable telemetry, and bucketing belongs
-// downstream, not in the SDK.
+// or AI_AGENT, preferring AGENT when both are non-empty. The value is
+// passed through rather than categorized so that new names are propagated
+// without the need to update the list of known agents.
 func agentEnvFallback() string {
 	v := os.Getenv(agentEnvVar)
 	if v == "" {
