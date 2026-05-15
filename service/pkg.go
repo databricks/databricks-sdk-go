@@ -344,7 +344,7 @@
 //
 // - [iam.AccountUsersV2API]: User identities recognized by Databricks and represented by email addresses.
 //
-// - [vectorsearch.VectorSearchEndpointsAPI]: **Endpoint**: Represents the compute resources to host vector search indexes.
+// - [vectorsearch.VectorSearchEndpointsAPI]: **Endpoint**: Represents the compute resources to host AI Search indexes.
 //
 // - [vectorsearch.VectorSearchIndexesAPI]: **Index**: An efficient representation of your embedding vectors that supports real-time and efficient approximate nearest neighbor (ANN) search queries.
 //

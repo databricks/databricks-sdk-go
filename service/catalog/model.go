@@ -965,7 +965,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 124
+// Next Id: 125
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -976,17 +976,23 @@ const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
 
 const ConnectionTypeGa4RawData ConnectionType = `GA4_RAW_DATA`
 
+const ConnectionTypeGithub ConnectionType = `GITHUB`
+
 const ConnectionTypeGlue ConnectionType = `GLUE`
 
 const ConnectionTypeHiveMetastore ConnectionType = `HIVE_METASTORE`
 
 const ConnectionTypeHttp ConnectionType = `HTTP`
 
+const ConnectionTypeHubspot ConnectionType = `HUBSPOT`
+
 const ConnectionTypeMetaMarketing ConnectionType = `META_MARKETING`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
 
 const ConnectionTypeOracle ConnectionType = `ORACLE`
+
+const ConnectionTypeOutlook ConnectionType = `OUTLOOK`
 
 const ConnectionTypePostgresql ConnectionType = `POSTGRESQL`
 
@@ -999,6 +1005,8 @@ const ConnectionTypeSalesforce ConnectionType = `SALESFORCE`
 const ConnectionTypeSalesforceDataCloud ConnectionType = `SALESFORCE_DATA_CLOUD`
 
 const ConnectionTypeServicenow ConnectionType = `SERVICENOW`
+
+const ConnectionTypeSmartsheet ConnectionType = `SMARTSHEET`
 
 const ConnectionTypeSnowflake ConnectionType = `SNOWFLAKE`
 
@@ -1022,11 +1030,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `GA4_RAW_DATA`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `META_MARKETING`, `MYSQL`, `ORACLE`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `META_MARKETING`, `MYSQL`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "GA4_RAW_DATA", "GLUE", "HIVE_METASTORE", "HTTP", "META_MARKETING", "MYSQL", "ORACLE", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "META_MARKETING", "MYSQL", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1039,18 +1047,22 @@ func (f *ConnectionType) Values() []ConnectionType {
 		ConnectionTypeConfluence,
 		ConnectionTypeDatabricks,
 		ConnectionTypeGa4RawData,
+		ConnectionTypeGithub,
 		ConnectionTypeGlue,
 		ConnectionTypeHiveMetastore,
 		ConnectionTypeHttp,
+		ConnectionTypeHubspot,
 		ConnectionTypeMetaMarketing,
 		ConnectionTypeMysql,
 		ConnectionTypeOracle,
+		ConnectionTypeOutlook,
 		ConnectionTypePostgresql,
 		ConnectionTypePowerBi,
 		ConnectionTypeRedshift,
 		ConnectionTypeSalesforce,
 		ConnectionTypeSalesforceDataCloud,
 		ConnectionTypeServicenow,
+		ConnectionTypeSmartsheet,
 		ConnectionTypeSnowflake,
 		ConnectionTypeSqldw,
 		ConnectionTypeSqlserver,
@@ -7229,7 +7241,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: MODEL_SERVICE_STANDARD = 327; Next id: 328
+// Latest kind: CONNECTION_ONEDRIVE_OAUTH_U2M = 329; Next id: 330
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

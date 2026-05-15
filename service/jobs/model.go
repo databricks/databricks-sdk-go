@@ -4471,6 +4471,9 @@ type RunTask struct {
 	Description string `json:"description,omitempty"`
 	// An option to disable auto optimization in serverless
 	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -5288,6 +5291,9 @@ type SubmitTask struct {
 	Description string `json:"description,omitempty"`
 	// An option to disable auto optimization in serverless
 	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`

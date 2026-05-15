@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -1365,6 +1366,12 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 }
 
 type Feature struct {
+	// Name of parent catalog.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// Time at which this feature was created.
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// Username of the feature creator.
+	CreatedBy string `json:"created_by,omitempty"`
 	// The description of the feature.
 	Description string `json:"description,omitempty"`
 	// The entity columns for the feature, used as aggregation keys and for
@@ -1374,7 +1381,9 @@ type Feature struct {
 	// KafkaSource.filter_condition instead. Kept for backwards compatibility.
 	// The filter condition applied to the source data before aggregation.
 	FilterCondition string `json:"filter_condition,omitempty"`
-	// The full three-part name (catalog, schema, name) of the feature.
+	// The full three-part name (catalog, schema, name) of the feature. This is
+	// the feature's resource identifier; the catalog_name, schema_name, and
+	// name fields below are OUTPUT_ONLY decomposed views of this value.
 	FullName string `json:"full_name"`
 	// The function by which the feature is computed.
 	Function Function `json:"function"`
@@ -1389,6 +1398,11 @@ type Feature struct {
 	// This field will be set by feature-engineering client and should be left
 	// unset by SDK and terraform users.
 	LineageContext *LineageContext `json:"lineage_context,omitempty"`
+	// Name of the feature, extracted from the full three-part name
+	// (catalog.schema.name).
+	Name string `json:"name,omitempty"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"schema_name,omitempty"`
 	// The data source of the feature.
 	Source DataSource `json:"source"`
 	// Deprecated: Use Function.aggregation_function.time_window instead. Kept
@@ -2286,10 +2300,14 @@ func (s ListFeatureTagsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListFeaturesRequest struct {
+	// Name of parent catalog for features of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
 	// The maximum number of results to return.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Pagination token to go to the next page based on a previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"-" url:"schema_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4768,7 +4786,9 @@ func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 type UpdateFeatureRequest struct {
 	// Feature to update.
 	Feature Feature `json:"feature"`
-	// The full three-part name (catalog, schema, name) of the feature.
+	// The full three-part name (catalog, schema, name) of the feature. This is
+	// the feature's resource identifier; the catalog_name, schema_name, and
+	// name fields below are OUTPUT_ONLY decomposed views of this value.
 	FullName string `json:"-" url:"-"`
 	// The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`

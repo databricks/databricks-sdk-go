@@ -83,7 +83,8 @@ func (s Example) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSpace struct {
-	// The ID of the genie space.
+	// Deprecated: use space_id instead. Still REQUIRED for backward
+	// compatibility until a future API version removes it.
 	Id string `json:"id"`
 }
 

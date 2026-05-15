@@ -2072,6 +2072,8 @@ const ServedModelInputWorkloadTypeGpuMedium ServedModelInputWorkloadType = `GPU_
 
 const ServedModelInputWorkloadTypeGpuSmall ServedModelInputWorkloadType = `GPU_SMALL`
 
+const ServedModelInputWorkloadTypeGpuXlarge ServedModelInputWorkloadType = `GPU_XLARGE`
+
 const ServedModelInputWorkloadTypeMultigpuMedium ServedModelInputWorkloadType = `MULTIGPU_MEDIUM`
 
 // String representation for [fmt.Print]
@@ -2082,11 +2084,11 @@ func (f *ServedModelInputWorkloadType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServedModelInputWorkloadType) Set(v string) error {
 	switch v {
-	case `CPU`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `MULTIGPU_MEDIUM`:
+	case `CPU`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `GPU_XLARGE`, `MULTIGPU_MEDIUM`:
 		*f = ServedModelInputWorkloadType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CPU", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "MULTIGPU_MEDIUM"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CPU", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "GPU_XLARGE", "MULTIGPU_MEDIUM"`, v)
 	}
 }
 
@@ -2099,6 +2101,7 @@ func (f *ServedModelInputWorkloadType) Values() []ServedModelInputWorkloadType {
 		ServedModelInputWorkloadTypeGpuLarge,
 		ServedModelInputWorkloadTypeGpuMedium,
 		ServedModelInputWorkloadTypeGpuSmall,
+		ServedModelInputWorkloadTypeGpuXlarge,
 		ServedModelInputWorkloadTypeMultigpuMedium,
 	}
 }
@@ -2559,6 +2562,8 @@ const ServingModelWorkloadTypeGpuMedium ServingModelWorkloadType = `GPU_MEDIUM`
 
 const ServingModelWorkloadTypeGpuSmall ServingModelWorkloadType = `GPU_SMALL`
 
+const ServingModelWorkloadTypeGpuXlarge ServingModelWorkloadType = `GPU_XLARGE`
+
 const ServingModelWorkloadTypeMultigpuMedium ServingModelWorkloadType = `MULTIGPU_MEDIUM`
 
 // String representation for [fmt.Print]
@@ -2569,11 +2574,11 @@ func (f *ServingModelWorkloadType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServingModelWorkloadType) Set(v string) error {
 	switch v {
-	case `CPU`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `MULTIGPU_MEDIUM`:
+	case `CPU`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `GPU_XLARGE`, `MULTIGPU_MEDIUM`:
 		*f = ServingModelWorkloadType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CPU", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "MULTIGPU_MEDIUM"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CPU", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "GPU_XLARGE", "MULTIGPU_MEDIUM"`, v)
 	}
 }
 
@@ -2586,6 +2591,7 @@ func (f *ServingModelWorkloadType) Values() []ServingModelWorkloadType {
 		ServingModelWorkloadTypeGpuLarge,
 		ServingModelWorkloadTypeGpuMedium,
 		ServingModelWorkloadTypeGpuSmall,
+		ServingModelWorkloadTypeGpuXlarge,
 		ServingModelWorkloadTypeMultigpuMedium,
 	}
 }

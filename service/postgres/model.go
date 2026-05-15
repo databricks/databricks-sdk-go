@@ -1219,8 +1219,8 @@ type GenerateDatabaseCredentialRequest struct {
 	// The returned token will be scoped to UC tables with the specified
 	// permissions.
 	Claims []RequestedClaims `json:"claims,omitempty"`
-	// This field is not yet supported. The endpoint for which this credential
-	// will be generated. Format:
+	// The endpoint resource name for which this credential will be generated.
+	// Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Endpoint string `json:"endpoint"`
 }
@@ -1840,8 +1840,6 @@ func (f *RequestedClaimsPermissionSet) Type() string {
 type RequestedResource struct {
 	// The full Unity Catalog table name.
 	TableName string `json:"table_name,omitempty"`
-
-	UnspecifiedResourceName string `json:"unspecified_resource_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
