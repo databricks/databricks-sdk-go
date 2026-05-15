@@ -19,6 +19,7 @@ func (w *WorkspaceClient) CurrentWorkspaceID(ctx context.Context) (int64, error)
 	var workspaceIdStr string
 	opts := []httpclient.DoOption{
 		httpclient.WithResponseHeader("X-Databricks-Org-Id", &workspaceIdStr),
+		httpclient.WithRequestData(map[string]string{"excludedAttributes": "entitlements"}),
 	}
 	if w.Config != nil && w.Config.WorkspaceID != "" {
 		opts = append(opts, httpclient.WithRequestHeader("X-Databricks-Org-Id", w.Config.WorkspaceID))
