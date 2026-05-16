@@ -3055,6 +3055,41 @@ func (s PowerBiTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PythonOperatorTask struct {
+	// Fully qualified name of the main class or function. For example,
+	// `my_project.my_function` or `my_project.MyOperator`.
+	Main string `json:"main,omitempty"`
+	// An ordered list of task parameters. TODO(JOBS-30885): Add limits for
+	// parameters.
+	Parameters []PythonOperatorTaskParameter `json:"parameters,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PythonOperatorTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PythonOperatorTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PythonOperatorTaskParameter struct {
+	Name string `json:"name,omitempty"`
+
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PythonOperatorTaskParameter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PythonOperatorTaskParameter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PythonWheelTask struct {
 	// Named entry point to use, if it does not exist in the metadata of the
 	// package it executes the function from the package directly using
@@ -4471,6 +4506,9 @@ type RunTask struct {
 	Description string `json:"description,omitempty"`
 	// An option to disable auto optimization in serverless
 	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -4547,6 +4585,8 @@ type RunTask struct {
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
 	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
+	// The task runs a Python operator task.
+	PythonOperatorTask *PythonOperatorTask `json:"python_operator_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
@@ -5288,6 +5328,9 @@ type SubmitTask struct {
 	Description string `json:"description,omitempty"`
 	// An option to disable auto optimization in serverless
 	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -5334,6 +5377,8 @@ type SubmitTask struct {
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
 	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
+	// The task runs a Python operator task.
+	PythonOperatorTask *PythonOperatorTask `json:"python_operator_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
@@ -5573,6 +5618,8 @@ type Task struct {
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
 	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
+	// The task runs a Python operator task.
+	PythonOperatorTask *PythonOperatorTask `json:"python_operator_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`

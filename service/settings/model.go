@@ -758,6 +758,7 @@ func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
 // traffic. Any changes here should also be synced to
 // estore/namespaces/lakehousenetworkmanager/latest.proto.
 type CustomerFacingIngressNetworkPolicy struct {
+	CrossWorkspaceAccess *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess `json:"cross_workspace_access,omitempty"`
 	// The network policy restrictions for private access to the workspace.
 	// Configures how registered private endpoints are allowed or denied access.
 	PrivateAccess *CustomerFacingIngressNetworkPolicyPrivateAccess `json:"private_access,omitempty"`
@@ -958,6 +959,88 @@ func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) Values() 
 // Type always returns CustomerFacingIngressNetworkPolicyAuthenticationIdentityType to satisfy [pflag.Value] interface
 func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) Type() string {
 	return "CustomerFacingIngressNetworkPolicyAuthenticationIdentityType"
+}
+
+type CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess struct {
+	AllowRules []CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule `json:"allow_rules,omitempty"`
+
+	DenyRules []CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule `json:"deny_rules,omitempty"`
+
+	RestrictionMode CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode `json:"restriction_mode"`
+}
+
+type CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode string
+
+const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeFullAccess CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `FULL_ACCESS`
+
+const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeRestrictedAccess CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `RESTRICTED_ACCESS`
+
+// String representation for [fmt.Print]
+func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) Set(v string) error {
+	switch v {
+	case `FULL_ACCESS`, `RESTRICTED_ACCESS`:
+		*f = CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "RESTRICTED_ACCESS"`, v)
+	}
+}
+
+// Values returns all possible values for CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) Values() []CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode {
+	return []CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode{
+		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeFullAccess,
+		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeRestrictedAccess,
+	}
+}
+
+// Type always returns CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode to satisfy [pflag.Value] interface
+func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) Type() string {
+	return "CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode"
+}
+
+type CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule struct {
+	Authentication *CustomerFacingIngressNetworkPolicyAuthentication `json:"authentication,omitempty"`
+
+	Destination *CustomerFacingIngressNetworkPolicyRequestDestination `json:"destination,omitempty"`
+	// The label for this ingress rule.
+	Label string `json:"label,omitempty"`
+
+	Origin *CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin `json:"origin,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin struct {
+	// Matches all source workspaces.
+	AllSourceWorkspaces bool `json:"all_source_workspaces,omitempty"`
+	// Specific source workspace IDs to match.
+	SelectedWorkspaces *CustomerFacingIngressNetworkPolicyWorkspaceIdList `json:"selected_workspaces,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CustomerFacingIngressNetworkPolicyEndpoints struct {
@@ -1191,6 +1274,10 @@ type CustomerFacingIngressNetworkPolicyWorkspaceApiDestination struct {
 	ScopeQualifier CustomerFacingIngressNetworkPolicyApiScopeQualifier `json:"scope_qualifier,omitempty"`
 
 	Scopes []string `json:"scopes,omitempty"`
+}
+
+type CustomerFacingIngressNetworkPolicyWorkspaceIdList struct {
+	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
 }
 
 type CustomerFacingIngressNetworkPolicyWorkspaceUiDestination struct {

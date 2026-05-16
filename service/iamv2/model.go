@@ -5,8 +5,85 @@ package iamv2
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
+
+type CreateWorkspaceAssignmentDetailProxyRequest struct {
+	// Required. Workspace assignment detail to be created in <Databricks>.
+	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
+}
+
+type CreateWorkspaceAssignmentDetailRequest struct {
+	// Required. Workspace assignment detail to be created in <Databricks>.
+	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
+	// Required. The workspace ID for which the workspace assignment detail is
+	// being created.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type DeleteWorkspaceAssignmentDetailProxyRequest struct {
+	// Required. ID of the principal in Databricks to delete workspace
+	// assignment for.
+	PrincipalId int64 `json:"-" url:"-"`
+}
+
+type DeleteWorkspaceAssignmentDetailRequest struct {
+	// Required. ID of the principal in Databricks to delete workspace
+	// assignment for.
+	PrincipalId int64 `json:"-" url:"-"`
+	// The workspace ID where the principal has access.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type Entitlement string
+
+const EntitlementAllowClusterCreate Entitlement = `ALLOW_CLUSTER_CREATE`
+
+const EntitlementAllowInstancePoolCreate Entitlement = `ALLOW_INSTANCE_POOL_CREATE`
+
+const EntitlementDatabricksSqlAccess Entitlement = `DATABRICKS_SQL_ACCESS`
+
+const EntitlementWorkspaceAccess Entitlement = `WORKSPACE_ACCESS`
+
+const EntitlementWorkspaceAdmin Entitlement = `WORKSPACE_ADMIN`
+
+const EntitlementWorkspaceConsume Entitlement = `WORKSPACE_CONSUME`
+
+// String representation for [fmt.Print]
+func (f *Entitlement) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *Entitlement) Set(v string) error {
+	switch v {
+	case `ALLOW_CLUSTER_CREATE`, `ALLOW_INSTANCE_POOL_CREATE`, `DATABRICKS_SQL_ACCESS`, `WORKSPACE_ACCESS`, `WORKSPACE_ADMIN`, `WORKSPACE_CONSUME`:
+		*f = Entitlement(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALLOW_CLUSTER_CREATE", "ALLOW_INSTANCE_POOL_CREATE", "DATABRICKS_SQL_ACCESS", "WORKSPACE_ACCESS", "WORKSPACE_ADMIN", "WORKSPACE_CONSUME"`, v)
+	}
+}
+
+// Values returns all possible values for Entitlement.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Entitlement) Values() []Entitlement {
+	return []Entitlement{
+		EntitlementAllowClusterCreate,
+		EntitlementAllowInstancePoolCreate,
+		EntitlementDatabricksSqlAccess,
+		EntitlementWorkspaceAccess,
+		EntitlementWorkspaceAdmin,
+		EntitlementWorkspaceConsume,
+	}
+}
+
+// Type always returns Entitlement to satisfy [pflag.Value] interface
+func (f *Entitlement) Type() string {
+	return "Entitlement"
+}
 
 type GetWorkspaceAccessDetailLocalRequest struct {
 	// Required. The internal ID of the principal (user/sp/group) for which the
@@ -23,6 +100,21 @@ type GetWorkspaceAccessDetailRequest struct {
 	// Controls what fields are returned.
 	View WorkspaceAccessDetailView `json:"-" url:"view,omitempty"`
 	// Required. The workspace ID for which the access details are being
+	// requested.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type GetWorkspaceAssignmentDetailProxyRequest struct {
+	// Required. The internal ID of the principal (user/sp/group) for which the
+	// assignment details are being requested.
+	PrincipalId int64 `json:"-" url:"-"`
+}
+
+type GetWorkspaceAssignmentDetailRequest struct {
+	// Required. The internal ID of the principal (user/sp/group) for which the
+	// assignment details are being requested.
+	PrincipalId int64 `json:"-" url:"-"`
+	// Required. The workspace ID for which the assignment details are being
 	// requested.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
@@ -46,6 +138,67 @@ func (s *Group) UnmarshalJSON(b []byte) error {
 }
 
 func (s Group) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListWorkspaceAssignmentDetailsProxyRequest struct {
+	// The maximum number of workspace assignment details to return. The service
+	// may return fewer than this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous
+	// ListWorkspaceAssignmentDetailsProxy call. Provide this to retrieve the
+	// subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListWorkspaceAssignmentDetailsProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWorkspaceAssignmentDetailsProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListWorkspaceAssignmentDetailsRequest struct {
+	// The maximum number of workspace assignment details to return. The service
+	// may return fewer than this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListWorkspaceAssignmentDetails
+	// call. Provide this to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Required. The workspace ID for which the workspace assignment details are
+	// being fetched.
+	WorkspaceId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListWorkspaceAssignmentDetailsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWorkspaceAssignmentDetailsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response message for listing workspace assignment details.
+type ListWorkspaceAssignmentDetailsResponse struct {
+	// A token, which can be sent as page_token to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	WorkspaceAssignmentDetails []WorkspaceAssignmentDetail `json:"workspace_assignment_details,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListWorkspaceAssignmentDetailsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWorkspaceAssignmentDetailsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -218,6 +371,27 @@ func (f *State) Type() string {
 	return "State"
 }
 
+type UpdateWorkspaceAssignmentDetailProxyRequest struct {
+	// Required. ID of the principal in Databricks.
+	PrincipalId int64 `json:"-" url:"-"`
+	// Required. The list of fields to update.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+	// Required. Workspace assignment detail to be updated in <Databricks>.
+	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
+}
+
+type UpdateWorkspaceAssignmentDetailRequest struct {
+	// Required. ID of the principal in Databricks.
+	PrincipalId int64 `json:"-" url:"-"`
+	// Required. The list of fields to update.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+	// Required. Workspace assignment detail to be updated in <Databricks>.
+	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
+	// Required. The workspace ID for which the workspace assignment detail is
+	// being updated.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
 // The details of a User resource.
 type User struct {
 	// The accountId parent of the user in Databricks.
@@ -362,6 +536,30 @@ func (f *WorkspaceAccessDetailView) Values() []WorkspaceAccessDetailView {
 // Type always returns WorkspaceAccessDetailView to satisfy [pflag.Value] interface
 func (f *WorkspaceAccessDetailView) Type() string {
 	return "WorkspaceAccessDetailView"
+}
+
+// The details of a principal's assignment to a workspace.
+type WorkspaceAssignmentDetail struct {
+	// The account ID parent of the workspace where the principal is assigned
+	AccountId string `json:"account_id,omitempty"`
+
+	Entitlements []Entitlement `json:"entitlements,omitempty"`
+	// The internal ID of the principal (user/sp/group) in Databricks.
+	PrincipalId int64 `json:"principal_id"`
+
+	PrincipalType PrincipalType `json:"principal_type,omitempty"`
+	// The workspace ID where the principal is assigned
+	WorkspaceId int64 `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *WorkspaceAssignmentDetail) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceAssignmentDetail) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The type of permission a principal has to a workspace (admin/user).
