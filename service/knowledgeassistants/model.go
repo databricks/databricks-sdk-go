@@ -160,7 +160,7 @@ type KnowledgeAssistant struct {
 	ErrorInfo string `json:"error_info,omitempty"`
 	// The MLflow experiment ID.
 	ExperimentId string `json:"experiment_id,omitempty"`
-	// The universally unique identifier (UUID) of the Knowledge Assistant.
+	// Deprecated: use knowledge_assistant_id instead.
 	Id string `json:"id,omitempty"`
 	// Additional global instructions on how the agent should generate answers.
 	// Optional on create and update. When updating a Knowledge Assistant,
