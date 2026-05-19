@@ -443,9 +443,11 @@ type Tool struct {
 	// User specified id of the Tool.
 	ToolId string `json:"tool_id,omitempty"`
 	// Tool type. Must be one of: "genie_space", "knowledge_assistant",
-	// "uc_function", "uc_connection", "app", "volume", "lakeview_dashboard",
-	// "serving_endpoint", "uc_table", "vector_search_index", "catalog",
-	// "schema", "supervisor_agent", "web_search".
+	// "uc_function", "uc_connection", "app", "volume", "dashboard",
+	// "serving_endpoint", "table", "vector_search_index", "catalog", "schema",
+	// "supervisor_agent", "web_search". The legacy values "lakeview_dashboard"
+	// and "uc_table" are also accepted and remain equivalent to "dashboard" and
+	// "table" respectively.
 	ToolType string `json:"tool_type"`
 
 	UcConnection *UcConnection `json:"uc_connection,omitempty"`

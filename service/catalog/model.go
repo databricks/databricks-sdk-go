@@ -1947,7 +1947,7 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 18
+// Next Id: 19
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
