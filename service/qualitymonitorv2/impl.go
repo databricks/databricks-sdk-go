@@ -26,7 +26,7 @@ func (a *qualityMonitorV2Impl) CreateQualityMonitor(ctx context.Context, request
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.QualityMonitor, &qualityMonitor)
 	return &qualityMonitor, err
@@ -39,7 +39,7 @@ func (a *qualityMonitorV2Impl) DeleteQualityMonitor(ctx context.Context, request
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -53,7 +53,7 @@ func (a *qualityMonitorV2Impl) GetQualityMonitor(ctx context.Context, request Ge
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &qualityMonitor)
 	return &qualityMonitor, err
@@ -100,7 +100,7 @@ func (a *qualityMonitorV2Impl) internalListQualityMonitor(ctx context.Context, r
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listQualityMonitorResponse)
 	return &listQualityMonitorResponse, err
@@ -115,7 +115,7 @@ func (a *qualityMonitorV2Impl) UpdateQualityMonitor(ctx context.Context, request
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.QualityMonitor, &qualityMonitor)
 	return &qualityMonitor, err

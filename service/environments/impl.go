@@ -41,7 +41,7 @@ func (a *environmentsImpl) CreateWorkspaceBaseEnvironment(ctx context.Context, r
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.WorkspaceBaseEnvironment, &operation)
 	return &operation, err
@@ -54,7 +54,7 @@ func (a *environmentsImpl) DeleteWorkspaceBaseEnvironment(ctx context.Context, r
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -68,7 +68,7 @@ func (a *environmentsImpl) GetDefaultWorkspaceBaseEnvironment(ctx context.Contex
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &defaultWorkspaceBaseEnvironment)
 	return &defaultWorkspaceBaseEnvironment, err
@@ -82,7 +82,7 @@ func (a *environmentsImpl) GetOperation(ctx context.Context, request GetOperatio
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &operation)
 	return &operation, err
@@ -96,7 +96,7 @@ func (a *environmentsImpl) GetWorkspaceBaseEnvironment(ctx context.Context, requ
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceBaseEnvironment)
 	return &workspaceBaseEnvironment, err
@@ -141,7 +141,7 @@ func (a *environmentsImpl) internalListWorkspaceBaseEnvironments(ctx context.Con
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listWorkspaceBaseEnvironmentsResponse)
 	return &listWorkspaceBaseEnvironmentsResponse, err
@@ -156,7 +156,7 @@ func (a *environmentsImpl) RefreshWorkspaceBaseEnvironment(ctx context.Context, 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
 	return &operation, err
@@ -178,7 +178,7 @@ func (a *environmentsImpl) UpdateDefaultWorkspaceBaseEnvironment(ctx context.Con
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DefaultWorkspaceBaseEnvironment, &defaultWorkspaceBaseEnvironment)
 	return &defaultWorkspaceBaseEnvironment, err
@@ -193,7 +193,7 @@ func (a *environmentsImpl) UpdateWorkspaceBaseEnvironment(ctx context.Context, r
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.WorkspaceBaseEnvironment, &operation)
 	return &operation, err

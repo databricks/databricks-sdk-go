@@ -33,7 +33,7 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.App, &app)
 	return &app, err
@@ -48,7 +48,7 @@ func (a *appsImpl) CreateSpace(ctx context.Context, request CreateSpaceRequest) 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Space, &operation)
 	return &operation, err
@@ -63,7 +63,7 @@ func (a *appsImpl) CreateUpdate(ctx context.Context, request AsyncUpdateAppReque
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &appUpdate)
 	return &appUpdate, err
@@ -77,7 +77,7 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &app)
 	return &app, err
@@ -90,7 +90,7 @@ func (a *appsImpl) DeleteAppThumbnail(ctx context.Context, request DeleteAppThum
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -104,7 +104,7 @@ func (a *appsImpl) DeleteSpace(ctx context.Context, request DeleteSpaceRequest) 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
 	return &operation, err
@@ -119,7 +119,7 @@ func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentReques
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.AppDeployment, &appDeployment)
 	return &appDeployment, err
@@ -133,7 +133,7 @@ func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &app)
 	return &app, err
@@ -147,7 +147,7 @@ func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRe
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appDeployment)
 	return &appDeployment, err
@@ -161,7 +161,7 @@ func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermis
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getAppPermissionLevelsResponse)
 	return &getAppPermissionLevelsResponse, err
@@ -175,7 +175,7 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
@@ -189,7 +189,7 @@ func (a *appsImpl) GetSpace(ctx context.Context, request GetSpaceRequest) (*Spac
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &space)
 	return &space, err
@@ -203,7 +203,7 @@ func (a *appsImpl) GetSpaceOperation(ctx context.Context, request GetOperationRe
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &operation)
 	return &operation, err
@@ -217,7 +217,7 @@ func (a *appsImpl) GetUpdate(ctx context.Context, request GetAppUpdateRequest) (
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appUpdate)
 	return &appUpdate, err
@@ -262,7 +262,7 @@ func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppsResponse)
 	return &listAppsResponse, err
@@ -307,7 +307,7 @@ func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppD
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppDeploymentsResponse)
 	return &listAppDeploymentsResponse, err
@@ -352,7 +352,7 @@ func (a *appsImpl) internalListSpaces(ctx context.Context, request ListSpacesReq
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSpacesResponse)
 	return &listSpacesResponse, err
@@ -367,7 +367,7 @@ func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsReq
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
@@ -382,7 +382,7 @@ func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, er
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &app)
 	return &app, err
@@ -397,7 +397,7 @@ func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, erro
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &app)
 	return &app, err
@@ -412,7 +412,7 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.App, &app)
 	return &app, err
@@ -427,7 +427,7 @@ func (a *appsImpl) UpdateAppThumbnail(ctx context.Context, request UpdateAppThum
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &appThumbnail)
 	return &appThumbnail, err
@@ -442,7 +442,7 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
@@ -464,7 +464,7 @@ func (a *appsImpl) UpdateSpace(ctx context.Context, request UpdateSpaceRequest) 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Space, &operation)
 	return &operation, err
@@ -484,7 +484,7 @@ func (a *appsSettingsImpl) CreateCustomTemplate(ctx context.Context, request Cre
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Template, &customTemplate)
 	return &customTemplate, err
@@ -498,7 +498,7 @@ func (a *appsSettingsImpl) DeleteCustomTemplate(ctx context.Context, request Del
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &customTemplate)
 	return &customTemplate, err
@@ -512,7 +512,7 @@ func (a *appsSettingsImpl) GetCustomTemplate(ctx context.Context, request GetCus
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &customTemplate)
 	return &customTemplate, err
@@ -557,7 +557,7 @@ func (a *appsSettingsImpl) internalListCustomTemplates(ctx context.Context, requ
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCustomTemplatesResponse)
 	return &listCustomTemplatesResponse, err
@@ -572,7 +572,7 @@ func (a *appsSettingsImpl) UpdateCustomTemplate(ctx context.Context, request Upd
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Template, &customTemplate)
 	return &customTemplate, err
