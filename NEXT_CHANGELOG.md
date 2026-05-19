@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.134.0
+## Release v0.135.0
 
 ### Breaking Changes
 
@@ -13,6 +13,3 @@
 ### Internal Changes
 
 ### API Changes
-* Add `FullRefreshSelection`, `RefreshFlowSelection`, `RefreshSelection` and `ResetCheckpointSelection` fields for [jobs.PipelineParams](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PipelineParams).
-* Add `FullRefreshSelection`, `RefreshFlowSelection`, `RefreshSelection` and `ResetCheckpointSelection` fields for [jobs.PipelineTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PipelineTask).
-* Add `EffectiveOperationalEmailCustomRecipient` and `OperationalEmailCustomRecipient` fields for [settingsv2.Setting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#Setting).
