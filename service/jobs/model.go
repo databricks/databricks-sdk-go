@@ -2958,6 +2958,16 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
 type PipelineParams struct {
 	// If true, triggers a full refresh on the spark declarative pipeline.
 	FullRefresh bool `json:"full_refresh,omitempty"`
+	// A list of tables to update with fullRefresh.
+	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Flow names to selectively refresh. These are unioned with other selective
+	// refresh options (refresh_selection, full_refresh_selection) to determine
+	// the final set of flows to refresh.
+	RefreshFlowSelection []string `json:"refresh_flow_selection,omitempty"`
+	// A list of tables to update without fullRefresh.
+	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// A list of streaming flows to reset checkpoints without clearing data.
+	ResetCheckpointSelection []string `json:"reset_checkpoint_selection,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2973,8 +2983,18 @@ func (s PipelineParams) MarshalJSON() ([]byte, error) {
 type PipelineTask struct {
 	// If true, triggers a full refresh on the spark declarative pipeline.
 	FullRefresh bool `json:"full_refresh,omitempty"`
+	// A list of tables to update with fullRefresh.
+	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
 	// The full name of the pipeline task to execute.
 	PipelineId string `json:"pipeline_id"`
+	// Flow names to selectively refresh. These are unioned with other selective
+	// refresh options (refresh_selection, full_refresh_selection) to determine
+	// the final set of flows to refresh.
+	RefreshFlowSelection []string `json:"refresh_flow_selection,omitempty"`
+	// A list of tables to update without fullRefresh.
+	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// A list of streaming flows to reset checkpoints without clearing data.
+	ResetCheckpointSelection []string `json:"reset_checkpoint_selection,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
