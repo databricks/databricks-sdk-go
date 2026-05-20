@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/service/apps"
+	"github.com/databricks/databricks-sdk-go/service/bundle"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -93,6 +94,9 @@ type WorkspaceClient struct {
 	// scripts to the `allowlist` in UC so that users can leverage these
 	// artifacts on compute configured with shared access mode.
 	ArtifactAllowlists catalog.ArtifactAllowlistsInterface
+
+	// Service for managing bundle deployment metadata.
+	Bundle bundle.BundleInterface
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
 	// It’s used to organize your data assets. Users can see all catalogs on
@@ -1455,6 +1459,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Apps:                                apps.NewApps(databricksClient),
 		AppsSettings:                        apps.NewAppsSettings(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
+		Bundle:                              bundle.NewBundle(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
 		CleanRoomAssetRevisions:             cleanrooms.NewCleanRoomAssetRevisions(databricksClient),
 		CleanRoomAssets:                     cleanrooms.NewCleanRoomAssets(databricksClient),

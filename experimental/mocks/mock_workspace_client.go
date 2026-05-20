@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/bundle"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
@@ -63,6 +64,7 @@ func NewMockWorkspaceClient(t interface {
 			Apps:                                apps.NewMockAppsInterface(t),
 			AppsSettings:                        apps.NewMockAppsSettingsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
+			Bundle:                              bundle.NewMockBundleInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
 			CleanRoomAssetRevisions:             cleanrooms.NewMockCleanRoomAssetRevisionsInterface(t),
 			CleanRoomAssets:                     cleanrooms.NewMockCleanRoomAssetsInterface(t),
@@ -437,6 +439,14 @@ func (m *MockWorkspaceClient) GetMockArtifactAllowlistsAPI() *catalog.MockArtifa
 	api, ok := m.WorkspaceClient.ArtifactAllowlists.(*catalog.MockArtifactAllowlistsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ArtifactAllowlists to be *catalog.MockArtifactAllowlistsInterface, actual was %T", m.WorkspaceClient.ArtifactAllowlists))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockBundleAPI() *bundle.MockBundleInterface {
+	api, ok := m.WorkspaceClient.Bundle.(*bundle.MockBundleInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Bundle to be *bundle.MockBundleInterface, actual was %T", m.WorkspaceClient.Bundle))
 	}
 	return api
 }
