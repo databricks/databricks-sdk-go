@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.135.0 (2026-05-20)
+
+### API Changes
+* Add [bundle](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle) package.
+* Add [w.Bundle](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#BundleAPI) workspace-level service.
+* Add `MtlsConfig` field for [ml.AuthConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#AuthConfig).
+
+
 ## Release v0.134.0 (2026-05-19)
 
 ### API Changes
