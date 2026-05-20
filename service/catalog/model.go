@@ -7241,7 +7241,11 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_ONEDRIVE_OAUTH_U2M = 329; Next id: 330
+// Specific variant of a SecurableType: identifies the concrete implementation
+// or backing system for a UC securable (e.g. CATALOG_STANDARD vs
+// CATALOG_DELTASHARING; MEMORY_STORE_STANDARD for Conversations-backed memory
+// stores). Used to dispatch type-specific handling in the entity model. Latest
+// kind: MEMORY_STORE_STANDARD = 330; Next id: 331
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
