@@ -174,7 +174,7 @@ type AccountUsersV2Service interface {
 type CurrentUserService interface {
 
 	// Get details about the current method caller's identity.
-	Me(ctx context.Context) (*User, error)
+	Me(ctx context.Context, request MeRequest) (*User, error)
 }
 
 // Groups simplify identity management, making it easier to assign access to

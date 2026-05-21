@@ -470,7 +470,7 @@ func (s ListVersionsResponse) MarshalJSON() ([]byte, error) {
 // workspace.
 type Operation struct {
 	// The type of operation performed on this resource.
-	ActionType OperationActionType `json:"action_type,omitempty"`
+	ActionType OperationActionType `json:"action_type"`
 	// When the operation was recorded.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Error message if the operation failed. Set when status is
@@ -481,8 +481,8 @@ type Operation struct {
 	// deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
 	Name string `json:"name,omitempty"`
 	// ID reference for the actual resource in the workspace (e.g. the job ID,
-	// pipeline ID). Should be unset for delete operations.
-	ResourceId string `json:"resource_id,omitempty"`
+	// pipeline ID).
+	ResourceId string `json:"resource_id"`
 	// Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar",
 	// "jobs.foo.permissions", "files.<rel-path>"). Can be an arbitrary UTF-8
 	// encoded string key. This key links the operation to the corresponding
@@ -638,7 +638,7 @@ func (s Resource) MarshalJSON() ([]byte, error) {
 // Creating a version acquires an exclusive lock on the parent deployment.
 type Version struct {
 	// CLI version used to initiate the version.
-	CliVersion string `json:"cli_version,omitempty"`
+	CliVersion string `json:"cli_version"`
 	// When the version completed. Unset while the version is in progress.
 	CompleteTime *time.Time `json:"complete_time,omitempty"`
 	// The user who completed the version (email or principal name). May differ

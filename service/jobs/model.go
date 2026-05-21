@@ -1519,6 +1519,9 @@ type GetJobPermissionsRequest struct {
 }
 
 type GetJobRequest struct {
+	// Flag that indicates that trigger state should be included in the
+	// response.
+	IncludeTriggerState bool `json:"-" url:"include_trigger_state,omitempty"`
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
