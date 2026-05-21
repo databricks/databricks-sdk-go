@@ -147,7 +147,7 @@ func TestUcAccWifAuthWorkspace(t *testing.T) {
 	wifWsClient, err := databricks.NewWorkspaceClient(wsCfg)
 
 	require.NoError(t, err)
-	_, err = wifWsClient.CurrentUser.Me(ctx)
+	_, err = wifWsClient.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 }
 
@@ -173,7 +173,7 @@ func TestUcAccWorkspaceOAuthM2MAuth(t *testing.T) {
 	}
 
 	// Call the "me" API
-	me, err := wsClient.CurrentUser.Me(ctx)
+	me, err := wsClient.CurrentUser.Me(ctx, iam.MeRequest{})
 	if err != nil {
 		t.Fatalf("failed to call CurrentUser.Me(): %v", err)
 	}
@@ -208,7 +208,7 @@ func TestUcAccWorkspaceAzureClientSecretAuth(t *testing.T) {
 	}
 
 	// Call the "me" API
-	me, err := wsClient.CurrentUser.Me(ctx)
+	me, err := wsClient.CurrentUser.Me(ctx, iam.MeRequest{})
 	if err != nil {
 		t.Fatalf("failed to call CurrentUser.Me(): %v", err)
 	}
