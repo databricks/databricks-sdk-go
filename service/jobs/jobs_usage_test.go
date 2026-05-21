@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/logger"
 
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 )
 
@@ -23,7 +24,7 @@ func ExampleJobsAPI_CancelAllRuns_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -80,7 +81,7 @@ func ExampleJobsAPI_CancelRun_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -146,7 +147,7 @@ func ExampleJobsAPI_Create_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -196,7 +197,7 @@ func ExampleJobsAPI_ExportRun_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -263,7 +264,7 @@ func ExampleJobsAPI_Get_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -319,7 +320,7 @@ func ExampleJobsAPI_GetRunOutput_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -390,7 +391,7 @@ func ExampleJobsAPI_ListRuns_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -448,7 +449,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -523,7 +524,7 @@ func ExampleJobsAPI_Reset_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -592,7 +593,7 @@ func ExampleJobsAPI_RunNow_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -650,7 +651,7 @@ func ExampleJobsAPI_Submit_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -698,7 +699,7 @@ func ExampleJobsAPI_Update_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}

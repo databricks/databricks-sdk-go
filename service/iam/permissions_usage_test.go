@@ -22,7 +22,7 @@ func ExamplePermissionsAPI_Get_genericPermissions() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -53,7 +53,7 @@ func ExamplePermissionsAPI_GetPermissionLevels_genericPermissions() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -85,7 +85,7 @@ func ExamplePermissionsAPI_Set_genericPermissions() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}

@@ -1154,6 +1154,23 @@ type ListWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type MeRequest struct {
+	// Comma-separated list of attributes to return in response.
+	Attributes string `json:"-" url:"attributes,omitempty"`
+	// Comma-separated list of attributes to exclude in response.
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MeRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MeRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type MigratePermissionsRequest struct {
 	// The name of the workspace group that permissions will be migrated from.
 	FromWorkspaceGroupName string `json:"from_workspace_group_name"`

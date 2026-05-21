@@ -6,13 +6,14 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/qa/lock"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func acquireGitCredentialsLock(ctx context.Context, t *testing.T, w *databricks.WorkspaceClient) {
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 	lockable := lock.GitCredentials{
 		WorkspaceHost: w.Config.Host,

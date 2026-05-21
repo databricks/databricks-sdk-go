@@ -1377,8 +1377,8 @@ type ListListingsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Matches any of the following provider ids
 	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
-	// Matches any of the following tags
-	Tags []ListingTag `json:"-" url:"tags,omitempty"`
+	// Matches listings with this tag
+	Tags *ListingTag `json:"-" url:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
