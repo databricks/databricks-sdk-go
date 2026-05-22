@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/logger"
 
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
 
@@ -23,7 +24,7 @@ func ExampleWorkspaceAPI_Export_workspaceIntegration() {
 	}
 
 	notebook := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -49,7 +50,7 @@ func ExampleWorkspaceAPI_GetStatus_genericPermissions() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -72,7 +73,7 @@ func ExampleWorkspaceAPI_GetStatus_workspaceIntegration() {
 	}
 
 	notebook := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -95,7 +96,7 @@ func ExampleWorkspaceAPI_Import_jobsApiFullIntegration() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -126,7 +127,7 @@ func ExampleWorkspaceAPI_Import_genericPermissions() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -155,7 +156,7 @@ func ExampleWorkspaceAPI_Import_pipelines() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -183,7 +184,7 @@ func ExampleWorkspaceAPI_Import_workspaceIntegration() {
 	}
 
 	notebook := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -211,7 +212,7 @@ func ExampleWorkspaceAPI_List_workspaceIntegration() {
 	}
 
 	notebook := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}

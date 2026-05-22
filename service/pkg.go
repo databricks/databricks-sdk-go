@@ -32,6 +32,8 @@
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
 //
+// - [bundle.BundleAPI]: Service for managing bundle deployment metadata.
+//
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
 // - [cleanrooms.CleanRoomAssetRevisionsAPI]: Clean Room Asset Revisions denote new versions of uploaded assets (e.g.
@@ -344,7 +346,7 @@
 //
 // - [iam.AccountUsersV2API]: User identities recognized by Databricks and represented by email addresses.
 //
-// - [vectorsearch.VectorSearchEndpointsAPI]: **Endpoint**: Represents the compute resources to host vector search indexes.
+// - [vectorsearch.VectorSearchEndpointsAPI]: **Endpoint**: Represents the compute resources to host AI Search indexes.
 //
 // - [vectorsearch.VectorSearchIndexesAPI]: **Index**: An efficient representation of your embedding vectors that supports real-time and efficient approximate nearest neighbor (ANN) search queries.
 //
@@ -377,6 +379,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
+	"github.com/databricks/databricks-sdk-go/service/bundle"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -431,6 +434,7 @@ var (
 	_ *billing.BillableUsageAPI                           = nil
 	_ *billing.BudgetPolicyAPI                            = nil
 	_ *billing.BudgetsAPI                                 = nil
+	_ *bundle.BundleAPI                                   = nil
 	_ *catalog.CatalogsAPI                                = nil
 	_ *cleanrooms.CleanRoomAssetRevisionsAPI              = nil
 	_ *cleanrooms.CleanRoomAssetsAPI                      = nil

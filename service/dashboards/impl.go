@@ -95,11 +95,12 @@ func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
 	return &genieGetMessageQueryResultResponse, err
 }
 
@@ -109,11 +110,12 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
 	return &genieGetMessageQueryResultResponse, err
 }
 
@@ -123,11 +125,12 @@ func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGenerateDownloadFullQueryResultResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieGenerateDownloadFullQueryResultResponse)
 	return &genieGenerateDownloadFullQueryResultResponse, err
 }
 

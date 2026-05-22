@@ -448,17 +448,17 @@ type currentUserImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
+func (a *currentUserImpl) Me(ctx context.Context, request MeRequest) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Me"
-
+	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &user)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &user)
 	return &user, err
 }
 

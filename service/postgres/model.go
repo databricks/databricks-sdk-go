@@ -105,6 +105,9 @@ type BranchStatus struct {
 	CurrentState BranchStatusState `json:"current_state,omitempty"`
 	// Whether the branch is the project's default branch.
 	Default bool `json:"default,omitempty"`
+	// A timestamp indicating when the branch was deleted. Empty if the branch
+	// is not deleted.
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Absolute expiration time for the branch. Empty if expiration is disabled.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
 	// Whether the branch is protected.
@@ -113,6 +116,9 @@ type BranchStatus struct {
 	LogicalSizeBytes int64 `json:"logical_size_bytes,omitempty"`
 	// The pending state of the branch, if a state transition is in progress.
 	PendingState BranchStatusState `json:"pending_state,omitempty"`
+	// A timestamp indicating when the branch is scheduled to be purged. Empty
+	// if the branch is not deleted, otherwise set to a timestamp in the future.
+	PurgeTime *time.Time `json:"purge_time,omitempty"`
 	// The name of the source branch from which this branch was created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	SourceBranch string `json:"source_branch,omitempty"`
@@ -141,6 +147,8 @@ type BranchStatusState string
 
 const BranchStatusStateArchived BranchStatusState = `ARCHIVED`
 
+const BranchStatusStateDeleted BranchStatusState = `DELETED`
+
 const BranchStatusStateImporting BranchStatusState = `IMPORTING`
 
 const BranchStatusStateInit BranchStatusState = `INIT`
@@ -157,11 +165,11 @@ func (f *BranchStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *BranchStatusState) Set(v string) error {
 	switch v {
-	case `ARCHIVED`, `IMPORTING`, `INIT`, `READY`, `RESETTING`:
+	case `ARCHIVED`, `DELETED`, `IMPORTING`, `INIT`, `READY`, `RESETTING`:
 		*f = BranchStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "IMPORTING", "INIT", "READY", "RESETTING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "DELETED", "IMPORTING", "INIT", "READY", "RESETTING"`, v)
 	}
 }
 
@@ -171,6 +179,7 @@ func (f *BranchStatusState) Set(v string) error {
 func (f *BranchStatusState) Values() []BranchStatusState {
 	return []BranchStatusState{
 		BranchStatusStateArchived,
+		BranchStatusStateDeleted,
 		BranchStatusStateImporting,
 		BranchStatusStateInit,
 		BranchStatusStateReady,
@@ -567,6 +576,18 @@ type DeleteBranchRequest struct {
 	// The full resource path of the branch to delete. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Name string `json:"-" url:"-"`
+	// If true, permanently delete the branch; if false, soft delete.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteBranchRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteCatalogRequest struct {
@@ -1219,8 +1240,8 @@ type GenerateDatabaseCredentialRequest struct {
 	// The returned token will be scoped to UC tables with the specified
 	// permissions.
 	Claims []RequestedClaims `json:"claims,omitempty"`
-	// This field is not yet supported. The endpoint for which this credential
-	// will be generated. Format:
+	// The endpoint resource name for which this credential will be generated.
+	// Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Endpoint string `json:"endpoint"`
 }
@@ -1290,6 +1311,10 @@ type ListBranchesRequest struct {
 	// The Project that owns this collection of branches. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
+	// Whether to include soft-deleted branches in the response. When true,
+	// deleted branches are included alongside active branches. Purged branches
+	// are never returned.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1647,7 +1672,8 @@ type ProjectSpec struct {
 	// recovery for all branches in this project. Value should be between
 	// 172800s (2 days) and 3024000s (35 days).
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
-	// The major Postgres version number. Supported versions are 16 and 17.
+	// The major Postgres version number. The set of supported versions may
+	// vary; consult the API documentation for currently accepted values.
 	PgVersion int `json:"pg_version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1840,8 +1866,6 @@ func (f *RequestedClaimsPermissionSet) Type() string {
 type RequestedResource struct {
 	// The full Unity Catalog table name.
 	TableName string `json:"table_name,omitempty"`
-
-	UnspecifiedResourceName string `json:"unspecified_resource_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2405,6 +2429,12 @@ func (s *SyncedTableSyncedTableStatus) UnmarshalJSON(b []byte) error {
 
 func (s SyncedTableSyncedTableStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UndeleteBranchRequest struct {
+	// The full resource path of the branch to undelete. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Name string `json:"-" url:"-"`
 }
 
 // Request to restore a soft-deleted project within its retention period.

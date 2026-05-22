@@ -5,7 +5,9 @@ package ml
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/duration"
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -311,6 +313,8 @@ func (s ApproxPercentileFunction) MarshalJSON() ([]byte, error) {
 }
 
 type AuthConfig struct {
+	// Mutual-TLS authentication. See MtlsConfig.
+	MtlsConfig *MtlsConfig `json:"mtls_config,omitempty"`
 	// Name of the Unity Catalog service credential. This value will be set
 	// under the option databricks.serviceCredential
 	UcServiceCredentialName string `json:"uc_service_credential_name,omitempty"`
@@ -476,6 +480,7 @@ func (s CommentObject) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Deprecated: use RollingWindow with `delay` instead.
 type ContinuousWindow struct {
 	// The offset of the continuous window (must be non-positive).
 	Offset string `json:"offset,omitempty"`
@@ -1365,6 +1370,12 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 }
 
 type Feature struct {
+	// Name of parent catalog.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// Time at which this feature was created.
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// Username of the feature creator.
+	CreatedBy string `json:"created_by,omitempty"`
 	// The description of the feature.
 	Description string `json:"description,omitempty"`
 	// The entity columns for the feature, used as aggregation keys and for
@@ -1374,7 +1385,9 @@ type Feature struct {
 	// KafkaSource.filter_condition instead. Kept for backwards compatibility.
 	// The filter condition applied to the source data before aggregation.
 	FilterCondition string `json:"filter_condition,omitempty"`
-	// The full three-part name (catalog, schema, name) of the feature.
+	// The full three-part name (catalog, schema, name) of the feature. This is
+	// the feature's resource identifier; the catalog_name, schema_name, and
+	// name fields below are OUTPUT_ONLY decomposed views of this value.
 	FullName string `json:"full_name"`
 	// The function by which the feature is computed.
 	Function Function `json:"function"`
@@ -1389,6 +1402,11 @@ type Feature struct {
 	// This field will be set by feature-engineering client and should be left
 	// unset by SDK and terraform users.
 	LineageContext *LineageContext `json:"lineage_context,omitempty"`
+	// Name of the feature, extracted from the full three-part name
+	// (catalog.schema.name).
+	Name string `json:"name,omitempty"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"schema_name,omitempty"`
 	// The data source of the feature.
 	Source DataSource `json:"source"`
 	// Deprecated: Use Function.aggregation_function.time_window instead. Kept
@@ -2286,10 +2304,14 @@ func (s ListFeatureTagsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListFeaturesRequest struct {
+	// Name of parent catalog for features of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
 	// The maximum number of results to return.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Pagination token to go to the next page based on a previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"-" url:"schema_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3183,6 +3205,60 @@ func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Mutual-TLS (mTLS) authentication configuration. The keystore (client
+// certificate + private key) and truststore (CAs trusted to verify the broker)
+// live as JKS files on Unity Catalog volumes, with their passwords stored in
+// Databricks secret scopes. This matches the SSL setup pattern documented at
+// https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
+//
+// At materialization time, the generated PySpark code passes the JKS file paths
+// and resolved passwords through to the Kafka SSL options
+// (kafka.ssl.keystore.location, kafka.ssl.keystore.password,
+// kafka.ssl.key.password, kafka.ssl.truststore.location,
+// kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster
+// via dbutils.secrets.get; this message stores only references, never password
+// values.
+type MtlsConfig struct {
+	// Set to true only when the broker certificate's SAN intentionally does not
+	// match the connection endpoint — for example when reaching the cluster
+	// through a PrivateLink endpoint whose DNS name is not in the broker
+	// certificate. Skipping the hostname check removes a defense against
+	// man-in-the-middle attacks; do not enable casually. mTLS client
+	// authentication is unaffected by this option.
+	//
+	// See the Apache Kafka SSL security guide for background on this check:
+	// https://kafka.apache.org/42/security/encryption-and-authentication-using-ssl/#host-name-verification
+	DisableHostnameVerification bool `json:"disable_hostname_verification,omitempty"`
+	// Secret-scope reference for the private key password. Often the same value
+	// as the keystore password (keytool's default), but provided as a separate
+	// field because Apache Kafka requires it as a distinct option
+	// (kafka.ssl.key.password).
+	KeyPasswordRef SecretScopeReference `json:"key_password_ref"`
+	// Unity Catalog volume path to the JKS keystore file containing the client
+	// certificate and private key. e.g.
+	// "/Volumes/<catalog>/<schema>/<volume>/client.jks". The materialization
+	// compute must have read permission on this volume.
+	KeystoreLocation string `json:"keystore_location"`
+	// Secret-scope reference for the JKS keystore password.
+	KeystorePasswordRef SecretScopeReference `json:"keystore_password_ref"`
+	// Unity Catalog volume path to the JKS truststore file containing the CA
+	// certificate(s) trusted to verify the Kafka broker's server certificate.
+	// e.g. "/Volumes/<catalog>/<schema>/<volume>/truststore.jks".
+	TruststoreLocation string `json:"truststore_location"`
+	// Secret-scope reference for the JKS truststore password.
+	TruststorePasswordRef SecretScopeReference `json:"truststore_password_ref"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MtlsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MtlsConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Configuration for offline store destination.
 type OfflineStoreConfig struct {
 	// The Unity Catalog catalog name.
@@ -3928,6 +4004,28 @@ func (s RestoreRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A rolling time window with an optional delay. This is the SQL-spec-aligned
+// replacement for ContinuousWindow: `delay` is the non-negative counterpart of
+// the legacy non-positive `ContinuousWindow.offset`.
+type RollingWindow struct {
+	// The delay applied to the end of the rolling window (must be
+	// non-negative). For example, delay=1d shifts the window end 1 day before
+	// the evaluation time.
+	Delay *duration.Duration `json:"delay,omitempty"`
+	// The duration of the rolling window (must be positive).
+	WindowDuration duration.Duration `json:"window_duration"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RollingWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RollingWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A single run.
 type Run struct {
 	// Run data.
@@ -4429,6 +4527,16 @@ func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Reference to an entry in a Databricks secret scope. The referenced value is
+// fetched on the Spark cluster at materialization time via
+// dbutils.secrets.get(scope, key).
+type SecretScopeReference struct {
+	// The key within the scope.
+	Key string `json:"key"`
+	// The Databricks secret scope name.
+	Scope string `json:"scope"`
+}
+
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	ExperimentId string `json:"experiment_id"`
@@ -4574,6 +4682,7 @@ type StddevSampFunction struct {
 	Input string `json:"input"`
 }
 
+// Deprecated: Use KafkaSubscriptionMode instead.
 type SubscriptionMode struct {
 	// A JSON string that contains the specific topic-partitions to consume
 	// from. For example, for '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th
@@ -4636,6 +4745,8 @@ func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
 
 type TimeWindow struct {
 	Continuous *ContinuousWindow `json:"continuous,omitempty"`
+
+	Rolling *RollingWindow `json:"rolling,omitempty"`
 
 	Sliding *SlidingWindow `json:"sliding,omitempty"`
 
@@ -4768,7 +4879,9 @@ func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 type UpdateFeatureRequest struct {
 	// Feature to update.
 	Feature Feature `json:"feature"`
-	// The full three-part name (catalog, schema, name) of the feature.
+	// The full three-part name (catalog, schema, name) of the feature. This is
+	// the feature's resource identifier; the catalog_name, schema_name, and
+	// name fields below are OUTPUT_ONLY decomposed views of this value.
 	FullName string `json:"-" url:"-"`
 	// The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`

@@ -30,7 +30,7 @@ type CreateEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Type of endpoint
 	EndpointType EndpointType `json:"endpoint_type"`
-	// Name of the vector search endpoint
+	// Name of the AI Search endpoint
 	Name string `json:"name"`
 	// Target QPS for the endpoint. Mutually exclusive with num_replicas. The
 	// actual replica count is calculated at index creation/sync time based on
@@ -72,9 +72,9 @@ type CreateVectorIndexRequest struct {
 }
 
 type CustomTag struct {
-	// Key field for a vector search endpoint tag.
+	// Key field for an AI Search endpoint tag.
 	Key string `json:"key"`
-	// [Optional] Value field for a vector search endpoint tag.
+	// [Optional] Value field for an AI Search endpoint tag.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -161,7 +161,7 @@ type DeleteDataVectorIndexResponse struct {
 }
 
 type DeleteEndpointRequest struct {
-	// Name of the vector search endpoint
+	// Name of the AI Search endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
@@ -336,7 +336,7 @@ type EndpointInfo struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// User who last updated the endpoint
 	LastUpdatedUser string `json:"last_updated_user,omitempty"`
-	// Name of the vector search endpoint
+	// Name of the AI Search endpoint
 	Name string `json:"name,omitempty"`
 	// Number of indexes on the endpoint
 	NumIndexes int `json:"num_indexes,omitempty"`
@@ -519,11 +519,10 @@ type GetVectorSearchEndpointPermissionsRequest struct {
 	EndpointId string `json:"-" url:"-"`
 }
 
-// The subtype of the vector search index, determining the indexing and
-// retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. -
-// `FULL_TEXT`: An index that uses full-text search without vector embeddings. -
-// `HYBRID`: An index that uses vector embeddings for similarity search and
-// hybrid search.
+// The subtype of the AI Search index, determining the indexing and retrieval
+// strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An
+// index that uses full-text search without vector embeddings. - `HYBRID`: An
+// index that uses vector embeddings for similarity search and hybrid search.
 type IndexSubtype string
 
 // An index that uses full-text search without vector embeddings.
@@ -750,13 +749,13 @@ func (s MiniVectorIndex) MarshalJSON() ([]byte, error) {
 type PatchEndpointBudgetPolicyRequest struct {
 	// The budget policy id to be applied
 	BudgetPolicyId string `json:"budget_policy_id"`
-	// Name of the vector search endpoint
+	// Name of the AI Search endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
 type PatchEndpointBudgetPolicyResponse struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// The budget policy applied to the vector search endpoint.
+	// The budget policy applied to the AI Search endpoint.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -771,7 +770,7 @@ func (s PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
 }
 
 type PatchEndpointRequest struct {
-	// Name of the vector search endpoint
+	// Name of the AI Search endpoint
 	EndpointName string `json:"-" url:"-"`
 	// Target QPS for the endpoint. Best-effort; the system does not guarantee
 	// this QPS will be achieved.
@@ -992,7 +991,7 @@ type RetrieveUserVisibleMetricsRequest struct {
 	GranularityInSeconds int `json:"granularity_in_seconds,omitempty"`
 	// List of metrics to retrieve
 	Metrics []Metric `json:"metrics,omitempty"`
-	// Vector search endpoint name
+	// AI Search endpoint name
 	Name string `json:"-" url:"-"`
 	// Token for pagination
 	PageToken string `json:"page_token,omitempty"`
@@ -1117,16 +1116,16 @@ type SyncIndexRequest struct {
 }
 
 type UpdateEndpointCustomTagsRequest struct {
-	// The new custom tags for the vector search endpoint
+	// The new custom tags for the AI Search endpoint
 	CustomTags []CustomTag `json:"custom_tags"`
-	// Name of the vector search endpoint
+	// Name of the AI Search endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
 type UpdateEndpointCustomTagsResponse struct {
-	// All the custom tags that are applied to the vector search endpoint.
+	// All the custom tags that are applied to the AI Search endpoint.
 	CustomTags []CustomTag `json:"custom_tags,omitempty"`
-	// The name of the vector search endpoint whose custom tags were updated.
+	// The name of the AI Search endpoint whose custom tags were updated.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1286,7 +1285,7 @@ func (s VectorIndexStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
+// There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that
 // automatically syncs with a source Delta Table, automatically and
 // incrementally updating the index as the underlying data in the Delta Table
 // changes. - `DIRECT_ACCESS`: An index that supports direct read and write of

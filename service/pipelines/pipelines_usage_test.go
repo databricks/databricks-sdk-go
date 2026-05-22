@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/logger"
 
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 )
 
@@ -23,7 +24,7 @@ func ExamplePipelinesAPI_Create_pipelines() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -67,7 +68,7 @@ func ExamplePipelinesAPI_Get_pipelines() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -117,7 +118,7 @@ func ExamplePipelinesAPI_ListPipelineEvents_pipelines() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}
@@ -184,7 +185,7 @@ func ExamplePipelinesAPI_Update_pipelines() {
 	}
 
 	notebookPath := func() string {
-		me, err := w.CurrentUser.Me(ctx)
+		me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 		if err != nil {
 			panic(err)
 		}

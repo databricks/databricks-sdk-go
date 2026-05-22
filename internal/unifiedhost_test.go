@@ -63,7 +63,7 @@ func TestAccUnifiedHost(t *testing.T) {
 	assert.Equal(t, 1, len(byId.Roles))
 
 	// Workspace level operations
-	_, err = w.CurrentUser.Me(ctx)
+	_, err = w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 }
 
@@ -83,7 +83,7 @@ func TestAccSpogWorkspacePAT(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 	w := databricks.Must(databricks.NewWorkspaceClient((*databricks.Config)(cfg)))
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 	assert.NotEmpty(t, me.UserName)
 }
@@ -103,7 +103,7 @@ func TestAccSpogWorkspaceOAuthM2M(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 	w := databricks.Must(databricks.NewWorkspaceClient((*databricks.Config)(cfg)))
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 	assert.NotEmpty(t, me.UserName)
 }
@@ -124,7 +124,7 @@ func TestAccSpogWorkspaceAzureClientSecret(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 	w := databricks.Must(databricks.NewWorkspaceClient((*databricks.Config)(cfg)))
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 	assert.NotEmpty(t, me.UserName)
 }
@@ -149,7 +149,7 @@ func TestAccSpogWorkspaceGoogleCredentials(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 	w := databricks.Must(databricks.NewWorkspaceClient((*databricks.Config)(cfg)))
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 	assert.NotEmpty(t, me.UserName)
 }

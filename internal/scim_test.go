@@ -14,7 +14,7 @@ import (
 
 func me(t *testing.T, w *databricks.WorkspaceClient) *iam.User {
 	ctx := context.Background()
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 	return me
 }
@@ -22,7 +22,7 @@ func me(t *testing.T, w *databricks.WorkspaceClient) *iam.User {
 func TestAccCurrentUser(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 
 	assert.NotEmpty(t, me.UserName)

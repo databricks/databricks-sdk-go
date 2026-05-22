@@ -25,7 +25,8 @@ type ExperimentsService interface {
 	// exists.
 	//
 	// Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name
-	// exists.
+	// exists. Note: In some contexts, this error may be remapped to
+	// `ALREADY_EXISTS`. To be safe, clients should check for both error codes.
 	CreateExperiment(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error)
 
 	// Create a logged model.

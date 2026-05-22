@@ -2074,22 +2074,21 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // Data security mode decides what data governance model to use when accessing
 // data from a cluster.
 //
-// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access
-// mode depending on your compute configuration. *
-// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+// access mode depending on your compute configuration. *
+// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+// multiple users. Cluster users are fully isolated so that they cannot see each
+// other’s data and credentials. Most data governance features are supported
+// in this mode. But programming languages and cluster features might be
+// limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that can only be
+// exclusively used by a single user specified in `single_user_name`. Most
+// programming languages, cluster features and data governance features are
+// available in this mode.
 //
-// The following modes can be used regardless of `kind`. * `NONE`: No security
-// isolation for multiple users sharing the cluster. Data governance features
-// are not available in this mode. * `SINGLE_USER`: A secure cluster that can
-// only be exclusively used by a single user specified in `single_user_name`.
-// Most programming languages, cluster features and data governance features are
-// available in this mode. * `USER_ISOLATION`: A secure cluster that can be
-// shared by multiple users. Cluster users are fully isolated so that they
-// cannot see each other's data and credentials. Most data governance features
-// are supported in this mode. But programming languages and cluster features
-// might be limited.
+// The following modes are legacy aliases for the above modes:
+//
+// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
 //
 // The following modes are deprecated starting with Databricks Runtime 15.0 and
 // will be removed for future Databricks Runtime versions:
@@ -2106,10 +2105,15 @@ type DataSecurityMode string
 // compute configuration.
 const DataSecurityModeDataSecurityModeAuto DataSecurityMode = `DATA_SECURITY_MODE_AUTO`
 
-// Alias for `SINGLE_USER`.
+// A secure cluster that can only be exclusively used by a single user specified
+// in `single_user_name`. Most programming languages, cluster features and data
+// governance features are available in this mode.
 const DataSecurityModeDataSecurityModeDedicated DataSecurityMode = `DATA_SECURITY_MODE_DEDICATED`
 
-// Alias for `USER_ISOLATION`.
+// A secure cluster that can be shared by multiple users. Cluster users are
+// fully isolated so that they cannot see each other’s data and credentials.
+// Most data governance features are supported in this mode. But programming
+// languages and cluster features might be limited.
 const DataSecurityModeDataSecurityModeStandard DataSecurityMode = `DATA_SECURITY_MODE_STANDARD`
 
 // This mode is for users migrating from legacy Passthrough on high concurrency
@@ -2126,19 +2130,12 @@ const DataSecurityModeLegacySingleUserStandard DataSecurityMode = `LEGACY_SINGLE
 // This mode is for users migrating from legacy Table ACL clusters.
 const DataSecurityModeLegacyTableAcl DataSecurityMode = `LEGACY_TABLE_ACL`
 
-// No security isolation for multiple users sharing the cluster. Data governance
-// features are not available in this mode.
 const DataSecurityModeNone DataSecurityMode = `NONE`
 
-// A secure cluster that can only be exclusively used by a single user specified
-// in `single_user_name`. Most programming languages, cluster features and data
-// governance features are available in this mode.
+// Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
 const DataSecurityModeSingleUser DataSecurityMode = `SINGLE_USER`
 
-// A secure cluster that can be shared by multiple users. Cluster users are
-// fully isolated so that they cannot see each other's data and credentials.
-// Most data governance features are supported in this mode. But programming
-// languages and cluster features might be limited.
+// Legacy alias for `DATA_SECURITY_MODE_STANDARD`.
 const DataSecurityModeUserIsolation DataSecurityMode = `USER_ISOLATION`
 
 // String representation for [fmt.Print]
@@ -2741,7 +2738,10 @@ type Environment struct {
 	// environment ID (e.g.,
 	// `workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7`)
 	// is in Beta. Either `environment_version` or `base_environment` can be
-	// provided. For more information, see
+	// provided. For more information about Databricks-provided base
+	// environments, see the [list workspace base
+	// environments](:method:Environments/ListWorkspaceBaseEnvironments) API.
+	// For more information, see
 	BaseEnvironment string `json:"base_environment,omitempty"`
 	// Use `environment_version` instead.
 	Client string `json:"client,omitempty"`
@@ -4313,10 +4313,7 @@ func (s InstanceProfile) MarshalJSON() ([]byte, error) {
 // Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas
 // clusters with no specified `kind` do not. *
 // [is_single_node](/api/workspace/clusters/create#is_single_node) *
-// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-// [data_security_mode](/api/workspace/clusters/create#data_security_mode) set
-// to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
-// `DATA_SECURITY_MODE_STANDARD`
+// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
 //
 // By using the [simple form], your clusters are automatically using `kind =
 // CLASSIC_PREVIEW`.

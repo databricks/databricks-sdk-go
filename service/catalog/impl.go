@@ -1904,11 +1904,12 @@ func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -2004,11 +2005,12 @@ func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefresh
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &monitorRefreshInfo)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &monitorRefreshInfo)
 	return &monitorRefreshInfo, err
 }
 

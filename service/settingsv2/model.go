@@ -56,6 +56,10 @@ type AibiDashboardEmbeddingApprovedDomains struct {
 	ApprovedDomains []string `json:"approved_domains,omitempty"`
 }
 
+type AllowedAppsUserApiScopesMessage struct {
+	AllowedScopes []string `json:"allowed_scopes,omitempty"`
+}
+
 type BooleanMessage struct {
 	Value bool `json:"value,omitempty"`
 
@@ -411,6 +415,20 @@ func (s ListWorkspaceSettingsMetadataResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type OperationalEmailCustomRecipientMessage struct {
+	Email string `json:"email,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *OperationalEmailCustomRecipientMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OperationalEmailCustomRecipientMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PatchPublicAccountSettingRequest struct {
 	Name string `json:"-" url:"-"`
 
@@ -594,6 +612,10 @@ type Setting struct {
 	// effective_aibi_dashboard_embedding_approved_domains for final setting
 	// value.
 	AibiDashboardEmbeddingApprovedDomains *AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains,omitempty"`
+	// Setting value for allowed_apps_user_api_scopes setting. This is the
+	// setting value set by consumers, check
+	// effective_allowed_apps_user_api_scopes for final setting value.
+	AllowedAppsUserApiScopes *AllowedAppsUserApiScopesMessage `json:"allowed_apps_user_api_scopes,omitempty"`
 	// Setting value for automatic_cluster_update_workspace setting. This is the
 	// setting value set by consumers, check
 	// effective_automatic_cluster_update_workspace for final setting value.
@@ -609,6 +631,10 @@ type Setting struct {
 	// setting. This is the final effective value of setting. To set a value use
 	// aibi_dashboard_embedding_approved_domains.
 	EffectiveAibiDashboardEmbeddingApprovedDomains *AibiDashboardEmbeddingApprovedDomains `json:"effective_aibi_dashboard_embedding_approved_domains,omitempty"`
+	// Effective setting value for allowed_apps_user_api_scopes setting. This is
+	// the final effective value of setting. To set a value use
+	// allowed_apps_user_api_scopes.
+	EffectiveAllowedAppsUserApiScopes *AllowedAppsUserApiScopesMessage `json:"effective_allowed_apps_user_api_scopes,omitempty"`
 	// Effective setting value for automatic_cluster_update_workspace setting.
 	// This is the final effective value of setting. To set a value use
 	// automatic_cluster_update_workspace.
@@ -619,6 +645,10 @@ type Setting struct {
 	// Effective setting value for integer type setting. This is the final
 	// effective value of setting. To set a value use integer_val.
 	EffectiveIntegerVal *IntegerMessage `json:"effective_integer_val,omitempty"`
+	// Effective setting value for operational_email_custom_recipient setting.
+	// This is the final effective value of setting. To set a value use
+	// operational_email_custom_recipient.
+	EffectiveOperationalEmailCustomRecipient *OperationalEmailCustomRecipientMessage `json:"effective_operational_email_custom_recipient,omitempty"`
 	// Effective setting value for personal_compute setting. This is the final
 	// effective value of setting. To set a value use personal_compute.
 	EffectivePersonalCompute *PersonalComputeMessage `json:"effective_personal_compute,omitempty"`
@@ -634,6 +664,10 @@ type Setting struct {
 	IntegerVal *IntegerMessage `json:"integer_val,omitempty"`
 	// Name of the setting.
 	Name string `json:"name,omitempty"`
+	// Setting value for operational_email_custom_recipient setting. This is the
+	// setting value set by consumers, check
+	// effective_operational_email_custom_recipient for final setting value.
+	OperationalEmailCustomRecipient *OperationalEmailCustomRecipientMessage `json:"operational_email_custom_recipient,omitempty"`
 	// Setting value for personal_compute setting. This is the setting value set
 	// by consumers, check effective_personal_compute for final setting value.
 	PersonalCompute *PersonalComputeMessage `json:"personal_compute,omitempty"`
