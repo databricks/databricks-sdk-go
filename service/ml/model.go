@@ -2839,11 +2839,11 @@ type MaterializedFeature struct {
 	// The timestamp when the pipeline last ran and updated the materialized
 	// feature values. If the pipeline has not run yet, this field will be null.
 	LastMaterializationTime string `json:"last_materialization_time,omitempty"`
-	// Unique identifier for the materialized feature.
+	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
-
+	// Destination for writing feature values to an offline Delta table.
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
-
+	// Destination for writing feature values to an online Lakebase table.
 	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
 	// The schedule state of the materialization pipeline.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
@@ -4923,7 +4923,7 @@ type UpdateKafkaConfigRequest struct {
 type UpdateMaterializedFeatureRequest struct {
 	// The materialized feature to update.
 	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
-	// Unique identifier for the materialized feature.
+	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"-" url:"-"`
 	// Provide the materialization feature fields which should be updated.
 	// Currently, only the pipeline_state field can be updated.

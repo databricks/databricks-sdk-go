@@ -591,6 +591,9 @@ type LakeviewInterface interface {
 	// Publish the current draft dashboard.
 	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
 
+	// Revert a dashboard's definition in draft mode to the last published version.
+	Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error)
+
 	// Trash a dashboard.
 	Trash(ctx context.Context, request TrashDashboardRequest) error
 

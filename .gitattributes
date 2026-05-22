@@ -141,6 +141,7 @@ experimental/mocks/service/postgres/mock_delete_project_operation_interface.go l
 experimental/mocks/service/postgres/mock_delete_role_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_synced_table_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_postgres_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_undelete_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_undelete_project_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_database_operation_interface.go linguist-generated=true

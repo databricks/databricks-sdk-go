@@ -7241,7 +7241,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: MODEL_SERVICE_SYSTEM_DELTASHARING = 330; Next id: 331
+// Latest kind: AGENT_SERVICE_STANDARD = 331; Next id: 332
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
