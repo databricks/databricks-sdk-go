@@ -42,6 +42,30 @@ func TestCurrentWorkspaceIDSendsOrgIdHeaderWhenConfigHasWorkspaceID(t *testing.T
 	assert.Equal(t, "7474644166319138", gotOrgIdHeader)
 }
 
+func TestCurrentWorkspaceIDExcludesEntitlements(t *testing.T) {
+	var gotRawQuery string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/2.0/preview/scim/v2/Me" {
+			gotRawQuery = r.URL.RawQuery
+			w.Header().Set("X-Databricks-Org-Id", "7474644166319138")
+			w.Write([]byte(`{}`))
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer server.Close()
+
+	w, err := NewWorkspaceClient(&Config{
+		Host:  server.URL,
+		Token: "token",
+	})
+	require.NoError(t, err)
+
+	_, err = w.CurrentWorkspaceID(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, "excludedAttributes=entitlements", gotRawQuery)
+}
+
 func TestCurrentWorkspaceIDOmitsOrgIdHeaderWhenConfigMissingWorkspaceID(t *testing.T) {
 	// On legacy workspace hosts the host itself identifies the workspace, so
 	// no routing header is needed. When Config.WorkspaceID is empty we send
