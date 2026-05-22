@@ -1666,7 +1666,7 @@ type ProjectSpec struct {
 	// characters.
 	DisplayName string `json:"display_name,omitempty"`
 	// Whether to enable PG native password login on all endpoints in this
-	// project. Defaults to true.
+	// project. Defaults to false.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
 	// recovery for all branches in this project. Value should be between
