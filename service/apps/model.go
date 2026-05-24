@@ -19,6 +19,12 @@ type App struct {
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
 
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Maximum number of app instances. Must be set together with
+	// `compute_min_instances`.
+	ComputeMaxInstances int `json:"compute_max_instances,omitempty"`
+	// Minimum number of app instances. Must be set together with
+	// `compute_max_instances`.
+	ComputeMinInstances int `json:"compute_min_instances,omitempty"`
 
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
 
@@ -1378,6 +1384,12 @@ func (s AppThumbnail) MarshalJSON() ([]byte, error) {
 
 type AppUpdate struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Maximum number of app instances. Must be set together with
+	// `compute_min_instances`.
+	ComputeMaxInstances int `json:"compute_max_instances,omitempty"`
+	// Minimum number of app instances. Must be set together with
+	// `compute_max_instances`.
+	ComputeMinInstances int `json:"compute_min_instances,omitempty"`
 
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
 

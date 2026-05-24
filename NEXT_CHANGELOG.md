@@ -26,3 +26,7 @@
 ### API Changes
 * Add `Revert` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
 * Add `ParentPath` field for [dashboards.GenieUpdateSpaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieUpdateSpaceRequest).
+* Add `ComputeMaxInstances` and `ComputeMinInstances` fields for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `ComputeMaxInstances` and `ComputeMinInstances` fields for [apps.AppUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppUpdate).
+* Add `CronScheduleTrigger`, `StreamingMode` and `TableTrigger` fields for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `SyncedTableId` field for [postgres.SyncedTableSyncedTableStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableStatus).

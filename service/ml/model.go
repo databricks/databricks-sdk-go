@@ -898,6 +898,23 @@ type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
+// A cron-based schedule trigger for the materialization pipeline.
+type CronSchedule struct {
+	// The cron expression defining the schedule (e.g., "0 0 * * *" for daily at
+	// midnight).
+	CronExpression string `json:"cron_expression,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CronSchedule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Specifies the data source backing a feature. Exactly one source type must be
 // set.
 type DataSource struct {
@@ -2831,6 +2848,8 @@ type MaterializedFeature struct {
 	// The quartz cron expression that defines the schedule of the
 	// materialization pipeline. The schedule is evaluated in the UTC timezone.
 	CronSchedule string `json:"cron_schedule,omitempty"`
+	// A cron-based schedule trigger for the materialization pipeline.
+	CronScheduleTrigger *CronSchedule `json:"cron_schedule_trigger,omitempty"`
 	// The full name of the feature in Unity Catalog.
 	FeatureName string `json:"feature_name"`
 	// True if this is an online materialized feature. False if it is an offline
@@ -2847,9 +2866,16 @@ type MaterializedFeature struct {
 	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
 	// The schedule state of the materialization pipeline.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
+	// The Structured Streaming trigger mode used for materialization. Real-time
+	// mode (RTM) targets sub-second latency for operational workloads;
+	// micro-batch mode (MBM) favors cost efficiency for ETL and analytics
+	// workloads.
+	StreamingMode *StreamingMode `json:"streaming_mode,omitempty"`
 	// The fully qualified Unity Catalog path to the table containing the
 	// materialized feature (Delta table or Lakebase table). Output only.
 	TableName string `json:"table_name,omitempty"`
+	// A trigger that fires when the upstream source table changes.
+	TableTrigger *TableTrigger `json:"table_trigger,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4682,6 +4708,49 @@ type StddevSampFunction struct {
 	Input string `json:"input"`
 }
 
+// The streaming mode configuration for a streaming materialization pipeline.
+type StreamingMode struct {
+	// The type of streaming mode used by the materialization pipeline.
+	Mode StreamingModeStreamingModeType `json:"mode,omitempty"`
+}
+
+type StreamingModeStreamingModeType string
+
+const StreamingModeStreamingModeTypeStreamingModeTypeMbm StreamingModeStreamingModeType = `STREAMING_MODE_TYPE_MBM`
+
+const StreamingModeStreamingModeTypeStreamingModeTypeRtm StreamingModeStreamingModeType = `STREAMING_MODE_TYPE_RTM`
+
+// String representation for [fmt.Print]
+func (f *StreamingModeStreamingModeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *StreamingModeStreamingModeType) Set(v string) error {
+	switch v {
+	case `STREAMING_MODE_TYPE_MBM`, `STREAMING_MODE_TYPE_RTM`:
+		*f = StreamingModeStreamingModeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "STREAMING_MODE_TYPE_MBM", "STREAMING_MODE_TYPE_RTM"`, v)
+	}
+}
+
+// Values returns all possible values for StreamingModeStreamingModeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *StreamingModeStreamingModeType) Values() []StreamingModeStreamingModeType {
+	return []StreamingModeStreamingModeType{
+		StreamingModeStreamingModeTypeStreamingModeTypeMbm,
+		StreamingModeStreamingModeTypeStreamingModeTypeRtm,
+	}
+}
+
+// Type always returns StreamingModeStreamingModeType to satisfy [pflag.Value] interface
+func (f *StreamingModeStreamingModeType) Type() string {
+	return "StreamingModeStreamingModeType"
+}
+
 // Deprecated: Use KafkaSubscriptionMode instead.
 type SubscriptionMode struct {
 	// A JSON string that contains the specific topic-partitions to consume
@@ -4714,6 +4783,10 @@ type SumFunction struct {
 	// "value:amount") is supported for backwards compatibility but is
 	// deprecated; migrate to dot notation.
 	Input string `json:"input"`
+}
+
+// A trigger that fires when the upstream source table changes.
+type TableTrigger struct {
 }
 
 // Details required to test a registry webhook.
