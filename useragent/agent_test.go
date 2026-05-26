@@ -115,9 +115,14 @@ func TestLookupAgentProvider(t *testing.T) {
 			expect: "augment",
 		},
 		{
-			name:   "copilot vscode",
+			name:   "vscode-agent",
+			envs:   map[string]string{"VSCODE_AGENT": "1"},
+			expect: "vscode-agent",
+		},
+		{
+			name:   "COPILOT_MODEL alone is no longer detected",
 			envs:   map[string]string{"COPILOT_MODEL": "gpt-4"},
-			expect: "copilot-vscode",
+			expect: "",
 		},
 		{
 			name:   "kiro",
@@ -176,17 +181,11 @@ func TestLookupAgentProvider(t *testing.T) {
 			envs:   map[string]string{"GOOSE_TERMINAL": "1", "AGENT": "cursor"},
 			expect: "goose",
 		},
-		// Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
-		// alongside COPILOT_CLI. The pair is treated as a single copilot-cli
-		// signal rather than a stacked multi-agent setup.
+		// VSCODE_AGENT can legitimately stack with other agents (e.g. running
+		// Copilot CLI from a VS Code agent terminal).
 		{
-			name:   "COPILOT_CLI + COPILOT_MODEL collapses to copilot-cli (BYOK)",
-			envs:   map[string]string{"COPILOT_CLI": "1", "COPILOT_MODEL": "gpt-4"},
-			expect: "copilot-cli",
-		},
-		{
-			name:   "COPILOT_CLI + COPILOT_MODEL + CLAUDECODE still reports multiple after BYOK collapse",
-			envs:   map[string]string{"COPILOT_CLI": "1", "COPILOT_MODEL": "gpt-4", "CLAUDECODE": "1"},
+			name:   "VSCODE_AGENT + COPILOT_CLI reports multiple",
+			envs:   map[string]string{"VSCODE_AGENT": "1", "COPILOT_CLI": "1"},
 			expect: "multiple",
 		},
 		// AI_AGENT fallback (Vercel @vercel/detect-agent convention).
