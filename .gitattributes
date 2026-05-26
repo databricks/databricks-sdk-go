@@ -15,6 +15,7 @@ experimental/mocks/service/billing/mock_budget_policy_interface.go linguist-gene
 experimental/mocks/service/billing/mock_budgets_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_log_delivery_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_usage_dashboards_interface.go linguist-generated=true
+experimental/mocks/service/bundle/mock_bundle_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_metastore_assignments_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_metastores_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_storage_credentials_interface.go linguist-generated=true
@@ -140,6 +141,7 @@ experimental/mocks/service/postgres/mock_delete_project_operation_interface.go l
 experimental/mocks/service/postgres/mock_delete_role_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_synced_table_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_postgres_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_undelete_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_undelete_project_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_database_operation_interface.go linguist-generated=true
@@ -250,6 +252,10 @@ service/billing/api.go linguist-generated=true
 service/billing/impl.go linguist-generated=true
 service/billing/interface.go linguist-generated=true
 service/billing/model.go linguist-generated=true
+service/bundle/api.go linguist-generated=true
+service/bundle/impl.go linguist-generated=true
+service/bundle/interface.go linguist-generated=true
+service/bundle/model.go linguist-generated=true
 service/catalog/api.go linguist-generated=true
 service/catalog/impl.go linguist-generated=true
 service/catalog/interface.go linguist-generated=true

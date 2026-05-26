@@ -313,6 +313,8 @@ func (s ApproxPercentileFunction) MarshalJSON() ([]byte, error) {
 }
 
 type AuthConfig struct {
+	// Mutual-TLS authentication. See MtlsConfig.
+	MtlsConfig *MtlsConfig `json:"mtls_config,omitempty"`
 	// Name of the Unity Catalog service credential. This value will be set
 	// under the option databricks.serviceCredential
 	UcServiceCredentialName string `json:"uc_service_credential_name,omitempty"`
@@ -894,6 +896,23 @@ type CreateTransitionRequestResponse struct {
 
 type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
+}
+
+// A cron-based schedule trigger for the materialization pipeline.
+type CronSchedule struct {
+	// The cron expression defining the schedule (e.g., "0 0 * * *" for daily at
+	// midnight).
+	CronExpression string `json:"cron_expression,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CronSchedule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Specifies the data source backing a feature. Exactly one source type must be
@@ -2829,6 +2848,8 @@ type MaterializedFeature struct {
 	// The quartz cron expression that defines the schedule of the
 	// materialization pipeline. The schedule is evaluated in the UTC timezone.
 	CronSchedule string `json:"cron_schedule,omitempty"`
+	// A cron-based schedule trigger for the materialization pipeline.
+	CronScheduleTrigger *CronSchedule `json:"cron_schedule_trigger,omitempty"`
 	// The full name of the feature in Unity Catalog.
 	FeatureName string `json:"feature_name"`
 	// True if this is an online materialized feature. False if it is an offline
@@ -2837,17 +2858,24 @@ type MaterializedFeature struct {
 	// The timestamp when the pipeline last ran and updated the materialized
 	// feature values. If the pipeline has not run yet, this field will be null.
 	LastMaterializationTime string `json:"last_materialization_time,omitempty"`
-	// Unique identifier for the materialized feature.
+	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
-
+	// Destination for writing feature values to an offline Delta table.
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
-
+	// Destination for writing feature values to an online Lakebase table.
 	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
 	// The schedule state of the materialization pipeline.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
+	// The Structured Streaming trigger mode used for materialization. Real-time
+	// mode (RTM) targets sub-second latency for operational workloads;
+	// micro-batch mode (MBM) favors cost efficiency for ETL and analytics
+	// workloads.
+	StreamingMode *StreamingMode `json:"streaming_mode,omitempty"`
 	// The fully qualified Unity Catalog path to the table containing the
 	// materialized feature (Delta table or Lakebase table). Output only.
 	TableName string `json:"table_name,omitempty"`
+	// A trigger that fires when the upstream source table changes.
+	TableTrigger *TableTrigger `json:"table_trigger,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3200,6 +3228,60 @@ func (s *ModelVersionTag) UnmarshalJSON(b []byte) error {
 }
 
 func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Mutual-TLS (mTLS) authentication configuration. The keystore (client
+// certificate + private key) and truststore (CAs trusted to verify the broker)
+// live as JKS files on Unity Catalog volumes, with their passwords stored in
+// Databricks secret scopes. This matches the SSL setup pattern documented at
+// https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
+//
+// At materialization time, the generated PySpark code passes the JKS file paths
+// and resolved passwords through to the Kafka SSL options
+// (kafka.ssl.keystore.location, kafka.ssl.keystore.password,
+// kafka.ssl.key.password, kafka.ssl.truststore.location,
+// kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster
+// via dbutils.secrets.get; this message stores only references, never password
+// values.
+type MtlsConfig struct {
+	// Set to true only when the broker certificate's SAN intentionally does not
+	// match the connection endpoint — for example when reaching the cluster
+	// through a PrivateLink endpoint whose DNS name is not in the broker
+	// certificate. Skipping the hostname check removes a defense against
+	// man-in-the-middle attacks; do not enable casually. mTLS client
+	// authentication is unaffected by this option.
+	//
+	// See the Apache Kafka SSL security guide for background on this check:
+	// https://kafka.apache.org/42/security/encryption-and-authentication-using-ssl/#host-name-verification
+	DisableHostnameVerification bool `json:"disable_hostname_verification,omitempty"`
+	// Secret-scope reference for the private key password. Often the same value
+	// as the keystore password (keytool's default), but provided as a separate
+	// field because Apache Kafka requires it as a distinct option
+	// (kafka.ssl.key.password).
+	KeyPasswordRef SecretScopeReference `json:"key_password_ref"`
+	// Unity Catalog volume path to the JKS keystore file containing the client
+	// certificate and private key. e.g.
+	// "/Volumes/<catalog>/<schema>/<volume>/client.jks". The materialization
+	// compute must have read permission on this volume.
+	KeystoreLocation string `json:"keystore_location"`
+	// Secret-scope reference for the JKS keystore password.
+	KeystorePasswordRef SecretScopeReference `json:"keystore_password_ref"`
+	// Unity Catalog volume path to the JKS truststore file containing the CA
+	// certificate(s) trusted to verify the Kafka broker's server certificate.
+	// e.g. "/Volumes/<catalog>/<schema>/<volume>/truststore.jks".
+	TruststoreLocation string `json:"truststore_location"`
+	// Secret-scope reference for the JKS truststore password.
+	TruststorePasswordRef SecretScopeReference `json:"truststore_password_ref"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MtlsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MtlsConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4471,6 +4553,16 @@ func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Reference to an entry in a Databricks secret scope. The referenced value is
+// fetched on the Spark cluster at materialization time via
+// dbutils.secrets.get(scope, key).
+type SecretScopeReference struct {
+	// The key within the scope.
+	Key string `json:"key"`
+	// The Databricks secret scope name.
+	Scope string `json:"scope"`
+}
+
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	ExperimentId string `json:"experiment_id"`
@@ -4616,6 +4708,49 @@ type StddevSampFunction struct {
 	Input string `json:"input"`
 }
 
+// The streaming mode configuration for a streaming materialization pipeline.
+type StreamingMode struct {
+	// The type of streaming mode used by the materialization pipeline.
+	Mode StreamingModeStreamingModeType `json:"mode,omitempty"`
+}
+
+type StreamingModeStreamingModeType string
+
+const StreamingModeStreamingModeTypeStreamingModeTypeMbm StreamingModeStreamingModeType = `STREAMING_MODE_TYPE_MBM`
+
+const StreamingModeStreamingModeTypeStreamingModeTypeRtm StreamingModeStreamingModeType = `STREAMING_MODE_TYPE_RTM`
+
+// String representation for [fmt.Print]
+func (f *StreamingModeStreamingModeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *StreamingModeStreamingModeType) Set(v string) error {
+	switch v {
+	case `STREAMING_MODE_TYPE_MBM`, `STREAMING_MODE_TYPE_RTM`:
+		*f = StreamingModeStreamingModeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "STREAMING_MODE_TYPE_MBM", "STREAMING_MODE_TYPE_RTM"`, v)
+	}
+}
+
+// Values returns all possible values for StreamingModeStreamingModeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *StreamingModeStreamingModeType) Values() []StreamingModeStreamingModeType {
+	return []StreamingModeStreamingModeType{
+		StreamingModeStreamingModeTypeStreamingModeTypeMbm,
+		StreamingModeStreamingModeTypeStreamingModeTypeRtm,
+	}
+}
+
+// Type always returns StreamingModeStreamingModeType to satisfy [pflag.Value] interface
+func (f *StreamingModeStreamingModeType) Type() string {
+	return "StreamingModeStreamingModeType"
+}
+
 // Deprecated: Use KafkaSubscriptionMode instead.
 type SubscriptionMode struct {
 	// A JSON string that contains the specific topic-partitions to consume
@@ -4648,6 +4783,10 @@ type SumFunction struct {
 	// "value:amount") is supported for backwards compatibility but is
 	// deprecated; migrate to dot notation.
 	Input string `json:"input"`
+}
+
+// A trigger that fires when the upstream source table changes.
+type TableTrigger struct {
 }
 
 // Details required to test a registry webhook.
@@ -4857,7 +4996,7 @@ type UpdateKafkaConfigRequest struct {
 type UpdateMaterializedFeatureRequest struct {
 	// The materialized feature to update.
 	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
-	// Unique identifier for the materialized feature.
+	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"-" url:"-"`
 	// Provide the materialization feature fields which should be updated.
 	// Currently, only the pipeline_state field can be updated.

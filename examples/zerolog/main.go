@@ -7,6 +7,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	sdk "github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -40,7 +41,7 @@ func main() {
 	// Construct client and make a request.
 	// Observe a mix of global=true and global=false in the log output.
 	w := databricks.Must(databricks.NewWorkspaceClient())
-	_, err := w.CurrentUser.Me(ctx)
+	_, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	if err != nil {
 		panic(err)
 	}

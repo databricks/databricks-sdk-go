@@ -7,6 +7,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
 func ExampleCurrentUserAPI_Me_currentUser() {
@@ -16,7 +17,7 @@ func ExampleCurrentUserAPI_Me_currentUser() {
 		panic(err)
 	}
 
-	me, err := w.CurrentUser.Me(ctx)
+	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +32,7 @@ func ExampleCurrentUserAPI_Me_tokens() {
 		panic(err)
 	}
 
-	me2, err := w.CurrentUser.Me(ctx)
+	me2, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 	if err != nil {
 		panic(err)
 	}

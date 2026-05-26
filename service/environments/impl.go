@@ -103,6 +103,18 @@ func (a *environmentsImpl) GetWorkspaceBaseEnvironment(ctx context.Context, requ
 }
 
 // Lists all WorkspaceBaseEnvironments in the workspace.
+//
+// Databricks provides the following base environments:
+//
+// - `workspace-base-environments/databricks_ai_...`: includes popular AI and
+// deep learning packages for serverless GPU compute.
+//
+// - `workspace-base-environments/databricks_ml_...`: includes popular ML
+// packages for serverless compute.
+//
+// Databricks-provided base environments are versioned. For example,
+// `workspace-base-environments/databricks_ml_v5` corresponds to the ML
+// environment built on environment version 5.
 func (a *environmentsImpl) ListWorkspaceBaseEnvironments(ctx context.Context, request ListWorkspaceBaseEnvironmentsRequest) listing.Iterator[WorkspaceBaseEnvironment] {
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceBaseEnvironmentsRequest) (*ListWorkspaceBaseEnvironmentsResponse, error) {
@@ -128,6 +140,18 @@ func (a *environmentsImpl) ListWorkspaceBaseEnvironments(ctx context.Context, re
 }
 
 // Lists all WorkspaceBaseEnvironments in the workspace.
+//
+// Databricks provides the following base environments:
+//
+// - `workspace-base-environments/databricks_ai_...`: includes popular AI and
+// deep learning packages for serverless GPU compute.
+//
+// - `workspace-base-environments/databricks_ml_...`: includes popular ML
+// packages for serverless compute.
+//
+// Databricks-provided base environments are versioned. For example,
+// `workspace-base-environments/databricks_ml_v5` corresponds to the ML
+// environment built on environment version 5.
 func (a *environmentsImpl) ListWorkspaceBaseEnvironmentsAll(ctx context.Context, request ListWorkspaceBaseEnvironmentsRequest) ([]WorkspaceBaseEnvironment, error) {
 	iterator := a.ListWorkspaceBaseEnvironments(ctx, request)
 	return listing.ToSlice[WorkspaceBaseEnvironment](ctx, iterator)

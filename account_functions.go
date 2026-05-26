@@ -54,7 +54,7 @@ func workspaceHost(env environment.DatabricksEnvironment, accountHost string, de
 //	if err != nil {
 //		panic(err)
 //	}
-//	me, err := w.CurrentUser.Me(ctx)
+//	me, err := w.CurrentUser.Me(ctx, iam.MeRequest{})
 func (c *AccountClient) GetWorkspaceClient(ws provisioning.Workspace) (*WorkspaceClient, error) {
 	host := workspaceHost(c.Config.Environment(), c.Config.Host, ws.DeploymentName)
 	cfg, err := c.Config.NewWithWorkspaceHost(host)

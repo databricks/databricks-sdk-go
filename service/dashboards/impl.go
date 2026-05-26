@@ -721,6 +721,21 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 	return &publishedDashboard, err
 }
 
+func (a *lakeviewImpl) Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error) {
+	var revertDashboardResponse RevertDashboardResponse
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/revert", request.DashboardId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &revertDashboardResponse)
+	return &revertDashboardResponse, err
+}
+
 func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)

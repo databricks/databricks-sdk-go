@@ -90,21 +90,16 @@ func (s BranchSpec) MarshalJSON() ([]byte, error) {
 }
 
 type BranchStatus struct {
-	// The short identifier of the branch, suitable for showing to the users.
-	// For a branch with name `projects/my-project/branches/my-branch`, the
-	// branch_id is `my-branch`.
-	//
-	// Use this field when building UI components that display branches to users
-	// (e.g., a drop-down selector). Prefer showing `branch_id` instead of the
-	// full resource name from `Branch.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}` format and is not
-	// user-friendly.
+	// Part of the resource name.
 	BranchId string `json:"branch_id,omitempty"`
 	// The branch's state, indicating if it is initializing, ready for use, or
 	// archived.
 	CurrentState BranchStatusState `json:"current_state,omitempty"`
 	// Whether the branch is the project's default branch.
 	Default bool `json:"default,omitempty"`
+	// A timestamp indicating when the branch was deleted. Empty if the branch
+	// is not deleted.
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Absolute expiration time for the branch. Empty if expiration is disabled.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
 	// Whether the branch is protected.
@@ -113,6 +108,9 @@ type BranchStatus struct {
 	LogicalSizeBytes int64 `json:"logical_size_bytes,omitempty"`
 	// The pending state of the branch, if a state transition is in progress.
 	PendingState BranchStatusState `json:"pending_state,omitempty"`
+	// A timestamp indicating when the branch is scheduled to be purged. Empty
+	// if the branch is not deleted, otherwise set to a timestamp in the future.
+	PurgeTime *time.Time `json:"purge_time,omitempty"`
 	// The name of the source branch from which this branch was created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	SourceBranch string `json:"source_branch,omitempty"`
@@ -141,6 +139,8 @@ type BranchStatusState string
 
 const BranchStatusStateArchived BranchStatusState = `ARCHIVED`
 
+const BranchStatusStateDeleted BranchStatusState = `DELETED`
+
 const BranchStatusStateImporting BranchStatusState = `IMPORTING`
 
 const BranchStatusStateInit BranchStatusState = `INIT`
@@ -157,11 +157,11 @@ func (f *BranchStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *BranchStatusState) Set(v string) error {
 	switch v {
-	case `ARCHIVED`, `IMPORTING`, `INIT`, `READY`, `RESETTING`:
+	case `ARCHIVED`, `DELETED`, `IMPORTING`, `INIT`, `READY`, `RESETTING`:
 		*f = BranchStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "IMPORTING", "INIT", "READY", "RESETTING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "DELETED", "IMPORTING", "INIT", "READY", "RESETTING"`, v)
 	}
 }
 
@@ -171,6 +171,7 @@ func (f *BranchStatusState) Set(v string) error {
 func (f *BranchStatusState) Values() []BranchStatusState {
 	return []BranchStatusState{
 		BranchStatusStateArchived,
+		BranchStatusStateDeleted,
 		BranchStatusStateImporting,
 		BranchStatusStateInit,
 		BranchStatusStateReady,
@@ -262,14 +263,7 @@ type CatalogCatalogStatus struct {
 	//
 	// Format: projects/{project_id}/branches/{branch_id}.
 	Branch string `json:"branch,omitempty"`
-	// The short identifier of the catalog, suitable for showing to the users.
-	// For a catalog with name `catalogs/my-catalog`, the catalog_id is
-	// `my-catalog`.
-	//
-	// Use this field when building UI components that display catalogs to users
-	// (e.g., a drop-down selector). Prefer showing `catalog_id` instead of the
-	// full resource name from `Catalog.name`, which follows the
-	// `catalogs/{catalog_id}` format and is not user-friendly.
+	// Part of the resource name.
 	CatalogId string `json:"catalog_id,omitempty"`
 	// The name of the Postgres database associated with the catalog.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
@@ -511,16 +505,7 @@ func (s DatabaseDatabaseSpec) MarshalJSON() ([]byte, error) {
 }
 
 type DatabaseDatabaseStatus struct {
-	// The short identifier of the database, suitable for showing to the users.
-	// For a database with name
-	// `projects/my-project/branches/my-branch/databases/my-db`, the database_id
-	// is `my-db`.
-	//
-	// Use this field when building UI components that display databases to
-	// users (e.g., a drop-down selector). Prefer showing `database_id` instead
-	// of the full resource name from `Database.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}/databases/{database_id}`
-	// format and is not user-friendly.
+	// Part of the resource name.
 	DatabaseId string `json:"database_id,omitempty"`
 	// The name of the Postgres database.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
@@ -567,6 +552,18 @@ type DeleteBranchRequest struct {
 	// The full resource path of the branch to delete. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Name string `json:"-" url:"-"`
+	// If true, permanently delete the branch; if false, soft delete.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteBranchRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteCatalogRequest struct {
@@ -821,16 +818,7 @@ type EndpointStatus struct {
 	// option schedules a suspend compute operation. A disabled compute endpoint
 	// cannot be enabled by a connection or console action.
 	Disabled bool `json:"disabled,omitempty"`
-	// The short identifier of the endpoint, suitable for showing to the users.
-	// For an endpoint with name
-	// `projects/my-project/branches/my-branch/endpoints/my-endpoint`, the
-	// endpoint_id is `my-endpoint`.
-	//
-	// Use this field when building UI components that display endpoints to
-	// users (e.g., a drop-down selector). Prefer showing `endpoint_id` instead
-	// of the full resource name from `Endpoint.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
-	// format and is not user-friendly.
+	// Part of the resource name.
 	EndpointId string `json:"endpoint_id,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
@@ -1290,6 +1278,10 @@ type ListBranchesRequest struct {
 	// The Project that owns this collection of branches. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
+	// Whether to include soft-deleted branches in the response. When true,
+	// deleted branches are included alongside active branches. Purged branches
+	// are never returned.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1641,7 +1633,7 @@ type ProjectSpec struct {
 	// characters.
 	DisplayName string `json:"display_name,omitempty"`
 	// Whether to enable PG native password login on all endpoints in this
-	// project. Defaults to true.
+	// project. Defaults to false.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
 	// recovery for all branches in this project. Value should be between
@@ -1685,14 +1677,7 @@ type ProjectStatus struct {
 	Owner string `json:"owner,omitempty"`
 	// The effective major Postgres version number.
 	PgVersion int `json:"pg_version,omitempty"`
-	// The short identifier of the project, suitable for showing to the users.
-	// For a project with name `projects/my-project`, the project_id is
-	// `my-project`.
-	//
-	// Use this field when building UI components that display projects to users
-	// (e.g., a drop-down selector). Prefer showing `project_id` instead of the
-	// full resource name from `Project.name`, which follows the
-	// `projects/{project_id}` format and is not user-friendly.
+	// Part of the resource name.
 	ProjectId string `json:"project_id,omitempty"`
 	// The current space occupied by the project in storage.
 	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
@@ -2097,15 +2082,7 @@ type RoleRoleStatus struct {
 	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	PostgresRole string `json:"postgres_role,omitempty"`
-	// The short identifier of the role, suitable for showing to the users. For
-	// a role with name `projects/my-project/branches/my-branch/roles/my-role`,
-	// the role_id is `my-role`.
-	//
-	// Use this field when building UI components that display roles to users
-	// (e.g., a drop-down selector). Prefer showing `role_id` instead of the
-	// full resource name from `Role.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}/roles/{role_id}` format and
-	// is not user-friendly.
+	// Part of the resource name.
 	RoleId string `json:"role_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2392,6 +2369,8 @@ type SyncedTableSyncedTableStatus struct {
 	Project string `json:"project,omitempty"`
 	// The current phase of the data synchronization pipeline.
 	ProvisioningPhase ProvisioningPhase `json:"provisioning_phase,omitempty"`
+	// Part of the resource name.
+	SyncedTableId string `json:"synced_table_id,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog.
 	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
@@ -2404,6 +2383,12 @@ func (s *SyncedTableSyncedTableStatus) UnmarshalJSON(b []byte) error {
 
 func (s SyncedTableSyncedTableStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UndeleteBranchRequest struct {
+	// The full resource path of the branch to undelete. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Name string `json:"-" url:"-"`
 }
 
 // Request to restore a soft-deleted project within its retention period.

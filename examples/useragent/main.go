@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	useragent.WithPartner("databricks-sdk-example-def")
 	useragent.WithUserAgentExtra("test-key", "test-value")
 	w := databricks.Must(databricks.NewWorkspaceClient())
-	_, err := w.CurrentUser.Me(context.Background())
+	_, err := w.CurrentUser.Me(context.Background(), iam.MeRequest{})
 	if err != nil {
 		panic(err)
 	}

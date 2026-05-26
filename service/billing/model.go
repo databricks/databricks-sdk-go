@@ -29,6 +29,7 @@ func (s ActionConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Type of action that a budget alert executes when its threshold is crossed.
 type ActionConfigurationType string
 
 const ActionConfigurationTypeEmailNotification ActionConfigurationType = `EMAIL_NOTIFICATION`
