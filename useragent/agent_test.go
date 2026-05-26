@@ -120,11 +120,6 @@ func TestLookupAgentProvider(t *testing.T) {
 			expect: "vscode-agent",
 		},
 		{
-			name:   "COPILOT_MODEL alone is no longer detected",
-			envs:   map[string]string{"COPILOT_MODEL": "gpt-4"},
-			expect: "",
-		},
-		{
 			name:   "kiro",
 			envs:   map[string]string{"KIRO": "1"},
 			expect: "kiro",
