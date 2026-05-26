@@ -155,6 +155,26 @@ func TestConfigFile_LegacyFallbackEmptyDefaultProfile(t *testing.T) {
 	}.apply(t)
 }
 
+// Test 4a: The legacy fallback to [DEFAULT] now pins cfg.Profile to
+// "DEFAULT". Callers (e.g. the Databricks CLI's per-profile OAuth cache key)
+// need a non-empty cfg.Profile to derive a stable key across login and
+// read flows. Previously the loader silently loaded [DEFAULT]'s values
+// but left cfg.Profile empty, producing a cache-key drift between an
+// explicit `--profile DEFAULT` write and a no-flag read.
+func TestConfigFile_LegacyFallbackSetsResolvedProfileName(t *testing.T) {
+	env.CleanupEnvironment(t)
+
+	cfg, err := configFixture{
+		Env: map[string]string{
+			"HOME": "testdata",
+		},
+	}.configureProviderAndReturnConfig(t)
+
+	require.NoError(t, err)
+	assert.Equal(t, "DEFAULT", cfg.Profile)
+	assert.Equal(t, "https://dbc-XXXXXXXX-YYYY.cloud.databricks.com", cfg.Host)
+}
+
 // Test 4b: default_profile = DEFAULT is treated as an explicit selection,
 // not as the legacy fallback. cfg.Profile is set to "DEFAULT" and a missing
 // [DEFAULT] section would error (unlike the silent legacy fallback).
