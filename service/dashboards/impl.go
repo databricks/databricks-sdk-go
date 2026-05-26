@@ -730,7 +730,7 @@ func (a *lakeviewImpl) Revert(ctx context.Context, request RevertDashboardReques
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &revertDashboardResponse)
 	return &revertDashboardResponse, err
