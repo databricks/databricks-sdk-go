@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -625,6 +626,20 @@ func (c *Config) fixHostIfNeeded() error {
 	if parsedHost.Hostname() == "" {
 		return ErrNoHostConfigured
 	}
+	// SPOG URLs pasted from the Databricks UI carry the workspace ID as
+	// ?o= (or ?workspace_id=) and the account ID as ?a= (or ?account_id=).
+	// Promote those into WorkspaceID/AccountID before we strip the query,
+	// so requests get the X-Databricks-Org-Id header instead of hitting the
+	// SPOG without routing and getting back the login HTML page.
+	if parsedHost.RawQuery != "" {
+		q := parsedHost.Query()
+		if c.WorkspaceID == "" {
+			c.WorkspaceID = workspaceIDFromQuery(q)
+		}
+		if c.AccountID == "" {
+			c.AccountID = accountIDFromQuery(q)
+		}
+	}
 	// Create new instance to ensure other fields are initialized as empty.
 	parsedHost = &url.URL{
 		Scheme: parsedHost.Scheme,
@@ -633,6 +648,28 @@ func (c *Config) fixHostIfNeeded() error {
 	// Store sanitized version of c.Host.
 	c.Host = parsedHost.String()
 	return nil
+}
+
+func workspaceIDFromQuery(q url.Values) string {
+	for _, key := range []string{"o", "workspace_id"} {
+		v := q.Get(key)
+		if v == "" {
+			continue
+		}
+		if _, err := strconv.ParseInt(v, 10, 64); err == nil {
+			return v
+		}
+	}
+	return ""
+}
+
+func accountIDFromQuery(q url.Values) string {
+	for _, key := range []string{"a", "account_id"} {
+		if v := q.Get(key); v != "" {
+			return v
+		}
+	}
+	return ""
 }
 
 // ErrNoHostConfigured is the error returned when a user tries to authenticate
