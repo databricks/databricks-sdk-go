@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
-	"sync"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -21,6 +20,7 @@ type oauthResult struct {
 	ErrorDescription string
 	State            string
 	Code             string
+	Issuer           string
 	Host             string
 }
 
@@ -45,12 +45,6 @@ type callbackServer struct {
 	// renderErrCh is a channel that receives an error if there is an error
 	// rendering the page.html template.
 	renderErrCh chan error
-
-	// lastIssuer stores the iss (issuer) query parameter from the OAuth
-	// callback, per RFC 9207. Used by the discovery login flow to identify
-	// which workspace the user selected. Protected by issuerMu.
-	issuerMu   sync.Mutex
-	lastIssuer string
 
 	// feedbackCh is a channel that receives the result of the authentication
 	// attempt.
@@ -95,14 +89,12 @@ func (cb *callbackServer) Close() error {
 
 // ServeHTTP renders the page.html template.
 func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	cb.issuerMu.Lock()
-	cb.lastIssuer = r.FormValue("iss")
-	cb.issuerMu.Unlock()
 	res := oauthResult{
 		Error:            r.FormValue("error"),
 		ErrorDescription: r.FormValue("error_description"),
 		Code:             r.FormValue("code"),
 		State:            r.FormValue("state"),
+		Issuer:           r.FormValue("iss"),
 		Host:             cb.getHost(),
 	}
 	if res.Error != "" {
@@ -128,30 +120,37 @@ func (cb *callbackServer) getHost() string {
 	}
 }
 
-// Issuer returns the iss parameter from the last OAuth callback received.
-// This is populated during the discovery login flow when login.databricks.com
-// redirects back with the workspace issuer.
-func (cb *callbackServer) Issuer() string {
-	cb.issuerMu.Lock()
-	defer cb.issuerMu.Unlock()
-	return cb.lastIssuer
-}
-
-// Handler opens up a browser waits for redirect to come back from the identity provider
-func (cb *callbackServer) Handler(authCodeURL string) (string, string, error) {
+func (cb *callbackServer) awaitResult(authCodeURL string) (oauthResult, error) {
 	err := cb.browser(authCodeURL)
 	if err != nil {
 		fmt.Printf("Please continue the authentication process in your browser:\n%s\n", authCodeURL)
 	}
 	select {
 	case <-cb.ctx.Done():
-		return "", "", cb.ctx.Err()
+		return oauthResult{}, cb.ctx.Err()
 	case renderErr := <-cb.renderErrCh:
-		return "", "", renderErr
+		return oauthResult{}, renderErr
 	case res := <-cb.feedbackCh:
 		if res.Error != "" {
-			return "", "", fmt.Errorf("%s: %s", res.Error, res.ErrorDescription)
+			return oauthResult{}, fmt.Errorf("%s: %s", res.Error, res.ErrorDescription)
 		}
-		return res.Code, res.State, nil
+		return res, nil
 	}
+}
+
+// Handler opens up a browser waits for redirect to come back from the identity provider
+func (cb *callbackServer) Handler(authCodeURL string) (string, string, error) {
+	res, err := cb.awaitResult(authCodeURL)
+	if err != nil {
+		return "", "", err
+	}
+	return res.Code, res.State, nil
+}
+
+func (cb *callbackServer) handlerWithIssuer(authCodeURL string) (code, state, issuer string, err error) {
+	res, err := cb.awaitResult(authCodeURL)
+	if err != nil {
+		return "", "", "", err
+	}
+	return res.Code, res.State, res.Issuer, nil
 }

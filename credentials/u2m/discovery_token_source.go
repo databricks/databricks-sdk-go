@@ -124,8 +124,7 @@ func (d *discoveryTokenSource) challenge() error {
 	}
 	authorizeURL := buildDiscoveryAuthorizeURL(host, d.pa.redirectAddr, state, pkce, scopes)
 
-	// Use cb.Handler to open the browser and wait for the callback.
-	code, returnedState, err := cb.Handler(authorizeURL)
+	code, returnedState, issuer, err := cb.handlerWithIssuer(authorizeURL)
 	if err != nil {
 		return fmt.Errorf("authorize: %w", err)
 	}
@@ -135,7 +134,6 @@ func (d *discoveryTokenSource) challenge() error {
 		return fmt.Errorf("state mismatch: expected %q, got %q", state, returnedState)
 	}
 
-	issuer := cb.Issuer()
 	if issuer == "" {
 		return fmt.Errorf("discovery login failed: callback did not include an issuer (iss) parameter")
 	}

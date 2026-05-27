@@ -64,11 +64,6 @@ func TestCallbackServer_ExtractsIssuer(t *testing.T) {
 	}
 	defer cb.Close()
 
-	// Verify issuer is empty before any callback.
-	if got := cb.Issuer(); got != "" {
-		t.Fatalf("Issuer() before callback: want %q, got %q", "", got)
-	}
-
 	// Fire a callback with iss parameter.
 	issuerURL := "https://adb-123.azuredatabricks.net/oidc"
 	resp, err := http.Get(fmt.Sprintf("http://%s?code=xxx&state=yyy&iss=%s", p.redirectAddr, issuerURL))
@@ -77,11 +72,9 @@ func TestCallbackServer_ExtractsIssuer(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Drain the feedback channel so ServeHTTP completes.
-	<-cb.feedbackCh
-
-	if got := cb.Issuer(); got != issuerURL {
-		t.Fatalf("Issuer(): want %q, got %q", issuerURL, got)
+	res := <-cb.feedbackCh
+	if got := res.Issuer; got != issuerURL {
+		t.Fatalf("result Issuer: want %q, got %q", issuerURL, got)
 	}
 }
 
@@ -128,11 +121,9 @@ func TestCallbackServer_NoIssuer(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Drain the feedback channel so ServeHTTP completes.
-	<-cb.feedbackCh
-
-	if got := cb.Issuer(); got != "" {
-		t.Fatalf("Issuer(): want %q, got %q", "", got)
+	res := <-cb.feedbackCh
+	if got := res.Issuer; got != "" {
+		t.Fatalf("result Issuer: want %q, got %q", "", got)
 	}
 }
 
@@ -180,10 +171,8 @@ func TestCallbackServer_IssuerWithAccountPath(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Drain the feedback channel so ServeHTTP completes.
-	<-cb.feedbackCh
-
-	if got := cb.Issuer(); got != issuerURL {
-		t.Fatalf("Issuer(): want %q, got %q", issuerURL, got)
+	res := <-cb.feedbackCh
+	if got := res.Issuer; got != issuerURL {
+		t.Fatalf("result Issuer: want %q, got %q", issuerURL, got)
 	}
 }
