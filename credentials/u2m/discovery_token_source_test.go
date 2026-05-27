@@ -187,7 +187,7 @@ func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes)
+			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes, "")
 			u, err := url.Parse(got)
 			if err != nil {
 				t.Fatalf("parsing URL: %v", err)
@@ -196,6 +196,50 @@ func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
 				t.Errorf("host = %q, want login.dev.databricks.com", u.Host)
 			}
 		})
+	}
+}
+
+func TestBuildDiscoveryAuthorizeURL_Target(t *testing.T) {
+	pkce := PKCEParams{
+		Challenge:       "c",
+		ChallengeMethod: "S256",
+		Verifier:        "v",
+	}
+	scopes := []string{"offline_access", "all-apis"}
+	tests := []struct {
+		name       string
+		target     string
+		wantTarget string
+	}{
+		{name: "no target", target: "", wantTarget: ""},
+		{name: "account target", target: "ACCOUNT", wantTarget: "ACCOUNT"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, "localhost:8020", "s", pkce, scopes, tc.target)
+			u, err := url.Parse(got)
+			if err != nil {
+				t.Fatalf("parsing URL: %v", err)
+			}
+			if g := u.Query().Get("target"); g != tc.wantTarget {
+				t.Errorf("target = %q, want %q", g, tc.wantTarget)
+			}
+			// destination_url must still be present in every variant.
+			if u.Query().Get("destination_url") == "" {
+				t.Error("destination_url should be set regardless of target")
+			}
+		})
+	}
+}
+
+func TestWithDiscoveryAccountTarget(t *testing.T) {
+	var a PersistentAuth
+	if a.discoveryAccountTarget {
+		t.Fatal("discoveryAccountTarget should default to false")
+	}
+	WithDiscoveryAccountTarget()(&a)
+	if !a.discoveryAccountTarget {
+		t.Error("WithDiscoveryAccountTarget did not set discoveryAccountTarget")
 	}
 }
 

@@ -48,17 +48,26 @@ func DeriveTokenEndpoint(issuer string) string {
 	return strings.TrimRight(issuer, "/") + "/v1/token"
 }
 
+// discoveryTargetAccount is the value of the `target` query parameter that
+// tells login.databricks.com to land the user on the account selector instead
+// of the workspace selector. Used when the caller has signalled (e.g. via
+// WithDiscoveryAccountTarget) that they only want account-level access.
+const discoveryTargetAccount = "ACCOUNT"
+
 // BuildDiscoveryAuthorizeURL builds the login.databricks.com URL that initiates
 // the discovery OAuth flow. The OIDC authorize path with all OAuth query params
 // is URL-encoded as the destination_url parameter.
 func BuildDiscoveryAuthorizeURL(redirectAddr, state string, pkce PKCEParams, scopes []string) string {
-	return buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, redirectAddr, state, pkce, scopes)
+	return buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, redirectAddr, state, pkce, scopes, "")
 }
 
 // buildDiscoveryAuthorizeURL builds the discovery authorize URL against the
 // given host. Trailing slashes on host are trimmed so the result is
-// well-formed regardless of how an override is written.
-func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParams, scopes []string) string {
+// well-formed regardless of how an override is written. When target is
+// non-empty it is set as the top-level `target` query parameter, which
+// login.databricks.com uses to route the user to a specific selector page
+// (e.g. "ACCOUNT" for the account selector).
+func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParams, scopes []string, target string) string {
 	// Build the nested OIDC authorize path with query parameters.
 	authParams := url.Values{}
 	authParams.Set("client_id", appClientID)
@@ -73,6 +82,9 @@ func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParam
 	// Wrap the authorize path as the destination_url query parameter on the
 	// discovery host.
 	topParams := url.Values{}
+	if target != "" {
+		topParams.Set("target", target)
+	}
 	topParams.Set("destination_url", destinationURL)
 	return strings.TrimRight(host, "/") + "/?" + topParams.Encode()
 }
@@ -93,6 +105,10 @@ type discoveryTokenSource struct {
 	pa *PersistentAuth
 	// host overrides defaultLoginDatabricksHost when non-empty.
 	host string
+	// target is the value of the top-level `target` query parameter on the
+	// authorize URL. When non-empty (e.g. "ACCOUNT"), login.databricks.com
+	// routes the user directly to the corresponding selector.
+	target string
 }
 
 // challenge initiates the discovery OAuth flow through login.databricks.com.
@@ -122,7 +138,7 @@ func (d *discoveryTokenSource) challenge() error {
 	if host == "" {
 		host = defaultLoginDatabricksHost
 	}
-	authorizeURL := buildDiscoveryAuthorizeURL(host, d.pa.redirectAddr, state, pkce, scopes)
+	authorizeURL := buildDiscoveryAuthorizeURL(host, d.pa.redirectAddr, state, pkce, scopes, d.target)
 
 	// Use cb.Handler to open the browser and wait for the callback.
 	code, returnedState, err := cb.Handler(authorizeURL)
