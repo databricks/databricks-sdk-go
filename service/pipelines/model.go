@@ -317,6 +317,9 @@ type CreatePipeline struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Key/value map of default parameters to use for pipeline execution.
+	// Maximum total size: 10k characters (JSON format)
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
@@ -597,6 +600,9 @@ type EditPipeline struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Key/value map of default parameters to use for pipeline execution.
+	// Maximum total size: 10k characters (JSON format)
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
@@ -947,6 +953,9 @@ type GetPipelineResponse struct {
 	LatestUpdates []UpdateStateInfo `json:"latest_updates,omitempty"`
 	// A human friendly identifier for the pipeline, taken from the `spec`.
 	Name string `json:"name,omitempty"`
+	// Key/value map of default parameters to use for pipeline execution.
+	// Maximum total size: 10k characters (JSON format)
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// The ID of the pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// The user or service principal that the pipeline runs as, if specified in

@@ -2990,6 +2990,9 @@ type PipelineTask struct {
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
 	// The full name of the pipeline task to execute.
 	PipelineId string `json:"pipeline_id"`
+	// Key/value-map of parameters passed to the pipeline execution. Limited to
+	// 10k characters in total.
+	PipelineTaskParameters map[string]string `json:"pipeline_task_parameters,omitempty"`
 	// Flow names to selectively refresh. These are unioned with other selective
 	// refresh options (refresh_selection, full_refresh_selection) to determine
 	// the final set of flows to refresh.
@@ -3466,6 +3469,12 @@ type ResolvedParamPairValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
+type ResolvedPipelineTaskValues struct {
+	// Key/value-map of parameters passed to the pipeline execution. Limited to
+	// 10k characters in total.
+	PipelineTaskParameters map[string]string `json:"pipeline_task_parameters,omitempty"`
+}
+
 type ResolvedPythonWheelTaskValues struct {
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 
@@ -3488,6 +3497,8 @@ type ResolvedValues struct {
 	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
 
 	NotebookTask *ResolvedNotebookTaskValues `json:"notebook_task,omitempty"`
+
+	PipelineTask *ResolvedPipelineTaskValues `json:"pipeline_task,omitempty"`
 
 	PythonWheelTask *ResolvedPythonWheelTaskValues `json:"python_wheel_task,omitempty"`
 
