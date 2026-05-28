@@ -111,6 +111,12 @@ type PersistentAuth struct {
 	// discoveryHost overrides the default login.databricks.com host used by
 	// the discovery flow. Empty means the production host.
 	discoveryHost string
+
+	// discoveryAccountTarget, when true, instructs the discovery flow to set
+	// the top-level `target=ACCOUNT` query parameter on the authorize URL so
+	// login.databricks.com lands the user on the account selector instead of
+	// the workspace selector. Use for account-only logins.
+	discoveryAccountTarget bool
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -197,6 +203,18 @@ func WithDiscoveryHost(host string) PersistentAuthOption {
 			host = "https://" + host
 		}
 		a.discoveryHost = host
+	}
+}
+
+// WithDiscoveryAccountTarget sets the top-level `target=ACCOUNT` query
+// parameter on the discovery authorize URL so login.databricks.com lands the
+// user on the account selector instead of the workspace selector. Use for
+// account-only logins where workspace selection would be a wasted step.
+//
+// Has no effect unless WithDiscoveryLogin is also set.
+func WithDiscoveryAccountTarget() PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.discoveryAccountTarget = true
 	}
 }
 
@@ -424,6 +442,9 @@ func (a *PersistentAuth) discoveryChallenge() error {
 	}
 	defer a.Close()
 	ds := &discoveryTokenSource{pa: a, host: a.discoveryHost}
+	if a.discoveryAccountTarget {
+		ds.target = discoveryTargetAccount
+	}
 	return ds.challenge()
 }
 
