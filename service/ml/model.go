@@ -859,6 +859,11 @@ type CreateRunResponse struct {
 	Run *Run `json:"run,omitempty"`
 }
 
+type CreateStreamRequest struct {
+	// The Stream to create.
+	Stream Stream `json:"stream"`
+}
+
 // Details required to create a model version stage transition request.
 type CreateTransitionRequest struct {
 	// User-provided comment on the action.
@@ -1098,6 +1103,11 @@ func (s DeleteRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteStreamRequest struct {
+	// Full three-part name (catalog.schema.stream) of the Stream to delete.
+	Name string `json:"-" url:"-"`
+}
+
 type DeleteTag struct {
 	// Name of the tag. Maximum size is 255 bytes. Must be provided.
 	Key string `json:"key"`
@@ -1182,6 +1192,30 @@ func (s *DeltaTableSource) UnmarshalJSON(b []byte) error {
 
 func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Direct connection configs for mTLS, as Kafka Connections do not support mTLS
+// yet (XTA-18030). Temporarily used until UC Kafka Connections gain mTLS
+// support.
+type DirectMtlsConfig struct {
+	// A comma-separated list of host:port pairs for the Kafka bootstrap
+	// servers.
+	BootstrapServers string `json:"bootstrap_servers"`
+	// Mutual-TLS authentication configuration.
+	MtlsConfig MtlsConfig `json:"mtls_config"`
+}
+
+// Schema definitions provided directly on the Stream, as opposed to referencing
+// a schema registry. In a future milestone, we will support schema registries
+// through a UC Connection.
+type DirectSchemas struct {
+	// Schema for the message key. This is only used for Kafka streams. For
+	// Kafka, at least one of payload_schema or key_schema must be specified.
+	KeySchema *SchemaConfig `json:"key_schema,omitempty"`
+	// Schema for the message payload. For Kafka, this is the value schema.
+	// Unless the platform supports another schema (e.g. keys for Kafka), this
+	// must be specified.
+	PayloadSchema *SchemaConfig `json:"payload_schema,omitempty"`
 }
 
 type EntityColumn struct {
@@ -1974,6 +2008,11 @@ type GetRunResponse struct {
 	Run *Run `json:"run,omitempty"`
 }
 
+type GetStreamRequest struct {
+	// Full three-part name (catalog.schema.stream) of the Stream to get.
+	Name string `json:"-" url:"-"`
+}
+
 type HttpUrlSpec struct {
 	// Value of the authorization header that should be sent in the request sent
 	// by the wehbook. It should be of the form `"<auth type> <credentials>"`.
@@ -2026,6 +2065,65 @@ func (s *HttpUrlSpecWithoutSecret) UnmarshalJSON(b []byte) error {
 }
 
 func (s HttpUrlSpecWithoutSecret) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Configuration for the Databricks-managed ingestion pipeline. Groups the
+// ingestion destination (required) and optional backfill source.
+type IngestionConfig struct {
+	// The ID of the Databricks Job that performs the historical backfill of the
+	// ingestion Delta table.
+	BackfillJobId int64 `json:"backfill_job_id,omitempty"`
+	// A user-provided source for backfilling data. Historical data is used when
+	// creating a training set from streaming features linked to this Stream.
+	// The backfill data stored in this location will be copied into the
+	// ingestion table for offline querying and training. The schema for this
+	// source must match exactly that of the key and payload schemas specified
+	// for this Stream.
+	BackfillSource *BackfillSource `json:"backfill_source,omitempty"`
+	// Column paths used to identify duplicate rows during ingestion; only one
+	// row per distinct combination of these values is kept. Use dot notation
+	// for nested fields (e.g. `value.user_id`). Empty list means every column
+	// is compared.
+	DeduplicationColumns []string `json:"deduplication_columns,omitempty"`
+	// Destination for the Databricks-managed Delta table that holds an offline
+	// copy of the streaming data for querying and training. This table contains
+	// both 1) forward-filled data from the Stream and 2) backfilled data from
+	// the BackfillSource (if provided). This table is created and managed by
+	// Databricks and is deleted when the Stream is deleted.
+	IngestionDestination IngestionDestination `json:"ingestion_destination"`
+	// The ID of the Databricks Job that performs the forward-fill ingestion.
+	IngestionJobId int64 `json:"ingestion_job_id,omitempty"`
+	// The ID of the SDP pipeline that continuously copies new events from the
+	// streaming source into the ingestion Delta table.
+	IngestionPipelineId string `json:"ingestion_pipeline_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Destination for the Databricks-managed Delta table that holds an offline copy
+// of the streaming data for querying and training.
+type IngestionDestination struct {
+	// The full three-part name (catalog, schema, name) of the Delta table to be
+	// created for ingestion.
+	DeltaTableName string `json:"delta_table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionDestination) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2144,6 +2242,42 @@ func (s *KafkaSource) UnmarshalJSON(b []byte) error {
 }
 
 func (s KafkaSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Kafka-specific configuration for a Stream.
+type KafkaStreamConfig struct {
+	// Miscellaneous source options. Accepted keys are source options or Kafka
+	// consumer options (kafka.*), validated against an allow-list at request
+	// time. All auth configuration goes through the underlying UC Connection(s)
+	// or configs and should not be stored here.
+	ExtraOptions map[string]string `json:"extra_options,omitempty"`
+	// Options to configure which Kafka topics to pull data from.
+	SubscriptionMode KafkaSubscriptionMode `json:"subscription_mode"`
+}
+
+// Subscription mode for Kafka topic selection, matching standard Spark
+// Structured Streaming options.
+type KafkaSubscriptionMode struct {
+	// A JSON string that contains the specific topic-partitions to consume
+	// from. For example, for '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th
+	// and 1st partitions will be consumed from.
+	Assign string `json:"assign,omitempty"`
+	// A comma-separated list of Kafka topics to read from. For example,
+	// 'topicA,topicB,topicC'.
+	Subscribe string `json:"subscribe,omitempty"`
+	// A regular expression matching topics to subscribe to. For example,
+	// 'topic.*' will subscribe to all topics starting with 'topic'.
+	SubscribePattern string `json:"subscribe_pattern,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KafkaSubscriptionMode) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KafkaSubscriptionMode) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2513,6 +2647,43 @@ func (s *ListRegistryWebhooks) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListRegistryWebhooks) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListStreamsRequest struct {
+	// The maximum number of results to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page based on a previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Two-part name (catalog.schema) of the parent under which to list Streams.
+	Parent string `json:"-" url:"parent,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListStreamsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListStreamsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to a ListStreamsRequest.
+type ListStreamsResponse struct {
+	// Pagination token to request the next page of results for this query.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// List of Streams.
+	Streams []Stream `json:"streams,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListStreamsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListStreamsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4708,6 +4879,85 @@ type StddevSampFunction struct {
 	Input string `json:"input"`
 }
 
+// A Stream is a governed UC entity representing an external streaming data
+// source. The source_config oneof determines the streaming platform source
+// (e.g. Kafka, Kinesis, etc.).
+type Stream struct {
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Specifies how to connect and authenticate to the stream platform.
+	ConnectionConfig StreamConnectionConfig `json:"connection_config"`
+	// Time at which this Stream was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Username of the Stream creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// User-provided description.
+	Description string `json:"description,omitempty"`
+	// Configuration for streaming data ingestion: the managed table storing an
+	// offline copy of forward fill data and optional historical backfill.
+	IngestionConfig IngestionConfig `json:"ingestion_config"`
+	// Full three-part (catalog.schema.stream) name of the stream.
+	Name string `json:"name"`
+	// Schema definitions for the stream. Currently only direct schemas are
+	// supported. In a future milestone, we will support schema registries
+	// through a UC Connection.
+	SchemaConfig StreamSchemaConfig `json:"schema_config"`
+	// Source-specific configuration. Determines the streaming platform source.
+	SourceConfig StreamSourceConfig `json:"source_config"`
+	// Time at which this Stream was last modified.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// Username of user who last modified the Stream.
+	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Stream) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Stream) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Specifies how to connect and authenticate to the stream platform.
+type StreamConnectionConfig struct {
+	// Direct mTLS configuration for stream platform access. This is only used
+	// in the short term until UC Kafka Connections support mTLS (XTA-18030).
+	// Once UC Kafka Connections support mTLS, this will be deprecated.
+	DirectMtlsConfig *DirectMtlsConfig `json:"direct_mtls_config,omitempty"`
+	// Name of an existing UC Connection for stream platform access. Must be the
+	// correct type for the streaming platform (e.g. a Kafka Connection for a
+	// Kafka Stream).
+	UcConnectionName string `json:"uc_connection_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *StreamConnectionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StreamConnectionConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Schema definitions for the stream. Currently only direct schemas are
+// supported. In a future milestone, we will support schema registries through a
+// UC Connection.
+type StreamSchemaConfig struct {
+	// Schema definitions provided directly on the Stream.
+	DirectSchemas *DirectSchemas `json:"direct_schemas,omitempty"`
+}
+
+// Source-specific configuration. Determines the streaming platform source.
+type StreamSourceConfig struct {
+	// Configuration for Apache Kafka streams.
+	KafkaStreamConfig *KafkaStreamConfig `json:"kafka_stream_config,omitempty"`
+}
+
 // The streaming mode configuration for a streaming materialization pipeline.
 type StreamingMode struct {
 	// The type of streaming mode used by the materialization pipeline.
@@ -5192,6 +5442,15 @@ func (f *UpdateRunStatus) Values() []UpdateRunStatus {
 // Type always returns UpdateRunStatus to satisfy [pflag.Value] interface
 func (f *UpdateRunStatus) Type() string {
 	return "UpdateRunStatus"
+}
+
+type UpdateStreamRequest struct {
+	// Full three-part (catalog.schema.stream) name of the stream.
+	Name string `json:"-" url:"-"`
+	// The Stream to update.
+	Stream Stream `json:"stream"`
+	// The list of fields to update.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
 type UpdateWebhookResponse struct {

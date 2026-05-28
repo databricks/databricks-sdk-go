@@ -259,6 +259,65 @@ func (_c *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call) RunAnd
 	return _c
 }
 
+// CreateStream provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) CreateStream(ctx context.Context, request ml.CreateStreamRequest) (*ml.Stream, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateStream")
+	}
+
+	var r0 *ml.Stream
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateStreamRequest) (*ml.Stream, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateStreamRequest) *ml.Stream); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.Stream)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.CreateStreamRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_CreateStream_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateStream'
+type MockFeatureEngineeringInterface_CreateStream_Call struct {
+	*mock.Call
+}
+
+// CreateStream is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.CreateStreamRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) CreateStream(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_CreateStream_Call {
+	return &MockFeatureEngineeringInterface_CreateStream_Call{Call: _e.mock.On("CreateStream", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateStream_Call) Run(run func(ctx context.Context, request ml.CreateStreamRequest)) *MockFeatureEngineeringInterface_CreateStream_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.CreateStreamRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateStream_Call) Return(_a0 *ml.Stream, _a1 error) *MockFeatureEngineeringInterface_CreateStream_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateStream_Call) RunAndReturn(run func(context.Context, ml.CreateStreamRequest) (*ml.Stream, error)) *MockFeatureEngineeringInterface_CreateStream_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteFeature provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) DeleteFeature(ctx context.Context, request ml.DeleteFeatureRequest) error {
 	ret := _m.Called(ctx, request)
@@ -396,6 +455,53 @@ func (_c *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call) Return
 }
 
 func (_c *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.DeleteMaterializedFeatureRequest) error) *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteStream provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) DeleteStream(ctx context.Context, request ml.DeleteStreamRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteStream")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteStreamRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockFeatureEngineeringInterface_DeleteStream_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteStream'
+type MockFeatureEngineeringInterface_DeleteStream_Call struct {
+	*mock.Call
+}
+
+// DeleteStream is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteStreamRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) DeleteStream(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_DeleteStream_Call {
+	return &MockFeatureEngineeringInterface_DeleteStream_Call{Call: _e.mock.On("DeleteStream", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteStream_Call) Run(run func(ctx context.Context, request ml.DeleteStreamRequest)) *MockFeatureEngineeringInterface_DeleteStream_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.DeleteStreamRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteStream_Call) Return(_a0 error) *MockFeatureEngineeringInterface_DeleteStream_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteStream_Call) RunAndReturn(run func(context.Context, ml.DeleteStreamRequest) error) *MockFeatureEngineeringInterface_DeleteStream_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -573,6 +679,65 @@ func (_c *MockFeatureEngineeringInterface_GetMaterializedFeature_Call) Return(_a
 }
 
 func (_c *MockFeatureEngineeringInterface_GetMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.GetMaterializedFeatureRequest) (*ml.MaterializedFeature, error)) *MockFeatureEngineeringInterface_GetMaterializedFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetStream provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) GetStream(ctx context.Context, request ml.GetStreamRequest) (*ml.Stream, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetStream")
+	}
+
+	var r0 *ml.Stream
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetStreamRequest) (*ml.Stream, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetStreamRequest) *ml.Stream); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.Stream)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetStreamRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_GetStream_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetStream'
+type MockFeatureEngineeringInterface_GetStream_Call struct {
+	*mock.Call
+}
+
+// GetStream is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetStreamRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) GetStream(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_GetStream_Call {
+	return &MockFeatureEngineeringInterface_GetStream_Call{Call: _e.mock.On("GetStream", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_GetStream_Call) Run(run func(ctx context.Context, request ml.GetStreamRequest)) *MockFeatureEngineeringInterface_GetStream_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetStreamRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetStream_Call) Return(_a0 *ml.Stream, _a1 error) *MockFeatureEngineeringInterface_GetStream_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetStream_Call) RunAndReturn(run func(context.Context, ml.GetStreamRequest) (*ml.Stream, error)) *MockFeatureEngineeringInterface_GetStream_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -901,6 +1066,114 @@ func (_c *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call) RunA
 	return _c
 }
 
+// ListStreams provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) ListStreams(ctx context.Context, request ml.ListStreamsRequest) listing.Iterator[ml.Stream] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListStreams")
+	}
+
+	var r0 listing.Iterator[ml.Stream]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListStreamsRequest) listing.Iterator[ml.Stream]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[ml.Stream])
+		}
+	}
+
+	return r0
+}
+
+// MockFeatureEngineeringInterface_ListStreams_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListStreams'
+type MockFeatureEngineeringInterface_ListStreams_Call struct {
+	*mock.Call
+}
+
+// ListStreams is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.ListStreamsRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) ListStreams(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_ListStreams_Call {
+	return &MockFeatureEngineeringInterface_ListStreams_Call{Call: _e.mock.On("ListStreams", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_ListStreams_Call) Run(run func(ctx context.Context, request ml.ListStreamsRequest)) *MockFeatureEngineeringInterface_ListStreams_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.ListStreamsRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListStreams_Call) Return(_a0 listing.Iterator[ml.Stream]) *MockFeatureEngineeringInterface_ListStreams_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListStreams_Call) RunAndReturn(run func(context.Context, ml.ListStreamsRequest) listing.Iterator[ml.Stream]) *MockFeatureEngineeringInterface_ListStreams_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListStreamsAll provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) ListStreamsAll(ctx context.Context, request ml.ListStreamsRequest) ([]ml.Stream, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListStreamsAll")
+	}
+
+	var r0 []ml.Stream
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListStreamsRequest) ([]ml.Stream, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListStreamsRequest) []ml.Stream); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]ml.Stream)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.ListStreamsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_ListStreamsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListStreamsAll'
+type MockFeatureEngineeringInterface_ListStreamsAll_Call struct {
+	*mock.Call
+}
+
+// ListStreamsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.ListStreamsRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) ListStreamsAll(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_ListStreamsAll_Call {
+	return &MockFeatureEngineeringInterface_ListStreamsAll_Call{Call: _e.mock.On("ListStreamsAll", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_ListStreamsAll_Call) Run(run func(ctx context.Context, request ml.ListStreamsRequest)) *MockFeatureEngineeringInterface_ListStreamsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.ListStreamsRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListStreamsAll_Call) Return(_a0 []ml.Stream, _a1 error) *MockFeatureEngineeringInterface_ListStreamsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListStreamsAll_Call) RunAndReturn(run func(context.Context, ml.ListStreamsRequest) ([]ml.Stream, error)) *MockFeatureEngineeringInterface_ListStreamsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateFeature provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) UpdateFeature(ctx context.Context, request ml.UpdateFeatureRequest) (*ml.Feature, error) {
 	ret := _m.Called(ctx, request)
@@ -1074,6 +1347,65 @@ func (_c *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call) Return
 }
 
 func (_c *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.UpdateMaterializedFeatureRequest) (*ml.MaterializedFeature, error)) *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateStream provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) UpdateStream(ctx context.Context, request ml.UpdateStreamRequest) (*ml.Stream, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateStream")
+	}
+
+	var r0 *ml.Stream
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateStreamRequest) (*ml.Stream, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateStreamRequest) *ml.Stream); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.Stream)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.UpdateStreamRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_UpdateStream_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateStream'
+type MockFeatureEngineeringInterface_UpdateStream_Call struct {
+	*mock.Call
+}
+
+// UpdateStream is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.UpdateStreamRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) UpdateStream(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_UpdateStream_Call {
+	return &MockFeatureEngineeringInterface_UpdateStream_Call{Call: _e.mock.On("UpdateStream", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateStream_Call) Run(run func(ctx context.Context, request ml.UpdateStreamRequest)) *MockFeatureEngineeringInterface_UpdateStream_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.UpdateStreamRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateStream_Call) Return(_a0 *ml.Stream, _a1 error) *MockFeatureEngineeringInterface_UpdateStream_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateStream_Call) RunAndReturn(run func(context.Context, ml.UpdateStreamRequest) (*ml.Stream, error)) *MockFeatureEngineeringInterface_UpdateStream_Call {
 	_c.Call.Return(run)
 	return _c
 }
