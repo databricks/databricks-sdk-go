@@ -653,6 +653,14 @@ func (c *Config) fixHostIfNeeded() error {
 }
 
 func workspaceIDFromQuery(q url.Values) string {
+	// ?w= is the unified workspace addressing query parameter. It supersedes
+	// the older ?o=/?workspace_id= forms and accepts a broader range of
+	// workspace identifier formats — both classic numeric workspace IDs and
+	// other identifier formats the server understands — so we don't apply the
+	// numeric-only validation that we use for ?o=/?workspace_id=.
+	if v := q.Get("w"); v != "" {
+		return v
+	}
 	for _, key := range []string{"o", "workspace_id"} {
 		v := q.Get(key)
 		if v == "" {
