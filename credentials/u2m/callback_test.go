@@ -3,12 +3,79 @@ package u2m
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"golang.org/x/oauth2"
 )
+
+func TestCallbackServer_HandlerWithIssuerBindsIssuerToResult(t *testing.T) {
+	browserOpened := make(chan string, 1)
+	cb := &callbackServer{
+		ctx: context.Background(),
+		browser: func(redirect string) error {
+			browserOpened <- redirect
+			return nil
+		},
+		renderErrCh: make(chan error),
+		feedbackCh:  make(chan oauthResult, 2),
+		tmpl:        template.Must(template.New("page").Parse("")),
+	}
+
+	const authCodeURL = "https://login.databricks.com/?destination_url=%2Foidc%2Fv1%2Fauthorize"
+	legitimate := struct {
+		code   string
+		state  string
+		issuer string
+	}{
+		code:   "legit-code",
+		state:  "legit-state",
+		issuer: "https://adb-123.azuredatabricks.net/oidc",
+	}
+
+	serveCallback := func(code, state, issuer string) {
+		callbackURL := fmt.Sprintf("/?code=%s&state=%s&iss=%s",
+			url.QueryEscape(code), url.QueryEscape(state), url.QueryEscape(issuer))
+		req := httptest.NewRequest(http.MethodGet, callbackURL, nil)
+		rec := httptest.NewRecorder()
+		cb.ServeHTTP(rec, req)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("ServeHTTP status = %d, want %d", rec.Code, http.StatusOK)
+		}
+	}
+
+	// Queue two callbacks with different code/state/iss; the handler must
+	// return the values from the first result and not interleave.
+	serveCallback(legitimate.code, legitimate.state, legitimate.issuer)
+	serveCallback("second-code", "second-state", "https://other.example/oidc")
+
+	code, state, issuer, err := cb.handlerWithIssuer(authCodeURL)
+	if err != nil {
+		t.Fatalf("handlerWithIssuer(): %v", err)
+	}
+	if code != legitimate.code {
+		t.Errorf("code = %q, want %q", code, legitimate.code)
+	}
+	if state != legitimate.state {
+		t.Errorf("state = %q, want %q", state, legitimate.state)
+	}
+	if issuer != legitimate.issuer {
+		t.Errorf("issuer = %q, want %q", issuer, legitimate.issuer)
+	}
+
+	select {
+	case got := <-browserOpened:
+		if got != authCodeURL {
+			t.Errorf("browser opened %q, want %q", got, authCodeURL)
+		}
+	default:
+		t.Fatal("browser was not opened")
+	}
+}
 
 func TestCallbackServer_ExtractsIssuer(t *testing.T) {
 	ctx := context.Background()
@@ -64,11 +131,6 @@ func TestCallbackServer_ExtractsIssuer(t *testing.T) {
 	}
 	defer cb.Close()
 
-	// Verify issuer is empty before any callback.
-	if got := cb.Issuer(); got != "" {
-		t.Fatalf("Issuer() before callback: want %q, got %q", "", got)
-	}
-
 	// Fire a callback with iss parameter.
 	issuerURL := "https://adb-123.azuredatabricks.net/oidc"
 	resp, err := http.Get(fmt.Sprintf("http://%s?code=xxx&state=yyy&iss=%s", p.redirectAddr, issuerURL))
@@ -77,11 +139,9 @@ func TestCallbackServer_ExtractsIssuer(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Drain the feedback channel so ServeHTTP completes.
-	<-cb.feedbackCh
-
-	if got := cb.Issuer(); got != issuerURL {
-		t.Fatalf("Issuer(): want %q, got %q", issuerURL, got)
+	res := <-cb.feedbackCh
+	if got := res.Issuer; got != issuerURL {
+		t.Fatalf("result Issuer: want %q, got %q", issuerURL, got)
 	}
 }
 
@@ -128,11 +188,9 @@ func TestCallbackServer_NoIssuer(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Drain the feedback channel so ServeHTTP completes.
-	<-cb.feedbackCh
-
-	if got := cb.Issuer(); got != "" {
-		t.Fatalf("Issuer(): want %q, got %q", "", got)
+	res := <-cb.feedbackCh
+	if got := res.Issuer; got != "" {
+		t.Fatalf("result Issuer: want %q, got %q", "", got)
 	}
 }
 
@@ -180,10 +238,8 @@ func TestCallbackServer_IssuerWithAccountPath(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Drain the feedback channel so ServeHTTP completes.
-	<-cb.feedbackCh
-
-	if got := cb.Issuer(); got != issuerURL {
-		t.Fatalf("Issuer(): want %q, got %q", issuerURL, got)
+	res := <-cb.feedbackCh
+	if got := res.Issuer; got != issuerURL {
+		t.Fatalf("result Issuer: want %q, got %q", issuerURL, got)
 	}
 }
