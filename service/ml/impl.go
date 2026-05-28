@@ -810,6 +810,21 @@ func (a *featureEngineeringImpl) CreateMaterializedFeature(ctx context.Context, 
 	return &materializedFeature, err
 }
 
+func (a *featureEngineeringImpl) CreateStream(ctx context.Context, request CreateStreamRequest) (*Stream, error) {
+	var stream Stream
+	path := "/api/2.0/feature-engineering/streams"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Stream, &stream)
+	return &stream, err
+}
+
 func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error {
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
 	queryParams := make(map[string]any)
@@ -838,6 +853,19 @@ func (a *featureEngineeringImpl) DeleteKafkaConfig(ctx context.Context, request 
 
 func (a *featureEngineeringImpl) DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error {
 	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *featureEngineeringImpl) DeleteStream(ctx context.Context, request DeleteStreamRequest) error {
+	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -889,6 +917,20 @@ func (a *featureEngineeringImpl) GetMaterializedFeature(ctx context.Context, req
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &materializedFeature)
 	return &materializedFeature, err
+}
+
+func (a *featureEngineeringImpl) GetStream(ctx context.Context, request GetStreamRequest) (*Stream, error) {
+	var stream Stream
+	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &stream)
+	return &stream, err
 }
 
 // List Features.
@@ -1030,6 +1072,51 @@ func (a *featureEngineeringImpl) internalListMaterializedFeatures(ctx context.Co
 	return &listMaterializedFeaturesResponse, err
 }
 
+// List Streams under a given catalog.schema parent.
+func (a *featureEngineeringImpl) ListStreams(ctx context.Context, request ListStreamsRequest) listing.Iterator[Stream] {
+
+	getNextPage := func(ctx context.Context, req ListStreamsRequest) (*ListStreamsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListStreams(ctx, req)
+	}
+	getItems := func(resp *ListStreamsResponse) []Stream {
+		return resp.Streams
+	}
+	getNextReq := func(resp *ListStreamsResponse) *ListStreamsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Streams under a given catalog.schema parent.
+func (a *featureEngineeringImpl) ListStreamsAll(ctx context.Context, request ListStreamsRequest) ([]Stream, error) {
+	iterator := a.ListStreams(ctx, request)
+	return listing.ToSlice[Stream](ctx, iterator)
+}
+
+func (a *featureEngineeringImpl) internalListStreams(ctx context.Context, request ListStreamsRequest) (*ListStreamsResponse, error) {
+	var listStreamsResponse ListStreamsResponse
+	path := "/api/2.0/feature-engineering/streams"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listStreamsResponse)
+	return &listStreamsResponse, err
+}
+
 func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error) {
 	var feature Feature
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
@@ -1088,6 +1175,28 @@ func (a *featureEngineeringImpl) UpdateMaterializedFeature(ctx context.Context, 
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.MaterializedFeature, &materializedFeature)
 	return &materializedFeature, err
+}
+
+func (a *featureEngineeringImpl) UpdateStream(ctx context.Context, request UpdateStreamRequest) (*Stream, error) {
+	var stream Stream
+	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Stream, &stream)
+	return &stream, err
 }
 
 // unexported type that holds implementations of just FeatureStore API methods

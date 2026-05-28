@@ -272,6 +272,10 @@ type FeatureEngineeringService interface {
 	// Create a materialized feature.
 	CreateMaterializedFeature(ctx context.Context, request CreateMaterializedFeatureRequest) (*MaterializedFeature, error)
 
+	// Create a Stream, a governed UC entity representing an external streaming
+	// data source.
+	CreateStream(ctx context.Context, request CreateStreamRequest) (*Stream, error)
+
 	// Delete a Feature.
 	DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error
 
@@ -282,6 +286,9 @@ type FeatureEngineeringService interface {
 
 	// Delete a materialized feature.
 	DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error
+
+	// Delete a Stream by its full three-part name (catalog.schema.stream).
+	DeleteStream(ctx context.Context, request DeleteStreamRequest) error
 
 	// Get a Feature.
 	GetFeature(ctx context.Context, request GetFeatureRequest) (*Feature, error)
@@ -294,6 +301,9 @@ type FeatureEngineeringService interface {
 	// Get a materialized feature.
 	GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error)
 
+	// Get a Stream by its full three-part name (catalog.schema.stream).
+	GetStream(ctx context.Context, request GetStreamRequest) (*Stream, error)
+
 	// List Features.
 	ListFeatures(ctx context.Context, request ListFeaturesRequest) (*ListFeaturesResponse, error)
 
@@ -305,6 +315,9 @@ type FeatureEngineeringService interface {
 	// List materialized features.
 	ListMaterializedFeatures(ctx context.Context, request ListMaterializedFeaturesRequest) (*ListMaterializedFeaturesResponse, error)
 
+	// List Streams under a given catalog.schema parent.
+	ListStreams(ctx context.Context, request ListStreamsRequest) (*ListStreamsResponse, error)
+
 	// Update a Feature.
 	UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error)
 
@@ -315,6 +328,9 @@ type FeatureEngineeringService interface {
 
 	// Update a materialized feature (pause/resume).
 	UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error)
+
+	// Update a Stream. Only fields listed in `update_mask` are mutated.
+	UpdateStream(ctx context.Context, request UpdateStreamRequest) (*Stream, error)
 }
 
 // A feature store is a centralized repository that enables data scientists to
