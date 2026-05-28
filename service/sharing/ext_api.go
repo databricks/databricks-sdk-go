@@ -73,7 +73,7 @@ func (a *SharesAPI) internalList(ctx context.Context, request ListSharesRequest)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSharesResponse)
 	return &listSharesResponse, err

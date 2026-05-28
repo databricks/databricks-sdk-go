@@ -26,7 +26,7 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &endpointInfo)
 	return &endpointInfo, err
@@ -39,7 +39,7 @@ func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -53,7 +53,7 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &endpointInfo)
 	return &endpointInfo, err
@@ -67,7 +67,7 @@ func (a *vectorSearchEndpointsImpl) GetPermissionLevels(ctx context.Context, req
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getVectorSearchEndpointPermissionLevelsResponse)
 	return &getVectorSearchEndpointPermissionLevelsResponse, err
@@ -81,7 +81,7 @@ func (a *vectorSearchEndpointsImpl) GetPermissions(ctx context.Context, request 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &vectorSearchEndpointPermissions)
 	return &vectorSearchEndpointPermissions, err
@@ -126,7 +126,7 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listEndpointResponse)
 	return &listEndpointResponse, err
@@ -141,7 +141,7 @@ func (a *vectorSearchEndpointsImpl) PatchEndpoint(ctx context.Context, request P
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &endpointInfo)
 	return &endpointInfo, err
@@ -156,7 +156,7 @@ func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Conte
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &retrieveUserVisibleMetricsResponse)
 	return &retrieveUserVisibleMetricsResponse, err
@@ -171,7 +171,7 @@ func (a *vectorSearchEndpointsImpl) SetPermissions(ctx context.Context, request 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &vectorSearchEndpointPermissions)
 	return &vectorSearchEndpointPermissions, err
@@ -186,7 +186,7 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Conte
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &patchEndpointBudgetPolicyResponse)
 	return &patchEndpointBudgetPolicyResponse, err
@@ -201,7 +201,7 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointCustomTags(ctx context.Context
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateEndpointCustomTagsResponse)
 	return &updateEndpointCustomTagsResponse, err
@@ -216,7 +216,7 @@ func (a *vectorSearchEndpointsImpl) UpdatePermissions(ctx context.Context, reque
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &vectorSearchEndpointPermissions)
 	return &vectorSearchEndpointPermissions, err
@@ -236,7 +236,7 @@ func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request Creat
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &vectorIndex)
 	return &vectorIndex, err
@@ -250,7 +250,7 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDataVectorIndexResponse)
 	return &deleteDataVectorIndexResponse, err
@@ -263,7 +263,7 @@ func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request Delet
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -277,7 +277,7 @@ func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndex
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &vectorIndex)
 	return &vectorIndex, err
@@ -322,7 +322,7 @@ func (a *vectorSearchIndexesImpl) internalListIndexes(ctx context.Context, reque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listVectorIndexesResponse)
 	return &listVectorIndexesResponse, err
@@ -337,7 +337,7 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
@@ -352,7 +352,7 @@ func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request Que
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
@@ -367,7 +367,7 @@ func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVec
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &scanVectorIndexResponse)
 	return &scanVectorIndexResponse, err
@@ -380,7 +380,7 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
@@ -395,7 +395,7 @@ func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, req
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &upsertDataVectorIndexResponse)
 	return &upsertDataVectorIndexResponse, err

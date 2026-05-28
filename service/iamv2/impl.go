@@ -141,7 +141,7 @@ func (a *workspaceIamV2Impl) CreateWorkspaceAssignmentDetailProxy(ctx context.Co
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.WorkspaceAssignmentDetail, &workspaceAssignmentDetail)
 	return &workspaceAssignmentDetail, err
@@ -154,7 +154,7 @@ func (a *workspaceIamV2Impl) DeleteWorkspaceAssignmentDetailProxy(ctx context.Co
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -168,7 +168,7 @@ func (a *workspaceIamV2Impl) GetWorkspaceAccessDetailLocal(ctx context.Context, 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceAccessDetail)
 	return &workspaceAccessDetail, err
@@ -182,7 +182,7 @@ func (a *workspaceIamV2Impl) GetWorkspaceAssignmentDetailProxy(ctx context.Conte
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceAssignmentDetail)
 	return &workspaceAssignmentDetail, err
@@ -196,7 +196,7 @@ func (a *workspaceIamV2Impl) ListWorkspaceAssignmentDetailsProxy(ctx context.Con
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listWorkspaceAssignmentDetailsResponse)
 	return &listWorkspaceAssignmentDetailsResponse, err
@@ -211,7 +211,7 @@ func (a *workspaceIamV2Impl) ResolveGroupProxy(ctx context.Context, request Reso
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &resolveGroupResponse)
 	return &resolveGroupResponse, err
@@ -226,7 +226,7 @@ func (a *workspaceIamV2Impl) ResolveServicePrincipalProxy(ctx context.Context, r
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &resolveServicePrincipalResponse)
 	return &resolveServicePrincipalResponse, err
@@ -241,7 +241,7 @@ func (a *workspaceIamV2Impl) ResolveUserProxy(ctx context.Context, request Resol
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &resolveUserResponse)
 	return &resolveUserResponse, err
@@ -263,7 +263,7 @@ func (a *workspaceIamV2Impl) UpdateWorkspaceAssignmentDetailProxy(ctx context.Co
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.WorkspaceAssignmentDetail, &workspaceAssignmentDetail)
 	return &workspaceAssignmentDetail, err

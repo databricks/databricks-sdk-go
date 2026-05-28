@@ -28,7 +28,7 @@ func (a *knowledgeAssistantsImpl) CreateExample(ctx context.Context, request Cre
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Example, &example)
 	return &example, err
@@ -43,7 +43,7 @@ func (a *knowledgeAssistantsImpl) CreateKnowledgeAssistant(ctx context.Context, 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.KnowledgeAssistant, &knowledgeAssistant)
 	return &knowledgeAssistant, err
@@ -58,7 +58,7 @@ func (a *knowledgeAssistantsImpl) CreateKnowledgeSource(ctx context.Context, req
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.KnowledgeSource, &knowledgeSource)
 	return &knowledgeSource, err
@@ -71,7 +71,7 @@ func (a *knowledgeAssistantsImpl) DeleteExample(ctx context.Context, request Del
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -84,7 +84,7 @@ func (a *knowledgeAssistantsImpl) DeleteKnowledgeAssistant(ctx context.Context, 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -97,7 +97,7 @@ func (a *knowledgeAssistantsImpl) DeleteKnowledgeSource(ctx context.Context, req
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -111,7 +111,7 @@ func (a *knowledgeAssistantsImpl) GetExample(ctx context.Context, request GetExa
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &example)
 	return &example, err
@@ -125,7 +125,7 @@ func (a *knowledgeAssistantsImpl) GetKnowledgeAssistant(ctx context.Context, req
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &knowledgeAssistant)
 	return &knowledgeAssistant, err
@@ -139,7 +139,7 @@ func (a *knowledgeAssistantsImpl) GetKnowledgeSource(ctx context.Context, reques
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &knowledgeSource)
 	return &knowledgeSource, err
@@ -153,7 +153,7 @@ func (a *knowledgeAssistantsImpl) GetPermissionLevels(ctx context.Context, reque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getKnowledgeAssistantPermissionLevelsResponse)
 	return &getKnowledgeAssistantPermissionLevelsResponse, err
@@ -167,7 +167,7 @@ func (a *knowledgeAssistantsImpl) GetPermissions(ctx context.Context, request Ge
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &knowledgeAssistantPermissions)
 	return &knowledgeAssistantPermissions, err
@@ -212,7 +212,7 @@ func (a *knowledgeAssistantsImpl) internalListExamples(ctx context.Context, requ
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExamplesResponse)
 	return &listExamplesResponse, err
@@ -257,7 +257,7 @@ func (a *knowledgeAssistantsImpl) internalListKnowledgeAssistants(ctx context.Co
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listKnowledgeAssistantsResponse)
 	return &listKnowledgeAssistantsResponse, err
@@ -302,7 +302,7 @@ func (a *knowledgeAssistantsImpl) internalListKnowledgeSources(ctx context.Conte
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listKnowledgeSourcesResponse)
 	return &listKnowledgeSourcesResponse, err
@@ -317,7 +317,7 @@ func (a *knowledgeAssistantsImpl) SetPermissions(ctx context.Context, request Kn
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &knowledgeAssistantPermissions)
 	return &knowledgeAssistantPermissions, err
@@ -331,7 +331,7 @@ func (a *knowledgeAssistantsImpl) SyncKnowledgeSources(ctx context.Context, requ
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -353,7 +353,7 @@ func (a *knowledgeAssistantsImpl) UpdateExample(ctx context.Context, request Upd
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Example, &example)
 	return &example, err
@@ -375,7 +375,7 @@ func (a *knowledgeAssistantsImpl) UpdateKnowledgeAssistant(ctx context.Context, 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.KnowledgeAssistant, &knowledgeAssistant)
 	return &knowledgeAssistant, err
@@ -397,7 +397,7 @@ func (a *knowledgeAssistantsImpl) UpdateKnowledgeSource(ctx context.Context, req
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.KnowledgeSource, &knowledgeSource)
 	return &knowledgeSource, err
@@ -412,7 +412,7 @@ func (a *knowledgeAssistantsImpl) UpdatePermissions(ctx context.Context, request
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &knowledgeAssistantPermissions)
 	return &knowledgeAssistantPermissions, err

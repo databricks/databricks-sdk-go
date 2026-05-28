@@ -263,8 +263,6 @@ type CatalogCatalogStatus struct {
 	//
 	// Format: projects/{project_id}/branches/{branch_id}.
 	Branch string `json:"branch,omitempty"`
-	// Part of the resource name.
-	CatalogId string `json:"catalog_id,omitempty"`
 	// The name of the Postgres database associated with the catalog.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// The resource path of the project associated with the catalog.
@@ -2369,8 +2367,6 @@ type SyncedTableSyncedTableStatus struct {
 	Project string `json:"project,omitempty"`
 	// The current phase of the data synchronization pipeline.
 	ProvisioningPhase ProvisioningPhase `json:"provisioning_phase,omitempty"`
-	// Part of the resource name.
-	SyncedTableId string `json:"synced_table_id,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog.
 	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
