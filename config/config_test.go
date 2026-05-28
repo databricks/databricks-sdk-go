@@ -1363,6 +1363,31 @@ func TestConfig_fixHostIfNeeded_extractsWorkspaceIDFromQuery(t *testing.T) {
 			wantHost: "https://acme.databricks.net",
 		},
 		{
+			name:            "?w= with numeric value promoted to WorkspaceID",
+			host:            "https://acme.databricks.net/?w=12345",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "12345",
+		},
+		{
+			name:            "?w= with non-numeric value promoted to WorkspaceID",
+			host:            "https://acme.databricks.net/?w=7a99b43c-b46c-432b-b0a7-814217701909",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "7a99b43c-b46c-432b-b0a7-814217701909",
+		},
+		{
+			name:            "?w= takes precedence over ?o=",
+			host:            "https://acme.databricks.net/?w=12345&o=99999",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "12345",
+		},
+		{
+			name:            "existing WorkspaceID is preserved over ?w=",
+			host:            "https://acme.databricks.net/?w=12345",
+			workspaceID:     "99999",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "99999",
+		},
+		{
 			name:     "host without query is unchanged",
 			host:     "https://acme.databricks.net",
 			wantHost: "https://acme.databricks.net",
