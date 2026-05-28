@@ -928,8 +928,11 @@ func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
 }
 
 type RerankerConfig struct {
+	// Reranker identifier: - When model_type=BASE/UNSPECIFIED: must be
+	// "databricks_reranker". - When model_type=FINETUNED: the Model Serving
+	// endpoint name hosting a finetuned reranker.
 	Model string `json:"model,omitempty"`
-
+	// Parameters that control how the reranker processes the query results.
 	Parameters *RerankerConfigRerankerParameters `json:"parameters,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

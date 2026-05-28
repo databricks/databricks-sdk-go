@@ -41,13 +41,13 @@ func listKnownAgents() []knownAgent {
 		{envVar: "CLINE_ACTIVE", product: "cline"},            // https://github.com/cline/cline (v3.24.0+)
 		{envVar: "CODEX_CI", product: "codex"},                // https://github.com/openai/codex
 		{envVar: "COPILOT_CLI", product: "copilot-cli"},       // https://github.com/features/copilot
-		{envVar: "COPILOT_MODEL", product: "copilot-vscode"},  // VS Code Copilot terminal, best-effort heuristic, not officially identified
 		{envVar: "CURSOR_AGENT", product: "cursor"},           // Closed source
 		{envVar: "GEMINI_CLI", product: "gemini-cli"},         // https://google-gemini.github.io/gemini-cli
 		{envVar: "GOOSE_TERMINAL", product: "goose"},          // https://block.github.io/goose/ (also sets AGENT=goose, handled by the central fallback in lookupAgentProvider)
 		{envVar: "KIRO", product: "kiro"},                     // https://kiro.dev/ (Amazon)
 		{envVar: "OPENCLAW_SHELL", product: "openclaw"},       // https://github.com/anthropics/openclaw
 		{envVar: "OPENCODE", product: "opencode"},             // https://github.com/opencode-ai/opencode
+		{envVar: "VSCODE_AGENT", product: "vscode-agent"},     // Set by VS Code 1.121+ for agent-initiated terminal commands (https://code.visualstudio.com/updates/v1_121)
 		{envVar: "WINDSURF_AGENT", product: "windsurf"},       // https://codeium.com/windsurf (Codeium)
 	}
 }
@@ -75,11 +75,6 @@ func lookupAgentProvider() string {
 		}
 	}
 
-	// Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
-	// alongside COPILOT_CLI. That is a single copilot-cli signal, not a
-	// stacked multi-agent setup, so drop the copilot-vscode match.
-	matches = collapseCopilotBYOK(matches)
-
 	switch len(matches) {
 	case 1:
 		return matches[0]
@@ -88,29 +83,6 @@ func lookupAgentProvider() string {
 	default:
 		return "multiple"
 	}
-}
-
-func collapseCopilotBYOK(matches []string) []string {
-	hasCLI, hasVSCode := false, false
-	for _, m := range matches {
-		if m == "copilot-cli" {
-			hasCLI = true
-		}
-		if m == "copilot-vscode" {
-			hasVSCode = true
-		}
-	}
-	if !hasCLI || !hasVSCode {
-		return matches
-	}
-	filtered := make([]string, 0, len(matches)-1)
-	for _, m := range matches {
-		if m == "copilot-vscode" {
-			continue
-		}
-		filtered = append(filtered, m)
-	}
-	return filtered
 }
 
 // agentEnvFallback returns a sanitized, length-capped name from AGENT

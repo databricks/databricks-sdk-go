@@ -26,7 +26,7 @@ func (a *dataClassificationImpl) CreateCatalogConfig(ctx context.Context, reques
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.CatalogConfig, &catalogConfig)
 	return &catalogConfig, err
@@ -39,7 +39,7 @@ func (a *dataClassificationImpl) DeleteCatalogConfig(ctx context.Context, reques
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -53,7 +53,7 @@ func (a *dataClassificationImpl) GetCatalogConfig(ctx context.Context, request G
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &catalogConfig)
 	return &catalogConfig, err
@@ -75,7 +75,7 @@ func (a *dataClassificationImpl) UpdateCatalogConfig(ctx context.Context, reques
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.CatalogConfig, &catalogConfig)
 	return &catalogConfig, err

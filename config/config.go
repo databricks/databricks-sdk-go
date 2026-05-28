@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -123,7 +124,9 @@ type Config struct {
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`
 
-	// Databricks Workspace ID for Workspace clients when working with unified hosts
+	// Databricks Workspace ID for Workspace clients when working with unified hosts.
+	// Accepts either a classic numeric workspace ID or a CPDR connection ID; the
+	// server disambiguates.
 	WorkspaceID string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
@@ -625,6 +628,20 @@ func (c *Config) fixHostIfNeeded() error {
 	if parsedHost.Hostname() == "" {
 		return ErrNoHostConfigured
 	}
+	// SPOG URLs pasted from the Databricks UI carry the workspace ID as
+	// ?o= (or ?workspace_id=) and the account ID as ?a= (or ?account_id=).
+	// Promote those into WorkspaceID/AccountID before we strip the query,
+	// so requests get the X-Databricks-Org-Id header instead of hitting the
+	// SPOG without routing and getting back the login HTML page.
+	if parsedHost.RawQuery != "" {
+		q := parsedHost.Query()
+		if c.WorkspaceID == "" {
+			c.WorkspaceID = workspaceIDFromQuery(q)
+		}
+		if c.AccountID == "" {
+			c.AccountID = accountIDFromQuery(q)
+		}
+	}
 	// Create new instance to ensure other fields are initialized as empty.
 	parsedHost = &url.URL{
 		Scheme: parsedHost.Scheme,
@@ -633,6 +650,36 @@ func (c *Config) fixHostIfNeeded() error {
 	// Store sanitized version of c.Host.
 	c.Host = parsedHost.String()
 	return nil
+}
+
+func workspaceIDFromQuery(q url.Values) string {
+	// ?w= is the unified workspace addressing query parameter. It supersedes
+	// the older ?o=/?workspace_id= forms and accepts a broader range of
+	// workspace identifier formats — both classic numeric workspace IDs and
+	// other identifier formats the server understands — so we don't apply the
+	// numeric-only validation that we use for ?o=/?workspace_id=.
+	if v := q.Get("w"); v != "" {
+		return v
+	}
+	for _, key := range []string{"o", "workspace_id"} {
+		v := q.Get(key)
+		if v == "" {
+			continue
+		}
+		if _, err := strconv.ParseInt(v, 10, 64); err == nil {
+			return v
+		}
+	}
+	return ""
+}
+
+func accountIDFromQuery(q url.Values) string {
+	for _, key := range []string{"a", "account_id"} {
+		if v := q.Get(key); v != "" {
+			return v
+		}
+	}
+	return ""
 }
 
 // ErrNoHostConfigured is the error returned when a user tries to authenticate

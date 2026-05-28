@@ -25,7 +25,7 @@ func (a *pipelinesImpl) ApplyEnvironment(ctx context.Context, request ApplyEnvir
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &applyEnvironmentRequestResponse)
 	return &applyEnvironmentRequestResponse, err
@@ -40,7 +40,7 @@ func (a *pipelinesImpl) Clone(ctx context.Context, request ClonePipelineRequest)
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &clonePipelineResponse)
 	return &clonePipelineResponse, err
@@ -55,7 +55,7 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createPipelineResponse)
 	return &createPipelineResponse, err
@@ -68,7 +68,7 @@ func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineReques
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -82,7 +82,7 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPipelineResponse)
 	return &getPipelineResponse, err
@@ -96,7 +96,7 @@ func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipe
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPipelinePermissionLevelsResponse)
 	return &getPipelinePermissionLevelsResponse, err
@@ -110,7 +110,7 @@ func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelineP
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &pipelinePermissions)
 	return &pipelinePermissions, err
@@ -124,7 +124,7 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getUpdateResponse)
 	return &getUpdateResponse, err
@@ -169,7 +169,7 @@ func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPipelineEventsResponse)
 	return &listPipelineEventsResponse, err
@@ -214,7 +214,7 @@ func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListP
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPipelinesResponse)
 	return &listPipelinesResponse, err
@@ -228,7 +228,7 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUpdatesResponse)
 	return &listUpdatesResponse, err
@@ -243,7 +243,7 @@ func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePerm
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &pipelinePermissions)
 	return &pipelinePermissions, err
@@ -258,7 +258,7 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &startUpdateResponse)
 	return &startUpdateResponse, err
@@ -271,7 +271,7 @@ func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
@@ -285,7 +285,7 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -300,7 +300,7 @@ func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelineP
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &pipelinePermissions)
 	return &pipelinePermissions, err
