@@ -28,7 +28,7 @@ func (a *supervisorAgentsImpl) CreateExample(ctx context.Context, request Create
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Example, &example)
 	return &example, err
@@ -43,7 +43,7 @@ func (a *supervisorAgentsImpl) CreateSupervisorAgent(ctx context.Context, reques
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.SupervisorAgent, &supervisorAgent)
 	return &supervisorAgent, err
@@ -62,7 +62,7 @@ func (a *supervisorAgentsImpl) CreateTool(ctx context.Context, request CreateToo
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Tool, &tool)
 	return &tool, err
@@ -75,7 +75,7 @@ func (a *supervisorAgentsImpl) DeleteExample(ctx context.Context, request Delete
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -88,7 +88,7 @@ func (a *supervisorAgentsImpl) DeleteSupervisorAgent(ctx context.Context, reques
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -101,7 +101,7 @@ func (a *supervisorAgentsImpl) DeleteTool(ctx context.Context, request DeleteToo
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -115,7 +115,7 @@ func (a *supervisorAgentsImpl) GetExample(ctx context.Context, request GetExampl
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &example)
 	return &example, err
@@ -129,7 +129,7 @@ func (a *supervisorAgentsImpl) GetPermissionLevels(ctx context.Context, request 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getSupervisorAgentPermissionLevelsResponse)
 	return &getSupervisorAgentPermissionLevelsResponse, err
@@ -143,7 +143,7 @@ func (a *supervisorAgentsImpl) GetPermissions(ctx context.Context, request GetSu
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &supervisorAgentPermissions)
 	return &supervisorAgentPermissions, err
@@ -157,7 +157,7 @@ func (a *supervisorAgentsImpl) GetSupervisorAgent(ctx context.Context, request G
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &supervisorAgent)
 	return &supervisorAgent, err
@@ -171,7 +171,7 @@ func (a *supervisorAgentsImpl) GetTool(ctx context.Context, request GetToolReque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &tool)
 	return &tool, err
@@ -216,7 +216,7 @@ func (a *supervisorAgentsImpl) internalListExamples(ctx context.Context, request
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExamplesResponse)
 	return &listExamplesResponse, err
@@ -261,7 +261,7 @@ func (a *supervisorAgentsImpl) internalListSupervisorAgents(ctx context.Context,
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSupervisorAgentsResponse)
 	return &listSupervisorAgentsResponse, err
@@ -306,7 +306,7 @@ func (a *supervisorAgentsImpl) internalListTools(ctx context.Context, request Li
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listToolsResponse)
 	return &listToolsResponse, err
@@ -321,7 +321,7 @@ func (a *supervisorAgentsImpl) SetPermissions(ctx context.Context, request Super
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &supervisorAgentPermissions)
 	return &supervisorAgentPermissions, err
@@ -343,7 +343,7 @@ func (a *supervisorAgentsImpl) UpdateExample(ctx context.Context, request Update
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Example, &example)
 	return &example, err
@@ -358,7 +358,7 @@ func (a *supervisorAgentsImpl) UpdatePermissions(ctx context.Context, request Su
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &supervisorAgentPermissions)
 	return &supervisorAgentPermissions, err
@@ -380,7 +380,7 @@ func (a *supervisorAgentsImpl) UpdateSupervisorAgent(ctx context.Context, reques
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.SupervisorAgent, &supervisorAgent)
 	return &supervisorAgent, err
@@ -402,7 +402,7 @@ func (a *supervisorAgentsImpl) UpdateTool(ctx context.Context, request UpdateToo
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Tool, &tool)
 	return &tool, err
