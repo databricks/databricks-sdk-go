@@ -1307,3 +1307,79 @@ func TestDefaultHostMetadataResolverFactory_NilResolverFromFactoryFallsThroughTo
 
 	assert.Equal(t, testHMAccountID, cfg.AccountID)
 }
+
+func TestConfig_fixHostIfNeeded_extractsWorkspaceIDFromQuery(t *testing.T) {
+	tests := []struct {
+		name            string
+		host            string
+		workspaceID     string
+		accountID       string
+		wantHost        string
+		wantWorkspaceID string
+		wantAccountID   string
+	}{
+		{
+			name:            "?o= promoted to WorkspaceID",
+			host:            "https://acme.databricks.net/?o=12345",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "12345",
+		},
+		{
+			name:            "?workspace_id= promoted to WorkspaceID",
+			host:            "https://acme.databricks.net/?workspace_id=12345",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "12345",
+		},
+		{
+			name:          "?a= promoted to AccountID",
+			host:          "https://acme.databricks.net/?a=abc",
+			wantHost:      "https://acme.databricks.net",
+			wantAccountID: "abc",
+		},
+		{
+			name:            "?o= and ?a= both promoted",
+			host:            "https://acme.databricks.net/?o=12345&a=abc",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "12345",
+			wantAccountID:   "abc",
+		},
+		{
+			name:            "existing WorkspaceID is preserved",
+			host:            "https://acme.databricks.net/?o=12345",
+			workspaceID:     "99999",
+			wantHost:        "https://acme.databricks.net",
+			wantWorkspaceID: "99999",
+		},
+		{
+			name:          "existing AccountID is preserved",
+			host:          "https://acme.databricks.net/?a=other",
+			accountID:     "kept",
+			wantHost:      "https://acme.databricks.net",
+			wantAccountID: "kept",
+		},
+		{
+			name:     "non-numeric ?o= is dropped",
+			host:     "https://acme.databricks.net/?o=notanumber",
+			wantHost: "https://acme.databricks.net",
+		},
+		{
+			name:     "host without query is unchanged",
+			host:     "https://acme.databricks.net",
+			wantHost: "https://acme.databricks.net",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := &Config{
+				Host:        tt.host,
+				WorkspaceID: tt.workspaceID,
+				AccountID:   tt.accountID,
+			}
+			require.NoError(t, cfg.fixHostIfNeeded())
+			assert.Equal(t, tt.wantHost, cfg.Host)
+			assert.Equal(t, tt.wantWorkspaceID, cfg.WorkspaceID)
+			assert.Equal(t, tt.wantAccountID, cfg.AccountID)
+		})
+	}
+}
