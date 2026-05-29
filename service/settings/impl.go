@@ -1675,6 +1675,21 @@ func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request Tok
 	return &tokenPermissions, err
 }
 
+func (a *tokenManagementImpl) UpdateTokenManagement(ctx context.Context, request UpdateTokenManagementRequest) (*TokenInfo, error) {
+	var tokenInfo TokenInfo
+	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &tokenInfo)
+	return &tokenInfo, err
+}
+
 // unexported type that holds implementations of just Tokens API methods
 type tokensImpl struct {
 	client *client.DatabricksClient

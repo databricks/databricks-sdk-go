@@ -7242,7 +7242,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 }
 
 // Latest kind: CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT = 340; Next
-// id: 341
+// id: 342
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

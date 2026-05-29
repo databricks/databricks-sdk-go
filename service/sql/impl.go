@@ -992,11 +992,12 @@ func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request Ca
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 

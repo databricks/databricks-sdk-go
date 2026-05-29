@@ -1136,6 +1136,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) Create(ctx context.Context) (*
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
