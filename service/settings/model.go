@@ -7,6 +7,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
 type AccountIpAccessEnable struct {
@@ -584,6 +585,8 @@ func (s CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
 type CreateOboTokenRequest struct {
 	// Application ID of the service principal.
 	ApplicationId string `json:"application_id"`
+	// Whether to enable autoscoping for this token.
+	AutoscopeEnabled bool `json:"autoscope_enabled,omitempty"`
 	// Comment that describes the purpose of the token.
 	Comment string `json:"comment,omitempty"`
 	// The number of seconds before the token expires.
@@ -670,6 +673,9 @@ type CreatePrivateEndpointRuleRequest struct {
 }
 
 type CreateTokenRequest struct {
+	// Whether to enable autoscoping for this token. When true, the token will
+	// automatically collect inferred API path scopes as it is used.
+	AutoscopeEnabled bool `json:"autoscope_enabled,omitempty"`
 	// Optional description to attach to the token.
 	Comment string `json:"comment,omitempty"`
 	// The lifetime of the token, in seconds.
@@ -4320,6 +4326,10 @@ func (s PersonalComputeSetting) MarshalJSON() ([]byte, error) {
 }
 
 type PublicTokenInfo struct {
+	// Output only. The autoscope state of this token.
+	AutoscopeState iam.AutoscopeState `json:"autoscope_state,omitempty"`
+	// Output only. Scopes inferred from offline backfill processing.
+	BackfillScopes []string `json:"backfill_scopes,omitempty"`
 	// Comment the token was created with, if applicable.
 	Comment string `json:"comment,omitempty"`
 	// Server time (in epoch milliseconds) when the token was created.
@@ -4327,6 +4337,11 @@ type PublicTokenInfo struct {
 	// Server time (in epoch milliseconds) when the token will expire, or -1 if
 	// not applicable.
 	ExpiryTime int64 `json:"expiry_time,omitempty"`
+	// Output only. Inferred API path scopes collected for this token when
+	// autoscope is enabled.
+	InferredScopes []string `json:"inferred_scopes,omitempty"`
+	// Scope of the token was created with, if applicable.
+	Scopes []string `json:"scopes,omitempty"`
 	// The ID of this token.
 	TokenId string `json:"token_id,omitempty"`
 
@@ -4557,6 +4572,10 @@ func (s TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
 }
 
 type TokenInfo struct {
+	// Output only. The autoscope state of this token.
+	AutoscopeState iam.AutoscopeState `json:"autoscope_state,omitempty"`
+	// Output only. Scopes inferred from offline backfill processing.
+	BackfillScopes []string `json:"backfill_scopes,omitempty"`
 	// Comment that describes the purpose of the token, specified by the token
 	// creator.
 	Comment string `json:"comment,omitempty"`
@@ -4568,11 +4587,16 @@ type TokenInfo struct {
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Timestamp when the token expires.
 	ExpiryTime int64 `json:"expiry_time,omitempty"`
+	// Output only. Inferred API path scopes collected for this token when
+	// autoscope is enabled.
+	InferredScopes []string `json:"inferred_scopes,omitempty"`
 	// Approximate timestamp for the day the token was last used. Accurate up to
 	// 1 day.
 	LastUsedDay int64 `json:"last_used_day,omitempty"`
 	// User ID of the user that owns the token.
 	OwnerId int64 `json:"owner_id,omitempty"`
+	// Scope of the token was created with, if applicable.
+	Scopes []string `json:"scopes,omitempty"`
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
 	// If applicable, the ID of the workspace that the token was created in.
@@ -5315,12 +5339,37 @@ type UpdateSqlResultsDownloadRequest struct {
 	Setting SqlResultsDownload `json:"setting"`
 }
 
+// For the list of supported token scopes, see
+// https://docs.databricks.com/api/workspace/api/scopes.
+type UpdateTokenManagementRequest struct {
+	Token TokenInfo `json:"token"`
+	// ID of the token.
+	TokenId string `json:"-" url:"-"`
+	// A list of field name under token, For example, {"update_mask":
+	// "comment,scopes"}
+	//
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask fieldmask.FieldMask `json:"update_mask"`
+}
+
+// For the list of supported token scopes, see
+// https://docs.databricks.com/api/workspace/api/scopes.
 type UpdateTokenRequest struct {
 	Token PublicTokenInfo `json:"token"`
 	// The SHA-256 hash of the token to be updated.
 	TokenId string `json:"-" url:"-"`
-	// A list of field name under PublicTokenInfo, For example in request use
-	// {"update_mask": "comment,scopes"}
+	// A list of field name under token, For example, {"update_mask":
+	// "comment,scopes"}
 	//
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,

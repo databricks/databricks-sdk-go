@@ -1844,6 +1844,10 @@ func (s JobCompliance) MarshalJSON() ([]byte, error) {
 }
 
 type JobDeployment struct {
+	// ID of the deployment that manages this job. Only set when `kind` is
+	// `BUNDLE`. Used to look up deployment metadata from the Deployment
+	// Metadata service.
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// The kind of deployment that manages the job.
 	//
 	// * `BUNDLE`: The job is managed by Databricks Asset Bundle. *
@@ -1851,6 +1855,10 @@ type JobDeployment struct {
 	Kind JobDeploymentKind `json:"kind"`
 	// Path of the file that contains deployment metadata.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
+	// ID of the version of the deployment that produced this job. Only set when
+	// `kind` is `BUNDLE`. Identifies a specific snapshot of the deployment in
+	// the Deployment Metadata service.
+	VersionId string `json:"version_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

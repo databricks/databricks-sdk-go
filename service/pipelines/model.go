@@ -2188,10 +2188,18 @@ func (f *PipelineClusterAutoscaleMode) Type() string {
 }
 
 type PipelineDeployment struct {
+	// ID of the deployment that manages this pipeline. Only set when `kind` is
+	// `BUNDLE`. Used to look up deployment metadata from the Deployment
+	// Metadata service.
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// The deployment method that manages the pipeline.
 	Kind DeploymentKind `json:"kind"`
 	// The path to the file containing metadata about the deployment.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
+	// ID of the version of the deployment that produced this pipeline. Only set
+	// when `kind` is `BUNDLE`. Identifies a specific snapshot of the deployment
+	// in the Deployment Metadata service.
+	VersionId string `json:"version_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

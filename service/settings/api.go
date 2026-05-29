@@ -1942,6 +1942,9 @@ type TokenManagementInterface interface {
 	// Updates the permissions on all tokens. Tokens can inherit permissions from
 	// their root object.
 	UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
+
+	// Updates a token, specified by its ID.
+	UpdateTokenManagement(ctx context.Context, request UpdateTokenManagementRequest) (*TokenInfo, error)
 }
 
 func NewTokenManagement(client *client.DatabricksClient) *TokenManagementAPI {
@@ -2077,7 +2080,7 @@ type TokensInterface interface {
 	// Updates the comment or scopes of a token.
 	//
 	// If a token with the specified ID is not valid, this call returns an error
-	// **RESOURCE_DOES_NOT_EXIST**.
+	// **NOT_FOUND**.
 	Update(ctx context.Context, request UpdateTokenRequest) (*UpdateTokenResponse, error)
 }
 

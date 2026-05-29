@@ -155,6 +155,61 @@ func (s Actor) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// State of inferred scope collection (autoscope) for an external PAT. Mirrored
+// in databricks.identity.AutoscopeState in
+// common/principal-context/api/proto/tokendetails.proto. Token store and token
+// management proto can depend on this. Principal context proto should NOT
+// depend on this proto definitions because too many services depend on the
+// principal context proto.
+type AutoscopeState string
+
+const AutoscopeStateAutoscopeStateApiNotCovered AutoscopeState = `AUTOSCOPE_STATE_API_NOT_COVERED`
+
+const AutoscopeStateAutoscopeStateBackfilled AutoscopeState = `AUTOSCOPE_STATE_BACKFILLED`
+
+const AutoscopeStateAutoscopeStateCompleted AutoscopeState = `AUTOSCOPE_STATE_COMPLETED`
+
+const AutoscopeStateAutoscopeStateDisabled AutoscopeState = `AUTOSCOPE_STATE_DISABLED`
+
+const AutoscopeStateAutoscopeStateRunning AutoscopeState = `AUTOSCOPE_STATE_RUNNING`
+
+const AutoscopeStateAutoscopeStateUserSelected AutoscopeState = `AUTOSCOPE_STATE_USER_SELECTED`
+
+// String representation for [fmt.Print]
+func (f *AutoscopeState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AutoscopeState) Set(v string) error {
+	switch v {
+	case `AUTOSCOPE_STATE_API_NOT_COVERED`, `AUTOSCOPE_STATE_BACKFILLED`, `AUTOSCOPE_STATE_COMPLETED`, `AUTOSCOPE_STATE_DISABLED`, `AUTOSCOPE_STATE_RUNNING`, `AUTOSCOPE_STATE_USER_SELECTED`:
+		*f = AutoscopeState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUTOSCOPE_STATE_API_NOT_COVERED", "AUTOSCOPE_STATE_BACKFILLED", "AUTOSCOPE_STATE_COMPLETED", "AUTOSCOPE_STATE_DISABLED", "AUTOSCOPE_STATE_RUNNING", "AUTOSCOPE_STATE_USER_SELECTED"`, v)
+	}
+}
+
+// Values returns all possible values for AutoscopeState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AutoscopeState) Values() []AutoscopeState {
+	return []AutoscopeState{
+		AutoscopeStateAutoscopeStateApiNotCovered,
+		AutoscopeStateAutoscopeStateBackfilled,
+		AutoscopeStateAutoscopeStateCompleted,
+		AutoscopeStateAutoscopeStateDisabled,
+		AutoscopeStateAutoscopeStateRunning,
+		AutoscopeStateAutoscopeStateUserSelected,
+	}
+}
+
+// Type always returns AutoscopeState to satisfy [pflag.Value] interface
+func (f *AutoscopeState) Type() string {
+	return "AutoscopeState"
+}
+
 type CheckPolicyRequest struct {
 	Actor Actor `json:"-" url:"actor"`
 
