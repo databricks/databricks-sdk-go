@@ -24,3 +24,4 @@
 * Add `AutoscopeEnabled` field for [settings.CreateTokenRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateTokenRequest).
 * Add `AutoscopeState`, `BackfillScopes`, `InferredScopes` and `Scopes` fields for [settings.PublicTokenInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#PublicTokenInfo).
 * Add `AutoscopeState`, `BackfillScopes`, `InferredScopes` and `Scopes` fields for [settings.TokenInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenInfo).
+* Add `ResourceType` field for [bundle.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Operation).

@@ -488,6 +488,10 @@ type Operation struct {
 	// encoded string key. This key links the operation to the corresponding
 	// deployment-level Resource.
 	ResourceKey string `json:"resource_key,omitempty"`
+	// The type of the deployment resource this operation applies to. Derived
+	// from the `resource_key` prefix (e.g. "jobs" → JOB); the caller does not
+	// set this field.
+	ResourceType DeploymentResourceType `json:"resource_type,omitempty"`
 	// Serialized local config state after the operation. Should be unset for
 	// delete operations.
 	State *json.RawMessage `json:"state,omitempty"`
