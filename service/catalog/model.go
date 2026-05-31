@@ -7241,9 +7241,9 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT = 340; Next
-// id: 342. Reserved numbers: 316, 317, 327, 330 (former ENDPOINT_LLM_*,
-// MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING).
+// Latest kind: MEMORY_STORE_STANDARD = 342; Next id: 343. Reserved numbers:
+// 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD,
+// MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD).
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
