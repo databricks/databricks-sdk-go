@@ -78,6 +78,9 @@ type Deployment struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The user who created the deployment (email or principal name).
 	CreatedBy string `json:"created_by,omitempty"`
+	// Bundle target deployment mode (development or production), derived from
+	// the most recent version's mode.
+	DeploymentMode DeploymentMode `json:"deployment_mode,omitempty"`
 	// When the deployment was destroyed (i.e. `bundle destroy` completed).
 	// Unset if the deployment has not been destroyed. Named destroy_time (not
 	// delete_time) because this tracks the `databricks bundle destroy` command,
@@ -108,6 +111,46 @@ func (s *Deployment) UnmarshalJSON(b []byte) error {
 
 func (s Deployment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Bundle target deployment mode. Mirrors the `mode` field on a bundle target in
+// `databricks.yml` (see
+// https://docs.databricks.com/dev-tools/bundles/deployment-modes).
+type DeploymentMode string
+
+const DeploymentModeDeploymentModeDevelopment DeploymentMode = `DEPLOYMENT_MODE_DEVELOPMENT`
+
+const DeploymentModeDeploymentModeProduction DeploymentMode = `DEPLOYMENT_MODE_PRODUCTION`
+
+// String representation for [fmt.Print]
+func (f *DeploymentMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DeploymentMode) Set(v string) error {
+	switch v {
+	case `DEPLOYMENT_MODE_DEVELOPMENT`, `DEPLOYMENT_MODE_PRODUCTION`:
+		*f = DeploymentMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEPLOYMENT_MODE_DEVELOPMENT", "DEPLOYMENT_MODE_PRODUCTION"`, v)
+	}
+}
+
+// Values returns all possible values for DeploymentMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DeploymentMode) Values() []DeploymentMode {
+	return []DeploymentMode{
+		DeploymentModeDeploymentModeDevelopment,
+		DeploymentModeDeploymentModeProduction,
+	}
+}
+
+// Type always returns DeploymentMode to satisfy [pflag.Value] interface
+func (f *DeploymentMode) Type() string {
+	return "DeploymentMode"
 }
 
 // Type of a deployment resource.
@@ -655,6 +698,9 @@ type Version struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The user who created the version (email or principal name).
 	CreatedBy string `json:"created_by,omitempty"`
+	// Bundle target deployment mode (development or production), captured at
+	// the time of this version.
+	DeploymentMode DeploymentMode `json:"deployment_mode,omitempty"`
 	// Display name for the deployment, captured at the time of this version.
 	DisplayName string `json:"display_name,omitempty"`
 	// Resource name of the version. Format:

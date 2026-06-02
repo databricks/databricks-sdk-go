@@ -1246,7 +1246,8 @@ func (s CustomerFacingIngressNetworkPolicyPublicRequestOrigin) MarshalJSON() ([]
 
 type CustomerFacingIngressNetworkPolicyRequestDestination struct {
 	AccountApi *CustomerFacingIngressNetworkPolicyAccountApiDestination `json:"account_api,omitempty"`
-
+	// Account DatabricksOne destination is not supported. DO NOT change the
+	// stage of this destination past PRIVATE_PREVIEW.
 	AccountDatabricksOne *CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination `json:"account_databricks_one,omitempty"`
 
 	AccountUi *CustomerFacingIngressNetworkPolicyAccountUiDestination `json:"account_ui,omitempty"`
