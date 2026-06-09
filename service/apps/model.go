@@ -1521,6 +1521,8 @@ func (f *ApplicationState) Type() string {
 type ApplicationStatus struct {
 	// Application status message
 	Message string `json:"message,omitempty"`
+	// The number of running instances of this application.
+	RunningInstances int `json:"running_instances,omitempty"`
 	// State of the application.
 	State ApplicationState `json:"state,omitempty"`
 

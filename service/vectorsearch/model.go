@@ -478,6 +478,24 @@ func (f *EndpointType) Type() string {
 	return "EndpointType"
 }
 
+// Facet aggregation rows returned by a query.
+type FacetResultData struct {
+	// Facet rows. Each row is `[facet_column_name, value_or_range, count]`.
+	FacetArray [][]string `json:"facet_array,omitempty"`
+	// Number of facet rows returned.
+	FacetRowCount int `json:"facet_row_count,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FacetResultData) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FacetResultData) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetEndpointRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"-"`
@@ -862,6 +880,12 @@ type QueryVectorIndexRequest struct {
 	Columns []string `json:"columns"`
 	// Column names used to retrieve data to send to the reranker.
 	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
+	// Facets to compute over the matched results. Each entry has one of these
+	// forms: `"<column>"` - top 10 distinct values by count `"<column> TOP
+	// <n>"` - top n distinct values, where n > 0 `"<column> BUCKETS
+	// [[from,to],...]"` - inclusive numeric ranges `TOP` and `BUCKETS` are
+	// case-insensitive. A column may appear at most once.
+	Facets []string `json:"facets,omitempty"`
 	// JSON string representing query filters.
 	//
 	// Example filters:
@@ -875,6 +899,9 @@ type QueryVectorIndexRequest struct {
 	IndexName string `json:"-" url:"-"`
 	// Number of results to return. Defaults to 10.
 	NumResults int `json:"num_results,omitempty"`
+	// Text columns to search for `query_text`. When empty, all text columns are
+	// searched.
+	QueryColumns []string `json:"query_columns,omitempty"`
 	// Query text. Required for Delta Sync Index using model endpoint.
 	QueryText string `json:"query_text,omitempty"`
 	// The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`.
@@ -893,6 +920,10 @@ type QueryVectorIndexRequest struct {
 	Reranker *RerankerConfig `json:"reranker,omitempty"`
 	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 	ScoreThreshold float64 `json:"score_threshold,omitempty"`
+	// Sort results by column values instead of the default relevance ordering.
+	// Each clause has the form `"<column> ASC"` or `"<column> DESC"`, for
+	// example `["rating DESC", "price ASC"]`.
+	SortColumns []string `json:"sort_columns,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -906,6 +937,8 @@ func (s QueryVectorIndexRequest) MarshalJSON() ([]byte, error) {
 }
 
 type QueryVectorIndexResponse struct {
+	// Facet aggregation rows returned by a query.
+	FacetResult *FacetResultData `json:"facet_result,omitempty"`
 	// Metadata about the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
 	// [Optional] Token that can be used in `QueryVectorIndexNextPage` API to
@@ -974,6 +1007,10 @@ type ResultManifest struct {
 	ColumnCount int `json:"column_count,omitempty"`
 	// Information about each column in the result set.
 	Columns []ColumnInfo `json:"columns,omitempty"`
+	// Number of columns in `facet_result`.
+	FacetColumnCount int `json:"facet_column_count,omitempty"`
+	// Information about each column in `facet_result`.
+	FacetColumns []ColumnInfo `json:"facet_columns,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
