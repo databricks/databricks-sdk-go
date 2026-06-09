@@ -2429,6 +2429,9 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 }
 
 type EgressNetworkPolicyNetworkAccessPolicy struct {
+	// List of Databricks workspace destinations that serverless workloads are
+	// allowed to access when in RESTRICTED_ACCESS mode.
+	AllowedDatabricksDestinations []EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination `json:"allowed_databricks_destinations,omitempty"`
 	// List of internet destinations that serverless workloads are allowed to
 	// access when in RESTRICTED_ACCESS mode.
 	AllowedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
@@ -2446,6 +2449,11 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 	// The restriction mode that controls how serverless workloads can access
 	// the internet.
 	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
+}
+
+type EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination struct {
+	// The workspace IDs to allow egress traffic to.
+	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
 }
 
 // Users can specify accessible internet destinations when outbound access is

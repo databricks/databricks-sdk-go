@@ -8,8 +8,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
-	"github.com/databricks/databricks-sdk-go/service/bundle"
+	"github.com/databricks/databricks-sdk-go/service/bundledeployments"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -57,6 +58,11 @@ type WorkspaceClient struct {
 	// LLM product.
 	AgentBricks agentbricks.AgentBricksInterface
 
+	// **AI Search Endpoint**: Represents the compute resources to host AI
+	// Search indexes. AIP-conformant replacement for the legacy
+	// VectorSearchEndpoints API; functionally equivalent.
+	AiSearch aisearch.AiSearchInterface
+
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
@@ -96,7 +102,7 @@ type WorkspaceClient struct {
 	ArtifactAllowlists catalog.ArtifactAllowlistsInterface
 
 	// Service for managing bundle deployment metadata.
-	Bundle bundle.BundleInterface
+	BundleDeployments bundledeployments.BundleDeploymentsInterface
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
 	// It’s used to organize your data assets. Users can see all catalogs on
@@ -1453,13 +1459,14 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		AgentBricks:                         agentbricks.NewAgentBricks(databricksClient),
+		AiSearch:                            aisearch.NewAiSearch(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
 		AlertsV2:                            sql.NewAlertsV2(databricksClient),
 		Apps:                                apps.NewApps(databricksClient),
 		AppsSettings:                        apps.NewAppsSettings(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
-		Bundle:                              bundle.NewBundle(databricksClient),
+		BundleDeployments:                   bundledeployments.NewBundleDeployments(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
 		CleanRoomAssetRevisions:             cleanrooms.NewCleanRoomAssetRevisions(databricksClient),
 		CleanRoomAssets:                     cleanrooms.NewCleanRoomAssets(databricksClient),

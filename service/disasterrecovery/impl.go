@@ -115,6 +115,9 @@ func (a *disasterRecoveryImpl) GetStableUrl(ctx context.Context, request GetStab
 }
 
 // List failover groups.
+//
+// List entries are abbreviated: `state` and `replication_point` are not
+// populated. Call GetFailoverGroup to retrieve the full resource.
 func (a *disasterRecoveryImpl) ListFailoverGroups(ctx context.Context, request ListFailoverGroupsRequest) listing.Iterator[FailoverGroup] {
 
 	getNextPage := func(ctx context.Context, req ListFailoverGroupsRequest) (*ListFailoverGroupsResponse, error) {
@@ -140,6 +143,9 @@ func (a *disasterRecoveryImpl) ListFailoverGroups(ctx context.Context, request L
 }
 
 // List failover groups.
+//
+// List entries are abbreviated: `state` and `replication_point` are not
+// populated. Call GetFailoverGroup to retrieve the full resource.
 func (a *disasterRecoveryImpl) ListFailoverGroupsAll(ctx context.Context, request ListFailoverGroupsRequest) ([]FailoverGroup, error) {
 	iterator := a.ListFailoverGroups(ctx, request)
 	return listing.ToSlice[FailoverGroup](ctx, iterator)

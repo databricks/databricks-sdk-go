@@ -33,6 +33,9 @@ type DisasterRecoveryService interface {
 	GetStableUrl(ctx context.Context, request GetStableUrlRequest) (*StableUrl, error)
 
 	// List failover groups.
+	//
+	// List entries are abbreviated: `state` and `replication_point` are not
+	// populated. Call GetFailoverGroup to retrieve the full resource.
 	ListFailoverGroups(ctx context.Context, request ListFailoverGroupsRequest) (*ListFailoverGroupsResponse, error)
 
 	// List stable URLs for an account.

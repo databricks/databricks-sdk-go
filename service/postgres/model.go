@@ -13,6 +13,8 @@ import (
 )
 
 type Branch struct {
+	// The part of the name, chosen by the user when the resource was created.
+	BranchId string `json:"branch_id,omitempty"`
 	// A timestamp indicating when the branch was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The full resource path of the branch. Format:
@@ -185,6 +187,8 @@ func (f *BranchStatusState) Type() string {
 }
 
 type Catalog struct {
+	// The part of the name, chosen by the user when the resource was created.
+	CatalogId string `json:"catalog_id,omitempty"`
 	// A timestamp indicating when the catalog was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The full resource path of the catalog.
@@ -431,6 +435,8 @@ type CreateSyncedTableRequest struct {
 type Database struct {
 	// A timestamp indicating when the database was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	DatabaseId string `json:"database_id,omitempty"`
 	// The resource name of the database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"name,omitempty"`
@@ -653,6 +659,8 @@ func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
 type Endpoint struct {
 	// A timestamp indicating when the compute endpoint was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// Output only. The full resource path of the endpoint. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Name string `json:"name,omitempty"`
@@ -1534,6 +1542,8 @@ type Project struct {
 	// Output only. The full resource path of the project. Format:
 	// projects/{project_id}
 	Name string `json:"name,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	ProjectId string `json:"project_id,omitempty"`
 	// A timestamp indicating when the project is scheduled for permanent
 	// deletion. Empty if the project is not deleted, otherwise set to a
 	// timestamp in the future.
@@ -1845,6 +1855,8 @@ type Role struct {
 	// The Branch where this Role exists. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"parent,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	RoleId string `json:"role_id,omitempty"`
 	// The spec contains the role configuration, including identity type,
 	// authentication method, and role attributes.
 	Spec *RoleRoleSpec `json:"spec,omitempty"`
@@ -2110,6 +2122,8 @@ type SyncedTable struct {
 	Spec *SyncedTableSyncedTableSpec `json:"spec,omitempty"`
 	// Synced Table data synchronization status.
 	Status *SyncedTableSyncedTableStatus `json:"status,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	SyncedTableId string `json:"synced_table_id,omitempty"`
 	// The Unity Catalog table ID for this synced table.
 	Uid string `json:"uid,omitempty"`
 
