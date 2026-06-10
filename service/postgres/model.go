@@ -2256,6 +2256,10 @@ func (f *SyncedTableState) Type() string {
 }
 
 type SyncedTableSyncedTableSpec struct {
+	// When true, enables accelerated sync mode for the initial data load. This
+	// significantly improves performance for large tables. Requires
+	// workspace-level enablement through Lakebase Accelerated Sync preview.
+	AcceleratedSync bool `json:"accelerated_sync,omitempty"`
 	// The full resource name the branch associated with the table.
 	//
 	// Format: "projects/{project_id}/branches/{branch_id}".

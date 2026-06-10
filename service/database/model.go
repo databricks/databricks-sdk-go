@@ -1140,6 +1140,10 @@ func (f *SyncedTableSchedulingPolicy) Type() string {
 
 // Specification of a synced database table.
 type SyncedTableSpec struct {
+	// When true, enables accelerated sync mode for the initial data load. This
+	// significantly improves performance for large tables. Requires
+	// workspace-level enablement.
+	AcceleratedSync bool `json:"accelerated_sync,omitempty"`
 	// If true, the synced table's logical database and schema resources in PG
 	// will be created if they do not already exist.
 	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
