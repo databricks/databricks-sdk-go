@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.143.0 (2026-06-10)
+
+### API Changes
+* Add `AcceleratedSync` field for [database.SyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/database#SyncedTableSpec).
+* Add `AcceleratedSync` field for [postgres.SyncedTableSyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpec).
+
+
 ## Release v0.142.0 (2026-06-09)
 
 ### API Changes
