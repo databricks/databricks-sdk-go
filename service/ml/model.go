@@ -334,7 +334,7 @@ func (s AuthConfig) MarshalJSON() ([]byte, error) {
 type AvgFunction struct {
 	// The input column from which the average is computed. For Kafka sources,
 	// use dot-prefixed path notation (e.g., "value.amount"). For nested fields,
-	// the leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
+	// the leaf node name is used. Colon-prefixed notation (e.g.,
 	// "value:amount") is supported for backwards compatibility but is
 	// deprecated; migrate to dot notation.
 	Input string `json:"input"`
@@ -502,9 +502,9 @@ func (s ContinuousWindow) MarshalJSON() ([]byte, error) {
 type CountFunction struct {
 	// The input column from which the count is computed. For Kafka sources, use
 	// dot-prefixed path notation (e.g., "value.amount"). For nested fields, the
-	// leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
-	// "value:amount") is supported for backwards compatibility but is
-	// deprecated; migrate to dot notation.
+	// leaf node name is used. Colon-prefixed notation (e.g., "value:amount") is
+	// supported for backwards compatibility but is deprecated; migrate to dot
+	// notation.
 	Input string `json:"input"`
 }
 
@@ -929,6 +929,8 @@ type DataSource struct {
 	KafkaSource *KafkaSource `json:"kafka_source,omitempty"`
 	// A request-time data source.
 	RequestSource *RequestSource `json:"request_source,omitempty"`
+	// A Stream data source.
+	StreamSource *StreamSource `json:"stream_source,omitempty"`
 }
 
 // Dataset. Represents a reference to data used for training, testing, or
@@ -1195,8 +1197,7 @@ func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
 }
 
 // Direct connection configs for mTLS, as Kafka Connections do not support mTLS
-// yet (XTA-18030). Temporarily used until UC Kafka Connections gain mTLS
-// support.
+// yet . Temporarily used until UC Kafka Connections gain mTLS support.
 type DirectMtlsConfig struct {
 	// A comma-separated list of host:port pairs for the Kafka bootstrap
 	// servers.
@@ -1224,9 +1225,8 @@ type EntityColumn struct {
 	// "value.user_id", "key.partition_key"). For nested fields, the leaf node
 	// name (e.g., "user_id" from "value.trip_details.user_id") is what will be
 	// present in materialized tables and expected to match at query time.
-	// TODO(FS-939): Colon-prefixed notation (e.g., "value:user_id") is
-	// supported for backwards compatibility but is deprecated; migrate to dot
-	// notation.
+	// Colon-prefixed notation (e.g., "value:user_id") is supported for
+	// backwards compatibility but is deprecated; migrate to dot notation.
 	Name string `json:"name"`
 }
 
@@ -2207,6 +2207,9 @@ type KafkaConfig struct {
 	// Catch-all for miscellaneous options. Keys should be source options or
 	// Kafka consumer options (kafka.*)
 	ExtraOptions map[string]string `json:"extra_options,omitempty"`
+	// Configuration for ingesting Kafka data into a Databricks-managed Delta
+	// table.
+	IngestionConfig *IngestionConfig `json:"ingestion_config,omitempty"`
 	// Schema configuration for extracting message keys from topics. At least
 	// one of key_schema and value_schema must be provided.
 	KeySchema *SchemaConfig `json:"key_schema,omitempty"`
@@ -2307,7 +2310,7 @@ func (s LineageContext) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)
+// Feature for model version.
 type LinkedFeature struct {
 	// Feature name
 	FeatureName string `json:"feature_name,omitempty"`
@@ -2670,6 +2673,13 @@ func (s ListStreamsRequest) MarshalJSON() ([]byte, error) {
 }
 
 // Response to a ListStreamsRequest.
+//
+// NOTE: Results are post-filtered by access permission on each stream's
+// ingestion table. This means: - Returned results may be fewer than page_size
+// (including zero) - Page token points to next unfiltered batch, not next
+// filtered batch, and may point to an item that will be filtered out Callers
+// should paginate until next_page_token is empty to retrieve all accessible
+// streams.
 type ListStreamsResponse struct {
 	// Pagination token to request the next page of results for this query.
 	NextPageToken string `json:"next_page_token,omitempty"`
@@ -3018,6 +3028,8 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 type MaterializedFeature struct {
 	// The quartz cron expression that defines the schedule of the
 	// materialization pipeline. The schedule is evaluated in the UTC timezone.
+	// Hidden from GraphQL: superseded by the `trigger` oneof
+	// (cron_schedule_trigger), so not exposed to Catalog Explorer.
 	CronSchedule string `json:"cron_schedule,omitempty"`
 	// A cron-based schedule trigger for the materialization pipeline.
 	CronScheduleTrigger *CronSchedule `json:"cron_schedule_trigger,omitempty"`
@@ -3035,7 +3047,8 @@ type MaterializedFeature struct {
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
 	// Destination for writing feature values to an online Lakebase table.
 	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
-	// The schedule state of the materialization pipeline.
+	// The schedule state of the materialization pipeline. Hidden from GraphQL:
+	// being deprecated, so not exposed to Catalog Explorer.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
 	// The Structured Streaming trigger mode used for materialization. Real-time
 	// mode (RTM) targets sub-second latency for operational workloads;
@@ -4868,8 +4881,8 @@ type StddevPopFunction struct {
 	// The input column from which the population standard deviation is
 	// computed. For Kafka sources, use dot-prefixed path notation (e.g.,
 	// "value.amount"). For nested fields, the leaf node name is used.
-	// TODO(FS-939): Colon-prefixed notation (e.g., "value:amount") is supported
-	// for backwards compatibility but is deprecated; migrate to dot notation.
+	// Colon-prefixed notation (e.g., "value:amount") is supported for backwards
+	// compatibility but is deprecated; migrate to dot notation.
 	Input string `json:"input"`
 }
 
@@ -4925,8 +4938,8 @@ func (s Stream) MarshalJSON() ([]byte, error) {
 // Specifies how to connect and authenticate to the stream platform.
 type StreamConnectionConfig struct {
 	// Direct mTLS configuration for stream platform access. This is only used
-	// in the short term until UC Kafka Connections support mTLS (XTA-18030).
-	// Once UC Kafka Connections support mTLS, this will be deprecated.
+	// in the short term until UC Kafka Connections support mTLS . Once UC Kafka
+	// Connections support mTLS, this will be deprecated.
 	DirectMtlsConfig *DirectMtlsConfig `json:"direct_mtls_config,omitempty"`
 	// Name of an existing UC Connection for stream platform access. Must be the
 	// correct type for the streaming platform (e.g. a Kafka Connection for a
@@ -4950,6 +4963,24 @@ func (s StreamConnectionConfig) MarshalJSON() ([]byte, error) {
 type StreamSchemaConfig struct {
 	// Schema definitions provided directly on the Stream.
 	DirectSchemas *DirectSchemas `json:"direct_schemas,omitempty"`
+}
+
+// A Stream entity used as a data source for a feature.
+type StreamSource struct {
+	// The filter condition applied to the source data before aggregation.
+	FilterCondition string `json:"filter_condition,omitempty"`
+	// Three-part full name of the Stream (catalog.schema.stream).
+	FullName string `json:"full_name"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *StreamSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StreamSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Source-specific configuration. Determines the streaming platform source.
@@ -5029,9 +5060,9 @@ func (s SubscriptionMode) MarshalJSON() ([]byte, error) {
 type SumFunction struct {
 	// The input column from which the sum is computed. For Kafka sources, use
 	// dot-prefixed path notation (e.g., "value.amount"). For nested fields, the
-	// leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
-	// "value:amount") is supported for backwards compatibility but is
-	// deprecated; migrate to dot notation.
+	// leaf node name is used. Colon-prefixed notation (e.g., "value:amount") is
+	// supported for backwards compatibility but is deprecated; migrate to dot
+	// notation.
 	Input string `json:"input"`
 }
 
@@ -5082,9 +5113,9 @@ type TimeseriesColumn struct {
 	// "value.event_timestamp"). For nested fields, the leaf node name (e.g.,
 	// "event_timestamp" from "value.event_details.event_timestamp") is what
 	// will be present in materialized tables and expected to match at query
-	// time. TODO(FS-939): Colon-prefixed notation (e.g.,
-	// "value:event_timestamp") is supported for backwards compatibility but is
-	// deprecated; migrate to dot notation.
+	// time. Colon-prefixed notation (e.g., "value:event_timestamp") is
+	// supported for backwards compatibility but is deprecated; migrate to dot
+	// notation.
 	Name string `json:"name"`
 }
 

@@ -8,6 +8,8 @@
 //
 // - [agentbricks.AgentBricksAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
+// - [aisearch.AiSearchAPI]: **AI Search Endpoint**: Represents the compute resources to host AI Search indexes.
+//
 // - [settings.AibiDashboardEmbeddingAccessPolicyAPI]: Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level.
 //
 // - [settings.AibiDashboardEmbeddingApprovedDomainsAPI]: Controls the list of domains approved to host the embedded AI/BI dashboards.
@@ -32,7 +34,7 @@
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
 //
-// - [bundle.BundleAPI]: Service for managing bundle deployment metadata.
+// - [bundledeployments.BundleDeploymentsAPI]: Service for managing bundle deployment metadata.
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
@@ -377,9 +379,10 @@ package service
 
 import (
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
-	"github.com/databricks/databricks-sdk-go/service/bundle"
+	"github.com/databricks/databricks-sdk-go/service/bundledeployments"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -422,6 +425,7 @@ var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *agentbricks.AgentBricksAPI                         = nil
+	_ *aisearch.AiSearchAPI                               = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
 	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
 	_ *sql.AlertsAPI                                      = nil
@@ -434,7 +438,7 @@ var (
 	_ *billing.BillableUsageAPI                           = nil
 	_ *billing.BudgetPolicyAPI                            = nil
 	_ *billing.BudgetsAPI                                 = nil
-	_ *bundle.BundleAPI                                   = nil
+	_ *bundledeployments.BundleDeploymentsAPI             = nil
 	_ *catalog.CatalogsAPI                                = nil
 	_ *cleanrooms.CleanRoomAssetRevisionsAPI              = nil
 	_ *cleanrooms.CleanRoomAssetsAPI                      = nil

@@ -1140,6 +1140,10 @@ func (f *SyncedTableSchedulingPolicy) Type() string {
 
 // Specification of a synced database table.
 type SyncedTableSpec struct {
+	// When true, enables accelerated sync mode for the initial data load. This
+	// significantly improves performance for large tables. Requires
+	// workspace-level enablement.
+	AcceleratedSync bool `json:"accelerated_sync,omitempty"`
 	// If true, the synced table's logical database and schema resources in PG
 	// will be created if they do not already exist.
 	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
@@ -1171,6 +1175,10 @@ type SyncedTableSpec struct {
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
 	TimeseriesKey string `json:"timeseries_key,omitempty"`
+	// Override the default Delta->PG type mapping for specific columns. A
+	// TypeOverride with PG_SPECIFIC_TYPE_UNSPECIFIED is rejected; a valid
+	// pg_type must be set.
+	TypeOverrides []SyncedTableSpecTypeOverride `json:"type_overrides,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1180,6 +1188,64 @@ func (s *SyncedTableSpec) UnmarshalJSON(b []byte) error {
 }
 
 func (s SyncedTableSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// PostgreSQL-specific target types that can override the default Delta-to-PG
+// mapping.
+type SyncedTableSpecPgSpecificType string
+
+const SyncedTableSpecPgSpecificTypePgSpecificTypeVector SyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VECTOR`
+
+// String representation for [fmt.Print]
+func (f *SyncedTableSpecPgSpecificType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SyncedTableSpecPgSpecificType) Set(v string) error {
+	switch v {
+	case `PG_SPECIFIC_TYPE_VECTOR`:
+		*f = SyncedTableSpecPgSpecificType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_VECTOR"`, v)
+	}
+}
+
+// Values returns all possible values for SyncedTableSpecPgSpecificType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SyncedTableSpecPgSpecificType) Values() []SyncedTableSpecPgSpecificType {
+	return []SyncedTableSpecPgSpecificType{
+		SyncedTableSpecPgSpecificTypePgSpecificTypeVector,
+	}
+}
+
+// Type always returns SyncedTableSpecPgSpecificType to satisfy [pflag.Value] interface
+func (f *SyncedTableSpecPgSpecificType) Type() string {
+	return "SyncedTableSpecPgSpecificType"
+}
+
+// Overrides the default Delta-to-PostgreSQL type mapping for a single column.
+type SyncedTableSpecTypeOverride struct {
+	// Name of the source column whose target PostgreSQL type should be
+	// overridden.
+	ColumnName string `json:"column_name"`
+	// PostgreSQL-specific target type to use for the column.
+	PgType SyncedTableSpecPgSpecificType `json:"pg_type"`
+	// Size parameter for the target type. Required when pg_type is
+	// PG_SPECIFIC_TYPE_VECTOR (specifies the vector dimension, e.g., 1024).
+	Size int `json:"size,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTableSpecTypeOverride) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTableSpecTypeOverride) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

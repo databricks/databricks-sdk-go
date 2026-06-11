@@ -1319,12 +1319,11 @@ func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
 }
 
@@ -1333,12 +1332,11 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
 }
 

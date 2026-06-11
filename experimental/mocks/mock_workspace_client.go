@@ -8,8 +8,9 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/bundle"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/bundledeployments"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
@@ -58,13 +59,14 @@ func NewMockWorkspaceClient(t interface {
 			AccessControl:                       iam.NewMockAccessControlInterface(t),
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			AgentBricks:                         agentbricks.NewMockAgentBricksInterface(t),
+			AiSearch:                            aisearch.NewMockAiSearchInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
 			AlertsV2:                            sql.NewMockAlertsV2Interface(t),
 			Apps:                                apps.NewMockAppsInterface(t),
 			AppsSettings:                        apps.NewMockAppsSettingsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
-			Bundle:                              bundle.NewMockBundleInterface(t),
+			BundleDeployments:                   bundledeployments.NewMockBundleDeploymentsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
 			CleanRoomAssetRevisions:             cleanrooms.NewMockCleanRoomAssetRevisionsInterface(t),
 			CleanRoomAssets:                     cleanrooms.NewMockCleanRoomAssetsInterface(t),
@@ -395,6 +397,14 @@ func (m *MockWorkspaceClient) GetMockAgentBricksAPI() *agentbricks.MockAgentBric
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockAiSearchAPI() *aisearch.MockAiSearchInterface {
+	api, ok := m.WorkspaceClient.AiSearch.(*aisearch.MockAiSearchInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AiSearch to be *aisearch.MockAiSearchInterface, actual was %T", m.WorkspaceClient.AiSearch))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockAlertsAPI() *sql.MockAlertsInterface {
 	api, ok := m.WorkspaceClient.Alerts.(*sql.MockAlertsInterface)
 	if !ok {
@@ -443,10 +453,10 @@ func (m *MockWorkspaceClient) GetMockArtifactAllowlistsAPI() *catalog.MockArtifa
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockBundleAPI() *bundle.MockBundleInterface {
-	api, ok := m.WorkspaceClient.Bundle.(*bundle.MockBundleInterface)
+func (m *MockWorkspaceClient) GetMockBundleDeploymentsAPI() *bundledeployments.MockBundleDeploymentsInterface {
+	api, ok := m.WorkspaceClient.BundleDeployments.(*bundledeployments.MockBundleDeploymentsInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected Bundle to be *bundle.MockBundleInterface, actual was %T", m.WorkspaceClient.Bundle))
+		panic(fmt.Sprintf("expected BundleDeployments to be *bundledeployments.MockBundleDeploymentsInterface, actual was %T", m.WorkspaceClient.BundleDeployments))
 	}
 	return api
 }

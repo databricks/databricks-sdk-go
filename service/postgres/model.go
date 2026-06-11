@@ -13,6 +13,8 @@ import (
 )
 
 type Branch struct {
+	// The part of the name, chosen by the user when the resource was created.
+	BranchId string `json:"branch_id,omitempty"`
 	// A timestamp indicating when the branch was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The full resource path of the branch. Format:
@@ -185,6 +187,8 @@ func (f *BranchStatusState) Type() string {
 }
 
 type Catalog struct {
+	// The part of the name, chosen by the user when the resource was created.
+	CatalogId string `json:"catalog_id,omitempty"`
 	// A timestamp indicating when the catalog was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The full resource path of the catalog.
@@ -431,6 +435,8 @@ type CreateSyncedTableRequest struct {
 type Database struct {
 	// A timestamp indicating when the database was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	DatabaseId string `json:"database_id,omitempty"`
 	// The resource name of the database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"name,omitempty"`
@@ -653,6 +659,8 @@ func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
 type Endpoint struct {
 	// A timestamp indicating when the compute endpoint was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// Output only. The full resource path of the endpoint. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Name string `json:"name,omitempty"`
@@ -1534,6 +1542,8 @@ type Project struct {
 	// Output only. The full resource path of the project. Format:
 	// projects/{project_id}
 	Name string `json:"name,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	ProjectId string `json:"project_id,omitempty"`
 	// A timestamp indicating when the project is scheduled for permanent
 	// deletion. Empty if the project is not deleted, otherwise set to a
 	// timestamp in the future.
@@ -1845,6 +1855,8 @@ type Role struct {
 	// The Branch where this Role exists. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"parent,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	RoleId string `json:"role_id,omitempty"`
 	// The spec contains the role configuration, including identity type,
 	// authentication method, and role attributes.
 	Spec *RoleRoleSpec `json:"spec,omitempty"`
@@ -2110,6 +2122,8 @@ type SyncedTable struct {
 	Spec *SyncedTableSyncedTableSpec `json:"spec,omitempty"`
 	// Synced Table data synchronization status.
 	Status *SyncedTableSyncedTableStatus `json:"status,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	SyncedTableId string `json:"synced_table_id,omitempty"`
 	// The Unity Catalog table ID for this synced table.
 	Uid string `json:"uid,omitempty"`
 
@@ -2242,6 +2256,10 @@ func (f *SyncedTableState) Type() string {
 }
 
 type SyncedTableSyncedTableSpec struct {
+	// When true, enables accelerated sync mode for the initial data load. This
+	// significantly improves performance for large tables. Requires
+	// workspace-level enablement through Lakebase Accelerated Sync preview.
+	AcceleratedSync bool `json:"accelerated_sync,omitempty"`
 	// The full resource name the branch associated with the table.
 	//
 	// Format: "projects/{project_id}/branches/{branch_id}".
@@ -2289,6 +2307,10 @@ type SyncedTableSyncedTableSpec struct {
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
 	TimeseriesKey string `json:"timeseries_key,omitempty"`
+	// Override the default Delta->PG type mapping for specific columns. A
+	// TypeOverride with PG_SPECIFIC_TYPE_UNSPECIFIED is rejected; a valid
+	// pg_type must be set.
+	TypeOverrides []SyncedTableSyncedTableSpecTypeOverride `json:"type_overrides,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2299,6 +2321,42 @@ func (s *SyncedTableSyncedTableSpec) UnmarshalJSON(b []byte) error {
 
 func (s SyncedTableSyncedTableSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// PostgreSQL-specific target types that can override the default Delta-to-PG
+// mapping.
+type SyncedTableSyncedTableSpecPgSpecificType string
+
+const SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVector SyncedTableSyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VECTOR`
+
+// String representation for [fmt.Print]
+func (f *SyncedTableSyncedTableSpecPgSpecificType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SyncedTableSyncedTableSpecPgSpecificType) Set(v string) error {
+	switch v {
+	case `PG_SPECIFIC_TYPE_VECTOR`:
+		*f = SyncedTableSyncedTableSpecPgSpecificType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_VECTOR"`, v)
+	}
+}
+
+// Values returns all possible values for SyncedTableSyncedTableSpecPgSpecificType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SyncedTableSyncedTableSpecPgSpecificType) Values() []SyncedTableSyncedTableSpecPgSpecificType {
+	return []SyncedTableSyncedTableSpecPgSpecificType{
+		SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVector,
+	}
+}
+
+// Type always returns SyncedTableSyncedTableSpecPgSpecificType to satisfy [pflag.Value] interface
+func (f *SyncedTableSyncedTableSpecPgSpecificType) Type() string {
+	return "SyncedTableSyncedTableSpecPgSpecificType"
 }
 
 // Scheduling policy of the synced table's underlying pipeline.
@@ -2340,6 +2398,28 @@ func (f *SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy) Values() []Synce
 // Type always returns SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy to satisfy [pflag.Value] interface
 func (f *SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy) Type() string {
 	return "SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy"
+}
+
+// Overrides the default Delta-to-PostgreSQL type mapping for a single column.
+type SyncedTableSyncedTableSpecTypeOverride struct {
+	// Name of the source column whose target PostgreSQL type should be
+	// overridden.
+	ColumnName string `json:"column_name"`
+	// PostgreSQL-specific target type to use for the column.
+	PgType SyncedTableSyncedTableSpecPgSpecificType `json:"pg_type"`
+	// Size parameter for the target type. Required when pg_type is
+	// PG_SPECIFIC_TYPE_VECTOR (specifies the vector dimension, e.g., 1024).
+	Size int `json:"size,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTableSyncedTableSpecTypeOverride) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTableSyncedTableSpecTypeOverride) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SyncedTableSyncedTableStatus struct {

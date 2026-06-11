@@ -551,6 +551,8 @@ type CatalogInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Custom maximum retention period in hours for the catalog
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
@@ -929,6 +931,9 @@ type ConnectionInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -965,7 +970,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 126
+// Next Id: 127
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1196,6 +1201,8 @@ type CreateCatalog struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Custom maximum retention period in hours for the catalog
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Control CMK encryption for managed catalog data
 	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
 	// Name of catalog.
@@ -1230,6 +1237,9 @@ type CreateConnection struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	ConnectionType ConnectionType `json:"connection_type"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1727,6 +1737,8 @@ type CreateSchema struct {
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Custom maximum retention period in hours for the schema.
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Name of schema, relative to parent catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -2843,6 +2855,22 @@ func (s *EntityTagAssignment) UnmarshalJSON(b []byte) error {
 }
 
 func (s EntityTagAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnvironmentSettings struct {
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -7116,6 +7144,8 @@ type SchemaInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Custom maximum retention period in hours for the schema.
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
@@ -7241,9 +7271,10 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: MEMORY_STORE_STANDARD = 342; Next id: 343. Reserved numbers:
-// 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD,
-// MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD).
+// Latest kind: CONNECTION_CONFLUENT_SCHEMA_REGISTRY_BASIC = 346; Next id: 347.
+// Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*,
+// MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
+// MCP_SERVICE_STANDARD).
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -8315,6 +8346,8 @@ func (s UpdateAccountsStorageCredential) MarshalJSON() ([]byte, error) {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Custom maximum retention period in hours for the catalog
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
@@ -8351,6 +8384,9 @@ type UpdateCatalogWorkspaceBindingsResponse struct {
 }
 
 type UpdateConnection struct {
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 	// New name for the connection.
@@ -8830,6 +8866,8 @@ func (s UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Custom maximum retention period in hours for the schema.
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`

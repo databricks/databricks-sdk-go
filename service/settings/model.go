@@ -2429,6 +2429,9 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 }
 
 type EgressNetworkPolicyNetworkAccessPolicy struct {
+	// List of Databricks workspace destinations that serverless workloads are
+	// allowed to access when in RESTRICTED_ACCESS mode.
+	AllowedDatabricksDestinations []EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination `json:"allowed_databricks_destinations,omitempty"`
 	// List of internet destinations that serverless workloads are allowed to
 	// access when in RESTRICTED_ACCESS mode.
 	AllowedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
@@ -2446,6 +2449,11 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 	// The restriction mode that controls how serverless workloads can access
 	// the internet.
 	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
+}
+
+type EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination struct {
+	// The workspace IDs to allow egress traffic to.
+	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
 }
 
 // Users can specify accessible internet destinations when outbound access is
@@ -4181,13 +4189,7 @@ func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The network policies applying for egress traffic. This message is used by the
-// UI/REST API. We translate this message to the format expected by the
-// dataplane in Lakehouse Network Manager (for the format expected by the
-// dataplane, see networkconfig.textproto). This policy should be consistent
-// with [[com.databricks.api.proto.settingspolicy.EgressNetworkPolicy]]. Details
-// see API-design:
-// https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/
+// The network policies applying for egress traffic.
 type NetworkPolicyEgress struct {
 	// The access policy enforced for egress traffic to the internet.
 	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy `json:"network_access,omitempty"`

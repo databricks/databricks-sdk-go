@@ -4949,11 +4949,6 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 // | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors
 // | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors |
 // +-------+--------------------------------------+--------------------------------+
-//
-// While including "spot" in the enum name may limit the the future
-// extensibility of this field because it limits this enum to denoting "spot or
-// not", this is the field that PM recommends after discussion with customers
-// per SC-48783.
 type SpotInstancePolicy string
 
 const SpotInstancePolicyCostOptimized SpotInstancePolicy = `COST_OPTIMIZED`
@@ -4994,7 +4989,6 @@ func (f *SpotInstancePolicy) Type() string {
 	return "SpotInstancePolicy"
 }
 
-// Starts a SQL warehouse. This API is idempotent.
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
@@ -5213,7 +5207,6 @@ func (f *Status) Type() string {
 	return "Status"
 }
 
-// Stops a SQL warehouse. This API is idempotent.
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
