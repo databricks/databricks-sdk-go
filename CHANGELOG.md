@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.144.0 (2026-06-11)
+
+### API Changes
+* Add `TypeOverrides` field for [database.SyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/database#SyncedTableSpec).
+* Add `TypeOverrides` field for [postgres.SyncedTableSyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpec).
+
+
 ## Release v0.143.0 (2026-06-10)
 
 ### API Changes
