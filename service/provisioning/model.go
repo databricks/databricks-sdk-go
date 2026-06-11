@@ -1248,9 +1248,7 @@ func (s UpdateWorkspaceRequest) MarshalJSON() ([]byte, error) {
 
 // *
 type VpcEndpoint struct {
-	// The Databricks account ID that hosts the VPC endpoint configuration. TODO
-	// - This may signal an OpenAPI diff; it does not show up in the generated
-	// spec
+	// The Databricks account ID that hosts the VPC endpoint configuration.
 	AccountId string `json:"account_id,omitempty"`
 	// The AWS Account in which the VPC endpoint object exists.
 	AwsAccountId string `json:"aws_account_id,omitempty"`
