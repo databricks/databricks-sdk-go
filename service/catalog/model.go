@@ -970,7 +970,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 126
+// Next Id: 127
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -7271,7 +7271,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_ADOBE_CAMPAIGNS_OAUTH_M2M = 345; Next id: 346.
+// Latest kind: CONNECTION_CONFLUENT_SCHEMA_REGISTRY_BASIC = 346; Next id: 347.
 // Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*,
 // MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
 // MCP_SERVICE_STANDARD).

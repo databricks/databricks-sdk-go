@@ -2036,7 +2036,6 @@ type RevertDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 	// The etag for the dashboard. Optionally, it can be provided to verify that
 	// the dashboard has not been modified from its last retrieval.
-	// TODO(TSE-3937): update to new non-CMK-encrypted label when available
 	Etag string `json:"etag,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
