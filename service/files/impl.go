@@ -98,9 +98,9 @@ func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*Fi
 // after approximately 60 seconds. We strongly recommend using list only on
 // directories containing less than 10K files and discourage using the DBFS REST
 // API for operations that list more than 10K files. Instead, we recommend that
-// you perform such operations in the context of a cluster, using the [File
-// system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
-// which provides the same functionality without timing out.
+// you perform such operations in the context of a cluster, using the File
+// system utility (dbutils.fs), which provides the same functionality without
+// timing out.
 func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) listing.Iterator[FileInfo] {
 
 	getNextPage := func(ctx context.Context, req ListDbfsRequest) (*ListStatusResponse, error) {
@@ -127,9 +127,9 @@ func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) listing.It
 // after approximately 60 seconds. We strongly recommend using list only on
 // directories containing less than 10K files and discourage using the DBFS REST
 // API for operations that list more than 10K files. Instead, we recommend that
-// you perform such operations in the context of a cluster, using the [File
-// system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
-// which provides the same functionality without timing out.
+// you perform such operations in the context of a cluster, using the File
+// system utility (dbutils.fs), which provides the same functionality without
+// timing out.
 func (a *dbfsImpl) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FileInfo](ctx, iterator)

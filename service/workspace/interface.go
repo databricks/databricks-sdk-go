@@ -110,40 +110,42 @@ type SecretsService interface {
 	// .. code::
 	//
 	// { "scope": "my-simple-databricks-scope", "initial_manage_principal":
-	// "users" "scope_backend_type": "databricks|azure_keyvault", # below is
-	// only required if scope type is azure_keyvault "backend_azure_keyvault": {
-	// "resource_id":
+	// "users" "scope_backend_type": "databricks|azure_keyvault",
+	//
+	// # below is only required if scope type is azure_keyvault
+	//
+	// "backend_azure_keyvault": { "resource_id":
 	// "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",
 	// "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name":
 	// "https://xxxx.vault.azure.net/", } }
 	//
-	// If ``initial_manage_principal`` is specified, the initial ACL applied to
+	// If `initial_manage_principal` is specified, the initial ACL applied to
 	// the scope is applied to the supplied principal (user or group) with
-	// ``MANAGE`` permissions. The only supported principal for this option is
-	// the group ``users``, which contains all users in the workspace. If
-	// ``initial_manage_principal`` is not specified, the initial ACL with
-	// ``MANAGE`` permission applied to the scope is assigned to the API request
+	// `MANAGE` permissions. The only supported principal for this option is the
+	// group `users`, which contains all users in the workspace. If
+	// `initial_manage_principal` is not specified, the initial ACL with
+	// `MANAGE` permission applied to the scope is assigned to the API request
 	// issuer's user identity.
 	//
-	// If ``scope_backend_type`` is ``azure_keyvault``, a secret scope is
-	// created with secrets from a given Azure KeyVault. The caller must provide
-	// the keyvault_resource_id and the tenant_id for the key vault. If
-	// ``scope_backend_type`` is ``databricks`` or is unspecified, an empty
-	// secret scope is created and stored in Databricks's own storage.
+	// If `scope_backend_type` is `azure_keyvault`, a secret scope is created
+	// with secrets from a given Azure KeyVault. The caller must provide the
+	// keyvault_resource_id and the tenant_id for the key vault. If
+	// `scope_backend_type` is `databricks` or is unspecified, an empty secret
+	// scope is created and stored in Databricks's own storage.
 	//
-	// Throws ``RESOURCE_ALREADY_EXISTS`` if a scope with the given name already
-	// exists. Throws ``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in
-	// the workspace is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the
-	// scope name is invalid. Throws ``BAD_REQUEST`` if request violated
-	// constraints. Throws ``CUSTOMER_UNAUTHORIZED`` if normal user attempts to
-	// create a scope with name reserved for databricks internal usage. Throws
-	// ``UNAUTHENTICATED`` if unable to verify user access permission on Azure
+	// Throws `RESOURCE_ALREADY_EXISTS` if a scope with the given name already
+	// exists. Throws `RESOURCE_LIMIT_EXCEEDED` if maximum number of scopes in
+	// the workspace is exceeded. Throws `INVALID_PARAMETER_VALUE` if the scope
+	// name is invalid. Throws `BAD_REQUEST` if request violated constraints.
+	// Throws `CUSTOMER_UNAUTHORIZED` if normal user attempts to create a scope
+	// with name reserved for databricks internal usage. Throws
+	// `UNAUTHENTICATED` if unable to verify user access permission on Azure
 	// KeyVault
 	CreateScope(ctx context.Context, request CreateScope) error
 
 	// Deletes the given ACL on the given scope.
 	//
-	// Users must have the ``MANAGE`` permission to invoke this API.
+	// Users must have the `MANAGE` permission to invoke this API.
 	//
 	// Example request:
 	//
@@ -151,10 +153,10 @@ type SecretsService interface {
 	//
 	// { "scope": "my-secret-scope", "principal": "data-scientists" }
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or
-	// ACL exists. Throws ``PERMISSION_DENIED`` if the user does not have
-	// permission to make this API call. Throws ``INVALID_PARAMETER_VALUE`` if
-	// the permission or principal is invalid.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope, principal, or
+	// ACL exists. Throws `PERMISSION_DENIED` if the user does not have
+	// permission to make this API call. Throws `INVALID_PARAMETER_VALUE` if the
+	// permission or principal is invalid.
 	DeleteAcl(ctx context.Context, request DeleteAcl) error
 
 	// Deletes a secret scope.
@@ -165,14 +167,14 @@ type SecretsService interface {
 	//
 	// { "scope": "my-secret-scope" }
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call. Throws ``BAD_REQUEST`` if system user attempts to delete
-	// internal secret scope.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call. Throws `BAD_REQUEST` if system user attempts to delete internal
+	// secret scope.
 	DeleteScope(ctx context.Context, request DeleteScope) error
 
-	// Deletes the secret stored in this secret scope. You must have ``WRITE``
-	// or ``MANAGE`` permission on the Secret Scope.
+	// Deletes the secret stored in this secret scope. You must have `WRITE` or
+	// `MANAGE` permission on the Secret Scope.
 	//
 	// Example request:
 	//
@@ -180,9 +182,9 @@ type SecretsService interface {
 	//
 	// { "scope": "my-secret-scope", "key": "my-secret-key" }
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret
-	// exists. Throws ``PERMISSION_DENIED`` if the user does not have permission
-	// to make this API call. Throws ``BAD_REQUEST`` if system user attempts to
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret
+	// exists. Throws `PERMISSION_DENIED` if the user does not have permission
+	// to make this API call. Throws `BAD_REQUEST` if system user attempts to
 	// delete an internal secret, or request is made against Azure KeyVault
 	// backed scope.
 	DeleteSecret(ctx context.Context, request DeleteSecret) error
@@ -190,7 +192,7 @@ type SecretsService interface {
 	// Describes the details about the given ACL, such as the group and
 	// permission.
 	//
-	// Users must have the ``MANAGE`` permission to invoke this API.
+	// Users must have the `MANAGE` permission to invoke this API.
 	//
 	// Example response:
 	//
@@ -198,10 +200,10 @@ type SecretsService interface {
 	//
 	// { "principal": "data-scientists", "permission": "READ" }
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call. Throws ``INVALID_PARAMETER_VALUE`` if the permission or
-	// principal is invalid.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call. Throws `INVALID_PARAMETER_VALUE` if the permission or principal is
+	// invalid.
 	GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error)
 
 	// Gets a secret for a given key and scope. This API can only be called from
@@ -217,26 +219,26 @@ type SecretsService interface {
 	// the bytes is determined by the caller in DBUtils and the type the data is
 	// decoded into.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope
-	// exists. Throws ``PERMISSION_DENIED`` if the user does not have permission
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret or secret scope
+	// exists. Throws `PERMISSION_DENIED` if the user does not have permission
 	// to make this API call.
 	//
 	// Note: This is explicitly an undocumented API. It also doesn't need to be
 	// supported for the /preview prefix, because it's not a customer-facing API
 	// (i.e. only used for DBUtils SecretUtils to fetch secrets).
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret
-	// exists. Throws ``BAD_REQUEST`` if normal user calls get secret outside of
-	// a notebook. AKV specific errors: Throws ``INVALID_PARAMETER_VALUE`` if
-	// secret name is not alphanumeric or too long. Throws ``PERMISSION_DENIED``
-	// if secret manager cannot access AKV with 403 error Throws
-	// ``MALFORMED_REQUEST`` if secret manager cannot access AKV with any other
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret
+	// exists. Throws `BAD_REQUEST` if normal user calls get secret outside of a
+	// notebook. AKV specific errors: Throws `INVALID_PARAMETER_VALUE` if secret
+	// name is not alphanumeric or too long. Throws `PERMISSION_DENIED` if
+	// secret manager cannot access AKV with 403 error Throws
+	// `MALFORMED_REQUEST` if secret manager cannot access AKV with any other
 	// 4xx error
 	GetSecret(ctx context.Context, request GetSecretRequest) (*GetSecretResponse, error)
 
 	// Lists the ACLs set on the given scope.
 	//
-	// Users must have the ``MANAGE`` permission to invoke this API.
+	// Users must have the `MANAGE` permission to invoke this API.
 	//
 	// Example response:
 	//
@@ -245,9 +247,9 @@ type SecretsService interface {
 	// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{
 	// "principal": "data-scientists", "permission": "READ" }] }
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call.
 	ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error)
 
 	// Lists all secret scopes available in the workspace.
@@ -260,7 +262,7 @@ type SecretsService interface {
 	// "DATABRICKS" },{ "name": "mount-points", "backend_type": "DATABRICKS" }]
 	// }
 	//
-	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
+	// Throws `PERMISSION_DENIED` if the user does not have permission to make
 	// this API call.
 	ListScopes(ctx context.Context) (*ListScopesResponse, error)
 
@@ -278,9 +280,9 @@ type SecretsService interface {
 	//
 	// The lastUpdatedTimestamp returned is in milliseconds since epoch.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call.
 	ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error)
 
 	// Creates or overwrites the ACL associated with the given principal (user
@@ -288,10 +290,11 @@ type SecretsService interface {
 	// use the most powerful permission available to them, and permissions are
 	// ordered as follows:
 	//
-	// * ``MANAGE`` - Allowed to change ACLs, and read and write to this secret
-	// scope. * ``WRITE`` - Allowed to read and write to this secret scope. *
-	// ``READ`` - Allowed to read this secret scope and list what secrets are
-	// available.
+	//   - `MANAGE` - Allowed to change ACLs, and read and write to this secret
+	//     scope.
+	//   - `WRITE` - Allowed to read and write to this secret scope.
+	//   - `READ` - Allowed to read this secret scope and list what secrets are
+	//     available.
 	//
 	// Note that in general, secret values can only be read from within a
 	// command on a cluster (for example, through a notebook). There is no API
@@ -299,7 +302,7 @@ type SecretsService interface {
 	// the user's permission will be applied based on who is executing the
 	// command, and they must have at least READ permission.
 	//
-	// Users must have the ``MANAGE`` permission to invoke this API.
+	// Users must have the `MANAGE` permission to invoke this API.
 	//
 	// Example request:
 	//
@@ -311,18 +314,18 @@ type SecretsService interface {
 	// The principal is a user or group name corresponding to an existing
 	// Databricks principal to be granted or revoked access.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``RESOURCE_ALREADY_EXISTS`` if a permission for the principal already
-	// exists. Throws ``INVALID_PARAMETER_VALUE`` if the permission or principal
-	// is invalid. Throws ``PERMISSION_DENIED`` if the user does not have
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `RESOURCE_ALREADY_EXISTS` if a permission for the principal already
+	// exists. Throws `INVALID_PARAMETER_VALUE` if the permission or principal
+	// is invalid. Throws `PERMISSION_DENIED` if the user does not have
 	// permission to make this API call.
 	PutAcl(ctx context.Context, request PutAcl) error
 
 	// Inserts a secret under the provided scope with the given name. If a
 	// secret already exists with the same name, this command overwrites the
 	// existing secret's value. The server encrypts the secret using the secret
-	// scope's encryption settings before storing it. You must have ``WRITE`` or
-	// ``MANAGE`` permission on the secret scope.
+	// scope's encryption settings before storing it. You must have `WRITE` or
+	// `MANAGE` permission on the secret scope.
 	//
 	// The secret key must consist of alphanumeric characters, dashes,
 	// underscores, and periods, and cannot exceed 128 characters. The maximum
@@ -340,13 +343,13 @@ type SecretsService interface {
 	// secret, which will determine the value returned when the secret value is
 	// requested. Exactly one must be specified.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``RESOURCE_LIMIT_EXCEEDED`` if maximum number of secrets in scope is
-	// exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the request parameters
-	// are invalid. Throws ``PERMISSION_DENIED`` if the user does not have
-	// permission to make this API call. Throws ``MALFORMED_REQUEST`` if request
-	// is incorrectly formatted or conflicting. Throws ``BAD_REQUEST`` if
-	// request is made against Azure KeyVault backed scope.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `RESOURCE_LIMIT_EXCEEDED` if maximum number of secrets in scope is
+	// exceeded. Throws `INVALID_PARAMETER_VALUE` if the request parameters are
+	// invalid. Throws `PERMISSION_DENIED` if the user does not have permission
+	// to make this API call. Throws `MALFORMED_REQUEST` if request is
+	// incorrectly formatted or conflicting. Throws `BAD_REQUEST` if request is
+	// made against Azure KeyVault backed scope.
 	PutSecret(ctx context.Context, request PutSecret) error
 }
 
@@ -361,10 +364,12 @@ type SecretsService interface {
 type WorkspaceService interface {
 
 	// Deletes an object or a directory (and optionally recursively deletes all
-	// objects in the directory). * If `path` does not exist, this call returns
-	// an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a non-empty directory
-	// and `recursive` is set to `false`, this call returns an error
-	// `DIRECTORY_NOT_EMPTY`.
+	// objects in the directory).
+	//
+	//   - If `path` does not exist, this call returns an error
+	//     `RESOURCE_DOES_NOT_EXIST`.
+	//   - If `path` is a non-empty directory and `recursive` is set to `false`,
+	//     this call returns an error `DIRECTORY_NOT_EMPTY`.
 	//
 	// Object deletion cannot be undone and deleting a directory recursively is
 	// not atomic.

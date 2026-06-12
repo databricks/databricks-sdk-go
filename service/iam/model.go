@@ -719,9 +719,11 @@ type GetWorkspaceAssignmentRequest struct {
 type GrantRule struct {
 	// Principals this grant rule applies to. A principal can be a user (for end
 	// users), a service principal (for applications and compute workloads), or
-	// an account group. Each principal has its own identifier format: *
-	// users/<USERNAME> * groups/<GROUP_NAME> *
-	// servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>
+	// an account group. Each principal has its own identifier format:
+	//
+	//   - users/<USERNAME>
+	//   - groups/<GROUP_NAME>
+	//   - servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>
 	Principals []string `json:"principals,omitempty"`
 	// Role that is assigned to the list of principals.
 	Role string `json:"role"`

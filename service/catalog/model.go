@@ -904,7 +904,7 @@ func (f *ColumnTypeName) Type() string {
 // A connection that is dependent on a SQL object.
 type ConnectionDependency struct {
 	// Full name of the dependent connection, in the form of
-	// __connection_name__.
+	// **connection_name**.
 	ConnectionName string `json:"connection_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1448,7 +1448,7 @@ func (f *CreateFunctionParameterStyle) Type() string {
 }
 
 type CreateFunctionRequest struct {
-	// Partial __FunctionInfo__ specifying the function to be created.
+	// Partial **FunctionInfo** specifying the function to be created.
 	FunctionInfo CreateFunction `json:"function_info"`
 }
 
@@ -1806,7 +1806,7 @@ type CreateTableConstraint struct {
 type CreateTableRequest struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
-	// The array of __ColumnInfo__ definitions of the table's columns.
+	// The array of **ColumnInfo** definitions of the table's columns.
 	Columns []ColumnInfo `json:"columns,omitempty"`
 
 	DataSourceFormat DataSourceFormat `json:"data_source_format"`
@@ -1855,7 +1855,7 @@ func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
 // A credential that is dependent on a SQL object.
 type CredentialDependency struct {
 	// Full name of the dependent credential, in the form of
-	// __credential_name__.
+	// **credential_name**.
 	CredentialName string `json:"credential_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2353,7 +2353,7 @@ type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
 	Force bool `json:"-" url:"force,omitempty"`
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name__) .
+	// **catalog_name**.**schema_name**.**function__name**) .
 	Name string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2507,7 +2507,7 @@ type DeleteVolumeRequest struct {
 
 // Properties pertaining to the current state of the delta table as given by the
 // commit server. This does not contain **delta.*** (input) properties in
-// __TableInfo.properties__.
+// **TableInfo.properties**.
 type DeltaRuntimePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	DeltaRuntimeProperties map[string]string `json:"delta_runtime_properties"`
@@ -2551,8 +2551,8 @@ func (f *DeltaSharingScopeEnum) Type() string {
 }
 
 // A dependency of a SQL object. One of the following fields must be defined:
-// __table__, __function__, __connection__, __credential__, __volume__, or
-// __secret__.
+// **table**, **function**, **connection**, **credential**, **volume**, or
+// **secret**.
 type Dependency struct {
 	Connection *ConnectionDependency `json:"connection,omitempty"`
 
@@ -2624,7 +2624,7 @@ type DisableRequest struct {
 
 type EffectivePermissionsList struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges conveyed to each principal (either directly or via
@@ -3283,7 +3283,7 @@ func (s FunctionArgument) MarshalJSON() ([]byte, error) {
 // A function that is dependent on a SQL object.
 type FunctionDependency struct {
 	// Full name of the dependent function, in the form of
-	// __catalog_name__.__schema_name__.__function_name__.
+	// **catalog_name**.**schema_name**.**function_name**.
 	FunctionFullName string `json:"function_full_name"`
 }
 
@@ -3857,12 +3857,16 @@ type GetArtifactAllowlistRequest struct {
 }
 
 type GetBindingsRequest struct {
-	// Maximum number of workspace bindings to return. - When set to 0, the page
-	// length is set to a server configured value (recommended); - When set to a
-	// value greater than 0, the page length is the minimum of this value and a
-	// server configured value; - When set to a value less than 0, an invalid
-	// parameter error is returned; - If not set, all the workspace bindings are
-	// returned (not recommended).
+	// Maximum number of workspace bindings to return.
+	//
+	//   - When set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - When set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - When set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all the workspace bindings are returned (not
+	//     recommended).
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -3944,13 +3948,15 @@ type GetEffectiveRequest struct {
 	// guaranteed to contain all the effective privileges granted on (or
 	// inherited by) the requested Securable for the respective principal.
 	//
-	// If not set, all the effective permissions are returned. If set to -
-	// lesser than 0: invalid parameter error - 0: page length is set to a
-	// server configured value - lesser than 150 but greater than 0: invalid
-	// parameter error (this is to ensure that server is able to return at least
-	// one complete EffectivePrivilegeAssignment in a single page response) -
-	// greater than (or equal to) 150: page length is the minimum of this value
-	// and a server configured value
+	// If not set, all the effective permissions are returned. If set to
+	//
+	//   - lesser than 0: invalid parameter error
+	//   - 0: page length is set to a server configured value
+	//   - lesser than 150 but greater than 0: invalid parameter error (this is
+	//     to ensure that server is able to return at least one complete
+	//     EffectivePrivilegeAssignment in a single page response)
+	//   - greater than (or equal to) 150: page length is the minimum of this
+	//     value and a server configured value
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque token for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4007,7 +4013,7 @@ type GetFunctionRequest struct {
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name__).
+	// **catalog_name**.**schema_name**.**function__name**).
 	Name string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4029,13 +4035,15 @@ type GetGrantRequest struct {
 	// contain all the privileges granted on the requested Securable for the
 	// respective principal.
 	//
-	// If not set, all the permissions are returned. If set to - lesser than 0:
-	// invalid parameter error - 0: page length is set to a server configured
-	// value - lesser than 150 but greater than 0: invalid parameter error (this
-	// is to ensure that server is able to return at least one complete
-	// PrivilegeAssignment in a single page response) - greater than (or equal
-	// to) 150: page length is the minimum of this value and a server configured
-	// value
+	// If not set, all the permissions are returned. If set to
+	//
+	//   - lesser than 0: invalid parameter error
+	//   - 0: page length is set to a server configured value
+	//   - lesser than 150 but greater than 0: invalid parameter error (this is
+	//     to ensure that server is able to return at least one complete
+	//     PrivilegeAssignment in a single page response)
+	//   - greater than (or equal to) 150: page length is the minimum of this
+	//     value and a server configured value
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4146,7 +4154,7 @@ type GetOnlineTableRequest struct {
 
 type GetPermissionsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges assigned to each principal
@@ -4295,7 +4303,7 @@ type GetWorkspaceBindingsResponse struct {
 	// List of workspace bindings
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4412,15 +4420,19 @@ type ListCatalogsRequest struct {
 	// Whether to include catalogs not bound to the workspace. Effective only if
 	// the user has permission to update the catalog–workspace binding.
 	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
-	// Maximum number of catalogs to return. - when set to 0, the page length is
-	// set to a server configured value (recommended); - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to a value less than 0, an invalid parameter
-	// error is returned; - If not set, all valid catalogs are returned (not
-	// recommended). - Note: The number of returned catalogs might be less than
-	// the specified max_results size, even zero. The only definitive indication
-	// that no further catalogs can be fetched is when the next_page_token is
-	// unset from the response.
+	// Maximum number of catalogs to return.
+	//
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all valid catalogs are returned (not recommended).
+	//   - Note: The number of returned catalogs might be less than the
+	//     specified max_results size, even zero. The only definitive indication
+	//     that no further catalogs can be fetched is when the next_page_token
+	//     is unset from the response.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4440,7 +4452,7 @@ type ListCatalogsResponse struct {
 	// An array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4456,12 +4468,15 @@ func (s ListCatalogsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListConnectionsRequest struct {
-	// Maximum number of connections to return. - If not set, all connections
-	// are returned (not recommended). - when set to a value greater than 0, the
-	// page length is the minimum of this value and a server configured value; -
-	// when set to 0, the page length is set to a server configured value
-	// (recommended); - when set to a value less than 0, an invalid parameter
-	// error is returned;
+	// Maximum number of connections to return.
+	//
+	//   - If not set, all connections are returned (not recommended).
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4481,7 +4496,7 @@ type ListConnectionsResponse struct {
 	// An array of connection information objects.
 	Connections []ConnectionInfo `json:"connections,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4500,11 +4515,15 @@ type ListCredentialsRequest struct {
 	// Whether to include credentials not bound to the workspace. Effective only
 	// if the user has permission to update the credential–workspace binding.
 	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
-	// Maximum number of credentials to return. - If not set, the default max
-	// page size is used. - When set to a value greater than 0, the page length
-	// is the minimum of this value and a server-configured value. - When set to
-	// 0, the page length is set to a server-configured value (recommended). -
-	// When set to a value less than 0, an invalid parameter error is returned.
+	// Maximum number of credentials to return.
+	//
+	//   - If not set, the default max page size is used.
+	//   - When set to a value greater than 0, the page length is the minimum of
+	//     this value and a server-configured value.
+	//   - When set to 0, the page length is set to a server-configured value
+	//     (recommended).
+	//   - When set to a value less than 0, an invalid parameter error is
+	//     returned.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque token to retrieve the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4525,7 +4544,7 @@ func (s ListCredentialsRequest) MarshalJSON() ([]byte, error) {
 type ListCredentialsResponse struct {
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4628,11 +4647,14 @@ type ListExternalLocationsRequest struct {
 	// location–workspace binding.
 	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
 	// Maximum number of external locations to return. If not set, all the
-	// external locations are returned (not recommended). - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to 0, the page length is set to a server
-	// configured value (recommended); - when set to a value less than 0, an
-	// invalid parameter error is returned;
+	// external locations are returned (not recommended).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4652,7 +4674,7 @@ type ListExternalLocationsResponse struct {
 	// An array of external locations.
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4708,11 +4730,14 @@ type ListFunctionsRequest struct {
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of functions to return. If not set, all the functions are
-	// returned (not recommended). - when set to a value greater than 0, the
-	// page length is the minimum of this value and a server configured value; -
-	// when set to 0, the page length is set to a server configured value
-	// (recommended); - when set to a value less than 0, an invalid parameter
-	// error is returned;
+	// returned (not recommended).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4734,7 +4759,7 @@ type ListFunctionsResponse struct {
 	// An array of function information objects.
 	Functions []FunctionInfo `json:"functions,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4750,15 +4775,19 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListMetastoresRequest struct {
-	// Maximum number of metastores to return. - when set to a value greater
-	// than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to 0, the page length is set to a server
-	// configured value (recommended); - when set to a value less than 0, an
-	// invalid parameter error is returned; - If not set, all the metastores are
-	// returned (not recommended). - Note: The number of returned metastores
-	// might be less than the specified max_results size, even zero. The only
-	// definitive indication that no further metastores can be fetched is when
-	// the next_page_token is unset from the response.
+	// Maximum number of metastores to return.
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all the metastores are returned (not recommended).
+	//   - Note: The number of returned metastores might be less than the
+	//     specified max_results size, even zero. The only definitive indication
+	//     that no further metastores can be fetched is when the next_page_token
+	//     is unset from the response.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4778,7 +4807,7 @@ type ListMetastoresResponse struct {
 	// An array of metastore information objects.
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4801,12 +4830,14 @@ type ListModelVersionsRequest struct {
 	// can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of model versions to return. If not set, the page length
-	// is set to a server configured value (100, as of 1/3/2024). - when set to
-	// a value greater than 0, the page length is the minimum of this value and
-	// a server configured value(1000, as of 1/3/2024); - when set to 0, the
-	// page length is set to a server configured value (100, as of 1/3/2024)
-	// (recommended); - when set to a value less than 0, an invalid parameter
-	// error is returned;
+	// is set to a server configured value (100, as of 1/3/2024).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value(1000, as of 1/3/2024);
+	//   - when set to 0, the page length is set to a server configured value
+	//     (100, as of 1/3/2024) (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4825,7 +4856,7 @@ func (s ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
 type ListModelVersionsResponse struct {
 	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -4845,9 +4876,12 @@ type ListPoliciesRequest struct {
 	// default, the inherited policies are not included.
 	IncludeInherited bool `json:"-" url:"include_inherited,omitempty"`
 	// Optional. Maximum number of policies to return on a single page (page
-	// length). - When not set or set to 0, the page length is set to a server
-	// configured value (recommended); - When set to a value greater than 0, the
-	// page length is the minimum of this value and a server configured value;
+	// length).
+	//
+	//   - When not set or set to 0, the page length is set to a server
+	//     configured value (recommended);
+	//   - When set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Required. The fully qualified name of securable to list policies for.
 	OnSecurableFullname string `json:"-" url:"-"`
@@ -4906,7 +4940,7 @@ func (s ListQuotasRequest) MarshalJSON() ([]byte, error) {
 
 type ListQuotasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of returned QuotaInfos.
@@ -4938,21 +4972,27 @@ type ListRegisteredModelsRequest struct {
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Max number of registered models to return.
 	//
-	// If both catalog and schema are specified: - when max_results is not
-	// specified, the page length is set to a server configured value (10000, as
-	// of 4/2/2024). - when set to a value greater than 0, the page length is
-	// the minimum of this value and a server configured value (10000, as of
-	// 4/2/2024); - when set to 0, the page length is set to a server configured
-	// value (10000, as of 4/2/2024); - when set to a value less than 0, an
-	// invalid parameter error is returned;
+	// If both catalog and schema are specified:
 	//
-	// If neither schema nor catalog is specified: - when max_results is not
-	// specified, the page length is set to a server configured value (100, as
-	// of 4/2/2024). - when set to a value greater than 0, the page length is
-	// the minimum of this value and a server configured value (1000, as of
-	// 4/2/2024); - when set to 0, the page length is set to a server configured
-	// value (100, as of 4/2/2024); - when set to a value less than 0, an
-	// invalid parameter error is returned;
+	//   - when max_results is not specified, the page length is set to a server
+	//     configured value (10000, as of 4/2/2024).
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value (10000, as of 4/2/2024);
+	//   - when set to 0, the page length is set to a server configured value
+	//     (10000, as of 4/2/2024);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//
+	// If neither schema nor catalog is specified:
+	//
+	//   - when max_results is not specified, the page length is set to a server
+	//     configured value (100, as of 4/2/2024).
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value (1000, as of 4/2/2024);
+	//   - when set to 0, the page length is set to a server configured value
+	//     (100, as of 4/2/2024);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque token to send for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4996,11 +5036,14 @@ type ListSchemasRequest struct {
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of schemas to return. If not set, all the schemas are
-	// returned (not recommended). - when set to a value greater than 0, the
-	// page length is the minimum of this value and a server configured value; -
-	// when set to 0, the page length is set to a server configured value
-	// (recommended); - when set to a value less than 0, an invalid parameter
-	// error is returned;
+	// returned (not recommended).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5018,7 +5061,7 @@ func (s ListSchemasRequest) MarshalJSON() ([]byte, error) {
 
 type ListSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of schema information objects.
@@ -5044,10 +5087,12 @@ type ListSecretsRequest struct {
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of secrets to return.
 	//
-	// - If not specified, at most 10000 secrets are returned. - If set to a
-	// value greater than 0, the page length is the minimum of this value and
-	// 10000. - If set to 0, the page length is set to 10000. - If set to a
-	// value less than 0, an invalid parameter error is returned.
+	//   - If not specified, at most 10000 secrets are returned.
+	//   - If set to a value greater than 0, the page length is the minimum of
+	//     this value and 10000.
+	//   - If set to 0, the page length is set to 10000.
+	//   - If set to a value less than 0, an invalid parameter error is
+	//     returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token to go to the next page based on previous query.
 	// The maximum page length is determined by a server configured value.
@@ -5092,11 +5137,14 @@ type ListStorageCredentialsRequest struct {
 	// if the user has permission to update the credential–workspace binding.
 	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
 	// Maximum number of storage credentials to return. If not set, all the
-	// storage credentials are returned (not recommended). - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to 0, the page length is set to a server
-	// configured value (recommended); - when set to a value less than 0, an
-	// invalid parameter error is returned;
+	// storage credentials are returned (not recommended).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5114,7 +5162,7 @@ func (s ListStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
 
 type ListStorageCredentialsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -5138,12 +5186,14 @@ type ListSummariesRequest struct {
 	// response.
 	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of summaries for tables to return. If not set, the page
-	// length is set to a server configured value (10000, as of 1/5/2024). -
-	// when set to a value greater than 0, the page length is the minimum of
-	// this value and a server configured value (10000, as of 1/5/2024); - when
-	// set to 0, the page length is set to a server configured value (10000, as
-	// of 1/5/2024) (recommended); - when set to a value less than 0, an invalid
-	// parameter error is returned;
+	// length is set to a server configured value (10000, as of 1/5/2024).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value (10000, as of 1/5/2024);
+	//   - when set to 0, the page length is set to a server configured value
+	//     (10000, as of 1/5/2024) (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5166,12 +5216,15 @@ func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListSystemSchemasRequest struct {
-	// Maximum number of schemas to return. - When set to 0, the page length is
-	// set to a server configured value (recommended); - When set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - When set to a value less than 0, an invalid parameter
-	// error is returned; - If not set, all the schemas are returned (not
-	// recommended).
+	// Maximum number of schemas to return.
+	//
+	//   - When set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - When set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - When set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all the schemas are returned (not recommended).
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// The ID for the metastore in which the system schema resides.
 	MetastoreId string `json:"-" url:"-"`
@@ -5191,7 +5244,7 @@ func (s ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
 
 type ListSystemSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of system schema information objects.
@@ -5210,7 +5263,7 @@ func (s ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
 
 type ListTableSummariesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of table summaries.
@@ -5237,11 +5290,14 @@ type ListTablesRequest struct {
 	// response.
 	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of tables to return. If not set, all the tables are
-	// returned (not recommended). - when set to a value greater than 0, the
-	// page length is the minimum of this value and a server configured value; -
-	// when set to 0, the page length is set to a server configured value
-	// (recommended); - when set to a value less than 0, an invalid parameter
-	// error is returned;
+	// returned (not recommended).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Whether to omit the columns of the table from the response or not.
 	OmitColumns bool `json:"-" url:"omit_columns,omitempty"`
@@ -5268,7 +5324,7 @@ func (s ListTablesRequest) MarshalJSON() ([]byte, error) {
 
 type ListTablesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of table information objects.
@@ -5294,11 +5350,14 @@ type ListVolumesRequest struct {
 	// Maximum number of volumes to return (page length).
 	//
 	// If not set, the page length is set to a server configured value (10000,
-	// as of 1/29/2024). - when set to a value greater than 0, the page length
-	// is the minimum of this value and a server configured value (10000, as of
-	// 1/29/2024); - when set to 0, the page length is set to a server
-	// configured value (10000, as of 1/29/2024) (recommended); - when set to a
-	// value less than 0, an invalid parameter error is returned;
+	// as of 1/29/2024).
+	//
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value (10000, as of 1/29/2024);
+	//   - when set to 0, the page length is set to a server configured value
+	//     (10000, as of 1/29/2024) (recommended);
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
 	//
 	// Note: this parameter controls only the maximum number of volumes to
 	// return. The actual number of volumes returned in a page may be smaller
@@ -5323,7 +5382,7 @@ func (s ListVolumesRequest) MarshalJSON() ([]byte, error) {
 
 type ListVolumesResponseContent struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request to retrieve the next page of results.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -5488,7 +5547,7 @@ type ModelVersionInfo struct {
 	ModelName string `json:"model_name,omitempty"`
 	// Model version dependencies, for feature-store packaged models
 	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
-	// MLflow run ID used when creating the model version, if ``source`` was
+	// MLflow run ID used when creating the model version, if `source` was
 	// generated by an experiment run stored in an MLflow tracking server
 	RunId string `json:"run_id,omitempty"`
 	// ID of the Databricks workspace containing the MLflow run that generated
@@ -5577,8 +5636,7 @@ type MonitorCronSchedule struct {
 	//
 	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	QuartzCronExpression string `json:"quartz_cron_expression"`
-	// The timezone id (e.g., ``PST``) in which to evaluate the quartz
-	// expression.
+	// The timezone id (e.g., `PST`) in which to evaluate the quartz expression.
 	TimezoneId string `json:"timezone_id"`
 }
 
@@ -5833,36 +5891,42 @@ type MonitorMetric struct {
 	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
 	Definition string `json:"definition"`
 	// A list of column names in the input table the metric should be computed
-	// for. Can use ``":table"`` to indicate that the metric needs information
+	// for. Can use `":table"` to indicate that the metric needs information
 	// from multiple columns.
 	InputColumns []string `json:"input_columns"`
 	// Name of the metric in the output tables.
 	Name string `json:"name"`
 	// The output type of the custom metric.
 	OutputDataType string `json:"output_data_type"`
-	// Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``,
-	// ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The
-	// ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"``
+	// Can only be one of `"CUSTOM_METRIC_TYPE_AGGREGATE"`,
+	// `"CUSTOM_METRIC_TYPE_DERIVED"`, or `"CUSTOM_METRIC_TYPE_DRIFT"`. The
+	// `"CUSTOM_METRIC_TYPE_AGGREGATE"` and `"CUSTOM_METRIC_TYPE_DERIVED"`
 	// metrics are computed on a single table, whereas the
-	// ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input
-	// table, or across the two consecutive time windows. -
-	// CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your
-	// table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed
-	// aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously
-	// computed aggregate or derived metrics
+	// `"CUSTOM_METRIC_TYPE_DRIFT"` compare metrics across baseline and input
+	// table, or across the two consecutive time windows.
+	//
+	//   - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in
+	//     your table
+	//   - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
+	//     metrics
+	//   - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or
+	//     derived metrics
 	Type MonitorMetricType `json:"type"`
 }
 
-// Can only be one of “\"CUSTOM_METRIC_TYPE_AGGREGATE\"“,
-// “\"CUSTOM_METRIC_TYPE_DERIVED\"“, or “\"CUSTOM_METRIC_TYPE_DRIFT\"“. The
-// “\"CUSTOM_METRIC_TYPE_AGGREGATE\"“ and “\"CUSTOM_METRIC_TYPE_DERIVED\"“
+// Can only be one of `\"CUSTOM_METRIC_TYPE_AGGREGATE\"`,
+// `\"CUSTOM_METRIC_TYPE_DERIVED\"`, or `\"CUSTOM_METRIC_TYPE_DRIFT\"`. The
+// `\"CUSTOM_METRIC_TYPE_AGGREGATE\"` and `\"CUSTOM_METRIC_TYPE_DERIVED\"`
 // metrics are computed on a single table, whereas the
-// “\"CUSTOM_METRIC_TYPE_DRIFT\"“ compare metrics across baseline and input
-// table, or across the two consecutive time windows. -
-// CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your
-// table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-// metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate
-// or derived metrics
+// `\"CUSTOM_METRIC_TYPE_DRIFT\"` compare metrics across baseline and input
+// table, or across the two consecutive time windows.
+//
+//   - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your
+//     table
+//   - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
+//     metrics
+//   - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or
+//     derived metrics
 type MonitorMetricType string
 
 const MonitorMetricTypeCustomMetricTypeAggregate MonitorMetricType = `CUSTOM_METRIC_TYPE_AGGREGATE`
@@ -6041,8 +6105,8 @@ type MonitorSnapshot struct {
 type MonitorTimeSeries struct {
 	// Granularities for aggregating data into time windows based on their
 	// timestamp. Currently the following static granularities are supported:
-	// {``\"5 minutes\"``, ``\"30 minutes\"``, ``\"1 hour\"``, ``\"1 day\"``,
-	// ``\"\u003cn\u003e week(s)\"``, ``\"1 month\"``, ``\"1 year\"``}.
+	// {`\"5 minutes\"`, `\"30 minutes\"`, `\"1 hour\"`, `\"1 day\"`,
+	// `\"\u003cn\u003e week(s)\"`, `\"1 month\"`, `\"1 year\"`}.
 	Granularities []string `json:"granularities"`
 	// Column for the timestamp.
 	TimestampCol string `json:"timestamp_col"`
@@ -7151,7 +7215,7 @@ type SchemaInfo struct {
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-	// Full name of schema, in form of __catalog_name__.__schema_name__.
+	// Full name of schema, in form of **catalog_name**.**schema_name**.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -7903,8 +7967,8 @@ func (f *SystemType) Type() string {
 }
 
 // A table constraint, as defined by *one* of the following fields being set:
-// __primary_key_constraint__, __foreign_key_constraint__,
-// __named_table_constraint__.
+// **primary_key_constraint**, **foreign_key_constraint**,
+// **named_table_constraint**.
 type TableConstraint struct {
 	ForeignKeyConstraint *ForeignKeyConstraint `json:"foreign_key_constraint,omitempty"`
 
@@ -7916,7 +7980,7 @@ type TableConstraint struct {
 // A table that is dependent on a SQL object.
 type TableDependency struct {
 	// Full name of the dependent table, in the form of
-	// __catalog_name__.__schema_name__.__table_name__.
+	// **catalog_name**.**schema_name**.**table_name**.
 	TableFullName string `json:"table_full_name"`
 }
 
@@ -7944,7 +8008,7 @@ type TableInfo struct {
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// The array of __ColumnInfo__ definitions of the table's columns.
+	// The array of **ColumnInfo** definitions of the table's columns.
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -7968,7 +8032,7 @@ type TableInfo struct {
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Full name of table, in form of
-	// __catalog_name__.__schema_name__.__table_name__
+	// **catalog_name**.**schema_name**.**table_name**
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -7995,7 +8059,7 @@ type TableInfo struct {
 	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
 	StorageLocation string `json:"storage_location,omitempty"`
 	// List of table constraints. Note: this field is not set in the output of
-	// the __listTables__ API.
+	// the **listTables** API.
 	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
 	// The unique identifier of the table.
 	TableId string `json:"table_id,omitempty"`
@@ -8005,15 +8069,18 @@ type TableInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// View definition SQL (when __table_type__ is **VIEW**,
+	// View definition SQL (when **table_type** is **VIEW**,
 	// **MATERIALIZED_VIEW**, or **STREAMING_TABLE**)
 	ViewDefinition string `json:"view_definition,omitempty"`
 	// View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**,
-	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
-	// provided; - when DependencyList is an empty list, the dependency is
-	// provided but is empty; - when DependencyList is not an empty list,
-	// dependencies are provided and recorded. Note: this field is not set in
-	// the output of the __listTables__ API.
+	// **STREAMING_TABLE**)
+	//
+	//   - when DependencyList is None, the dependency is not provided;
+	//   - when DependencyList is an empty list, the dependency is provided but
+	//     is empty;
+	//   - when DependencyList is not an empty list, dependencies are provided
+	//     and recorded. Note: this field is not set in the output of the
+	//     **listTables** API.
 	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -8565,7 +8632,7 @@ type UpdateExternalMetadataRequest struct {
 
 type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name__).
+	// **catalog_name**.**schema_name**.**function__name**).
 	Name string `json:"-" url:"-"`
 	// Username of current owner of the function.
 	Owner string `json:"owner,omitempty"`
@@ -8658,7 +8725,7 @@ type UpdateModelVersionRequest struct {
 	ModelName string `json:"model_name,omitempty"`
 	// Model version dependencies, for feature-store packaged models
 	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
-	// MLflow run ID used when creating the model version, if ``source`` was
+	// MLflow run ID used when creating the model version, if `source` was
 	// generated by an experiment run stored in an MLflow tracking server
 	RunId string `json:"run_id,omitempty"`
 	// ID of the Databricks workspace containing the MLflow run that generated
@@ -8770,12 +8837,15 @@ type UpdatePolicyRequest struct {
 	OnSecurableType string `json:"-" url:"-"`
 	// Optional fields to update. This is the request body for updating a
 	// policy. Use `update_mask` field to specify which fields in the request is
-	// to be updated. - If `update_mask` is empty or "*", all specified fields
-	// will be updated. - If `update_mask` is specified, only the fields
-	// specified in the `update_mask` will be updated. If a field is specified
-	// in `update_mask` and not set in the request, the field will be cleared.
-	// Users can use the update mask to explicitly unset optional fields such as
-	// `exception_principals` and `when_condition`.
+	// to be updated.
+	//
+	//   - If `update_mask` is empty or "*", all specified fields will be
+	//     updated.
+	//   - If `update_mask` is specified, only the fields specified in the
+	//     `update_mask` will be updated. If a field is specified in
+	//     `update_mask` and not set in the request, the field will be cleared.
+	//     Users can use the update mask to explicitly unset optional fields
+	//     such as `exception_principals` and `when_condition`.
 	PolicyInfo PolicyInfo `json:"policy_info"`
 	// Optional. The update mask field for specifying user intentions on which
 	// fields to update in the request.

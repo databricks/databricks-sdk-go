@@ -82,13 +82,17 @@ type CancelRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -116,13 +120,17 @@ type CreateRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -146,7 +154,7 @@ type CronSchedule struct {
 	// A Java timezone id. The schedule for a job will be resolved with respect
 	// to this timezone. See `Java TimeZone
 	// <http://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`_ for
-	// details. The timezone id (e.g., ``America/Los_Angeles``) in which to
+	// details. The timezone id (e.g., `America/Los_Angeles`) in which to
 	// evaluate the quartz expression.
 	TimezoneId string `json:"timezone_id"`
 }
@@ -269,7 +277,7 @@ type DataProfilingCustomMetric struct {
 	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
 	Definition string `json:"definition"`
 	// A list of column names in the input table the metric should be computed
-	// for. Can use ``":table"`` to indicate that the metric needs information
+	// for. Can use `":table"` to indicate that the metric needs information
 	// from multiple columns.
 	InputColumns []string `json:"input_columns"`
 	// Name of the metric in the output tables.
@@ -372,13 +380,17 @@ type DeleteMonitorRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -393,13 +405,17 @@ type DeleteRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -416,13 +432,17 @@ type GetMonitorRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -437,13 +457,17 @@ type GetRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -558,13 +582,17 @@ type ListRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -617,13 +645,17 @@ type Monitor struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -658,13 +690,17 @@ type Refresh struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -806,13 +842,17 @@ type UpdateMonitorRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
@@ -831,13 +871,17 @@ type UpdateRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
 	//
-	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
-	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
-	// `Details` tab > the `Schema ID` field.
+	// Find the `schema_id` from either:
 	//
-	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
-	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
-	// `Details` tab > the `Table ID` field.
+	//  1. The [schema_id] of the `Schemas` resource.
+	//  2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+	//     > the `Schema ID` field.
+	//
+	// Find the `table_id` from either:
+	//
+	//  1. The [table_id] of the `Tables` resource.
+	//  2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+	//     > the `Table ID` field.
 	//
 	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id

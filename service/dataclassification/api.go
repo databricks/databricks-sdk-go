@@ -17,7 +17,9 @@ type DataClassificationInterface interface {
 	// Create Data Classification configuration for a catalog.
 	//
 	// Creates a new config resource, which enables Data Classification for the
-	// specified catalog. - The config must not already exist for the catalog.
+	// specified catalog.
+	//
+	//   - The config must not already exist for the catalog.
 	CreateCatalogConfig(ctx context.Context, request CreateCatalogConfigRequest) (*CatalogConfig, error)
 
 	// Delete Data Classification configuration for a catalog.
@@ -26,9 +28,11 @@ type DataClassificationInterface interface {
 	// Get the Data Classification configuration for a catalog.
 	GetCatalogConfig(ctx context.Context, request GetCatalogConfigRequest) (*CatalogConfig, error)
 
-	// Update the Data Classification configuration for a catalog. - The config must
-	// already exist for the catalog. - Updates fields specified in the update_mask.
-	// Use update_mask field to perform partial updates of the configuration.
+	// Update the Data Classification configuration for a catalog.
+	//
+	//   - The config must already exist for the catalog.
+	//   - Updates fields specified in the update_mask. Use update_mask field to
+	//     perform partial updates of the configuration.
 	UpdateCatalogConfig(ctx context.Context, request UpdateCatalogConfigRequest) (*CatalogConfig, error)
 }
 

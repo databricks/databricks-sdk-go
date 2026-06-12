@@ -686,8 +686,7 @@ func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitSc
 
 // Get a list of all global init scripts for this workspace. This returns all
 // properties for each script but **not** the script contents. To retrieve the
-// contents of a script, use the [get a global init
-// script](:method:globalinitscripts/get) operation.
+// contents of a script, use the get a global init script operation.
 func (a *globalInitScriptsImpl) List(ctx context.Context) listing.Iterator[GlobalInitScriptDetails] {
 	request := struct{}{}
 
@@ -709,8 +708,7 @@ func (a *globalInitScriptsImpl) List(ctx context.Context) listing.Iterator[Globa
 
 // Get a list of all global init scripts for this workspace. This returns all
 // properties for each script but **not** the script contents. To retrieve the
-// contents of a script, use the [get a global init
-// script](:method:globalinitscripts/get) operation.
+// contents of a script, use the get a global init script operation.
 func (a *globalInitScriptsImpl) ListAll(ctx context.Context) ([]GlobalInitScriptDetails, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[GlobalInitScriptDetails](ctx, iterator)
@@ -1044,11 +1042,13 @@ func (a *librariesImpl) internalAllClusterStatuses(ctx context.Context) (*ListAl
 
 // Get the status of libraries on a cluster. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI. The
-// order of returned libraries is as follows: 1. Libraries set to be installed
-// on this cluster, in the order that the libraries were added to the cluster,
-// are returned first. 2. Libraries that were previously requested to be
-// installed on this cluster or, but are now marked for removal, in no
-// particular order, are returned last.
+// order of returned libraries is as follows:
+//
+//  1. Libraries set to be installed on this cluster, in the order that the
+//     libraries were added to the cluster, are returned first.
+//  2. Libraries that were previously requested to be installed on this cluster
+//     or, but are now marked for removal, in no particular order, are returned
+//     last.
 func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) listing.Iterator[LibraryFullStatus] {
 
 	getNextPage := func(ctx context.Context, req ClusterStatus) (*ClusterLibraryStatuses, error) {
@@ -1069,11 +1069,13 @@ func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus
 
 // Get the status of libraries on a cluster. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI. The
-// order of returned libraries is as follows: 1. Libraries set to be installed
-// on this cluster, in the order that the libraries were added to the cluster,
-// are returned first. 2. Libraries that were previously requested to be
-// installed on this cluster or, but are now marked for removal, in no
-// particular order, are returned last.
+// order of returned libraries is as follows:
+//
+//  1. Libraries set to be installed on this cluster, in the order that the
+//     libraries were added to the cluster, are returned first.
+//  2. Libraries that were previously requested to be installed on this cluster
+//     or, but are now marked for removal, in no particular order, are returned
+//     last.
 func (a *librariesImpl) ClusterStatusAll(ctx context.Context, request ClusterStatus) ([]LibraryFullStatus, error) {
 	iterator := a.ClusterStatus(ctx, request)
 	return listing.ToSlice[LibraryFullStatus](ctx, iterator)

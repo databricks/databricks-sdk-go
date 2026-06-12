@@ -60,9 +60,12 @@ func (f *AutoTaggingConfigAutoTaggingMode) Type() string {
 
 // Data Classification configuration for a Unity Catalog catalog. This message
 // follows the "At Most One Resource" pattern: at most one CatalogConfig exists
-// per catalog. - Full CRUD operations are supported: Create enables Data
-// Classification, Delete disables it - It has no unique identifier of its own
-// and uses its parent catalog's identifier (catalog_name)
+// per catalog.
+//
+//   - Full CRUD operations are supported: Create enables Data Classification,
+//     Delete disables it
+//   - It has no unique identifier of its own and uses its parent catalog's
+//     identifier (catalog_name)
 type CatalogConfig struct {
 	// List of auto-tagging configurations for this catalog. Empty list means no
 	// auto-tagging is enabled.

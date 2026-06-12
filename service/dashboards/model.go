@@ -378,11 +378,10 @@ type GenieCreateSpaceRequest struct {
 	Description string `json:"description,omitempty"`
 	// Parent folder path where the space will be registered
 	ParentPath string `json:"parent_path,omitempty"`
-	// The contents of the Genie Space in serialized string form. Use the [Get
-	// Genie Space](:method:genie/getspace) API to retrieve an example response,
-	// which includes the `serialized_space` field. This field provides the
-	// structure of the JSON string that represents the space's layout and
-	// components.
+	// The contents of the Genie Space in serialized string form. Use the Get
+	// Genie Space API to retrieve an example response, which includes the
+	// `serialized_space` field. This field provides the structure of the JSON
+	// string that represents the space's layout and components.
 	SerializedSpace string `json:"serialized_space"`
 	// Optional title override
 	Title string `json:"title,omitempty"`
@@ -552,53 +551,67 @@ type GenieEvalResultDetails struct {
 	//
 	// Assessment reasons describe why a Genie response was scored as BAD.
 	//
-	// Deterministic values (compared against the ground truth result): -
-	// EMPTY_RESULT: Genie's generated SQL results were empty for this benchmark
-	// question. - RESULT_MISSING_ROWS: Genie's generated SQL response is
-	// missing rows from the provided ground truth SQL. - RESULT_EXTRA_ROWS:
-	// Genie's generated SQL response has more rows than the provided ground
-	// truth SQL. - RESULT_MISSING_COLUMNS: Genie's generated SQL response is
-	// missing columns from the provided ground truth SQL. -
-	// RESULT_EXTRA_COLUMNS: Genie's generated SQL response has more columns
-	// than the provided ground truth SQL. - SINGLE_CELL_DIFFERENCE: Single
-	// value result was produced but differs from ground truth result. -
-	// EMPTY_GOOD_SQL: The benchmark SQL returned an empty result. -
-	// COLUMN_TYPE_DIFFERENCE: The values between the results match but the
-	// column type is different.
+	// Deterministic values (compared against the ground truth result):
 	//
-	// LLM judge ratings explain the factors driving BAD results: -
-	// LLM_JUDGE_MISSING_OR_INCORRECT_FILTER: Genie's generated SQL is missing a
-	// WHERE clause condition or has incorrect filter logic that
-	// excludes/includes wrong data. - LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT:
-	// Genie's generated SQL returns only some of the requested data or columns,
-	// missing parts of what the ground truth SQL returns. -
-	// LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST: Genie's generated SQL
-	// fundamentally misunderstands what the user is asking for, addressing the
-	// wrong question or goal. -
-	// LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC: Genie's
-	// generated SQL fails to apply specified instructions or business logic
-	// that should be followed. - LLM_JUDGE_INCORRECT_METRIC_CALCULATION:
-	// Genie's generated SQL uses incorrect logic or makes wrong assumptions
-	// when calculating metrics. - LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE:
-	// Genie's generated SQL references wrong tables, columns, or uses fields
-	// that don't match the ground truth SQL's intent. -
-	// LLM_JUDGE_INCORRECT_FUNCTION_USAGE: Genie's generated SQL uses SQL
-	// functions incorrectly or inappropriately (wrong parameters, wrong
-	// function for the task, etc.). - LLM_JUDGE_MISSING_OR_INCORRECT_JOIN:
-	// Genie's generated SQL is missing necessary joins between tables or has
-	// incorrect join conditions/types that produce wrong results. -
-	// LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION: Genie's generated SQL is
-	// missing GROUP BY clauses or has incorrect grouping that doesn't match the
-	// requested aggregation level. - LLM_JUDGE_FORMATTING_ERROR: Genie's
-	// generated SQL output has incorrect formatting, ordering (ORDER BY), or
-	// presentation issues that don't match expectations. - LLM_JUDGE_OTHER: LLM
-	// judge identified an error that doesn't fall into other categories.
+	//   - EMPTY_RESULT: Genie's generated SQL results were empty for this
+	//     benchmark question.
+	//   - RESULT_MISSING_ROWS: Genie's generated SQL response is missing rows
+	//     from the provided ground truth SQL.
+	//   - RESULT_EXTRA_ROWS: Genie's generated SQL response has more rows than
+	//     the provided ground truth SQL.
+	//   - RESULT_MISSING_COLUMNS: Genie's generated SQL response is missing
+	//     columns from the provided ground truth SQL.
+	//   - RESULT_EXTRA_COLUMNS: Genie's generated SQL response has more columns
+	//     than the provided ground truth SQL.
+	//   - SINGLE_CELL_DIFFERENCE: Single value result was produced but differs
+	//     from ground truth result.
+	//   - EMPTY_GOOD_SQL: The benchmark SQL returned an empty result.
+	//   - COLUMN_TYPE_DIFFERENCE: The values between the results match but the
+	//     column type is different.
+	//
+	// LLM judge ratings explain the factors driving BAD results:
+	//
+	//   - LLM_JUDGE_MISSING_OR_INCORRECT_FILTER: Genie's generated SQL is
+	//     missing a WHERE clause condition or has incorrect filter logic that
+	//     excludes/includes wrong data.
+	//   - LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT: Genie's generated SQL returns
+	//     only some of the requested data or columns, missing parts of what the
+	//     ground truth SQL returns.
+	//   - LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST: Genie's generated SQL
+	//     fundamentally misunderstands what the user is asking for, addressing
+	//     the wrong question or goal.
+	//   - LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC: Genie's
+	//     generated SQL fails to apply specified instructions or business logic
+	//     that should be followed.
+	//   - LLM_JUDGE_INCORRECT_METRIC_CALCULATION: Genie's generated SQL uses
+	//     incorrect logic or makes wrong assumptions when calculating metrics.
+	//   - LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE: Genie's generated SQL
+	//     references wrong tables, columns, or uses fields that don't match the
+	//     ground truth SQL's intent.
+	//   - LLM_JUDGE_INCORRECT_FUNCTION_USAGE: Genie's generated SQL uses SQL
+	//     functions incorrectly or inappropriately (wrong parameters, wrong
+	//     function for the task, etc.).
+	//   - LLM_JUDGE_MISSING_OR_INCORRECT_JOIN: Genie's generated SQL is missing
+	//     necessary joins between tables or has incorrect join conditions/types
+	//     that produce wrong results.
+	//   - LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION: Genie's generated SQL is
+	//     missing GROUP BY clauses or has incorrect grouping that doesn't match
+	//     the requested aggregation level.
+	//   - LLM_JUDGE_FORMATTING_ERROR: Genie's generated SQL output has
+	//     incorrect formatting, ordering (ORDER BY), or presentation issues
+	//     that don't match expectations.
+	//   - LLM_JUDGE_OTHER: LLM judge identified an error that doesn't fall into
+	//     other categories.
 	//
 	// Deprecated LLM judge values (kept for backward compatibility, do not
-	// use): - LLM_JUDGE_MISSING_JOIN (deprecated) - LLM_JUDGE_WRONG_FILTER
-	// (deprecated) - LLM_JUDGE_WRONG_AGGREGATION (deprecated) -
-	// LLM_JUDGE_WRONG_COLUMNS (deprecated) - LLM_JUDGE_SYNTAX_ERROR
-	// (deprecated) - LLM_JUDGE_SEMANTIC_ERROR (deprecated)
+	// use):
+	//
+	//   - LLM_JUDGE_MISSING_JOIN (deprecated)
+	//   - LLM_JUDGE_WRONG_FILTER (deprecated)
+	//   - LLM_JUDGE_WRONG_AGGREGATION (deprecated)
+	//   - LLM_JUDGE_WRONG_COLUMNS (deprecated)
+	//   - LLM_JUDGE_SYNTAX_ERROR (deprecated)
+	//   - LLM_JUDGE_SEMANTIC_ERROR (deprecated)
 	AssessmentReasons []ScoreReason `json:"assessment_reasons,omitempty"`
 	// The ID of the benchmark question that was evaluated.
 	BenchmarkQuestionId string `json:"benchmark_question_id"`
@@ -781,8 +794,7 @@ type GenieGetDownloadFullQueryResultRequest struct {
 	AttachmentId string `json:"-" url:"-"`
 	// Conversation ID
 	ConversationId string `json:"-" url:"-"`
-	// Download ID. This ID is provided by the [Generate Download
-	// endpoint](:method:genie/generateDownloadFullQueryResult)
+	// Download ID. This ID is provided by the Generate Download endpoint
 	DownloadId string `json:"-" url:"-"`
 	// JWT signature for the download_id to ensure secure access to query
 	// results
@@ -794,8 +806,8 @@ type GenieGetDownloadFullQueryResultRequest struct {
 }
 
 type GenieGetDownloadFullQueryResultResponse struct {
-	// SQL Statement Execution response. See [Get status, manifest, and result
-	// first chunk](:method:statementexecution/getstatement) for more details.
+	// SQL Statement Execution response. See Get status, manifest, and result
+	// first chunk for more details.
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
@@ -837,8 +849,8 @@ type GenieGetMessageQueryResultRequest struct {
 }
 
 type GenieGetMessageQueryResultResponse struct {
-	// SQL Statement Execution response. See [Get status, manifest, and result
-	// first chunk](:method:statementexecution/getstatement) for more details.
+	// SQL Statement Execution response. See Get status, manifest, and result
+	// first chunk for more details.
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
@@ -1218,9 +1230,8 @@ type GenieQueryAttachment struct {
 	Query string `json:"query,omitempty"`
 	// Metadata associated with the query result.
 	QueryResultMetadata *GenieResultMetadata `json:"query_result_metadata,omitempty"`
-	// Statement Execution API statement id. Use [Get status, manifest, and
-	// result first chunk](:method:statementexecution/getstatement) to get the
-	// full result data.
+	// Statement Execution API statement id. Use Get status, manifest, and
+	// result first chunk to get the full result data.
 	StatementId string `json:"statement_id,omitempty"`
 	// Insights into how Genie came to generate the SQL.
 	Thoughts []Thought `json:"thoughts,omitempty"`
@@ -1287,10 +1298,10 @@ type GenieSpace struct {
 	// Parent folder path of the Genie Space
 	ParentPath string `json:"parent_path,omitempty"`
 	// The contents of the Genie Space in serialized string form. This field is
-	// excluded in List Genie spaces responses. Use the [Get Genie
-	// Space](:method:genie/getspace) API to retrieve an example response, which
-	// includes the `serialized_space` field. This field provides the structure
-	// of the JSON string that represents the space's layout and components.
+	// excluded in List Genie spaces responses. Use the Get Genie Space API to
+	// retrieve an example response, which includes the `serialized_space`
+	// field. This field provides the structure of the JSON string that
+	// represents the space's layout and components.
 	SerializedSpace string `json:"serialized_space,omitempty"`
 	// Genie space ID
 	SpaceId string `json:"space_id"`
@@ -1349,10 +1360,10 @@ type GenieUpdateSpaceRequest struct {
 	// Parent workspace folder path to move this Genie space under.
 	ParentPath string `json:"parent_path,omitempty"`
 	// The contents of the Genie Space in serialized string form (full
-	// replacement). Use the [Get Genie Space](:method:genie/getspace) API to
-	// retrieve an example response, which includes the `serialized_space`
-	// field. This field provides the structure of the JSON string that
-	// represents the space's layout and components.
+	// replacement). Use the Get Genie Space API to retrieve an example
+	// response, which includes the `serialized_space` field. This field
+	// provides the structure of the JSON string that represents the space's
+	// layout and components.
 	SerializedSpace string `json:"serialized_space,omitempty"`
 	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
@@ -1827,22 +1838,26 @@ func (f *MessageErrorType) Type() string {
 	return "MessageErrorType"
 }
 
-// MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
-// metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context
-// step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to
-// respond to the user's question. * `PENDING_WAREHOUSE`: Waiting for warehouse
-// before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
-// generated SQL query. Get the SQL query result by calling
-// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
-// API. * `FAILED`: The response generation or query execution failed. See
-// `error` field. * `COMPLETED`: Message processing is completed. Results are in
-// the `attachments` field. Get the SQL query result by calling
-// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
-// API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL
-// result is not available anymore. The user needs to rerun the query. Rerun the
-// SQL query result by calling
-// [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
-// API. * `CANCELLED`: Message has been cancelled.
+// MessageStatus. The possible values are:
+//
+//   - `FETCHING_METADATA`: Fetching metadata from the data sources.
+//   - `FILTERING_CONTEXT`: Running smart context step to determine relevant
+//     context.
+//   - `ASKING_AI`: Waiting for the LLM to respond to the user's question.
+//   - `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start
+//     executing.
+//   - `EXECUTING_QUERY`: Executing a generated SQL query. Get the SQL query
+//     result by calling getMessageAttachmentQueryResult API.
+//   - `FAILED`: The response generation or query execution failed. See `error`
+//     field.
+//   - `COMPLETED`: Message processing is completed. Results are in the
+//     `attachments` field. Get the SQL query result by calling
+//     getMessageAttachmentQueryResult API.
+//   - `SUBMITTED`: Message has been submitted.
+//   - `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user
+//     needs to rerun the query. Rerun the SQL query result by calling
+//     executeMessageAttachmentQuery API.
+//   - `CANCELLED`: Message has been cancelled.
 type MessageStatus string
 
 // Waiting for the LLM to respond to the user's question.
@@ -1852,14 +1867,11 @@ const MessageStatusAskingAi MessageStatus = `ASKING_AI`
 const MessageStatusCancelled MessageStatus = `CANCELLED`
 
 // Message processing is completed. Results are in the `attachments` field. Get
-// the SQL query result by calling
-// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
-// API.
+// the SQL query result by calling getMessageAttachmentQueryResult API.
 const MessageStatusCompleted MessageStatus = `COMPLETED`
 
 // Executing a generated SQL query. Get the SQL query result by calling
-// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
-// API.
+// getMessageAttachmentQueryResult API.
 const MessageStatusExecutingQuery MessageStatus = `EXECUTING_QUERY`
 
 // The response generation or query execution failed. See `error` field.
@@ -1875,9 +1887,7 @@ const MessageStatusFilteringContext MessageStatus = `FILTERING_CONTEXT`
 const MessageStatusPendingWarehouse MessageStatus = `PENDING_WAREHOUSE`
 
 // SQL result is not available anymore. The user needs to rerun the query. Rerun
-// the SQL query result by calling
-// [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
-// API.
+// the SQL query result by calling executeMessageAttachmentQuery API.
 const MessageStatusQueryResultExpired MessageStatus = `QUERY_RESULT_EXPIRED`
 
 // Message has been submitted.
@@ -2012,9 +2022,8 @@ type Result struct {
 	IsTruncated bool `json:"is_truncated,omitempty"`
 	// Row count of the result
 	RowCount int64 `json:"row_count,omitempty"`
-	// Statement Execution API statement id. Use [Get status, manifest, and
-	// result first chunk](:method:statementexecution/getstatement) to get the
-	// full result data.
+	// Statement Execution API statement id. Use Get status, manifest, and
+	// result first chunk to get the full result data.
 	StatementId string `json:"statement_id,omitempty"`
 	// JWT corresponding to the statement contained in this result
 	StatementIdSignature string `json:"statement_id_signature,omitempty"`
@@ -2347,13 +2356,17 @@ func (f *TextAttachmentPurpose) Type() string {
 type Thought struct {
 	// The md formatted content for this thought.
 	Content string `json:"content,omitempty"`
-	// The category of this thought. The possible values are: *
-	// `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question
-	// was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of
-	// the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables
-	// or datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`:
-	// Which author-defined instructions were referenced. *
-	// `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer.
+	// The category of this thought. The possible values are:
+	//
+	//   - `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the
+	//     question was interpreted.
+	//   - `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question
+	//     were resolved.
+	//   - `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were
+	//     identified as relevant.
+	//   - `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined instructions were
+	//     referenced.
+	//   - `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer.
 	ThoughtType ThoughtType `json:"thought_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2367,15 +2380,19 @@ func (s Thought) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// ThoughtType. The possible values are: * `THOUGHT_TYPE_UNSPECIFIED`: Default
-// value that should not be used. * `THOUGHT_TYPE_DESCRIPTION`: A high-level
-// description of how the question was interpreted. *
-// `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were
-// resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were
-// identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined
-// instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken
-// to compute the answer. The category of a Thought. Additional values may be
-// added in the future.
+// ThoughtType. The possible values are:
+//
+//   - `THOUGHT_TYPE_UNSPECIFIED`: Default value that should not be used.
+//   - `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question
+//     was interpreted.
+//   - `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were
+//     resolved.
+//   - `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were identified as
+//     relevant.
+//   - `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined instructions were
+//     referenced.
+//   - `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer. The
+//     category of a Thought. Additional values may be added in the future.
 type ThoughtType string
 
 // Which tables or datasets were identified as relevant.

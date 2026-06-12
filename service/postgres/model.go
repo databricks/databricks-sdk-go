@@ -425,9 +425,10 @@ type CreateSyncedTableRequest struct {
 	//
 	// synced_table_id represents both of the following:
 	//
-	// 1. An online VIEW virtual table in the Unity Catalog accessible via the
-	// Lakehouse Federation. 2. Postgres table named "{table}" in schema
-	// "{schema}" in the connected Postgres database
+	//  1. An online VIEW virtual table in the Unity Catalog accessible via the
+	//     Lakehouse Federation.
+	//  2. Postgres table named "{table}" in schema "{schema}" in the connected
+	//     Postgres database
 	SyncedTableId string `json:"-" url:"synced_table_id"`
 }
 
@@ -2029,21 +2030,24 @@ type RoleRoleSpec struct {
 	// Controls how the Postgres role authenticates when a client opens a
 	// database connection. Supported values:
 	//
-	// * LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks
-	// OAuth access token derived from the backing managed identity (the
-	// Databricks user, service principal, or group named by the role's
-	// `postgres_role`). No static password exists for roles using this method.
-	// * PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres
-	// password verified server-side using the SCRAM-SHA-256 mechanism. Lakebase
-	// generates a password for the role. * NO_LOGIN: the role cannot open a
-	// Postgres session at all. Useful for roles that exist only to own objects
-	// or to aggregate privileges that are then granted to other, loginable
-	// roles.
+	//   - LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks
+	//     OAuth access token derived from the backing managed identity (the
+	//     Databricks user, service principal, or group named by the role's
+	//     `postgres_role`). No static password exists for roles using this
+	//     method.
+	//   - PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres
+	//     password verified server-side using the SCRAM-SHA-256 mechanism.
+	//     Lakebase generates a password for the role.
+	//   - NO_LOGIN: the role cannot open a Postgres session at all. Useful for
+	//     roles that exist only to own objects or to aggregate privileges that
+	//     are then granted to other, loginable roles.
 	//
 	// If auth_method is left unspecified, a meaningful authentication method is
-	// derived from the identity_type: * For the managed identities, OAUTH is
-	// used. * For the regular postgres roles, authentication based on postgres
-	// passwords is used.
+	// derived from the identity_type:
+	//
+	//   - For the managed identities, OAUTH is used.
+	//   - For the regular postgres roles, authentication based on postgres
+	//     passwords is used.
 	//
 	// NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the
 	// default auth method (group can login as well).
@@ -2051,8 +2055,9 @@ type RoleRoleSpec struct {
 	// The type of role. When specifying a managed-identity, the chosen role_id
 	// must be a valid:
 	//
-	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
-	// for GROUP
+	//   - application ID for SERVICE_PRINCIPAL
+	//   - user email for USER
+	//   - group name for GROUP
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
 	// An enum value for a standard role that this role is a member of.
 	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
@@ -2066,8 +2071,9 @@ type RoleRoleSpec struct {
 	// If you wish to create a Postgres Role backed by a managed Databricks
 	// identity, then postgres_role must be one of the following:
 	//
-	// 1. user email for IdentityType.USER 2. app ID for
-	// IdentityType.SERVICE_PRINCIPAL 2. group name for IdentityType.GROUP
+	//  1. user email for IdentityType.USER
+	//  2. app ID for IdentityType.SERVICE_PRINCIPAL
+	//  3. group name for IdentityType.GROUP
 	PostgresRole string `json:"postgres_role,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2300,9 +2306,9 @@ type SyncedTableSyncedTableSpec struct {
 	//
 	// For the corresponding destination table, use any of the two:
 	//
-	// * synced_table_id used at the creation of the SyncedTable * "name"
-	// consisting of "synced_tables/" prefix and the full name of the
-	// destination table.
+	//   - synced_table_id used at the creation of the SyncedTable
+	//   - "name" consisting of "synced_tables/" prefix and the full name of the
+	//     destination table.
 	SourceTableFullName string `json:"source_table_full_name,omitempty"`
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.

@@ -515,8 +515,9 @@ func (s DeletePipelineRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The deployment method that manages the pipeline: - BUNDLE: The pipeline is
-// managed by a Databricks Asset Bundle.
+// The deployment method that manages the pipeline:
+//
+//   - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
 type DeploymentKind string
 
 const DeploymentKindBundle DeploymentKind = `BUNDLE`
@@ -1314,10 +1315,13 @@ type IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue struct {
 	// Key for the report parameter, can be a column name or other metadata
 	Key string `json:"key,omitempty"`
 	// Value for the report parameter. Possible values it can take are these sql
-	// functions: 1. coalesce(current_offset(), date("YYYY-MM-DD")) -> if
-	// current_offset() is null, then the passed date, else current_offset() 2.
-	// current_date() 3. date_sub(current_date(), x) -> subtract x (some
-	// non-negative integer) days from current date
+	// functions:
+	//
+	//  1. coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset()
+	//     is null, then the passed date, else current_offset()
+	//  2. current_date()
+	//  3. date_sub(current_date(), x) -> subtract x (some non-negative integer)
+	//     days from current date
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1488,9 +1492,12 @@ func (s KafkaOptions) MarshalJSON() ([]byte, error) {
 
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
-	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
-	// level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp > 'TIMESTAMP'
-	// (or >=,<,<=,=)
+	// syntax. The supported filters are:
+	//
+	//  1. level='INFO' (or WARN or ERROR)
+	//  2. level in ('INFO', 'WARN')
+	//  3. id='[event-id]'
+	//  4. timestamp > 'TIMESTAMP' (or >=,<,<=,=)
 	//
 	// Composite expressions are supported, for example: level in ('ERROR',
 	// 'WARN') AND timestamp> '2021-07-22T06:37:33.083Z'
@@ -1545,10 +1552,11 @@ type ListPipelinesRequest struct {
 	// Select a subset of results based on the specified criteria. The supported
 	// filters are:
 	//
-	// * `notebook='<path>'` to select pipelines that reference the provided
-	// notebook path. * `name LIKE '[pattern]'` to select pipelines with a name
-	// that matches pattern. Wildcards are supported, for example: `name LIKE
-	// '%shopping%'`
+	//   - `notebook='<path>'` to select pipelines that reference the provided
+	//     notebook path.
+	//   - `name LIKE '[pattern]'` to select pipelines with a name that matches
+	//     pattern. Wildcards are supported, for example: `name LIKE
+	//     '%shopping%'`
 	//
 	// Composite filters are not supported. This field is optional.
 	Filter string `json:"-" url:"filter,omitempty"`
@@ -1738,10 +1746,11 @@ type Notifications struct {
 	// A list of alerts that trigger the sending of notifications to the
 	// configured destinations. The supported alerts are:
 	//
-	// * `on-update-success`: A pipeline update completes successfully. *
-	// `on-update-failure`: Each time a pipeline update fails. *
-	// `on-update-fatal-failure`: A pipeline update fails with a non-retryable
-	// (fatal) error. * `on-flow-failure`: A single data flow fails.
+	//   - `on-update-success`: A pipeline update completes successfully.
+	//   - `on-update-failure`: Each time a pipeline update fails.
+	//   - `on-update-fatal-failure`: A pipeline update fails with a
+	//     non-retryable (fatal) error.
+	//   - `on-flow-failure`: A single data flow fails.
 	Alerts []string `json:"alerts,omitempty"`
 	// A list of email addresses notified when a configured alert is triggered.
 	EmailRecipients []string `json:"email_recipients,omitempty"`
@@ -2053,10 +2062,9 @@ type PipelineCluster struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
+	//   - Currently, Databricks allows at most 45 custom tags
+	//   - Clusters can only reuse cloud resources if the resources' tags are a
+	//     subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id

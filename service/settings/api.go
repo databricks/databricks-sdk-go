@@ -21,11 +21,12 @@ type AccountIpAccessListsInterface interface {
 	//
 	// When creating or updating an IP access list:
 	//
-	// * For all allow lists and block lists combined, the API supports a maximum of
-	// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-	// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-	// * If the new list would block the calling user's current IP, error 400 is
-	// returned with `error_code` value `INVALID_STATE`.
+	//   - For all allow lists and block lists combined, the API supports a maximum
+	//     of 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts
+	//     to exceed that number return error 400 with `error_code` value
+	//     `QUOTA_EXCEEDED`.
+	//   - If the new list would block the calling user's current IP, error 400 is
+	//     returned with `error_code` value `INVALID_STATE`.
 	//
 	// It can take a few minutes for the changes to take effect.
 	Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error)
@@ -74,12 +75,15 @@ type AccountIpAccessListsInterface interface {
 	//
 	// A list can include allow lists and block lists. See the top of this file for
 	// a description of how the server treats allow lists and block lists at run
-	// time. When replacing an IP access list: * For all allow lists and block lists
-	// combined, the API supports a maximum of 1000 IP/CIDR values, where one CIDR
-	// counts as a single value. Attempts to exceed that number return error 400
-	// with `error_code` value `QUOTA_EXCEEDED`. * If the resulting list would block
-	// the calling user's current IP, error 400 is returned with `error_code` value
-	// `INVALID_STATE`. It can take a few minutes for the changes to take effect.
+	// time. When replacing an IP access list:
+	//
+	//   - For all allow lists and block lists combined, the API supports a maximum
+	//     of 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts
+	//     to exceed that number return error 400 with `error_code` value
+	//     `QUOTA_EXCEEDED`.
+	//   - If the resulting list would block the calling user's current IP, error
+	//     400 is returned with `error_code` value `INVALID_STATE`. It can take a
+	//     few minutes for the changes to take effect.
 	Replace(ctx context.Context, request ReplaceIpAccessList) error
 
 	// Updates an existing IP access list, specified by its ID.
@@ -90,11 +94,12 @@ type AccountIpAccessListsInterface interface {
 	//
 	// When updating an IP access list:
 	//
-	// * For all allow lists and block lists combined, the API supports a maximum of
-	// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-	// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-	// * If the updated list would block the calling user's current IP, error 400 is
-	// returned with `error_code` value `INVALID_STATE`.
+	//   - For all allow lists and block lists combined, the API supports a maximum
+	//     of 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts
+	//     to exceed that number return error 400 with `error_code` value
+	//     `QUOTA_EXCEEDED`.
+	//   - If the updated list would block the calling user's current IP, error 400
+	//     is returned with `error_code` value `INVALID_STATE`.
 	//
 	// It can take a few minutes for the changes to take effect.
 	Update(ctx context.Context, request UpdateIpAccessList) error
@@ -116,10 +121,12 @@ func NewAccountIpAccessLists(client *client.DatabricksClient) *AccountIpAccessLi
 // account, all access is allowed for this account. There is support for allow
 // lists (inclusion) and block lists (exclusion).
 //
-// When a connection is attempted: 1. **First, all block lists are checked.** If
-// the connection IP address matches any block list, the connection is rejected.
-// 2. **If the connection was not rejected by block lists**, the IP address is
-// compared with the allow lists.
+// When a connection is attempted:
+//
+//  1. **First, all block lists are checked.** If the connection IP address
+//     matches any block list, the connection is rejected.
+//  2. **If the connection was not rejected by block lists**, the IP address is
+//     compared with the allow lists.
 //
 // If there is at least one allow list for the account, the connection is
 // allowed only if the IP address matches an allow list. If there are no allow
@@ -215,10 +222,12 @@ type AccountSettingsInterface interface {
 
 	// Disable legacy features for new Databricks workspaces.
 	//
-	// For newly created workspaces: 1. Disables the use of DBFS root and
-	// mounts. 2. Hive Metastore will not be provisioned. 3. Disables the use of
-	// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
-	// prior to 13.3LTS.
+	// For newly created workspaces:
+	//
+	//  1. Disables the use of DBFS root and mounts.
+	//  2. Hive Metastore will not be provisioned.
+	//  3. Disables the use of ‘No-isolation clusters’.
+	//  4. Disables Databricks Runtime versions prior to 13.3LTS.
 	DisableLegacyFeatures() DisableLegacyFeaturesInterface
 
 	// Controls the enforcement of IP access lists for accessing the account
@@ -292,10 +301,12 @@ type AccountSettingsAPI struct {
 
 	// Disable legacy features for new Databricks workspaces.
 	//
-	// For newly created workspaces: 1. Disables the use of DBFS root and
-	// mounts. 2. Hive Metastore will not be provisioned. 3. Disables the use of
-	// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
-	// prior to 13.3LTS.
+	// For newly created workspaces:
+	//
+	//  1. Disables the use of DBFS root and mounts.
+	//  2. Hive Metastore will not be provisioned.
+	//  3. Disables the use of ‘No-isolation clusters’.
+	//  4. Disables Databricks Runtime versions prior to 13.3LTS.
 	disableLegacyFeatures DisableLegacyFeaturesInterface
 
 	// Controls the enforcement of IP access lists for accessing the account
@@ -658,10 +669,10 @@ func NewDisableLegacyAccess(client *client.DatabricksClient) *DisableLegacyAcces
 
 // 'Disabling legacy access' has the following impacts:
 //
-// 1. Disables direct access to Hive Metastores from the workspace. However, you
-// can still access a Hive Metastore through Hive Metastore federation. 2.
-// Disables fallback mode on external location access from the workspace. 3.
-// Disables Databricks Runtime versions prior to 13.3LTS.
+//  1. Disables direct access to Hive Metastores from the workspace. However,
+//     you can still access a Hive Metastore through Hive Metastore federation.
+//  2. Disables fallback mode on external location access from the workspace.
+//  3. Disables Databricks Runtime versions prior to 13.3LTS.
 type DisableLegacyAccessAPI struct {
 	disableLegacyAccessImpl
 }
@@ -689,8 +700,9 @@ func NewDisableLegacyDbfs(client *client.DatabricksClient) *DisableLegacyDbfsAPI
 
 // Disabling legacy DBFS has the following implications:
 //
-// 1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation
-// of new mounts). 2. Disables Databricks Runtime versions prior to 13.3LTS.
+//  1. Access to DBFS root and DBFS mounts is disallowed (as well as the
+//     creation of new mounts).
+//  2. Disables Databricks Runtime versions prior to 13.3LTS.
 //
 // When the setting is off, all DBFS functionality is enabled and no
 // restrictions are imposed on Databricks Runtime versions. This setting can
@@ -722,10 +734,12 @@ func NewDisableLegacyFeatures(client *client.DatabricksClient) *DisableLegacyFea
 
 // Disable legacy features for new Databricks workspaces.
 //
-// For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2.
-// Hive Metastore will not be provisioned. 3. Disables the use of
-// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions prior to
-// 13.3LTS.
+// For newly created workspaces:
+//
+//  1. Disables the use of DBFS root and mounts.
+//  2. Hive Metastore will not be provisioned.
+//  3. Disables the use of ‘No-isolation clusters’.
+//  4. Disables Databricks Runtime versions prior to 13.3LTS.
 type DisableLegacyFeaturesAPI struct {
 	disableLegacyFeaturesImpl
 }
@@ -900,11 +914,12 @@ type IpAccessListsInterface interface {
 	//
 	// When creating or updating an IP access list:
 	//
-	// * For all allow lists and block lists combined, the API supports a maximum of
-	// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-	// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-	// * If the new list would block the calling user's current IP, error 400 is
-	// returned with `error_code` value `INVALID_STATE`.
+	//   - For all allow lists and block lists combined, the API supports a maximum
+	//     of 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts
+	//     to exceed that number return error 400 with `error_code` value
+	//     `QUOTA_EXCEEDED`.
+	//   - If the new list would block the calling user's current IP, error 400 is
+	//     returned with `error_code` value `INVALID_STATE`.
 	//
 	// It can take a few minutes for the changes to take effect. **Note**: Your new
 	// IP access list has no effect until you enable the feature. See
@@ -955,14 +970,17 @@ type IpAccessListsInterface interface {
 	//
 	// A list can include allow lists and block lists. See the top of this file for
 	// a description of how the server treats allow lists and block lists at run
-	// time. When replacing an IP access list: * For all allow lists and block lists
-	// combined, the API supports a maximum of 1000 IP/CIDR values, where one CIDR
-	// counts as a single value. Attempts to exceed that number return error 400
-	// with `error_code` value `QUOTA_EXCEEDED`. * If the resulting list would block
-	// the calling user's current IP, error 400 is returned with `error_code` value
-	// `INVALID_STATE`. It can take a few minutes for the changes to take effect.
-	// Note that your resulting IP access list has no effect until you enable the
-	// feature. See :method:workspaceconf/setStatus.
+	// time. When replacing an IP access list:
+	//
+	//   - For all allow lists and block lists combined, the API supports a maximum
+	//     of 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts
+	//     to exceed that number return error 400 with `error_code` value
+	//     `QUOTA_EXCEEDED`.
+	//   - If the resulting list would block the calling user's current IP, error
+	//     400 is returned with `error_code` value `INVALID_STATE`. It can take a
+	//     few minutes for the changes to take effect. Note that your resulting IP
+	//     access list has no effect until you enable the feature. See
+	//     :method:workspaceconf/setStatus.
 	Replace(ctx context.Context, request ReplaceIpAccessList) error
 
 	// Updates an existing IP access list, specified by its ID.
@@ -973,11 +991,12 @@ type IpAccessListsInterface interface {
 	//
 	// When updating an IP access list:
 	//
-	// * For all allow lists and block lists combined, the API supports a maximum of
-	// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-	// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-	// * If the updated list would block the calling user's current IP, error 400 is
-	// returned with `error_code` value `INVALID_STATE`.
+	//   - For all allow lists and block lists combined, the API supports a maximum
+	//     of 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts
+	//     to exceed that number return error 400 with `error_code` value
+	//     `QUOTA_EXCEEDED`.
+	//   - If the updated list would block the calling user's current IP, error 400
+	//     is returned with `error_code` value `INVALID_STATE`.
 	//
 	// It can take a few minutes for the changes to take effect. Note that your
 	// resulting IP access list has no effect until you enable the feature. See
@@ -1000,10 +1019,12 @@ func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
 // allowed for this workspace. There is support for allow lists (inclusion) and
 // block lists (exclusion).
 //
-// When a connection is attempted: 1. **First, all block lists are checked.** If
-// the connection IP address matches any block list, the connection is rejected.
-// 2. **If the connection was not rejected by block lists**, the IP address is
-// compared with the allow lists.
+// When a connection is attempted:
+//
+//  1. **First, all block lists are checked.** If the connection IP address
+//     matches any block list, the connection is rejected.
+//  2. **If the connection was not rejected by block lists**, the IP address is
+//     compared with the allow lists.
 //
 // If there is at least one allow list for the workspace, the connection is
 // allowed only if the IP address matches an allow list. If there are no allow
@@ -1570,17 +1591,19 @@ type SettingsInterface interface {
 
 	// 'Disabling legacy access' has the following impacts:
 	//
-	// 1. Disables direct access to Hive Metastores from the workspace. However,
-	// you can still access a Hive Metastore through Hive Metastore federation.
-	// 2. Disables fallback mode on external location access from the workspace.
-	// 3. Disables Databricks Runtime versions prior to 13.3LTS.
+	//  1. Disables direct access to Hive Metastores from the workspace.
+	//     However, you can still access a Hive Metastore through Hive Metastore
+	//     federation.
+	//  2. Disables fallback mode on external location access from the
+	//     workspace.
+	//  3. Disables Databricks Runtime versions prior to 13.3LTS.
 	DisableLegacyAccess() DisableLegacyAccessInterface
 
 	// Disabling legacy DBFS has the following implications:
 	//
-	// 1. Access to DBFS root and DBFS mounts is disallowed (as well as the
-	// creation of new mounts). 2. Disables Databricks Runtime versions prior to
-	// 13.3LTS.
+	//  1. Access to DBFS root and DBFS mounts is disallowed (as well as the
+	//     creation of new mounts).
+	//  2. Disables Databricks Runtime versions prior to 13.3LTS.
 	//
 	// When the setting is off, all DBFS functionality is enabled and no
 	// restrictions are imposed on Databricks Runtime versions. This setting can
@@ -1727,17 +1750,19 @@ type SettingsAPI struct {
 
 	// 'Disabling legacy access' has the following impacts:
 	//
-	// 1. Disables direct access to Hive Metastores from the workspace. However,
-	// you can still access a Hive Metastore through Hive Metastore federation.
-	// 2. Disables fallback mode on external location access from the workspace.
-	// 3. Disables Databricks Runtime versions prior to 13.3LTS.
+	//  1. Disables direct access to Hive Metastores from the workspace.
+	//     However, you can still access a Hive Metastore through Hive Metastore
+	//     federation.
+	//  2. Disables fallback mode on external location access from the
+	//     workspace.
+	//  3. Disables Databricks Runtime versions prior to 13.3LTS.
 	disableLegacyAccess DisableLegacyAccessInterface
 
 	// Disabling legacy DBFS has the following implications:
 	//
-	// 1. Access to DBFS root and DBFS mounts is disallowed (as well as the
-	// creation of new mounts). 2. Disables Databricks Runtime versions prior to
-	// 13.3LTS.
+	//  1. Access to DBFS root and DBFS mounts is disallowed (as well as the
+	//     creation of new mounts).
+	//  2. Disables Databricks Runtime versions prior to 13.3LTS.
 	//
 	// When the setting is off, all DBFS functionality is enabled and no
 	// restrictions are imposed on Databricks Runtime versions. This setting can

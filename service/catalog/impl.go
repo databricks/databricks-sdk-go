@@ -635,7 +635,7 @@ func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredenti
 	return &credentialInfo, err
 }
 
-// Gets an array of credentials (as __CredentialInfo__ objects).
+// Gets an array of credentials (as **CredentialInfo** objects).
 //
 // The array is limited to only the credentials that the caller has permission
 // to access. If the caller is a metastore admin, retrieval of credentials is
@@ -670,7 +670,7 @@ func (a *credentialsImpl) ListCredentials(ctx context.Context, request ListCrede
 	return iterator
 }
 
-// Gets an array of credentials (as __CredentialInfo__ objects).
+// Gets an array of credentials (as **CredentialInfo** objects).
 //
 // The array is limited to only the credentials that the caller has permission
 // to access. If the caller is a metastore admin, retrieval of credentials is
@@ -997,7 +997,7 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 	return &externalLocationInfo, err
 }
 
-// Gets an array of external locations (__ExternalLocationInfo__ objects) from
+// Gets an array of external locations (**ExternalLocationInfo** objects) from
 // the metastore. The caller must be a metastore admin, the owner of the
 // external location, or a user that has some privilege on the external
 // location. There is no guarantee of a specific ordering of the elements in the
@@ -1036,7 +1036,7 @@ func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLo
 	return iterator
 }
 
-// Gets an array of external locations (__ExternalLocationInfo__ objects) from
+// Gets an array of external locations (**ExternalLocationInfo** objects) from
 // the metastore. The caller must be a metastore admin, the owner of the
 // external location, or a user that has some privilege on the external
 // location. There is no guarantee of a specific ordering of the elements in the
@@ -1461,7 +1461,7 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 	return &metastoreInfo, err
 }
 
-// Gets an array of the available metastores (as __MetastoreInfo__ objects). The
+// Gets an array of the available metastores (as **MetastoreInfo** objects). The
 // caller must be an admin to retrieve this info. There is no guarantee of a
 // specific ordering of the elements in the array.
 //
@@ -1498,7 +1498,7 @@ func (a *metastoresImpl) List(ctx context.Context, request ListMetastoresRequest
 	return iterator
 }
 
-// Gets an array of the available metastores (as __MetastoreInfo__ objects). The
+// Gets an array of the available metastores (as **MetastoreInfo** objects). The
 // caller must be an admin to retrieve this info. There is no guarantee of a
 // specific ordering of the elements in the array.
 //
@@ -2633,7 +2633,7 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	return &storageCredentialInfo, err
 }
 
-// Gets an array of storage credentials (as __StorageCredentialInfo__ objects).
+// Gets an array of storage credentials (as **StorageCredentialInfo** objects).
 // The array is limited to only those storage credentials the caller has
 // permission to access. If the caller is a metastore admin, retrieval of
 // credentials is unrestricted. There is no guarantee of a specific ordering of
@@ -2672,7 +2672,7 @@ func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCr
 	return iterator
 }
 
-// Gets an array of storage credentials (as __StorageCredentialInfo__ objects).
+// Gets an array of storage credentials (as **StorageCredentialInfo** objects).
 // The array is limited to only those storage credentials the caller has
 // permission to access. If the caller is a metastore admin, retrieval of
 // credentials is unrestricted. There is no guarantee of a specific ordering of
@@ -3007,12 +3007,13 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 // Gets an array of summaries for tables for a schema and catalog within the
 // metastore. The table summaries returned are either:
 //
-// * summaries for tables (within the current metastore and parent catalog and
-// schema), when the user is a metastore admin, or: * summaries for tables and
-// schemas (within the current metastore and parent catalog) for which the user
-// has ownership or the **SELECT** privilege on the table and ownership or
-// **USE_SCHEMA** privilege on the schema, provided that the user also has
-// ownership or the **USE_CATALOG** privilege on the parent catalog.
+//   - summaries for tables (within the current metastore and parent catalog and
+//     schema), when the user is a metastore admin, or:
+//   - summaries for tables and schemas (within the current metastore and parent
+//     catalog) for which the user has ownership or the **SELECT** privilege on
+//     the table and ownership or **USE_SCHEMA** privilege on the schema,
+//     provided that the user also has ownership or the **USE_CATALOG**
+//     privilege on the parent catalog.
 //
 // There is no guarantee of a specific ordering of the elements in the array.
 //
@@ -3047,12 +3048,13 @@ func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesReq
 // Gets an array of summaries for tables for a schema and catalog within the
 // metastore. The table summaries returned are either:
 //
-// * summaries for tables (within the current metastore and parent catalog and
-// schema), when the user is a metastore admin, or: * summaries for tables and
-// schemas (within the current metastore and parent catalog) for which the user
-// has ownership or the **SELECT** privilege on the table and ownership or
-// **USE_SCHEMA** privilege on the schema, provided that the user also has
-// ownership or the **USE_CATALOG** privilege on the parent catalog.
+//   - summaries for tables (within the current metastore and parent catalog and
+//     schema), when the user is a metastore admin, or:
+//   - summaries for tables and schemas (within the current metastore and parent
+//     catalog) for which the user has ownership or the **SELECT** privilege on
+//     the table and ownership or **USE_SCHEMA** privilege on the schema,
+//     provided that the user also has ownership or the **USE_CATALOG**
+//     privilege on the parent catalog.
 //
 // There is no guarantee of a specific ordering of the elements in the array.
 //

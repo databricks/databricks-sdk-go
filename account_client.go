@@ -62,10 +62,11 @@ type AccountClient struct {
 	// and some information about how the key configuration can be used. There
 	// are two possible uses for key configurations:
 	//
-	// * Managed services: A key configuration can be used to encrypt a
-	// workspace's notebook and secret data in the control plane, as well as
-	// Databricks SQL queries and query history. * Storage: A key configuration
-	// can be used to encrypt a workspace's DBFS and EBS data in the data plane.
+	//   - Managed services: A key configuration can be used to encrypt a
+	//     workspace's notebook and secret data in the control plane, as well as
+	//     Databricks SQL queries and query history.
+	//   - Storage: A key configuration can be used to encrypt a workspace's
+	//     DBFS and EBS data in the data plane.
 	//
 	// In both of these cases, the key configuration's ID is used when creating
 	// a new workspace. This Preview feature is available if your account is on
@@ -94,34 +95,45 @@ type AccountClient struct {
 	// into your Databricks account.
 	//
 	// Token federation is configured in your Databricks account using an
-	// account federation policy. An account federation policy specifies: *
-	// which IdP, or issuer, your Databricks account should accept tokens from *
-	// how to determine which Databricks user, or subject, a token is issued for
+	// account federation policy. An account federation policy specifies:
 	//
-	// To configure a federation policy, you provide the following: * The
-	// required token __issuer__, as specified in the “iss” claim of your
-	// tokens. The issuer is an https URL that identifies your IdP. * The
-	// allowed token __audiences__, as specified in the “aud” claim of your
-	// tokens. This identifier is intended to represent the recipient of the
-	// token. As long as the audience in the token matches at least one audience
-	// in the policy, the token is considered a match. If unspecified, the
-	// default value is your Databricks account id. * The __subject claim__,
-	// which indicates which token claim contains the Databricks username of the
-	// user the token was issued for. If unspecified, the default value is
-	// “sub”. * Optionally, the public keys used to validate the signature
-	// of your tokens, in JWKS format. If unspecified (recommended), Databricks
-	// automatically fetches the public keys from your issuer’s well known
-	// endpoint. Databricks strongly recommends relying on your issuer’s well
-	// known endpoint for discovering public keys.
+	//   - which IdP, or issuer, your Databricks account should accept tokens
+	//     from
+	//   - how to determine which Databricks user, or subject, a token is issued
+	//     for
 	//
-	// An example federation policy is: ``` issuer:
-	// "https://idp.mycompany.com/oidc" audiences: ["databricks"] subject_claim:
-	// "sub" ```
+	// To configure a federation policy, you provide the following:
+	//
+	//   - The required token **issuer**, as specified in the “iss” claim of
+	//     your tokens. The issuer is an https URL that identifies your IdP.
+	//   - The allowed token **audiences**, as specified in the “aud” claim
+	//     of your tokens. This identifier is intended to represent the
+	//     recipient of the token. As long as the audience in the token matches
+	//     at least one audience in the policy, the token is considered a match.
+	//     If unspecified, the default value is your Databricks account id.
+	//   - The **subject claim**, which indicates which token claim contains the
+	//     Databricks username of the user the token was issued for. If
+	//     unspecified, the default value is “sub”.
+	//   - Optionally, the public keys used to validate the signature of your
+	//     tokens, in JWKS format. If unspecified (recommended), Databricks
+	//     automatically fetches the public keys from your issuer’s well known
+	//     endpoint. Databricks strongly recommends relying on your issuer’s
+	//     well known endpoint for discovering public keys.
+	//
+	// An example federation policy is:
+	//
+	// 	issuer: "https://idp.mycompany.com/oidc"
+	// 	audiences: ["databricks"]
+	// 	subject_claim: "sub"
 	//
 	// An example JWT token body that matches this policy and could be used to
-	// authenticate to Databricks as user `username@mycompany.com` is: ``` {
-	// "iss": "https://idp.mycompany.com/oidc", "aud": "databricks", "sub":
-	// "username@mycompany.com" } ```
+	// authenticate to Databricks as user `username@mycompany.com` is:
+	//
+	// 	{
+	// 	"iss": "https://idp.mycompany.com/oidc",
+	// 	"aud": "databricks",
+	// 	"sub": "username@mycompany.com"
+	// 	}
 	//
 	// You may also need to configure your IdP to generate tokens for your users
 	// to exchange with Databricks, if your users do not already have the
@@ -155,10 +167,12 @@ type AccountClient struct {
 	// the account, all access is allowed for this account. There is support for
 	// allow lists (inclusion) and block lists (exclusion).
 	//
-	// When a connection is attempted: 1. **First, all block lists are
-	// checked.** If the connection IP address matches any block list, the
-	// connection is rejected. 2. **If the connection was not rejected by block
-	// lists**, the IP address is compared with the allow lists.
+	// When a connection is attempted:
+	//
+	//  1. **First, all block lists are checked.** If the connection IP address
+	//     matches any block list, the connection is rejected.
+	//  2. **If the connection was not rejected by block lists**, the IP address
+	//     is compared with the allow lists.
 	//
 	// If there is at least one allow list for the account, the connection is
 	// allowed only if the IP address matches an allow list. If there are no
@@ -172,8 +186,8 @@ type AccountClient struct {
 	IpAccessLists settings.AccountIpAccessListsInterface
 
 	// These APIs manage log delivery configurations for this account. The two
-	// supported log types for this API are _billable usage logs_ (AWS only) and
-	// _audit logs_ (AWS and GCP). This feature is in Public Preview. This
+	// supported log types for this API are *billable usage logs* (AWS only) and
+	// *audit logs* (AWS and GCP). This feature is in Public Preview. This
 	// feature works with all account ID types.
 	//
 	// Log delivery works with all account types. However, if your account is on
@@ -184,55 +198,58 @@ type AccountClient struct {
 	//
 	// The high-level flow of billable usage delivery (AWS only):
 	//
-	// 1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a
-	// specific bucket policy. Using Databricks APIs, call the Account API to
-	// create a [storage configuration object](:method:Storage/Create) that uses
-	// the bucket name.
+	//  1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a
+	//     specific bucket policy. Using Databricks APIs, call the Account API
+	//     to create a storage configuration object that uses the bucket name.
+	//  2. **Create credentials**: In AWS, create the appropriate AWS IAM role.
+	//     For full details, including the required IAM role policies and trust
+	//     relationship, see [Billable usage log delivery]. Using Databricks
+	//     APIs, call the Account API to create a credential configuration
+	//     object that uses the IAM role's ARN.
+	//  3. **Create log delivery configuration**: Using Databricks APIs, call
+	//     the Account API to create a log delivery configuration that uses the
+	//     credential and storage configuration objects from previous steps. You
+	//     can specify if the logs should include all events of that log type in
+	//     your account (*Account level* delivery) or only events for a specific
+	//     set of workspaces (*workspace level* delivery). Account level log
+	//     delivery applies to all current and future workspaces plus account
+	//     level logs, while workspace level log delivery solely delivers logs
+	//     related to the specified workspaces. You can create multiple types of
+	//     delivery configurations per account.
 	//
-	// 2. **Create credentials**: In AWS, create the appropriate AWS IAM role.
-	// For full details, including the required IAM role policies and trust
-	// relationship, see [Billable usage log delivery]. Using Databricks APIs,
-	// call the Account API to create a [credential configuration
-	// object](:method:Credentials/Create) that uses the IAM role's ARN.
+	// For billable usage delivery (AWS only):
 	//
-	// 3. **Create log delivery configuration**: Using Databricks APIs, call the
-	// Account API to [create a log delivery
-	// configuration](:method:LogDelivery/Create) that uses the credential and
-	// storage configuration objects from previous steps. You can specify if the
-	// logs should include all events of that log type in your account (_Account
-	// level_ delivery) or only events for a specific set of workspaces
-	// (_workspace level_ delivery). Account level log delivery applies to all
-	// current and future workspaces plus account level logs, while workspace
-	// level log delivery solely delivers logs related to the specified
-	// workspaces. You can create multiple types of delivery configurations per
-	// account.
+	//   - For more information about billable usage logs, see [Billable usage
+	//     log delivery]. For the CSV schema, see the [Usage page].
+	//   - The delivery location is
+	//     `<bucket-name>/<prefix>/billable-usage/csv/`, where `<prefix>` is the
+	//     name of the optional delivery path prefix you set up during log
+	//     delivery configuration. Files are named
+	//     `workspaceId=<workspace-id>-usageMonth=<month>.csv`.
+	//   - All billable usage logs apply to specific workspaces (*workspace
+	//     level* logs). You can aggregate usage for your entire account by
+	//     creating an *account level* delivery configuration that delivers logs
+	//     for all current and future workspaces in your account.
+	//   - The files are delivered daily by overwriting the month's CSV file for
+	//     each workspace.
 	//
-	// For billable usage delivery (AWS only): * For more information about
-	// billable usage logs, see [Billable usage log delivery]. For the CSV
-	// schema, see the [Usage page]. * The delivery location is
-	// `<bucket-name>/<prefix>/billable-usage/csv/`, where `<prefix>` is the
-	// name of the optional delivery path prefix you set up during log delivery
-	// configuration. Files are named
-	// `workspaceId=<workspace-id>-usageMonth=<month>.csv`. * All billable usage
-	// logs apply to specific workspaces (_workspace level_ logs). You can
-	// aggregate usage for your entire account by creating an _account level_
-	// delivery configuration that delivers logs for all current and future
-	// workspaces in your account. * The files are delivered daily by
-	// overwriting the month's CSV file for each workspace.
+	// For audit log delivery (AWS and GCP):
 	//
-	// For audit log delivery (AWS and GCP): * For more information about about
-	// audit log delivery, see Audit log delivery [AWS] or [GCP], which includes
-	// information about the used JSON schema. * The delivery location is
-	// `<bucket-name>/<delivery-path-prefix>/workspaceId=<workspaceId>/date=<yyyy-mm-dd>/auditlogs_<internal-id>.json`.
-	// Files may get overwritten with the same content multiple times to achieve
-	// exactly-once delivery. * If the audit log delivery configuration included
-	// specific workspace IDs, only _workspace-level_ audit logs for those
-	// workspaces are delivered. If the log delivery configuration applies to
-	// the entire account (_account level_ delivery configuration), the audit
-	// log delivery includes workspace-level audit logs for all workspaces in
-	// the account as well as account-level audit logs. See Audit log delivery
-	// [AWS] or [GCP] for details. * Auditable events are typically available in
-	// logs within 15 minutes.
+	//   - For more information about about audit log delivery, see Audit log
+	//     delivery [AWS] or [GCP], which includes information about the used
+	//     JSON schema.
+	//   - The delivery location is
+	//     `<bucket-name>/<delivery-path-prefix>/workspaceId=<workspaceId>/date=<yyyy-mm-dd>/auditlogs_<internal-id>.json`.
+	//     Files may get overwritten with the same content multiple times to
+	//     achieve exactly-once delivery.
+	//   - If the audit log delivery configuration included specific workspace
+	//     IDs, only *workspace-level* audit logs for those workspaces are
+	//     delivered. If the log delivery configuration applies to the entire
+	//     account (*account level* delivery configuration), the audit log
+	//     delivery includes workspace-level audit logs for all workspaces in
+	//     the account as well as account-level audit logs. See Audit log
+	//     delivery [AWS] or [GCP] for details.
+	//   - Auditable events are typically available in logs within 15 minutes.
 	//
 	// [AWS]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
@@ -306,37 +323,49 @@ type AccountClient struct {
 	//
 	// Workload identity federation is configured in your Databricks account
 	// using a service principal federation policy. A service principal
-	// federation policy specifies: * which IdP, or issuer, the service
-	// principal is allowed to authenticate from * which workload identity, or
-	// subject, is allowed to authenticate as the Databricks service principal
+	// federation policy specifies:
 	//
-	// To configure a federation policy, you provide the following: * The
-	// required token __issuer__, as specified in the “iss” claim of
-	// workload identity tokens. The issuer is an https URL that identifies the
-	// workload identity provider. * The required token __subject__, as
-	// specified in the “sub” claim of workload identity tokens. The subject
-	// uniquely identifies the workload in the workload runtime environment. *
-	// The allowed token __audiences__, as specified in the “aud” claim of
-	// workload identity tokens. The audience is intended to represent the
-	// recipient of the token. As long as the audience in the token matches at
-	// least one audience in the policy, the token is considered a match. If
-	// unspecified, the default value is your Databricks account id. *
-	// Optionally, the public keys used to validate the signature of the
-	// workload identity tokens, in JWKS format. If unspecified (recommended),
-	// Databricks automatically fetches the public keys from the issuer’s well
-	// known endpoint. Databricks strongly recommends relying on the issuer’s
-	// well known endpoint for discovering public keys.
+	//   - which IdP, or issuer, the service principal is allowed to
+	//     authenticate from
+	//   - which workload identity, or subject, is allowed to authenticate as
+	//     the Databricks service principal
+	//
+	// To configure a federation policy, you provide the following:
+	//
+	//   - The required token **issuer**, as specified in the “iss” claim of
+	//     workload identity tokens. The issuer is an https URL that identifies
+	//     the workload identity provider.
+	//   - The required token **subject**, as specified in the “sub” claim
+	//     of workload identity tokens. The subject uniquely identifies the
+	//     workload in the workload runtime environment.
+	//   - The allowed token **audiences**, as specified in the “aud” claim
+	//     of workload identity tokens. The audience is intended to represent
+	//     the recipient of the token. As long as the audience in the token
+	//     matches at least one audience in the policy, the token is considered
+	//     a match. If unspecified, the default value is your Databricks account
+	//     id.
+	//   - Optionally, the public keys used to validate the signature of the
+	//     workload identity tokens, in JWKS format. If unspecified
+	//     (recommended), Databricks automatically fetches the public keys from
+	//     the issuer’s well known endpoint. Databricks strongly recommends
+	//     relying on the issuer’s well known endpoint for discovering public
+	//     keys.
 	//
 	// An example service principal federation policy, for a Github Actions
-	// workload, is: ``` issuer: "https://token.actions.githubusercontent.com"
-	// audiences: ["https://github.com/my-github-org"] subject:
-	// "repo:my-github-org/my-repo:environment:prod" ```
+	// workload, is:
+	//
+	// 	issuer: "https://token.actions.githubusercontent.com"
+	// 	audiences: ["https://github.com/my-github-org"]
+	// 	subject: "repo:my-github-org/my-repo:environment:prod"
 	//
 	// An example JWT token body that matches this policy and could be used to
-	// authenticate to Databricks is: ``` { "iss":
-	// "https://token.actions.githubusercontent.com", "aud":
-	// "https://github.com/my-github-org", "sub":
-	// "repo:my-github-org/my-repo:environment:prod" } ```
+	// authenticate to Databricks is:
+	//
+	// 	{
+	// 	"iss": "https://token.actions.githubusercontent.com",
+	// 	"aud": "https://github.com/my-github-org",
+	// 	"sub": "repo:my-github-org/my-repo:environment:prod"
+	// 	}
 	//
 	// You may also need to configure the workload runtime to generate tokens
 	// for your workloads.

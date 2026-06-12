@@ -591,12 +591,16 @@ func (s IndexStatus) MarshalJSON() ([]byte, error) {
 }
 
 // The subtype of the AI Search index, determining the indexing and retrieval
-// strategy. - `VECTOR`: Not a supported create value — do not select it. Use
-// `HYBRID` (vector + hybrid search) or `FULL_TEXT` (full-text only). It is the
-// proto2 default (`= 0`) solely to mirror the legacy `index_v2.proto` enum
-// value-for-value; it is not an offered index subtype. - `FULL_TEXT`: An index
-// that uses full-text search without vector embeddings. - `HYBRID`: An index
-// that uses vector embeddings for similarity search and hybrid search.
+// strategy.
+//
+//   - `VECTOR`: Not a supported create value — do not select it. Use `HYBRID`
+//     (vector + hybrid search) or `FULL_TEXT` (full-text only). It is the
+//     proto2 default (`= 0`) solely to mirror the legacy `index_v2.proto` enum
+//     value-for-value; it is not an offered index subtype.
+//   - `FULL_TEXT`: An index that uses full-text search without vector
+//     embeddings.
+//   - `HYBRID`: An index that uses vector embeddings for similarity search and
+//     hybrid search.
 type IndexSubtype string
 
 // An index that uses full-text search without vector embeddings.
@@ -641,12 +645,14 @@ func (f *IndexSubtype) Type() string {
 	return "IndexSubtype"
 }
 
-// There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that
-// automatically syncs with a source Delta Table, automatically and
-// incrementally updating the index as the underlying data in the Delta Table
-// changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
-// vectors and metadata through our REST and SDK APIs. With this model, the user
-// manages index updates.
+// There are 2 types of AI Search indexes:
+//
+//   - `DELTA_SYNC`: An index that automatically syncs with a source Delta
+//     Table, automatically and incrementally updating the index as the
+//     underlying data in the Delta Table changes.
+//   - `DIRECT_ACCESS`: An index that supports direct read and write of vectors
+//     and metadata through our REST and SDK APIs. With this model, the user
+//     manages index updates.
 type IndexType string
 
 // An index that automatically syncs with a source Delta Table,
@@ -781,10 +787,12 @@ func (s ListIndexesResponse) MarshalJSON() ([]byte, error) {
 
 // Pipeline execution mode for a Delta Sync index. Required on create for Delta
 // Sync indexes; the legacy backend rejects an unset value with
-// INVALID_PARAMETER_VALUE. - `TRIGGERED`: the pipeline stops after refreshing
-// the source table once, using the data available when the update started. -
-// `CONTINUOUS`: the pipeline processes new data as it arrives in the source
-// table to keep the index fresh.
+// INVALID_PARAMETER_VALUE.
+//
+//   - `TRIGGERED`: the pipeline stops after refreshing the source table once,
+//     using the data available when the update started.
+//   - `CONTINUOUS`: the pipeline processes new data as it arrives in the source
+//     table to keep the index fresh.
 type PipelineType string
 
 // the pipeline processes new data as it arrives in the source table to

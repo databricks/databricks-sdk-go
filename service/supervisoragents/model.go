@@ -483,7 +483,10 @@ type UpdateExampleRequest struct {
 	// supervisor-agents/{supervisor_agent_id}/examples/{example_id}
 	Name string `json:"-" url:"-"`
 	// Comma-delimited list of fields to update on the example. Allowed values:
-	// `question`, `guidelines`. Examples: - `question` - `question,guidelines`
+	// `question`, `guidelines`. Examples:
+	//
+	//   - `question`
+	//   - `question,guidelines`
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

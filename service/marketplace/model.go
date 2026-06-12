@@ -1515,10 +1515,12 @@ type ListingDetail struct {
 	// Listing tags - Simple key value pair to annotate listings. When should I
 	// use tags vs dedicated fields? Using tags avoids the need to add new
 	// columns in the database for new annotations. However, this should be used
-	// sparingly since tags are stored as key value pair. Use tags only: 1. If
-	// the field is optional and won't need to have NOT NULL integrity check 2.
-	// The value is fairly fixed, static and low cardinality (eg. enums). 3. The
-	// value won't be used in filters or joins with other tables.
+	// sparingly since tags are stored as key value pair. Use tags only:
+	//
+	//  1. If the field is optional and won't need to have NOT NULL integrity
+	//     check
+	//  2. The value is fairly fixed, static and low cardinality (eg. enums).
+	//  3. The value won't be used in filters or joins with other tables.
 	Tags []ListingTag `json:"tags,omitempty"`
 
 	TermsOfService string `json:"terms_of_service,omitempty"`

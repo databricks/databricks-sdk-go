@@ -116,8 +116,8 @@ type JobsInterface interface {
 	// the first 5 MB of the output. To return a larger result, you can store job
 	// results in a cloud storage service.
 	//
-	// This endpoint validates that the __run_id__ parameter is valid and returns an
-	// HTTP status code 400 if the __run_id__ parameter is invalid. Runs are
+	// This endpoint validates that the **run_id** parameter is valid and returns an
+	// HTTP status code 400 if the **run_id** parameter is invalid. Runs are
 	// automatically removed after 60 days. If you to want to reference them beyond
 	// 60 days, you must save old run results before they expire.
 	GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error)
@@ -128,8 +128,8 @@ type JobsInterface interface {
 	// the first 5 MB of the output. To return a larger result, you can store job
 	// results in a cloud storage service.
 	//
-	// This endpoint validates that the __run_id__ parameter is valid and returns an
-	// HTTP status code 400 if the __run_id__ parameter is invalid. Runs are
+	// This endpoint validates that the **run_id** parameter is valid and returns an
+	// HTTP status code 400 if the **run_id** parameter is invalid. Runs are
 	// automatically removed after 60 days. If you to want to reference them beyond
 	// 60 days, you must save old run results before they expire.
 	GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOutput, error)
@@ -185,8 +185,8 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.RepairRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error)
 
-	// Overwrite all settings for the given job. Use the [_Update_
-	// endpoint](:method:jobs/update) to update job settings partially.
+	// Overwrite all settings for the given job. Use the *Update* endpoint to update
+	// job settings partially.
 	Reset(ctx context.Context, request ResetJob) error
 
 	// Run a job and return the `run_id` of the triggered run.
@@ -227,8 +227,8 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.Submit].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error)
 
-	// Add, update, or remove specific settings of an existing job. Use the [_Reset_
-	// endpoint](:method:jobs/reset) to overwrite all job settings.
+	// Add, update, or remove specific settings of an existing job. Use the *Reset*
+	// endpoint to overwrite all job settings.
 	Update(ctx context.Context, request UpdateJob) error
 
 	// Updates the permissions on a job. Jobs can inherit permissions from their
@@ -433,8 +433,8 @@ func (a *JobsAPI) GetPermissionsByJobId(ctx context.Context, jobId string) (*Job
 // the first 5 MB of the output. To return a larger result, you can store job
 // results in a cloud storage service.
 //
-// This endpoint validates that the __run_id__ parameter is valid and returns an
-// HTTP status code 400 if the __run_id__ parameter is invalid. Runs are
+// This endpoint validates that the **run_id** parameter is valid and returns an
+// HTTP status code 400 if the **run_id** parameter is invalid. Runs are
 // automatically removed after 60 days. If you to want to reference them beyond
 // 60 days, you must save old run results before they expire.
 func (a *JobsAPI) GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOutput, error) {

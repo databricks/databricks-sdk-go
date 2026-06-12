@@ -131,7 +131,8 @@ func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request Lis
 
 // Gets an array of a specified provider's shares within the metastore where:
 //
-// * the caller is a metastore admin, or * the caller is the owner.
+//   - the caller is a metastore admin, or
+//   - the caller is the owner.
 func (a *providersImpl) ListShares(ctx context.Context, request ListSharesRequest) listing.Iterator[ProviderShare] {
 
 	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
@@ -160,7 +161,8 @@ func (a *providersImpl) ListShares(ctx context.Context, request ListSharesReques
 
 // Gets an array of a specified provider's shares within the metastore where:
 //
-// * the caller is a metastore admin, or * the caller is the owner.
+//   - the caller is a metastore admin, or
+//   - the caller is the owner.
 func (a *providersImpl) ListSharesAll(ctx context.Context, request ListSharesRequest) ([]ProviderShare, error) {
 	iterator := a.ListShares(ctx, request)
 	return listing.ToSlice[ProviderShare](ctx, iterator)
@@ -371,8 +373,9 @@ func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (
 
 // Gets an array of all share recipients within the current metastore where:
 //
-// * the caller is a metastore admin, or * the caller is the owner. There is no
-// guarantee of a specific ordering of the elements in the array.
+//   - the caller is a metastore admin, or
+//   - the caller is the owner. There is no guarantee of a specific ordering of
+//     the elements in the array.
 func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest) listing.Iterator[RecipientInfo] {
 
 	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
@@ -401,8 +404,9 @@ func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest
 
 // Gets an array of all share recipients within the current metastore where:
 //
-// * the caller is a metastore admin, or * the caller is the owner. There is no
-// guarantee of a specific ordering of the elements in the array.
+//   - the caller is a metastore admin, or
+//   - the caller is the owner. There is no guarantee of a specific ordering of
+//     the elements in the array.
 func (a *recipientsImpl) ListAll(ctx context.Context, request ListRecipientsRequest) ([]RecipientInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[RecipientInfo](ctx, iterator)

@@ -41,7 +41,8 @@ type ProvidersService interface {
 	// Gets an array of a specified provider's shares within the metastore
 	// where:
 	//
-	// * the caller is a metastore admin, or * the caller is the owner.
+	//   - the caller is a metastore admin, or
+	//   - the caller is the owner.
 	ListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error)
 
 	// Updates the information for an authentication provider, if the caller is
@@ -84,16 +85,18 @@ type RecipientActivationService interface {
 // recipients authenticate using OIDC tokens. It validates the OIDC claims in
 // federated tokens and is set at the recipient level. The caller must be the
 // owner of the recipient to create or manage a federation policy. Federation
-// policies support the following scenarios: - User-to-Machine (U2M) flow: A
-// user accesses Delta Shares using their own identity, such as connecting
-// through PowerBI Delta Sharing Client. - Machine-to-Machine (M2M) flow: An
-// application accesses Delta Shares using its own identity, typically for
-// automation tasks like nightly jobs through Python Delta Sharing Client. OIDC
-// Token Federation enables fine-grained access control, supports Multi-Factor
-// Authentication (MFA), and enhances security by minimizing the risk of
-// credential leakage through the use of short-lived, expiring tokens. It is
-// designed for strong identity governance, secure cross-platform data sharing,
-// and reduced operational overhead for credential management.
+// policies support the following scenarios:
+//
+//   - User-to-Machine (U2M) flow: A user accesses Delta Shares using their own
+//     identity, such as connecting through PowerBI Delta Sharing Client.
+//   - Machine-to-Machine (M2M) flow: An application accesses Delta Shares using
+//     its own identity, typically for automation tasks like nightly jobs
+//     through Python Delta Sharing Client. OIDC Token Federation enables
+//     fine-grained access control, supports Multi-Factor Authentication (MFA),
+//     and enhances security by minimizing the risk of credential leakage
+//     through the use of short-lived, expiring tokens. It is designed for
+//     strong identity governance, secure cross-platform data sharing, and
+//     reduced operational overhead for credential management.
 //
 // For more information, see
 // https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
@@ -111,24 +114,29 @@ type RecipientFederationPoliciesService interface {
 	// This enables secretless sharing clients to authenticate using OIDC
 	// tokens.
 	//
-	// Supported scenarios for federation policies: 1. **User-to-Machine (U2M)
-	// flow** (e.g., PowerBI): A user accesses a resource using their own
-	// identity. 2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App): An
-	// OAuth App accesses a resource using its own identity, typically for tasks
-	// like running nightly jobs.
+	// Supported scenarios for federation policies:
 	//
-	// For an overview, refer to: - Blog post: Overview of feature:
-	// https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+	//  1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user accesses a
+	//     resource using their own identity.
+	//  2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App): An OAuth App
+	//     accesses a resource using its own identity, typically for tasks like
+	//     running nightly jobs.
 	//
-	// For detailed configuration guides based on your use case: - Creating a
-	// Federation Policy as a provider:
-	// https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed -
-	// Configuration and usage for Machine-to-Machine (M2M) applications (e.g.,
-	// Python Delta Sharing Client):
-	// https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m -
-	// Configuration and usage for User-to-Machine (U2M) applications (e.g.,
-	// PowerBI):
-	// https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
+	// For an overview, refer to:
+	//
+	//   - Blog post: Overview of feature:
+	//     https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+	//
+	// For detailed configuration guides based on your use case:
+	//
+	//   - Creating a Federation Policy as a provider:
+	//     https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed
+	//   - Configuration and usage for Machine-to-Machine (M2M) applications
+	//     (e.g., Python Delta Sharing Client):
+	//     https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m
+	//   - Configuration and usage for User-to-Machine (U2M) applications (e.g.,
+	//     PowerBI):
+	//     https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
 	Create(ctx context.Context, request CreateFederationPolicyRequest) (*FederationPolicy, error)
 
 	// Deletes an existing federation policy for an OIDC_FEDERATION recipient.
@@ -151,18 +159,17 @@ type RecipientFederationPoliciesService interface {
 // sharing works differs depending on whether or not your recipient has access
 // to a Databricks workspace that is enabled for Unity Catalog:
 //
-// - For recipients with access to a Databricks workspace that is enabled for
-// Unity Catalog, you can create a recipient object along with a unique sharing
-// identifier you get from the recipient. The sharing identifier is the key
-// identifier that enables the secure connection. This sharing mode is called
-// **Databricks-to-Databricks sharing**.
-//
-// - For recipients without access to a Databricks workspace that is enabled for
-// Unity Catalog, when you create a recipient object, Databricks generates an
-// activation link you can send to the recipient. The recipient follows the
-// activation link to download the credential file, and then uses the credential
-// file to establish a secure connection to receive the shared data. This
-// sharing mode is called **open sharing**.
+//   - For recipients with access to a Databricks workspace that is enabled for
+//     Unity Catalog, you can create a recipient object along with a unique
+//     sharing identifier you get from the recipient. The sharing identifier is
+//     the key identifier that enables the secure connection. This sharing mode
+//     is called **Databricks-to-Databricks sharing**.
+//   - For recipients without access to a Databricks workspace that is enabled
+//     for Unity Catalog, when you create a recipient object, Databricks
+//     generates an activation link you can send to the recipient. The recipient
+//     follows the activation link to download the credential file, and then
+//     uses the credential file to establish a secure connection to receive the
+//     shared data. This sharing mode is called **open sharing**.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RecipientsService interface {
@@ -176,15 +183,18 @@ type RecipientsService interface {
 	// the owner of the recipient.
 	Delete(ctx context.Context, request DeleteRecipientRequest) error
 
-	// Gets a share recipient from the metastore. The caller must be one of: * A
-	// user with **USE_RECIPIENT** privilege on the metastore * The owner of the
-	// share recipient * A metastore admin
+	// Gets a share recipient from the metastore. The caller must be one of:
+	//
+	//   - A user with **USE_RECIPIENT** privilege on the metastore
+	//   - The owner of the share recipient
+	//   - A metastore admin
 	Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error)
 
 	// Gets an array of all share recipients within the current metastore where:
 	//
-	// * the caller is a metastore admin, or * the caller is the owner. There is
-	// no guarantee of a specific ordering of the elements in the array.
+	//   - the caller is a metastore admin, or
+	//   - the caller is the owner. There is no guarantee of a specific ordering
+	//     of the elements in the array.
 	List(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error)
 
 	// Refreshes the specified recipient's delta sharing authentication token
@@ -240,13 +250,13 @@ type SharesService interface {
 	// Updates the share with the changes and data objects in the request. The
 	// caller must be the owner of the share or a metastore admin.
 	//
-	// When the caller is a metastore admin, only the __owner__ field can be
+	// When the caller is a metastore admin, only the **owner** field can be
 	// updated.
 	//
 	// In the case the share name is changed, **updateShare** requires that the
 	// caller is the owner of the share and has the CREATE_SHARE privilege.
 	//
-	// If there are notebook files in the share, the __storage_root__ field
+	// If there are notebook files in the share, the **storage_root** field
 	// cannot be updated.
 	//
 	// For each table that is added through this method, the share owner must

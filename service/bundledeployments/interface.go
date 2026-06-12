@@ -13,10 +13,12 @@ type BundleDeploymentsService interface {
 
 	// Marks a version as complete and releases the deployment lock.
 	//
-	// The server atomically: 1. Sets the version status to the provided
-	// terminal status. 2. Sets `complete_time` to the current server timestamp.
-	// 3. Releases the lock on the parent deployment. 4. Updates the parent
-	// deployment's `status` and `last_version_id`.
+	// The server atomically:
+	//
+	//  1. Sets the version status to the provided terminal status.
+	//  2. Sets `complete_time` to the current server timestamp.
+	//  3. Releases the lock on the parent deployment.
+	//  4. Updates the parent deployment's `status` and `last_version_id`.
 	CompleteVersion(ctx context.Context, request CompleteVersionRequest) (*Version, error)
 
 	// Creates a new deployment in the workspace.

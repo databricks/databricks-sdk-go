@@ -262,7 +262,7 @@ type CleanRoomsInterface interface {
 	// Update a clean room. The caller must be the owner of the clean room, have
 	// **MODIFY_CLEAN_ROOM** privilege, or be metastore admin.
 	//
-	// When the caller is a metastore admin, only the __owner__ field can be
+	// When the caller is a metastore admin, only the **owner** field can be
 	// updated.
 	Update(ctx context.Context, request UpdateCleanRoomRequest) (*CleanRoom, error)
 }

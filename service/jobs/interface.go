@@ -85,8 +85,8 @@ type JobsService interface {
 	// to returning the first 5 MB of the output. To return a larger result, you
 	// can store job results in a cloud storage service.
 	//
-	// This endpoint validates that the __run_id__ parameter is valid and
-	// returns an HTTP status code 400 if the __run_id__ parameter is invalid.
+	// This endpoint validates that the **run_id** parameter is valid and
+	// returns an HTTP status code 400 if the **run_id** parameter is invalid.
 	// Runs are automatically removed after 60 days. If you to want to reference
 	// them beyond 60 days, you must save old run results before they expire.
 	GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error)
@@ -102,8 +102,8 @@ type JobsService interface {
 	// history for the original job run.
 	RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error)
 
-	// Overwrite all settings for the given job. Use the [_Update_
-	// endpoint](:method:jobs/update) to update job settings partially.
+	// Overwrite all settings for the given job. Use the *Update* endpoint to
+	// update job settings partially.
 	Reset(ctx context.Context, request ResetJob) error
 
 	// Run a job and return the `run_id` of the triggered run.
@@ -129,7 +129,7 @@ type JobsService interface {
 	Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error)
 
 	// Add, update, or remove specific settings of an existing job. Use the
-	// [_Reset_ endpoint](:method:jobs/reset) to overwrite all job settings.
+	// *Reset* endpoint to overwrite all job settings.
 	Update(ctx context.Context, request UpdateJob) error
 
 	// Updates the permissions on a job. Jobs can inherit permissions from their

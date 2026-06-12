@@ -62,8 +62,11 @@ type AccountMetastoresService interface {
 type AccountStorageCredentialsService interface {
 
 	// Creates a new storage credential. The request object is specific to the
-	// cloud: - **AwsIamRole** for AWS credentials - **AzureServicePrincipal**
-	// for Azure credentials - **GcpServiceAccountKey** for GCP credentials
+	// cloud:
+	//
+	//   - **AwsIamRole** for AWS credentials
+	//   - **AzureServicePrincipal** for Azure credentials
+	//   - **GcpServiceAccountKey** for GCP credentials
 	//
 	// The caller must be a metastore admin and have the
 	// `CREATE_STORAGE_CREDENTIAL` privilege on the metastore.
@@ -231,7 +234,7 @@ type CredentialsService interface {
 	// on the credential.
 	GetCredential(ctx context.Context, request GetCredentialRequest) (*CredentialInfo, error)
 
-	// Gets an array of credentials (as __CredentialInfo__ objects).
+	// Gets an array of credentials (as **CredentialInfo** objects).
 	//
 	// The array is limited to only the credentials that the caller has
 	// permission to access. If the caller is a metastore admin, retrieval of
@@ -248,20 +251,20 @@ type CredentialsService interface {
 	//
 	// The caller must be the owner of the credential or a metastore admin or
 	// have the `MANAGE` permission. If the caller is a metastore admin, only
-	// the __owner__ field can be changed.
+	// the **owner** field can be changed.
 	UpdateCredential(ctx context.Context, request UpdateCredentialRequest) (*CredentialInfo, error)
 
 	// Validates a credential.
 	//
 	// For service credentials (purpose is **SERVICE**), either the
-	// __credential_name__ or the cloud-specific credential must be provided.
+	// **credential_name** or the cloud-specific credential must be provided.
 	//
 	// For storage credentials (purpose is **STORAGE**), at least one of
-	// __external_location_name__ and __url__ need to be provided. If only one
+	// **external_location_name** and **url** need to be provided. If only one
 	// of them is provided, it will be used for validation. And if both are
-	// provided, the __url__ will be used for validation, and
-	// __external_location_name__ will be ignored when checking overlapping
-	// urls. Either the __credential_name__ or the cloud-specific credential
+	// provided, the **url** will be used for validation, and
+	// **external_location_name** will be ignored when checking overlapping
+	// urls. Either the **credential_name** or the cloud-specific credential
 	// must be provided.
 	//
 	// The caller must be a metastore admin or the credential owner or have the
@@ -282,9 +285,11 @@ type EntityTagAssignmentsService interface {
 	// Creates a tag assignment for an Unity Catalog entity.
 	//
 	// To add tags to Unity Catalog entities, you must own the entity or have
-	// the following privileges: - **APPLY TAG** on the entity - **USE SCHEMA**
-	// on the entity's parent schema - **USE CATALOG** on the entity's parent
-	// catalog
+	// the following privileges:
+	//
+	//   - **APPLY TAG** on the entity
+	//   - **USE SCHEMA** on the entity's parent schema
+	//   - **USE CATALOG** on the entity's parent catalog
 	//
 	// To add a governed tag to Unity Catalog entities, you must also have the
 	// **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage tag
@@ -296,9 +301,11 @@ type EntityTagAssignmentsService interface {
 	// Deletes a tag assignment for an Unity Catalog entity by its key.
 	//
 	// To delete tags from Unity Catalog entities, you must own the entity or
-	// have the following privileges: - **APPLY TAG** on the entity -
-	// **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
-	// entity's parent catalog
+	// have the following privileges:
+	//
+	//   - **APPLY TAG** on the entity
+	//   - **USE_SCHEMA** on the entity's parent schema
+	//   - **USE_CATALOG** on the entity's parent catalog
 	//
 	// To delete a governed tag from Unity Catalog entities, you must also have
 	// the **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage
@@ -321,9 +328,11 @@ type EntityTagAssignmentsService interface {
 	// Updates an existing tag assignment for an Unity Catalog entity.
 	//
 	// To update tags to Unity Catalog entities, you must own the entity or have
-	// the following privileges: - **APPLY TAG** on the entity - **USE SCHEMA**
-	// on the entity's parent schema - **USE CATALOG** on the entity's parent
-	// catalog
+	// the following privileges:
+	//
+	//   - **APPLY TAG** on the entity
+	//   - **USE SCHEMA** on the entity's parent schema
+	//   - **USE CATALOG** on the entity's parent catalog
 	//
 	// To update a governed tag to Unity Catalog entities, you must also have
 	// the **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage
@@ -392,7 +401,7 @@ type ExternalLocationsService interface {
 	// some privilege on the external location.
 	Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error)
 
-	// Gets an array of external locations (__ExternalLocationInfo__ objects)
+	// Gets an array of external locations (**ExternalLocationInfo** objects)
 	// from the metastore. The caller must be a metastore admin, the owner of
 	// the external location, or a user that has some privilege on the external
 	// location. There is no guarantee of a specific ordering of the elements in
@@ -461,7 +470,7 @@ type ExternalMetadataService interface {
 // The function implementation can be any SQL expression or Query, and it can be
 // invoked wherever a table reference is allowed in a query. In Unity Catalog, a
 // function resides at the same level as a table, so it can be referenced with
-// the form __catalog_name__.__schema_name__.__function_name__.
+// the form **catalog_name**.**schema_name**.**function_name**.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FunctionsService interface {
@@ -471,26 +480,34 @@ type FunctionsService interface {
 	// Creates a new function
 	//
 	// The user must have the following permissions in order for the function to
-	// be created: - **USE_CATALOG** on the function's parent catalog -
-	// **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent schema
+	// be created:
+	//
+	//   - **USE_CATALOG** on the function's parent catalog
+	//   - **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent
+	//     schema
 	Create(ctx context.Context, request CreateFunctionRequest) (*FunctionInfo, error)
 
 	// Deletes the function that matches the supplied name. For the deletion to
-	// succeed, the user must satisfy one of the following conditions: - Is the
-	// owner of the function's parent catalog - Is the owner of the function's
-	// parent schema and have the **USE_CATALOG** privilege on its parent
-	// catalog - Is the owner of the function itself and have both the
-	// **USE_CATALOG** privilege on its parent catalog and the **USE_SCHEMA**
-	// privilege on its parent schema
+	// succeed, the user must satisfy one of the following conditions:
+	//
+	//   - Is the owner of the function's parent catalog
+	//   - Is the owner of the function's parent schema and have the
+	//     **USE_CATALOG** privilege on its parent catalog
+	//   - Is the owner of the function itself and have both the **USE_CATALOG**
+	//     privilege on its parent catalog and the **USE_SCHEMA** privilege on
+	//     its parent schema
 	Delete(ctx context.Context, request DeleteFunctionRequest) error
 
 	// Gets a function from within a parent catalog and schema. For the fetch to
-	// succeed, the user must satisfy one of the following requirements: - Is a
-	// metastore admin - Is an owner of the function's parent catalog - Have the
-	// **USE_CATALOG** privilege on the function's parent catalog and be the
-	// owner of the function - Have the **USE_CATALOG** privilege on the
-	// function's parent catalog, the **USE_SCHEMA** privilege on the function's
-	// parent schema, and the **EXECUTE** privilege on the function itself
+	// succeed, the user must satisfy one of the following requirements:
+	//
+	//   - Is a metastore admin
+	//   - Is an owner of the function's parent catalog
+	//   - Have the **USE_CATALOG** privilege on the function's parent catalog
+	//     and be the owner of the function
+	//   - Have the **USE_CATALOG** privilege on the function's parent catalog,
+	//     the **USE_SCHEMA** privilege on the function's parent schema, and the
+	//     **EXECUTE** privilege on the function itself
 	Get(ctx context.Context, request GetFunctionRequest) (*FunctionInfo, error)
 
 	// List functions within the specified parent catalog and schema. If the
@@ -512,12 +529,15 @@ type FunctionsService interface {
 
 	// Updates the function that matches the supplied name. Only the owner of
 	// the function can be updated. If the user is not a metastore admin, the
-	// user must be a member of the group that is the new function owner. - Is a
-	// metastore admin - Is the owner of the function's parent catalog - Is the
-	// owner of the function's parent schema and has the **USE_CATALOG**
-	// privilege on its parent catalog - Is the owner of the function itself and
-	// has the **USE_CATALOG** privilege on its parent catalog as well as the
-	// **USE_SCHEMA** privilege on the function's parent schema.
+	// user must be a member of the group that is the new function owner.
+	//
+	//   - Is a metastore admin
+	//   - Is the owner of the function's parent catalog
+	//   - Is the owner of the function's parent schema and has the
+	//     **USE_CATALOG** privilege on its parent catalog
+	//   - Is the owner of the function itself and has the **USE_CATALOG**
+	//     privilege on its parent catalog as well as the **USE_SCHEMA**
+	//     privilege on the function's parent schema.
 	Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error)
 }
 
@@ -583,15 +603,15 @@ type GrantsService interface {
 type MetastoresService interface {
 
 	// Creates a new metastore assignment. If an assignment for the same
-	// __workspace_id__ exists, it will be overwritten by the new
-	// __metastore_id__ and __default_catalog_name__. The caller must be an
+	// **workspace_id** exists, it will be overwritten by the new
+	// **metastore_id** and **default_catalog_name**. The caller must be an
 	// account admin.
 	Assign(ctx context.Context, request CreateMetastoreAssignment) error
 
 	// Creates a new metastore based on a provided name and optional storage
-	// root path. By default (if the __owner__ field is not set), the owner of
-	// the new metastore is the user calling the __createMetastore__ API. If the
-	// __owner__ field is set to the empty string (**""**), the ownership is
+	// root path. By default (if the **owner** field is not set), the owner of
+	// the new metastore is the user calling the **createMetastore** API. If the
+	// **owner** field is set to the empty string (**""**), the ownership is
 	// assigned to the System User instead.
 	Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error)
 
@@ -605,7 +625,7 @@ type MetastoresService interface {
 	// metastore admin to retrieve this info.
 	Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error)
 
-	// Gets an array of the available metastores (as __MetastoreInfo__ objects).
+	// Gets an array of the available metastores (as **MetastoreInfo** objects).
 	// The caller must be an admin to retrieve this info. There is no guarantee
 	// of a specific ordering of the elements in the array.
 	//
@@ -628,14 +648,14 @@ type MetastoresService interface {
 	Unassign(ctx context.Context, request UnassignRequest) error
 
 	// Updates information for a specific metastore. The caller must be a
-	// metastore admin. If the __owner__ field is set to the empty string
+	// metastore admin. If the **owner** field is set to the empty string
 	// (**""**), the ownership is updated to the System User.
 	Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error)
 
 	// Updates a metastore assignment. This operation can be used to update
-	// __metastore_id__ or __default_catalog_name__ for a specified Workspace,
+	// **metastore_id** or **default_catalog_name** for a specified Workspace,
 	// if the Workspace is already assigned a metastore. The caller must be an
-	// account admin to update __metastore_id__; otherwise, the caller can be a
+	// account admin to update **metastore_id**; otherwise, the caller can be a
 	// Workspace admin.
 	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
 }
@@ -645,8 +665,7 @@ type MetastoresService interface {
 // auditing, lineage, and discovery of ML models across Databricks workspaces.
 //
 // This API reference documents the REST endpoints for managing model versions
-// in Unity Catalog. For more details, see the [registered models API
-// docs](/api/workspace/registeredmodels).
+// in Unity Catalog. For more details, see the registered models API docs.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ModelVersionsService interface {
@@ -787,13 +806,17 @@ type QualityMonitorsService interface {
 	// (/api/data-quality/v1/monitors). Creates a new monitor for the specified
 	// table.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog,
-	// have **USE_SCHEMA** on the table's parent schema, and have **SELECT**
-	// access on the table 2. have **USE_CATALOG** on the table's parent
-	// catalog, be an owner of the table's parent schema, and have **SELECT**
-	// access on the table. 3. have the following permissions: - **USE_CATALOG**
-	// on the table's parent catalog - **USE_SCHEMA** on the table's parent
-	// schema - be an owner of the table.
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
+	//     table's parent schema, and have **SELECT** access on the table
+	//  2. have **USE_CATALOG** on the table's parent catalog, be an owner of
+	//     the table's parent schema, and have **SELECT** access on the table.
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - be an owner of the table.
 	//
 	// Workspace assets, such as the dashboard, will be created in the workspace
 	// where this call was made.
@@ -803,11 +826,16 @@ type QualityMonitorsService interface {
 	// (/api/data-quality/v1/monitors). Deletes a monitor for the specified
 	// table.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - be an owner of the table.
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog
+	//  2. have **USE_CATALOG** on the table's parent catalog and be an owner of
+	//     the table's parent schema
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - be an owner of the table.
 	//
 	// Additionally, the call must be made from the workspace where the monitor
 	// was created.
@@ -819,11 +847,16 @@ type QualityMonitorsService interface {
 	// Deprecated: Use Data Quality Monitors API instead
 	// (/api/data-quality/v1/monitors). Gets a monitor for the specified table.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema. 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - **SELECT** privilege on the table.
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog
+	//  2. have **USE_CATALOG** on the table's parent catalog and be an owner of
+	//     the table's parent schema.
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - **SELECT** privilege on the table.
 	//
 	// The returned information includes configuration values, as well as
 	// information on assets created by the monitor. Some information (e.g.,
@@ -835,11 +868,16 @@ type QualityMonitorsService interface {
 	// (/api/data-quality/v1/monitors). Gets info about a specific monitor
 	// refresh using the given refresh ID.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - **SELECT** privilege on the table.
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog
+	//  2. have **USE_CATALOG** on the table's parent catalog and be an owner of
+	//     the table's parent schema
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - **SELECT** privilege on the table.
 	//
 	// Additionally, the call must be made from the workspace where the monitor
 	// was created.
@@ -849,11 +887,16 @@ type QualityMonitorsService interface {
 	// (/api/data-quality/v1/monitors). Gets an array containing the history of
 	// the most recent refreshes (up to 25) for this table.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - **SELECT** privilege on the table.
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog
+	//  2. have **USE_CATALOG** on the table's parent catalog and be an owner of
+	//     the table's parent schema
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - **SELECT** privilege on the table.
 	//
 	// Additionally, the call must be made from the workspace where the monitor
 	// was created.
@@ -863,11 +906,16 @@ type QualityMonitorsService interface {
 	// (/api/data-quality/v1/monitors). Regenerates the monitoring dashboard for
 	// the specified table.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - be an owner of the table
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog
+	//  2. have **USE_CATALOG** on the table's parent catalog and be an owner of
+	//     the table's parent schema
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - be an owner of the table
 	//
 	// The call must be made from the workspace where the monitor was created.
 	// The dashboard will be regenerated in the assets directory that was
@@ -878,11 +926,16 @@ type QualityMonitorsService interface {
 	// (/api/data-quality/v1/monitors). Queues a metric refresh on the monitor
 	// for the specified table. The refresh will execute in the background.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - be an owner of the table
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog
+	//  2. have **USE_CATALOG** on the table's parent catalog and be an owner of
+	//     the table's parent schema
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - be an owner of the table
 	//
 	// Additionally, the call must be made from the workspace where the monitor
 	// was created.
@@ -892,11 +945,16 @@ type QualityMonitorsService interface {
 	// (/api/data-quality/v1/monitors). Updates a monitor for the specified
 	// table.
 	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - be an owner of the table.
+	// The caller must either:
+	//
+	//  1. be an owner of the table's parent catalog
+	//  2. have **USE_CATALOG** on the table's parent catalog and be an owner of
+	//     the table's parent schema
+	//  3. have the following permissions:
+	//
+	//   - **USE_CATALOG** on the table's parent catalog
+	//   - **USE_SCHEMA** on the table's parent schema
+	//   - be an owner of the table.
 	//
 	// Additionally, the call must be made from the workspace where the monitor
 	// was created, and the caller must be the original creator of the monitor.
@@ -922,15 +980,16 @@ type QualityMonitorsService interface {
 // enclosing schema. In addition, the following additional privileges are
 // required for various operations:
 //
-// * To create a registered model, users must additionally have the CREATE_MODEL
-// permission on the target schema. * To view registered model or model version
-// metadata, model version data files, or invoke a model version, users must
-// additionally have the EXECUTE permission on the registered model * To update
-// registered model or model version tags, users must additionally have APPLY
-// TAG permissions on the registered model * To update other registered model or
-// model version metadata (comments, aliases) create a new model version, or
-// update permissions on the registered model, users must be owners of the
-// registered model.
+//   - To create a registered model, users must additionally have the
+//     CREATE_MODEL permission on the target schema.
+//   - To view registered model or model version metadata, model version data
+//     files, or invoke a model version, users must additionally have the
+//     EXECUTE permission on the registered model
+//   - To update registered model or model version tags, users must additionally
+//     have APPLY TAG permissions on the registered model
+//   - To update other registered model or model version metadata (comments,
+//     aliases) create a new model version, or update permissions on the
+//     registered model, users must be owners of the registered model.
 //
 // Note: The securable type for models is FUNCTION. When using REST APIs (e.g.
 // tagging, grants) that specify a securable type, use FUNCTION as the securable
@@ -946,11 +1005,13 @@ type RegisteredModelsService interface {
 	// parent catalog, or the Metastore.
 	//
 	// For registered model creation to succeed, the user must satisfy the
-	// following conditions: - The caller must be a metastore admin, or be the
-	// owner of the parent catalog and schema, or have the **USE_CATALOG**
-	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
-	// parent schema. - The caller must have the **CREATE MODEL** or **CREATE
-	// FUNCTION** privilege on the parent schema.
+	// following conditions:
+	//
+	//   - The caller must be a metastore admin, or be the owner of the parent
+	//     catalog and schema, or have the **USE_CATALOG** privilege on the
+	//     parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+	//   - The caller must have the **CREATE MODEL** or **CREATE FUNCTION**
+	//     privilege on the parent schema.
 	Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error)
 
 	// Deletes a registered model and all its model versions from the specified
@@ -1134,7 +1195,7 @@ type SchemasService interface {
 
 	// Updates a schema for a catalog. The caller must be the owner of the
 	// schema or a metastore admin. If the caller is a metastore admin, only the
-	// __owner__ field can be changed in the update. If the __name__ field must
+	// **owner** field can be changed in the update. If the **name** field must
 	// be updated, the caller must be a metastore admin or have the
 	// **CREATE_SCHEMA** privilege on the parent catalog.
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
@@ -1228,7 +1289,7 @@ type StorageCredentialsService interface {
 	// permission on the storage credential.
 	Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error)
 
-	// Gets an array of storage credentials (as __StorageCredentialInfo__
+	// Gets an array of storage credentials (as **StorageCredentialInfo**
 	// objects). The array is limited to only those storage credentials the
 	// caller has permission to access. If the caller is a metastore admin,
 	// retrieval of credentials is unrestricted. There is no guarantee of a
@@ -1251,13 +1312,13 @@ type StorageCredentialsService interface {
 	Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error)
 
 	// Validates a storage credential. At least one of
-	// __external_location_name__ and __url__ need to be provided. If only one
+	// **external_location_name** and **url** need to be provided. If only one
 	// of them is provided, it will be used for validation. And if both are
-	// provided, the __url__ will be used for validation, and
-	// __external_location_name__ will be ignored when checking overlapping
+	// provided, the **url** will be used for validation, and
+	// **external_location_name** will be ignored when checking overlapping
 	// urls.
 	//
-	// Either the __storage_credential_name__ or the cloud-specific credential
+	// Either the **storage_credential_name** or the cloud-specific credential
 	// must be provided.
 	//
 	// The caller must be a metastore admin or the storage credential owner or
@@ -1314,25 +1375,29 @@ type TableConstraintsService interface {
 	// Creates a new table constraint.
 	//
 	// For the table constraint creation to succeed, the user must satisfy both
-	// of these conditions: - the user must have the **USE_CATALOG** privilege
-	// on the table's parent catalog, the **USE_SCHEMA** privilege on the
-	// table's parent schema, and be the owner of the table. - if the new
-	// constraint is a __ForeignKeyConstraint__, the user must have the
-	// **USE_CATALOG** privilege on the referenced parent table's catalog, the
-	// **USE_SCHEMA** privilege on the referenced parent table's schema, and be
-	// the owner of the referenced parent table.
+	// of these conditions:
+	//
+	//   - the user must have the **USE_CATALOG** privilege on the table's
+	//     parent catalog, the **USE_SCHEMA** privilege on the table's parent
+	//     schema, and be the owner of the table.
+	//   - if the new constraint is a **ForeignKeyConstraint**, the user must
+	//     have the **USE_CATALOG** privilege on the referenced parent table's
+	//     catalog, the **USE_SCHEMA** privilege on the referenced parent
+	//     table's schema, and be the owner of the referenced parent table.
 	Create(ctx context.Context, request CreateTableConstraint) (*TableConstraint, error)
 
 	// Deletes a table constraint.
 	//
 	// For the table constraint deletion to succeed, the user must satisfy both
-	// of these conditions: - the user must have the **USE_CATALOG** privilege
-	// on the table's parent catalog, the **USE_SCHEMA** privilege on the
-	// table's parent schema, and be the owner of the table. - if __cascade__
-	// argument is **true**, the user must have the following permissions on all
-	// of the child tables: the **USE_CATALOG** privilege on the table's
-	// catalog, the **USE_SCHEMA** privilege on the table's schema, and be the
-	// owner of the table.
+	// of these conditions:
+	//
+	//   - the user must have the **USE_CATALOG** privilege on the table's
+	//     parent catalog, the **USE_SCHEMA** privilege on the table's parent
+	//     schema, and be the owner of the table.
+	//   - if **cascade** argument is **true**, the user must have the following
+	//     permissions on all of the child tables: the **USE_CATALOG** privilege
+	//     on the table's catalog, the **USE_SCHEMA** privilege on the table's
+	//     schema, and be the owner of the table.
 	Delete(ctx context.Context, request DeleteTableConstraintRequest) error
 }
 
@@ -1344,7 +1409,7 @@ type TableConstraintsService interface {
 // permission on its parent catalog and the USE_SCHEMA permission on its parent
 // schema.
 //
-// A table can be managed or external. From an API perspective, a __VIEW__ is a
+// A table can be managed or external. From an API perspective, a **VIEW** is a
 // particular kind of table (rather than a managed or external table).
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
@@ -1385,23 +1450,29 @@ type TablesService interface {
 	Delete(ctx context.Context, request DeleteTableRequest) error
 
 	// Gets if a table exists in the metastore for a specific catalog and
-	// schema. The caller must satisfy one of the following requirements: * Be a
-	// metastore admin * Be the owner of the parent catalog * Be the owner of
-	// the parent schema and have the **USE_CATALOG** privilege on the parent
-	// catalog * Have the **USE_CATALOG** privilege on the parent catalog and
-	// the **USE_SCHEMA** privilege on the parent schema, and either be the
-	// table owner or have the **SELECT** privilege on the table. * Have
-	// **BROWSE** privilege on the parent catalog * Have **BROWSE** privilege on
-	// the parent schema
+	// schema. The caller must satisfy one of the following requirements:
+	//
+	//   - Be a metastore admin
+	//   - Be the owner of the parent catalog
+	//   - Be the owner of the parent schema and have the **USE_CATALOG**
+	//     privilege on the parent catalog
+	//   - Have the **USE_CATALOG** privilege on the parent catalog and the
+	//     **USE_SCHEMA** privilege on the parent schema, and either be the
+	//     table owner or have the **SELECT** privilege on the table.
+	//   - Have **BROWSE** privilege on the parent catalog
+	//   - Have **BROWSE** privilege on the parent schema
 	Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error)
 
 	// Gets a table from the metastore for a specific catalog and schema. The
-	// caller must satisfy one of the following requirements: * Be a metastore
-	// admin * Be the owner of the parent catalog * Be the owner of the parent
-	// schema and have the **USE_CATALOG** privilege on the parent catalog *
-	// Have the **USE_CATALOG** privilege on the parent catalog and the
-	// **USE_SCHEMA** privilege on the parent schema, and either be the table
-	// owner or have the **SELECT** privilege on the table.
+	// caller must satisfy one of the following requirements:
+	//
+	//   - Be a metastore admin
+	//   - Be the owner of the parent catalog
+	//   - Be the owner of the parent schema and have the **USE_CATALOG**
+	//     privilege on the parent catalog
+	//   - Have the **USE_CATALOG** privilege on the parent catalog and the
+	//     **USE_SCHEMA** privilege on the parent schema, and either be the
+	//     table owner or have the **SELECT** privilege on the table.
 	Get(ctx context.Context, request GetTableRequest) (*TableInfo, error)
 
 	// Gets an array of all tables for the current metastore under the parent
@@ -1427,13 +1498,13 @@ type TablesService interface {
 	// Gets an array of summaries for tables for a schema and catalog within the
 	// metastore. The table summaries returned are either:
 	//
-	// * summaries for tables (within the current metastore and parent catalog
-	// and schema), when the user is a metastore admin, or: * summaries for
-	// tables and schemas (within the current metastore and parent catalog) for
-	// which the user has ownership or the **SELECT** privilege on the table and
-	// ownership or **USE_SCHEMA** privilege on the schema, provided that the
-	// user also has ownership or the **USE_CATALOG** privilege on the parent
-	// catalog.
+	//   - summaries for tables (within the current metastore and parent catalog
+	//     and schema), when the user is a metastore admin, or:
+	//   - summaries for tables and schemas (within the current metastore and
+	//     parent catalog) for which the user has ownership or the **SELECT**
+	//     privilege on the table and ownership or **USE_SCHEMA** privilege on
+	//     the schema, provided that the user also has ownership or the
+	//     **USE_CATALOG** privilege on the parent catalog.
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
@@ -1574,16 +1645,22 @@ type VolumesService interface {
 	// specified by the parent schema, or the parent catalog, or the Metastore.
 	//
 	// For the volume creation to succeed, the user must satisfy following
-	// conditions: - The caller must be a metastore admin, or be the owner of
-	// the parent catalog and schema, or have the **USE_CATALOG** privilege on
-	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-	// - The caller must have **CREATE VOLUME** privilege on the parent schema.
+	// conditions:
 	//
-	// For an external volume, following conditions also need to satisfy - The
-	// caller must have **CREATE EXTERNAL VOLUME** privilege on the external
-	// location. - There are no other tables, nor volumes existing in the
-	// specified storage location. - The specified storage location is not under
-	// the location of other tables, nor volumes, or catalogs or schemas.
+	//   - The caller must be a metastore admin, or be the owner of the parent
+	//     catalog and schema, or have the **USE_CATALOG** privilege on the
+	//     parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+	//   - The caller must have **CREATE VOLUME** privilege on the parent
+	//     schema.
+	//
+	// For an external volume, following conditions also need to satisfy
+	//
+	//   - The caller must have **CREATE EXTERNAL VOLUME** privilege on the
+	//     external location.
+	//   - There are no other tables, nor volumes existing in the specified
+	//     storage location.
+	//   - The specified storage location is not under the location of other
+	//     tables, nor volumes, or catalogs or schemas.
 	Create(ctx context.Context, request CreateVolumeRequestContent) (*VolumeInfo, error)
 
 	// Deletes a volume from the specified parent catalog and schema.
@@ -1635,14 +1712,14 @@ type VolumesService interface {
 	Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error)
 }
 
-// A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An
-// __OPEN__ securable can be accessed from any workspace, while an __ISOLATED__
+// A securable in Databricks can be configured as **OPEN** or **ISOLATED**. An
+// **OPEN** securable can be accessed from any workspace, while an **ISOLATED**
 // securable can only be accessed from a configured list of workspaces. This API
 // allows you to configure (bind) securables to workspaces.
 //
-// NOTE: The __isolation_mode__ is configured for the securable itself (using
+// NOTE: The **isolation_mode** is configured for the securable itself (using
 // its Update method) and the workspace bindings are only consulted when the
-// securable's __isolation_mode__ is set to __ISOLATED__.
+// securable's **isolation_mode** is set to **ISOLATED**.
 //
 // A securable's workspace bindings can be configured by a metastore admin or
 // the owner of the securable.
@@ -1652,8 +1729,12 @@ type VolumesService interface {
 // (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which
 // introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
 //
-// Securable types that support binding: - catalog - storage_credential -
-// credential - external_location
+// Securable types that support binding:
+//
+//   - catalog
+//   - storage_credential
+//   - credential
+//   - external_location
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceBindingsService interface {

@@ -577,7 +577,10 @@ type UpdateExampleRequest struct {
 	// knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
 	Name string `json:"-" url:"-"`
 	// Comma-delimited list of fields to update on the example. Allowed values:
-	// `question`, `guidelines`. Examples: - `question` - `question,guidelines`
+	// `question`, `guidelines`. Examples:
+	//
+	//   - `question`
+	//   - `question,guidelines`
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
@@ -592,7 +595,9 @@ type UpdateKnowledgeAssistantRequest struct {
 	Name string `json:"-" url:"-"`
 	// Comma-delimited list of fields to update on the Knowledge Assistant.
 	// Allowed values: `display_name`, `description`, `instructions`. Examples:
-	// - `display_name` - `description,instructions`
+	//
+	//   - `display_name`
+	//   - `description,instructions`
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
@@ -606,7 +611,9 @@ type UpdateKnowledgeSourceRequest struct {
 	// knowledge-assistants/{knowledge_assistant_id}/knowledge-sources/{knowledge_source_id}
 	Name string `json:"-" url:"-"`
 	// Comma-delimited list of fields to update on the Knowledge Source. Allowed
-	// values: `display_name`, `description`. Examples: - `display_name` -
-	// `display_name,description`
+	// values: `display_name`, `description`. Examples:
+	//
+	//   - `display_name`
+	//   - `display_name,description`
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }

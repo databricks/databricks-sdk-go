@@ -14,7 +14,7 @@ type ConsumerFulfillmentsService interface {
 	// Get a high level preview of the metadata of listing installable content.
 	Get(ctx context.Context, request GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error)
 
-	// Get all listings fulfillments associated with a listing. A _fulfillment_
+	// Get all listings fulfillments associated with a listing. A *fulfillment*
 	// is a potential installation. Standard installations contain metadata
 	// about the attached share or git repo. Only one of these fields will be
 	// present. Personalized installations contain metadata about the attached
@@ -43,10 +43,11 @@ type ConsumerInstallationsService interface {
 
 	// This is a update API that will update the part of the fields defined in
 	// the installation table as well as interact with external services
-	// according to the fields not included in the installation table 1. the
-	// token will be rotate if the rotateToken flag is true 2. the token will be
-	// forcibly rotate if the rotateToken flag is true and the tokenInfo field
-	// is empty
+	// according to the fields not included in the installation table
+	//
+	//  1. the token will be rotate if the rotateToken flag is true
+	//  2. the token will be forcibly rotate if the rotateToken flag is true and
+	//     the tokenInfo field is empty
 	Update(ctx context.Context, request UpdateInstallationRequest) (*UpdateInstallationResponse, error)
 }
 

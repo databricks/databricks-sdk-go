@@ -20,9 +20,8 @@ type GenieInterface interface {
 	WaitGetMessageGenieCompleted(ctx context.Context, conversationId string, messageId string, spaceId string,
 		timeout time.Duration, callback func(*GenieMessage)) (*GenieMessage, error)
 
-	// Create new message in a [conversation](:method:genie/startconversation). The
-	// AI response uses all previously created messages in the conversation to
-	// respond.
+	// Create new message in a conversation. The AI response uses all previously
+	// created messages in the conversation to respond.
 	CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error)
 
 	// Calls [GenieAPIInterface.CreateMessage] and waits to reach COMPLETED state
@@ -52,21 +51,16 @@ type GenieInterface interface {
 	// attachment has expired and needs to be re-executed.
 	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Execute Message Attachment
-	// Query](:method:genie/executemessageattachmentquery) instead.
+	// DEPRECATED: Use Execute Message Attachment Query instead.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
 	// Initiates a new SQL execution and returns a `download_id` and
 	// `download_id_signature` that you can use to track the progress of the
 	// download. The query result is stored in an external link and can be retrieved
-	// using the [Get Download Full Query
-	// Result](:method:genie/getdownloadfullqueryresult) API. Both `download_id` and
+	// using the Get Download Full Query Result API. Both `download_id` and
 	// `download_id_signature` must be provided when calling the Get endpoint.
 	//
-	// ----
-	//
-	// ### **Warning: Databricks strongly recommends that you protect the URLs that
-	// are returned by the `EXTERNAL_LINKS` disposition.**
+	// # **Warning: Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.**
 	//
 	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
 	// generated, which can be used to download the results directly from . As a
@@ -75,10 +69,7 @@ type GenieInterface interface {
 	// Because URLs are already generated with embedded temporary s, you must not
 	// set an `Authorization` header in the download requests.
 	//
-	// See [Execute Statement](:method:statementexecution/executestatement) for more
-	// details.
-	//
-	// ----
+	// See Execute Statement for more details.
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
 
 	// Create and run evaluations for multiple benchmark questions in a Genie space.
@@ -96,18 +87,14 @@ type GenieInterface interface {
 	// Lists all evaluation runs in a space.
 	GenieListEvalRuns(ctx context.Context, request GenieListEvalRunsRequest) (*GenieListEvalRunsResponse, error)
 
-	// After [Generating a Full Query Result
-	// Download](:method:genie/generatedownloadfullqueryresult) and successfully
-	// receiving a `download_id` and `download_id_signature`, use this API to poll
-	// the download progress. Both `download_id` and `download_id_signature` are
-	// required to call this endpoint. When the download is complete, the API
-	// returns the result in the `EXTERNAL_LINKS` disposition, containing one or
-	// more external links to the query result files.
+	// After Generating a Full Query Result Download and successfully receiving a
+	// `download_id` and `download_id_signature`, use this API to poll the download
+	// progress. Both `download_id` and `download_id_signature` are required to call
+	// this endpoint. When the download is complete, the API returns the result in
+	// the `EXTERNAL_LINKS` disposition, containing one or more external links to
+	// the query result files.
 	//
-	// ----
-	//
-	// ### **Warning: Databricks strongly recommends that you protect the URLs that
-	// are returned by the `EXTERNAL_LINKS` disposition.**
+	// # **Warning: Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.**
 	//
 	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
 	// generated, which can be used to download the results directly from . As a
@@ -116,24 +103,17 @@ type GenieInterface interface {
 	// Because URLs are already generated with embedded temporary s, you must not
 	// set an `Authorization` header in the download requests.
 	//
-	// See [Execute Statement](:method:statementexecution/executestatement) for more
-	// details.
-	//
-	// ----
+	// See Execute Statement for more details.
 	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
-	// After [Generating a Full Query Result
-	// Download](:method:genie/generatedownloadfullqueryresult) and successfully
-	// receiving a `download_id` and `download_id_signature`, use this API to poll
-	// the download progress. Both `download_id` and `download_id_signature` are
-	// required to call this endpoint. When the download is complete, the API
-	// returns the result in the `EXTERNAL_LINKS` disposition, containing one or
-	// more external links to the query result files.
+	// After Generating a Full Query Result Download and successfully receiving a
+	// `download_id` and `download_id_signature`, use this API to poll the download
+	// progress. Both `download_id` and `download_id_signature` are required to call
+	// this endpoint. When the download is complete, the API returns the result in
+	// the `EXTERNAL_LINKS` disposition, containing one or more external links to
+	// the query result files.
 	//
-	// ----
-	//
-	// ### **Warning: Databricks strongly recommends that you protect the URLs that
-	// are returned by the `EXTERNAL_LINKS` disposition.**
+	// # **Warning: Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.**
 	//
 	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
 	// generated, which can be used to download the results directly from . As a
@@ -142,10 +122,7 @@ type GenieInterface interface {
 	// Because URLs are already generated with embedded temporary s, you must not
 	// set an `Authorization` header in the download requests.
 	//
-	// See [Execute Statement](:method:statementexecution/executestatement) for more
-	// details.
-	//
-	// ----
+	// See Execute Statement for more details.
 	GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get message from conversation.
@@ -164,20 +141,16 @@ type GenieInterface interface {
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Get Message Attachment Query
-	// Result](:method:genie/getmessageattachmentqueryresult) instead.
+	// DEPRECATED: Use Get Message Attachment Query Result instead.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Get Message Attachment Query
-	// Result](:method:genie/getmessageattachmentqueryresult) instead.
+	// DEPRECATED: Use Get Message Attachment Query Result instead.
 	GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Get Message Attachment Query
-	// Result](:method:genie/getmessageattachmentqueryresult) instead.
+	// DEPRECATED: Use Get Message Attachment Query Result instead.
 	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Get Message Attachment Query
-	// Result](:method:genie/getmessageattachmentqueryresult) instead.
+	// DEPRECATED: Use Get Message Attachment Query Result instead.
 	GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
 	// Get details of a Genie Space.
@@ -303,9 +276,8 @@ func (w *WaitGetMessageGenieCompleted[R]) GetWithTimeout(timeout time.Duration) 
 	return w.Poll(timeout, w.callback)
 }
 
-// Create new message in a [conversation](:method:genie/startconversation). The
-// AI response uses all previously created messages in the conversation to
-// respond.
+// Create new message in a conversation. The AI response uses all previously
+// created messages in the conversation to respond.
 func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error) {
 	genieMessage, err := a.genieImpl.CreateMessage(ctx, genieCreateConversationMessageRequest)
 	if err != nil {
@@ -359,18 +331,14 @@ func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Cont
 	})
 }
 
-// After [Generating a Full Query Result
-// Download](:method:genie/generatedownloadfullqueryresult) and successfully
-// receiving a `download_id` and `download_id_signature`, use this API to poll
-// the download progress. Both `download_id` and `download_id_signature` are
-// required to call this endpoint. When the download is complete, the API
-// returns the result in the `EXTERNAL_LINKS` disposition, containing one or
-// more external links to the query result files.
+// After Generating a Full Query Result Download and successfully receiving a
+// `download_id` and `download_id_signature`, use this API to poll the download
+// progress. Both `download_id` and `download_id_signature` are required to call
+// this endpoint. When the download is complete, the API returns the result in
+// the `EXTERNAL_LINKS` disposition, containing one or more external links to
+// the query result files.
 //
-// ----
-//
-// ### **Warning: Databricks strongly recommends that you protect the URLs that
-// are returned by the `EXTERNAL_LINKS` disposition.**
+// # **Warning: Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.**
 //
 // When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
 // generated, which can be used to download the results directly from . As a
@@ -379,10 +347,7 @@ func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Cont
 // Because URLs are already generated with embedded temporary s, you must not
 // set an `Authorization` header in the download requests.
 //
-// See [Execute Statement](:method:statementexecution/executestatement) for more
-// details.
-//
-// ----
+// See Execute Statement for more details.
 func (a *GenieAPI) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error) {
 	return a.genieImpl.GetDownloadFullQueryResult(ctx, GenieGetDownloadFullQueryResultRequest{
 		SpaceId:        spaceId,
@@ -414,8 +379,7 @@ func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndM
 	})
 }
 
-// DEPRECATED: Use [Get Message Attachment Query
-// Result](:method:genie/getmessageattachmentqueryresult) instead.
+// DEPRECATED: Use Get Message Attachment Query Result instead.
 func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
 		SpaceId:        spaceId,
@@ -424,8 +388,7 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 	})
 }
 
-// DEPRECATED: Use [Get Message Attachment Query
-// Result](:method:genie/getmessageattachmentqueryresult) instead.
+// DEPRECATED: Use Get Message Attachment Query Result instead.
 func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResultByAttachment(ctx, GenieGetQueryResultByAttachmentRequest{
 		SpaceId:        spaceId,

@@ -11,8 +11,10 @@ import (
 
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
-	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+	//   - `CAN_VIEW`: Can view the query
+	//   - `CAN_RUN`: Can run the query
+	//   - `CAN_EDIT`: Can edit the query
+	//   - `CAN_MANAGE`: Can manage the query
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
@@ -526,11 +528,13 @@ type AlertV2 struct {
 	QueryText string `json:"query_text"`
 	// Specifies the identity that will be used to run the alert. This field
 	// allows you to configure alerts to run as a specific user or service
-	// principal. - For user identity: Set `user_name` to the email of an active
-	// workspace user. Users can only set this to their own email. - For service
-	// principal: Set `service_principal_name` to the application ID. Requires
-	// the `servicePrincipal/user` role. If not specified, the alert will run as
-	// the request user.
+	// principal.
+	//
+	//   - For user identity: Set `user_name` to the email of an active
+	//     workspace user. Users can only set this to their own email.
+	//   - For service principal: Set `service_principal_name` to the
+	//     application ID. Requires the `servicePrincipal/user` role. If not
+	//     specified, the alert will run as the request user.
 	RunAs *AlertV2RunAs `json:"run_as,omitempty"`
 	// The run as username or application ID of service principal. On Create and
 	// Update, this field can be set to application ID of an active service
@@ -1215,7 +1219,10 @@ type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values:
+	//
+	//   - Must be == 0 or >= 10 mins
+	//   - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -1225,8 +1232,18 @@ type CreateWarehouseRequest struct {
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
-	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// Supported values:
+	//
+	//   - 2X-Small
+	//   - X-Small
+	//   - Small
+	//   - Medium
+	//   - Large
+	//   - X-Large
+	//   - 2X-Large
+	//   - 3X-Large
+	//   - 4X-Large
+	//   - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -1241,7 +1258,10 @@ type CreateWarehouseRequest struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
+	// Supported values:
+	//
+	//   - Must be >= min_num_clusters
+	//   - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -1251,21 +1271,28 @@ type CreateWarehouseRequest struct {
 	// queries. This is similar to reserved vs. revocable cores in a resource
 	// manager.
 	//
-	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+	// Supported values:
+	//
+	//   - Must be > 0
+	//   - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
-	// characters.
+	// Supported values:
+	//
+	//   - Must be unique within an org.
+	//   - Must be less than 100 characters.
 	Name string `json:"name,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
-	// Supported values: - Number of tags < 45.
+	// Supported values:
+	//
+	//   - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
@@ -1409,8 +1436,10 @@ type Dashboard struct {
 	Options *DashboardOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+	//   - `CAN_VIEW`: Can view the query
+	//   - `CAN_RUN`: Can run the query
+	//   - `CAN_EDIT`: Can edit the query
+	//   - `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
@@ -1895,7 +1924,10 @@ type EditWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values:
+	//
+	//   - Must be == 0 or >= 10 mins
+	//   - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -1905,8 +1937,18 @@ type EditWarehouseRequest struct {
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
-	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// Supported values:
+	//
+	//   - 2X-Small
+	//   - X-Small
+	//   - Small
+	//   - Medium
+	//   - Large
+	//   - X-Large
+	//   - 2X-Large
+	//   - 3X-Large
+	//   - 4X-Large
+	//   - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -1923,7 +1965,10 @@ type EditWarehouseRequest struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
+	// Supported values:
+	//
+	//   - Must be >= min_num_clusters
+	//   - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -1933,21 +1978,28 @@ type EditWarehouseRequest struct {
 	// queries. This is similar to reserved vs. revocable cores in a resource
 	// manager.
 	//
-	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+	// Supported values:
+	//
+	//   - Must be > 0
+	//   - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
-	// characters.
+	// Supported values:
+	//
+	//   - Must be unique within an org.
+	//   - Must be less than 100 characters.
 	Name string `json:"name,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
-	// Supported values: - Number of tags < 45.
+	// Supported values:
+	//
+	//   - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
@@ -2050,7 +2102,10 @@ type EndpointInfo struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values:
+	//
+	//   - Must be == 0 or >= 10 mins
+	//   - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -2060,8 +2115,18 @@ type EndpointInfo struct {
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
-	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// Supported values:
+	//
+	//   - 2X-Small
+	//   - X-Small
+	//   - Small
+	//   - Medium
+	//   - Large
+	//   - X-Large
+	//   - 2X-Large
+	//   - 3X-Large
+	//   - 4X-Large
+	//   - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2083,7 +2148,10 @@ type EndpointInfo struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
+	// Supported values:
+	//
+	//   - Must be >= min_num_clusters
+	//   - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -2093,14 +2161,19 @@ type EndpointInfo struct {
 	// queries. This is similar to reserved vs. revocable cores in a resource
 	// manager.
 	//
-	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+	// Supported values:
+	//
+	//   - Must be > 0
+	//   - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
-	// characters.
+	// Supported values:
+	//
+	//   - Must be unique within an org.
+	//   - Must be less than 100 characters.
 	Name string `json:"name,omitempty"`
 	// Deprecated. current number of active sessions for the warehouse
 	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
@@ -2115,7 +2188,9 @@ type EndpointInfo struct {
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
-	// Supported values: - Number of tags < 45.
+	// Supported values:
+	//
+	//   - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
@@ -2243,13 +2318,13 @@ type ExecuteStatementRequest struct {
 	// generate arbitrarily sized result sets for fetching up to 100 GiB. The
 	// resulting links have two important properties:
 	//
-	// 1. They point to resources _external_ to the Databricks compute;
-	// therefore any associated authentication information (typically a personal
-	// access token, OAuth token, or similar) _must be removed_ when fetching
-	// from these links.
-	//
-	// 2. These are URLs with a specific expiration, indicated in the response.
-	// The behavior when attempting to use an expired link is cloud specific.
+	//  1. They point to resources *external* to the Databricks compute;
+	//     therefore any associated authentication information (typically a
+	//     personal access token, OAuth token, or similar) *must be removed*
+	//     when fetching from these links.
+	//  2. These are URLs with a specific expiration, indicated in the response.
+	//     The behavior when attempting to use an expired link is cloud
+	//     specific.
 	Disposition Disposition `json:"disposition,omitempty"`
 	// Statement execution supports three result formats: `JSON_ARRAY`
 	// (default), `ARROW_STREAM`, and `CSV`.
@@ -2264,8 +2339,11 @@ type ExecuteStatementRequest struct {
 	// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
 	// would look like this:
 	//
-	// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null
-	// ], ] ```
+	// 	[
+	// 	[ "id-1", "1", null ],
+	// 	[ "id-2", "2", null ],
+	// 	[ "id-3", "3", null ],
+	// 	]
 	//
 	// When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`,
 	// each chunk in the result contains compact JSON with no indentation or
@@ -2283,7 +2361,10 @@ type ExecuteStatementRequest struct {
 	// names. For example, the output of `SELECT concat('id-', id) AS strCol, id
 	// AS intCol, null as nullCol FROM range(3)` would look like this:
 	//
-	// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+	// 	strCol,intCol,nullCol
+	// 	id-1,1,null
+	// 	id-2,2,null
+	// 	id-3,3,null
 	//
 	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
@@ -2312,14 +2393,14 @@ type ExecuteStatementRequest struct {
 	// For example, the following statement contains two parameters, `my_name`
 	// and `my_date`:
 	//
-	// ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ```
+	// 	SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
 	//
 	// The parameters can be passed in the request body as follows:
 	//
-	// ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND
+	// `{ ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND
 	// date = :my_date", "parameters": [ { "name": "my_name", "value": "the
-	// name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] }
-	// `
+	// name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ]
+	// }`
 	//
 	// Currently, positional parameters denoted by a `?` marker are not
 	// supported by the Databricks SQL Statement Execution API.
@@ -2449,11 +2530,11 @@ type ExternalLink struct {
 	// values of these headers should be considered sensitive and the client
 	// should not expose these values in a log.
 	HttpHeaders map[string]string `json:"http_headers,omitempty"`
-	// When fetching, provides the `chunk_index` for the _next_ chunk. If
+	// When fetching, provides the `chunk_index` for the *next* chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
 	// with a :method:statementexecution/getstatementresultchunkn request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, provides a link to fetch the _next_ chunk. If absent,
+	// When fetching, provides a link to fetch the *next* chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
 	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
@@ -2656,7 +2737,10 @@ type GetWarehouseResponse struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values:
+	//
+	//   - Must be == 0 or >= 10 mins
+	//   - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -2666,8 +2750,18 @@ type GetWarehouseResponse struct {
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
-	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// Supported values:
+	//
+	//   - 2X-Small
+	//   - X-Small
+	//   - Small
+	//   - Medium
+	//   - Large
+	//   - X-Large
+	//   - 2X-Large
+	//   - 3X-Large
+	//   - 4X-Large
+	//   - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2689,7 +2783,10 @@ type GetWarehouseResponse struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
+	// Supported values:
+	//
+	//   - Must be >= min_num_clusters
+	//   - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -2699,14 +2796,19 @@ type GetWarehouseResponse struct {
 	// queries. This is similar to reserved vs. revocable cores in a resource
 	// manager.
 	//
-	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+	// Supported values:
+	//
+	//   - Must be > 0
+	//   - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
-	// characters.
+	// Supported values:
+	//
+	//   - Must be unique within an org.
+	//   - Must be less than 100 characters.
 	Name string `json:"name,omitempty"`
 	// Deprecated. current number of active sessions for the warehouse
 	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
@@ -2721,7 +2823,9 @@ type GetWarehouseResponse struct {
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
-	// Supported values: - Number of tags < 45.
+	// Supported values:
+	//
+	//   - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
@@ -2989,8 +3093,10 @@ type LegacyQuery struct {
 	Options *QueryOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+	//   - `CAN_VIEW`: Can view the query
+	//   - `CAN_RUN`: Can run the query
+	//   - `CAN_EDIT`: Can edit the query
+	//   - `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
@@ -3023,8 +3129,8 @@ func (s LegacyQuery) MarshalJSON() ([]byte, error) {
 }
 
 // The visualization description API changes frequently and is unsupported. You
-// can duplicate a visualization by copying description objects received _from
-// the API_ and then using them to create a new one with a POST request to the
+// can duplicate a visualization by copying description objects received *from
+// the API* and then using them to create a new one with a POST request to the
 // same endpoint. Databricks does not recommend constructing ad-hoc
 // visualizations entirely in JSON.
 type LegacyVisualization struct {
@@ -3319,17 +3425,13 @@ type ListQueriesLegacyRequest struct {
 	// Name of query attribute to order by. Default sort order is ascending.
 	// Append a dash (`-`) to order descending instead.
 	//
-	// - `name`: The name of the query.
-	//
-	// - `created_at`: The timestamp the query was created.
-	//
-	// - `runtime`: The time it took to run this query. This is blank for
-	// parameterized queries. A blank value is treated as the highest value for
-	// sorting.
-	//
-	// - `executed_at`: The timestamp when the query was last run.
-	//
-	// - `created_by`: The user name of the user that created the query.
+	//   - `name`: The name of the query.
+	//   - `created_at`: The timestamp the query was created.
+	//   - `runtime`: The time it took to run this query. This is blank for
+	//     parameterized queries. A blank value is treated as the highest value
+	//     for sorting.
+	//   - `executed_at`: The timestamp when the query was last run.
+	//   - `created_by`: The user name of the user that created the query.
 	Order string `json:"-" url:"order,omitempty"`
 	// Page number to retrieve.
 	Page int `json:"-" url:"page,omitempty"`
@@ -3834,8 +3936,10 @@ func (f *ParameterType) Type() string {
 	return "ParameterType"
 }
 
-// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`:
-// Can edit the query * `CAN_MANAGE`: Can manage the query
+// - `CAN_VIEW`: Can view the query
+// - `CAN_RUN`: Can run the query
+// - `CAN_EDIT`: Can edit the query
+// - `CAN_MANAGE`: Can manage the query
 type PermissionLevel string
 
 // Can edit the query
@@ -4114,9 +4218,11 @@ type QueryInfo struct {
 	StatementType QueryStatementType `json:"statement_type,omitempty"`
 	// Query status with one the following values:
 	//
-	// - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has
-	// started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`:
-	// Query has failed. - `FINISHED`: Query has completed.
+	//   - `QUEUED`: Query has been received and queued.
+	//   - `RUNNING`: Query has started.
+	//   - `CANCELED`: Query has been cancelled by the user.
+	//   - `FAILED`: Query has failed.
+	//   - `FINISHED`: Query has completed.
 	Status QueryStatus `json:"status,omitempty"`
 	// The ID of the user who ran the query.
 	UserId int64 `json:"user_id,omitempty"`
@@ -4498,9 +4604,9 @@ func (f *QueryStatus) Type() string {
 	return "QueryStatus"
 }
 
-// * A query execution can be annotated with an optional key-value pair to allow
-// users to attribute the executions by key and optional value to filter by.
-// QueryTag is the user-facing representation.
+//   - A query execution can be annotated with an optional key-value pair to
+//     allow users to attribute the executions by key and optional value to
+//     filter by. QueryTag is the user-facing representation.
 type QueryTag struct {
 	Key string `json:"key"`
 
@@ -4550,11 +4656,11 @@ type ResultData struct {
 	DataArray [][]string `json:"data_array,omitempty"`
 
 	ExternalLinks []ExternalLink `json:"external_links,omitempty"`
-	// When fetching, provides the `chunk_index` for the _next_ chunk. If
+	// When fetching, provides the `chunk_index` for the *next* chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
 	// with a :method:statementexecution/getstatementresultchunkn request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, provides a link to fetch the _next_ chunk. If absent,
+	// When fetching, provides a link to fetch the *next* chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
 	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
@@ -4994,7 +5100,7 @@ type StartRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// * State of a warehouse.
+// State of a warehouse.
 type State string
 
 const StateDeleted State = `DELETED`
@@ -5147,13 +5253,18 @@ type StatementStatus struct {
 	// SQLSTATE error code returned when the statement execution fails. Only
 	// populated when the statement status is `FAILED`.
 	SqlState string `json:"sql_state,omitempty"`
-	// Statement execution state: - `PENDING`: waiting for warehouse -
-	// `RUNNING`: running - `SUCCEEDED`: execution was successful, result data
-	// available for fetch - `FAILED`: execution failed; reason for failure
-	// described in accompanying error message - `CANCELED`: user canceled; can
-	// come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL`
-	// - `CLOSED`: execution successful, and statement closed; result no longer
-	// available for fetch
+	// Statement execution state:
+	//
+	//   - `PENDING`: waiting for warehouse
+	//   - `RUNNING`: running
+	//   - `SUCCEEDED`: execution was successful, result data available for
+	//     fetch
+	//   - `FAILED`: execution failed; reason for failure described in
+	//     accompanying error message
+	//   - `CANCELED`: user canceled; can come from explicit cancel call, or
+	//     timeout with `on_wait_timeout=CANCEL`
+	//   - `CLOSED`: execution successful, and statement closed; result no
+	//     longer available for fetch
 	State StatementState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6480,7 +6591,7 @@ type WarehousePermissionsRequest struct {
 	WarehouseId string `json:"-" url:"-"`
 }
 
-// * Configuration values to enable or disable the access to specific warehouse
+// Configuration values to enable or disable the access to specific warehouse
 // types in the workspace.
 type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be be allowed as a
@@ -6547,7 +6658,7 @@ type Widget struct {
 	Options *WidgetOptions `json:"options,omitempty"`
 	// The visualization description API changes frequently and is unsupported.
 	// You can duplicate a visualization by copying description objects received
-	// _from the API_ and then using them to create a new one with a POST
+	// *from the API* and then using them to create a new one with a POST
 	// request to the same endpoint. Databricks does not recommend constructing
 	// ad-hoc visualizations entirely in JSON.
 	Visualization *LegacyVisualization `json:"visualization,omitempty"`

@@ -296,8 +296,7 @@ func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*G
 // specified, the response contains only artifacts with the specified prefix. A
 // maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
 // `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
-// Volumes, which supports pagination. See [List directory contents | Files
-// API](/api/workspace/files/listdirectorycontents).
+// Volumes, which supports pagination. See List directory contents | Files API.
 func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifactsRequest) listing.Iterator[FileInfo] {
 
 	getNextPage := func(ctx context.Context, req ListArtifactsRequest) (*ListArtifactsResponse, error) {
@@ -326,8 +325,7 @@ func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifac
 // specified, the response contains only artifacts with the specified prefix. A
 // maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
 // `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
-// Volumes, which supports pagination. See [List directory contents | Files
-// API](/api/workspace/files/listdirectorycontents).
+// Volumes, which supports pagination. See List directory contents | Files API.
 func (a *experimentsImpl) ListArtifactsAll(ctx context.Context, request ListArtifactsRequest) ([]FileInfo, error) {
 	iterator := a.ListArtifacts(ctx, request)
 	return listing.ToSlice[FileInfo](ctx, iterator)
@@ -1795,7 +1793,7 @@ func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegis
 }
 
 // Lists all available registered models, up to the limit specified in
-// __max_results__.
+// **max_results**.
 func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRequest) listing.Iterator[Model] {
 
 	getNextPage := func(ctx context.Context, req ListModelsRequest) (*ListModelsResponse, error) {
@@ -1821,7 +1819,7 @@ func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRe
 }
 
 // Lists all available registered models, up to the limit specified in
-// __max_results__.
+// **max_results**.
 func (a *modelRegistryImpl) ListModelsAll(ctx context.Context, request ListModelsRequest) ([]Model, error) {
 	iterator := a.ListModels(ctx, request)
 	return listing.ToSlice[Model](ctx, iterator)
@@ -1955,7 +1953,7 @@ func (a *modelRegistryImpl) RenameModel(ctx context.Context, request RenameModel
 	return &renameModelResponse, err
 }
 
-// Searches for specific model versions based on the supplied __filter__.
+// Searches for specific model versions based on the supplied **filter**.
 func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) listing.Iterator[ModelVersion] {
 
 	getNextPage := func(ctx context.Context, req SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
@@ -1980,7 +1978,7 @@ func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request Sea
 	return iterator
 }
 
-// Searches for specific model versions based on the supplied __filter__.
+// Searches for specific model versions based on the supplied **filter**.
 func (a *modelRegistryImpl) SearchModelVersionsAll(ctx context.Context, request SearchModelVersionsRequest) ([]ModelVersion, error) {
 	iterator := a.SearchModelVersions(ctx, request)
 	return listing.ToSlice[ModelVersion](ctx, iterator)
@@ -2000,7 +1998,7 @@ func (a *modelRegistryImpl) internalSearchModelVersions(ctx context.Context, req
 	return &searchModelVersionsResponse, err
 }
 
-// Search for registered models based on the specified __filter__.
+// Search for registered models based on the specified **filter**.
 func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchModelsRequest) listing.Iterator[Model] {
 
 	getNextPage := func(ctx context.Context, req SearchModelsRequest) (*SearchModelsResponse, error) {
@@ -2025,7 +2023,7 @@ func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchMode
 	return iterator
 }
 
-// Search for registered models based on the specified __filter__.
+// Search for registered models based on the specified **filter**.
 func (a *modelRegistryImpl) SearchModelsAll(ctx context.Context, request SearchModelsRequest) ([]Model, error) {
 	iterator := a.SearchModels(ctx, request)
 	return listing.ToSlice[Model](ctx, iterator)

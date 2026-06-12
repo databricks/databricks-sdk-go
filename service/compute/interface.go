@@ -11,20 +11,25 @@ import (
 // values can be used during cluster creation. Cluster policies have ACLs that
 // limit their use to specific users and groups.
 //
-// With cluster policies, you can: - Auto-install cluster libraries on the next
-// restart by listing them in the policy's "libraries" field (Public Preview). -
-// Limit users to creating clusters with the prescribed settings. - Simplify the
-// user interface, enabling more users to create clusters, by fixing and hiding
-// some fields. - Manage costs by setting limits on attributes that impact the
-// hourly rate.
+// With cluster policies, you can:
+//
+//   - Auto-install cluster libraries on the next restart by listing them in the
+//     policy's "libraries" field (Public Preview).
+//   - Limit users to creating clusters with the prescribed settings.
+//   - Simplify the user interface, enabling more users to create clusters, by
+//     fixing and hiding some fields.
+//   - Manage costs by setting limits on attributes that impact the hourly rate.
 //
 // Cluster policy permissions limit which policies a user can select in the
-// Policy drop-down when the user creates a cluster: - A user who has
-// unrestricted cluster create permission can select the Unrestricted policy and
-// create fully-configurable clusters. - A user who has both unrestricted
-// cluster create permission and access to cluster policies can select the
-// Unrestricted policy and policies they have access to. - A user that has
-// access to only cluster policies, can select the policies they have access to.
+// Policy drop-down when the user creates a cluster:
+//
+//   - A user who has unrestricted cluster create permission can select the
+//     Unrestricted policy and create fully-configurable clusters.
+//   - A user who has both unrestricted cluster create permission and access to
+//     cluster policies can select the Unrestricted policy and policies they
+//     have access to.
+//   - A user that has access to only cluster policies, can select the policies
+//     they have access to.
 //
 // If no policies exist in the workspace, the Policy drop-down doesn't appear.
 // Only admin users can create, edit, and delete policies. Admin users also have
@@ -105,10 +110,10 @@ type ClustersService interface {
 
 	// Creates a new Spark cluster. This method will acquire new instances from
 	// the cloud provider if necessary. This method is asynchronous; the
-	// returned ``cluster_id`` can be used to poll the cluster status. When this
-	// method returns, the cluster will be in a ``PENDING`` state. The cluster
-	// will be usable once it enters a ``RUNNING`` state. Note: Databricks may
-	// not be able to acquire some of the requested nodes, due to cloud provider
+	// returned `cluster_id` can be used to poll the cluster status. When this
+	// method returns, the cluster will be in a `PENDING` state. The cluster
+	// will be usable once it enters a `RUNNING` state. Note: Databricks may not
+	// be able to acquire some of the requested nodes, due to cloud provider
 	// limitations (account limits, spot price, etc.) or transient network
 	// issues.
 	//
@@ -205,12 +210,15 @@ type ClustersService interface {
 	SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error)
 
 	// Starts a terminated Spark cluster with the supplied ID. This works
-	// similar to `createCluster` except: - The previous cluster id and
-	// attributes are preserved. - The cluster starts with the last specified
-	// cluster size. - If the previous cluster was an autoscaling cluster, the
-	// current cluster starts with the minimum number of nodes. - If the cluster
-	// is not currently in a ``TERMINATED`` state, nothing will happen. -
-	// Clusters launched to run a job cannot be started.
+	// similar to `createCluster` except:
+	//
+	//   - The previous cluster id and attributes are preserved.
+	//   - The cluster starts with the last specified cluster size.
+	//   - If the previous cluster was an autoscaling cluster, the current
+	//     cluster starts with the minimum number of nodes.
+	//   - If the cluster is not currently in a `TERMINATED` state, nothing will
+	//     happen.
+	//   - Clusters launched to run a job cannot be started.
 	Start(ctx context.Context, request StartCluster) error
 
 	// Unpinning a cluster will allow the cluster to eventually be removed from
@@ -245,13 +253,13 @@ type CommandExecutionService interface {
 
 	// Cancels a currently running command within an execution context.
 	//
-	// The command ID is obtained from a prior successful call to __execute__.
+	// The command ID is obtained from a prior successful call to **execute**.
 	Cancel(ctx context.Context, request CancelCommand) error
 
 	// Gets the status of and, if available, the results from a currently
 	// executing command.
 	//
-	// The command ID is obtained from a prior successful call to __execute__.
+	// The command ID is obtained from a prior successful call to **execute**.
 	CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error)
 
 	// Gets the status for an execution context.
@@ -298,8 +306,8 @@ type GlobalInitScriptsService interface {
 
 	// Get a list of all global init scripts for this workspace. This returns
 	// all properties for each script but **not** the script contents. To
-	// retrieve the contents of a script, use the [get a global init
-	// script](:method:globalinitscripts/get) operation.
+	// retrieve the contents of a script, use the get a global init script
+	// operation.
 	List(ctx context.Context) (*ListGlobalInitScriptsResponse, error)
 
 	// Updates a global init script, specifying only the fields to change. All
@@ -383,9 +391,10 @@ type InstanceProfilesService interface {
 	// associated with the instance profile. It is required to specify the IAM
 	// role ARN if both of the following are true:
 	//
-	// * Your role name and instance profile name do not match. The name is the
-	// part after the last slash in each ARN. * You want to use the instance
-	// profile with [Databricks SQL Serverless].
+	//   - Your role name and instance profile name do not match. The name is
+	//     the part after the last slash in each ARN.
+	//   - You want to use the instance profile with [Databricks SQL
+	//     Serverless].
 	//
 	// To understand where these fields are in the AWS console, see [Enable
 	// serverless SQL warehouses].
@@ -435,11 +444,13 @@ type LibrariesService interface {
 
 	// Get the status of libraries on a cluster. A status is returned for all
 	// libraries installed on this cluster via the API or the libraries UI. The
-	// order of returned libraries is as follows: 1. Libraries set to be
-	// installed on this cluster, in the order that the libraries were added to
-	// the cluster, are returned first. 2. Libraries that were previously
-	// requested to be installed on this cluster or, but are now marked for
-	// removal, in no particular order, are returned last.
+	// order of returned libraries is as follows:
+	//
+	//  1. Libraries set to be installed on this cluster, in the order that the
+	//     libraries were added to the cluster, are returned first.
+	//  2. Libraries that were previously requested to be installed on this
+	//     cluster or, but are now marked for removal, in no particular order,
+	//     are returned last.
 	ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error)
 
 	// Add libraries to install on a cluster. The installation is asynchronous;

@@ -189,13 +189,15 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// [Optional] Name of the Delta table to sync the vector index contents and
 	// computed embeddings to.
 	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
-	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
-	// triggered execution mode, the system stops processing after successfully
-	// refreshing the source table in the pipeline once, ensuring the table is
-	// updated based on the data available when the update started. -
-	// `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
-	// processes new data as it arrives in the source table to keep vector index
-	// fresh.
+	// Pipeline execution mode.
+	//
+	//   - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
+	//     system stops processing after successfully refreshing the source
+	//     table in the pipeline once, ensuring the table is updated based on
+	//     the data available when the update started.
+	//   - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
+	//     processes new data as it arrives in the source table to keep vector
+	//     index fresh.
 	PipelineType PipelineType `json:"pipeline_type,omitempty"`
 	// The name of the source table.
 	SourceTable string `json:"source_table,omitempty"`
@@ -232,13 +234,15 @@ type DeltaSyncVectorIndexSpecResponse struct {
 	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
 	// The ID of the pipeline that is used to sync the index.
 	PipelineId string `json:"pipeline_id,omitempty"`
-	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
-	// triggered execution mode, the system stops processing after successfully
-	// refreshing the source table in the pipeline once, ensuring the table is
-	// updated based on the data available when the update started. -
-	// `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
-	// processes new data as it arrives in the source table to keep vector index
-	// fresh.
+	// Pipeline execution mode.
+	//
+	//   - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
+	//     system stops processing after successfully refreshing the source
+	//     table in the pipeline once, ensuring the table is updated based on
+	//     the data available when the update started.
+	//   - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
+	//     processes new data as it arrives in the source table to keep vector
+	//     index fresh.
 	PipelineType PipelineType `json:"pipeline_type,omitempty"`
 	// The name of the source table.
 	SourceTable string `json:"source_table,omitempty"`
@@ -538,9 +542,13 @@ type GetVectorSearchEndpointPermissionsRequest struct {
 }
 
 // The subtype of the AI Search index, determining the indexing and retrieval
-// strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An
-// index that uses full-text search without vector embeddings. - `HYBRID`: An
-// index that uses vector embeddings for similarity search and hybrid search.
+// strategy.
+//
+//   - `VECTOR`: Not supported. Use `HYBRID` instead.
+//   - `FULL_TEXT`: An index that uses full-text search without vector
+//     embeddings.
+//   - `HYBRID`: An index that uses vector embeddings for similarity search and
+//     hybrid search.
 type IndexSubtype string
 
 // An index that uses full-text search without vector embeddings.
@@ -805,12 +813,15 @@ func (s PatchEndpointRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered
-// execution mode, the system stops processing after successfully refreshing the
-// source table in the pipeline once, ensuring the table is updated based on the
-// data available when the update started. - `CONTINUOUS`: If the pipeline uses
-// continuous execution, the pipeline processes new data as it arrives in the
-// source table to keep vector index fresh.
+// Pipeline execution mode.
+//
+//   - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
+//     system stops processing after successfully refreshing the source table in
+//     the pipeline once, ensuring the table is updated based on the data
+//     available when the update started.
+//   - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
+//     processes new data as it arrives in the source table to keep vector index
+//     fresh.
 type PipelineType string
 
 // If the pipeline uses continuous execution, the pipeline processes new data as
@@ -890,10 +901,11 @@ type QueryVectorIndexRequest struct {
 	//
 	// Example filters:
 	//
-	// - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for
-	// id greater than 5. - `{"id <=": 5}`: Filter for id less than equal to 5.
-	// - `{"id >=": 5}`: Filter for id greater than equal to 5. - `{"id": 5}`:
-	// Filter for id equal to 5.
+	//   - `{"id <": 5}`: Filter for id less than 5.
+	//   - `{"id >": 5}`: Filter for id greater than 5.
+	//   - `{"id <=": 5}`: Filter for id less than equal to 5.
+	//   - `{"id >=": 5}`: Filter for id greater than equal to 5.
+	//   - `{"id": 5}`: Filter for id equal to 5.
 	FiltersJson string `json:"filters_json,omitempty"`
 	// Name of the vector index to query.
 	IndexName string `json:"-" url:"-"`
@@ -961,9 +973,11 @@ func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
 }
 
 type RerankerConfig struct {
-	// Reranker identifier: - When model_type=BASE/UNSPECIFIED: must be
-	// "databricks_reranker". - When model_type=FINETUNED: the Model Serving
-	// endpoint name hosting a finetuned reranker.
+	// Reranker identifier:
+	//
+	//   - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker".
+	//   - When model_type=FINETUNED: the Model Serving endpoint name hosting a
+	//     finetuned reranker.
 	Model string `json:"model,omitempty"`
 	// Parameters that control how the reranker processes the query results.
 	Parameters *RerankerConfigRerankerParameters `json:"parameters,omitempty"`
@@ -1325,12 +1339,14 @@ func (s VectorIndexStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that
-// automatically syncs with a source Delta Table, automatically and
-// incrementally updating the index as the underlying data in the Delta Table
-// changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
-// vectors and metadata through our REST and SDK APIs. With this model, the user
-// manages index updates.
+// There are 2 types of AI Search indexes:
+//
+//   - `DELTA_SYNC`: An index that automatically syncs with a source Delta
+//     Table, automatically and incrementally updating the index as the
+//     underlying data in the Delta Table changes.
+//   - `DIRECT_ACCESS`: An index that supports direct read and write of vectors
+//     and metadata through our REST and SDK APIs. With this model, the user
+//     manages index updates.
 type VectorIndexType string
 
 // An index that automatically syncs with a source Delta Table, automatically

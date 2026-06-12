@@ -15,9 +15,8 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GenieService interface {
 
-	// Create new message in a [conversation](:method:genie/startconversation).
-	// The AI response uses all previously created messages in the conversation
-	// to respond.
+	// Create new message in a conversation. The AI response uses all previously
+	// created messages in the conversation to respond.
 	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
 
 	// Create a comment on a conversation message.
@@ -36,22 +35,17 @@ type GenieService interface {
 	// query attachment has expired and needs to be re-executed.
 	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Execute Message Attachment
-	// Query](:method:genie/executemessageattachmentquery) instead.
+	// DEPRECATED: Use Execute Message Attachment Query instead.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
 	// Initiates a new SQL execution and returns a `download_id` and
 	// `download_id_signature` that you can use to track the progress of the
 	// download. The query result is stored in an external link and can be
-	// retrieved using the [Get Download Full Query
-	// Result](:method:genie/getdownloadfullqueryresult) API. Both `download_id`
-	// and `download_id_signature` must be provided when calling the Get
-	// endpoint.
+	// retrieved using the Get Download Full Query Result API. Both
+	// `download_id` and `download_id_signature` must be provided when calling
+	// the Get endpoint.
 	//
-	// ----
-	//
-	// ### **Warning: Databricks strongly recommends that you protect the URLs
-	// that are returned by the `EXTERNAL_LINKS` disposition.**
+	// # **Warning: Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.**
 	//
 	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
 	// generated, which can be used to download the results directly from . As a
@@ -60,10 +54,7 @@ type GenieService interface {
 	// Because URLs are already generated with embedded temporary s, you must
 	// not set an `Authorization` header in the download requests.
 	//
-	// See [Execute Statement](:method:statementexecution/executestatement) for
-	// more details.
-	//
-	// ----
+	// See Execute Statement for more details.
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
 
 	// Create and run evaluations for multiple benchmark questions in a Genie
@@ -82,19 +73,14 @@ type GenieService interface {
 	// Lists all evaluation runs in a space.
 	GenieListEvalRuns(ctx context.Context, request GenieListEvalRunsRequest) (*GenieListEvalRunsResponse, error)
 
-	// After [Generating a Full Query Result
-	// Download](:method:genie/generatedownloadfullqueryresult) and successfully
-	// receiving a `download_id` and `download_id_signature`, use this API to
-	// poll the download progress. Both `download_id` and
-	// `download_id_signature` are required to call this endpoint. When the
-	// download is complete, the API returns the result in the `EXTERNAL_LINKS`
-	// disposition, containing one or more external links to the query result
-	// files.
+	// After Generating a Full Query Result Download and successfully receiving
+	// a `download_id` and `download_id_signature`, use this API to poll the
+	// download progress. Both `download_id` and `download_id_signature` are
+	// required to call this endpoint. When the download is complete, the API
+	// returns the result in the `EXTERNAL_LINKS` disposition, containing one or
+	// more external links to the query result files.
 	//
-	// ----
-	//
-	// ### **Warning: Databricks strongly recommends that you protect the URLs
-	// that are returned by the `EXTERNAL_LINKS` disposition.**
+	// # **Warning: Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.**
 	//
 	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
 	// generated, which can be used to download the results directly from . As a
@@ -103,10 +89,7 @@ type GenieService interface {
 	// Because URLs are already generated with embedded temporary s, you must
 	// not set an `Authorization` header in the download requests.
 	//
-	// See [Execute Statement](:method:statementexecution/executestatement) for
-	// more details.
-	//
-	// ----
+	// See Execute Statement for more details.
 	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get message from conversation.
@@ -117,12 +100,10 @@ type GenieService interface {
 	// status is `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Get Message Attachment Query
-	// Result](:method:genie/getmessageattachmentqueryresult) instead.
+	// DEPRECATED: Use Get Message Attachment Query Result instead.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// DEPRECATED: Use [Get Message Attachment Query
-	// Result](:method:genie/getmessageattachmentqueryresult) instead.
+	// DEPRECATED: Use Get Message Attachment Query Result instead.
 	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
 
 	// Get details of a Genie Space.

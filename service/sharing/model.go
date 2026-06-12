@@ -166,7 +166,7 @@ type CreateProvider struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the Provider.
 	Name string `json:"name"`
-	// This field is required when the __authentication_type__ is **TOKEN**,
+	// This field is required when the **authentication_type** is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
@@ -186,9 +186,9 @@ type CreateRecipient struct {
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
-	// This field is only present when the __authentication_type__ is
+	// This field is only present when the **authentication_type** is
 	// **DATABRICKS**. The identifier is of format
-	// __cloud__:__region__:__metastore-uuid__.
+	// **cloud**:**region**:**metastore-uuid**.
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
@@ -206,7 +206,7 @@ type CreateRecipient struct {
 	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**.
+	// only present when the **authentication_type** is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -528,7 +528,7 @@ type GetRecipientRequest struct {
 
 type GetRecipientSharePermissionsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of data share permissions for a recipient.
@@ -547,7 +547,7 @@ func (s GetRecipientSharePermissionsResponse) MarshalJSON() ([]byte, error) {
 
 type GetSharePermissionsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges assigned to each principal
@@ -663,7 +663,7 @@ type ListProviderShareAssetsResponse struct {
 
 type ListProviderSharesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of provider shares.
@@ -684,15 +684,19 @@ type ListProvidersRequest struct {
 	// If not provided, all providers will be returned. If no providers exist
 	// with this ID, no results will be returned.
 	DataProviderGlobalMetastoreId string `json:"-" url:"data_provider_global_metastore_id,omitempty"`
-	// Maximum number of providers to return. - when set to 0, the page length
-	// is set to a server configured value (recommended); - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to a value less than 0, an invalid parameter
-	// error is returned; - If not set, all valid providers are returned (not
-	// recommended). - Note: The number of returned providers might be less than
-	// the specified max_results size, even zero. The only definitive indication
-	// that no further providers can be fetched is when the next_page_token is
-	// unset from the response.
+	// Maximum number of providers to return.
+	//
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all valid providers are returned (not recommended).
+	//   - Note: The number of returned providers might be less than the
+	//     specified max_results size, even zero. The only definitive indication
+	//     that no further providers can be fetched is when the next_page_token
+	//     is unset from the response.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -710,7 +714,7 @@ func (s ListProvidersRequest) MarshalJSON() ([]byte, error) {
 
 type ListProvidersResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of provider information objects.
@@ -731,15 +735,19 @@ type ListRecipientsRequest struct {
 	// If not provided, all recipients will be returned. If no recipients exist
 	// with this ID, no results will be returned.
 	DataRecipientGlobalMetastoreId string `json:"-" url:"data_recipient_global_metastore_id,omitempty"`
-	// Maximum number of recipients to return. - when set to 0, the page length
-	// is set to a server configured value (recommended); - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to a value less than 0, an invalid parameter
-	// error is returned; - If not set, all valid recipients are returned (not
-	// recommended). - Note: The number of returned recipients might be less
-	// than the specified max_results size, even zero. The only definitive
-	// indication that no further recipients can be fetched is when the
-	// next_page_token is unset from the response.
+	// Maximum number of recipients to return.
+	//
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all valid recipients are returned (not recommended).
+	//   - Note: The number of returned recipients might be less than the
+	//     specified max_results size, even zero. The only definitive indication
+	//     that no further recipients can be fetched is when the next_page_token
+	//     is unset from the response.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -757,7 +765,7 @@ func (s ListRecipientsRequest) MarshalJSON() ([]byte, error) {
 
 type ListRecipientsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of recipient information objects.
@@ -775,15 +783,19 @@ func (s ListRecipientsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListSharesRequest struct {
-	// Maximum number of shares to return. - when set to 0, the page length is
-	// set to a server configured value (recommended); - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to a value less than 0, an invalid parameter
-	// error is returned; - If not set, all valid shares are returned (not
-	// recommended). - Note: The number of returned shares might be less than
-	// the specified max_results size, even zero. The only definitive indication
-	// that no further shares can be fetched is when the next_page_token is
-	// unset from the response.
+	// Maximum number of shares to return.
+	//
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all valid shares are returned (not recommended).
+	//   - Note: The number of returned shares might be less than the specified
+	//     max_results size, even zero. The only definitive indication that no
+	//     further shares can be fetched is when the next_page_token is unset
+	//     from the response.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Name of the provider in which to list shares.
 	Name string `json:"-" url:"-"`
@@ -803,7 +815,7 @@ func (s ListSharesRequest) MarshalJSON() ([]byte, error) {
 
 type ListSharesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
+	// more pages. **page_token** should be set to this value for the next
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of data share information objects.
@@ -860,22 +872,32 @@ type OidcFederationPolicy struct {
 	Issuer string `json:"issuer"`
 	// The required token subject, as specified in the subject claim of
 	// federated tokens. The subject claim identifies the identity of the user
-	// or machine accessing the resource. Examples for Entra ID (AAD): - U2M
-	// flow (group access): If the subject claim is `groups`, this must be the
-	// Object ID of the group in Entra ID. - U2M flow (user access): If the
-	// subject claim is `oid`, this must be the Object ID of the user in Entra
-	// ID. - M2M flow (OAuth App access): If the subject claim is `azp`, this
-	// must be the client ID of the OAuth app registered in Entra ID.
+	// or machine accessing the resource. Examples for Entra ID (AAD):
+	//
+	//   - U2M flow (group access): If the subject claim is `groups`, this must
+	//     be the Object ID of the group in Entra ID.
+	//   - U2M flow (user access): If the subject claim is `oid`, this must be
+	//     the Object ID of the user in Entra ID.
+	//   - M2M flow (OAuth App access): If the subject claim is `azp`, this must
+	//     be the client ID of the OAuth app registered in Entra ID.
 	Subject string `json:"subject"`
 	// The claim that contains the subject of the token. Depending on the
-	// identity provider and the use case (U2M or M2M), this can vary: - For
-	// Entra ID (AAD): * U2M flow (group access): Use `groups`. * U2M flow (user
-	// access): Use `oid`. * M2M flow (OAuth App access): Use `azp`. - For other
-	// IdPs, refer to the specific IdP documentation.
+	// identity provider and the use case (U2M or M2M), this can vary:
 	//
-	// Supported `subject_claim` values are: - `oid`: Object ID of the user. -
-	// `azp`: Client ID of the OAuth app. - `groups`: Object ID of the group. -
-	// `sub`: Subject identifier for other use cases.
+	//   - For Entra ID (AAD):
+	//
+	//   - U2M flow (group access): Use `groups`.
+	//   - U2M flow (user access): Use `oid`.
+	//   - M2M flow (OAuth App access): Use `azp`.
+	//
+	//   - For other IdPs, refer to the specific IdP documentation.
+	//
+	// Supported `subject_claim` values are:
+	//
+	//   - `oid`: Object ID of the user.
+	//   - `azp`: Client ID of the OAuth app.
+	//   - `groups`: Object ID of the group.
+	//   - `sub`: Subject identifier for other use cases.
 	SubjectClaim string `json:"subject_claim"`
 }
 
@@ -1153,7 +1175,7 @@ func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
 type ProviderInfo struct {
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the provider's UC metastore. This field is only present
-	// when the __authentication_type__ is **DATABRICKS**.
+	// when the **authentication_type** is **DATABRICKS**.
 	Cloud string `json:"cloud,omitempty"`
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
@@ -1162,11 +1184,11 @@ type ProviderInfo struct {
 	// Username of Provider creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// The global UC metastore id of the data provider. This field is only
-	// present when the __authentication_type__ is **DATABRICKS**. The
-	// identifier is of format __cloud__:__region__:__metastore-uuid__.
+	// present when the **authentication_type** is **DATABRICKS**. The
+	// identifier is of format **cloud**:**region**:**metastore-uuid**.
 	DataProviderGlobalMetastoreId string `json:"data_provider_global_metastore_id,omitempty"`
 	// UUID of the provider's UC metastore. This field is only present when the
-	// __authentication_type__ is **DATABRICKS**.
+	// **authentication_type** is **DATABRICKS**.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the Provider.
 	Name string `json:"name,omitempty"`
@@ -1175,11 +1197,11 @@ type ProviderInfo struct {
 	// The recipient profile. This field is only present when the
 	// authentication_type is `TOKEN` or `OAUTH_CLIENT_CREDENTIALS`.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-	// This field is required when the __authentication_type__ is **TOKEN**,
+	// This field is required when the **authentication_type** is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 	// Cloud region of the provider's UC metastore. This field is only present
-	// when the __authentication_type__ is **DATABRICKS**.
+	// when the **authentication_type** is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// Time at which this Provider was created, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -1222,7 +1244,7 @@ type RecipientInfo struct {
 
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the recipient's Unity Catalog Metastore. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**.
+	// only present when the **authentication_type** is **DATABRICKS**.
 	Cloud string `json:"cloud,omitempty"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
@@ -1231,9 +1253,9 @@ type RecipientInfo struct {
 	// Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
-	// This field is only present when the __authentication_type__ is
+	// This field is only present when the **authentication_type** is
 	// **DATABRICKS**. The identifier is of format
-	// __cloud__:__region__:__metastore-uuid__.
+	// **cloud**:**region**:**metastore-uuid**.
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
@@ -1242,7 +1264,7 @@ type RecipientInfo struct {
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Unique identifier of recipient's Unity Catalog Metastore. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**.
+	// only present when the **authentication_type** is **DATABRICKS**.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of Recipient.
 	Name string `json:"name,omitempty"`
@@ -1254,12 +1276,12 @@ type RecipientInfo struct {
 	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 	// Cloud region of the recipient's Unity Catalog Metastore. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**.
+	// only present when the **authentication_type** is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**.
+	// only present when the **authentication_type** is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// This field is only present when the __authentication_type__ is **TOKEN**.
+	// This field is only present when the **authentication_type** is **TOKEN**.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
 	// Time at which the recipient was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -1377,7 +1399,7 @@ type RotateRecipientToken struct {
 	Name string `json:"-" url:"-"`
 }
 
-// An object with __properties__ containing map of key-value properties attached
+// An object with **properties** containing map of key-value properties attached
 // to the securable.
 type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
@@ -1434,15 +1456,19 @@ func (s ShareInfo) MarshalJSON() ([]byte, error) {
 }
 
 type SharePermissionsRequest struct {
-	// Maximum number of permissions to return. - when set to 0, the page length
-	// is set to a server configured value (recommended); - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to a value less than 0, an invalid parameter
-	// error is returned; - If not set, all valid permissions are returned (not
-	// recommended). - Note: The number of returned permissions might be less
-	// than the specified max_results size, even zero. The only definitive
-	// indication that no further permissions can be fetched is when the
-	// next_page_token is unset from the response.
+	// Maximum number of permissions to return.
+	//
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all valid permissions are returned (not recommended).
+	//   - Note: The number of returned permissions might be less than the
+	//     specified max_results size, even zero. The only definitive indication
+	//     that no further permissions can be fetched is when the
+	//     next_page_token is unset from the response.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// The name of the Recipient.
 	Name string `json:"-" url:"-"`
@@ -1512,20 +1538,28 @@ type SharedDataObject struct {
 	// Important: For non-table objects, this field must be omitted entirely.
 	//
 	// Format: Must be a 2-part name `<schema_name>.<table_name>` (e.g.,
-	// "sales_schema.orders_table") - Both schema and table names must contain
-	// only alphanumeric characters and underscores - No periods, spaces,
-	// forward slashes, or control characters are allowed within each part - Do
-	// not include the catalog name (use 2 parts, not 3)
+	// "sales_schema.orders_table")
 	//
-	// Behavior: - If not provided, the service automatically generates the
-	// alias as `<schema>.<table>` from the object's original name - If you
-	// don't want to specify this field, omit it entirely from the request (do
-	// not pass an empty string) - The `shared_as` name must be unique within
-	// the share
+	//   - Both schema and table names must contain only alphanumeric characters
+	//     and underscores
+	//   - No periods, spaces, forward slashes, or control characters are
+	//     allowed within each part
+	//   - Do not include the catalog name (use 2 parts, not 3)
 	//
-	// Examples: - Valid: "analytics_schema.customer_view" - Invalid:
-	// "catalog.analytics_schema.customer_view" (3 parts not allowed) - Invalid:
-	// "analytics-schema.customer-view" (hyphens not allowed)
+	// Behavior:
+	//
+	//   - If not provided, the service automatically generates the alias as
+	//     `<schema>.<table>` from the object's original name
+	//   - If you don't want to specify this field, omit it entirely from the
+	//     request (do not pass an empty string)
+	//   - The `shared_as` name must be unique within the share
+	//
+	// Examples:
+	//
+	//   - Valid: "analytics_schema.customer_view"
+	//   - Invalid: "catalog.analytics_schema.customer_view" (3 parts not
+	//     allowed)
+	//   - Invalid: "analytics-schema.customer-view" (hyphens not allowed)
 	SharedAs string `json:"shared_as,omitempty"`
 	// The start version associated with the object. This allows data providers
 	// to control the lowest object version that is accessible by clients. If
@@ -1546,25 +1580,36 @@ type SharedDataObject struct {
 	//
 	// Important: For table-like objects, this field must be omitted entirely.
 	//
-	// Format: - For VOLUME: Must be a 2-part name `<schema_name>.<volume_name>`
-	// (e.g., "data_schema.ml_models") - For FUNCTION: Must be a 2-part name
-	// `<schema_name>.<function_name>` (e.g., "udf_schema.calculate_tax") - For
-	// MODEL: Must be a 2-part name `<schema_name>.<model_name>` (e.g.,
-	// "models.prediction_model") - For NOTEBOOK_FILE: Should be the notebook
-	// file name (e.g., "analysis_notebook.py") - All names must contain only
-	// alphanumeric characters and underscores - No periods, spaces, forward
-	// slashes, or control characters are allowed within each part
+	// Format:
 	//
-	// Behavior: - If not provided, the service automatically generates the
-	// alias from the object's original name - If you don't want to specify this
-	// field, omit it entirely from the request (do not pass an empty string) -
-	// The `string_shared_as` name must be unique for objects of the same type
-	// within the share
+	//   - For VOLUME: Must be a 2-part name `<schema_name>.<volume_name>`
+	//     (e.g., "data_schema.ml_models")
+	//   - For FUNCTION: Must be a 2-part name `<schema_name>.<function_name>`
+	//     (e.g., "udf_schema.calculate_tax")
+	//   - For MODEL: Must be a 2-part name `<schema_name>.<model_name>` (e.g.,
+	//     "models.prediction_model")
+	//   - For NOTEBOOK_FILE: Should be the notebook file name (e.g.,
+	//     "analysis_notebook.py")
+	//   - All names must contain only alphanumeric characters and underscores
+	//   - No periods, spaces, forward slashes, or control characters are
+	//     allowed within each part
 	//
-	// Examples: - Valid for VOLUME: "data_schema.training_data" - Valid for
-	// FUNCTION: "analytics.calculate_revenue" - Invalid:
-	// "catalog.data_schema.training_data" (3 parts not allowed for volumes) -
-	// Invalid: "data-schema.training-data" (hyphens not allowed)
+	// Behavior:
+	//
+	//   - If not provided, the service automatically generates the alias from
+	//     the object's original name
+	//   - If you don't want to specify this field, omit it entirely from the
+	//     request (do not pass an empty string)
+	//   - The `string_shared_as` name must be unique for objects of the same
+	//     type within the share
+	//
+	// Examples:
+	//
+	//   - Valid for VOLUME: "data_schema.training_data"
+	//   - Valid for FUNCTION: "analytics.calculate_revenue"
+	//   - Invalid: "catalog.data_schema.training_data" (3 parts not allowed for
+	//     volumes)
+	//   - Invalid: "data-schema.training-data" (hyphens not allowed)
 	StringSharedAs string `json:"string_shared_as,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1806,15 +1851,19 @@ func (f *SharedSecurableKind) Type() string {
 }
 
 type SharesListRequest struct {
-	// Maximum number of shares to return. - when set to 0, the page length is
-	// set to a server configured value (recommended); - when set to a value
-	// greater than 0, the page length is the minimum of this value and a server
-	// configured value; - when set to a value less than 0, an invalid parameter
-	// error is returned; - If not set, all valid shares are returned (not
-	// recommended). - Note: The number of returned shares might be less than
-	// the specified max_results size, even zero. The only definitive indication
-	// that no further shares can be fetched is when the next_page_token is
-	// unset from the response.
+	// Maximum number of shares to return.
+	//
+	//   - when set to 0, the page length is set to a server configured value
+	//     (recommended);
+	//   - when set to a value greater than 0, the page length is the minimum of
+	//     this value and a server configured value;
+	//   - when set to a value less than 0, an invalid parameter error is
+	//     returned;
+	//   - If not set, all valid shares are returned (not recommended).
+	//   - Note: The number of returned shares might be less than the specified
+	//     max_results size, even zero. The only definitive indication that no
+	//     further shares can be fetched is when the next_page_token is unset
+	//     from the response.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -1870,7 +1919,7 @@ type UpdateProvider struct {
 	NewName string `json:"new_name,omitempty"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
-	// This field is required when the __authentication_type__ is **TOKEN**,
+	// This field is required when the **authentication_type** is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 

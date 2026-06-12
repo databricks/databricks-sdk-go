@@ -62,7 +62,7 @@ func (a *consumerFulfillmentsImpl) internalGet(ctx context.Context, request GetL
 	return &getListingContentMetadataResponse, err
 }
 
-// Get all listings fulfillments associated with a listing. A _fulfillment_ is a
+// Get all listings fulfillments associated with a listing. A *fulfillment* is a
 // potential installation. Standard installations contain metadata about the
 // attached share or git repo. Only one of these fields will be present.
 // Personalized installations contain metadata about the attached share or git
@@ -91,7 +91,7 @@ func (a *consumerFulfillmentsImpl) List(ctx context.Context, request ListFulfill
 	return iterator
 }
 
-// Get all listings fulfillments associated with a listing. A _fulfillment_ is a
+// Get all listings fulfillments associated with a listing. A *fulfillment* is a
 // potential installation. Standard installations contain metadata about the
 // attached share or git repo. Only one of these fields will be present.
 // Personalized installations contain metadata about the attached share or git

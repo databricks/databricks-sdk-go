@@ -105,8 +105,8 @@ type ExperimentsService interface {
 	// if specified, the response contains only artifacts with the specified
 	// prefix. A maximum of 1000 artifacts will be retrieved for UC Volumes.
 	// Please call `/api/2.0/fs/directories{directory_path}` for listing
-	// artifacts in UC Volumes, which supports pagination. See [List directory
-	// contents | Files API](/api/workspace/files/listdirectorycontents).
+	// artifacts in UC Volumes, which supports pagination. See List directory
+	// contents | Files API.
 	ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error)
 
 	// Gets a list of all experiments.
@@ -125,31 +125,28 @@ type ExperimentsService interface {
 	//
 	// The overwrite behavior for metrics, params, and tags is as follows:
 	//
-	// * Metrics: metric values are never overwritten. Logging a metric (key,
-	// value, timestamp) appends to the set of values for the metric with the
-	// provided key.
+	//   - Metrics: metric values are never overwritten. Logging a metric (key,
+	//     value, timestamp) appends to the set of values for the metric with
+	//     the provided key.
+	//   - Tags: tag values can be overwritten by successive writes to the same
+	//     tag key. That is, if multiple tag values with the same key are
+	//     provided in the same API request, the last-provided tag value is
+	//     written. Logging the same tag (key, value) is permitted.
+	//     Specifically, logging a tag is idempotent.
+	//   - Parameters: once written, param values cannot be changed (attempting
+	//     to overwrite a param value will result in an error). However, logging
+	//     the same param (key, value) is permitted. Specifically, logging a
+	//     param is idempotent.
 	//
-	// * Tags: tag values can be overwritten by successive writes to the same
-	// tag key. That is, if multiple tag values with the same key are provided
-	// in the same API request, the last-provided tag value is written. Logging
-	// the same tag (key, value) is permitted. Specifically, logging a tag is
-	// idempotent.
+	// # Request Limits
 	//
-	// * Parameters: once written, param values cannot be changed (attempting to
-	// overwrite a param value will result in an error). However, logging the
-	// same param (key, value) is permitted. Specifically, logging a param is
-	// idempotent.
+	// A single JSON-serialized API request may be up to 1 MB in size and
+	// contain:
 	//
-	// Request Limits ------------------------------- A single JSON-serialized
-	// API request may be up to 1 MB in size and contain:
-	//
-	// * No more than 1000 metrics, params, and tags in total
-	//
-	// * Up to 1000 metrics
-	//
-	// * Up to 100 params
-	//
-	// * Up to 100 tags
+	//   - No more than 1000 metrics, params, and tags in total
+	//   - Up to 1000 metrics
+	//   - Up to 100 params
+	//   - Up to 100 tags
 	//
 	// For example, a valid request might contain 900 metrics, 50 params, and 50
 	// tags, but logging 900 metrics, 50 params, and 51 tags is invalid.
@@ -157,10 +154,9 @@ type ExperimentsService interface {
 	// The following limits also apply to metric, param, and tag keys and
 	// values:
 	//
-	// * Metric keys, param keys, and tag keys can be up to 250 characters in
-	// length
-	//
-	// * Parameter and tag values can be up to 250 characters in length
+	//   - Metric keys, param keys, and tag keys can be up to 250 characters in
+	//     length
+	//   - Parameter and tag values can be up to 250 characters in length
 	LogBatch(ctx context.Context, request LogBatch) error
 
 	// Logs inputs, such as datasets and models, to an MLflow Run.
@@ -178,9 +174,7 @@ type ExperimentsService interface {
 	// that represent ML model accuracy. A metric can be logged multiple times.
 	LogMetric(ctx context.Context, request LogMetric) error
 
-	// **Note:** the [Create a logged
-	// model](/api/workspace/experiments/createloggedmodel) API replaces this
-	// endpoint.
+	// **Note:** the Create a logged model API replaces this endpoint.
 	//
 	// Log a model to an MLflow Run.
 	LogModel(ctx context.Context, request LogModel) error
@@ -405,10 +399,10 @@ type MaterializedFeaturesService interface {
 }
 
 // Note: This API reference documents APIs for the Workspace Model Registry.
-// Databricks recommends using [Models in Unity
-// Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog
-// provides centralized model governance, cross-workspace access, lineage, and
-// deployment. Workspace Model Registry will be deprecated in the future.
+// Databricks recommends using Models in Unity Catalog instead. Models in Unity
+// Catalog provides centralized model governance, cross-workspace access,
+// lineage, and deployment. Workspace Model Registry will be deprecated in the
+// future.
 //
 // The Workspace Model Registry is a centralized model repository and a UI and
 // set of APIs that enable you to manage the full lifecycle of MLflow Models.
@@ -483,7 +477,7 @@ type ModelRegistryService interface {
 	GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
 	// Lists all available registered models, up to the limit specified in
-	// __max_results__.
+	// **max_results**.
 	ListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error)
 
 	// Gets a list of all open stage transition requests for the model version.
@@ -499,10 +493,10 @@ type ModelRegistryService interface {
 	// Renames a registered model.
 	RenameModel(ctx context.Context, request RenameModelRequest) (*RenameModelResponse, error)
 
-	// Searches for specific model versions based on the supplied __filter__.
+	// Searches for specific model versions based on the supplied **filter**.
 	SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error)
 
-	// Search for registered models based on the specified __filter__.
+	// Search for registered models based on the specified **filter**.
 	SearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error)
 
 	// Sets a tag on a registered model.

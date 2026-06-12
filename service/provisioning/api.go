@@ -249,10 +249,11 @@ func NewEncryptionKeys(client *client.DatabricksClient) *EncryptionKeysAPI {
 // some information about how the key configuration can be used. There are two
 // possible uses for key configurations:
 //
-// * Managed services: A key configuration can be used to encrypt a workspace's
-// notebook and secret data in the control plane, as well as Databricks SQL
-// queries and query history. * Storage: A key configuration can be used to
-// encrypt a workspace's DBFS and EBS data in the data plane.
+//   - Managed services: A key configuration can be used to encrypt a
+//     workspace's notebook and secret data in the control plane, as well as
+//     Databricks SQL queries and query history.
+//   - Storage: A key configuration can be used to encrypt a workspace's DBFS
+//     and EBS data in the data plane.
 //
 // In both of these cases, the key configuration's ID is used when creating a
 // new workspace. This Preview feature is available if your account is on the E2

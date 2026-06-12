@@ -141,21 +141,26 @@ type WorkspaceClient struct {
 	// attribute values can be used during cluster creation. Cluster policies
 	// have ACLs that limit their use to specific users and groups.
 	//
-	// With cluster policies, you can: - Auto-install cluster libraries on the
-	// next restart by listing them in the policy's "libraries" field (Public
-	// Preview). - Limit users to creating clusters with the prescribed
-	// settings. - Simplify the user interface, enabling more users to create
-	// clusters, by fixing and hiding some fields. - Manage costs by setting
-	// limits on attributes that impact the hourly rate.
+	// With cluster policies, you can:
+	//
+	//   - Auto-install cluster libraries on the next restart by listing them in
+	//     the policy's "libraries" field (Public Preview).
+	//   - Limit users to creating clusters with the prescribed settings.
+	//   - Simplify the user interface, enabling more users to create clusters,
+	//     by fixing and hiding some fields.
+	//   - Manage costs by setting limits on attributes that impact the hourly
+	//     rate.
 	//
 	// Cluster policy permissions limit which policies a user can select in the
-	// Policy drop-down when the user creates a cluster: - A user who has
-	// unrestricted cluster create permission can select the Unrestricted policy
-	// and create fully-configurable clusters. - A user who has both
-	// unrestricted cluster create permission and access to cluster policies can
-	// select the Unrestricted policy and policies they have access to. - A user
-	// that has access to only cluster policies, can select the policies they
-	// have access to.
+	// Policy drop-down when the user creates a cluster:
+	//
+	//   - A user who has unrestricted cluster create permission can select the
+	//     Unrestricted policy and create fully-configurable clusters.
+	//   - A user who has both unrestricted cluster create permission and access
+	//     to cluster policies can select the Unrestricted policy and policies
+	//     they have access to.
+	//   - A user that has access to only cluster policies, can select the
+	//     policies they have access to.
 	//
 	// If no policies exist in the workspace, the Policy drop-down doesn't
 	// appear. Only admin users can create, edit, and delete policies. Admin
@@ -306,12 +311,10 @@ type WorkspaceClient struct {
 	//
 	// There are three levels of permission:
 	//
-	// - `CAN_VIEW`: Allows read-only access
-	//
-	// - `CAN_RUN`: Allows read access and run access (superset of `CAN_VIEW`)
-	//
-	// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
-	// permissions (superset of `CAN_RUN`)
+	//   - `CAN_VIEW`: Allows read-only access
+	//   - `CAN_RUN`: Allows read access and run access (superset of `CAN_VIEW`)
+	//   - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
+	//     permissions (superset of `CAN_RUN`)
 	//
 	// **Warning**: This API is deprecated. Please see the latest version of the
 	// Databricks SQL API. [Learn more]
@@ -421,7 +424,7 @@ type WorkspaceClient struct {
 	// can be invoked wherever a table reference is allowed in a query. In Unity
 	// Catalog, a function resides at the same level as a table, so it can be
 	// referenced with the form
-	// __catalog_name__.__schema_name__.__function_name__.
+	// **catalog_name**.**schema_name**.**function_name**.
 	Functions catalog.FunctionsInterface
 
 	// Genie provides a no-code experience for business users, powered by AI/BI.
@@ -508,10 +511,12 @@ type WorkspaceClient struct {
 	// allowed for this workspace. There is support for allow lists (inclusion)
 	// and block lists (exclusion).
 	//
-	// When a connection is attempted: 1. **First, all block lists are
-	// checked.** If the connection IP address matches any block list, the
-	// connection is rejected. 2. **If the connection was not rejected by block
-	// lists**, the IP address is compared with the allow lists.
+	// When a connection is attempted:
+	//
+	//  1. **First, all block lists are checked.** If the connection IP address
+	//     matches any block list, the connection is rejected.
+	//  2. **If the connection was not rejected by block lists**, the IP address
+	//     is compared with the allow lists.
 	//
 	// If there is at least one allow list for the workspace, the connection is
 	// allowed only if the IP address matches an allow list. If there are no
@@ -598,11 +603,10 @@ type WorkspaceClient struct {
 	Metastores catalog.MetastoresInterface
 
 	// Note: This API reference documents APIs for the Workspace Model Registry.
-	// Databricks recommends using [Models in Unity
-	// Catalog](/api/workspace/registeredmodels) instead. Models in Unity
-	// Catalog provides centralized model governance, cross-workspace access,
-	// lineage, and deployment. Workspace Model Registry will be deprecated in
-	// the future.
+	// Databricks recommends using Models in Unity Catalog instead. Models in
+	// Unity Catalog provides centralized model governance, cross-workspace
+	// access, lineage, and deployment. Workspace Model Registry will be
+	// deprecated in the future.
 	//
 	// The Workspace Model Registry is a centralized model repository and a UI
 	// and set of APIs that enable you to manage the full lifecycle of MLflow
@@ -615,8 +619,8 @@ type WorkspaceClient struct {
 	// workspaces.
 	//
 	// This API reference documents the REST endpoints for managing model
-	// versions in Unity Catalog. For more details, see the [registered models
-	// API docs](/api/workspace/registeredmodels).
+	// versions in Unity Catalog. For more details, see the registered models
+	// API docs.
 	ModelVersions catalog.ModelVersionsInterface
 
 	// The notification destinations API lets you programmatically manage a
@@ -635,35 +639,37 @@ type WorkspaceClient struct {
 	PermissionMigration iam.PermissionMigrationInterface
 
 	// Permissions API are used to create read, write, edit, update and manage
-	// access for various users on different objects and endpoints. * **[Apps
-	// permissions](:service:apps)** — Manage which users can manage or use
-	// apps. * **[Cluster permissions](:service:clusters)** — Manage which
-	// users can manage, restart, or attach to clusters. * **[Cluster policy
-	// permissions](:service:clusterpolicies)** — Manage which users can use
-	// cluster policies. * **[Spark Declarative Pipelines
-	// permissions](:service:pipelines)** — Manage which users can view,
-	// manage, run, cancel, or own a Spark Declarative Pipeline. * **[Job
-	// permissions](:service:jobs)** — Manage which users can view, manage,
-	// trigger, cancel, or own a job. * **[MLflow experiment
-	// permissions](:service:experiments)** — Manage which users can read,
-	// edit, or manage MLflow experiments. * **[MLflow registered model
-	// permissions](:service:modelregistry)** — Manage which users can read,
-	// edit, or manage MLflow registered models. * **[Instance Pool
-	// permissions](:service:instancepools)** — Manage which users can manage
-	// or attach to pools. * **[Repo permissions](repos)** — Manage which
-	// users can read, run, edit, or manage a repo. * **[Serving endpoint
-	// permissions](:service:servingendpoints)** — Manage which users can
-	// view, query, or manage a serving endpoint. * **[SQL warehouse
-	// permissions](:service:warehouses)** — Manage which users can use or
-	// manage SQL warehouses. * **[Token
-	// permissions](:service:tokenmanagement)** — Manage which users can
-	// create or use tokens. * **[Workspace object
-	// permissions](:service:workspace)** — Manage which users can read, run,
-	// edit, or manage alerts, dbsql-dashboards, directories, files, notebooks
-	// and queries. For the mapping of the required permissions for specific
-	// actions or abilities and other important information, see [Access
-	// Control]. Note that to manage access control on service principals, use
-	// **[Account Access Control Proxy](:service:accountaccesscontrolproxy)**.
+	// access for various users on different objects and endpoints.
+	//
+	//   - **Apps permissions** — Manage which users can manage or use apps.
+	//   - **Cluster permissions** — Manage which users can manage, restart,
+	//     or attach to clusters.
+	//   - **Cluster policy permissions** — Manage which users can use cluster
+	//     policies.
+	//   - **Spark Declarative Pipelines permissions** — Manage which users
+	//     can view, manage, run, cancel, or own a Spark Declarative Pipeline.
+	//   - **Job permissions** — Manage which users can view, manage, trigger,
+	//     cancel, or own a job.
+	//   - **MLflow experiment permissions** — Manage which users can read,
+	//     edit, or manage MLflow experiments.
+	//   - **MLflow registered model permissions** — Manage which users can
+	//     read, edit, or manage MLflow registered models.
+	//   - **Instance Pool permissions** — Manage which users can manage or
+	//     attach to pools.
+	//   - **Repo permissions** — Manage which users can read, run, edit, or
+	//     manage a repo.
+	//   - **Serving endpoint permissions** — Manage which users can view,
+	//     query, or manage a serving endpoint.
+	//   - **SQL warehouse permissions** — Manage which users can use or
+	//     manage SQL warehouses.
+	//   - **Token permissions** — Manage which users can create or use
+	//     tokens.
+	//   - **Workspace object permissions** — Manage which users can read,
+	//     run, edit, or manage alerts, dbsql-dashboards, directories, files,
+	//     notebooks and queries. For the mapping of the required permissions
+	//     for specific actions or abilities and other important information,
+	//     see [Access Control]. Note that to manage access control on service
+	//     principals, use **Account Access Control Proxy**.
 	//
 	// [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 	Permissions iam.PermissionsInterface
@@ -860,16 +866,20 @@ type WorkspaceClient struct {
 	// tokens. It validates the OIDC claims in federated tokens and is set at
 	// the recipient level. The caller must be the owner of the recipient to
 	// create or manage a federation policy. Federation policies support the
-	// following scenarios: - User-to-Machine (U2M) flow: A user accesses Delta
-	// Shares using their own identity, such as connecting through PowerBI Delta
-	// Sharing Client. - Machine-to-Machine (M2M) flow: An application accesses
-	// Delta Shares using its own identity, typically for automation tasks like
-	// nightly jobs through Python Delta Sharing Client. OIDC Token Federation
-	// enables fine-grained access control, supports Multi-Factor Authentication
-	// (MFA), and enhances security by minimizing the risk of credential leakage
-	// through the use of short-lived, expiring tokens. It is designed for
-	// strong identity governance, secure cross-platform data sharing, and
-	// reduced operational overhead for credential management.
+	// following scenarios:
+	//
+	//   - User-to-Machine (U2M) flow: A user accesses Delta Shares using their
+	//     own identity, such as connecting through PowerBI Delta Sharing
+	//     Client.
+	//   - Machine-to-Machine (M2M) flow: An application accesses Delta Shares
+	//     using its own identity, typically for automation tasks like nightly
+	//     jobs through Python Delta Sharing Client. OIDC Token Federation
+	//     enables fine-grained access control, supports Multi-Factor
+	//     Authentication (MFA), and enhances security by minimizing the risk of
+	//     credential leakage through the use of short-lived, expiring tokens.
+	//     It is designed for strong identity governance, secure cross-platform
+	//     data sharing, and reduced operational overhead for credential
+	//     management.
 	//
 	// For more information, see
 	// https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
@@ -882,18 +892,18 @@ type WorkspaceClient struct {
 	// how sharing works differs depending on whether or not your recipient has
 	// access to a Databricks workspace that is enabled for Unity Catalog:
 	//
-	// - For recipients with access to a Databricks workspace that is enabled
-	// for Unity Catalog, you can create a recipient object along with a unique
-	// sharing identifier you get from the recipient. The sharing identifier is
-	// the key identifier that enables the secure connection. This sharing mode
-	// is called **Databricks-to-Databricks sharing**.
-	//
-	// - For recipients without access to a Databricks workspace that is enabled
-	// for Unity Catalog, when you create a recipient object, Databricks
-	// generates an activation link you can send to the recipient. The recipient
-	// follows the activation link to download the credential file, and then
-	// uses the credential file to establish a secure connection to receive the
-	// shared data. This sharing mode is called **open sharing**.
+	//   - For recipients with access to a Databricks workspace that is enabled
+	//     for Unity Catalog, you can create a recipient object along with a
+	//     unique sharing identifier you get from the recipient. The sharing
+	//     identifier is the key identifier that enables the secure connection.
+	//     This sharing mode is called **Databricks-to-Databricks sharing**.
+	//   - For recipients without access to a Databricks workspace that is
+	//     enabled for Unity Catalog, when you create a recipient object,
+	//     Databricks generates an activation link you can send to the
+	//     recipient. The recipient follows the activation link to download the
+	//     credential file, and then uses the credential file to establish a
+	//     secure connection to receive the shared data. This sharing mode is
+	//     called **open sharing**.
 	Recipients sharing.RecipientsInterface
 
 	// Redash V2 service for workspace configurations (internal)
@@ -917,15 +927,16 @@ type WorkspaceClient struct {
 	// permissions on the enclosing schema. In addition, the following
 	// additional privileges are required for various operations:
 	//
-	// * To create a registered model, users must additionally have the
-	// CREATE_MODEL permission on the target schema. * To view registered model
-	// or model version metadata, model version data files, or invoke a model
-	// version, users must additionally have the EXECUTE permission on the
-	// registered model * To update registered model or model version tags,
-	// users must additionally have APPLY TAG permissions on the registered
-	// model * To update other registered model or model version metadata
-	// (comments, aliases) create a new model version, or update permissions on
-	// the registered model, users must be owners of the registered model.
+	//   - To create a registered model, users must additionally have the
+	//     CREATE_MODEL permission on the target schema.
+	//   - To view registered model or model version metadata, model version
+	//     data files, or invoke a model version, users must additionally have
+	//     the EXECUTE permission on the registered model
+	//   - To update registered model or model version tags, users must
+	//     additionally have APPLY TAG permissions on the registered model
+	//   - To update other registered model or model version metadata (comments,
+	//     aliases) create a new model version, or update permissions on the
+	//     registered model, users must be owners of the registered model.
 	//
 	// Note: The securable type for models is FUNCTION. When using REST APIs
 	// (e.g. tagging, grants) that specify a securable type, use FUNCTION as the
@@ -1081,23 +1092,28 @@ type WorkspaceClient struct {
 	// asynchronous mode, or it can be set to `CANCEL`, which cancels the
 	// statement.
 	//
-	// In summary: - **Synchronous mode** (`wait_timeout=30s` and
-	// `on_wait_timeout=CANCEL`): The call waits up to 30 seconds; if the
-	// statement execution finishes within this time, the result data is
-	// returned directly in the response. If the execution takes longer than 30
-	// seconds, the execution is canceled and the call returns with a `CANCELED`
-	// state. - **Asynchronous mode** (`wait_timeout=0s` and `on_wait_timeout`
-	// is ignored): The call doesn't wait for the statement to finish but
-	// returns directly with a statement ID. The status of the statement
-	// execution can be polled by issuing
-	// :method:statementexecution/getStatement with the statement ID. Once the
-	// execution has succeeded, this call also returns the result and metadata
-	// in the response. - **[Default] Hybrid mode** (`wait_timeout=10s` and
-	// `on_wait_timeout=CONTINUE`): The call waits for up to 10 seconds; if the
-	// statement execution finishes within this time, the result data is
-	// returned directly in the response. If the execution takes longer than 10
-	// seconds, a statement ID is returned. The statement ID can be used to
-	// fetch status and results in the same way as in the asynchronous mode.
+	// In summary:
+	//
+	//   - **Synchronous mode** (`wait_timeout=30s` and
+	//     `on_wait_timeout=CANCEL`): The call waits up to 30 seconds; if the
+	//     statement execution finishes within this time, the result data is
+	//     returned directly in the response. If the execution takes longer than
+	//     30 seconds, the execution is canceled and the call returns with a
+	//     `CANCELED` state.
+	//   - **Asynchronous mode** (`wait_timeout=0s` and `on_wait_timeout` is
+	//     ignored): The call doesn't wait for the statement to finish but
+	//     returns directly with a statement ID. The status of the statement
+	//     execution can be polled by issuing
+	//     :method:statementexecution/getStatement with the statement ID. Once
+	//     the execution has succeeded, this call also returns the result and
+	//     metadata in the response.
+	//   - **[Default] Hybrid mode** (`wait_timeout=10s` and
+	//     `on_wait_timeout=CONTINUE`): The call waits for up to 10 seconds; if
+	//     the statement execution finishes within this time, the result data is
+	//     returned directly in the response. If the execution takes longer than
+	//     10 seconds, a statement ID is returned. The statement ID can be used
+	//     to fetch status and results in the same way as in the asynchronous
+	//     mode.
 	//
 	// Depending on the size, the result can be split into multiple chunks. If
 	// the statement execution is successful, the statement response contains a
@@ -1121,14 +1137,14 @@ type WorkspaceClient struct {
 	// There are two ways to receive statement results, controlled by the
 	// `disposition` setting, which can be either `INLINE` or `EXTERNAL_LINKS`:
 	//
-	// - `INLINE`: In this mode, the result data is directly included in the
-	// response. It's best suited for smaller results. This mode can only be
-	// used with the `JSON_ARRAY` format.
-	//
-	// - `EXTERNAL_LINKS`: In this mode, the response provides links that can be
-	// used to download the result data in chunks separately. This approach is
-	// ideal for larger results and offers higher throughput. This mode can be
-	// used with all the formats: `JSON_ARRAY`, `ARROW_STREAM`, and `CSV`.
+	//   - `INLINE`: In this mode, the result data is directly included in the
+	//     response. It's best suited for smaller results. This mode can only be
+	//     used with the `JSON_ARRAY` format.
+	//   - `EXTERNAL_LINKS`: In this mode, the response provides links that can
+	//     be used to download the result data in chunks separately. This
+	//     approach is ideal for larger results and offers higher throughput.
+	//     This mode can be used with all the formats: `JSON_ARRAY`,
+	//     `ARROW_STREAM`, and `CSV`.
 	//
 	// By default, the API uses `format=JSON_ARRAY` and `disposition=INLINE`.
 	//
@@ -1137,25 +1153,28 @@ type WorkspaceClient struct {
 	// Note: The byte limit for INLINE disposition is based on internal storage
 	// metrics and will not exactly match the byte count of the actual payload.
 	//
-	// - Statements with `disposition=INLINE` are limited to 25 MiB and will
-	// fail when this limit is exceeded. - Statements with
-	// `disposition=EXTERNAL_LINKS` are limited to 100 GiB. Result sets larger
-	// than this limit will be truncated. Truncation is indicated by the
-	// `truncated` field in the result manifest. - The maximum query text size
-	// is 16 MiB. - Cancelation might silently fail. A successful response from
-	// a cancel request indicates that the cancel request was successfully
-	// received and sent to the processing engine. However, an outstanding
-	// statement might have already completed execution when the cancel request
-	// arrives. Polling for status until a terminal state is reached is a
-	// reliable way to determine the final state. - Wait timeouts are
-	// approximate, occur server-side, and cannot account for things such as
-	// caller delays and network latency from caller to service. - To guarantee
-	// that the statement is kept alive, you must poll at least once every 15
-	// minutes. - The results are only available for one hour after success;
-	// polling does not extend this. - The SQL Execution API must be used for
-	// the entire lifecycle of the statement. For example, you cannot use the
-	// Jobs API to execute the command, and then the SQL Execution API to cancel
-	// it.
+	//   - Statements with `disposition=INLINE` are limited to 25 MiB and will
+	//     fail when this limit is exceeded.
+	//   - Statements with `disposition=EXTERNAL_LINKS` are limited to 100 GiB.
+	//     Result sets larger than this limit will be truncated. Truncation is
+	//     indicated by the `truncated` field in the result manifest.
+	//   - The maximum query text size is 16 MiB.
+	//   - Cancelation might silently fail. A successful response from a cancel
+	//     request indicates that the cancel request was successfully received
+	//     and sent to the processing engine. However, an outstanding statement
+	//     might have already completed execution when the cancel request
+	//     arrives. Polling for status until a terminal state is reached is a
+	//     reliable way to determine the final state.
+	//   - Wait timeouts are approximate, occur server-side, and cannot account
+	//     for things such as caller delays and network latency from caller to
+	//     service.
+	//   - To guarantee that the statement is kept alive, you must poll at least
+	//     once every 15 minutes.
+	//   - The results are only available for one hour after success; polling
+	//     does not extend this.
+	//   - The SQL Execution API must be used for the entire lifecycle of the
+	//     statement. For example, you cannot use the Jobs API to execute the
+	//     command, and then the SQL Execution API to cancel it.
 	//
 	// [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 	// [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
@@ -1208,7 +1227,7 @@ type WorkspaceClient struct {
 	// USE_CATALOG permission on its parent catalog and the USE_SCHEMA
 	// permission on its parent schema.
 	//
-	// A table can be managed or external. From an API perspective, a __VIEW__
+	// A table can be managed or external. From an API perspective, a **VIEW**
 	// is a particular kind of table (rather than a managed or external table).
 	Tables catalog.TablesInterface
 
@@ -1318,12 +1337,14 @@ type WorkspaceClient struct {
 	// supports real-time and efficient approximate nearest neighbor (ANN)
 	// search queries.
 	//
-	// There are 2 types of AI Search indexes: - **Delta Sync Index**: An index
-	// that automatically syncs with a source Delta Table, automatically and
-	// incrementally updating the index as the underlying data in the Delta
-	// Table changes. - **Direct Vector Access Index**: An index that supports
-	// direct read and write of vectors and metadata through our REST and SDK
-	// APIs. With this model, the user manages index updates.
+	// There are 2 types of AI Search indexes:
+	//
+	//   - **Delta Sync Index**: An index that automatically syncs with a source
+	//     Delta Table, automatically and incrementally updating the index as
+	//     the underlying data in the Delta Table changes.
+	//   - **Direct Vector Access Index**: An index that supports direct read
+	//     and write of vectors and metadata through our REST and SDK APIs. With
+	//     this model, the user manages index updates.
 	VectorSearchIndexes vectorsearch.VectorSearchIndexesInterface
 
 	// Volumes are a Unity Catalog (UC) capability for accessing, storing,
@@ -1351,15 +1372,15 @@ type WorkspaceClient struct {
 	// code, visualizations, and explanatory text.
 	Workspace workspace.WorkspaceInterface
 
-	// A securable in Databricks can be configured as __OPEN__ or __ISOLATED__.
-	// An __OPEN__ securable can be accessed from any workspace, while an
-	// __ISOLATED__ securable can only be accessed from a configured list of
+	// A securable in Databricks can be configured as **OPEN** or **ISOLATED**.
+	// An **OPEN** securable can be accessed from any workspace, while an
+	// **ISOLATED** securable can only be accessed from a configured list of
 	// workspaces. This API allows you to configure (bind) securables to
 	// workspaces.
 	//
-	// NOTE: The __isolation_mode__ is configured for the securable itself
+	// NOTE: The **isolation_mode** is configured for the securable itself
 	// (using its Update method) and the workspace bindings are only consulted
-	// when the securable's __isolation_mode__ is set to __ISOLATED__.
+	// when the securable's **isolation_mode** is set to **ISOLATED**.
 	//
 	// A securable's workspace bindings can be configured by a metastore admin
 	// or the owner of the securable.
@@ -1371,8 +1392,12 @@ type WorkspaceClient struct {
 	// introduces the ability to bind a securable in READ_ONLY mode (catalogs
 	// only).
 	//
-	// Securable types that support binding: - catalog - storage_credential -
-	// credential - external_location
+	// Securable types that support binding:
+	//
+	//   - catalog
+	//   - storage_credential
+	//   - credential
+	//   - external_location
 	WorkspaceBindings catalog.WorkspaceBindingsInterface
 
 	// This API allows updating known workspace settings for advanced users.

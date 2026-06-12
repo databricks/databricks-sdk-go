@@ -209,15 +209,15 @@ func (s CreateRepoResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateScope struct {
-	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
+	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
 	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
-	// The principal that is initially granted ``MANAGE`` permission to the
+	// The principal that is initially granted `MANAGE` permission to the
 	// created scope.
 	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
 	// Scope name requested by the user. Scope names are unique.
 	Scope string `json:"scope"`
 	// The backend type the scope will be created with. If not specified, will
-	// default to ``DATABRICKS``
+	// default to `DATABRICKS`
 	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -390,15 +390,16 @@ type ExportRequest struct {
 	//
 	// The value is case sensitive.
 	//
-	// - `SOURCE`: The notebook is exported as source code. Directory exports
-	// will not include non-notebook entries. - `HTML`: The notebook is exported
-	// as an HTML file. - `JUPYTER`: The notebook is exported as a
-	// Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in
-	// Databricks archive format. Directory exports will not include
-	// non-notebook entries. - `R_MARKDOWN`: The notebook is exported to R
-	// Markdown format. - `AUTO`: The object or directory is exported depending
-	// on the objects type. Directory exports will include notebooks and
-	// workspace files.
+	//   - `SOURCE`: The notebook is exported as source code. Directory exports
+	//     will not include non-notebook entries.
+	//   - `HTML`: The notebook is exported as an HTML file.
+	//   - `JUPYTER`: The notebook is exported as a Jupyter/IPython Notebook
+	//     file.
+	//   - `DBC`: The notebook is exported in Databricks archive format.
+	//     Directory exports will not include non-notebook entries.
+	//   - `R_MARKDOWN`: The notebook is exported to R Markdown format.
+	//   - `AUTO`: The object or directory is exported depending on the objects
+	//     type. Directory exports will include notebooks and workspace files.
 	Format ExportFormat `json:"-" url:"format,omitempty"`
 	// The absolute path of the object or directory. Exporting a directory is
 	// only supported for the `DBC`, `SOURCE`, and `AUTO` format.
@@ -597,15 +598,17 @@ type Import struct {
 	//
 	// The value is case sensitive.
 	//
-	// - `AUTO`: The item is imported depending on an analysis of the item's
-	// extension and the header content provided in the request. If the item is
-	// imported as a notebook, then the item's extension is automatically
-	// removed. - `SOURCE`: The notebook or directory is imported as source
-	// code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`:
-	// The notebook is imported as a Jupyter/IPython Notebook file. - `DBC`: The
-	// notebook is imported in Databricks archive format. Required for
-	// directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
-	// format.
+	//   - `AUTO`: The item is imported depending on an analysis of the item's
+	//     extension and the header content provided in the request. If the item
+	//     is imported as a notebook, then the item's extension is automatically
+	//     removed.
+	//   - `SOURCE`: The notebook or directory is imported as source code.
+	//   - `HTML`: The notebook is imported as an HTML file.
+	//   - `JUPYTER`: The notebook is imported as a Jupyter/IPython Notebook
+	//     file.
+	//   - `DBC`: The notebook is imported in Databricks archive format.
+	//     Required for directories.
+	//   - `R_MARKDOWN`: The notebook is imported from R Markdown format.
 	Format ImportFormat `json:"format,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
@@ -840,13 +843,13 @@ type Mkdirs struct {
 	Path string `json:"path"`
 }
 
-// The information of the object in workspace. It will be returned by “list“
-// and “get-status“.
+// The information of the object in workspace. It will be returned by `list` and
+// `get-status`.
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The language of the object. This value is set only if the object type is
-	// ``NOTEBOOK``. For Jupyter (.ipynb) notebooks, this is always ``PYTHON``.
+	// `NOTEBOOK`. For Jupyter (.ipynb) notebooks, this is always `PYTHON`.
 	Language Language `json:"language,omitempty"`
 	// Only applicable to files, the last modified UTC timestamp.
 	ModifiedAt int64 `json:"modified_at,omitempty"`
@@ -854,9 +857,13 @@ type ObjectInfo struct {
 	ObjectId int64 `json:"object_id,omitempty"`
 	// The type of the object in workspace.
 	//
-	// - `NOTEBOOK`: document that contains runnable code, visualizations, and
-	// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
-	// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
+	//   - `NOTEBOOK`: document that contains runnable code, visualizations, and
+	//     explanatory text.
+	//   - `DIRECTORY`: directory
+	//   - `LIBRARY`: library
+	//   - `FILE`: file
+	//   - `REPO`: repository
+	//   - `DASHBOARD`: Lakeview dashboard
 	ObjectType ObjectType `json:"object_type,omitempty"`
 	// The absolute path of the object.
 	Path string `json:"path,omitempty"`
@@ -1198,7 +1205,7 @@ func (s SecretMetadata) MarshalJSON() ([]byte, error) {
 type SecretScope struct {
 	// The type of secret scope backend.
 	BackendType ScopeBackendType `json:"backend_type,omitempty"`
-	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
+	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// A unique name to identify the secret scope.
 	Name string `json:"name,omitempty"`

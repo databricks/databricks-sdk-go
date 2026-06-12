@@ -238,12 +238,10 @@ type DataSourcesService interface {
 //
 // There are three levels of permission:
 //
-// - `CAN_VIEW`: Allows read-only access
-//
-// - `CAN_RUN`: Allows read access and run access (superset of `CAN_VIEW`)
-//
-// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
-// permissions (superset of `CAN_RUN`)
+//   - `CAN_VIEW`: Allows read-only access
+//   - `CAN_RUN`: Allows read access and run access (superset of `CAN_VIEW`)
+//   - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
+//     permissions (superset of `CAN_RUN`)
 //
 // **Warning**: This API is deprecated. Please see the latest version of the
 // Databricks SQL API. [Learn more]
@@ -506,22 +504,25 @@ type RedashConfigService interface {
 // to either `CONTINUE`, to fallback to asynchronous mode, or it can be set to
 // `CANCEL`, which cancels the statement.
 //
-// In summary: - **Synchronous mode** (`wait_timeout=30s` and
-// `on_wait_timeout=CANCEL`): The call waits up to 30 seconds; if the statement
-// execution finishes within this time, the result data is returned directly in
-// the response. If the execution takes longer than 30 seconds, the execution is
-// canceled and the call returns with a `CANCELED` state. - **Asynchronous
-// mode** (`wait_timeout=0s` and `on_wait_timeout` is ignored): The call doesn't
-// wait for the statement to finish but returns directly with a statement ID.
-// The status of the statement execution can be polled by issuing
-// :method:statementexecution/getStatement with the statement ID. Once the
-// execution has succeeded, this call also returns the result and metadata in
-// the response. - **[Default] Hybrid mode** (`wait_timeout=10s` and
-// `on_wait_timeout=CONTINUE`): The call waits for up to 10 seconds; if the
-// statement execution finishes within this time, the result data is returned
-// directly in the response. If the execution takes longer than 10 seconds, a
-// statement ID is returned. The statement ID can be used to fetch status and
-// results in the same way as in the asynchronous mode.
+// In summary:
+//
+//   - **Synchronous mode** (`wait_timeout=30s` and `on_wait_timeout=CANCEL`):
+//     The call waits up to 30 seconds; if the statement execution finishes
+//     within this time, the result data is returned directly in the response.
+//     If the execution takes longer than 30 seconds, the execution is canceled
+//     and the call returns with a `CANCELED` state.
+//   - **Asynchronous mode** (`wait_timeout=0s` and `on_wait_timeout` is
+//     ignored): The call doesn't wait for the statement to finish but returns
+//     directly with a statement ID. The status of the statement execution can
+//     be polled by issuing :method:statementexecution/getStatement with the
+//     statement ID. Once the execution has succeeded, this call also returns
+//     the result and metadata in the response.
+//   - **[Default] Hybrid mode** (`wait_timeout=10s` and
+//     `on_wait_timeout=CONTINUE`): The call waits for up to 10 seconds; if the
+//     statement execution finishes within this time, the result data is
+//     returned directly in the response. If the execution takes longer than 10
+//     seconds, a statement ID is returned. The statement ID can be used to
+//     fetch status and results in the same way as in the asynchronous mode.
 //
 // Depending on the size, the result can be split into multiple chunks. If the
 // statement execution is successful, the statement response contains a manifest
@@ -543,14 +544,13 @@ type RedashConfigService interface {
 // There are two ways to receive statement results, controlled by the
 // `disposition` setting, which can be either `INLINE` or `EXTERNAL_LINKS`:
 //
-// - `INLINE`: In this mode, the result data is directly included in the
-// response. It's best suited for smaller results. This mode can only be used
-// with the `JSON_ARRAY` format.
-//
-// - `EXTERNAL_LINKS`: In this mode, the response provides links that can be
-// used to download the result data in chunks separately. This approach is ideal
-// for larger results and offers higher throughput. This mode can be used with
-// all the formats: `JSON_ARRAY`, `ARROW_STREAM`, and `CSV`.
+//   - `INLINE`: In this mode, the result data is directly included in the
+//     response. It's best suited for smaller results. This mode can only be
+//     used with the `JSON_ARRAY` format.
+//   - `EXTERNAL_LINKS`: In this mode, the response provides links that can be
+//     used to download the result data in chunks separately. This approach is
+//     ideal for larger results and offers higher throughput. This mode can be
+//     used with all the formats: `JSON_ARRAY`, `ARROW_STREAM`, and `CSV`.
 //
 // By default, the API uses `format=JSON_ARRAY` and `disposition=INLINE`.
 //
@@ -559,23 +559,27 @@ type RedashConfigService interface {
 // Note: The byte limit for INLINE disposition is based on internal storage
 // metrics and will not exactly match the byte count of the actual payload.
 //
-// - Statements with `disposition=INLINE` are limited to 25 MiB and will fail
-// when this limit is exceeded. - Statements with `disposition=EXTERNAL_LINKS`
-// are limited to 100 GiB. Result sets larger than this limit will be truncated.
-// Truncation is indicated by the `truncated` field in the result manifest. -
-// The maximum query text size is 16 MiB. - Cancelation might silently fail. A
-// successful response from a cancel request indicates that the cancel request
-// was successfully received and sent to the processing engine. However, an
-// outstanding statement might have already completed execution when the cancel
-// request arrives. Polling for status until a terminal state is reached is a
-// reliable way to determine the final state. - Wait timeouts are approximate,
-// occur server-side, and cannot account for things such as caller delays and
-// network latency from caller to service. - To guarantee that the statement is
-// kept alive, you must poll at least once every 15 minutes. - The results are
-// only available for one hour after success; polling does not extend this. -
-// The SQL Execution API must be used for the entire lifecycle of the statement.
-// For example, you cannot use the Jobs API to execute the command, and then the
-// SQL Execution API to cancel it.
+//   - Statements with `disposition=INLINE` are limited to 25 MiB and will fail
+//     when this limit is exceeded.
+//   - Statements with `disposition=EXTERNAL_LINKS` are limited to 100 GiB.
+//     Result sets larger than this limit will be truncated. Truncation is
+//     indicated by the `truncated` field in the result manifest.
+//   - The maximum query text size is 16 MiB.
+//   - Cancelation might silently fail. A successful response from a cancel
+//     request indicates that the cancel request was successfully received and
+//     sent to the processing engine. However, an outstanding statement might
+//     have already completed execution when the cancel request arrives. Polling
+//     for status until a terminal state is reached is a reliable way to
+//     determine the final state.
+//   - Wait timeouts are approximate, occur server-side, and cannot account for
+//     things such as caller delays and network latency from caller to service.
+//   - To guarantee that the statement is kept alive, you must poll at least
+//     once every 15 minutes.
+//   - The results are only available for one hour after success; polling does
+//     not extend this.
+//   - The SQL Execution API must be used for the entire lifecycle of the
+//     statement. For example, you cannot use the Jobs API to execute the
+//     command, and then the SQL Execution API to cancel it.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
@@ -614,10 +618,7 @@ type StatementExecutionService interface {
 	// `EXTERNAL_LINKS` mode, chunks can be resolved and fetched multiple times
 	// and in parallel.
 	//
-	// ----
-	//
-	// ### **Warning: Databricks strongly recommends that you protect the URLs
-	// that are returned by the `EXTERNAL_LINKS` disposition.**
+	// # **Warning: Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.**
 	//
 	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
 	// generated, which can be used to download the results directly from . As a
@@ -630,8 +631,6 @@ type StatementExecutionService interface {
 	// a support case.
 	//
 	// See also [Security best practices].
-	//
-	// ----
 	//
 	// StatementResponse contains `statement_id` and `status`; other fields
 	// might be absent or present depending on context. If the SQL warehouse

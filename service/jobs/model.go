@@ -63,9 +63,11 @@ type AlertTask struct {
 	// task.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 	// The workspace_path is the path to the alert file in the workspace. The
-	// path: * must start with "/Workspace" * must be a normalized path. User
-	// has to select only one of alert_id or workspace_path to identify the
-	// alert.
+	// path:
+	//
+	//   - must start with "/Workspace"
+	//   - must be a normalized path. User has to select only one of alert_id or
+	//     workspace_path to identify the alert.
 	WorkspacePath string `json:"workspace_path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -147,11 +149,12 @@ type BaseJob struct {
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The id of the budget policy used by this job for cost attribution
-	// purposes. This may be set through (in order of precedence): 1. Budget
-	// admins through the account or workspace console 2. Jobs UI in the job
-	// details page and Jobs API using `budget_policy_id` 3. Inferred default
-	// based on accessible budget policies of the run_as identity on job
-	// creation or modification.
+	// purposes. This may be set through (in order of precedence):
+	//
+	//  1. Budget admins through the account or workspace console
+	//  2. Jobs UI in the job details page and Jobs API using `budget_policy_id`
+	//  3. Inferred default based on accessible budget policies of the run_as
+	//     identity on job creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The id of the usage policy used by this job for cost attribution
 	// purposes.
@@ -212,9 +215,9 @@ type BaseRun struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The id of the usage policy used by this run for cost attribution
 	// purposes.
@@ -655,12 +658,13 @@ type ConditionTask struct {
 	// The left operand of the condition task. Can be either a string value or a
 	// job state or parameter reference.
 	Left string `json:"left"`
-	// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
-	// operands. This means that `“12.0” == “12”` will evaluate to
-	// `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
-	// `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their
-	// operands. `“12.0” >= “12”` will evaluate to `true`, `“10.0”
-	// >= “12”` will evaluate to `false`.
+	//   - `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
+	//     operands. This means that `“12.0” == “12”` will evaluate to
+	//     `false`.
+	//   - `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
+	//     `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their
+	//     operands. `“12.0” >= “12”` will evaluate to `true`,
+	//     `“10.0” >= “12”` will evaluate to `false`.
 	//
 	// The boolean comparison to task values can be implemented with operators
 	// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it
@@ -671,12 +675,13 @@ type ConditionTask struct {
 	Right string `json:"right"`
 }
 
-// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
-// operands. This means that `“12.0” == “12”` will evaluate to `false`.
-// * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`
-// operators perform numeric comparison of their operands. `“12.0” >=
-// “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to
-// `false`.
+//   - `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
+//     operands. This means that `“12.0” == “12”` will evaluate to
+//     `false`.
+//   - `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
+//     `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their
+//     operands. `“12.0” >= “12”` will evaluate to `true`, `“10.0”
+//     >= “12”` will evaluate to `false`.
 //
 // The boolean comparison to task values can be implemented with operators
 // `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it will
@@ -758,8 +763,8 @@ type CreateJob struct {
 	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
 	//
-	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
-	// `EDITABLE`: The job is in an editable state and can be modified.
+	//   - `UI_LOCKED`: The job is in a locked UI state and cannot be modified.
+	//   - `EDITABLE`: The job is in an editable state and can be modified.
 	EditMode JobEditMode `json:"edit_mode,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
@@ -818,9 +823,9 @@ type CreateJob struct {
 	// of compute performance or cost-efficiency for the run. The performance
 	// target does not apply to tasks that run on Serverless GPU compute.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -927,13 +932,16 @@ type DashboardTask struct {
 	// Dashboard task parameters. Used to apply dashboard filter values during
 	// dashboard task execution. Parameter values get applied to any dashboard
 	// filters that have a matching URL identifier as the parameter key. The
-	// parameter value format is dependent on the filter type: - For text and
-	// single-select filters, provide a single value (e.g. `"value"`) - For date
-	// and datetime filters, provide the value in ISO 8601 format (e.g.
-	// `"2000-01-01T00:00:00"`) - For multi-select filters, provide a JSON array
-	// of values (e.g. `"[\"value1\",\"value2\"]"`) - For range and date range
-	// filters, provide a JSON object with `start` and `end` (e.g.
-	// `"{\"start\":\"1\",\"end\":\"10\"}"`)
+	// parameter value format is dependent on the filter type:
+	//
+	//   - For text and single-select filters, provide a single value (e.g.
+	//     `"value"`)
+	//   - For date and datetime filters, provide the value in ISO 8601 format
+	//     (e.g. `"2000-01-01T00:00:00"`)
+	//   - For multi-select filters, provide a JSON array of values (e.g.
+	//     `"[\"value1\",\"value2\"]"`)
+	//   - For range and date range filters, provide a JSON object with `start`
+	//     and `end` (e.g. `"{\"start\":\"1\",\"end\":\"10\"}"`)
 	Filters map[string]string `json:"filters,omitempty"`
 	// Optional: subscription configuration for sending the dashboard snapshot.
 	Subscription *Subscription `json:"subscription,omitempty"`
@@ -1188,8 +1196,8 @@ type DbtTask struct {
 	// in `git_source`. If the value is empty, the task will use `GIT` if
 	// `git_source` is defined and `WORKSPACE` otherwise.
 	//
-	// * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`:
-	// Project is located in cloud Git provider.
+	//   - `WORKSPACE`: Project is located in Databricks workspace.
+	//   - `GIT`: Project is located in cloud Git provider.
 	Source Source `json:"source,omitempty"`
 	// ID of the SQL warehouse to connect to. If provided, we automatically
 	// generate and provide the profile and connection details to dbt. It can be
@@ -1294,8 +1302,8 @@ func (s EnforcePolicyComplianceResponse) MarshalJSON() ([]byte, error) {
 // Run was exported successfully.
 type ExportRunOutput struct {
 	// The exported content in HTML format (one for every view item). To extract
-	// the HTML notebook from the JSON response, download and run this [Python
-	// script](/_static/examples/extract.py).
+	// the HTML notebook from the JSON response, download and run this Python
+	// script.
 	Views []ViewItem `json:"views,omitempty"`
 }
 
@@ -1479,9 +1487,10 @@ type GenAiComputeTask struct {
 	// the script will be retrieved from the local Databricks workspace. When
 	// set to `GIT`, the script will be retrieved from a Git repository defined
 	// in `git_source`. If the value is empty, the task will use `GIT` if
-	// `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script
-	// is located in Databricks workspace. * `GIT`: Script is located in cloud
-	// Git provider.
+	// `git_source` is defined and `WORKSPACE` otherwise.
+	//
+	//   - `WORKSPACE`: Script is located in Databricks workspace.
+	//   - `GIT`: Script is located in cloud Git provider.
 	Source Source `json:"source,omitempty"`
 	// The training script file path to be executed. Cloud file URIs (such as
 	// dbfs:/, s3:/, adls:/, gcs:/) and workspace paths are supported. For
@@ -1729,11 +1738,12 @@ type Job struct {
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The id of the budget policy used by this job for cost attribution
-	// purposes. This may be set through (in order of precedence): 1. Budget
-	// admins through the account or workspace console 2. Jobs UI in the job
-	// details page and Jobs API using `budget_policy_id` 3. Inferred default
-	// based on accessible budget policies of the run_as identity on job
-	// creation or modification.
+	// purposes. This may be set through (in order of precedence):
+	//
+	//  1. Budget admins through the account or workspace console
+	//  2. Jobs UI in the job details page and Jobs API using `budget_policy_id`
+	//  3. Inferred default based on accessible budget policies of the run_as
+	//     identity on job creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The id of the usage policy used by this job for cost attribution
 	// purposes.
@@ -1855,8 +1865,8 @@ type JobDeployment struct {
 	DeploymentId string `json:"deployment_id,omitempty"`
 	// The kind of deployment that manages the job.
 	//
-	// * `BUNDLE`: The job is managed by Databricks Asset Bundle. *
-	// `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
+	//   - `BUNDLE`: The job is managed by Databricks Asset Bundle.
+	//   - `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
 	Kind JobDeploymentKind `json:"kind"`
 	// Path of the file that contains deployment metadata.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
@@ -1876,8 +1886,8 @@ func (s JobDeployment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// * `BUNDLE`: The job is managed by Databricks Asset Bundle. *
-// `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
+// - `BUNDLE`: The job is managed by Databricks Asset Bundle.
+// - `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
 type JobDeploymentKind string
 
 // The job is managed by Databricks Asset Bundle.
@@ -1919,8 +1929,8 @@ func (f *JobDeploymentKind) Type() string {
 
 // Edit mode of the job.
 //
-// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
-// `EDITABLE`: The job is in an editable state and can be modified.
+//   - `UI_LOCKED`: The job is in a locked UI state and cannot be modified.
+//   - `EDITABLE`: The job is in an editable state and can be modified.
 type JobEditMode string
 
 // The job is in an editable state and can be modified.
@@ -2205,8 +2215,8 @@ type JobSettings struct {
 	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
 	//
-	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
-	// `EDITABLE`: The job is in an editable state and can be modified.
+	//   - `UI_LOCKED`: The job is in a locked UI state and cannot be modified.
+	//   - `EDITABLE`: The job is in an editable state and can be modified.
 	EditMode JobEditMode `json:"edit_mode,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
@@ -2265,9 +2275,9 @@ type JobSettings struct {
 	// of compute performance or cost-efficiency for the run. The performance
 	// target does not apply to tasks that run on Serverless GPU compute.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -2326,12 +2336,14 @@ type JobSource struct {
 	// Dirty state indicates the job is not fully synced with the job
 	// specification in the remote repository.
 	//
-	// Possible values are: * `NOT_SYNCED`: The job is not yet synced with the
-	// remote job specification. Import the remote job specification from UI to
-	// make the job fully synced. * `DISCONNECTED`: The job is temporary
-	// disconnected from the remote job specification and is allowed for live
-	// edit. Import the remote job specification again from UI to make the job
-	// fully synced.
+	// Possible values are:
+	//
+	//   - `NOT_SYNCED`: The job is not yet synced with the remote job
+	//     specification. Import the remote job specification from UI to make
+	//     the job fully synced.
+	//   - `DISCONNECTED`: The job is temporary disconnected from the remote job
+	//     specification and is allowed for live edit. Import the remote job
+	//     specification again from UI to make the job fully synced.
 	DirtyState JobSourceDirtyState `json:"dirty_state,omitempty"`
 	// Name of the branch which the job is imported from.
 	ImportFromGitBranch string `json:"import_from_git_branch"`
@@ -2342,11 +2354,14 @@ type JobSource struct {
 // Dirty state indicates the job is not fully synced with the job specification
 // in the remote repository.
 //
-// Possible values are: * `NOT_SYNCED`: The job is not yet synced with the
-// remote job specification. Import the remote job specification from UI to make
-// the job fully synced. * `DISCONNECTED`: The job is temporary disconnected
-// from the remote job specification and is allowed for live edit. Import the
-// remote job specification again from UI to make the job fully synced.
+// Possible values are:
+//
+//   - `NOT_SYNCED`: The job is not yet synced with the remote job
+//     specification. Import the remote job specification from UI to make the
+//     job fully synced.
+//   - `DISCONNECTED`: The job is temporary disconnected from the remote job
+//     specification and is allowed for live edit. Import the remote job
+//     specification again from UI to make the job fully synced.
 type JobSourceDirtyState string
 
 // The job is temporary disconnected from the remote job specification and is
@@ -2392,15 +2407,16 @@ func (f *JobSourceDirtyState) Type() string {
 // Specifies the health metric that is being evaluated for a particular health
 // rule.
 //
-// * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. *
-// `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data waiting
-// to be consumed across all streams. This metric is in Public Preview. *
-// `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across all
-// streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An
-// estimate of the maximum consumer delay across all streams. This metric is in
-// Public Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum
-// number of outstanding files across all streams. This metric is in Public
-// Preview.
+//   - `RUN_DURATION_SECONDS`: Expected total time for a run in seconds.
+//   - `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data
+//     waiting to be consumed across all streams. This metric is in Public
+//     Preview.
+//   - `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across
+//     all streams. This metric is in Public Preview.
+//   - `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay
+//     across all streams. This metric is in Public Preview.
+//   - `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of
+//     outstanding files across all streams. This metric is in Public Preview.
 type JobsHealthMetric string
 
 // Expected total time for a run in seconds.
@@ -2636,12 +2652,12 @@ type ListRunsRequest struct {
 	// The type of runs to return. For a description of run types, see
 	// :method:jobs/getRun.
 	RunType RunType `json:"-" url:"run_type,omitempty"`
-	// Show runs that started _at or after_ this value. The value must be a UTC
-	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
+	// Show runs that started *at or after* this value. The value must be a UTC
+	// timestamp in milliseconds. Can be combined with *start_time_to* to filter
 	// by a time range.
 	StartTimeFrom int64 `json:"-" url:"start_time_from,omitempty"`
-	// Show runs that started _at or before_ this value. The value must be a UTC
-	// timestamp in milliseconds. Can be combined with _start_time_from_ to
+	// Show runs that started *at or before* this value. The value must be a UTC
+	// timestamp in milliseconds. Can be combined with *start_time_from* to
 	// filter by a time range.
 	StartTimeTo int64 `json:"-" url:"start_time_to,omitempty"`
 
@@ -2753,12 +2769,10 @@ func (f *ModelTriggerConfigurationCondition) Type() string {
 }
 
 type NotebookOutput struct {
-	// The value passed to
-	// [dbutils.notebook.exit()](/notebooks/notebook-workflows.html#notebook-workflows-exit).
-	// Databricks restricts this API to return the first 5 MB of the value. For
-	// a larger result, your job can store the results in a cloud storage
-	// service. This field is absent if `dbutils.notebook.exit()` was never
-	// called.
+	// The value passed to dbutils.notebook.exit(). Databricks restricts this
+	// API to return the first 5 MB of the value. For a larger result, your job
+	// can store the results in a cloud storage service. This field is absent if
+	// `dbutils.notebook.exit()` was never called.
 	Result string `json:"result,omitempty"`
 	// Whether or not the result was truncated.
 	Truncated bool `json:"truncated,omitempty"`
@@ -2802,9 +2816,10 @@ type NotebookTask struct {
 	// notebook will be retrieved from the local Databricks workspace. When set
 	// to `GIT`, the notebook will be retrieved from a Git repository defined in
 	// `git_source`. If the value is empty, the task will use `GIT` if
-	// `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`:
-	// Notebook is located in Databricks workspace. * `GIT`: Notebook is located
-	// in cloud Git provider.
+	// `git_source` is defined and `WORKSPACE` otherwise.
+	//
+	//   - `WORKSPACE`: Notebook is located in Databricks workspace.
+	//   - `GIT`: Notebook is located in cloud Git provider.
 	Source Source `json:"source,omitempty"`
 	// Optional `warehouse_id` to run the notebook on a SQL warehouse. Classic
 	// SQL warehouses are NOT supported, please use serverless or pro SQL
@@ -3162,11 +3177,14 @@ func (s QueueDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was
-// queued due to reaching the workspace limit of active task runs. *
-// `MAX_CONCURRENT_RUNS_REACHED`: The run was queued due to reaching the per-job
-// limit of concurrent job runs. * `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run
-// was queued due to reaching the workspace limit of active run job tasks.
+// The reason for queuing the run.
+//
+//   - `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to reaching the
+//     workspace limit of active task runs.
+//   - `MAX_CONCURRENT_RUNS_REACHED`: The run was queued due to reaching the
+//     per-job limit of concurrent job runs.
+//   - `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching
+//     the workspace limit of active run job tasks.
 type QueueDetailsCodeCode string
 
 // The run was queued due to reaching the workspace limit of active task runs.
@@ -3222,9 +3240,9 @@ type RepairHistoryItem struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The end time of the (repaired) run.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -3349,9 +3367,9 @@ type RepairRun struct {
 	// run. This field overrides the performance target defined on the job
 	// level.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -3561,9 +3579,9 @@ type Run struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The id of the usage policy used by this run for cost attribution
 	// purposes.
@@ -3686,12 +3704,13 @@ type RunConditionTask struct {
 	// The left operand of the condition task. Can be either a string value or a
 	// job state or parameter reference.
 	Left string `json:"left"`
-	// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
-	// operands. This means that `“12.0” == “12”` will evaluate to
-	// `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
-	// `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their
-	// operands. `“12.0” >= “12”` will evaluate to `true`, `“10.0”
-	// >= “12”` will evaluate to `false`.
+	//   - `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
+	//     operands. This means that `“12.0” == “12”` will evaluate to
+	//     `false`.
+	//   - `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
+	//     `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their
+	//     operands. `“12.0” >= “12”` will evaluate to `true`,
+	//     `“10.0” >= “12”` will evaluate to `false`.
 	//
 	// The boolean comparison to task values can be implemented with operators
 	// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it
@@ -3744,12 +3763,15 @@ func (s RunForEachTask) MarshalJSON() ([]byte, error) {
 // should be run once its dependencies have been completed. When omitted,
 // defaults to `ALL_SUCCESS`.
 //
-// Possible values are: * `ALL_SUCCESS`: All dependencies have executed and
-// succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded *
-// `NONE_FAILED`: None of the dependencies have failed and at least one was
-// executed * `ALL_DONE`: All dependencies have been completed *
-// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
-// dependencies have failed
+// Possible values are:
+//
+//   - `ALL_SUCCESS`: All dependencies have executed and succeeded
+//   - `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded
+//   - `NONE_FAILED`: None of the dependencies have failed and at least one was
+//     executed
+//   - `ALL_DONE`: All dependencies have been completed
+//   - `AT_LEAST_ONE_FAILED`: At least one dependency failed
+//   - `ALL_FAILED`: ALl dependencies have failed
 type RunIf string
 
 // All dependencies have been completed
@@ -3919,20 +3941,24 @@ type RunJobTask struct {
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
-// A value indicating the run's lifecycle state. The possible values are: *
-// `QUEUED`: The run is queued. * `PENDING`: The run is waiting to be executed
-// while the cluster and execution context are being prepared. * `RUNNING`: The
-// task of this run is being executed. * `TERMINATING`: The task of this run has
-// completed, and the cluster and execution context are being cleaned up. *
-// `TERMINATED`: The task of this run has completed, and the cluster and
-// execution context have been cleaned up. This state is terminal. * `SKIPPED`:
-// This run was aborted because a previous run of the same job was already
-// active. This state is terminal. * `INTERNAL_ERROR`: An exceptional state that
-// indicates a failure in the Jobs service, such as network failure over a long
-// period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the
-// Jobs service terminates the cluster as soon as possible. This state is
-// terminal. * `BLOCKED`: The run is blocked on an upstream dependency. *
-// `WAITING_FOR_RETRY`: The run is waiting for a retry.
+// A value indicating the run's lifecycle state. The possible values are:
+//
+//   - `QUEUED`: The run is queued.
+//   - `PENDING`: The run is waiting to be executed while the cluster and
+//     execution context are being prepared.
+//   - `RUNNING`: The task of this run is being executed.
+//   - `TERMINATING`: The task of this run has completed, and the cluster and
+//     execution context are being cleaned up.
+//   - `TERMINATED`: The task of this run has completed, and the cluster and
+//     execution context have been cleaned up. This state is terminal.
+//   - `SKIPPED`: This run was aborted because a previous run of the same job
+//     was already active. This state is terminal.
+//   - `INTERNAL_ERROR`: An exceptional state that indicates a failure in the
+//     Jobs service, such as network failure over a long period. If a run on a
+//     new cluster ends in the `INTERNAL_ERROR` state, the Jobs service
+//     terminates the cluster as soon as possible. This state is terminal.
+//   - `BLOCKED`: The run is blocked on an upstream dependency.
+//   - `WAITING_FOR_RETRY`: The run is waiting for a retry.
 type RunLifeCycleState string
 
 // The run is blocked on an upstream dependency.
@@ -4131,9 +4157,9 @@ type RunNow struct {
 	// run. This field overrides the performance target defined on the job
 	// level.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -4373,18 +4399,23 @@ type RunParameters struct {
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
-// A value indicating the run's result. The possible values are: * `SUCCESS`:
-// The task completed successfully. * `FAILED`: The task completed with an
-// error. * `TIMEDOUT`: The run was stopped after reaching the timeout. *
-// `CANCELED`: The run was canceled at user request. *
-// `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum
-// concurrent runs were reached. * `EXCLUDED`: The run was skipped because the
-// necessary conditions were not met. * `SUCCESS_WITH_FAILURES`: The job run
-// completed successfully with some failures; leaf tasks were successful. *
-// `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
-// `UPSTREAM_CANCELED`: The run was skipped because an upstream task was
-// canceled. * `DISABLED`: The run was skipped because it was disabled
-// explicitly by the user.
+// A value indicating the run's result. The possible values are:
+//
+//   - `SUCCESS`: The task completed successfully.
+//   - `FAILED`: The task completed with an error.
+//   - `TIMEDOUT`: The run was stopped after reaching the timeout.
+//   - `CANCELED`: The run was canceled at user request.
+//   - `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the
+//     maximum concurrent runs were reached.
+//   - `EXCLUDED`: The run was skipped because the necessary conditions were not
+//     met.
+//   - `SUCCESS_WITH_FAILURES`: The job run completed successfully with some
+//     failures; leaf tasks were successful.
+//   - `UPSTREAM_FAILED`: The run was skipped because of an upstream failure.
+//   - `UPSTREAM_CANCELED`: The run was skipped because an upstream task was
+//     canceled.
+//   - `DISABLED`: The run was skipped because it was disabled explicitly by the
+//     user.
 type RunResultState string
 
 // The run was canceled at user request.
@@ -4561,9 +4592,9 @@ type RunTask struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	//   - `STANDARD`: Enables cost-efficient execution of serverless workloads.
+	//   - `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	//     through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
@@ -4673,7 +4704,7 @@ type RunTask struct {
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the spark_submit_task
 	// field is present. Databricks recommends using the spark_jar_task instead;
-	// see [Spark Submit task for jobs](/jobs/spark-submit).
+	// see Spark Submit task for jobs.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
@@ -4711,10 +4742,11 @@ func (s RunTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The type of a run. * `JOB_RUN`: Normal job run. A run created with
-// :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow run. A run created with
-// [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
-// :method:jobs/submit.
+// The type of a run.
+//
+//   - `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow.
+//   - `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run].
+//   - `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
 //
 // [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 type RunType string
@@ -4725,8 +4757,7 @@ const RunTypeJobRun RunType = `JOB_RUN`
 // Submit run. A run created with :method:jobs/submit.
 const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 
-// Workflow run. A run created with
-// [dbutils.notebook.run](/dev-tools/databricks-utils.html#dbutils-workflow).
+// Workflow run. A run created with dbutils.notebook.run.
 const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
 
 // String representation for [fmt.Print]
@@ -4762,13 +4793,13 @@ func (f *RunType) Type() string {
 }
 
 // Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file
-// will be retrieved\ from the local Databricks workspace. When set to `GIT`,
-// the SQL file will be retrieved from a Git repository defined in `git_source`.
-// If the value is empty, the task will use `GIT` if `git_source` is defined and
+// will be retrieved from the local Databricks workspace. When set to `GIT`, the
+// SQL file will be retrieved from a Git repository defined in `git_source`. If
+// the value is empty, the task will use `GIT` if `git_source` is defined and
 // `WORKSPACE` otherwise.
 //
-// * `WORKSPACE`: SQL file is located in Databricks workspace. * `GIT`: SQL file
-// is located in cloud Git provider.
+//   - `WORKSPACE`: SQL file is located in Databricks workspace.
+//   - `GIT`: SQL file is located in cloud Git provider.
 type Source string
 
 // SQL file is located in cloud Git provider.
@@ -4863,9 +4894,9 @@ type SparkPythonTask struct {
 	// `GIT`, the Python file will be retrieved from a Git repository defined in
 	// `git_source`.
 	//
-	// * `WORKSPACE`: The Python file is located in a Databricks workspace or at
-	// a cloud filesystem URI. * `GIT`: The Python file is located in a remote
-	// Git repository.
+	//   - `WORKSPACE`: The Python file is located in a Databricks workspace or
+	//     at a cloud filesystem URI.
+	//   - `GIT`: The Python file is located in a remote Git repository.
 	Source Source `json:"source,omitempty"`
 }
 
@@ -4909,9 +4940,9 @@ func (s SqlAlertOutput) MarshalJSON() ([]byte, error) {
 
 // The state of the SQL alert.
 //
-// * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not
-// fulfill trigger conditions * TRIGGERED: alert evaluated and fulfilled trigger
-// conditions
+//   - UNKNOWN: alert yet to be evaluated
+//   - OK: alert evaluated and did not fulfill trigger conditions
+//   - TRIGGERED: alert evaluated and fulfilled trigger conditions
 type SqlAlertState string
 
 const SqlAlertStateOk SqlAlertState = `OK`
@@ -5175,8 +5206,8 @@ type SqlTaskFile struct {
 	// `git_source`. If the value is empty, the task will use `GIT` if
 	// `git_source` is defined and `WORKSPACE` otherwise.
 	//
-	// * `WORKSPACE`: SQL file is located in Databricks workspace. * `GIT`: SQL
-	// file is located in cloud Git provider.
+	//   - `WORKSPACE`: SQL file is located in Databricks workspace.
+	//   - `GIT`: SQL file is located in cloud Git provider.
 	Source Source `json:"source,omitempty"`
 }
 
@@ -5446,7 +5477,7 @@ type SubmitTask struct {
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the spark_submit_task
 	// field is present. Databricks recommends using the spark_jar_task instead;
-	// see [Spark Submit task for jobs](/jobs/spark-submit).
+	// see Spark Submit task for jobs.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
@@ -5676,12 +5707,13 @@ type Task struct {
 	// An optional value specifying the condition determining whether the task
 	// is run once its dependencies have been completed.
 	//
-	// * `ALL_SUCCESS`: All dependencies have executed and succeeded *
-	// `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded *
-	// `NONE_FAILED`: None of the dependencies have failed and at least one was
-	// executed * `ALL_DONE`: All dependencies have been completed *
-	// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
-	// dependencies have failed
+	//   - `ALL_SUCCESS`: All dependencies have executed and succeeded
+	//   - `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded
+	//   - `NONE_FAILED`: None of the dependencies have failed and at least one
+	//     was executed
+	//   - `ALL_DONE`: All dependencies have been completed
+	//   - `AT_LEAST_ONE_FAILED`: At least one dependency failed
+	//   - `ALL_FAILED`: ALl dependencies have failed
 	RunIf RunIf `json:"run_if,omitempty"`
 	// The task triggers another job when the `run_job_task` field is present.
 	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
@@ -5692,7 +5724,7 @@ type Task struct {
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the spark_submit_task
 	// field is present. Databricks recommends using the spark_jar_task instead;
-	// see [Spark Submit task for jobs](/jobs/spark-submit).
+	// see Spark Submit task for jobs.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
@@ -5808,11 +5840,13 @@ func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// task retry mode of the continuous job * NEVER: The failed task will not be
-// retried. * ON_FAILURE: Retry a failed task if at least one other task in the
-// job is still running its first attempt. When this condition is no longer met
-// or the retry limit is reached, the job run is cancelled and a new run is
-// started.
+// task retry mode of the continuous job
+//
+//   - NEVER: The failed task will not be retried.
+//   - ON_FAILURE: Retry a failed task if at least one other task in the job is
+//     still running its first attempt. When this condition is no longer met or
+//     the retry limit is reached, the job run is cancelled and a new run is
+//     started.
 type TaskRetryMode string
 
 const TaskRetryModeNever TaskRetryMode = `NEVER`
@@ -5851,53 +5885,67 @@ func (f *TaskRetryMode) Type() string {
 }
 
 // The code indicates why the run was terminated. Additional codes might be
-// introduced in future releases. * `SUCCESS`: The run was completed
-// successfully. * `SUCCESS_WITH_FAILURES`: The run was completed successfully
-// but some child runs failed. * `USER_CANCELED`: The run was successfully
-// canceled during execution by a user. * `CANCELED`: The run was canceled
-// during execution by the Databricks platform; for example, if the maximum run
-// duration was exceeded. * `SKIPPED`: Run was never executed, for example, if
-// the upstream task run failed, the dependency type condition was not met, or
-// there were no material tasks to execute. * `INTERNAL_ERROR`: The run
-// encountered an unexpected error. Refer to the state message for further
-// details. * `DRIVER_ERROR`: The run encountered an error while communicating
-// with the Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster
-// error. Refer to the state message for further details. *
-// `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error
-// when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`:
-// The run failed because it issued an invalid request to start the cluster. *
-// `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the
-// maximum number of concurrent active runs. Consider scheduling the runs over a
-// larger time frame. * `FEATURE_DISABLED`: The run failed because it tried to
-// access a feature unavailable for the workspace. *
-// `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and
-// upsize requests have exceeded the allotted rate limit. Consider spreading the
-// run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run
-// failed due to an error when accessing the customer blob storage. Refer to the
-// state message for further details. * `RUN_EXECUTION_ERROR`: The run was
-// completed with task failures. For more details, refer to the state message or
-// run output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue
-// while accessing a resource. Refer to the state message for further details. *
-// `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the
-// user-requested library. Refer to the state message for further details. The
-// causes might include, but are not limited to: The provided library is
-// invalid, there are insufficient permissions to install the library, and so
-// forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit
-// of maximum concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`:
-// The run is scheduled on a cluster that has already reached the maximum number
-// of contexts it is configured to create. See: [Link]. * `RESOURCE_NOT_FOUND`:
-// A resource necessary for run execution does not exist. Refer to the state
-// message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed
-// due to an invalid configuration. Refer to the state message for further
-// details. * `CLOUD_FAILURE`: The run failed due to a cloud provider issue.
-// Refer to the state message for further details. *
-// `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job
-// level queue size limit. * `DISABLED`: The run was never executed because it
-// was disabled explicitly by the user. * `BREAKING_CHANGE`: Run failed because
-// of an intentional breaking change in Spark, but it will be retried with a
-// mitigation config. * `CLUSTER_TERMINATED_BY_USER`: The run failed because the
-// externally managed cluster entered an unusable state, likely due to the user
-// terminating or restarting it outside the jobs service.
+// introduced in future releases.
+//
+//   - `SUCCESS`: The run was completed successfully.
+//   - `SUCCESS_WITH_FAILURES`: The run was completed successfully but some
+//     child runs failed.
+//   - `USER_CANCELED`: The run was successfully canceled during execution by a
+//     user.
+//   - `CANCELED`: The run was canceled during execution by the Databricks
+//     platform; for example, if the maximum run duration was exceeded.
+//   - `SKIPPED`: Run was never executed, for example, if the upstream task run
+//     failed, the dependency type condition was not met, or there were no
+//     material tasks to execute.
+//   - `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the
+//     state message for further details.
+//   - `DRIVER_ERROR`: The run encountered an error while communicating with the
+//     Spark Driver.
+//   - `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the
+//     state message for further details.
+//   - `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an
+//     error when communicating with the third party service.
+//   - `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid
+//     request to start the cluster.
+//   - `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for
+//     the maximum number of concurrent active runs. Consider scheduling the
+//     runs over a larger time frame.
+//   - `FEATURE_DISABLED`: The run failed because it tried to access a feature
+//     unavailable for the workspace.
+//   - `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start,
+//     and upsize requests have exceeded the allotted rate limit. Consider
+//     spreading the run execution over a larger time frame.
+//   - `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the
+//     customer blob storage. Refer to the state message for further details.
+//   - `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
+//     details, refer to the state message or run output.
+//   - `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while
+//     accessing a resource. Refer to the state message for further details.
+//   - `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the
+//     user-requested library. Refer to the state message for further details.
+//     The causes might include, but are not limited to: The provided library is
+//     invalid, there are insufficient permissions to install the library, and
+//     so forth.
+//   - `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of
+//     maximum concurrent runs set for the job.
+//   - `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
+//     already reached the maximum number of contexts it is configured to
+//     create. See: [Link].
+//   - `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not
+//     exist. Refer to the state message for further details.
+//   - `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid
+//     configuration. Refer to the state message for further details.
+//   - `CLOUD_FAILURE`: The run failed due to a cloud provider issue. Refer to
+//     the state message for further details.
+//   - `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the
+//     job level queue size limit.
+//   - `DISABLED`: The run was never executed because it was disabled explicitly
+//     by the user.
+//   - `BREAKING_CHANGE`: Run failed because of an intentional breaking change
+//     in Spark, but it will be retried with a mitigation config.
+//   - `CLUSTER_TERMINATED_BY_USER`: The run failed because the externally
+//     managed cluster entered an unusable state, likely due to the user
+//     terminating or restarting it outside the jobs service.
 //
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string
@@ -6077,12 +6125,13 @@ func (s TerminationDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// * `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An
-// error occurred in the Databricks platform. Please look at the [status page]
-// or contact support if the issue persists. * `CLIENT_ERROR`: The run was
-// terminated because of an error caused by user input or the job configuration.
-// * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud
-// provider.
+//   - `SUCCESS`: The run terminated without any issues
+//   - `INTERNAL_ERROR`: An error occurred in the Databricks platform. Please
+//     look at the [status page] or contact support if the issue persists.
+//   - `CLIENT_ERROR`: The run was terminated because of an error caused by user
+//     input or the job configuration.
+//   - `CLOUD_FAILURE`: The run was terminated because of an issue with your
+//     cloud provider.
 //
 // [status page]: https://status.databricks.com/
 type TerminationTypeType string
@@ -6173,18 +6222,20 @@ type TriggerStateProto struct {
 
 // The type of trigger that fired this run.
 //
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures. *
-// `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. *
-// `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival. *
-// `CONTINUOUS`: Indicates a run that is triggered by a continuous job. *
-// `TABLE`: Indicates a run that is triggered by a table update. *
-// `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a
-// continuous job run. * `MODEL`: Indicates a run that is triggered by a model
-// update.
+//   - `PERIODIC`: Schedules that periodically trigger runs, such as a cron
+//     scheduler.
+//   - `ONE_TIME`: One time triggers that fire a single run. This occurs you
+//     triggered a single run on demand through the UI or the API.
+//   - `RETRY`: Indicates a run that is triggered as a retry of a previously
+//     failed run. This occurs when you request to re-run the job in case of
+//     failures.
+//   - `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
+//   - `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
+//   - `CONTINUOUS`: Indicates a run that is triggered by a continuous job.
+//   - `TABLE`: Indicates a run that is triggered by a table update.
+//   - `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart
+//     a continuous job run.
+//   - `MODEL`: Indicates a run that is triggered by a model update.
 type TriggerType string
 
 // Indicates a run that is triggered by a continuous job.
@@ -6292,7 +6343,8 @@ func (s ViewItem) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+// - `NOTEBOOK`: Notebook view item.
+// - `DASHBOARD`: Dashboard view item.
 type ViewType string
 
 // Dashboard view item.
@@ -6332,8 +6384,9 @@ func (f *ViewType) Type() string {
 	return "ViewType"
 }
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// - `CODE`: Code view of the notebook.
+// - `DASHBOARDS`: All dashboard views of the notebook.
+// - `ALL`: All views of the notebook.
 type ViewsToExport string
 
 // All views of the notebook.

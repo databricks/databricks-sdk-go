@@ -366,7 +366,7 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 
 // Lists the ACLs set on the given scope.
 //
-// Users must have the “MANAGE“ permission to invoke this API.
+// Users must have the `MANAGE` permission to invoke this API.
 //
 // Example response:
 //
@@ -375,8 +375,8 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 // { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
 // "data-scientists", "permission": "READ" }] }
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) listing.Iterator[AclItem] {
 
@@ -398,7 +398,7 @@ func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) lis
 
 // Lists the ACLs set on the given scope.
 //
-// Users must have the “MANAGE“ permission to invoke this API.
+// Users must have the `MANAGE` permission to invoke this API.
 //
 // Example response:
 //
@@ -407,8 +407,8 @@ func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) lis
 // { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
 // "data-scientists", "permission": "READ" }] }
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
 	iterator := a.ListAcls(ctx, request)
@@ -438,8 +438,8 @@ func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequ
 // { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
 // },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
 //
-// Throws “PERMISSION_DENIED“ if the user does not have permission to make
-// this API call.
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
 func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretScope] {
 	request := struct{}{}
 
@@ -468,8 +468,8 @@ func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretSco
 // { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
 // },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
 //
-// Throws “PERMISSION_DENIED“ if the user does not have permission to make
-// this API call.
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
 func (a *secretsImpl) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 	iterator := a.ListScopes(ctx)
 	return listing.ToSlice[SecretScope](ctx, iterator)
@@ -503,8 +503,8 @@ func (a *secretsImpl) internalListScopes(ctx context.Context) (*ListScopesRespon
 //
 // The lastUpdatedTimestamp returned is in milliseconds since epoch.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) listing.Iterator[SecretMetadata] {
 
@@ -538,8 +538,8 @@ func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsReques
 //
 // The lastUpdatedTimestamp returned is in milliseconds since epoch.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
 	iterator := a.ListSecrets(ctx, request)

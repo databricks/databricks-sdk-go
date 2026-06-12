@@ -451,10 +451,9 @@ type ClusterAttributes struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
+	//   - Currently, Databricks allows at most 45 custom tags
+	//   - Clusters can only reuse cloud resources if the resources' tags are a
+	//     subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
@@ -648,25 +647,20 @@ type ClusterDetails struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
+	//   - Currently, Databricks allows at most 45 custom tags
+	//   - Clusters can only reuse cloud resources if the resources' tags are a
+	//     subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
-	// - Vendor: Databricks
-	//
-	// - Creator: <username_of_creator>
-	//
-	// - ClusterName: <name_of_cluster>
-	//
-	// - ClusterId: <id_of_cluster>
-	//
-	// - Name: <Databricks internal use>
+	//   - Vendor: Databricks
+	//   - Creator: <username_of_creator>
+	//   - ClusterName: <name_of_cluster>
+	//   - ClusterId: <id_of_cluster>
+	//   - Name: <Databricks internal use>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1273,10 +1267,9 @@ type ClusterSpec struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
+	//   - Currently, Databricks allows at most 45 custom tags
+	//   - Clusters can only reuse cloud resources if the resources' tags are a
+	//     subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
@@ -1651,10 +1644,9 @@ type CreateCluster struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
+	//   - Currently, Databricks allows at most 45 custom tags
+	//   - Clusters can only reuse cloud resources if the resources' tags are a
+	//     subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
@@ -1826,7 +1818,7 @@ type CreateInstancePool struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
+	//   - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
@@ -1996,9 +1988,11 @@ func (s Created) MarshalJSON() ([]byte, error) {
 }
 
 type CustomPolicyTag struct {
-	// The key of the tag. - Must be unique among all custom tags of the same
-	// policy - Cannot be “budget-policy-name”, “budget-policy-id” or
-	// "budget-policy-resolution-result" - these tags are preserved.
+	// The key of the tag.
+	//
+	//   - Must be unique among all custom tags of the same policy
+	//   - Cannot be “budget-policy-name”, “budget-policy-id” or
+	//     "budget-policy-resolution-result" - these tags are preserved.
 	Key string `json:"key"`
 	// The value of the tag.
 	Value string `json:"value,omitempty"`
@@ -2074,31 +2068,34 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // Data security mode decides what data governance model to use when accessing
 // data from a cluster.
 //
-// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-// access mode depending on your compute configuration. *
-// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
-// multiple users. Cluster users are fully isolated so that they cannot see each
-// other’s data and credentials. Most data governance features are supported
-// in this mode. But programming languages and cluster features might be
-// limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that can only be
-// exclusively used by a single user specified in `single_user_name`. Most
-// programming languages, cluster features and data governance features are
-// available in this mode.
+//   - `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+//     access mode depending on your compute configuration.
+//   - `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+//     multiple users. Cluster users are fully isolated so that they cannot see
+//     each other’s data and credentials. Most data governance features are
+//     supported in this mode. But programming languages and cluster features
+//     might be limited.
+//   - `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that can only be
+//     exclusively used by a single user specified in `single_user_name`. Most
+//     programming languages, cluster features and data governance features are
+//     available in this mode.
 //
 // The following modes are legacy aliases for the above modes:
 //
-// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
-// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+//   - `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`.
+//   - `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
 //
 // The following modes are deprecated starting with Databricks Runtime 15.0 and
 // will be removed for future Databricks Runtime versions:
 //
-// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL
-// clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from
-// legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This
-// mode is for users migrating from legacy Passthrough on standard clusters. *
-// `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have
-// UC nor passthrough enabled.
+//   - `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+//     ACL clusters.
+//   - `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
+//     Passthrough on high concurrency clusters.
+//   - `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+//     Passthrough on standard clusters.
+//   - `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t
+//     have UC nor passthrough enabled.
 type DataSecurityMode string
 
 // <Databricks> will choose the most appropriate access mode depending on your
@@ -2214,11 +2211,13 @@ type DestroyContext struct {
 // launch 2 disks, 100 GiB each, then Databricks will launch a total of 6 disks,
 // 100 GiB each, for this cluster.
 type DiskSpec struct {
-	// The number of disks launched for each instance: - This feature is only
-	// enabled for supported node types. - Users can choose up to the limit of
-	// the disks supported by the node type. - For node types with no OS disk,
-	// at least one disk must be specified; otherwise, cluster creation will
-	// fail.
+	// The number of disks launched for each instance:
+	//
+	//   - This feature is only enabled for supported node types.
+	//   - Users can choose up to the limit of the disks supported by the node
+	//     type.
+	//   - For node types with no OS disk, at least one disk must be specified;
+	//     otherwise, cluster creation will fail.
 	//
 	// If disks are attached, Databricks will configure Spark to use only the
 	// disks for scratch storage, because heterogenously sized scratch devices
@@ -2228,19 +2227,25 @@ type DiskSpec struct {
 	// Note: If disks are specified, then the Spark configuration
 	// `spark.local.dir` will be overridden.
 	//
-	// Disks will be mounted at: - For AWS: `/ebs0`, `/ebs1`, and etc. - For
-	// Azure: `/remote_volume0`, `/remote_volume1`, and etc.
+	// Disks will be mounted at:
+	//
+	//   - For AWS: `/ebs0`, `/ebs1`, and etc.
+	//   - For Azure: `/remote_volume0`, `/remote_volume1`, and etc.
 	DiskCount int `json:"disk_count,omitempty"`
 
 	DiskIops int `json:"disk_iops,omitempty"`
 	// The size of each disk (in GiB) launched for each instance. Values must
 	// fall into the supported range for a particular instance type.
 	//
-	// For AWS: - General Purpose SSD: 100 - 4096 GiB - Throughput Optimized
-	// HDD: 500 - 4096 GiB
+	// For AWS:
 	//
-	// For Azure: - Premium LRS (SSD): 1 - 1023 GiB - Standard LRS (HDD): 1-
-	// 1023 GiB
+	//   - General Purpose SSD: 100 - 4096 GiB
+	//   - Throughput Optimized HDD: 500 - 4096 GiB
+	//
+	// For Azure:
+	//
+	//   - Premium LRS (SSD): 1 - 1023 GiB
+	//   - Standard LRS (HDD): 1- 1023 GiB
 	DiskSize int `json:"disk_size,omitempty"`
 
 	DiskThroughput int `json:"disk_throughput,omitempty"`
@@ -2456,10 +2461,9 @@ type EditCluster struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
+	//   - Currently, Databricks allows at most 45 custom tags
+	//   - Clusters can only reuse cloud resources if the resources' tags are a
+	//     subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
@@ -2594,7 +2598,7 @@ type EditInstancePool struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
+	//   - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
@@ -2739,9 +2743,8 @@ type Environment struct {
 	// `workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7`)
 	// is in Beta. Either `environment_version` or `base_environment` can be
 	// provided. For more information about Databricks-provided base
-	// environments, see the [list workspace base
-	// environments](:method:Environments/ListWorkspaceBaseEnvironments) API.
-	// For more information, see
+	// environments, see the list workspace base environments API. For more
+	// information, see
 	BaseEnvironment string `json:"base_environment,omitempty"`
 	// Use `environment_version` instead.
 	Client string `json:"client,omitempty"`
@@ -2773,8 +2776,8 @@ func (s Environment) MarshalJSON() ([]byte, error) {
 }
 
 type EventDetails struct {
-	// * For created clusters, the attributes of the cluster. * For edited
-	// clusters, the new attributes of the cluster.
+	//   - For created clusters, the attributes of the cluster.
+	//   - For edited clusters, the new attributes of the cluster.
 	Attributes *ClusterAttributes `json:"attributes,omitempty"`
 	// The cause of a change in target size.
 	Cause EventDetailsCause `json:"cause,omitempty"`
@@ -2801,8 +2804,10 @@ type EventDetails struct {
 	// Instance Id where the event originated from
 	InstanceId string `json:"instance_id,omitempty"`
 	// Unique identifier of the specific job run associated with this cluster
-	// event * For clusters created for jobs, this will be the same as the
-	// cluster name
+	// event
+	//
+	//   - For clusters created for jobs, this will be the same as the cluster
+	//     name
 	JobRunName string `json:"job_run_name,omitempty"`
 	// The cluster attributes before a cluster was edited.
 	PreviousAttributes *ClusterAttributes `json:"previous_attributes,omitempty"`
@@ -2810,9 +2815,11 @@ type EventDetails struct {
 	PreviousClusterSize *ClusterSize `json:"previous_cluster_size,omitempty"`
 	// Previous disk size in bytes
 	PreviousDiskSize int64 `json:"previous_disk_size,omitempty"`
-	// A termination reason: * On a TERMINATED event, this is the reason of the
-	// termination. * On a RESIZE_COMPLETE event, this indicates the reason that
-	// we failed to acquire some nodes.
+	// A termination reason:
+	//
+	//   - On a TERMINATED event, this is the reason of the termination.
+	//   - On a RESIZE_COMPLETE event, this indicates the reason that we failed
+	//     to acquire some nodes.
 	Reason *TerminationReason `json:"reason,omitempty"`
 	// The targeted number of vCPUs in the cluster.
 	TargetNumVcpus int `json:"target_num_vcpus,omitempty"`
@@ -3053,12 +3060,15 @@ type GcpAttributes struct {
 	// 'availability' field instead.
 	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
 	// Identifier for the availability zone in which the cluster resides. This
-	// can be one of the following: - "HA" => High availability, spread nodes
-	// across availability zones for a Databricks deployment region [default]. -
-	// "AUTO" => Databricks picks an availability zone to schedule the cluster
-	// on. - A GCP availability zone => Pick One of the available zones for
-	// (machine type + region) from
-	// https://cloud.google.com/compute/docs/regions-zones.
+	// can be one of the following:
+	//
+	//   - "HA" => High availability, spread nodes across availability zones for
+	//     a Databricks deployment region [default].
+	//   - "AUTO" => Databricks picks an availability zone to schedule the
+	//     cluster on.
+	//   - A GCP availability zone => Pick One of the available zones for
+	//     (machine type + region) from
+	//     https://cloud.google.com/compute/docs/regions-zones.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3320,18 +3330,15 @@ type GetInstancePool struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
+	//   - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
+	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
-	// - Vendor: Databricks
-	//
-	// - InstancePoolCreator: <user_id_of_creator>
-	//
-	// - InstancePoolName: <name_of_pool>
-	//
-	// - InstancePoolId: <id_of_pool>
+	//   - Vendor: Databricks
+	//   - InstancePoolCreator: <user_id_of_creator>
+	//   - InstancePoolName: <name_of_pool>
+	//   - InstancePoolId: <id_of_pool>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
@@ -3833,18 +3840,15 @@ type InstancePoolAndStats struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
+	//   - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
+	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
-	// - Vendor: Databricks
-	//
-	// - InstancePoolCreator: <user_id_of_creator>
-	//
-	// - InstancePoolName: <name_of_pool>
-	//
-	// - InstancePoolId: <id_of_pool>
+	//   - Vendor: Databricks
+	//   - InstancePoolCreator: <user_id_of_creator>
+	//   - InstancePoolName: <name_of_pool>
+	//   - InstancePoolId: <id_of_pool>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
@@ -4083,11 +4087,14 @@ type InstancePoolGcpAttributes struct {
 	// instance pool creation, and if not specified, a default zone will be
 	// used.
 	//
-	// This field can be one of the following: - "HA" => High availability,
-	// spread nodes across availability zones for a Databricks deployment region
-	// - A GCP availability zone => Pick One of the available zones for (machine
-	// type + region) from https://cloud.google.com/compute/docs/regions-zones
-	// (e.g. "us-west1-a").
+	// This field can be one of the following:
+	//
+	//   - "HA" => High availability, spread nodes across availability zones for
+	//     a Databricks deployment region
+	//   - A GCP availability zone => Pick One of the available zones for
+	//     (machine type + region) from
+	//     https://cloud.google.com/compute/docs/regions-zones (e.g.
+	//     "us-west1-a").
 	//
 	// If empty, Databricks picks an availability zone to schedule the cluster
 	// on.
@@ -4203,8 +4210,10 @@ type InstancePoolPermissionsRequest struct {
 // The state of a Cluster. The current allowable state transitions are as
 // follows:
 //
-// - “ACTIVE“ -> “STOPPED“ - “ACTIVE“ -> “DELETED“ - “STOPPED“ ->
-// “ACTIVE“ - “STOPPED“ -> “DELETED“
+//   - `ACTIVE` -> `STOPPED`
+//   - `ACTIVE` -> `DELETED`
+//   - `STOPPED` -> `ACTIVE`
+//   - `STOPPED` -> `DELETED`
 type InstancePoolState string
 
 const InstancePoolStateActive InstancePoolState = `ACTIVE`
@@ -4311,9 +4320,10 @@ func (s InstanceProfile) MarshalJSON() ([]byte, error) {
 // applied.
 //
 // Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas
-// clusters with no specified `kind` do not. *
-// [is_single_node](/api/workspace/clusters/create#is_single_node) *
-// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
+// clusters with no specified `kind` do not.
+//
+//   - is_single_node
+//   - use_ml_runtime
 //
 // By using the [simple form], your clusters are automatically using `kind =
 // CLASSIC_PREVIEW`.
@@ -4528,8 +4538,8 @@ type ListAllClusterLibraryStatusesResponse struct {
 }
 
 type ListAvailableZonesResponse struct {
-	// The availability zone if no ``zone_id`` is provided in the cluster
-	// creation request.
+	// The availability zone if no `zone_id` is provided in the cluster creation
+	// request.
 	DefaultZone string `json:"default_zone,omitempty"`
 	// The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
 	Zones []string `json:"zones,omitempty"`
@@ -4590,12 +4600,15 @@ func (s ListClusterCompliancesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListClusterPoliciesRequest struct {
-	// The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort
-	// result list by policy creation time. * `POLICY_NAME` - Sort result list
-	// by policy name.
+	// The cluster policy attribute to sort by.
+	//
+	//   - `POLICY_CREATION_TIME` - Sort result list by policy creation time.
+	//   - `POLICY_NAME` - Sort result list by policy name.
 	SortColumn ListSortColumn `json:"-" url:"sort_column,omitempty"`
-	// The order in which the policies get listed. * `DESC` - Sort result list
-	// in descending order. * `ASC` - Sort result list in ascending order.
+	// The order in which the policies get listed.
+	//
+	//   - `DESC` - Sort result list in descending order.
+	//   - `ASC` - Sort result list in ascending order.
 	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
 }
 
@@ -5299,12 +5312,11 @@ type Results struct {
 	Data any `json:"data,omitempty"`
 	// The image data in one of the following formats:
 	//
-	// 1. A Data URL with base64-encoded image data:
-	// `data:image/{type};base64,{base64-data}`. Example:
-	// `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...`
-	//
-	// 2. A FileStore file path for large images: `/plots/{filename}.png`.
-	// Example: `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`
+	//  1. A Data URL with base64-encoded image data:
+	//     `data:image/{type};base64,{base64-data}`. Example:
+	//     `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...`
+	//  2. A FileStore file path for large images: `/plots/{filename}.png`.
+	//     Example: `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`
 	FileName string `json:"fileName,omitempty"`
 	// List of image data for multiple images. Each element follows the same
 	// format as file_name.
@@ -5495,10 +5507,16 @@ type StartCluster struct {
 // The state of a Cluster. The current allowable state transitions are as
 // follows:
 //
-// - `PENDING` -> `RUNNING` - `PENDING` -> `TERMINATING` - `RUNNING` ->
-// `RESIZING` - `RUNNING` -> `RESTARTING` - `RUNNING` -> `TERMINATING` -
-// `RESTARTING` -> `RUNNING` - `RESTARTING` -> `TERMINATING` - `RESIZING` ->
-// `RUNNING` - `RESIZING` -> `TERMINATING` - `TERMINATING` -> `TERMINATED`
+//   - `PENDING` -> `RUNNING`
+//   - `PENDING` -> `TERMINATING`
+//   - `RUNNING` -> `RESIZING`
+//   - `RUNNING` -> `RESTARTING`
+//   - `RUNNING` -> `TERMINATING`
+//   - `RESTARTING` -> `RUNNING`
+//   - `RESTARTING` -> `TERMINATING`
+//   - `RESIZING` -> `RUNNING`
+//   - `RESIZING` -> `TERMINATING`
+//   - `TERMINATING` -> `TERMINATED`
 type State string
 
 const StateError State = `ERROR`
@@ -6268,10 +6286,9 @@ type UpdateClusterResource struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
+	//   - Currently, Databricks allows at most 45 custom tags
+	//   - Clusters can only reuse cloud resources if the resources' tags are a
+	//     subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`

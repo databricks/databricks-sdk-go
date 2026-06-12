@@ -14,26 +14,26 @@ type DbfsService interface {
 
 	// Appends a block of data to the stream specified by the input handle. If
 	// the handle does not exist, this call will throw an exception with
-	// ``RESOURCE_DOES_NOT_EXIST``.
+	// `RESOURCE_DOES_NOT_EXIST`.
 	//
 	// If the block of data exceeds 1 MB, this call will throw an exception with
-	// ``MAX_BLOCK_SIZE_EXCEEDED``.
+	// `MAX_BLOCK_SIZE_EXCEEDED`.
 	AddBlock(ctx context.Context, request AddBlock) error
 
 	// Closes the stream specified by the input handle. If the handle does not
-	// exist, this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
+	// exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 	Close(ctx context.Context, request Close) error
 
 	// Opens a stream to write to a file and returns a handle to this stream.
 	// There is a 10 minute idle timeout on this handle. If a file or directory
-	// already exists on the given path and __overwrite__ is set to false, this
-	// call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
+	// already exists on the given path and **overwrite** is set to false, this
+	// call will throw an exception with `RESOURCE_ALREADY_EXISTS`.
 	//
 	// A typical workflow for file upload would be:
 	//
-	// 1. Issue a ``create`` call and get a handle. 2. Issue one or more
-	// ``add-block`` calls with the handle you have. 3. Issue a ``close`` call
-	// with the handle you have.
+	//  1. Issue a `create` call and get a handle.
+	//  2. Issue one or more `add-block` calls with the handle you have.
+	//  3. Issue a `close` call with the handle you have.
 	Create(ctx context.Context, request Create) (*CreateResponse, error)
 
 	// Delete the file or directory (optionally recursively delete all files in
@@ -48,8 +48,7 @@ type DbfsService interface {
 	//
 	// For operations that delete more than 10K files, we discourage using the
 	// DBFS REST API, but advise you to perform such operations in the context
-	// of a cluster, using the [File system utility
-	// (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs). `dbutils.fs`
+	// of a cluster, using the File system utility (dbutils.fs). `dbutils.fs`
 	// covers the functional scope of the DBFS REST API, but from notebooks.
 	// Running such operations using notebooks provides better control and
 	// manageability, such as selective deletes, and the possibility to automate
@@ -70,9 +69,8 @@ type DbfsService interface {
 	// directories containing less than 10K files and discourage using the DBFS
 	// REST API for operations that list more than 10K files. Instead, we
 	// recommend that you perform such operations in the context of a cluster,
-	// using the [File system utility
-	// (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which
-	// provides the same functionality without timing out.
+	// using the File system utility (dbutils.fs), which provides the same
+	// functionality without timing out.
 	List(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error)
 
 	// Creates the given directory and necessary parent directories if they do
@@ -97,7 +95,7 @@ type DbfsService interface {
 	// Alternatively you can pass contents as base64 string.
 	//
 	// The amount of data that can be passed (when not streaming) using the
-	// __contents__ parameter is limited to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will
+	// **contents** parameter is limited to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will
 	// be thrown if this limit is exceeded.
 	//
 	// If you want to upload large files, use the streaming upload. For details,

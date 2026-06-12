@@ -106,11 +106,10 @@ func (a *environmentsImpl) GetWorkspaceBaseEnvironment(ctx context.Context, requ
 //
 // Databricks provides the following base environments:
 //
-// - `workspace-base-environments/databricks_ai_...`: includes popular AI and
-// deep learning packages for serverless GPU compute.
-//
-// - `workspace-base-environments/databricks_ml_...`: includes popular ML
-// packages for serverless compute.
+//   - `workspace-base-environments/databricks_ai_...`: includes popular AI and
+//     deep learning packages for serverless GPU compute.
+//   - `workspace-base-environments/databricks_ml_...`: includes popular ML
+//     packages for serverless compute.
 //
 // Databricks-provided base environments are versioned. For example,
 // `workspace-base-environments/databricks_ml_v5` corresponds to the ML
@@ -143,11 +142,10 @@ func (a *environmentsImpl) ListWorkspaceBaseEnvironments(ctx context.Context, re
 //
 // Databricks provides the following base environments:
 //
-// - `workspace-base-environments/databricks_ai_...`: includes popular AI and
-// deep learning packages for serverless GPU compute.
-//
-// - `workspace-base-environments/databricks_ml_...`: includes popular ML
-// packages for serverless compute.
+//   - `workspace-base-environments/databricks_ai_...`: includes popular AI and
+//     deep learning packages for serverless GPU compute.
+//   - `workspace-base-environments/databricks_ml_...`: includes popular ML
+//     packages for serverless compute.
 //
 // Databricks-provided base environments are versioned. For example,
 // `workspace-base-environments/databricks_ml_v5` corresponds to the ML

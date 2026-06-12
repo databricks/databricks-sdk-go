@@ -391,9 +391,7 @@ type CleanRoomCollaborator struct {
 	// Must be specified if invite_recipient_email is specified. It should be
 	// empty when the collaborator is the creator of the clean room.
 	InviteRecipientWorkspaceId int64 `json:"invite_recipient_workspace_id,omitempty"`
-	// [Organization
-	// name](:method:metastores/list#metastores-delta_sharing_organization_name)
-	// configured in the metastore
+	// Organization name configured in the metastore
 	OrganizationName string `json:"organization_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -614,10 +612,9 @@ type CleanRoomRemoteDetail struct {
 	// Collaborators in the central clean room. There should one and only one
 	// collaborator in the list that satisfies the owner condition:
 	//
-	// 1. It has the creator's global_metastore_id (determined by caller of
-	// CreateCleanRoom).
-	//
-	// 2. Its invite_recipient_email is empty.
+	//  1. It has the creator's global_metastore_id (determined by caller of
+	//     CreateCleanRoom).
+	//  2. Its invite_recipient_email is empty.
 	Collaborators []CleanRoomCollaborator `json:"collaborators,omitempty"`
 
 	ComplianceSecurityProfile *ComplianceSecurityProfile `json:"compliance_security_profile,omitempty"`

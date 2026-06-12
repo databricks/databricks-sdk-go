@@ -29,11 +29,12 @@ type AccountIamV2Service interface {
 
 	// Returns the access details for a principal in a workspace. Allows for
 	// checking access details for any provisioned principal (user, service
-	// principal, or group) in a workspace. * Provisioned principal here refers
-	// to one that has been synced into Databricks from the customer's IdP or
-	// added explicitly to Databricks via SCIM/UI. Allows for passing in a
-	// "view" parameter to control what fields are returned (BASIC by default or
-	// FULL).
+	// principal, or group) in a workspace.
+	//
+	//   - Provisioned principal here refers to one that has been synced into
+	//     Databricks from the customer's IdP or added explicitly to Databricks
+	//     via SCIM/UI. Allows for passing in a "view" parameter to control what
+	//     fields are returned (BASIC by default or FULL).
 	GetWorkspaceAccessDetail(ctx context.Context, request GetWorkspaceAccessDetailRequest) (*WorkspaceAccessDetail, error)
 
 	// Returns the assignment details for a principal in a workspace.
@@ -90,11 +91,12 @@ type WorkspaceIamV2Service interface {
 
 	// Returns the access details for a principal in the current workspace.
 	// Allows for checking access details for any provisioned principal (user,
-	// service principal, or group) in the current workspace. * Provisioned
-	// principal here refers to one that has been synced into Databricks from
-	// the customer's IdP or added explicitly to Databricks via SCIM/UI. Allows
-	// for passing in a "view" parameter to control what fields are returned
-	// (BASIC by default or FULL).
+	// service principal, or group) in the current workspace.
+	//
+	//   - Provisioned principal here refers to one that has been synced into
+	//     Databricks from the customer's IdP or added explicitly to Databricks
+	//     via SCIM/UI. Allows for passing in a "view" parameter to control what
+	//     fields are returned (BASIC by default or FULL).
 	GetWorkspaceAccessDetailLocal(ctx context.Context, request GetWorkspaceAccessDetailLocalRequest) (*WorkspaceAccessDetail, error)
 
 	// Returns the assignment details for a principal in a workspace

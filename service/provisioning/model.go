@@ -1105,7 +1105,6 @@ func (f *PrivateAccessLevel) Type() string {
 	return "PrivateAccessLevel"
 }
 
-// *
 type PrivateAccessSettings struct {
 	// The Databricks account ID that hosts the private access settings.
 	AccountId string `json:"account_id,omitempty"`
@@ -1246,7 +1245,6 @@ func (s UpdateWorkspaceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// *
 type VpcEndpoint struct {
 	// The Databricks account ID that hosts the VPC endpoint configuration.
 	AccountId string `json:"account_id,omitempty"`
