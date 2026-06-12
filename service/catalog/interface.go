@@ -89,8 +89,8 @@ type AccountStorageCredentialsService interface {
 }
 
 // In Databricks Runtime 13.3 and above, you can add libraries and init scripts
-// to the `allowlist` in UC so that users can leverage these artifacts on
-// compute configured with shared access mode.
+// to the `allowlist` in UC so that users can use these artifacts on compute
+// configured with shared access mode.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ArtifactAllowlistsService interface {
@@ -153,17 +153,15 @@ type CatalogsService interface {
 	Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error)
 }
 
-// Connections allow for creating a connection to an external data source.
+// A connection represents an external data source for use within Databricks.
 //
-// A connection is an abstraction of an external data source that can be
-// connected from Databricks Compute. Creating a connection object is the first
-// step to managing external data sources within Unity Catalog, with the second
-// step being creating a data object (catalog, schema, or table) using the
-// connection. Data objects derived from a connection can be written to or read
-// from similar to other Unity Catalog data objects based on cloud storage.
-// Users may create different types of connections with each connection having a
-// unique set of configuration options to support credential management and
-// other settings.
+// Creating a connection object is the first step to managing external data
+// sources within Unity Catalog. The second step is creating a data object
+// (catalog, schema, or table) using the connection. Data objects derived from a
+// connection can be written to or read from similar to other Unity Catalog data
+// objects based on cloud storage. You can create different types of
+// connections, and each connection has a unique set of configuration options to
+// support credential management and other settings.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConnectionsService interface {
@@ -272,9 +270,9 @@ type CredentialsService interface {
 
 // Tags are attributes that include keys and optional values that you can use to
 // organize and categorize entities in Unity Catalog. Entity tagging is
-// currently supported on catalogs, schemas, tables (including views), columns,
-// volumes. With these APIs, users can create, update, delete, and list tag
-// assignments across Unity Catalog entities
+// supported on catalogs, schemas, tables (including views), columns, and
+// volumes. With these APIs, you can create, update, delete, and list tag
+// assignments across Unity Catalog entities.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EntityTagAssignmentsService interface {
@@ -527,11 +525,10 @@ type FunctionsService interface {
 // the object. Securable objects in Unity Catalog are hierarchical and
 // privileges are inherited downward.
 //
-// Securable objects in Unity Catalog are hierarchical and privileges are
-// inherited downward. This means that granting a privilege on the catalog
-// automatically grants the privilege to all current and future objects within
-// the catalog. Similarly, privileges granted on a schema are inherited by all
-// current and future objects within that schema.
+// This means that granting a privilege on the catalog automatically grants the
+// privilege to all current and future objects within the catalog. Similarly,
+// privileges granted on a schema are inherited by all current and future
+// objects within that schema.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GrantsService interface {
@@ -683,7 +680,7 @@ type ModelVersionsService interface {
 	// The returned models are filtered based on the privileges of the calling
 	// user. For example, the metastore admin is able to list all the model
 	// versions. A regular user needs to be the owner or have the **EXECUTE**
-	// privilege on the parent registered model to recieve the model versions in
+	// privilege on the parent registered model to receive the model versions in
 	// the response. For the latter case, the caller must also be the owner or
 	// have the **USE_CATALOG** privilege on the parent catalog and the
 	// **USE_SCHEMA** privilege on the parent schema.
@@ -913,9 +910,9 @@ type QualityMonitorsService interface {
 // An MLflow registered model resides in the third layer of Unity Catalog’s
 // three-level namespace. Registered models contain model versions, which
 // correspond to actual ML models (MLflow models). Creating new model versions
-// currently requires use of the MLflow Python client. Once model versions are
-// created, you can load them for batch inference using MLflow Python client
-// APIs, or deploy them for real-time serving using Databricks Model Serving.
+// requires use of the MLflow Python client. After model versions are created,
+// you can load them for batch inference using MLflow Python client APIs, or
+// deploy them for real-time serving using Databricks Model Serving.
 //
 // All operations on registered models and model versions require USE_CATALOG
 // permissions on the enclosing catalog and USE_SCHEMA permissions on the
@@ -932,9 +929,9 @@ type QualityMonitorsService interface {
 // update permissions on the registered model, users must be owners of the
 // registered model.
 //
-// Note: The securable type for models is FUNCTION. When using REST APIs (e.g.
-// tagging, grants) that specify a securable type, use FUNCTION as the securable
-// type.
+// Note: The securable type for models is FUNCTION. When using REST APIs (for
+// example, tagging, grants) that specify a securable type, use FUNCTION as the
+// securable type.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RegisteredModelsService interface {
@@ -984,7 +981,7 @@ type RegisteredModelsService interface {
 	// The returned models are filtered based on the privileges of the calling
 	// user. For example, the metastore admin is able to list all the registered
 	// models. A regular user needs to be the owner or have the **EXECUTE**
-	// privilege on the registered model to recieve the registered models in the
+	// privilege on the registered model to receive the registered models in the
 	// response. For the latter case, the caller must also be the owner or have
 	// the **USE_CATALOG** privilege on the parent catalog and the
 	// **USE_SCHEMA** privilege on the parent schema.
@@ -1094,7 +1091,7 @@ type RfaService interface {
 }
 
 // A schema (also called a database) is the second layer of Unity Catalog’s
-// three-level namespace. A schema organizes tables, views and functions. To
+// three-level namespace. A schema organizes tables, views, and functions. To
 // access (or list) a table or view in a schema, users must have the USE_SCHEMA
 // data permission on the schema and its parent catalog, and they must have the
 // SELECT permission on the table or view.
@@ -1268,7 +1265,7 @@ type StorageCredentialsService interface {
 
 // A system schema is a schema that lives within the system catalog. A system
 // schema may contain information about customer usage of Unity Catalog such as
-// audit-logs, billing-logs, lineage information, etc.
+// audit logs, billing logs, and lineage information.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SystemSchemasService interface {
@@ -1299,9 +1296,9 @@ type SystemSchemasService interface {
 //
 // Primary and foreign keys are informational only and are not enforced. Foreign
 // keys must reference a primary key in another table. This primary key is the
-// parent constraint of the foreign key and the table this primary key is on is
+// parent constraint of the foreign key, and the table this primary key is on is
 // the parent table of the foreign key. Similarly, the foreign key is the child
-// constraint of its referenced primary key; the table of the foreign key is the
+// constraint of its referenced primary key. The table of the foreign key is the
 // child table of the primary key.
 //
 // You can declare primary keys and foreign keys as part of the table
@@ -1452,30 +1449,31 @@ type TablesService interface {
 	Update(ctx context.Context, request UpdateTableRequest) error
 }
 
-// Temporary Path Credentials refer to short-lived, downscoped credentials used
-// to access external cloud storage locations registered in Databricks. These
-// credentials are employed to provide secure and time-limited access to data in
-// cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider
-// has its own type of credentials: AWS uses temporary session tokens via AWS
-// Security Token Service (STS), Azure utilizes Shared Access Signatures (SAS)
-// for its data storage services, and Google Cloud supports temporary
-// credentials through OAuth 2.0.
+// Temporary Path Credentials are short-lived, downscoped credentials used to
+// access external cloud storage locations registered in Databricks. These
+// credentials provide secure and time-limited access to data in cloud
+// environments such as AWS, Azure, and Google Cloud. Each cloud provider has
+// its own type of credentials: AWS uses temporary session tokens through AWS
+// Security Token Service (STS), Azure uses Shared Access Signatures (SAS) for
+// its data storage services, and Google Cloud supports temporary credentials
+// through OAuth 2.0.
 //
 // Temporary path credentials ensure that data access is limited in scope and
 // duration, reducing the risk of unauthorized access or misuse. To use the
-// temporary path credentials API, a metastore admin needs to enable the
+// temporary path credentials API, a metastore admin must enable the
 // external_access_enabled flag (off by default) at the metastore level. A user
-// needs to be granted the EXTERNAL USE LOCATION permission by external location
-// owner. For requests on existing external tables and external volumes, user
-// also needs to be granted the EXTERNAL USE SCHEMA permission at the schema
-// level by catalog owner.
+// must be granted the EXTERNAL USE LOCATION permission by the external location
+// owner. For requests on existing external tables and external volumes, the
+// user must also be granted the EXTERNAL USE SCHEMA permission at the schema
+// level by the catalog owner.
 //
 // Note that EXTERNAL USE SCHEMA is a schema level permission that can only be
-// granted by catalog owner explicitly and is not included in schema ownership
-// or ALL PRIVILEGES on the schema for security reasons. Similarly, EXTERNAL USE
-// LOCATION is an external location level permission that can only be granted by
-// external location owner explicitly and is not included in external location
-// ownership or ALL PRIVILEGES on the external location for security reasons.
+// granted by the catalog owner explicitly and is not included in schema
+// ownership or ALL PRIVILEGES on the schema for security reasons. Similarly,
+// EXTERNAL USE LOCATION is an external location level permission that can only
+// be granted by the external location owner explicitly and is not included in
+// external location ownership or ALL PRIVILEGES on the external location for
+// security reasons.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TemporaryPathCredentialsService interface {
@@ -1494,23 +1492,23 @@ type TemporaryPathCredentialsService interface {
 	GenerateTemporaryPathCredentials(ctx context.Context, request GenerateTemporaryPathCredentialRequest) (*GenerateTemporaryPathCredentialResponse, error)
 }
 
-// Temporary Table Credentials refer to short-lived, downscoped credentials used
-// to access cloud storage locations where table data is stored in Databricks.
-// These credentials are employed to provide secure and time-limited access to
-// data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
-// provider has its own type of credentials: AWS uses temporary session tokens
-// via AWS Security Token Service (STS), Azure utilizes Shared Access Signatures
-// (SAS) for its data storage services, and Google Cloud supports temporary
-// credentials through OAuth 2.0.
+// Temporary Table Credentials are short-lived, downscoped credentials used to
+// access cloud storage locations where table data is stored in Databricks.
+// These credentials provide secure and time-limited access to data in cloud
+// environments such as AWS, Azure, and Google Cloud. Each cloud provider has
+// its own type of credentials: AWS uses temporary session tokens through AWS
+// Security Token Service (STS), Azure uses Shared Access Signatures (SAS) for
+// its data storage services, and Google Cloud supports temporary credentials
+// through OAuth 2.0.
 //
 // Temporary table credentials ensure that data access is limited in scope and
 // duration, reducing the risk of unauthorized access or misuse. To use the
-// temporary table credentials API, a metastore admin needs to enable the
-// external_access_enabled flag (off by default) at the metastore level, and
-// user needs to be granted the EXTERNAL USE SCHEMA permission at the schema
-// level by catalog owner. Note that EXTERNAL USE SCHEMA is a schema level
-// permission that can only be granted by catalog owner explicitly and is not
-// included in schema ownership or ALL PRIVILEGES on the schema for security
+// temporary table credentials API, a metastore admin must enable the
+// external_access_enabled flag (off by default) at the metastore level, and the
+// user must be granted the EXTERNAL USE SCHEMA permission at the schema level
+// by the catalog owner. Note that EXTERNAL USE SCHEMA is a schema level
+// permission that can only be granted by the catalog owner explicitly and is
+// not included in schema ownership or ALL PRIVILEGES on the schema for security
 // reasons.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
@@ -1524,23 +1522,23 @@ type TemporaryTableCredentialsService interface {
 	GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error)
 }
 
-// Temporary Volume Credentials refer to short-lived, downscoped credentials
-// used to access cloud storage locations where volume data is stored in
-// Databricks. These credentials are employed to provide secure and time-limited
-// access to data in cloud environments such as AWS, Azure, and Google Cloud.
-// Each cloud provider has its own type of credentials: AWS uses temporary
-// session tokens via AWS Security Token Service (STS), Azure utilizes Shared
-// Access Signatures (SAS) for its data storage services, and Google Cloud
-// supports temporary credentials through OAuth 2.0.
+// Temporary Volume Credentials are short-lived, downscoped credentials used to
+// access cloud storage locations where volume data is stored in Databricks.
+// These credentials provide secure and time-limited access to data in cloud
+// environments such as AWS, Azure, and Google Cloud. Each cloud provider has
+// its own type of credentials: AWS uses temporary session tokens through AWS
+// Security Token Service (STS), Azure uses Shared Access Signatures (SAS) for
+// its data storage services, and Google Cloud supports temporary credentials
+// through OAuth 2.0.
 //
 // Temporary volume credentials ensure that data access is limited in scope and
 // duration, reducing the risk of unauthorized access or misuse. To use the
-// temporary volume credentials API, a metastore admin needs to enable the
-// external_access_enabled flag (off by default) at the metastore level, and
-// user needs to be granted the EXTERNAL USE SCHEMA permission at the schema
-// level by catalog owner. Note that EXTERNAL USE SCHEMA is a schema level
-// permission that can only be granted by catalog owner explicitly and is not
-// included in schema ownership or ALL PRIVILEGES on the schema for security
+// temporary volume credentials API, a metastore admin must enable the
+// external_access_enabled flag (off by default) at the metastore level, and the
+// user must be granted the EXTERNAL USE SCHEMA permission at the schema level
+// by the catalog owner. Note that EXTERNAL USE SCHEMA is a schema level
+// permission that can only be granted by the catalog owner explicitly and is
+// not included in schema ownership or ALL PRIVILEGES on the schema for security
 // reasons.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
@@ -1555,13 +1553,14 @@ type TemporaryVolumeCredentialsService interface {
 }
 
 // Volumes are a Unity Catalog (UC) capability for accessing, storing,
-// governing, organizing and processing files. Use cases include running machine
-// learning on unstructured data such as image, audio, video, or PDF files,
-// organizing data sets during the data exploration stages in data science,
-// working with libraries that require access to the local file system on
-// cluster machines, storing library and config files of arbitrary formats such
-// as .whl or .txt centrally and providing secure access across workspaces to
-// it, or transforming and querying non-tabular data files in ETL.
+// governing, organizing, and processing files. Use cases include running
+// machine learning on unstructured data such as image, audio, video, or PDF
+// files, organizing data sets during the data exploration stages in data
+// science, working with libraries that require access to the local file system
+// on cluster machines, storing library and config files of arbitrary formats
+// such as .whl or .txt centrally and providing secure access to those files
+// across workspaces, or transforming and querying non-tabular data files in
+// ETL.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VolumesService interface {
@@ -1648,8 +1647,8 @@ type VolumesService interface {
 // the owner of the securable.
 //
 // The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name})
-// is deprecated. Please use the new path
-// (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which
+// is deprecated. Use the new path
+// (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}), which
 // introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
 //
 // Securable types that support binding: - catalog - storage_credential -

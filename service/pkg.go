@@ -24,7 +24,7 @@
 //
 // - [apps.AppsSettingsAPI]: Apps Settings manage the settings for the Apps service on a customer's Databricks instance.
 //
-// - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
+// - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can use these artifacts on compute configured with shared access mode.
 //
 // - [settings.AutomaticClusterUpdateAPI]: Controls whether automatic cluster update is enabled for the current workspace.
 //
@@ -56,7 +56,7 @@
 //
 // - [settings.ComplianceSecurityProfileAPI]: Controls whether to enable the compliance security profile for the current workspace.
 //
-// - [catalog.ConnectionsAPI]: Connections allow for creating a connection to an external data source.
+// - [catalog.ConnectionsAPI]: A connection represents an external data source for use within Databricks.
 //
 // - [marketplace.ConsumerFulfillmentsAPI]: Fulfillments are entities that allow consumers to preview installations.
 //
@@ -332,11 +332,11 @@
 //
 // - [tags.TagPoliciesAPI]: The Tag Policy API allows you to manage policies for governed tags in Databricks.
 //
-// - [catalog.TemporaryPathCredentialsAPI]: Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks.
+// - [catalog.TemporaryPathCredentialsAPI]: Temporary Path Credentials are short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks.
 //
-// - [catalog.TemporaryTableCredentialsAPI]: Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks.
+// - [catalog.TemporaryTableCredentialsAPI]: Temporary Table Credentials are short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks.
 //
-// - [catalog.TemporaryVolumeCredentialsAPI]: Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks.
+// - [catalog.TemporaryVolumeCredentialsAPI]: Temporary Volume Credentials are short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks.
 //
 // - [settings.TokenManagementAPI]: Enables administrators to get all tokens and delete tokens for other users.
 //
@@ -352,7 +352,7 @@
 //
 // - [vectorsearch.VectorSearchIndexesAPI]: **Index**: An efficient representation of your embedding vectors that supports real-time and efficient approximate nearest neighbor (ANN) search queries.
 //
-// - [catalog.VolumesAPI]: Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing and processing files.
+// - [catalog.VolumesAPI]: Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing, and processing files.
 //
 // - [provisioning.VpcEndpointsAPI]: These APIs manage VPC endpoint configurations for this account.
 //

@@ -552,9 +552,11 @@ type Operation struct {
 	// Resource name of the operation. Format:
 	// deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
 	Name string `json:"name,omitempty"`
-	// ID reference for the actual resource in the workspace (e.g. the job ID,
-	// pipeline ID).
-	ResourceId string `json:"resource_id"`
+	// ID of the actual resource in the workspace (e.g. the job ID, pipeline
+	// ID). Required for every operation except CREATE and RECREATE, which
+	// produce a new resource whose ID is not yet known when the operation is
+	// recorded.
+	ResourceId string `json:"resource_id,omitempty"`
 	// Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar",
 	// "jobs.foo.permissions", "files.<rel-path>"). Can be an arbitrary UTF-8
 	// encoded string key. This key links the operation to the corresponding
