@@ -5010,8 +5010,8 @@ type NodeType struct {
 	// Unique identifier for this node type.
 	NodeTypeId string `json:"node_type_id"`
 	// Number of CPU cores available for this node type. Note that this can be
-	// fractional, e.g., 2.5 cores, if the the number of cores on a machine
-	// instance is not divisible by the number of Spark nodes on that machine.
+	// fractional, e.g., 2.5 cores, if the number of cores on a machine instance
+	// is not divisible by the number of Spark nodes on that machine.
 	NumCores float64 `json:"num_cores"`
 	// Number of GPUs available for this node type.
 	NumGpus int `json:"num_gpus,omitempty"`

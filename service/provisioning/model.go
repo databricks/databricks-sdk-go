@@ -1471,8 +1471,7 @@ type WorkspaceNetwork struct {
 	// The mutually exclusive network deployment modes. The option decides which
 	// network mode the workspace will use. The network config for GCP workspace
 	// with Databricks managed network. This object is input-only and will not
-	// be provided when listing workspaces. See go/gcp-byovpc-alpha-design for
-	// interface decisions.
+	// be provided when listing workspaces.
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
 	// The ID of the network object, if the workspace is a BYOVPC workspace.
 	// This should apply to workspaces on all clouds in internal services. In
@@ -1498,8 +1497,7 @@ func (s WorkspaceNetwork) MarshalJSON() ([]byte, error) {
 // (note that this transition is disallowed in the MultiWorkspace Project)
 // RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED -> PROVISIONING ->
 // CANCELLED BANNED -> RUNNING -> CANCELLED Note that a transition from any
-// state to itself is also valid. TODO(PLAT-5867): add a transition from
-// CANCELLED to some other value (e.g. RECOVERING)
+// state to itself is also valid.
 type WorkspaceStatus string
 
 const WorkspaceStatusBanned WorkspaceStatus = `BANNED`

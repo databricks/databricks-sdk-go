@@ -286,7 +286,7 @@ func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest)
 }
 
 // Returns the contents of a directory. If there is no directory at the
-// specified path, the API returns a HTTP 404 error.
+// specified path, the API returns an HTTP 404 error.
 func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) listing.Iterator[DirectoryEntry] {
 
 	getNextPage := func(ctx context.Context, req ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
@@ -312,7 +312,7 @@ func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirec
 }
 
 // Returns the contents of a directory. If there is no directory at the
-// specified path, the API returns a HTTP 404 error.
+// specified path, the API returns an HTTP 404 error.
 func (a *filesImpl) ListDirectoryContentsAll(ctx context.Context, request ListDirectoryContentsRequest) ([]DirectoryEntry, error) {
 	iterator := a.ListDirectoryContents(ctx, request)
 	return listing.ToSlice[DirectoryEntry](ctx, iterator)

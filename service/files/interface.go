@@ -176,7 +176,7 @@ type FilesService interface {
 	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
 
 	// Returns the contents of a directory. If there is no directory at the
-	// specified path, the API returns a HTTP 404 error.
+	// specified path, the API returns an HTTP 404 error.
 	ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error)
 
 	// Uploads a file of up to 5 GiB. The file contents should be sent as the
