@@ -64,7 +64,7 @@ type DatabaseCatalog struct {
 	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
 	// The name of the DatabaseInstance housing the database.
 	DatabaseInstanceName string `json:"database_instance_name"`
-	// The name of the database (in a instance) associated with the catalog.
+	// The name of the database (in an instance) associated with the catalog.
 	DatabaseName string `json:"database_name"`
 	// The name of the catalog in UC.
 	Name string `json:"name"`
@@ -466,7 +466,7 @@ type DeleteDatabaseCatalogRequest struct {
 }
 
 type DeleteDatabaseInstanceRequest struct {
-	// By default, a instance cannot be deleted if it has descendant instances
+	// By default, an instance cannot be deleted if it has descendant instances
 	// created via PITR. If this flag is specified as true, all descendent
 	// instances will be deleted as well.
 	Force bool `json:"-" url:"force,omitempty"`
