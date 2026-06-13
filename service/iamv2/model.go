@@ -542,7 +542,9 @@ func (f *WorkspaceAccessDetailView) Type() string {
 type WorkspaceAssignmentDetail struct {
 	// The account ID parent of the workspace where the principal is assigned
 	AccountId string `json:"account_id,omitempty"`
-
+	// Entitlements granted directly to the principal on this workspace. The
+	// only client-settable field: create and update manage exactly this set
+	// (including entitlements the principal also holds via a group).
 	Entitlements []Entitlement `json:"entitlements,omitempty"`
 	// The internal ID of the principal (user/sp/group) in Databricks.
 	PrincipalId int64 `json:"principal_id"`
