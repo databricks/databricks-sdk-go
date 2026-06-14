@@ -742,6 +742,8 @@ type MetricValues struct {
 type MiniVectorIndex struct {
 	// The user who created the index.
 	Creator string `json:"creator,omitempty"`
+	// ID of the endpoint associated with the index.
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
 	// The subtype of the index.
@@ -1280,6 +1282,8 @@ type VectorIndex struct {
 	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecResponse `json:"delta_sync_index_spec,omitempty"`
 
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
+	// ID of the endpoint associated with the index.
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
 	// The subtype of the index.
