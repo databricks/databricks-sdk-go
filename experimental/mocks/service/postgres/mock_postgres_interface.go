@@ -141,6 +141,65 @@ func (_c *MockPostgresInterface_CreateCatalog_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// CreateDataApi provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) CreateDataApi(ctx context.Context, request postgres.CreateDataApiRequest) (postgres.CreateDataApiOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDataApi")
+	}
+
+	var r0 postgres.CreateDataApiOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateDataApiRequest) (postgres.CreateDataApiOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateDataApiRequest) postgres.CreateDataApiOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateDataApiOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.CreateDataApiRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateDataApi_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDataApi'
+type MockPostgresInterface_CreateDataApi_Call struct {
+	*mock.Call
+}
+
+// CreateDataApi is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateDataApiRequest
+func (_e *MockPostgresInterface_Expecter) CreateDataApi(ctx interface{}, request interface{}) *MockPostgresInterface_CreateDataApi_Call {
+	return &MockPostgresInterface_CreateDataApi_Call{Call: _e.mock.On("CreateDataApi", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateDataApi_Call) Run(run func(ctx context.Context, request postgres.CreateDataApiRequest)) *MockPostgresInterface_CreateDataApi_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.CreateDataApiRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateDataApi_Call) Return(_a0 postgres.CreateDataApiOperationInterface, _a1 error) *MockPostgresInterface_CreateDataApi_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateDataApi_Call) RunAndReturn(run func(context.Context, postgres.CreateDataApiRequest) (postgres.CreateDataApiOperationInterface, error)) *MockPostgresInterface_CreateDataApi_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateDatabase provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) CreateDatabase(ctx context.Context, request postgres.CreateDatabaseRequest) (postgres.CreateDatabaseOperationInterface, error) {
 	ret := _m.Called(ctx, request)
@@ -550,6 +609,65 @@ func (_c *MockPostgresInterface_DeleteCatalog_Call) Return(_a0 postgres.DeleteCa
 }
 
 func (_c *MockPostgresInterface_DeleteCatalog_Call) RunAndReturn(run func(context.Context, postgres.DeleteCatalogRequest) (postgres.DeleteCatalogOperationInterface, error)) *MockPostgresInterface_DeleteCatalog_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDataApi provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) DeleteDataApi(ctx context.Context, request postgres.DeleteDataApiRequest) (postgres.DeleteDataApiOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDataApi")
+	}
+
+	var r0 postgres.DeleteDataApiOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteDataApiRequest) (postgres.DeleteDataApiOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteDataApiRequest) postgres.DeleteDataApiOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteDataApiOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteDataApiRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteDataApi_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDataApi'
+type MockPostgresInterface_DeleteDataApi_Call struct {
+	*mock.Call
+}
+
+// DeleteDataApi is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteDataApiRequest
+func (_e *MockPostgresInterface_Expecter) DeleteDataApi(ctx interface{}, request interface{}) *MockPostgresInterface_DeleteDataApi_Call {
+	return &MockPostgresInterface_DeleteDataApi_Call{Call: _e.mock.On("DeleteDataApi", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteDataApi_Call) Run(run func(ctx context.Context, request postgres.DeleteDataApiRequest)) *MockPostgresInterface_DeleteDataApi_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.DeleteDataApiRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteDataApi_Call) Return(_a0 postgres.DeleteDataApiOperationInterface, _a1 error) *MockPostgresInterface_DeleteDataApi_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteDataApi_Call) RunAndReturn(run func(context.Context, postgres.DeleteDataApiRequest) (postgres.DeleteDataApiOperationInterface, error)) *MockPostgresInterface_DeleteDataApi_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1022,6 +1140,65 @@ func (_c *MockPostgresInterface_GetCatalog_Call) Return(_a0 *postgres.Catalog, _
 }
 
 func (_c *MockPostgresInterface_GetCatalog_Call) RunAndReturn(run func(context.Context, postgres.GetCatalogRequest) (*postgres.Catalog, error)) *MockPostgresInterface_GetCatalog_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDataApi provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetDataApi(ctx context.Context, request postgres.GetDataApiRequest) (*postgres.DataApi, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDataApi")
+	}
+
+	var r0 *postgres.DataApi
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetDataApiRequest) (*postgres.DataApi, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetDataApiRequest) *postgres.DataApi); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.DataApi)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetDataApiRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetDataApi_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDataApi'
+type MockPostgresInterface_GetDataApi_Call struct {
+	*mock.Call
+}
+
+// GetDataApi is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetDataApiRequest
+func (_e *MockPostgresInterface_Expecter) GetDataApi(ctx interface{}, request interface{}) *MockPostgresInterface_GetDataApi_Call {
+	return &MockPostgresInterface_GetDataApi_Call{Call: _e.mock.On("GetDataApi", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetDataApi_Call) Run(run func(ctx context.Context, request postgres.GetDataApiRequest)) *MockPostgresInterface_GetDataApi_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetDataApiRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetDataApi_Call) Return(_a0 *postgres.DataApi, _a1 error) *MockPostgresInterface_GetDataApi_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetDataApi_Call) RunAndReturn(run func(context.Context, postgres.GetDataApiRequest) (*postgres.DataApi, error)) *MockPostgresInterface_GetDataApi_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2093,6 +2270,65 @@ func (_c *MockPostgresInterface_UpdateBranch_Call) Return(_a0 postgres.UpdateBra
 }
 
 func (_c *MockPostgresInterface_UpdateBranch_Call) RunAndReturn(run func(context.Context, postgres.UpdateBranchRequest) (postgres.UpdateBranchOperationInterface, error)) *MockPostgresInterface_UpdateBranch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateDataApi provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) UpdateDataApi(ctx context.Context, request postgres.UpdateDataApiRequest) (postgres.UpdateDataApiOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDataApi")
+	}
+
+	var r0 postgres.UpdateDataApiOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateDataApiRequest) (postgres.UpdateDataApiOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateDataApiRequest) postgres.UpdateDataApiOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.UpdateDataApiOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateDataApiRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_UpdateDataApi_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDataApi'
+type MockPostgresInterface_UpdateDataApi_Call struct {
+	*mock.Call
+}
+
+// UpdateDataApi is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.UpdateDataApiRequest
+func (_e *MockPostgresInterface_Expecter) UpdateDataApi(ctx interface{}, request interface{}) *MockPostgresInterface_UpdateDataApi_Call {
+	return &MockPostgresInterface_UpdateDataApi_Call{Call: _e.mock.On("UpdateDataApi", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_UpdateDataApi_Call) Run(run func(ctx context.Context, request postgres.UpdateDataApiRequest)) *MockPostgresInterface_UpdateDataApi_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.UpdateDataApiRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateDataApi_Call) Return(_a0 postgres.UpdateDataApiOperationInterface, _a1 error) *MockPostgresInterface_UpdateDataApi_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateDataApi_Call) RunAndReturn(run func(context.Context, postgres.UpdateDataApiRequest) (postgres.UpdateDataApiOperationInterface, error)) *MockPostgresInterface_UpdateDataApi_Call {
 	_c.Call.Return(run)
 	return _c
 }
