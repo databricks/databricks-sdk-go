@@ -39,7 +39,10 @@ type AccountIamV2Service interface {
 	// Returns the assignment details for a principal in a workspace.
 	GetWorkspaceAssignmentDetail(ctx context.Context, request GetWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error)
 
-	// Lists workspace assignment details for a workspace.
+	// Lists workspace assignment details for a workspace. For scalability, the
+	// response omits the per-principal entitlement fields (`entitlements` and
+	// `effective_entitlements`); call GetWorkspaceAssignmentDetail to read
+	// entitlements for a single principal.
 	ListWorkspaceAssignmentDetails(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) (*ListWorkspaceAssignmentDetailsResponse, error)
 
 	// Resolves a group with the given external ID from the customer's IdP. If
@@ -102,7 +105,10 @@ type WorkspaceIamV2Service interface {
 	GetWorkspaceAssignmentDetailProxy(ctx context.Context, request GetWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error)
 
 	// Lists workspace assignment details for a workspace (workspace-level
-	// proxy).
+	// proxy). For scalability, the response omits the per-principal entitlement
+	// fields (`entitlements` and `effective_entitlements`); call
+	// GetWorkspaceAssignmentDetailProxy to read entitlements for a single
+	// principal.
 	ListWorkspaceAssignmentDetailsProxy(ctx context.Context, request ListWorkspaceAssignmentDetailsProxyRequest) (*ListWorkspaceAssignmentDetailsResponse, error)
 
 	// Resolves a group with the given external ID from the customer's IdP. If

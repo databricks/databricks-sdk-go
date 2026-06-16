@@ -62,6 +62,21 @@ func (a *postgresImpl) CreateCatalog(ctx context.Context, request CreateCatalogR
 	return &operation, err
 }
 
+func (a *postgresImpl) CreateDataApi(ctx context.Context, request CreateDataApiRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/data-api", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DataApi, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) CreateDatabase(ctx context.Context, request CreateDatabaseRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", request.Parent)
@@ -189,6 +204,20 @@ func (a *postgresImpl) DeleteCatalog(ctx context.Context, request DeleteCatalogR
 	return &operation, err
 }
 
+func (a *postgresImpl) DeleteDataApi(ctx context.Context, request DeleteDataApiRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
@@ -300,6 +329,20 @@ func (a *postgresImpl) GetCatalog(ctx context.Context, request GetCatalogRequest
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &catalog)
 	return &catalog, err
+}
+
+func (a *postgresImpl) GetDataApi(ctx context.Context, request GetDataApiRequest) (*DataApi, error) {
+	var dataApi DataApi
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dataApi)
+	return &dataApi, err
 }
 
 func (a *postgresImpl) GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error) {
@@ -662,6 +705,28 @@ func (a *postgresImpl) UpdateBranch(ctx context.Context, request UpdateBranchReq
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Branch, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) UpdateDataApi(ctx context.Context, request UpdateDataApiRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DataApi, &operation)
 	return &operation, err
 }
 

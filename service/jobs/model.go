@@ -307,7 +307,7 @@ type BaseRun struct {
 
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
-	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
+	// which you can use to call `JobsGetOutput` to retrieve the run results. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
@@ -1380,7 +1380,7 @@ type ForEachTaskErrorMessageStats struct {
 	// Describes the count of such error message encountered during the
 	// iterations.
 	Count int `json:"count,omitempty"`
-	// Describes the error message occured during the iterations.
+	// Describes the error message occurred during the iterations.
 	ErrorMessage string `json:"error_message,omitempty"`
 	// Describes the termination reason for the error message.
 	TerminationCategory string `json:"termination_category,omitempty"`
@@ -3661,7 +3661,7 @@ type Run struct {
 
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
-	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
+	// which you can use to call `JobsGetOutput` to retrieve the run results. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
@@ -3724,7 +3724,7 @@ type RunForEachTask struct {
 	// an array parameter.
 	Inputs string `json:"inputs"`
 	// Read only field. Populated for GetRun and ListRuns RPC calls and stores
-	// the execution stats of an For each task
+	// the execution stats of a `For each` task.
 	Stats *ForEachStats `json:"stats,omitempty"`
 	// Configuration for the task that will be run for each element in the array
 	Task Task `json:"task"`

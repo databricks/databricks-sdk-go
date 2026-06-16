@@ -322,6 +322,14 @@ type CreateCatalogRequest struct {
 	CatalogId string `json:"-" url:"catalog_id"`
 }
 
+type CreateDataApiRequest struct {
+	// The Data API configuration to create.
+	DataApi DataApi `json:"data_api"`
+	// Parent database:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
+	Parent string `json:"-" url:"-"`
+}
+
 type CreateDatabaseRequest struct {
 	// The desired specification of a Database.
 	Database Database `json:"database"`
@@ -429,6 +437,114 @@ type CreateSyncedTableRequest struct {
 	// Lakehouse Federation. 2. Postgres table named "{table}" in schema
 	// "{schema}" in the connected Postgres database
 	SyncedTableId string `json:"-" url:"synced_table_id"`
+}
+
+// DataApi represents the Data API (PostgREST) configuration for a Database. At
+// most one DataApi per database. Create enables Data API, Delete disables it.
+type DataApi struct {
+	// A timestamp indicating when the Data API was first enabled.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+	Name string `json:"name,omitempty"`
+	// The database containing this Data API configuration. Format:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
+	Parent string `json:"parent,omitempty"`
+	// The desired Data API configuration.
+	Spec *DataApiDataApiSpec `json:"spec,omitempty"`
+	// The observed Data API state (read-only).
+	Status *DataApiDataApiStatus `json:"status,omitempty"`
+	// A timestamp indicating when the Data API configuration was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DataApi) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataApi) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Desired PostgREST configuration (input).
+type DataApiDataApiSpec struct {
+	// Enable aggregate functions (count, sum, avg, etc.) in Data API responses.
+	// Default: true.
+	DbAggregatesEnabled bool `json:"db_aggregates_enabled,omitempty"`
+	// Additional schemas to include in the PostgreSQL search path. Each entry
+	// must be a valid PostgreSQL schema name.
+	DbExtraSearchPath []string `json:"db_extra_search_path,omitempty"`
+	// Maximum number of rows returned in a single Data API response. Must be a
+	// positive integer.
+	DbMaxRows int `json:"db_max_rows,omitempty"`
+	// Database schemas exposed through the Data API. Each entry must be a valid
+	// PostgreSQL schema name (1-63 chars, [a-zA-Z_][a-zA-Z0-9_$]*). Maximum 100
+	// entries. Default: ["public"].
+	DbSchemas []string `json:"db_schemas,omitempty"`
+	// Maximum lifetime for cached JWT tokens. Zero duration disables caching.
+	JwtCacheMaxLifetime *duration.Duration `json:"jwt_cache_max_lifetime,omitempty"`
+	// JSON path to the role claim in JWT tokens (e.g., ".sub"). Default:
+	// ".sub".
+	JwtRoleClaimKey string `json:"jwt_role_claim_key,omitempty"`
+	// OpenAPI documentation mode for the Data API endpoint.
+	OpenapiMode OpenApiMode `json:"openapi_mode,omitempty"`
+	// Allowed origins for CORS requests. Each entry should be a valid origin
+	// URL, or use "*" to allow all origins.
+	ServerCorsAllowedOrigins []string `json:"server_cors_allowed_origins,omitempty"`
+	// Enable the Server-Timing header in Data API responses.
+	ServerTimingEnabled bool `json:"server_timing_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DataApiDataApiSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataApiDataApiSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Observed state (output-only).
+type DataApiDataApiStatus struct {
+	// Schemas available in the database (for reference when configuring
+	// db_schemas).
+	AvailableSchemas []string `json:"available_schemas,omitempty"`
+	// Actual aggregate function setting read from the database.
+	DbAggregatesEnabled bool `json:"db_aggregates_enabled,omitempty"`
+	// Actual extra search path schemas read from the database.
+	DbExtraSearchPath []string `json:"db_extra_search_path,omitempty"`
+	// Actual max rows setting read from the database.
+	DbMaxRows int `json:"db_max_rows,omitempty"`
+	// Actual exposed schemas read from the database.
+	DbSchemas []string `json:"db_schemas,omitempty"`
+	// Actual JWT cache max lifetime read from the database.
+	JwtCacheMaxLifetime *duration.Duration `json:"jwt_cache_max_lifetime,omitempty"`
+	// Actual JWT role claim key read from the database.
+	JwtRoleClaimKey string `json:"jwt_role_claim_key,omitempty"`
+	// Actual OpenAPI mode read from the database.
+	OpenapiMode OpenApiMode `json:"openapi_mode,omitempty"`
+	// Actual CORS allowed origins read from the database.
+	ServerCorsAllowedOrigins []string `json:"server_cors_allowed_origins,omitempty"`
+	// Actual Server-Timing header setting read from the database.
+	ServerTimingEnabled bool `json:"server_timing_enabled,omitempty"`
+	// Data API endpoint URL.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DataApiDataApiStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataApiDataApiStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DataApiOperationMetadata struct {
 }
 
 // Database represents a Postgres database within a Branch.
@@ -574,6 +690,12 @@ type DeleteCatalogRequest struct {
 	// The full resource path of the catalog to delete.
 	//
 	// Format: "catalogs/{catalog_id}".
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteDataApiRequest struct {
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 	Name string `json:"-" url:"-"`
 }
 
@@ -1232,6 +1354,12 @@ type GetCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetDataApiRequest struct {
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+	Name string `json:"-" url:"-"`
+}
+
 type GetDatabaseRequest struct {
 	// The name of the Database to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
@@ -1493,6 +1621,47 @@ func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
 
 func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Controls how the Data API exposes the OpenAPI documentation endpoint. Only
+// IGNORE_PRIVILEGES and DISABLED are supported today; "follow-privileges" is
+// not implemented yet (it may be added later as value 3 — adding new enum
+// values is backward-compatible).
+type OpenApiMode string
+
+const OpenApiModeOpenApiModeDisabled OpenApiMode = `OPEN_API_MODE_DISABLED`
+
+const OpenApiModeOpenApiModeIgnorePrivileges OpenApiMode = `OPEN_API_MODE_IGNORE_PRIVILEGES`
+
+// String representation for [fmt.Print]
+func (f *OpenApiMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OpenApiMode) Set(v string) error {
+	switch v {
+	case `OPEN_API_MODE_DISABLED`, `OPEN_API_MODE_IGNORE_PRIVILEGES`:
+		*f = OpenApiMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "OPEN_API_MODE_DISABLED", "OPEN_API_MODE_IGNORE_PRIVILEGES"`, v)
+	}
+}
+
+// Values returns all possible values for OpenApiMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OpenApiMode) Values() []OpenApiMode {
+	return []OpenApiMode{
+		OpenApiModeOpenApiModeDisabled,
+		OpenApiModeOpenApiModeIgnorePrivileges,
+	}
+}
+
+// Type always returns OpenApiMode to satisfy [pflag.Value] interface
+func (f *OpenApiMode) Type() string {
+	return "OpenApiMode"
 }
 
 // This resource represents a long-running operation that is the result of a
@@ -2482,6 +2651,18 @@ type UpdateBranchRequest struct {
 	Branch Branch `json:"branch"`
 	// Output only. The full resource path of the branch. Format:
 	// projects/{project_id}/branches/{branch_id}
+	Name string `json:"-" url:"-"`
+	// The list of fields to update. If unspecified, all fields will be updated
+	// when possible.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+type UpdateDataApiRequest struct {
+	// The Data API configuration to update. The data_api's `name` field
+	// identifies the resource.
+	DataApi DataApi `json:"data_api"`
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible.

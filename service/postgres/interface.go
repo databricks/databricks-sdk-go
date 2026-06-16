@@ -29,6 +29,9 @@ type PostgresService interface {
 	// Register a Postgres database in the Unity Catalog.
 	CreateCatalog(ctx context.Context, request CreateCatalogRequest) (*Operation, error)
 
+	// Enable Data API for a database.
+	CreateDataApi(ctx context.Context, request CreateDataApiRequest) (*Operation, error)
+
 	// Create a Database.
 	//
 	// Creates a database in the specified branch. A branch can have multiple
@@ -54,6 +57,9 @@ type PostgresService interface {
 	// Delete a Database Catalog.
 	DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) (*Operation, error)
 
+	// Disable Data API for a database.
+	DeleteDataApi(ctx context.Context, request DeleteDataApiRequest) (*Operation, error)
+
 	// Delete a Database.
 	DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error)
 
@@ -77,6 +83,9 @@ type PostgresService interface {
 
 	// Get a Database Catalog.
 	GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error)
+
+	// Get Data API configuration for a database.
+	GetDataApi(ctx context.Context, request GetDataApiRequest) (*DataApi, error)
 
 	// Get a Database.
 	GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error)
@@ -123,6 +132,9 @@ type PostgresService interface {
 	// Updates the specified database branch. You can set this branch as the
 	// project's default branch, or protect/unprotect it.
 	UpdateBranch(ctx context.Context, request UpdateBranchRequest) (*Operation, error)
+
+	// Update Data API configuration for a database.
+	UpdateDataApi(ctx context.Context, request UpdateDataApiRequest) (*Operation, error)
 
 	// Update a Database.
 	UpdateDatabase(ctx context.Context, request UpdateDatabaseRequest) (*Operation, error)

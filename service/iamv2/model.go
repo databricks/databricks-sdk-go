@@ -544,7 +544,10 @@ type WorkspaceAssignmentDetail struct {
 	AccountId string `json:"account_id,omitempty"`
 	// Entitlements granted directly to the principal on this workspace. The
 	// only client-settable field: create and update manage exactly this set
-	// (including entitlements the principal also holds via a group).
+	// (including entitlements the principal also holds via a group). Not
+	// populated by ListWorkspaceAssignmentDetails (omitted for scalability);
+	// call GetWorkspaceAssignmentDetail to read the entitlements for a single
+	// principal.
 	Entitlements []Entitlement `json:"entitlements,omitempty"`
 	// The internal ID of the principal (user/sp/group) in Databricks.
 	PrincipalId int64 `json:"principal_id"`
