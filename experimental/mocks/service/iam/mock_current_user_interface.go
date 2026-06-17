@@ -22,9 +22,9 @@ func (_m *MockCurrentUserInterface) EXPECT() *MockCurrentUserInterface_Expecter 
 	return &MockCurrentUserInterface_Expecter{mock: &_m.Mock}
 }
 
-// Me provides a mock function with given fields: ctx
-func (_m *MockCurrentUserInterface) Me(ctx context.Context) (*iam.User, error) {
-	ret := _m.Called(ctx)
+// Me provides a mock function with given fields: ctx, request
+func (_m *MockCurrentUserInterface) Me(ctx context.Context, request iam.MeRequest) (*iam.User, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Me")
@@ -32,19 +32,19 @@ func (_m *MockCurrentUserInterface) Me(ctx context.Context) (*iam.User, error) {
 
 	var r0 *iam.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (*iam.User, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, iam.MeRequest) (*iam.User, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) *iam.User); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, iam.MeRequest) *iam.User); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*iam.User)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, iam.MeRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -59,13 +59,14 @@ type MockCurrentUserInterface_Me_Call struct {
 
 // Me is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCurrentUserInterface_Expecter) Me(ctx interface{}) *MockCurrentUserInterface_Me_Call {
-	return &MockCurrentUserInterface_Me_Call{Call: _e.mock.On("Me", ctx)}
+//   - request iam.MeRequest
+func (_e *MockCurrentUserInterface_Expecter) Me(ctx interface{}, request interface{}) *MockCurrentUserInterface_Me_Call {
+	return &MockCurrentUserInterface_Me_Call{Call: _e.mock.On("Me", ctx, request)}
 }
 
-func (_c *MockCurrentUserInterface_Me_Call) Run(run func(ctx context.Context)) *MockCurrentUserInterface_Me_Call {
+func (_c *MockCurrentUserInterface_Me_Call) Run(run func(ctx context.Context, request iam.MeRequest)) *MockCurrentUserInterface_Me_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(iam.MeRequest))
 	})
 	return _c
 }
@@ -75,7 +76,7 @@ func (_c *MockCurrentUserInterface_Me_Call) Return(_a0 *iam.User, _a1 error) *Mo
 	return _c
 }
 
-func (_c *MockCurrentUserInterface_Me_Call) RunAndReturn(run func(context.Context) (*iam.User, error)) *MockCurrentUserInterface_Me_Call {
+func (_c *MockCurrentUserInterface_Me_Call) RunAndReturn(run func(context.Context, iam.MeRequest) (*iam.User, error)) *MockCurrentUserInterface_Me_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -214,6 +214,22 @@ type AzureAttributes struct {
 	// `first_on_demand` ones. Note: If `first_on_demand` is zero, this
 	// availability type will be used for the entire cluster.
 	Availability AzureAvailability `json:"availability,omitempty"`
+	// The Azure capacity reservation group resource ID to use for launching
+	// VMs. When specified, VMs will be launched using the provided capacity
+	// reservation.
+	//
+	// Capacity reservations can only be specified when the workspace uses
+	// injected vnet (i.e. customer defined vnet not managed by databricks).
+	// Ensure the databricks-login-prod Enterprise Application is granted the
+	// following four permissions: 1.
+	// Microsoft.Compute/capacityReservationGroups/read 2.
+	// Microsoft.Compute/capacityReservationGroups/deploy/action 3.
+	// Microsoft.Compute/capacityReservationGroups/capacityReservations/read 4.
+	// Microsoft.Compute/capacityReservationGroups/capacityReservations/deploy/action
+	//
+	// Format:
+	// `/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}`
+	CapacityReservationGroup string `json:"capacity_reservation_group,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
 	// the cluster driver node is placed on an on-demand instance. If this value
@@ -2738,7 +2754,10 @@ type Environment struct {
 	// environment ID (e.g.,
 	// `workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7`)
 	// is in Beta. Either `environment_version` or `base_environment` can be
-	// provided. For more information, see
+	// provided. For more information about Databricks-provided base
+	// environments, see the [list workspace base
+	// environments](:method:Environments/ListWorkspaceBaseEnvironments) API.
+	// For more information, see
 	BaseEnvironment string `json:"base_environment,omitempty"`
 	// Use `environment_version` instead.
 	Client string `json:"client,omitempty"`
@@ -5007,8 +5026,8 @@ type NodeType struct {
 	// Unique identifier for this node type.
 	NodeTypeId string `json:"node_type_id"`
 	// Number of CPU cores available for this node type. Note that this can be
-	// fractional, e.g., 2.5 cores, if the the number of cores on a machine
-	// instance is not divisible by the number of Spark nodes on that machine.
+	// fractional, e.g., 2.5 cores, if the number of cores on a machine instance
+	// is not divisible by the number of Spark nodes on that machine.
 	NumCores float64 `json:"num_cores"`
 	// Number of GPUs available for this node type.
 	NumGpus int `json:"num_gpus,omitempty"`

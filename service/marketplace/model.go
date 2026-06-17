@@ -708,7 +708,7 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 
 type FileParent struct {
 	FileParentType FileParentType `json:"file_parent_type,omitempty" url:"file_parent_type,omitempty"`
-	// TODO make the following fields required
+
 	ParentId string `json:"parent_id,omitempty" url:"parent_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1377,8 +1377,8 @@ type ListListingsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Matches any of the following provider ids
 	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
-	// Matches any of the following tags
-	Tags []ListingTag `json:"-" url:"tags,omitempty"`
+	// Matches listings with this tag
+	Tags *ListingTag `json:"-" url:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1504,8 +1504,7 @@ type ListingDetail struct {
 	// listings with model based assets
 	License string `json:"license,omitempty"`
 	// What the pricing model is (e.g. paid, subscription, paid upfront); should
-	// only be present if cost is paid TODO: Not used yet, should deprecate if
-	// we will never use it
+	// only be present if cost is paid
 	PricingModel string `json:"pricing_model,omitempty"`
 
 	PrivacyPolicyLink string `json:"privacy_policy_link,omitempty"`

@@ -754,6 +754,65 @@ func (_c *MockTokenManagementInterface_UpdatePermissions_Call) RunAndReturn(run 
 	return _c
 }
 
+// UpdateTokenManagement provides a mock function with given fields: ctx, request
+func (_m *MockTokenManagementInterface) UpdateTokenManagement(ctx context.Context, request settings.UpdateTokenManagementRequest) (*settings.TokenInfo, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateTokenManagement")
+	}
+
+	var r0 *settings.TokenInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateTokenManagementRequest) (*settings.TokenInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateTokenManagementRequest) *settings.TokenInfo); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.TokenInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateTokenManagementRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockTokenManagementInterface_UpdateTokenManagement_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateTokenManagement'
+type MockTokenManagementInterface_UpdateTokenManagement_Call struct {
+	*mock.Call
+}
+
+// UpdateTokenManagement is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.UpdateTokenManagementRequest
+func (_e *MockTokenManagementInterface_Expecter) UpdateTokenManagement(ctx interface{}, request interface{}) *MockTokenManagementInterface_UpdateTokenManagement_Call {
+	return &MockTokenManagementInterface_UpdateTokenManagement_Call{Call: _e.mock.On("UpdateTokenManagement", ctx, request)}
+}
+
+func (_c *MockTokenManagementInterface_UpdateTokenManagement_Call) Run(run func(ctx context.Context, request settings.UpdateTokenManagementRequest)) *MockTokenManagementInterface_UpdateTokenManagement_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.UpdateTokenManagementRequest))
+	})
+	return _c
+}
+
+func (_c *MockTokenManagementInterface_UpdateTokenManagement_Call) Return(_a0 *settings.TokenInfo, _a1 error) *MockTokenManagementInterface_UpdateTokenManagement_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockTokenManagementInterface_UpdateTokenManagement_Call) RunAndReturn(run func(context.Context, settings.UpdateTokenManagementRequest) (*settings.TokenInfo, error)) *MockTokenManagementInterface_UpdateTokenManagement_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockTokenManagementInterface creates a new instance of MockTokenManagementInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockTokenManagementInterface(t interface {

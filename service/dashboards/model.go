@@ -1346,6 +1346,8 @@ type GenieUpdateSpaceRequest struct {
 	// if the space has been modified since. Omit to apply the update
 	// unconditionally.
 	Etag string `json:"etag,omitempty"`
+	// Parent workspace folder path to move this Genie space under.
+	ParentPath string `json:"parent_path,omitempty"`
 	// The contents of the Genie Space in serialized string form (full
 	// replacement). Use the [Get Genie Space](:method:genie/getspace) API to
 	// retrieve an example response, which includes the `serialized_space`
@@ -2026,6 +2028,31 @@ func (s *Result) UnmarshalJSON(b []byte) error {
 
 func (s Result) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Request to revert a dashboard draft to its last published state.
+type RevertDashboardRequest struct {
+	// UUID identifying the dashboard.
+	DashboardId string `json:"-" url:"-"`
+	// The etag for the dashboard. Optionally, it can be provided to verify that
+	// the dashboard has not been modified from its last retrieval.
+	Etag string `json:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RevertDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RevertDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to revert a dashboard draft to its last published state.
+type RevertDashboardResponse struct {
+	// The reverted dashboard.
+	Dashboard *Dashboard `json:"dashboard,omitempty"`
 }
 
 type Schedule struct {

@@ -137,6 +137,8 @@ type ClonePipelineRequest struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
@@ -317,6 +319,9 @@ type CreatePipeline struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Key/value map of default parameters to use for pipeline execution.
+	// Maximum total size: 10k characters (JSON format)
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
@@ -331,6 +336,8 @@ type CreatePipeline struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
@@ -597,6 +604,9 @@ type EditPipeline struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Key/value map of default parameters to use for pipeline execution.
+	// Maximum total size: 10k characters (JSON format)
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
@@ -613,6 +623,8 @@ type EditPipeline struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
@@ -947,6 +959,9 @@ type GetPipelineResponse struct {
 	LatestUpdates []UpdateStateInfo `json:"latest_updates,omitempty"`
 	// A human friendly identifier for the pipeline, taken from the `spec`.
 	Name string `json:"name,omitempty"`
+	// Key/value map of default parameters to use for pipeline execution.
+	// Maximum total size: 10k characters (JSON format)
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// The ID of the pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// The user or service principal that the pipeline runs as, if specified in
@@ -1671,26 +1686,32 @@ func (f *MaturityLevel) Type() string {
 
 // Meta Marketing (Meta Ads) specific options for ingestion
 type MetaMarketingOptions struct {
-	// (Optional) Action attribution windows for insights reporting (e.g.
-	// "28d_click", "1d_view")
+	// (Optional, DEPRECATED — use
+	// custom_report_options.action_attribution_windows) Action attribution
+	// windows for insights reporting (e.g. "28d_click", "1d_view")
 	ActionAttributionWindows []string `json:"action_attribution_windows,omitempty"`
-	// (Optional) Action breakdowns to configure for data aggregation
+	// (Optional, DEPRECATED — use custom_report_options.action_breakdowns)
+	// Action breakdowns
 	ActionBreakdowns []string `json:"action_breakdowns,omitempty"`
-	// (Optional) Timing used to report action statistics (impression,
-	// conversion, mixed, or lifetime)
+	// (Optional, DEPRECATED — use custom_report_options.action_report_time)
+	// Timing used to report action statistics (impression, conversion, mixed,
+	// or lifetime)
 	ActionReportTime string `json:"action_report_time,omitempty"`
-	// (Optional) Breakdowns to configure for data aggregation
+	// (Optional, DEPRECATED — use custom_report_options.breakdowns)
+	// Breakdowns to configure
 	Breakdowns []string `json:"breakdowns,omitempty"`
 	// (Optional) Window in days to revisit data during sync to capture updated
-	// conversion data from the API.
+	// conversion data from the API, shared by prebuilt and custom reports.
 	CustomInsightsLookbackWindow int `json:"custom_insights_lookback_window,omitempty"`
-	// (Optional) Granularity of data to pull (account, ad, adset, campaign)
+	// (Optional, DEPRECATED — use custom_report_options.level) Granularity of
+	// data to pull (account, ad, adset, campaign)
 	Level string `json:"level,omitempty"`
 	// (Optional) Start date in yyyy-MM-dd format (e.g. 2025-01-15). Data added
-	// after this date will be ingested
+	// after this date will be ingested, shared by prebuilt and custom reports.
 	StartDate string `json:"start_date,omitempty"`
-	// (Optional) Value in string by which to aggregate statistics (can take
-	// all_days, monthly or number of days)
+	// (Optional, DEPRECATED — use custom_report_options.time_increment) Value
+	// in string by which to aggregate statistics (can take all_days, monthly or
+	// number of days)
 	TimeIncrement string `json:"time_increment,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2179,10 +2200,18 @@ func (f *PipelineClusterAutoscaleMode) Type() string {
 }
 
 type PipelineDeployment struct {
+	// ID of the deployment that manages this pipeline. Only set when `kind` is
+	// `BUNDLE`. Used to look up deployment metadata from the Deployment
+	// Metadata service.
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// The deployment method that manages the pipeline.
 	Kind DeploymentKind `json:"kind"`
 	// The path to the file containing metadata about the deployment.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
+	// ID of the version of the deployment that produced this pipeline. Only set
+	// when `kind` is `BUNDLE`. Identifies a specific snapshot of the deployment
+	// in the Deployment Metadata service.
+	VersionId string `json:"version_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2416,6 +2445,8 @@ type PipelineSpec struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
@@ -3169,6 +3200,21 @@ type TableSpecificConfig struct {
 	// "auto_full_refresh_policy": { "enabled": true, "min_interval_hours": 23,
 	// } } If unspecified, auto full refresh is disabled.
 	AutoFullRefreshPolicy *AutoFullRefreshPolicy `json:"auto_full_refresh_policy,omitempty"`
+	// List of column names to use for clustering the destination table. When
+	// specified, the destination Delta table will be clustered by these
+	// columns. This can improve query performance when filtering on these
+	// columns. Note: clustering_columns in table specific configuration will
+	// override the pipeline definition. Note: we can only provide
+	// enable_auto_clustering or clustering_columns, added as separate fields as
+	// we cannot have repeated field in oneof.
+	ClusteringColumns []string `json:"clustering_columns,omitempty"`
+	// Whether to enable auto clustering on the destination table. When enabled,
+	// Delta will automatically optimize the data layout based on the clustering
+	// columns for improved query performance. Note: enable_auto_clustering in
+	// table specific configuration will override the pipeline definition. Note:
+	// we can only provide enable_auto_clustering or clustering_columns, added
+	// as separate fields as we cannot have repeated field in oneof.
+	EnableAutoClustering bool `json:"enable_auto_clustering,omitempty"`
 	// A list of column names to be excluded for the ingestion. When not
 	// specified, include_columns fully controls what columns to be ingested.
 	// When specified, all other columns including future ones will be
@@ -3198,6 +3244,13 @@ type TableSpecificConfig struct {
 	// data. Spark Declarative Pipelines uses this sequencing to handle change
 	// events that arrive out of order.
 	SequenceBy []string `json:"sequence_by,omitempty"`
+	// Table properties to set on the destination table. These are key-value
+	// pairs that configure various Delta table behaviors or any user defined
+	// properties. Example: {"delta.feature.variantType": "supported",
+	// "delta.enableTypeWidening": "true"} Note: table_properties in table
+	// specific configuration will override the table_properties of the pipeline
+	// definition.
+	TableProperties map[string]string `json:"table_properties,omitempty"`
 	// (Optional) Additional custom parameters for Workday Report
 	WorkdayReportParameters *IngestionPipelineDefinitionWorkdayReportParameters `json:"workday_report_parameters,omitempty"`
 
@@ -3255,32 +3308,23 @@ func (f *TableSpecificConfigScdType) Type() string {
 
 // TikTok Ads specific options for ingestion
 type TikTokAdsOptions struct {
-	// (Optional) Data level for the report. If not specified, defaults to
-	// AUCTION_CAMPAIGN.
+	// Deprecated. Use custom_report_options.data_level instead.
 	DataLevel TikTokAdsOptionsTikTokDataLevel `json:"data_level,omitempty"`
-	// (Optional) Dimensions to include in the report. Examples: "campaign_id",
-	// "adgroup_id", "ad_id", "stat_time_day", "stat_time_hour" If not
-	// specified, defaults to campaign_id.
+	// Deprecated. Use custom_report_options.dimensions instead.
 	Dimensions []string `json:"dimensions,omitempty"`
 	// (Optional) Number of days to look back for report tables during
 	// incremental sync to capture late-arriving conversions and attribution
-	// data. If not specified, defaults to 7 days.
+	// data.
 	LookbackWindowDays int `json:"lookback_window_days,omitempty"`
-	// (Optional) Metrics to include in the report. Examples: "spend",
-	// "impressions", "clicks", "conversion", "cpc" If not specified, defaults
-	// to basic metrics (spend, impressions, clicks, etc.)
+	// Deprecated. Use custom_report_options.metrics instead.
 	Metrics []string `json:"metrics,omitempty"`
-	// (Optional) Whether to request lifetime metrics (all-time aggregated
-	// data). When true, the report returns all-time data. If not specified,
-	// defaults to false.
+	// Deprecated. Use custom_report_options.query_lifetime instead.
 	QueryLifetime bool `json:"query_lifetime,omitempty"`
-	// (Optional) Report type for the TikTok Ads API. If not specified, defaults
-	// to BASIC.
+	// Deprecated. Use custom_report_options.report_type instead.
 	ReportType TikTokAdsOptionsTikTokReportType `json:"report_type,omitempty"`
 	// (Optional) Start date for the initial sync of report tables in YYYY-MM-DD
 	// format. This determines the earliest date from which to sync historical
-	// data. If not specified, defaults to 1 year of historical data for daily
-	// reports and 30 days for hourly reports.
+	// data.
 	SyncStartDate string `json:"sync_start_date,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

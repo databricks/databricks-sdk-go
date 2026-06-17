@@ -1427,6 +1427,65 @@ func (_c *MockLakeviewInterface_Publish_Call) RunAndReturn(run func(context.Cont
 	return _c
 }
 
+// Revert provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) Revert(ctx context.Context, request dashboards.RevertDashboardRequest) (*dashboards.RevertDashboardResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Revert")
+	}
+
+	var r0 *dashboards.RevertDashboardResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.RevertDashboardRequest) (*dashboards.RevertDashboardResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.RevertDashboardRequest) *dashboards.RevertDashboardResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.RevertDashboardResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.RevertDashboardRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_Revert_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Revert'
+type MockLakeviewInterface_Revert_Call struct {
+	*mock.Call
+}
+
+// Revert is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.RevertDashboardRequest
+func (_e *MockLakeviewInterface_Expecter) Revert(ctx interface{}, request interface{}) *MockLakeviewInterface_Revert_Call {
+	return &MockLakeviewInterface_Revert_Call{Call: _e.mock.On("Revert", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_Revert_Call) Run(run func(ctx context.Context, request dashboards.RevertDashboardRequest)) *MockLakeviewInterface_Revert_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.RevertDashboardRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Revert_Call) Return(_a0 *dashboards.RevertDashboardResponse, _a1 error) *MockLakeviewInterface_Revert_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Revert_Call) RunAndReturn(run func(context.Context, dashboards.RevertDashboardRequest) (*dashboards.RevertDashboardResponse, error)) *MockLakeviewInterface_Revert_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Trash provides a mock function with given fields: ctx, request
 func (_m *MockLakeviewInterface) Trash(ctx context.Context, request dashboards.TrashDashboardRequest) error {
 	ret := _m.Called(ctx, request)

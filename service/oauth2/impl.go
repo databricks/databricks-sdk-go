@@ -532,7 +532,7 @@ func (a *servicePrincipalSecretsProxyImpl) Create(ctx context.Context, request C
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
 	return &createServicePrincipalSecretResponse, err
@@ -544,7 +544,7 @@ func (a *servicePrincipalSecretsProxyImpl) Delete(ctx context.Context, request D
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -593,7 +593,7 @@ func (a *servicePrincipalSecretsProxyImpl) internalList(ctx context.Context, req
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
 	return &listServicePrincipalSecretsResponse, err

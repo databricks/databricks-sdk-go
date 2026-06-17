@@ -1,5 +1,206 @@
 # Version changelog
 
+## Release v0.146.0 (2026-06-16)
+
+### API Changes
+* Add `CreateDataApi`, `DeleteDataApi`, `GetDataApi` and `UpdateDataApi` methods for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `CapacityReservationGroup` field for [compute.AzureAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#AzureAttributes).
+
+
+## Release v0.145.0 (2026-06-15)
+
+### Bug Fixes
+
+* Encode the governed-tag key as a single path segment when it is sent as a URL path parameter, so hierarchical keys containing `/` route correctly instead of being split into extra path segments and resolving to no endpoint (`404` / `ENDPOINT_NOT_FOUND`). Affects `GetTagPolicy`/`DeleteTagPolicy`/`UpdateTagPolicy` ([tags.TagPoliciesAPI](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/tags#TagPoliciesAPI)), `GetTagAssignment`/`DeleteTagAssignment`/`UpdateTagAssignment` ([tags.WorkspaceEntityTagAssignmentsAPI](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/tags#WorkspaceEntityTagAssignmentsAPI)), and `Get`/`Delete`/`Update` ([catalog.EntityTagAssignmentsAPI](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EntityTagAssignmentsAPI)).
+
+### API Changes
+* Change `ResourceId` field for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* [Breaking] Change `ResourceId` field for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* Add `Dynamics365` enum value for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
+* Add `EndpointId` field for [vectorsearch.MiniVectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#MiniVectorIndex).
+* Add `EndpointId` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+
+
+## Release v0.144.0 (2026-06-11)
+
+### API Changes
+* Add `TypeOverrides` field for [database.SyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/database#SyncedTableSpec).
+* Add `TypeOverrides` field for [postgres.SyncedTableSyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpec).
+
+
+## Release v0.143.0 (2026-06-10)
+
+### API Changes
+* Add `AcceleratedSync` field for [database.SyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/database#SyncedTableSpec).
+* Add `AcceleratedSync` field for [postgres.SyncedTableSyncedTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpec).
+
+
+## Release v0.142.0 (2026-06-09)
+
+### API Changes
+* Add [aisearch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aisearch) and [bundledeployments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments) packages.
+* Add [w.AiSearch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aisearch#AiSearchAPI) workspace-level service.
+* Add [w.BundleDeployments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#BundleDeploymentsAPI) workspace-level service.
+* Add `RunningInstances` field for [apps.ApplicationStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#ApplicationStatus).
+* Add `CustomMaxRetentionHours` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+* Add `EnvironmentSettings` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+* Add `CustomMaxRetentionHours` field for [catalog.CreateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCatalog).
+* Add `EnvironmentSettings` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
+* Add `CustomMaxRetentionHours` field for [catalog.CreateSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateSchema).
+* Add `CustomMaxRetentionHours` field for [catalog.SchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SchemaInfo).
+* Add `CustomMaxRetentionHours` field for [catalog.UpdateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCatalog).
+* Add `EnvironmentSettings` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+* Add `CustomMaxRetentionHours` field for [catalog.UpdateSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateSchema).
+* Add `StreamSource` field for [ml.DataSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DataSource).
+* Add `IngestionConfig` field for [ml.KafkaConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#KafkaConfig).
+* Add `ClusteringColumns`, `EnableAutoClustering` and `TableProperties` fields for [pipelines.TableSpecificConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpecificConfig).
+* Add `BranchId` field for [postgres.Branch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Branch).
+* Add `CatalogId` field for [postgres.Catalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Catalog).
+* Add `DatabaseId` field for [postgres.Database](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Database).
+* Add `EndpointId` field for [postgres.Endpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Endpoint).
+* Add `ProjectId` field for [postgres.Project](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Project).
+* Add `RoleId` field for [postgres.Role](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Role).
+* Add `SyncedTableId` field for [postgres.SyncedTable](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTable).
+* Add `AllowedDatabricksDestinations` field for [settings.EgressNetworkPolicyNetworkAccessPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EgressNetworkPolicyNetworkAccessPolicy).
+* Add `Facets`, `QueryColumns` and `SortColumns` fields for [vectorsearch.QueryVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#QueryVectorIndexRequest).
+* Add `FacetResult` field for [vectorsearch.QueryVectorIndexResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#QueryVectorIndexResponse).
+* Add `FacetColumnCount` and `FacetColumns` fields for [vectorsearch.ResultManifest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#ResultManifest).
+* Add `DangerouslyForceDiscardAll` field for [workspace.UpdateRepoRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#UpdateRepoRequest).
+* [Breaking] Remove [bundle](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle) package.
+* [Breaking] Remove [w.Bundle](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#BundleAPI) workspace-level service.
+
+
+## Release v0.141.0 (2026-06-02)
+
+### API Changes
+* Add `DeploymentMode` field for [bundle.Deployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Deployment).
+* Add `DeploymentMode` field for [bundle.Version](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Version).
+* Add `CollaborationPlatformConnectivity` and `EffectiveCollaborationPlatformConnectivity` fields for [settingsv2.Setting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#Setting).
+
+
+## Release v0.140.0 (2026-06-01)
+
+### New Features and Improvements
+
+* Add `u2m.WithDiscoveryAccountTarget()` option that sets `target=ACCOUNT` on the login.databricks.com authorize URL, so the discovery flow lands the user on the account selector instead of the workspace selector.
+
+### Internal Changes
+
+* Switch workspace addressing header on workspace-scoped API calls from `X-Databricks-Org-Id` to `X-Databricks-Workspace-Id`. The value continues to come from `Config.WorkspaceID` (`DATABRICKS_WORKSPACE_ID`), and now accepts either a classic numeric workspace ID or a CPDR connection ID (server disambiguates). Part of the DECO + Unified Workspace Addressing initiative.
+
+### API Changes
+* Add `UpdateTokenManagement` method for [w.TokenManagement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenManagementAPI) workspace-level service.
+* Add `DeploymentId` and `VersionId` fields for [jobs.JobDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobDeployment).
+* Add `DeploymentId` and `VersionId` fields for [pipelines.PipelineDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineDeployment).
+* Add `AutoscopeEnabled` field for [settings.CreateOboTokenRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateOboTokenRequest).
+* Add `AutoscopeEnabled` field for [settings.CreateTokenRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateTokenRequest).
+* Add `AutoscopeState`, `BackfillScopes`, `InferredScopes` and `Scopes` fields for [settings.PublicTokenInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#PublicTokenInfo).
+* Add `AutoscopeState`, `BackfillScopes`, `InferredScopes` and `Scopes` fields for [settings.TokenInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenInfo).
+* Add `ResourceType` field for [bundle.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Operation).
+
+
+## Release v0.139.0 (2026-05-28)
+
+### API Changes
+* Add `CreateStream`, `DeleteStream`, `GetStream`, `ListStreams` and `UpdateStream` methods for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service.
+* Add `Parameters` field for [jobs.PipelineTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PipelineTask).
+* Add `PipelineTask` field for [jobs.ResolvedValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedValues).
+* Add `Parameters` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+* Add `Parameters` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+* Add `Parameters` field for [pipelines.GetPipelineResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#GetPipelineResponse).
+* [Breaking] Remove `CatalogId` field for [postgres.CatalogCatalogStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#CatalogCatalogStatus).
+* [Breaking] Remove `SyncedTableId` field for [postgres.SyncedTableSyncedTableStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableStatus).
+
+
+## Release v0.138.0 (2026-05-27)
+
+### Bug Fixes
+
+* `config`: The config-file loader now sets `cfg.Profile` to `"DEFAULT"` on the legacy fallback (no profile requested, no `[__settings__].default_profile` set, `[DEFAULT]` section loaded). Previously the loader silently used `[DEFAULT]`'s values but left `cfg.Profile` empty. Consumers that derive a per-profile identifier from `cfg.Profile` (e.g. the Databricks CLI's U2M OAuth cache key) need the resolved name to match across the login and read flows; without this fix a write under `"DEFAULT"` could not be found by a no-flag read.
+
+
+## Release v0.137.0 (2026-05-25)
+
+### New Features and Improvements
+
+* Honor the Vercel `AI_AGENT=<name>` env var as a secondary fallback for
+  AI agent detection in the User-Agent header (after the agents.md
+  `AGENT=<name>` standard). Unrecognized fallback values now pass through
+  the User-Agent sanitized and length-capped at 64 chars instead of being
+  coerced to `agent/unknown`, so versioned variants such as
+  `claude-code_2-1-141_agent` surface as-is.
+
+### Internal Changes
+
+* Pass `excludedAttributes=entitlements` on the SCIM `/Me` request made by `WorkspaceClient.CurrentWorkspaceID` ([#1681](https://github.com/databricks/databricks-sdk-go/pull/1681)).
+
+  `CurrentWorkspaceID` only reads the `X-Databricks-Org-Id` response header and discards the body, so it has no use for the `User.Entitlements` field. Skipping that attribute avoids an expensive `getEffectivePermissions` scan on the SCIM backend, which has caused incidents on workspaces with large grant counts.
+
+### API Changes
+* Add `Revert` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+* Add `ParentPath` field for [dashboards.GenieUpdateSpaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieUpdateSpaceRequest).
+* Add `ComputeMaxInstances` and `ComputeMinInstances` fields for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `ComputeMaxInstances` and `ComputeMinInstances` fields for [apps.AppUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppUpdate).
+* Add `CronScheduleTrigger`, `StreamingMode` and `TableTrigger` fields for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `SyncedTableId` field for [postgres.SyncedTableSyncedTableStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableStatus).
+
+
+## Release v0.136.0 (2026-05-21)
+
+### API Changes
+* Add `UndeleteBranch` method for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `Attributes` and `ExcludedAttributes` fields for [iam.MeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#MeRequest).
+* Add `IncludeTriggerState` field for [jobs.GetJobRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetJobRequest).
+* Add `DeleteTime` and `PurgeTime` fields for [postgres.BranchStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#BranchStatus).
+* Add `Purge` field for [postgres.DeleteBranchRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#DeleteBranchRequest).
+* Add `ShowDeleted` field for [postgres.ListBranchesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ListBranchesRequest).
+* Add `Deleted` enum value for [postgres.BranchStatusState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#BranchStatusState).
+* [Breaking] Change `ActionType` and `ResourceId` fields for [bundle.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Operation) to be required.
+* Change `ActionType` and `ResourceId` fields for [bundle.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Operation) to be required.
+* [Breaking] Change `CliVersion` field for [bundle.Version](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Version) to be required.
+* Change `CliVersion` field for [bundle.Version](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#Version) to be required.
+* [Breaking] Change `Tags` field for [marketplace.ListListingsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#ListListingsRequest) to type [marketplace.ListingTag](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#ListingTag).
+* [Breaking] Change pagination for [ClustersAPI.Events](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClustersAPI.Events).
+
+
+## Release v0.135.0 (2026-05-20)
+
+### API Changes
+* Add [bundle](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle) package.
+* Add [w.Bundle](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundle#BundleAPI) workspace-level service.
+* Add `MtlsConfig` field for [ml.AuthConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#AuthConfig).
+
+
+## Release v0.134.0 (2026-05-19)
+
+### API Changes
+* Add `FullRefreshSelection`, `RefreshFlowSelection`, `RefreshSelection` and `ResetCheckpointSelection` fields for [jobs.PipelineParams](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PipelineParams).
+* Add `FullRefreshSelection`, `RefreshFlowSelection`, `RefreshSelection` and `ResetCheckpointSelection` fields for [jobs.PipelineTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PipelineTask).
+* Add `EffectiveOperationalEmailCustomRecipient` and `OperationalEmailCustomRecipient` fields for [settingsv2.Setting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#Setting).
+
+
+## Release v0.133.0 (2026-05-18)
+
+### API Changes
+* Add `CreateWorkspaceAssignmentDetail`, `DeleteWorkspaceAssignmentDetail`, `GetWorkspaceAssignmentDetail`, `ListWorkspaceAssignmentDetails` and `UpdateWorkspaceAssignmentDetail` methods for [a.AccountIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API) account-level service.
+* Add `CreateWorkspaceAssignmentDetailProxy`, `DeleteWorkspaceAssignmentDetailProxy`, `GetWorkspaceAssignmentDetailProxy`, `ListWorkspaceAssignmentDetailsProxy` and `UpdateWorkspaceAssignmentDetailProxy` methods for [w.WorkspaceIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API) workspace-level service.
+* Add `FailoverGroupName` field for [disasterrecovery.StableUrl](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#StableUrl).
+* Add `Disabled` and `PythonOperatorTask` fields for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `Disabled` and `PythonOperatorTask` fields for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `PythonOperatorTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+* Add `CatalogName`, `CreatedAt`, `CreatedBy`, `Name` and `SchemaName` fields for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature).
+* [Breaking] Add `CatalogName` and `SchemaName` fields for [ml.ListFeaturesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ListFeaturesRequest).
+* Add `Rolling` field for [ml.TimeWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#TimeWindow).
+* Add `KafkaOptions` field for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
+* Add `CrossWorkspaceAccess` field for [settings.CustomerFacingIngressNetworkPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingIngressNetworkPolicy).
+* Add `AllowedAppsUserApiScopes` and `EffectiveAllowedAppsUserApiScopes` fields for [settingsv2.Setting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#Setting).
+* Add `Hubspot`, `Github`, `Outlook` and `Smartsheet` enum values for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
+* Add `GpuXlarge` enum value for [serving.ServedModelInputWorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInputWorkloadType).
+* Add `GpuXlarge` enum value for [serving.ServingModelWorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingModelWorkloadType).
+* [Breaking] Change `ListFeatures` method for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service with new required argument order.
+* [Breaking] Remove `UnspecifiedResourceName` field for [postgres.RequestedResource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#RequestedResource).
+
+
 ## Release v0.132.0 (2026-05-07)
 
 ### API Changes

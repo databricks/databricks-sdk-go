@@ -551,6 +551,8 @@ type CatalogInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Custom maximum retention period in hours for the catalog
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
@@ -929,6 +931,9 @@ type ConnectionInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -965,7 +970,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 125
+// Next Id: 127
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -973,6 +978,8 @@ const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
 const ConnectionTypeConfluence ConnectionType = `CONFLUENCE`
 
 const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
+
+const ConnectionTypeDynamics365 ConnectionType = `DYNAMICS365`
 
 const ConnectionTypeGa4RawData ConnectionType = `GA4_RAW_DATA`
 
@@ -1030,11 +1037,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `META_MARKETING`, `MYSQL`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `META_MARKETING`, `MYSQL`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "META_MARKETING", "MYSQL", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "META_MARKETING", "MYSQL", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1046,6 +1053,7 @@ func (f *ConnectionType) Values() []ConnectionType {
 		ConnectionTypeBigquery,
 		ConnectionTypeConfluence,
 		ConnectionTypeDatabricks,
+		ConnectionTypeDynamics365,
 		ConnectionTypeGa4RawData,
 		ConnectionTypeGithub,
 		ConnectionTypeGlue,
@@ -1196,6 +1204,8 @@ type CreateCatalog struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Custom maximum retention period in hours for the catalog
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Control CMK encryption for managed catalog data
 	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
 	// Name of catalog.
@@ -1230,6 +1240,9 @@ type CreateConnection struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	ConnectionType ConnectionType `json:"connection_type"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1727,6 +1740,8 @@ type CreateSchema struct {
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Custom maximum retention period in hours for the schema.
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Name of schema, relative to parent catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1947,7 +1962,7 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 18
+// Next Id: 20
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
@@ -2843,6 +2858,22 @@ func (s *EntityTagAssignment) UnmarshalJSON(b []byte) error {
 }
 
 func (s EntityTagAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnvironmentSettings struct {
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -7116,6 +7147,8 @@ type SchemaInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Custom maximum retention period in hours for the schema.
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
@@ -7241,7 +7274,10 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_ONEDRIVE_OAUTH_U2M = 329; Next id: 330
+// Latest kind: CONNECTION_MARKETO_OAUTH_M2M = 347; Next id: 348. Reserved
+// numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*,
+// MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
+// MCP_SERVICE_STANDARD).
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -8313,6 +8349,8 @@ func (s UpdateAccountsStorageCredential) MarshalJSON() ([]byte, error) {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Custom maximum retention period in hours for the catalog
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
@@ -8349,6 +8387,9 @@ type UpdateCatalogWorkspaceBindingsResponse struct {
 }
 
 type UpdateConnection struct {
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 	// New name for the connection.
@@ -8828,6 +8869,8 @@ func (s UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Custom maximum retention period in hours for the schema.
+	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`

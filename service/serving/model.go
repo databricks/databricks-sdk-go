@@ -2060,8 +2060,8 @@ func (s ServedModelInput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Please keep this in sync with with workload types in
-// InferenceEndpointEntities.scala
+// Please keep this in sync with workload types in
+// InferenceEndpointEntities.scala.
 type ServedModelInputWorkloadType string
 
 const ServedModelInputWorkloadTypeCpu ServedModelInputWorkloadType = `CPU`
@@ -2550,8 +2550,8 @@ type ServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
-// Please keep this in sync with with workload types in
-// InferenceEndpointEntities.scala
+// Please keep this in sync with workload types in
+// InferenceEndpointEntities.scala.
 type ServingModelWorkloadType string
 
 const ServingModelWorkloadTypeCpu ServingModelWorkloadType = `CPU`

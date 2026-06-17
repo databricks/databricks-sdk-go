@@ -307,7 +307,7 @@ type BaseRun struct {
 
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
-	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
+	// which you can use to call `JobsGetOutput` to retrieve the run results. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
@@ -1380,7 +1380,7 @@ type ForEachTaskErrorMessageStats struct {
 	// Describes the count of such error message encountered during the
 	// iterations.
 	Count int `json:"count,omitempty"`
-	// Describes the error message occured during the iterations.
+	// Describes the error message occurred during the iterations.
 	ErrorMessage string `json:"error_message,omitempty"`
 	// Describes the termination reason for the error message.
 	TerminationCategory string `json:"termination_category,omitempty"`
@@ -1459,6 +1459,11 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
+// DEPRECATED — use `AiRuntimeTask` for all new BYOT multi-node GPU workloads
+// (see ai_runtime_task.proto). `AiRuntimeTask` is the only supported BYOT task
+// type for new workloads; this proto is retained only for AIR CLI (fka SGCLI)
+// pywheel backwards compatibility and will be removed once the pywheel →
+// databricks-cli migration completes (post- PuPr).
 type GenAiComputeTask struct {
 	// Command launcher to run the actual script, e.g. bash, python etc.
 	Command string `json:"command,omitempty"`
@@ -1519,6 +1524,9 @@ type GetJobPermissionsRequest struct {
 }
 
 type GetJobRequest struct {
+	// Flag that indicates that trigger state should be included in the
+	// response.
+	IncludeTriggerState bool `json:"-" url:"include_trigger_state,omitempty"`
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
@@ -1841,6 +1849,10 @@ func (s JobCompliance) MarshalJSON() ([]byte, error) {
 }
 
 type JobDeployment struct {
+	// ID of the deployment that manages this job. Only set when `kind` is
+	// `BUNDLE`. Used to look up deployment metadata from the Deployment
+	// Metadata service.
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// The kind of deployment that manages the job.
 	//
 	// * `BUNDLE`: The job is managed by Databricks Asset Bundle. *
@@ -1848,6 +1860,10 @@ type JobDeployment struct {
 	Kind JobDeploymentKind `json:"kind"`
 	// Path of the file that contains deployment metadata.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
+	// ID of the version of the deployment that produced this job. Only set when
+	// `kind` is `BUNDLE`. Identifies a specific snapshot of the deployment in
+	// the Deployment Metadata service.
+	VersionId string `json:"version_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2958,6 +2974,16 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
 type PipelineParams struct {
 	// If true, triggers a full refresh on the spark declarative pipeline.
 	FullRefresh bool `json:"full_refresh,omitempty"`
+	// A list of tables to update with fullRefresh.
+	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Flow names to selectively refresh. These are unioned with other selective
+	// refresh options (refresh_selection, full_refresh_selection) to determine
+	// the final set of flows to refresh.
+	RefreshFlowSelection []string `json:"refresh_flow_selection,omitempty"`
+	// A list of tables to update without fullRefresh.
+	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// A list of streaming flows to reset checkpoints without clearing data.
+	ResetCheckpointSelection []string `json:"reset_checkpoint_selection,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2973,8 +2999,21 @@ func (s PipelineParams) MarshalJSON() ([]byte, error) {
 type PipelineTask struct {
 	// If true, triggers a full refresh on the spark declarative pipeline.
 	FullRefresh bool `json:"full_refresh,omitempty"`
+	// A list of tables to update with fullRefresh.
+	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Key/value-map of parameters passed to the pipeline execution. Limited to
+	// 10k characters in total.
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// The full name of the pipeline task to execute.
 	PipelineId string `json:"pipeline_id"`
+	// Flow names to selectively refresh. These are unioned with other selective
+	// refresh options (refresh_selection, full_refresh_selection) to determine
+	// the final set of flows to refresh.
+	RefreshFlowSelection []string `json:"refresh_flow_selection,omitempty"`
+	// A list of tables to update without fullRefresh.
+	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// A list of streaming flows to reset checkpoints without clearing data.
+	ResetCheckpointSelection []string `json:"reset_checkpoint_selection,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3443,6 +3482,12 @@ type ResolvedParamPairValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
+type ResolvedPipelineTaskValues struct {
+	// Key/value-map of parameters passed to the pipeline execution. Limited to
+	// 10k characters in total.
+	Parameters map[string]string `json:"parameters,omitempty"`
+}
+
 type ResolvedPythonWheelTaskValues struct {
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 
@@ -3465,6 +3510,8 @@ type ResolvedValues struct {
 	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
 
 	NotebookTask *ResolvedNotebookTaskValues `json:"notebook_task,omitempty"`
+
+	PipelineTask *ResolvedPipelineTaskValues `json:"pipeline_task,omitempty"`
 
 	PythonWheelTask *ResolvedPythonWheelTaskValues `json:"python_wheel_task,omitempty"`
 
@@ -3614,7 +3661,7 @@ type Run struct {
 
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
-	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
+	// which you can use to call `JobsGetOutput` to retrieve the run results. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
@@ -3677,7 +3724,7 @@ type RunForEachTask struct {
 	// an array parameter.
 	Inputs string `json:"inputs"`
 	// Read only field. Populated for GetRun and ListRuns RPC calls and stores
-	// the execution stats of an For each task
+	// the execution stats of a `For each` task.
 	Stats *ForEachStats `json:"stats,omitempty"`
 	// Configuration for the task that will be run for each element in the array
 	Task Task `json:"task"`

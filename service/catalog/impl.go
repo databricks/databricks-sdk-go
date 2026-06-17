@@ -294,7 +294,7 @@ func (a *artifactAllowlistsImpl) Get(ctx context.Context, request GetArtifactAll
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &artifactAllowlistInfo)
 	return &artifactAllowlistInfo, err
@@ -309,7 +309,7 @@ func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifact
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &artifactAllowlistInfo)
 	return &artifactAllowlistInfo, err
@@ -329,7 +329,7 @@ func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*Cata
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &catalogInfo)
 	return &catalogInfo, err
@@ -342,7 +342,7 @@ func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -356,7 +356,7 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &catalogInfo)
 	return &catalogInfo, err
@@ -427,7 +427,7 @@ func (a *catalogsImpl) internalList(ctx context.Context, request ListCatalogsReq
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCatalogsResponse)
 	return &listCatalogsResponse, err
@@ -442,7 +442,7 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*Cata
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &catalogInfo)
 	return &catalogInfo, err
@@ -462,7 +462,7 @@ func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &connectionInfo)
 	return &connectionInfo, err
@@ -475,7 +475,7 @@ func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRe
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -489,7 +489,7 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &connectionInfo)
 	return &connectionInfo, err
@@ -552,7 +552,7 @@ func (a *connectionsImpl) internalList(ctx context.Context, request ListConnecti
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listConnectionsResponse)
 	return &listConnectionsResponse, err
@@ -567,7 +567,7 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &connectionInfo)
 	return &connectionInfo, err
@@ -587,7 +587,7 @@ func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCr
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &credentialInfo)
 	return &credentialInfo, err
@@ -600,7 +600,7 @@ func (a *credentialsImpl) DeleteCredential(ctx context.Context, request DeleteCr
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -615,7 +615,7 @@ func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &temporaryCredentials)
 	return &temporaryCredentials, err
@@ -629,7 +629,7 @@ func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredenti
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &credentialInfo)
 	return &credentialInfo, err
@@ -694,7 +694,7 @@ func (a *credentialsImpl) internalListCredentials(ctx context.Context, request L
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCredentialsResponse)
 	return &listCredentialsResponse, err
@@ -709,7 +709,7 @@ func (a *credentialsImpl) UpdateCredential(ctx context.Context, request UpdateCr
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &credentialInfo)
 	return &credentialInfo, err
@@ -724,7 +724,7 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &validateCredentialResponse)
 	return &validateCredentialResponse, err
@@ -744,7 +744,7 @@ func (a *entityTagAssignmentsImpl) Create(ctx context.Context, request CreateEnt
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.TagAssignment, &entityTagAssignment)
 	return &entityTagAssignment, err
@@ -757,7 +757,7 @@ func (a *entityTagAssignmentsImpl) Delete(ctx context.Context, request DeleteEnt
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -771,7 +771,7 @@ func (a *entityTagAssignmentsImpl) Get(ctx context.Context, request GetEntityTag
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &entityTagAssignment)
 	return &entityTagAssignment, err
@@ -826,7 +826,7 @@ func (a *entityTagAssignmentsImpl) internalList(ctx context.Context, request Lis
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listEntityTagAssignmentsResponse)
 	return &listEntityTagAssignmentsResponse, err
@@ -845,7 +845,7 @@ func (a *entityTagAssignmentsImpl) Update(ctx context.Context, request UpdateEnt
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.TagAssignment, &entityTagAssignment)
 	return &entityTagAssignment, err
@@ -865,7 +865,7 @@ func (a *externalLineageImpl) CreateExternalLineageRelationship(ctx context.Cont
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ExternalLineageRelationship, &externalLineageRelationship)
 	return &externalLineageRelationship, err
@@ -878,7 +878,7 @@ func (a *externalLineageImpl) DeleteExternalLineageRelationship(ctx context.Cont
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -925,7 +925,7 @@ func (a *externalLineageImpl) internalListExternalLineageRelationships(ctx conte
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExternalLineageRelationshipsResponse)
 	return &listExternalLineageRelationshipsResponse, err
@@ -944,7 +944,7 @@ func (a *externalLineageImpl) UpdateExternalLineageRelationship(ctx context.Cont
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ExternalLineageRelationship, &externalLineageRelationship)
 	return &externalLineageRelationship, err
@@ -964,7 +964,7 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &externalLocationInfo)
 	return &externalLocationInfo, err
@@ -977,7 +977,7 @@ func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExtern
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -991,7 +991,7 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalLocationInfo)
 	return &externalLocationInfo, err
@@ -1062,7 +1062,7 @@ func (a *externalLocationsImpl) internalList(ctx context.Context, request ListEx
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExternalLocationsResponse)
 	return &listExternalLocationsResponse, err
@@ -1077,7 +1077,7 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &externalLocationInfo)
 	return &externalLocationInfo, err
@@ -1097,7 +1097,7 @@ func (a *externalMetadataImpl) CreateExternalMetadata(ctx context.Context, reque
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ExternalMetadata, &externalMetadata)
 	return &externalMetadata, err
@@ -1110,7 +1110,7 @@ func (a *externalMetadataImpl) DeleteExternalMetadata(ctx context.Context, reque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -1124,7 +1124,7 @@ func (a *externalMetadataImpl) GetExternalMetadata(ctx context.Context, request 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalMetadata)
 	return &externalMetadata, err
@@ -1177,7 +1177,7 @@ func (a *externalMetadataImpl) internalListExternalMetadata(ctx context.Context,
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExternalMetadataResponse)
 	return &listExternalMetadataResponse, err
@@ -1196,7 +1196,7 @@ func (a *externalMetadataImpl) UpdateExternalMetadata(ctx context.Context, reque
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ExternalMetadata, &externalMetadata)
 	return &externalMetadata, err
@@ -1216,7 +1216,7 @@ func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionReques
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &functionInfo)
 	return &functionInfo, err
@@ -1228,7 +1228,7 @@ func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionReques
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -1242,7 +1242,7 @@ func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*F
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &functionInfo)
 	return &functionInfo, err
@@ -1317,7 +1317,7 @@ func (a *functionsImpl) internalList(ctx context.Context, request ListFunctionsR
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFunctionsResponse)
 	return &listFunctionsResponse, err
@@ -1332,7 +1332,7 @@ func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*Fu
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &functionInfo)
 	return &functionInfo, err
@@ -1351,7 +1351,7 @@ func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*GetPerm
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPermissionsResponse)
 	return &getPermissionsResponse, err
@@ -1365,7 +1365,7 @@ func (a *grantsImpl) GetEffective(ctx context.Context, request GetEffectiveReque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &effectivePermissionsList)
 	return &effectivePermissionsList, err
@@ -1380,7 +1380,7 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Up
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updatePermissionsResponse)
 	return &updatePermissionsResponse, err
@@ -1399,7 +1399,7 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -1414,7 +1414,7 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &metastoreInfo)
 	return &metastoreInfo, err
@@ -1428,7 +1428,7 @@ func (a *metastoresImpl) Current(ctx context.Context) (*MetastoreAssignment, err
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &metastoreAssignment)
 	return &metastoreAssignment, err
@@ -1441,7 +1441,7 @@ func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequ
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -1455,7 +1455,7 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &metastoreInfo)
 	return &metastoreInfo, err
@@ -1522,7 +1522,7 @@ func (a *metastoresImpl) internalList(ctx context.Context, request ListMetastore
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listMetastoresResponse)
 	return &listMetastoresResponse, err
@@ -1536,7 +1536,7 @@ func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryRespo
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getMetastoreSummaryResponse)
 	return &getMetastoreSummaryResponse, err
@@ -1549,7 +1549,7 @@ func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -1564,7 +1564,7 @@ func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &metastoreInfo)
 	return &metastoreInfo, err
@@ -1578,7 +1578,7 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
@@ -1595,7 +1595,7 @@ func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersi
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -1609,7 +1609,7 @@ func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequ
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &modelVersionInfo)
 	return &modelVersionInfo, err
@@ -1623,7 +1623,7 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &modelVersionInfo)
 	return &modelVersionInfo, err
@@ -1635,7 +1635,7 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 // The returned models are filtered based on the privileges of the calling user.
 // For example, the metastore admin is able to list all the model versions. A
 // regular user needs to be the owner or have the **EXECUTE** privilege on the
-// parent registered model to recieve the model versions in the response. For
+// parent registered model to receive the model versions in the response. For
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
@@ -1677,7 +1677,7 @@ func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsR
 // The returned models are filtered based on the privileges of the calling user.
 // For example, the metastore admin is able to list all the model versions. A
 // regular user needs to be the owner or have the **EXECUTE** privilege on the
-// parent registered model to recieve the model versions in the response. For
+// parent registered model to receive the model versions in the response. For
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
@@ -1702,7 +1702,7 @@ func (a *modelVersionsImpl) internalList(ctx context.Context, request ListModelV
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listModelVersionsResponse)
 	return &listModelVersionsResponse, err
@@ -1717,7 +1717,7 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &modelVersionInfo)
 	return &modelVersionInfo, err
@@ -1737,7 +1737,7 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Table, &onlineTable)
 	return &onlineTable, err
@@ -1750,7 +1750,7 @@ func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTable
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -1764,7 +1764,7 @@ func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableReques
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &onlineTable)
 	return &onlineTable, err
@@ -1784,7 +1784,7 @@ func (a *policiesImpl) CreatePolicy(ctx context.Context, request CreatePolicyReq
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.PolicyInfo, &policyInfo)
 	return &policyInfo, err
@@ -1798,7 +1798,7 @@ func (a *policiesImpl) DeletePolicy(ctx context.Context, request DeletePolicyReq
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deletePolicyResponse)
 	return &deletePolicyResponse, err
@@ -1812,7 +1812,7 @@ func (a *policiesImpl) GetPolicy(ctx context.Context, request GetPolicyRequest) 
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &policyInfo)
 	return &policyInfo, err
@@ -1869,7 +1869,7 @@ func (a *policiesImpl) internalListPolicies(ctx context.Context, request ListPol
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPoliciesResponse)
 	return &listPoliciesResponse, err
@@ -1888,7 +1888,7 @@ func (a *policiesImpl) UpdatePolicy(ctx context.Context, request UpdatePolicyReq
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.PolicyInfo, &policyInfo)
 	return &policyInfo, err
@@ -1907,7 +1907,7 @@ func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelR
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -1922,7 +1922,7 @@ func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor)
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &monitorInfo)
 	return &monitorInfo, err
@@ -1936,7 +1936,7 @@ func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityM
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteMonitorResponse)
 	return &deleteMonitorResponse, err
@@ -1950,7 +1950,7 @@ func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitor
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &monitorInfo)
 	return &monitorInfo, err
@@ -1964,7 +1964,7 @@ func (a *qualityMonitorsImpl) GetRefresh(ctx context.Context, request GetRefresh
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &monitorRefreshInfo)
 	return &monitorRefreshInfo, err
@@ -1978,7 +1978,7 @@ func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRef
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &monitorRefreshListResponse)
 	return &monitorRefreshListResponse, err
@@ -1993,7 +1993,7 @@ func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request R
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &regenerateDashboardResponse)
 	return &regenerateDashboardResponse, err
@@ -2008,7 +2008,7 @@ func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefresh
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &monitorRefreshInfo)
 	return &monitorRefreshInfo, err
@@ -2023,7 +2023,7 @@ func (a *qualityMonitorsImpl) Update(ctx context.Context, request UpdateMonitor)
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &monitorInfo)
 	return &monitorInfo, err
@@ -2043,7 +2043,7 @@ func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegiste
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &registeredModelInfo)
 	return &registeredModelInfo, err
@@ -2055,7 +2055,7 @@ func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegiste
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2067,7 +2067,7 @@ func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAl
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2081,7 +2081,7 @@ func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredMod
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &registeredModelInfo)
 	return &registeredModelInfo, err
@@ -2093,7 +2093,7 @@ func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredMod
 // The returned models are filtered based on the privileges of the calling user.
 // For example, the metastore admin is able to list all the registered models. A
 // regular user needs to be the owner or have the **EXECUTE** privilege on the
-// registered model to recieve the registered models in the response. For the
+// registered model to receive the registered models in the response. For the
 // latter case, the caller must also be the owner or have the **USE_CATALOG**
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
@@ -2134,7 +2134,7 @@ func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredM
 // The returned models are filtered based on the privileges of the calling user.
 // For example, the metastore admin is able to list all the registered models. A
 // regular user needs to be the owner or have the **EXECUTE** privilege on the
-// registered model to recieve the registered models in the response. For the
+// registered model to receive the registered models in the response. For the
 // latter case, the caller must also be the owner or have the **USE_CATALOG**
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
@@ -2158,7 +2158,7 @@ func (a *registeredModelsImpl) internalList(ctx context.Context, request ListReg
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRegisteredModelsResponse)
 	return &listRegisteredModelsResponse, err
@@ -2173,7 +2173,7 @@ func (a *registeredModelsImpl) SetAlias(ctx context.Context, request SetRegister
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &registeredModelAlias)
 	return &registeredModelAlias, err
@@ -2188,7 +2188,7 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &registeredModelInfo)
 	return &registeredModelInfo, err
@@ -2207,7 +2207,7 @@ func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaReque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getQuotaResponse)
 	return &getQuotaResponse, err
@@ -2266,7 +2266,7 @@ func (a *resourceQuotasImpl) internalListQuotas(ctx context.Context, request Lis
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listQuotasResponse)
 	return &listQuotasResponse, err
@@ -2286,7 +2286,7 @@ func (a *rfaImpl) BatchCreateAccessRequests(ctx context.Context, request BatchCr
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &batchCreateAccessRequestsResponse)
 	return &batchCreateAccessRequestsResponse, err
@@ -2300,7 +2300,7 @@ func (a *rfaImpl) GetAccessRequestDestinations(ctx context.Context, request GetA
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accessRequestDestinations)
 	return &accessRequestDestinations, err
@@ -2319,7 +2319,7 @@ func (a *rfaImpl) UpdateAccessRequestDestinations(ctx context.Context, request U
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.AccessRequestDestinations, &accessRequestDestinations)
 	return &accessRequestDestinations, err
@@ -2339,7 +2339,7 @@ func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*Schema
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &schemaInfo)
 	return &schemaInfo, err
@@ -2352,7 +2352,7 @@ func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) e
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2366,7 +2366,7 @@ func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*Schem
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &schemaInfo)
 	return &schemaInfo, err
@@ -2437,7 +2437,7 @@ func (a *schemasImpl) internalList(ctx context.Context, request ListSchemasReque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSchemasResponse)
 	return &listSchemasResponse, err
@@ -2452,7 +2452,7 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &schemaInfo)
 	return &schemaInfo, err
@@ -2472,7 +2472,7 @@ func (a *secretsUcImpl) CreateSecret(ctx context.Context, request CreateSecretRe
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Secret, &secret)
 	return &secret, err
@@ -2485,7 +2485,7 @@ func (a *secretsUcImpl) DeleteSecret(ctx context.Context, request DeleteSecretRe
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2499,7 +2499,7 @@ func (a *secretsUcImpl) GetSecret(ctx context.Context, request GetSecretRequest)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &secret)
 	return &secret, err
@@ -2558,7 +2558,7 @@ func (a *secretsUcImpl) internalListSecrets(ctx context.Context, request ListSec
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSecretsResponse)
 	return &listSecretsResponse, err
@@ -2580,7 +2580,7 @@ func (a *secretsUcImpl) UpdateSecret(ctx context.Context, request UpdateSecretRe
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Secret, &secret)
 	return &secret, err
@@ -2600,7 +2600,7 @@ func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStora
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
@@ -2613,7 +2613,7 @@ func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStora
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2627,7 +2627,7 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
@@ -2698,7 +2698,7 @@ func (a *storageCredentialsImpl) internalList(ctx context.Context, request ListS
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listStorageCredentialsResponse)
 	return &listStorageCredentialsResponse, err
@@ -2713,7 +2713,7 @@ func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStora
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
@@ -2728,7 +2728,7 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
@@ -2746,7 +2746,7 @@ func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest)
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2760,7 +2760,7 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -2825,7 +2825,7 @@ func (a *systemSchemasImpl) internalList(ctx context.Context, request ListSystem
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSystemSchemasResponse)
 	return &listSystemSchemasResponse, err
@@ -2845,7 +2845,7 @@ func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableCo
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &tableConstraint)
 	return &tableConstraint, err
@@ -2858,7 +2858,7 @@ func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableCo
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2878,7 +2878,7 @@ func (a *tablesImpl) Create(ctx context.Context, request CreateTableRequest) (*T
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &tableInfo)
 	return &tableInfo, err
@@ -2891,7 +2891,7 @@ func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) err
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -2905,7 +2905,7 @@ func (a *tablesImpl) Exists(ctx context.Context, request ExistsRequest) (*TableE
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &tableExistsResponse)
 	return &tableExistsResponse, err
@@ -2919,7 +2919,7 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &tableInfo)
 	return &tableInfo, err
@@ -2998,7 +2998,7 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listTablesResponse)
 	return &listTablesResponse, err
@@ -3073,7 +3073,7 @@ func (a *tablesImpl) internalListSummaries(ctx context.Context, request ListSumm
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listTableSummariesResponse)
 	return &listTableSummariesResponse, err
@@ -3087,7 +3087,7 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
@@ -3107,7 +3107,7 @@ func (a *temporaryPathCredentialsImpl) GenerateTemporaryPathCredentials(ctx cont
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &generateTemporaryPathCredentialResponse)
 	return &generateTemporaryPathCredentialResponse, err
@@ -3127,7 +3127,7 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &generateTemporaryTableCredentialResponse)
 	return &generateTemporaryTableCredentialResponse, err
@@ -3147,7 +3147,7 @@ func (a *temporaryVolumeCredentialsImpl) GenerateTemporaryVolumeCredentials(ctx 
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &generateTemporaryVolumeCredentialResponse)
 	return &generateTemporaryVolumeCredentialResponse, err
@@ -3167,7 +3167,7 @@ func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestCon
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &volumeInfo)
 	return &volumeInfo, err
@@ -3179,7 +3179,7 @@ func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) e
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -3254,7 +3254,7 @@ func (a *volumesImpl) internalList(ctx context.Context, request ListVolumesReque
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listVolumesResponseContent)
 	return &listVolumesResponseContent, err
@@ -3268,7 +3268,7 @@ func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*Vol
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &volumeInfo)
 	return &volumeInfo, err
@@ -3283,7 +3283,7 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &volumeInfo)
 	return &volumeInfo, err
@@ -3302,7 +3302,7 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCatalogWorkspaceBindingsResponse)
 	return &getCatalogWorkspaceBindingsResponse, err
@@ -3367,7 +3367,7 @@ func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWorkspaceBindingsResponse)
 	return &getWorkspaceBindingsResponse, err
@@ -3382,7 +3382,7 @@ func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorksp
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCatalogWorkspaceBindingsResponse)
 	return &updateCatalogWorkspaceBindingsResponse, err
@@ -3397,7 +3397,7 @@ func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request Upda
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateWorkspaceBindingsResponse)
 	return &updateWorkspaceBindingsResponse, err

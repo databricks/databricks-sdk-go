@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -36,7 +37,7 @@ func TestAccTokens(t *testing.T) {
 		AuthType: "pat",
 	}))
 
-	me2, err := wscInner.CurrentUser.Me(ctx)
+	me2, err := wscInner.CurrentUser.Me(ctx, iam.MeRequest{})
 	require.NoError(t, err)
 	assert.Equal(t, me2.UserName, me(t, w).UserName)
 }

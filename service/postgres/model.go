@@ -13,6 +13,8 @@ import (
 )
 
 type Branch struct {
+	// The part of the name, chosen by the user when the resource was created.
+	BranchId string `json:"branch_id,omitempty"`
 	// A timestamp indicating when the branch was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The full resource path of the branch. Format:
@@ -90,21 +92,16 @@ func (s BranchSpec) MarshalJSON() ([]byte, error) {
 }
 
 type BranchStatus struct {
-	// The short identifier of the branch, suitable for showing to the users.
-	// For a branch with name `projects/my-project/branches/my-branch`, the
-	// branch_id is `my-branch`.
-	//
-	// Use this field when building UI components that display branches to users
-	// (e.g., a drop-down selector). Prefer showing `branch_id` instead of the
-	// full resource name from `Branch.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}` format and is not
-	// user-friendly.
+	// Part of the resource name.
 	BranchId string `json:"branch_id,omitempty"`
 	// The branch's state, indicating if it is initializing, ready for use, or
 	// archived.
 	CurrentState BranchStatusState `json:"current_state,omitempty"`
 	// Whether the branch is the project's default branch.
 	Default bool `json:"default,omitempty"`
+	// A timestamp indicating when the branch was deleted. Empty if the branch
+	// is not deleted.
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Absolute expiration time for the branch. Empty if expiration is disabled.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
 	// Whether the branch is protected.
@@ -113,6 +110,9 @@ type BranchStatus struct {
 	LogicalSizeBytes int64 `json:"logical_size_bytes,omitempty"`
 	// The pending state of the branch, if a state transition is in progress.
 	PendingState BranchStatusState `json:"pending_state,omitempty"`
+	// A timestamp indicating when the branch is scheduled to be purged. Empty
+	// if the branch is not deleted, otherwise set to a timestamp in the future.
+	PurgeTime *time.Time `json:"purge_time,omitempty"`
 	// The name of the source branch from which this branch was created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	SourceBranch string `json:"source_branch,omitempty"`
@@ -141,6 +141,8 @@ type BranchStatusState string
 
 const BranchStatusStateArchived BranchStatusState = `ARCHIVED`
 
+const BranchStatusStateDeleted BranchStatusState = `DELETED`
+
 const BranchStatusStateImporting BranchStatusState = `IMPORTING`
 
 const BranchStatusStateInit BranchStatusState = `INIT`
@@ -157,11 +159,11 @@ func (f *BranchStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *BranchStatusState) Set(v string) error {
 	switch v {
-	case `ARCHIVED`, `IMPORTING`, `INIT`, `READY`, `RESETTING`:
+	case `ARCHIVED`, `DELETED`, `IMPORTING`, `INIT`, `READY`, `RESETTING`:
 		*f = BranchStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "IMPORTING", "INIT", "READY", "RESETTING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "DELETED", "IMPORTING", "INIT", "READY", "RESETTING"`, v)
 	}
 }
 
@@ -171,6 +173,7 @@ func (f *BranchStatusState) Set(v string) error {
 func (f *BranchStatusState) Values() []BranchStatusState {
 	return []BranchStatusState{
 		BranchStatusStateArchived,
+		BranchStatusStateDeleted,
 		BranchStatusStateImporting,
 		BranchStatusStateInit,
 		BranchStatusStateReady,
@@ -184,6 +187,8 @@ func (f *BranchStatusState) Type() string {
 }
 
 type Catalog struct {
+	// The part of the name, chosen by the user when the resource was created.
+	CatalogId string `json:"catalog_id,omitempty"`
 	// A timestamp indicating when the catalog was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The full resource path of the catalog.
@@ -262,15 +267,6 @@ type CatalogCatalogStatus struct {
 	//
 	// Format: projects/{project_id}/branches/{branch_id}.
 	Branch string `json:"branch,omitempty"`
-	// The short identifier of the catalog, suitable for showing to the users.
-	// For a catalog with name `catalogs/my-catalog`, the catalog_id is
-	// `my-catalog`.
-	//
-	// Use this field when building UI components that display catalogs to users
-	// (e.g., a drop-down selector). Prefer showing `catalog_id` instead of the
-	// full resource name from `Catalog.name`, which follows the
-	// `catalogs/{catalog_id}` format and is not user-friendly.
-	CatalogId string `json:"catalog_id,omitempty"`
 	// The name of the Postgres database associated with the catalog.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// The resource path of the project associated with the catalog.
@@ -324,6 +320,14 @@ type CreateCatalogRequest struct {
 	// The ID in the Unity Catalog. It becomes the full resource name, for
 	// example "my_catalog" becomes "catalogs/my_catalog".
 	CatalogId string `json:"-" url:"catalog_id"`
+}
+
+type CreateDataApiRequest struct {
+	// The Data API configuration to create.
+	DataApi DataApi `json:"data_api"`
+	// Parent database:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
+	Parent string `json:"-" url:"-"`
 }
 
 type CreateDatabaseRequest struct {
@@ -435,10 +439,120 @@ type CreateSyncedTableRequest struct {
 	SyncedTableId string `json:"-" url:"synced_table_id"`
 }
 
+// DataApi represents the Data API (PostgREST) configuration for a Database. At
+// most one DataApi per database. Create enables Data API, Delete disables it.
+type DataApi struct {
+	// A timestamp indicating when the Data API was first enabled.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+	Name string `json:"name,omitempty"`
+	// The database containing this Data API configuration. Format:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
+	Parent string `json:"parent,omitempty"`
+	// The desired Data API configuration.
+	Spec *DataApiDataApiSpec `json:"spec,omitempty"`
+	// The observed Data API state (read-only).
+	Status *DataApiDataApiStatus `json:"status,omitempty"`
+	// A timestamp indicating when the Data API configuration was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DataApi) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataApi) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Desired PostgREST configuration (input).
+type DataApiDataApiSpec struct {
+	// Enable aggregate functions (count, sum, avg, etc.) in Data API responses.
+	// Default: true.
+	DbAggregatesEnabled bool `json:"db_aggregates_enabled,omitempty"`
+	// Additional schemas to include in the PostgreSQL search path. Each entry
+	// must be a valid PostgreSQL schema name.
+	DbExtraSearchPath []string `json:"db_extra_search_path,omitempty"`
+	// Maximum number of rows returned in a single Data API response. Must be a
+	// positive integer.
+	DbMaxRows int `json:"db_max_rows,omitempty"`
+	// Database schemas exposed through the Data API. Each entry must be a valid
+	// PostgreSQL schema name (1-63 chars, [a-zA-Z_][a-zA-Z0-9_$]*). Maximum 100
+	// entries. Default: ["public"].
+	DbSchemas []string `json:"db_schemas,omitempty"`
+	// Maximum lifetime for cached JWT tokens. Zero duration disables caching.
+	JwtCacheMaxLifetime *duration.Duration `json:"jwt_cache_max_lifetime,omitempty"`
+	// JSON path to the role claim in JWT tokens (e.g., ".sub"). Default:
+	// ".sub".
+	JwtRoleClaimKey string `json:"jwt_role_claim_key,omitempty"`
+	// OpenAPI documentation mode for the Data API endpoint.
+	OpenapiMode OpenApiMode `json:"openapi_mode,omitempty"`
+	// Allowed origins for CORS requests. Each entry should be a valid origin
+	// URL, or use "*" to allow all origins.
+	ServerCorsAllowedOrigins []string `json:"server_cors_allowed_origins,omitempty"`
+	// Enable the Server-Timing header in Data API responses.
+	ServerTimingEnabled bool `json:"server_timing_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DataApiDataApiSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataApiDataApiSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Observed state (output-only).
+type DataApiDataApiStatus struct {
+	// Schemas available in the database (for reference when configuring
+	// db_schemas).
+	AvailableSchemas []string `json:"available_schemas,omitempty"`
+	// Actual aggregate function setting read from the database.
+	DbAggregatesEnabled bool `json:"db_aggregates_enabled,omitempty"`
+	// Actual extra search path schemas read from the database.
+	DbExtraSearchPath []string `json:"db_extra_search_path,omitempty"`
+	// Actual max rows setting read from the database.
+	DbMaxRows int `json:"db_max_rows,omitempty"`
+	// Actual exposed schemas read from the database.
+	DbSchemas []string `json:"db_schemas,omitempty"`
+	// Actual JWT cache max lifetime read from the database.
+	JwtCacheMaxLifetime *duration.Duration `json:"jwt_cache_max_lifetime,omitempty"`
+	// Actual JWT role claim key read from the database.
+	JwtRoleClaimKey string `json:"jwt_role_claim_key,omitempty"`
+	// Actual OpenAPI mode read from the database.
+	OpenapiMode OpenApiMode `json:"openapi_mode,omitempty"`
+	// Actual CORS allowed origins read from the database.
+	ServerCorsAllowedOrigins []string `json:"server_cors_allowed_origins,omitempty"`
+	// Actual Server-Timing header setting read from the database.
+	ServerTimingEnabled bool `json:"server_timing_enabled,omitempty"`
+	// Data API endpoint URL.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DataApiDataApiStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataApiDataApiStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DataApiOperationMetadata struct {
+}
+
 // Database represents a Postgres database within a Branch.
 type Database struct {
 	// A timestamp indicating when the database was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	DatabaseId string `json:"database_id,omitempty"`
 	// The resource name of the database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"name,omitempty"`
@@ -511,16 +625,7 @@ func (s DatabaseDatabaseSpec) MarshalJSON() ([]byte, error) {
 }
 
 type DatabaseDatabaseStatus struct {
-	// The short identifier of the database, suitable for showing to the users.
-	// For a database with name
-	// `projects/my-project/branches/my-branch/databases/my-db`, the database_id
-	// is `my-db`.
-	//
-	// Use this field when building UI components that display databases to
-	// users (e.g., a drop-down selector). Prefer showing `database_id` instead
-	// of the full resource name from `Database.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}/databases/{database_id}`
-	// format and is not user-friendly.
+	// Part of the resource name.
 	DatabaseId string `json:"database_id,omitempty"`
 	// The name of the Postgres database.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
@@ -567,12 +672,30 @@ type DeleteBranchRequest struct {
 	// The full resource path of the branch to delete. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Name string `json:"-" url:"-"`
+	// If true, permanently delete the branch; if false, soft delete.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteBranchRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteCatalogRequest struct {
 	// The full resource path of the catalog to delete.
 	//
 	// Format: "catalogs/{catalog_id}".
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteDataApiRequest struct {
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 	Name string `json:"-" url:"-"`
 }
 
@@ -658,6 +781,8 @@ func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
 type Endpoint struct {
 	// A timestamp indicating when the compute endpoint was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// Output only. The full resource path of the endpoint. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Name string `json:"name,omitempty"`
@@ -821,16 +946,7 @@ type EndpointStatus struct {
 	// option schedules a suspend compute operation. A disabled compute endpoint
 	// cannot be enabled by a connection or console action.
 	Disabled bool `json:"disabled,omitempty"`
-	// The short identifier of the endpoint, suitable for showing to the users.
-	// For an endpoint with name
-	// `projects/my-project/branches/my-branch/endpoints/my-endpoint`, the
-	// endpoint_id is `my-endpoint`.
-	//
-	// Use this field when building UI components that display endpoints to
-	// users (e.g., a drop-down selector). Prefer showing `endpoint_id` instead
-	// of the full resource name from `Endpoint.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
-	// format and is not user-friendly.
+	// Part of the resource name.
 	EndpointId string `json:"endpoint_id,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
@@ -1238,6 +1354,12 @@ type GetCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetDataApiRequest struct {
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+	Name string `json:"-" url:"-"`
+}
+
 type GetDatabaseRequest struct {
 	// The name of the Database to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
@@ -1290,6 +1412,10 @@ type ListBranchesRequest struct {
 	// The Project that owns this collection of branches. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
+	// Whether to include soft-deleted branches in the response. When true,
+	// deleted branches are included alongside active branches. Purged branches
+	// are never returned.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1497,6 +1623,47 @@ func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Controls how the Data API exposes the OpenAPI documentation endpoint. Only
+// IGNORE_PRIVILEGES and DISABLED are supported today; "follow-privileges" is
+// not implemented yet (it may be added later as value 3 — adding new enum
+// values is backward-compatible).
+type OpenApiMode string
+
+const OpenApiModeOpenApiModeDisabled OpenApiMode = `OPEN_API_MODE_DISABLED`
+
+const OpenApiModeOpenApiModeIgnorePrivileges OpenApiMode = `OPEN_API_MODE_IGNORE_PRIVILEGES`
+
+// String representation for [fmt.Print]
+func (f *OpenApiMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OpenApiMode) Set(v string) error {
+	switch v {
+	case `OPEN_API_MODE_DISABLED`, `OPEN_API_MODE_IGNORE_PRIVILEGES`:
+		*f = OpenApiMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "OPEN_API_MODE_DISABLED", "OPEN_API_MODE_IGNORE_PRIVILEGES"`, v)
+	}
+}
+
+// Values returns all possible values for OpenApiMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OpenApiMode) Values() []OpenApiMode {
+	return []OpenApiMode{
+		OpenApiModeOpenApiModeDisabled,
+		OpenApiModeOpenApiModeIgnorePrivileges,
+	}
+}
+
+// Type always returns OpenApiMode to satisfy [pflag.Value] interface
+func (f *OpenApiMode) Type() string {
+	return "OpenApiMode"
+}
+
 // This resource represents a long-running operation that is the result of a
 // network API call.
 type Operation struct {
@@ -1544,6 +1711,8 @@ type Project struct {
 	// Output only. The full resource path of the project. Format:
 	// projects/{project_id}
 	Name string `json:"name,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	ProjectId string `json:"project_id,omitempty"`
 	// A timestamp indicating when the project is scheduled for permanent
 	// deletion. Empty if the project is not deleted, otherwise set to a
 	// timestamp in the future.
@@ -1641,7 +1810,7 @@ type ProjectSpec struct {
 	// characters.
 	DisplayName string `json:"display_name,omitempty"`
 	// Whether to enable PG native password login on all endpoints in this
-	// project. Defaults to true.
+	// project. Defaults to false.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// The number of seconds to retain the shared history for point in time
 	// recovery for all branches in this project. Value should be between
@@ -1685,14 +1854,7 @@ type ProjectStatus struct {
 	Owner string `json:"owner,omitempty"`
 	// The effective major Postgres version number.
 	PgVersion int `json:"pg_version,omitempty"`
-	// The short identifier of the project, suitable for showing to the users.
-	// For a project with name `projects/my-project`, the project_id is
-	// `my-project`.
-	//
-	// Use this field when building UI components that display projects to users
-	// (e.g., a drop-down selector). Prefer showing `project_id` instead of the
-	// full resource name from `Project.name`, which follows the
-	// `projects/{project_id}` format and is not user-friendly.
+	// Part of the resource name.
 	ProjectId string `json:"project_id,omitempty"`
 	// The current space occupied by the project in storage.
 	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
@@ -1862,6 +2024,8 @@ type Role struct {
 	// The Branch where this Role exists. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"parent,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	RoleId string `json:"role_id,omitempty"`
 	// The spec contains the role configuration, including identity type,
 	// authentication method, and role attributes.
 	Spec *RoleRoleSpec `json:"spec,omitempty"`
@@ -2097,15 +2261,7 @@ type RoleRoleStatus struct {
 	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	PostgresRole string `json:"postgres_role,omitempty"`
-	// The short identifier of the role, suitable for showing to the users. For
-	// a role with name `projects/my-project/branches/my-branch/roles/my-role`,
-	// the role_id is `my-role`.
-	//
-	// Use this field when building UI components that display roles to users
-	// (e.g., a drop-down selector). Prefer showing `role_id` instead of the
-	// full resource name from `Role.name`, which follows the
-	// `projects/{project_id}/branches/{branch_id}/roles/{role_id}` format and
-	// is not user-friendly.
+	// Part of the resource name.
 	RoleId string `json:"role_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2135,6 +2291,8 @@ type SyncedTable struct {
 	Spec *SyncedTableSyncedTableSpec `json:"spec,omitempty"`
 	// Synced Table data synchronization status.
 	Status *SyncedTableSyncedTableStatus `json:"status,omitempty"`
+	// The part of the name, chosen by the user when the resource was created.
+	SyncedTableId string `json:"synced_table_id,omitempty"`
 	// The Unity Catalog table ID for this synced table.
 	Uid string `json:"uid,omitempty"`
 
@@ -2267,6 +2425,10 @@ func (f *SyncedTableState) Type() string {
 }
 
 type SyncedTableSyncedTableSpec struct {
+	// When true, enables accelerated sync mode for the initial data load. This
+	// significantly improves performance for large tables. Requires
+	// workspace-level enablement through Lakebase Accelerated Sync preview.
+	AcceleratedSync bool `json:"accelerated_sync,omitempty"`
 	// The full resource name the branch associated with the table.
 	//
 	// Format: "projects/{project_id}/branches/{branch_id}".
@@ -2314,6 +2476,10 @@ type SyncedTableSyncedTableSpec struct {
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
 	TimeseriesKey string `json:"timeseries_key,omitempty"`
+	// Override the default Delta->PG type mapping for specific columns. A
+	// TypeOverride with PG_SPECIFIC_TYPE_UNSPECIFIED is rejected; a valid
+	// pg_type must be set.
+	TypeOverrides []SyncedTableSyncedTableSpecTypeOverride `json:"type_overrides,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2324,6 +2490,42 @@ func (s *SyncedTableSyncedTableSpec) UnmarshalJSON(b []byte) error {
 
 func (s SyncedTableSyncedTableSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// PostgreSQL-specific target types that can override the default Delta-to-PG
+// mapping.
+type SyncedTableSyncedTableSpecPgSpecificType string
+
+const SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVector SyncedTableSyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VECTOR`
+
+// String representation for [fmt.Print]
+func (f *SyncedTableSyncedTableSpecPgSpecificType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SyncedTableSyncedTableSpecPgSpecificType) Set(v string) error {
+	switch v {
+	case `PG_SPECIFIC_TYPE_VECTOR`:
+		*f = SyncedTableSyncedTableSpecPgSpecificType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_VECTOR"`, v)
+	}
+}
+
+// Values returns all possible values for SyncedTableSyncedTableSpecPgSpecificType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SyncedTableSyncedTableSpecPgSpecificType) Values() []SyncedTableSyncedTableSpecPgSpecificType {
+	return []SyncedTableSyncedTableSpecPgSpecificType{
+		SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVector,
+	}
+}
+
+// Type always returns SyncedTableSyncedTableSpecPgSpecificType to satisfy [pflag.Value] interface
+func (f *SyncedTableSyncedTableSpecPgSpecificType) Type() string {
+	return "SyncedTableSyncedTableSpecPgSpecificType"
 }
 
 // Scheduling policy of the synced table's underlying pipeline.
@@ -2367,6 +2569,28 @@ func (f *SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy) Type() string {
 	return "SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy"
 }
 
+// Overrides the default Delta-to-PostgreSQL type mapping for a single column.
+type SyncedTableSyncedTableSpecTypeOverride struct {
+	// Name of the source column whose target PostgreSQL type should be
+	// overridden.
+	ColumnName string `json:"column_name"`
+	// PostgreSQL-specific target type to use for the column.
+	PgType SyncedTableSyncedTableSpecPgSpecificType `json:"pg_type"`
+	// Size parameter for the target type. Required when pg_type is
+	// PG_SPECIFIC_TYPE_VECTOR (specifies the vector dimension, e.g., 1024).
+	Size int `json:"size,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTableSyncedTableSpecTypeOverride) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTableSyncedTableSpecTypeOverride) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SyncedTableSyncedTableStatus struct {
 	// The state of the synced table.
 	DetailedState SyncedTableState `json:"detailed_state,omitempty"`
@@ -2406,6 +2630,12 @@ func (s SyncedTableSyncedTableStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UndeleteBranchRequest struct {
+	// The full resource path of the branch to undelete. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Name string `json:"-" url:"-"`
+}
+
 // Request to restore a soft-deleted project within its retention period.
 type UndeleteProjectRequest struct {
 	// The full resource path of the project to undelete. Format:
@@ -2421,6 +2651,18 @@ type UpdateBranchRequest struct {
 	Branch Branch `json:"branch"`
 	// Output only. The full resource path of the branch. Format:
 	// projects/{project_id}/branches/{branch_id}
+	Name string `json:"-" url:"-"`
+	// The list of fields to update. If unspecified, all fields will be updated
+	// when possible.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+type UpdateDataApiRequest struct {
+	// The Data API configuration to update. The data_api's `name` field
+	// identifies the resource.
+	DataApi DataApi `json:"data_api"`
+	// Resource name:
+	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible.

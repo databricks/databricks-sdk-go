@@ -313,6 +313,8 @@ func (s ApproxPercentileFunction) MarshalJSON() ([]byte, error) {
 }
 
 type AuthConfig struct {
+	// Mutual-TLS authentication. See MtlsConfig.
+	MtlsConfig *MtlsConfig `json:"mtls_config,omitempty"`
 	// Name of the Unity Catalog service credential. This value will be set
 	// under the option databricks.serviceCredential
 	UcServiceCredentialName string `json:"uc_service_credential_name,omitempty"`
@@ -332,7 +334,7 @@ func (s AuthConfig) MarshalJSON() ([]byte, error) {
 type AvgFunction struct {
 	// The input column from which the average is computed. For Kafka sources,
 	// use dot-prefixed path notation (e.g., "value.amount"). For nested fields,
-	// the leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
+	// the leaf node name is used. Colon-prefixed notation (e.g.,
 	// "value:amount") is supported for backwards compatibility but is
 	// deprecated; migrate to dot notation.
 	Input string `json:"input"`
@@ -500,9 +502,9 @@ func (s ContinuousWindow) MarshalJSON() ([]byte, error) {
 type CountFunction struct {
 	// The input column from which the count is computed. For Kafka sources, use
 	// dot-prefixed path notation (e.g., "value.amount"). For nested fields, the
-	// leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
-	// "value:amount") is supported for backwards compatibility but is
-	// deprecated; migrate to dot notation.
+	// leaf node name is used. Colon-prefixed notation (e.g., "value:amount") is
+	// supported for backwards compatibility but is deprecated; migrate to dot
+	// notation.
 	Input string `json:"input"`
 }
 
@@ -857,6 +859,11 @@ type CreateRunResponse struct {
 	Run *Run `json:"run,omitempty"`
 }
 
+type CreateStreamRequest struct {
+	// The Stream to create.
+	Stream Stream `json:"stream"`
+}
+
 // Details required to create a model version stage transition request.
 type CreateTransitionRequest struct {
 	// User-provided comment on the action.
@@ -896,6 +903,23 @@ type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
+// A cron-based schedule trigger for the materialization pipeline.
+type CronSchedule struct {
+	// The cron expression defining the schedule (e.g., "0 0 * * *" for daily at
+	// midnight).
+	CronExpression string `json:"cron_expression,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CronSchedule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Specifies the data source backing a feature. Exactly one source type must be
 // set.
 type DataSource struct {
@@ -905,6 +929,8 @@ type DataSource struct {
 	KafkaSource *KafkaSource `json:"kafka_source,omitempty"`
 	// A request-time data source.
 	RequestSource *RequestSource `json:"request_source,omitempty"`
+	// A Stream data source.
+	StreamSource *StreamSource `json:"stream_source,omitempty"`
 }
 
 // Dataset. Represents a reference to data used for training, testing, or
@@ -1079,6 +1105,11 @@ func (s DeleteRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteStreamRequest struct {
+	// Full three-part name (catalog.schema.stream) of the Stream to delete.
+	Name string `json:"-" url:"-"`
+}
+
 type DeleteTag struct {
 	// Name of the tag. Maximum size is 255 bytes. Must be provided.
 	Key string `json:"key"`
@@ -1165,15 +1196,37 @@ func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Direct connection configs for mTLS, as Kafka Connections do not support mTLS
+// yet . Temporarily used until UC Kafka Connections gain mTLS support.
+type DirectMtlsConfig struct {
+	// A comma-separated list of host:port pairs for the Kafka bootstrap
+	// servers.
+	BootstrapServers string `json:"bootstrap_servers"`
+	// Mutual-TLS authentication configuration.
+	MtlsConfig MtlsConfig `json:"mtls_config"`
+}
+
+// Schema definitions provided directly on the Stream, as opposed to referencing
+// a schema registry. In a future milestone, we will support schema registries
+// through a UC Connection.
+type DirectSchemas struct {
+	// Schema for the message key. This is only used for Kafka streams. For
+	// Kafka, at least one of payload_schema or key_schema must be specified.
+	KeySchema *SchemaConfig `json:"key_schema,omitempty"`
+	// Schema for the message payload. For Kafka, this is the value schema.
+	// Unless the platform supports another schema (e.g. keys for Kafka), this
+	// must be specified.
+	PayloadSchema *SchemaConfig `json:"payload_schema,omitempty"`
+}
+
 type EntityColumn struct {
 	// The name of the entity column. For Kafka sources, use dot-prefixed path
 	// notation to reference fields within the key or value schema (e.g.,
 	// "value.user_id", "key.partition_key"). For nested fields, the leaf node
 	// name (e.g., "user_id" from "value.trip_details.user_id") is what will be
 	// present in materialized tables and expected to match at query time.
-	// TODO(FS-939): Colon-prefixed notation (e.g., "value:user_id") is
-	// supported for backwards compatibility but is deprecated; migrate to dot
-	// notation.
+	// Colon-prefixed notation (e.g., "value:user_id") is supported for
+	// backwards compatibility but is deprecated; migrate to dot notation.
 	Name string `json:"name"`
 }
 
@@ -1955,6 +2008,11 @@ type GetRunResponse struct {
 	Run *Run `json:"run,omitempty"`
 }
 
+type GetStreamRequest struct {
+	// Full three-part name (catalog.schema.stream) of the Stream to get.
+	Name string `json:"-" url:"-"`
+}
+
 type HttpUrlSpec struct {
 	// Value of the authorization header that should be sent in the request sent
 	// by the wehbook. It should be of the form `"<auth type> <credentials>"`.
@@ -2007,6 +2065,65 @@ func (s *HttpUrlSpecWithoutSecret) UnmarshalJSON(b []byte) error {
 }
 
 func (s HttpUrlSpecWithoutSecret) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Configuration for the Databricks-managed ingestion pipeline. Groups the
+// ingestion destination (required) and optional backfill source.
+type IngestionConfig struct {
+	// The ID of the Databricks Job that performs the historical backfill of the
+	// ingestion Delta table.
+	BackfillJobId int64 `json:"backfill_job_id,omitempty"`
+	// A user-provided source for backfilling data. Historical data is used when
+	// creating a training set from streaming features linked to this Stream.
+	// The backfill data stored in this location will be copied into the
+	// ingestion table for offline querying and training. The schema for this
+	// source must match exactly that of the key and payload schemas specified
+	// for this Stream.
+	BackfillSource *BackfillSource `json:"backfill_source,omitempty"`
+	// Column paths used to identify duplicate rows during ingestion; only one
+	// row per distinct combination of these values is kept. Use dot notation
+	// for nested fields (e.g. `value.user_id`). Empty list means every column
+	// is compared.
+	DeduplicationColumns []string `json:"deduplication_columns,omitempty"`
+	// Destination for the Databricks-managed Delta table that holds an offline
+	// copy of the streaming data for querying and training. This table contains
+	// both 1) forward-filled data from the Stream and 2) backfilled data from
+	// the BackfillSource (if provided). This table is created and managed by
+	// Databricks and is deleted when the Stream is deleted.
+	IngestionDestination IngestionDestination `json:"ingestion_destination"`
+	// The ID of the Databricks Job that performs the forward-fill ingestion.
+	IngestionJobId int64 `json:"ingestion_job_id,omitempty"`
+	// The ID of the SDP pipeline that continuously copies new events from the
+	// streaming source into the ingestion Delta table.
+	IngestionPipelineId string `json:"ingestion_pipeline_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Destination for the Databricks-managed Delta table that holds an offline copy
+// of the streaming data for querying and training.
+type IngestionDestination struct {
+	// The full three-part name (catalog, schema, name) of the Delta table to be
+	// created for ingestion.
+	DeltaTableName string `json:"delta_table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionDestination) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2090,6 +2207,9 @@ type KafkaConfig struct {
 	// Catch-all for miscellaneous options. Keys should be source options or
 	// Kafka consumer options (kafka.*)
 	ExtraOptions map[string]string `json:"extra_options,omitempty"`
+	// Configuration for ingesting Kafka data into a Databricks-managed Delta
+	// table.
+	IngestionConfig *IngestionConfig `json:"ingestion_config,omitempty"`
 	// Schema configuration for extracting message keys from topics. At least
 	// one of key_schema and value_schema must be provided.
 	KeySchema *SchemaConfig `json:"key_schema,omitempty"`
@@ -2128,6 +2248,46 @@ func (s KafkaSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Kafka-specific configuration for a Stream.
+type KafkaStreamConfig struct {
+	// Optional Kafka source or consumer options, validated against a
+	// server-side allowlist at request time. Allowed keys: -
+	// `maxOffsetsPerTrigger` - `startingOffsets` - `includeHeaders` -
+	// `kafka.request.timeout.ms` - `kafka.session.timeout.ms` -
+	// `kafka.max.partition.fetch.bytes` The following keys are ingestion-only
+	// and are stripped before being forwarded to the materialization pipeline:
+	// - `maxOffsetsPerTrigger` - `startingOffsets` Auth and connection details
+	// belong on the parent Stream's `connection_config`, not here.
+	ExtraOptions map[string]string `json:"extra_options,omitempty"`
+	// Options to configure which Kafka topics to pull data from.
+	SubscriptionMode KafkaSubscriptionMode `json:"subscription_mode"`
+}
+
+// Subscription mode for Kafka topic selection, matching standard Spark
+// Structured Streaming options.
+type KafkaSubscriptionMode struct {
+	// A JSON string that contains the specific topic-partitions to consume
+	// from. For example, for '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th
+	// and 1st partitions will be consumed from.
+	Assign string `json:"assign,omitempty"`
+	// A comma-separated list of Kafka topics to read from. For example,
+	// 'topicA,topicB,topicC'.
+	Subscribe string `json:"subscribe,omitempty"`
+	// A regular expression matching topics to subscribe to. For example,
+	// 'topic.*' will subscribe to all topics starting with 'topic'.
+	SubscribePattern string `json:"subscribe_pattern,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *KafkaSubscriptionMode) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s KafkaSubscriptionMode) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Returns the last value.
 type LastFunction struct {
 	// The input column from which the last value is returned.
@@ -2154,7 +2314,7 @@ func (s LineageContext) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)
+// Feature for model version.
 type LinkedFeature struct {
 	// Feature name
 	FeatureName string `json:"feature_name,omitempty"`
@@ -2497,6 +2657,50 @@ func (s ListRegistryWebhooks) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListStreamsRequest struct {
+	// The maximum number of results to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page based on a previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Two-part name (catalog.schema) of the parent under which to list Streams.
+	Parent string `json:"-" url:"parent,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListStreamsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListStreamsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to a ListStreamsRequest.
+//
+// NOTE: Results are post-filtered by access permission on each stream's
+// ingestion table. This means: - Returned results may be fewer than page_size
+// (including zero) - Page token points to next unfiltered batch, not next
+// filtered batch, and may point to an item that will be filtered out Callers
+// should paginate until next_page_token is empty to retrieve all accessible
+// streams.
+type ListStreamsResponse struct {
+	// Pagination token to request the next page of results for this query.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// List of Streams.
+	Streams []Stream `json:"streams,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListStreamsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListStreamsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListTransitionRequestsRequest struct {
 	// Name of the registered model.
 	Name string `json:"-" url:"name"`
@@ -2828,7 +3032,11 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 type MaterializedFeature struct {
 	// The quartz cron expression that defines the schedule of the
 	// materialization pipeline. The schedule is evaluated in the UTC timezone.
+	// Hidden from GraphQL: superseded by the `trigger` oneof
+	// (cron_schedule_trigger), so not exposed to Catalog Explorer.
 	CronSchedule string `json:"cron_schedule,omitempty"`
+	// A cron-based schedule trigger for the materialization pipeline.
+	CronScheduleTrigger *CronSchedule `json:"cron_schedule_trigger,omitempty"`
 	// The full name of the feature in Unity Catalog.
 	FeatureName string `json:"feature_name"`
 	// True if this is an online materialized feature. False if it is an offline
@@ -2837,17 +3045,25 @@ type MaterializedFeature struct {
 	// The timestamp when the pipeline last ran and updated the materialized
 	// feature values. If the pipeline has not run yet, this field will be null.
 	LastMaterializationTime string `json:"last_materialization_time,omitempty"`
-	// Unique identifier for the materialized feature.
+	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
-
+	// Destination for writing feature values to an offline Delta table.
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
-
+	// Destination for writing feature values to an online Lakebase table.
 	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
-	// The schedule state of the materialization pipeline.
+	// The schedule state of the materialization pipeline. Hidden from GraphQL:
+	// being deprecated, so not exposed to Catalog Explorer.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
+	// The Structured Streaming trigger mode used for materialization. Real-time
+	// mode (RTM) targets sub-second latency for operational workloads;
+	// micro-batch mode (MBM) favors cost efficiency for ETL and analytics
+	// workloads.
+	StreamingMode *StreamingMode `json:"streaming_mode,omitempty"`
 	// The fully qualified Unity Catalog path to the table containing the
 	// materialized feature (Delta table or Lakebase table). Output only.
 	TableName string `json:"table_name,omitempty"`
+	// A trigger that fires when the upstream source table changes.
+	TableTrigger *TableTrigger `json:"table_trigger,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3200,6 +3416,60 @@ func (s *ModelVersionTag) UnmarshalJSON(b []byte) error {
 }
 
 func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Mutual-TLS (mTLS) authentication configuration. The keystore (client
+// certificate + private key) and truststore (CAs trusted to verify the broker)
+// live as JKS files on Unity Catalog volumes, with their passwords stored in
+// Databricks secret scopes. This matches the SSL setup pattern documented at
+// https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
+//
+// At materialization time, the generated PySpark code passes the JKS file paths
+// and resolved passwords through to the Kafka SSL options
+// (kafka.ssl.keystore.location, kafka.ssl.keystore.password,
+// kafka.ssl.key.password, kafka.ssl.truststore.location,
+// kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster
+// via dbutils.secrets.get; this message stores only references, never password
+// values.
+type MtlsConfig struct {
+	// Set to true only when the broker certificate's SAN intentionally does not
+	// match the connection endpoint — for example when reaching the cluster
+	// through a PrivateLink endpoint whose DNS name is not in the broker
+	// certificate. Skipping the hostname check removes a defense against
+	// man-in-the-middle attacks; do not enable casually. mTLS client
+	// authentication is unaffected by this option.
+	//
+	// See the Apache Kafka SSL security guide for background on this check:
+	// https://kafka.apache.org/42/security/encryption-and-authentication-using-ssl/#host-name-verification
+	DisableHostnameVerification bool `json:"disable_hostname_verification,omitempty"`
+	// Secret-scope reference for the private key password. Often the same value
+	// as the keystore password (keytool's default), but provided as a separate
+	// field because Apache Kafka requires it as a distinct option
+	// (kafka.ssl.key.password).
+	KeyPasswordRef SecretScopeReference `json:"key_password_ref"`
+	// Unity Catalog volume path to the JKS keystore file containing the client
+	// certificate and private key. e.g.
+	// "/Volumes/<catalog>/<schema>/<volume>/client.jks". The materialization
+	// compute must have read permission on this volume.
+	KeystoreLocation string `json:"keystore_location"`
+	// Secret-scope reference for the JKS keystore password.
+	KeystorePasswordRef SecretScopeReference `json:"keystore_password_ref"`
+	// Unity Catalog volume path to the JKS truststore file containing the CA
+	// certificate(s) trusted to verify the Kafka broker's server certificate.
+	// e.g. "/Volumes/<catalog>/<schema>/<volume>/truststore.jks".
+	TruststoreLocation string `json:"truststore_location"`
+	// Secret-scope reference for the JKS truststore password.
+	TruststorePasswordRef SecretScopeReference `json:"truststore_password_ref"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MtlsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MtlsConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4471,6 +4741,16 @@ func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Reference to an entry in a Databricks secret scope. The referenced value is
+// fetched on the Spark cluster at materialization time via
+// dbutils.secrets.get(scope, key).
+type SecretScopeReference struct {
+	// The key within the scope.
+	Key string `json:"key"`
+	// The Databricks secret scope name.
+	Scope string `json:"scope"`
+}
+
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	ExperimentId string `json:"experiment_id"`
@@ -4605,8 +4885,8 @@ type StddevPopFunction struct {
 	// The input column from which the population standard deviation is
 	// computed. For Kafka sources, use dot-prefixed path notation (e.g.,
 	// "value.amount"). For nested fields, the leaf node name is used.
-	// TODO(FS-939): Colon-prefixed notation (e.g., "value:amount") is supported
-	// for backwards compatibility but is deprecated; migrate to dot notation.
+	// Colon-prefixed notation (e.g., "value:amount") is supported for backwards
+	// compatibility but is deprecated; migrate to dot notation.
 	Input string `json:"input"`
 }
 
@@ -4614,6 +4894,146 @@ type StddevPopFunction struct {
 type StddevSampFunction struct {
 	// The input column from which the sample standard deviation is computed.
 	Input string `json:"input"`
+}
+
+// A Stream is a governed UC entity representing an external streaming data
+// source. The source_config oneof determines the streaming platform source
+// (e.g. Kafka, Kinesis, etc.).
+type Stream struct {
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Specifies how to connect and authenticate to the stream platform.
+	ConnectionConfig StreamConnectionConfig `json:"connection_config"`
+	// Time at which this Stream was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Username of the Stream creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// User-provided description.
+	Description string `json:"description,omitempty"`
+	// Configuration for streaming data ingestion: the managed table storing an
+	// offline copy of forward fill data and optional historical backfill.
+	IngestionConfig IngestionConfig `json:"ingestion_config"`
+	// Full three-part (catalog.schema.stream) name of the stream.
+	Name string `json:"name"`
+	// Schema definitions for the stream. Currently only direct schemas are
+	// supported. In a future milestone, we will support schema registries
+	// through a UC Connection.
+	SchemaConfig StreamSchemaConfig `json:"schema_config"`
+	// Source-specific configuration. Determines the streaming platform source.
+	SourceConfig StreamSourceConfig `json:"source_config"`
+	// Time at which this Stream was last modified.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// Username of user who last modified the Stream.
+	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Stream) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Stream) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Specifies how to connect and authenticate to the stream platform.
+type StreamConnectionConfig struct {
+	// Direct mTLS configuration for stream platform access. This is only used
+	// in the short term until UC Kafka Connections support mTLS . Once UC Kafka
+	// Connections support mTLS, this will be deprecated.
+	DirectMtlsConfig *DirectMtlsConfig `json:"direct_mtls_config,omitempty"`
+	// Name of an existing UC Connection for stream platform access. Must be the
+	// correct type for the streaming platform (e.g. a Kafka Connection for a
+	// Kafka Stream).
+	UcConnectionName string `json:"uc_connection_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *StreamConnectionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StreamConnectionConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Schema definitions for the stream. Currently only direct schemas are
+// supported. In a future milestone, we will support schema registries through a
+// UC Connection.
+type StreamSchemaConfig struct {
+	// Schema definitions provided directly on the Stream.
+	DirectSchemas *DirectSchemas `json:"direct_schemas,omitempty"`
+}
+
+// A Stream entity used as a data source for a feature.
+type StreamSource struct {
+	// The filter condition applied to the source data before aggregation.
+	FilterCondition string `json:"filter_condition,omitempty"`
+	// Three-part full name of the Stream (catalog.schema.stream).
+	FullName string `json:"full_name"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *StreamSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StreamSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Source-specific configuration. Determines the streaming platform source.
+type StreamSourceConfig struct {
+	// Configuration for Apache Kafka streams.
+	KafkaStreamConfig *KafkaStreamConfig `json:"kafka_stream_config,omitempty"`
+}
+
+// The streaming mode configuration for a streaming materialization pipeline.
+type StreamingMode struct {
+	// The type of streaming mode used by the materialization pipeline.
+	Mode StreamingModeStreamingModeType `json:"mode,omitempty"`
+}
+
+type StreamingModeStreamingModeType string
+
+const StreamingModeStreamingModeTypeStreamingModeTypeMbm StreamingModeStreamingModeType = `STREAMING_MODE_TYPE_MBM`
+
+const StreamingModeStreamingModeTypeStreamingModeTypeRtm StreamingModeStreamingModeType = `STREAMING_MODE_TYPE_RTM`
+
+// String representation for [fmt.Print]
+func (f *StreamingModeStreamingModeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *StreamingModeStreamingModeType) Set(v string) error {
+	switch v {
+	case `STREAMING_MODE_TYPE_MBM`, `STREAMING_MODE_TYPE_RTM`:
+		*f = StreamingModeStreamingModeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "STREAMING_MODE_TYPE_MBM", "STREAMING_MODE_TYPE_RTM"`, v)
+	}
+}
+
+// Values returns all possible values for StreamingModeStreamingModeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *StreamingModeStreamingModeType) Values() []StreamingModeStreamingModeType {
+	return []StreamingModeStreamingModeType{
+		StreamingModeStreamingModeTypeStreamingModeTypeMbm,
+		StreamingModeStreamingModeTypeStreamingModeTypeRtm,
+	}
+}
+
+// Type always returns StreamingModeStreamingModeType to satisfy [pflag.Value] interface
+func (f *StreamingModeStreamingModeType) Type() string {
+	return "StreamingModeStreamingModeType"
 }
 
 // Deprecated: Use KafkaSubscriptionMode instead.
@@ -4644,10 +5064,14 @@ func (s SubscriptionMode) MarshalJSON() ([]byte, error) {
 type SumFunction struct {
 	// The input column from which the sum is computed. For Kafka sources, use
 	// dot-prefixed path notation (e.g., "value.amount"). For nested fields, the
-	// leaf node name is used. TODO(FS-939): Colon-prefixed notation (e.g.,
-	// "value:amount") is supported for backwards compatibility but is
-	// deprecated; migrate to dot notation.
+	// leaf node name is used. Colon-prefixed notation (e.g., "value:amount") is
+	// supported for backwards compatibility but is deprecated; migrate to dot
+	// notation.
 	Input string `json:"input"`
+}
+
+// A trigger that fires when the upstream source table changes.
+type TableTrigger struct {
 }
 
 // Details required to test a registry webhook.
@@ -4693,9 +5117,9 @@ type TimeseriesColumn struct {
 	// "value.event_timestamp"). For nested fields, the leaf node name (e.g.,
 	// "event_timestamp" from "value.event_details.event_timestamp") is what
 	// will be present in materialized tables and expected to match at query
-	// time. TODO(FS-939): Colon-prefixed notation (e.g.,
-	// "value:event_timestamp") is supported for backwards compatibility but is
-	// deprecated; migrate to dot notation.
+	// time. Colon-prefixed notation (e.g., "value:event_timestamp") is
+	// supported for backwards compatibility but is deprecated; migrate to dot
+	// notation.
 	Name string `json:"name"`
 }
 
@@ -4857,7 +5281,7 @@ type UpdateKafkaConfigRequest struct {
 type UpdateMaterializedFeatureRequest struct {
 	// The materialized feature to update.
 	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
-	// Unique identifier for the materialized feature.
+	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"-" url:"-"`
 	// Provide the materialization feature fields which should be updated.
 	// Currently, only the pipeline_state field can be updated.
@@ -5053,6 +5477,15 @@ func (f *UpdateRunStatus) Values() []UpdateRunStatus {
 // Type always returns UpdateRunStatus to satisfy [pflag.Value] interface
 func (f *UpdateRunStatus) Type() string {
 	return "UpdateRunStatus"
+}
+
+type UpdateStreamRequest struct {
+	// Full three-part (catalog.schema.stream) name of the stream.
+	Name string `json:"-" url:"-"`
+	// The Stream to update.
+	Stream Stream `json:"stream"`
+	// The list of fields to update.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
 type UpdateWebhookResponse struct {

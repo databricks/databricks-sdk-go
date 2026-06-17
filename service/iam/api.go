@@ -259,7 +259,7 @@ type AccountUsersV2API struct {
 type CurrentUserInterface interface {
 
 	// Get details about the current method caller's identity.
-	Me(ctx context.Context) (*User, error)
+	Me(ctx context.Context, request MeRequest) (*User, error)
 }
 
 func NewCurrentUser(client *client.DatabricksClient) *CurrentUserAPI {

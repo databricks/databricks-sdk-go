@@ -254,6 +254,55 @@ func (s ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON()
 	return marshal.Marshal(s)
 }
 
+// Controls which external collaboration platforms (Slack, Microsoft Teams) can
+// connect to a workspace. Defaults to ALLOW_ALL.
+type CollaborationPlatformConnectivityMessage struct {
+	Connectivity CollaborationPlatformConnectivityMessageConnectivity `json:"connectivity"`
+}
+
+type CollaborationPlatformConnectivityMessageConnectivity string
+
+const CollaborationPlatformConnectivityMessageConnectivityAllowAll CollaborationPlatformConnectivityMessageConnectivity = `ALLOW_ALL`
+
+const CollaborationPlatformConnectivityMessageConnectivityAllowSlack CollaborationPlatformConnectivityMessageConnectivity = `ALLOW_SLACK`
+
+const CollaborationPlatformConnectivityMessageConnectivityAllowTeams CollaborationPlatformConnectivityMessageConnectivity = `ALLOW_TEAMS`
+
+const CollaborationPlatformConnectivityMessageConnectivityDenyAll CollaborationPlatformConnectivityMessageConnectivity = `DENY_ALL`
+
+// String representation for [fmt.Print]
+func (f *CollaborationPlatformConnectivityMessageConnectivity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CollaborationPlatformConnectivityMessageConnectivity) Set(v string) error {
+	switch v {
+	case `ALLOW_ALL`, `ALLOW_SLACK`, `ALLOW_TEAMS`, `DENY_ALL`:
+		*f = CollaborationPlatformConnectivityMessageConnectivity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALLOW_ALL", "ALLOW_SLACK", "ALLOW_TEAMS", "DENY_ALL"`, v)
+	}
+}
+
+// Values returns all possible values for CollaborationPlatformConnectivityMessageConnectivity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CollaborationPlatformConnectivityMessageConnectivity) Values() []CollaborationPlatformConnectivityMessageConnectivity {
+	return []CollaborationPlatformConnectivityMessageConnectivity{
+		CollaborationPlatformConnectivityMessageConnectivityAllowAll,
+		CollaborationPlatformConnectivityMessageConnectivityAllowSlack,
+		CollaborationPlatformConnectivityMessageConnectivityAllowTeams,
+		CollaborationPlatformConnectivityMessageConnectivityDenyAll,
+	}
+}
+
+// Type always returns CollaborationPlatformConnectivityMessageConnectivity to satisfy [pflag.Value] interface
+func (f *CollaborationPlatformConnectivityMessageConnectivity) Type() string {
+	return "CollaborationPlatformConnectivityMessageConnectivity"
+}
+
 type GetPublicAccountSettingRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -412,6 +461,20 @@ func (s *ListWorkspaceSettingsMetadataResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListWorkspaceSettingsMetadataResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type OperationalEmailCustomRecipientMessage struct {
+	Email string `json:"email,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *OperationalEmailCustomRecipientMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OperationalEmailCustomRecipientMessage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -609,6 +672,10 @@ type Setting struct {
 	// Setting value for boolean type setting. This is the setting value set by
 	// consumers, check effective_boolean_val for final setting value.
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
+	// Setting value for collaboration_platform_connectivity setting. This is
+	// the setting value set by consumers, check
+	// effective_collaboration_platform_connectivity for final setting value.
+	CollaborationPlatformConnectivity *CollaborationPlatformConnectivityMessage `json:"collaboration_platform_connectivity,omitempty"`
 	// Effective setting value for aibi_dashboard_embedding_access_policy
 	// setting. This is the final effective value of setting. To set a value use
 	// aibi_dashboard_embedding_access_policy.
@@ -628,9 +695,17 @@ type Setting struct {
 	// Effective setting value for boolean type setting. This is the final
 	// effective value of setting. To set a value use boolean_val.
 	EffectiveBooleanVal *BooleanMessage `json:"effective_boolean_val,omitempty"`
+	// Effective setting value for collaboration_platform_connectivity setting.
+	// This is the final effective value of setting. To set a value use
+	// collaboration_platform_connectivity.
+	EffectiveCollaborationPlatformConnectivity *CollaborationPlatformConnectivityMessage `json:"effective_collaboration_platform_connectivity,omitempty"`
 	// Effective setting value for integer type setting. This is the final
 	// effective value of setting. To set a value use integer_val.
 	EffectiveIntegerVal *IntegerMessage `json:"effective_integer_val,omitempty"`
+	// Effective setting value for operational_email_custom_recipient setting.
+	// This is the final effective value of setting. To set a value use
+	// operational_email_custom_recipient.
+	EffectiveOperationalEmailCustomRecipient *OperationalEmailCustomRecipientMessage `json:"effective_operational_email_custom_recipient,omitempty"`
 	// Effective setting value for personal_compute setting. This is the final
 	// effective value of setting. To set a value use personal_compute.
 	EffectivePersonalCompute *PersonalComputeMessage `json:"effective_personal_compute,omitempty"`
@@ -646,6 +721,10 @@ type Setting struct {
 	IntegerVal *IntegerMessage `json:"integer_val,omitempty"`
 	// Name of the setting.
 	Name string `json:"name,omitempty"`
+	// Setting value for operational_email_custom_recipient setting. This is the
+	// setting value set by consumers, check
+	// effective_operational_email_custom_recipient for final setting value.
+	OperationalEmailCustomRecipient *OperationalEmailCustomRecipientMessage `json:"operational_email_custom_recipient,omitempty"`
 	// Setting value for personal_compute setting. This is the setting value set
 	// by consumers, check effective_personal_compute for final setting value.
 	PersonalCompute *PersonalComputeMessage `json:"personal_compute,omitempty"`

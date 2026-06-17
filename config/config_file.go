@@ -100,9 +100,12 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
 	}
-	if !isFallback {
-		cfg.Profile = profile
-	}
+	// Pin the resolved profile name on cfg, including the legacy fallback to
+	// [DEFAULT]. Callers (notably the CLI's U2M OAuth cache, which derives a
+	// per-profile keyring entry from cfg.Profile) need to see the same name
+	// that was used to load values, otherwise the cache key drifts between
+	// a `databricks auth login --profile DEFAULT` write and a later read.
+	cfg.Profile = profile
 	return nil
 }
 

@@ -1226,7 +1226,7 @@ type CreateWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -1906,7 +1906,7 @@ type EditWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2061,7 +2061,7 @@ type EndpointInfo struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2667,7 +2667,7 @@ type GetWarehouseResponse struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -4949,11 +4949,6 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 // | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors
 // | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors |
 // +-------+--------------------------------------+--------------------------------+
-//
-// While including "spot" in the enum name may limit the the future
-// extensibility of this field because it limits this enum to denoting "spot or
-// not", this is the field that PM recommends after discussion with customers
-// per SC-48783.
 type SpotInstancePolicy string
 
 const SpotInstancePolicyCostOptimized SpotInstancePolicy = `COST_OPTIMIZED`
@@ -6488,7 +6483,7 @@ type WarehousePermissionsRequest struct {
 // * Configuration values to enable or disable the access to specific warehouse
 // types in the workspace.
 type WarehouseTypePair struct {
-	// If set to false the specific warehouse type will not be be allowed as a
+	// If set to false the specific warehouse type will not be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
 	Enabled bool `json:"enabled,omitempty"`
 

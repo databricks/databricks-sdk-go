@@ -27,7 +27,7 @@ func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -41,7 +41,7 @@ func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -56,7 +56,7 @@ func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse,
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createResponse)
 	return &createResponse, err
@@ -70,7 +70,7 @@ func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -84,7 +84,7 @@ func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*Fi
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &fileInfo)
 	return &fileInfo, err
@@ -143,7 +143,7 @@ func (a *dbfsImpl) internalList(ctx context.Context, request ListDbfsRequest) (*
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listStatusResponse)
 	return &listStatusResponse, err
@@ -157,7 +157,7 @@ func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -171,7 +171,7 @@ func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -185,7 +185,7 @@ func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
 	headers["Content-Type"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
@@ -199,7 +199,7 @@ func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResp
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &readResponse)
 	return &readResponse, err
@@ -216,7 +216,7 @@ func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectory
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, nil, nil)
 	return err
@@ -228,7 +228,7 @@ func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -240,7 +240,7 @@ func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectory
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
@@ -254,7 +254,7 @@ func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*Dow
 	headers["Accept"] = "application/octet-stream"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &downloadResponse)
 	return &downloadResponse, err
@@ -266,7 +266,7 @@ func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirecto
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodHead, path, headers, queryParams, request, nil)
 	return err
@@ -279,14 +279,14 @@ func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest)
 	headers := make(map[string]string)
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodHead, path, headers, queryParams, request, &getMetadataResponse)
 	return &getMetadataResponse, err
 }
 
 // Returns the contents of a directory. If there is no directory at the
-// specified path, the API returns a HTTP 404 error.
+// specified path, the API returns an HTTP 404 error.
 func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) listing.Iterator[DirectoryEntry] {
 
 	getNextPage := func(ctx context.Context, req ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
@@ -312,7 +312,7 @@ func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirec
 }
 
 // Returns the contents of a directory. If there is no directory at the
-// specified path, the API returns a HTTP 404 error.
+// specified path, the API returns an HTTP 404 error.
 func (a *filesImpl) ListDirectoryContentsAll(ctx context.Context, request ListDirectoryContentsRequest) ([]DirectoryEntry, error) {
 	iterator := a.ListDirectoryContents(ctx, request)
 	return listing.ToSlice[DirectoryEntry](ctx, iterator)
@@ -326,7 +326,7 @@ func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request L
 	headers["Accept"] = "application/json"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDirectoryResponse)
 	return &listDirectoryResponse, err
@@ -343,7 +343,7 @@ func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
 	headers["Content-Type"] = "application/octet-stream"
 	cfg := a.client.Config
 	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Contents, nil)
 	return err
