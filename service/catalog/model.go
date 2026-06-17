@@ -1962,7 +1962,7 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 19
+// Next Id: 20
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
@@ -7274,8 +7274,8 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_CONFLUENT_SCHEMA_REGISTRY_BASIC = 346; Next id: 347.
-// Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*,
+// Latest kind: CONNECTION_MARKETO_OAUTH_M2M = 347; Next id: 348. Reserved
+// numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*,
 // MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
 // MCP_SERVICE_STANDARD).
 type SecurableKind string
