@@ -6,6 +6,8 @@
 
 ### New Features and Improvements
 
+- Upload of big files (> 5Gb) to UC Volumes using multipart chunking ([#621](https://github.com/databricks/databricks-sdk-go/pull/1621)).
+
 ### Bug Fixes
 
 ### Documentation
