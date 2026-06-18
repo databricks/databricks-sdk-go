@@ -113,8 +113,7 @@ type data []info
 // With appends the key/value pair, skipping it when an identical key/value
 // pair is already present. De-duplicating exact pairs keeps the user agent from
 // growing without bound when the same dimension is injected repeatedly onto a
-// reused context (for example, the same resource pushed onto a long-lived
-// context many times). Distinct values for the same key are still preserved.
+// reused context. Distinct values for the same key are still preserved.
 // Panics if key or value don't satisfy alphanumeric or semver format.
 func (d data) With(key, value string) data {
 	if err := matchAlphanum(key); err != nil {
