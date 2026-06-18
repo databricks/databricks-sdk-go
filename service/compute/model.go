@@ -3711,7 +3711,7 @@ func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Type() string {
 	return "InitScriptExecutionDetailsInitScriptExecutionStatus"
 }
 
-// Config for an individual init script Next ID: 11
+// Config for an individual init script
 type InitScriptInfo struct {
 	// destination needs to be provided, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
