@@ -12,10 +12,11 @@ import (
 )
 
 const (
-	RuntimeKey = "runtime"
-	CicdKey    = "cicd"
-	AuthKey    = "auth"
-	AgentKey   = "agent"
+	RuntimeKey     = "runtime"
+	CicdKey        = "cicd"
+	AuthKey        = "auth"
+	AgentKey       = "agent"
+	MetaHarnessKey = "meta-harness"
 )
 
 // WithProduct sets the product name and product version globally.

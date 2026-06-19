@@ -74,6 +74,17 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			*r = *r.WithContext(ctx) // replace request
 			return nil
 		},
+		func(r *http.Request) error {
+			// Detect if we are running inside a known agent meta-harness.
+			provider := useragent.MetaHarnessProvider()
+			if provider == "" {
+				return nil
+			}
+			// Add the detected meta-harness to the user agent.
+			ctx := useragent.InContext(r.Context(), useragent.MetaHarnessKey, provider)
+			*r = *r.WithContext(ctx) // replace request
+			return nil
+		},
 	}
 
 	return httpclient.ClientConfig{

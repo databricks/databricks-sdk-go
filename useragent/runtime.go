@@ -13,6 +13,7 @@ func ClearCache() {
 	runtimeOnce = sync.Once{}
 	providerOnce = sync.Once{}
 	agentOnce = sync.Once{}
+	metaHarnessOnce = sync.Once{}
 }
 
 var runtimeOnce sync.Once
