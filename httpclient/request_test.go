@@ -107,6 +107,143 @@ func TestMakeRequestBodyQueryUnsupported(t *testing.T) {
 	require.EqualError(t, err, "unsupported query string data: true")
 }
 
+func TestMakeQueryStringForceSendFields(t *testing.T) {
+	type req struct {
+		Cascade bool   `json:"-" url:"cascade,omitempty"`
+		Force   bool   `json:"-" url:"force,omitempty"`
+		Name    string `json:"-" url:"name,omitempty"`
+
+		ForceSendFields []string `json:"-" url:"-"`
+	}
+
+	cases := []struct {
+		name string
+		in   req
+		want string
+	}{
+		{
+			name: "zero value dropped without ForceSendFields",
+			in:   req{Cascade: false},
+			want: "",
+		},
+		{
+			name: "false bool sent when forced",
+			in:   req{Cascade: false, ForceSendFields: []string{"Cascade"}},
+			want: "cascade=false",
+		},
+		{
+			name: "non-zero value still sent without forcing",
+			in:   req{Cascade: true},
+			want: "cascade=true",
+		},
+		{
+			name: "multiple forced fields, keys sorted by Encode",
+			in:   req{ForceSendFields: []string{"Cascade", "Force"}},
+			want: "cascade=false&force=false",
+		},
+		{
+			name: "forcing does not override an explicitly set value",
+			in:   req{Cascade: true, ForceSendFields: []string{"Cascade"}},
+			want: "cascade=true",
+		},
+		{
+			name: "unknown forced field is ignored",
+			in:   req{ForceSendFields: []string{"DoesNotExist"}},
+			want: "",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := makeQueryString(tc.in)
+			if err != nil {
+				t.Fatalf("makeQueryString returned error: %v", err)
+			}
+			if got != tc.want {
+				t.Errorf("makeQueryString() = %q, want %q", got, tc.want)
+			}
+		})
+	}
+}
+
+func TestMakeQueryStringForceSendFieldsNested(t *testing.T) {
+	type inner struct {
+		Flag bool  `json:"-" url:"flag,omitempty"`
+		Num  int64 `json:"-" url:"num,omitempty"`
+
+		ForceSendFields []string `json:"-" url:"-"`
+	}
+	type deep struct {
+		Inner inner `json:"-" url:"inner"`
+
+		ForceSendFields []string `json:"-" url:"-"`
+	}
+	type outer struct {
+		Inner    inner  `json:"-" url:"inner"`
+		PtrInner *inner `json:"-" url:"ptr_inner,omitempty"`
+		Deep     deep   `json:"-" url:"deep"`
+
+		ForceSendFields []string `json:"-" url:"-"`
+	}
+
+	cases := []struct {
+		name string
+		in   outer
+		want string
+	}{
+		{
+			name: "nested struct honors its own ForceSendFields",
+			in:   outer{Inner: inner{ForceSendFields: []string{"Flag"}}},
+			want: "inner.flag=false",
+		},
+		{
+			name: "nested zero field dropped without forcing",
+			in:   outer{Inner: inner{Flag: false}},
+			want: "",
+		},
+		{
+			name: "nested non-zero value still sent",
+			in:   outer{Inner: inner{Num: 7}},
+			want: "inner.num=7",
+		},
+		{
+			name: "non-nil pointer to nested struct is honored",
+			in:   outer{PtrInner: &inner{ForceSendFields: []string{"Flag"}}},
+			want: "ptr_inner.flag=false",
+		},
+		{
+			name: "nil pointer to nested struct adds nothing",
+			in:   outer{ForceSendFields: []string{"PtrInner"}},
+			want: "",
+		},
+		{
+			name: "doubly nested struct honors deepest ForceSendFields",
+			in:   outer{Deep: deep{Inner: inner{ForceSendFields: []string{"Num"}}}},
+			want: "deep.inner.num=0",
+		},
+		{
+			name: "mixed top-level and nested forcing",
+			in: outer{
+				Inner:           inner{ForceSendFields: []string{"Flag", "Num"}},
+				ForceSendFields: nil,
+			},
+			want: "inner.flag=false&inner.num=0",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := makeQueryString(tc.in)
+			if err != nil {
+				t.Fatalf("makeQueryString returned error: %v", err)
+			}
+			if got != tc.want {
+				t.Errorf("makeQueryString() = %q, want %q", got, tc.want)
+			}
+		})
+	}
+}
+
 func TestWithTokenSource(t *testing.T) {
 	client := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
