@@ -1561,6 +1561,8 @@ const ComputeSizeLarge ComputeSize = `LARGE`
 
 const ComputeSizeMedium ComputeSize = `MEDIUM`
 
+const ComputeSizeXlarge ComputeSize = `XLARGE`
+
 // String representation for [fmt.Print]
 func (f *ComputeSize) String() string {
 	return string(*f)
@@ -1569,11 +1571,11 @@ func (f *ComputeSize) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComputeSize) Set(v string) error {
 	switch v {
-	case `LARGE`, `MEDIUM`:
+	case `LARGE`, `MEDIUM`, `XLARGE`:
 		*f = ComputeSize(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "LARGE", "MEDIUM"`, v)
+		return fmt.Errorf(`value "%s" is not one of "LARGE", "MEDIUM", "XLARGE"`, v)
 	}
 }
 
@@ -1584,6 +1586,7 @@ func (f *ComputeSize) Values() []ComputeSize {
 	return []ComputeSize{
 		ComputeSizeLarge,
 		ComputeSizeMedium,
+		ComputeSizeXlarge,
 	}
 }
 

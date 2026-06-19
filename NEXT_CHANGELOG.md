@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `Xlarge` enum value for [apps.ComputeSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#ComputeSize).
