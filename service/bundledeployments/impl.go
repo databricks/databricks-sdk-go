@@ -308,8 +308,8 @@ func (a *bundleDeploymentsImpl) internalListResources(ctx context.Context, reque
 	return &listResourcesResponse, err
 }
 
-// Lists versions under a deployment, ordered by version_id descending (most
-// recent first).
+// Lists versions under a deployment, ordered numerically by version_id
+// descending (most recent first).
 func (a *bundleDeploymentsImpl) ListVersions(ctx context.Context, request ListVersionsRequest) listing.Iterator[Version] {
 
 	getNextPage := func(ctx context.Context, req ListVersionsRequest) (*ListVersionsResponse, error) {
@@ -334,8 +334,8 @@ func (a *bundleDeploymentsImpl) ListVersions(ctx context.Context, request ListVe
 	return iterator
 }
 
-// Lists versions under a deployment, ordered by version_id descending (most
-// recent first).
+// Lists versions under a deployment, ordered numerically by version_id
+// descending (most recent first).
 func (a *bundleDeploymentsImpl) ListVersionsAll(ctx context.Context, request ListVersionsRequest) ([]Version, error) {
 	iterator := a.ListVersions(ctx, request)
 	return listing.ToSlice[Version](ctx, iterator)
