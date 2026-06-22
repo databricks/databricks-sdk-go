@@ -1,5 +1,15 @@
 # Version changelog
 
+## Release v0.148.0 (2026-06-22)
+
+### New Features and Improvements
+
+* Added a `meta-harness` user-agent dimension that reports the omnigent meta-harness (detected via the `OMNIGENT` environment variable) independently of agent detection.
+
+### API Changes
+* Add `Xlarge` enum value for [apps.ComputeSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#ComputeSize).
+
+
 ## Release v0.147.0 (2026-06-17)
 
 ### API Changes
