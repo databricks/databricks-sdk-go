@@ -9,6 +9,78 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+// AiRuntimeTask: multi-node GPU compute task definition for Databricks AI
+// Runtime workloads.
+//
+// Jobs-framework-level concepts (retries, per-task timeout, idempotency token,
+// usage/budget policy, permissions) live on the surrounding TaskSettings /
+// run-submit request and are intentionally NOT duplicated here. Users compose
+// `ai_runtime_task` with the standard Jobs/DABs task wrapper to get those.
+type AiRuntimeTask struct {
+	// Optional workspace or UC volume path of the uploaded code-source archive.
+	// The CLI packages the user's local code directory into an archive and
+	// populates this. Customers calling the Jobs API directly should upload
+	// their archive to the workspace or a UC volume first and supply the
+	// resulting path here.
+	//
+	// When set, the training node exposes the value via the `$CODE_SOURCE`
+	// environment variable.
+	CodeSourcePath string `json:"code_source_path,omitempty"`
+	// Deployment specs for this task. Many single-program training algorithms
+	// use a single entry where every node runs the same command. Role-split
+	// workloads (driver + worker, parameter server, separate eval node, etc.)
+	// have multiple entries, each with its own command and compute.
+	Deployments []DeploymentSpec `json:"deployments"`
+	// MLflow experiment name for this run. If an experiment with this name
+	// already exists under the calling user, the run is appended to it;
+	// otherwise a new experiment is created. To target a specific MLflow
+	// storage location (for example, when running as a service principal), set
+	// `mlflow_experiment_directory`.
+	Experiment string `json:"experiment"`
+	// Optional workspace directory under which the MLflow experiment named in
+	// `experiment` is created. Must start with `/Workspace`. Set this when
+	// running as a service principal that has no default user directory; for
+	// regular users the experiment defaults to the user's home directory.
+	MlflowExperimentDirectory string `json:"mlflow_experiment_directory,omitempty"`
+	// Optional display name for the MLflow run created under `experiment`. If
+	// omitted, MLflow generates a default name.
+	MlflowRun string `json:"mlflow_run,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiRuntimeTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiRuntimeTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// AiRuntimeTaskOutput: output identifiers for an AiRuntimeTask run — the
+// MLflow experiment and run IDs the task wrote to.
+//
+// Run lifecycle and termination status are not on this message; they live on
+// the surrounding `RunTask.status` field (see `runs.proto:RunTask.status`).
+type AiRuntimeTaskOutput struct {
+	// MLflow experiment ID the run was logged to. Use it to look up the
+	// experiment in MLflow APIs or the workspace MLflow UI.
+	MlflowExperimentId string `json:"mlflow_experiment_id,omitempty"`
+	// MLflow run ID for this task execution. Use it to look up the run in
+	// MLflow APIs or the workspace MLflow UI.
+	MlflowRunId string `json:"mlflow_run_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiRuntimeTaskOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiRuntimeTaskOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto
 type AlertEvaluationState string
 
@@ -614,6 +686,63 @@ func (s ComputeConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// ComputeSpec: compute configuration — accelerator type and total accelerator
+// count across all nodes.
+type ComputeSpec struct {
+	// Total number of accelerators across all nodes. Must be a positive
+	// multiple of the per-node accelerator count encoded in `accelerator_type`.
+	// For example, `GPU_8xH100` with `accelerator_count: 16` allocates 2 nodes
+	// (8 GPUs per node).
+	AcceleratorCount int `json:"accelerator_count"`
+	// Hardware accelerator type (for example, `GPU_1xA10` or `GPU_8xH100`). The
+	// number of accelerators per node is encoded in the enum value —
+	// `GPU_8xH100` means 8 H100 GPUs per node.
+	AcceleratorType ComputeSpecAcceleratorType `json:"accelerator_type"`
+}
+
+// Customer-facing AcceleratorType: hardware accelerator type for the AiRuntime
+// workload. Per-node accelerator count is encoded in the value name (e.g.
+// `GPU_8xH100` means 8 H100s per node).
+type ComputeSpecAcceleratorType string
+
+const ComputeSpecAcceleratorTypeGpu1xA10 ComputeSpecAcceleratorType = `GPU_1xA10`
+
+const ComputeSpecAcceleratorTypeGpu1xH100 ComputeSpecAcceleratorType = `GPU_1xH100`
+
+const ComputeSpecAcceleratorTypeGpu8xH100 ComputeSpecAcceleratorType = `GPU_8xH100`
+
+// String representation for [fmt.Print]
+func (f *ComputeSpecAcceleratorType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ComputeSpecAcceleratorType) Set(v string) error {
+	switch v {
+	case `GPU_1xA10`, `GPU_1xH100`, `GPU_8xH100`:
+		*f = ComputeSpecAcceleratorType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_1xH100", "GPU_8xH100"`, v)
+	}
+}
+
+// Values returns all possible values for ComputeSpecAcceleratorType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ComputeSpecAcceleratorType) Values() []ComputeSpecAcceleratorType {
+	return []ComputeSpecAcceleratorType{
+		ComputeSpecAcceleratorTypeGpu1xA10,
+		ComputeSpecAcceleratorTypeGpu1xH100,
+		ComputeSpecAcceleratorTypeGpu8xH100,
+	}
+}
+
+// Type always returns ComputeSpecAcceleratorType to satisfy [pflag.Value] interface
+func (f *ComputeSpecAcceleratorType) Type() string {
+	return "ComputeSpecAcceleratorType"
+}
+
 type Condition string
 
 const ConditionAllUpdated Condition = `ALL_UPDATED`
@@ -1216,6 +1345,37 @@ type DeleteJob struct {
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId int64 `json:"run_id"`
+}
+
+// DeploymentSpec: configuration for one deployment within an AiRuntimeTask.
+// Each entry in `AiRuntimeTask.deployments` describes a group of nodes that
+// share the same command and compute. Many single-program training algorithms
+// use a single entry where every node runs the same command; role-split
+// workloads (driver + worker, parameter server, separate eval node, etc.) use
+// multiple entries.
+type DeploymentSpec struct {
+	// Workspace path of the bash script to execute on each node in this
+	// deployment. The CLI uploads the user's script and populates this.
+	// Customers calling the Jobs API directly should upload their script to the
+	// workspace first and supply the resulting path here.
+	CommandPath string `json:"command_path"`
+	// Compute resources allocated to each node in this deployment.
+	Compute ComputeSpec `json:"compute"`
+	// Optional human-readable name for this deployment (for example, `driver`,
+	// `worker`, `param_server`). Used for log and UI display. Distinct names
+	// are recommended so deployments can be told apart, but uniqueness is not
+	// enforced.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeploymentSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeploymentSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Represents a change to the job cluster's settings that would be required for
@@ -3505,6 +3665,11 @@ type ResolvedStringParamsValues struct {
 }
 
 type ResolvedValues struct {
+	// Resolved values for an AI Runtime task — env_vars with
+	// `{{tasks.<key>.values.<name>}}` references substituted to concrete values
+	// before submission to the training service.
+	AiRuntimeTask *ResolvedValuesAiRuntimeTaskResolvedValues `json:"ai_runtime_task,omitempty"`
+
 	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
 
 	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
@@ -3526,6 +3691,12 @@ type ResolvedValues struct {
 	SparkSubmitTask *ResolvedStringParamsValues `json:"spark_submit_task,omitempty"`
 
 	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
+}
+
+// Resolved env_vars for an AiRuntimeTask after dynamic-value substitution.
+// Mirrors the task's `resolved_parameters_field` (env_vars) so Jobs can expand
+// `{{tasks.<key>.values.<name>}}` references before submission.
+type ResolvedValuesAiRuntimeTaskResolvedValues struct {
 }
 
 // Run was retrieved successfully
@@ -4220,6 +4391,12 @@ func (s RunNowResponse) MarshalJSON() ([]byte, error) {
 
 // Run output was retrieved successfully.
 type RunOutput struct {
+	// The output of an AiRuntimeTask, if available — MLflow identifiers,
+	// artifact paths, and per-replica allocated compute. Run lifecycle /
+	// termination status lives on the surrounding framework `RunTask.status`
+	// (`runs.proto:RunTask.status` of type `RunStatus`), not on this output.
+	// See `tasks/genai/ai_runtime_task.proto:AiRuntimeTaskOutput`.
+	AiRuntimeTaskOutput *AiRuntimeTaskOutput `json:"ai_runtime_task_output,omitempty"`
 	// The output of an alert task, if available
 	AlertOutput *AlertTaskOutput `json:"alert_output,omitempty"`
 	// The output of a clean rooms notebook task, if available
@@ -4500,6 +4677,9 @@ type RunStatus struct {
 
 // Used when outputting a child run, in GetRun or ListRuns.
 type RunTask struct {
+	// The task runs a multi-node GPU compute workload on Databricks AI Runtime.
+	// External-facing surface; mirrors the AIR CLI (fka SGCLI) v2 YAML schema.
+	AiRuntimeTask *AiRuntimeTask `json:"ai_runtime_task,omitempty"`
 	// The task evaluates a Databricks alert and sends notifications to
 	// subscribers when the `alert_task` field is present.
 	AlertTask *AlertTask `json:"alert_task,omitempty"`
@@ -5340,6 +5520,9 @@ func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
 }
 
 type SubmitTask struct {
+	// The task runs a multi-node GPU compute workload on Databricks AI Runtime.
+	// External-facing surface; mirrors the AIR CLI (fka SGCLI) v2 YAML schema.
+	AiRuntimeTask *AiRuntimeTask `json:"ai_runtime_task,omitempty"`
 	// The task evaluates a Databricks alert and sends notifications to
 	// subscribers when the `alert_task` field is present.
 	AlertTask *AlertTask `json:"alert_task,omitempty"`
@@ -5577,6 +5760,9 @@ func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type Task struct {
+	// The task runs a multi-node GPU compute workload on Databricks AI Runtime.
+	// External-facing surface; mirrors the AIR CLI (fka SGCLI) v2 YAML schema.
+	AiRuntimeTask *AiRuntimeTask `json:"ai_runtime_task,omitempty"`
 	// The task evaluates a Databricks alert and sends notifications to
 	// subscribers when the `alert_task` field is present.
 	AlertTask *AlertTask `json:"alert_task,omitempty"`

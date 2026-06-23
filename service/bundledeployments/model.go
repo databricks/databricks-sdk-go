@@ -903,6 +903,10 @@ func (f *VersionType) Type() string {
 
 // Workspace location of a bundle deployment, captured at deploy time.
 type WorkspaceInfo struct {
+	// Path of the bundle root (the directory containing databricks.yml)
+	// relative to git_folder_path. Empty when the deployment is not from a
+	// Databricks Git folder.
+	BundleRootPath string `json:"bundle_root_path,omitempty"`
 	// Absolute workspace path where the deployed bundle files live. Mirrors the
 	// workspace.file_path field in DABs bundle config.
 	FilePath string `json:"file_path,omitempty"`
