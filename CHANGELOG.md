@@ -1,5 +1,26 @@
 # Version changelog
 
+## Release v0.149.0 (2026-06-23)
+
+### API Changes
+* Add `BundleRootPath` field for [bundledeployments.WorkspaceInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#WorkspaceInfo).
+* Add `AiRuntimeTask` field for [jobs.ResolvedValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedValues).
+* Add `AiRuntimeTaskOutput` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+* Add `AiRuntimeTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `AiRuntimeTask` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `AiRuntimeTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+
+
+## Release v0.148.0 (2026-06-22)
+
+### New Features and Improvements
+
+* Added a `meta-harness` user-agent dimension that reports the omnigent meta-harness (detected via the `OMNIGENT` environment variable) independently of agent detection.
+
+### API Changes
+* Add `Xlarge` enum value for [apps.ComputeSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#ComputeSize).
+
+
 ## Release v0.147.0 (2026-06-17)
 
 ### API Changes
