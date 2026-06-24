@@ -23,6 +23,65 @@ func (_m *MockPolicyComplianceForClustersInterface) EXPECT() *MockPolicyComplian
 	return &MockPolicyComplianceForClustersInterface_Expecter{mock: &_m.Mock}
 }
 
+// CancelPendingClusterEnforcement provides a mock function with given fields: ctx, request
+func (_m *MockPolicyComplianceForClustersInterface) CancelPendingClusterEnforcement(ctx context.Context, request compute.CancelPendingClusterEnforcementRequest) (*compute.CancelPendingClusterEnforcementResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CancelPendingClusterEnforcement")
+	}
+
+	var r0 *compute.CancelPendingClusterEnforcementResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.CancelPendingClusterEnforcementRequest) (*compute.CancelPendingClusterEnforcementResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.CancelPendingClusterEnforcementRequest) *compute.CancelPendingClusterEnforcementResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.CancelPendingClusterEnforcementResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.CancelPendingClusterEnforcementRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CancelPendingClusterEnforcement'
+type MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call struct {
+	*mock.Call
+}
+
+// CancelPendingClusterEnforcement is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.CancelPendingClusterEnforcementRequest
+func (_e *MockPolicyComplianceForClustersInterface_Expecter) CancelPendingClusterEnforcement(ctx interface{}, request interface{}) *MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call {
+	return &MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call{Call: _e.mock.On("CancelPendingClusterEnforcement", ctx, request)}
+}
+
+func (_c *MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call) Run(run func(ctx context.Context, request compute.CancelPendingClusterEnforcementRequest)) *MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.CancelPendingClusterEnforcementRequest))
+	})
+	return _c
+}
+
+func (_c *MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call) Return(_a0 *compute.CancelPendingClusterEnforcementResponse, _a1 error) *MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call) RunAndReturn(run func(context.Context, compute.CancelPendingClusterEnforcementRequest) (*compute.CancelPendingClusterEnforcementResponse, error)) *MockPolicyComplianceForClustersInterface_CancelPendingClusterEnforcement_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // EnforceCompliance provides a mock function with given fields: ctx, request
 func (_m *MockPolicyComplianceForClustersInterface) EnforceCompliance(ctx context.Context, request compute.EnforceClusterComplianceRequest) (*compute.EnforceClusterComplianceResponse, error) {
 	ret := _m.Called(ctx, request)

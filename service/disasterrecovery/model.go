@@ -372,7 +372,7 @@ type StableUrl struct {
 	Name string `json:"name,omitempty"`
 	// The stable URL endpoint. Generated on creation and immutable thereafter.
 	// For non-Private-Link workspaces this is
-	// `https://<spog_host>/?c=<connection_id>`. For Private-Link workspaces
+	// `https://<spog_host>/?w=<connection_id>`. For Private-Link workspaces
 	// this is the per-connection hostname.
 	Url string `json:"url,omitempty"`
 
@@ -420,8 +420,8 @@ type WorkspaceSet struct {
 	// Resource name for this workspace set.
 	Name string `json:"name"`
 	// Whether to enable control plane DR (notebooks, jobs, clusters, etc.) for
-	// this set.
-	ReplicateWorkspaceAssets bool `json:"replicate_workspace_assets"`
+	// this set. Defaults to false.
+	ReplicateWorkspaceAssets bool `json:"replicate_workspace_assets,omitempty"`
 	// Resource names of stable URLs associated with this workspace set. Format:
 	// accounts/{account_id}/stable-urls/{stable_url_id}. The referenced stable
 	// URLs must already exist (via CreateStableUrl).
@@ -429,4 +429,14 @@ type WorkspaceSet struct {
 	// Workspace IDs in this set. The system derives and validates regions. All
 	// workspaces must be in the Mission Critical tier.
 	WorkspaceIds []string `json:"workspace_ids"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *WorkspaceSet) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceSet) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
