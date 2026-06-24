@@ -128,8 +128,8 @@ type CreateRefreshRequest struct {
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
 	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: `schema`or
-	// `table`.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 	// The refresh to create
 	Refresh Refresh `json:"refresh"`
@@ -670,8 +670,8 @@ type Refresh struct {
 	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
 	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"object_id"`
-	// The type of the monitored object. Can be one of the following: `schema`or
-	// `table`.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"object_type"`
 	// Unique id of the refresh operation.
 	RefreshId int64 `json:"refresh_id,omitempty"`

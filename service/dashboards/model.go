@@ -1486,7 +1486,7 @@ type ListDashboardsRequest struct {
 	// The flag to include dashboards located in the trash. If unspecified, only
 	// active dashboards will be returned.
 	ShowTrashed bool `json:"-" url:"show_trashed,omitempty"`
-	// `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
+	// `DASHBOARD_VIEW_BASIC` only includes summary metadata from the dashboard.
 	View DashboardView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

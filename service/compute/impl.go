@@ -1126,6 +1126,21 @@ type policyComplianceForClustersImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *policyComplianceForClustersImpl) CancelPendingClusterEnforcement(ctx context.Context, request CancelPendingClusterEnforcementRequest) (*CancelPendingClusterEnforcementResponse, error) {
+	var cancelPendingClusterEnforcementResponse CancelPendingClusterEnforcementResponse
+	path := "/api/2.0/policies/clusters:cancelPendingClusterEnforcement"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelPendingClusterEnforcementResponse)
+	return &cancelPendingClusterEnforcementResponse, err
+}
+
 func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error) {
 	var enforceClusterComplianceResponse EnforceClusterComplianceResponse
 	path := "/api/2.0/policies/clusters/enforce-compliance"

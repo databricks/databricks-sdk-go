@@ -2052,15 +2052,20 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 
 type PolicyComplianceForClustersInterface interface {
 
-	// Updates a cluster to be compliant with the current version of its policy. A
-	// cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
-	//
-	// If a cluster is updated while in a `RUNNING` state, it will be restarted so
-	// that the new attributes can take effect.
+	// Cancels a pending enforcement on a cluster. After canceling the pending
+	// enforcement, the cluster will no longer update on the next termination or
+	// restart. Pending enforcements cannot be canceled when a cluster is in
+	// `TERMINATING` state. Only workspace admins can cancel pending enforcements.
+	CancelPendingClusterEnforcement(ctx context.Context, request CancelPendingClusterEnforcementRequest) (*CancelPendingClusterEnforcementResponse, error)
+
+	// Updates a cluster to be compliant with the current version of its policy.
 	//
 	// If a cluster is updated while in a `TERMINATED` state, it will remain
 	// `TERMINATED`. The next time the cluster is started, the new attributes will
 	// take effect.
+	//
+	// For clusters in other states, the behavior depends on the `enforce_mode`
+	// used.
 	//
 	// Clusters created by the Databricks Jobs, SDP, or Models services cannot be
 	// enforced by this API. Instead, use the "Enforce job policy compliance" API to
