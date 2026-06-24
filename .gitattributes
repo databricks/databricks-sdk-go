@@ -130,6 +130,7 @@ experimental/mocks/service/oauth2/mock_service_principal_secrets_proxy_interface
 experimental/mocks/service/pipelines/mock_pipelines_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_catalog_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_create_data_api_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_database_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_endpoint_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_project_operation_interface.go linguist-generated=true
@@ -137,6 +138,7 @@ experimental/mocks/service/postgres/mock_create_role_operation_interface.go ling
 experimental/mocks/service/postgres/mock_create_synced_table_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_catalog_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_delete_data_api_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_database_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_endpoint_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_project_operation_interface.go linguist-generated=true
@@ -146,6 +148,7 @@ experimental/mocks/service/postgres/mock_postgres_interface.go linguist-generate
 experimental/mocks/service/postgres/mock_undelete_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_undelete_project_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_branch_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_update_data_api_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_database_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_endpoint_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_project_operation_interface.go linguist-generated=true

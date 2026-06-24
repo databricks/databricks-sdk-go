@@ -60,9 +60,13 @@ type CreateVersionRequest struct {
 	Parent string `json:"-" url:"-"`
 	// The version to create.
 	Version Version `json:"version"`
-	// The version ID the caller expects to create. The server validates this
-	// equals `last_version_id + 1` on the deployment. If it doesn't match, the
-	// server returns `ABORTED`.
+	// The ID to use for the version, which becomes the final component of the
+	// version's resource name. A numeric string (base-10, fits in a signed
+	// 64-bit integer) chosen by the caller; must be greater than or equal to 1.
+	// Must be numerically greater than the deployment's most recent version
+	// (see `version.previous_version_id`); it does not need to start at 1 or
+	// increase by exactly 1. If the value is not numerically greater, the
+	// server returns `INVALID_PARAMETER_VALUE`.
 	VersionId string `json:"-" url:"version_id"`
 }
 
@@ -537,9 +541,11 @@ func (s ListVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// An operation on a single resource performed during a version. Operations are
-// append-only and record the result of applying a resource change to the
-// workspace.
+// An operation on a single resource performed during a version. Operations
+// record the result of applying a resource change to the workspace. Most fields
+// are immutable once recorded; `state`, `error_message`, `resource_id`, and
+// `status` may be updated afterwards (via UpdateOperation), guarded by
+// `sequence_id` for optimistic concurrency control.
 type Operation struct {
 	// The type of operation performed on this resource.
 	ActionType OperationActionType `json:"action_type"`
@@ -547,15 +553,19 @@ type Operation struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Error message if the operation failed. Set when status is
 	// OPERATION_STATUS_FAILED. Captures the error encountered while applying
-	// the resource to the workspace.
+	// the resource to the workspace. Mutable: may be updated after creation via
+	// UpdateOperation; setting it to an empty string clears it. After an update
+	// is applied, an operation whose status is OPERATION_STATUS_SUCCEEDED
+	// cannot carry an error_message.
 	ErrorMessage string `json:"error_message,omitempty"`
 	// Resource name of the operation. Format:
 	// deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
 	Name string `json:"name,omitempty"`
 	// ID of the actual resource in the workspace (e.g. the job ID, pipeline
-	// ID). Required for every operation except CREATE and RECREATE, which
-	// produce a new resource whose ID is not yet known when the operation is
-	// recorded.
+	// ID). Optional at creation: CREATE and RECREATE operations produce a new
+	// resource whose ID is not yet known when the operation is recorded.
+	// Mutable: may be filled in (or corrected) later via UpdateOperation once
+	// the ID is known.
 	ResourceId string `json:"resource_id,omitempty"`
 	// Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar",
 	// "jobs.foo.permissions", "files.<rel-path>"). Can be an arbitrary UTF-8
@@ -567,9 +577,14 @@ type Operation struct {
 	// set this field.
 	ResourceType DeploymentResourceType `json:"resource_type,omitempty"`
 	// Serialized local config state after the operation. Should be unset for
-	// delete operations.
+	// delete operations. Mutable: may be updated after creation via
+	// UpdateOperation. When updating, the caller must echo the last-observed
+	// `sequence_id` as a concurrency precondition.
 	State *json.RawMessage `json:"state,omitempty"`
-	// Whether the operation succeeded or failed.
+	// Whether the operation succeeded or failed. Mutable: may be updated after
+	// creation via UpdateOperation, e.g. when an operation recorded as failed
+	// is retried and eventually succeeds. A succeeded operation cannot carry an
+	// `error_message`.
 	Status OperationStatus `json:"status"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -743,8 +758,11 @@ type Version struct {
 	Status VersionStatus `json:"status,omitempty"`
 	// Target name of the deployment, captured at the time of this version.
 	TargetName string `json:"target_name,omitempty"`
-	// Monotonically increasing version identifier within the parent deployment.
-	// Assigned by the client on creation.
+	// Version identifier within the parent deployment, assigned by the client
+	// on creation. A numeric string (base-10, fits in a signed 64-bit integer)
+	// that is greater than or equal to 1. Version IDs are strictly increasing
+	// within a deployment but are not required to start at 1 or to be
+	// contiguous.
 	VersionId string `json:"version_id,omitempty"`
 	// Type of version (deploy or destroy).
 	VersionType VersionType `json:"version_type"`
@@ -885,6 +903,10 @@ func (f *VersionType) Type() string {
 
 // Workspace location of a bundle deployment, captured at deploy time.
 type WorkspaceInfo struct {
+	// Path of the bundle root (the directory containing databricks.yml)
+	// relative to git_folder_path. Empty when the deployment is not from a
+	// Databricks Git folder.
+	BundleRootPath string `json:"bundle_root_path,omitempty"`
 	// Absolute workspace path where the deployed bundle files live. Mirrors the
 	// workspace.file_path field in DABs bundle config.
 	FilePath string `json:"file_path,omitempty"`

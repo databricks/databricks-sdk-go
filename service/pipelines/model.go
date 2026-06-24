@@ -137,6 +137,8 @@ type ClonePipelineRequest struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
@@ -334,6 +336,8 @@ type CreatePipeline struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
@@ -619,6 +623,8 @@ type EditPipeline struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
@@ -2439,6 +2445,8 @@ type PipelineSpec struct {
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
+	// Serverless compute ID specified by the user for serverless pipelines.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the

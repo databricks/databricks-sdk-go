@@ -1,5 +1,56 @@
 # Version changelog
 
+## Release v0.149.0 (2026-06-23)
+
+### API Changes
+* Add `BundleRootPath` field for [bundledeployments.WorkspaceInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#WorkspaceInfo).
+* Add `AiRuntimeTask` field for [jobs.ResolvedValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedValues).
+* Add `AiRuntimeTaskOutput` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+* Add `AiRuntimeTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `AiRuntimeTask` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `AiRuntimeTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+
+
+## Release v0.148.0 (2026-06-22)
+
+### New Features and Improvements
+
+* Added a `meta-harness` user-agent dimension that reports the omnigent meta-harness (detected via the `OMNIGENT` environment variable) independently of agent detection.
+
+### API Changes
+* Add `Xlarge` enum value for [apps.ComputeSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#ComputeSize).
+
+
+## Release v0.147.0 (2026-06-17)
+
+### API Changes
+* Add `ServerlessComputeId` field for [pipelines.ClonePipelineRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ClonePipelineRequest).
+* Add `ServerlessComputeId` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+* Add `ServerlessComputeId` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+* Add `ServerlessComputeId` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+
+
+## Release v0.146.0 (2026-06-16)
+
+### API Changes
+* Add `CreateDataApi`, `DeleteDataApi`, `GetDataApi` and `UpdateDataApi` methods for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `CapacityReservationGroup` field for [compute.AzureAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#AzureAttributes).
+
+
+## Release v0.145.0 (2026-06-15)
+
+### Bug Fixes
+
+* Encode the governed-tag key as a single path segment when it is sent as a URL path parameter, so hierarchical keys containing `/` route correctly instead of being split into extra path segments and resolving to no endpoint (`404` / `ENDPOINT_NOT_FOUND`). Affects `GetTagPolicy`/`DeleteTagPolicy`/`UpdateTagPolicy` ([tags.TagPoliciesAPI](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/tags#TagPoliciesAPI)), `GetTagAssignment`/`DeleteTagAssignment`/`UpdateTagAssignment` ([tags.WorkspaceEntityTagAssignmentsAPI](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/tags#WorkspaceEntityTagAssignmentsAPI)), and `Get`/`Delete`/`Update` ([catalog.EntityTagAssignmentsAPI](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EntityTagAssignmentsAPI)).
+
+### API Changes
+* Change `ResourceId` field for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* [Breaking] Change `ResourceId` field for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* Add `Dynamics365` enum value for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
+* Add `EndpointId` field for [vectorsearch.MiniVectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#MiniVectorIndex).
+* Add `EndpointId` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+
+
 ## Release v0.144.0 (2026-06-11)
 
 ### API Changes

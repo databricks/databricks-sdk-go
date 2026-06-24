@@ -773,6 +773,8 @@ type CustomerFacingIngressNetworkPolicy struct {
 	PublicAccess *CustomerFacingIngressNetworkPolicyPublicAccess `json:"public_access,omitempty"`
 }
 
+// Matches account-level Databricks API endpoints for an ingress network policy
+// rule.
 type CustomerFacingIngressNetworkPolicyAccountApiDestination struct {
 	// Qualifies the breadth of API access for the listed scopes. See
 	// ApiScopeQualifier.
@@ -1275,6 +1277,8 @@ func (s CustomerFacingIngressNetworkPolicyRequestDestination) MarshalJSON() ([]b
 	return marshal.Marshal(s)
 }
 
+// Matches workspace-level Databricks API endpoints for an ingress network
+// policy rule.
 type CustomerFacingIngressNetworkPolicyWorkspaceApiDestination struct {
 	// Qualifies the breadth of API access for the listed scopes. See
 	// ApiScopeQualifier.
