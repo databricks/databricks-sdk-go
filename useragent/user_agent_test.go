@@ -82,3 +82,24 @@ func TestMultiplePartners(t *testing.T) {
 	assert.Contains(t, userAgent, "partner/partner1")
 	assert.Contains(t, userAgent, "partner/partner2")
 }
+
+func TestInContext_DeduplicatesIdenticalPairs(t *testing.T) {
+	// Repeatedly injecting the same key/value pair onto a reused context must
+	// not grow the user agent: this is what happened when a long-lived caller
+	// threaded one context across many operations.
+	ctx := context.Background()
+	for i := 0; i < 100; i++ {
+		ctx = InContext(ctx, "resource", "cluster")
+		ctx = InContext(ctx, "sdk", "sdkv2")
+	}
+	userAgent := FromContext(ctx)
+	assert.Equal(t, 1, strings.Count(userAgent, "resource/cluster"))
+	assert.Equal(t, 1, strings.Count(userAgent, "sdk/sdkv2"))
+
+	// Distinct values for the same key are still preserved.
+	ctx2 := InContext(context.Background(), "resource", "a")
+	ctx2 = InContext(ctx2, "resource", "b")
+	userAgent2 := FromContext(ctx2)
+	assert.Contains(t, userAgent2, "resource/a")
+	assert.Contains(t, userAgent2, "resource/b")
+}

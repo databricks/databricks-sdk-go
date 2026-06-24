@@ -111,7 +111,10 @@ func (u info) String() string {
 
 type data []info
 
-// With always uses the latest value for a given alphanumeric key.
+// With appends the key/value pair, skipping it when an identical key/value
+// pair is already present. De-duplicating exact pairs keeps the user agent from
+// growing without bound when the same dimension is injected repeatedly onto a
+// reused context. Distinct values for the same key are still preserved.
 // Panics if key or value don't satisfy alphanumeric or semver format.
 func (d data) With(key, value string) data {
 	if err := matchAlphanum(key); err != nil {
@@ -119,6 +122,11 @@ func (d data) With(key, value string) data {
 	}
 	if err := matchAlphanumOrSemVer(value); err != nil {
 		panic(err)
+	}
+	for _, e := range d {
+		if e.Key == key && e.Value == value {
+			return d
+		}
 	}
 	return append(d, info{key, value})
 }
