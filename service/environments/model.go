@@ -125,6 +125,32 @@ type DeleteWorkspaceBaseEnvironmentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Environment specification for a WorkspaceBaseEnvironment. Contains the
+// environment version and dependencies configuration.
+type EnvironmentSpec struct {
+	// List of pip dependencies, as supported by the version of pip in this
+	// environment. Each dependency is a valid pip requirements file line per
+	// https://pip.pypa.io/en/stable/reference/requirements-file-format/.
+	// Allowed dependencies include a requirement specifier, an archive URL, a
+	// local project path (such as WSFS or UC Volumes in Databricks), or a VCS
+	// project URL.
+	Dependencies []string `json:"dependencies,omitempty"`
+	// Environment version used by the environment. Each version comes with a
+	// specific Python version and a set of Python packages. The version is a
+	// string, consisting of an integer.
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Error codes returned by Databricks APIs to indicate specific failure
 // conditions.
 type ErrorCode string
@@ -541,6 +567,8 @@ type WorkspaceBaseEnvironment struct {
 	// The resource name of the workspace base environment. Format:
 	// workspace-base-environments/{workspace-base-environment}
 	Name string `json:"name,omitempty"`
+	// The environment specification containing version and dependencies.
+	Spec *EnvironmentSpec `json:"spec,omitempty"`
 	// The status of the materialized workspace base environment.
 	Status WorkspaceBaseEnvironmentCacheStatus `json:"status,omitempty"`
 	// Timestamp when the environment was last updated.

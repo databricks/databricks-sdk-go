@@ -26,10 +26,11 @@ type AiRuntimeTask struct {
 	// When set, the training node exposes the value via the `$CODE_SOURCE`
 	// environment variable.
 	CodeSourcePath string `json:"code_source_path,omitempty"`
-	// Deployment specs for this task. Many single-program training algorithms
-	// use a single entry where every node runs the same command. Role-split
-	// workloads (driver + worker, parameter server, separate eval node, etc.)
-	// have multiple entries, each with its own command and compute.
+	// Deployment specs for this task. Exactly one deployment is currently
+	// supported (a single entry where every node runs the same command); this
+	// is a current-Preview constraint. Role-split workloads (driver + worker,
+	// parameter server, separate eval node, etc.) with multiple entries are the
+	// eventual intent but not yet supported.
 	Deployments []DeploymentSpec `json:"deployments"`
 	// MLflow experiment name for this run. If an experiment with this name
 	// already exists under the calling user, the run is appended to it;

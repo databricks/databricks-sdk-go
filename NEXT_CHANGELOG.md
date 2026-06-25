@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `Spec` field for [environments.WorkspaceBaseEnvironment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments#WorkspaceBaseEnvironment).
