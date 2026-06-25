@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.151.0 (2026-06-25)
+
+### API Changes
+* Add `Spec` field for [environments.WorkspaceBaseEnvironment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/environments#WorkspaceBaseEnvironment).
+
+
 ## Release v0.150.0 (2026-06-24)
 
 ### Bug Fixes
