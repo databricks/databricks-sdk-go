@@ -15,6 +15,12 @@ import (
 )
 
 func TestUcAccProviders(t *testing.T) {
+	// TODO: Re-enable once the sharing server issue is resolved. ListSharesAll
+	// fails with DS_FAILED_REQUEST_TO_OPEN_DS_SERVER against the public Delta
+	// Sharing server (sharing.delta.io). The failure originates server-side,
+	// not in the SDK, and the owning team is addressing it.
+	t.Skip("temporarily disabled: server-side DS_FAILED_REQUEST_TO_OPEN_DS_SERVER from sharing.delta.io")
+
 	ctx, w := ucwsTest(t)
 
 	// this is a publicly available test token
