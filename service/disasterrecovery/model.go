@@ -149,9 +149,8 @@ type FailoverGroup struct {
 	// Current effective primary region. Replication flows FROM workspaces in
 	// this region. Changes after a successful failover.
 	EffectivePrimaryRegion string `json:"effective_primary_region,omitempty"`
-	// Opaque version string for optimistic locking. Server-generated, returned
-	// in responses. Must be provided on Update requests to prevent concurrent
-	// modifications.
+	// Opaque version string for optimistic locking. Server-generated and
+	// returned in responses.
 	Etag string `json:"etag,omitempty"`
 	// Initial primary region. Used only in Create requests to set the starting
 	// primary region. Not returned in responses.
@@ -405,6 +404,11 @@ type UcReplicationConfig struct {
 }
 
 type UpdateFailoverGroupRequest struct {
+	// Optional opaque version string for optimistic locking, obtained from a
+	// prior read of the failover group. If provided, the update is rejected
+	// unless it matches the failover group's current etag. If omitted, the
+	// update proceeds without an optimistic-lock check.
+	Etag string `json:"-" url:"etag,omitempty"`
 	// The failover group with updated fields. The name field identifies the
 	// resource and is populated from the URL path.
 	FailoverGroup FailoverGroup `json:"failover_group"`
@@ -413,6 +417,16 @@ type UpdateFailoverGroupRequest struct {
 	Name string `json:"-" url:"-"`
 	// Comma-separated list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateFailoverGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateFailoverGroupRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A set of workspaces that replicate to each other across regions.
