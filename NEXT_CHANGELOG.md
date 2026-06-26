@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+- Parse WaitTimeout and use it as poll timeout in ExecuteAndWait
+
 ### Documentation
 
 ### Internal Changes
