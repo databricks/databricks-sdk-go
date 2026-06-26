@@ -12,11 +12,27 @@ import (
 type HttpCallV2Interface interface {
 
 	// This mimics "old" style post requests which have the resource inlined.
+	//
+	// Set the `path_param_string` value before calling. The _resource_ is sent as
+	// the request **body**. See the [API overview] for details.
+	//
+	// Supported body styles:
+	//
+	// - [inline] - referenced
+	//
+	// Resolution order:
+	//
+	// 1. inline body 2. referenced resource
+	//
+	// [API overview]: https://docs.databricks.com/api
+	// [inline]: https://docs.databricks.com/api/inline
 	CreateResource(ctx context.Context, request CreateResourceRequest) (*Resource, error)
 
 	GetResource(ctx context.Context, request GetResourceRequest) (*Resource, error)
 
 	// This mimics "new" style post requests which have a body field.
+	//
+	// > Prefer this over the inline form.
 	UpdateResource(ctx context.Context, request UpdateResourceRequest) (*Resource, error)
 }
 

@@ -17,3 +17,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `Etag` field for [disasterrecovery.UpdateFailoverGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#UpdateFailoverGroupRequest).
