@@ -209,6 +209,10 @@ func (a *disasterRecoveryImpl) UpdateFailoverGroup(ctx context.Context, request 
 	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", request.Name)
 	queryParams := make(map[string]any)
 
+	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
+		queryParams["etag"] = request.Etag
+	}
+
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
 	if updateMaskMarshallError != nil {
 		return nil, updateMaskMarshallError

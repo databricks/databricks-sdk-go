@@ -5,6 +5,7 @@ package compute
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -321,6 +322,31 @@ func (s CancelCommand) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Request to cancel the pending enforcement for a cluster.
+type CancelPendingClusterEnforcementRequest struct {
+	// If true and no pending enforcement exists, the request will succeed but
+	// no action will be taken.
+	AllowMissing bool `json:"allow_missing,omitempty"`
+	// The ID of the cluster to cancel the pending enforcement for.
+	ClusterId string `json:"cluster_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CancelPendingClusterEnforcementRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CancelPendingClusterEnforcementRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response for canceling the pending enforcement for a cluster. If the cancel
+// request succeeds, an empty response object is returned. Otherwise, an error
+// response is returned.
+type CancelPendingClusterEnforcementResponse struct {
+}
+
 type ChangeClusterOwner struct {
 	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
@@ -595,6 +621,9 @@ type ClusterCompliance struct {
 	// Whether this cluster is in compliance with the latest version of its
 	// policy.
 	IsCompliant bool `json:"is_compliant,omitempty"`
+	// Information about the pending enforcement for the cluster. Only present
+	// if a pending enforcement is scheduled for the cluster.
+	PendingEnforcement *PendingEnforcement `json:"pending_enforcement,omitempty"`
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. The values indicate an error message describing the
@@ -2706,6 +2735,20 @@ func (s EditPolicy) MarshalJSON() ([]byte, error) {
 type EnforceClusterComplianceRequest struct {
 	// The ID of the cluster you want to enforce policy compliance on.
 	ClusterId string `json:"cluster_id"`
+	// Determines how changes should be made to clusters that are not in
+	// `TERMINATED` state.
+	//
+	// - `ENFORCE_IMMEDIATELY`: If the cluster is in a `RUNNING` state, it will
+	// be restarted so that the new attributes can take effect. For other states
+	// aside from `TERMINATED` state, the request will be rejected. -
+	// `WAIT_FOR_TERMINATION`: The cluster is not immediately edited. Instead, a
+	// pending enforcement is scheduled to update the cluster when it terminates
+	// or restarts. When this occurs, `enforce_result` will contain `DEFERRED`.
+	// Only workspace admins can use this mode.
+	//
+	// Regardless of the enforce mode, clusters in `TERMINATED` state are
+	// immediately edited.
+	EnforceMode EnforcePolicyComplianceForClusterEnforceMode `json:"enforce_mode,omitempty"`
 	// If set, previews the changes that would be made to a cluster to enforce
 	// compliance but does not update the cluster.
 	ValidateOnly bool `json:"validate_only,omitempty"`
@@ -2725,6 +2768,8 @@ type EnforceClusterComplianceResponse struct {
 	// A list of changes that have been made to the cluster settings for the
 	// cluster to become compliant with its policy.
 	Changes []ClusterSettingsChange `json:"changes,omitempty"`
+	// Describes whether changes have been applied to the cluster.
+	EnforceResult EnforcePolicyComplianceForClusterResponseEnforceResult `json:"enforce_result,omitempty"`
 	// Whether any changes have been made to the cluster settings for the
 	// cluster to become compliant with its policy.
 	HasChanges bool `json:"has_changes,omitempty"`
@@ -2738,6 +2783,250 @@ func (s *EnforceClusterComplianceResponse) UnmarshalJSON(b []byte) error {
 
 func (s EnforceClusterComplianceResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type EnforcePolicyComplianceForClusterEnforceMode string
+
+const EnforcePolicyComplianceForClusterEnforceModeEnforceImmediately EnforcePolicyComplianceForClusterEnforceMode = `ENFORCE_IMMEDIATELY`
+
+const EnforcePolicyComplianceForClusterEnforceModeWaitForTermination EnforcePolicyComplianceForClusterEnforceMode = `WAIT_FOR_TERMINATION`
+
+// String representation for [fmt.Print]
+func (f *EnforcePolicyComplianceForClusterEnforceMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EnforcePolicyComplianceForClusterEnforceMode) Set(v string) error {
+	switch v {
+	case `ENFORCE_IMMEDIATELY`, `WAIT_FOR_TERMINATION`:
+		*f = EnforcePolicyComplianceForClusterEnforceMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ENFORCE_IMMEDIATELY", "WAIT_FOR_TERMINATION"`, v)
+	}
+}
+
+// Values returns all possible values for EnforcePolicyComplianceForClusterEnforceMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EnforcePolicyComplianceForClusterEnforceMode) Values() []EnforcePolicyComplianceForClusterEnforceMode {
+	return []EnforcePolicyComplianceForClusterEnforceMode{
+		EnforcePolicyComplianceForClusterEnforceModeEnforceImmediately,
+		EnforcePolicyComplianceForClusterEnforceModeWaitForTermination,
+	}
+}
+
+// Type always returns EnforcePolicyComplianceForClusterEnforceMode to satisfy [pflag.Value] interface
+func (f *EnforcePolicyComplianceForClusterEnforceMode) Type() string {
+	return "EnforcePolicyComplianceForClusterEnforceMode"
+}
+
+type EnforcePolicyComplianceForClusterResponseClusterSettings struct {
+	// Parameters needed in order to automatically scale clusters up and down
+	// based on load. Note: autoscaling works best with DB runtime versions 3.0
+	// or later.
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
+	// Automatically terminates the cluster after it is inactive for this time
+	// in minutes. If not set, this cluster will not be automatically
+	// terminated. If specified, the threshold must be between 10 and 10000
+	// minutes. Users can also set this value to 0 to explicitly disable
+	// automatic termination.
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
+	// Attributes related to clusters running on Amazon Web Services. If not
+	// specified at cluster creation, a set of default values will be used.
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
+	// Attributes related to clusters running on Microsoft Azure. If not
+	// specified at cluster creation, a set of default values will be used.
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// The configuration for delivering spark logs to a long-term storage
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
+	// Cluster name requested by the user. This doesn't have to be unique. If
+	// not specified at creation, the cluster name will be an empty string. For
+	// job clusters, the cluster name is automatically set based on the job and
+	// job run IDs.
+	ClusterName string `json:"cluster_name,omitempty"`
+	// Additional tags for cluster resources. Databricks will tag all cluster
+	// resources (e.g., AWS instances and EBS volumes) with these tags in
+	// addition to `default_tags`. Notes:
+	//
+	// - Currently, Databricks allows at most 45 custom tags
+	//
+	// - Clusters can only reuse cloud resources if the resources' tags are a
+	// subset of the cluster tags
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+	// Custom docker image BYOC
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
+	// The optional ID of the instance pool for the driver of the cluster
+	// belongs. The pool cluster uses the instance pool with id
+	// (instance_pool_id) if the driver pool is not assigned.
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// Flexible node type configuration for the driver node.
+	DriverNodeTypeFlexibility *NodeTypeFlexibility `json:"driver_node_type_flexibility,omitempty"`
+	// The node type of the Spark driver. Note that this field is optional; if
+	// unset, the driver node type will be set as the same value as
+	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
+	// Autoscaling Local Storage: when enabled, this cluster will dynamically
+	// acquire additional disk space when its Spark workers are running low on
+	// disk space.
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Whether to enable LUKS on cluster VMs' local disks
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
+	// Attributes related to clusters running on Google Cloud Platform. If not
+	// specified at cluster creation, a set of default values will be used.
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
+	// The configuration for storing init scripts. Any number of destinations
+	// can be specified. The scripts are executed sequentially in the order
+	// provided. If `cluster_log_conf` is specified, init script logs are sent
+	// to `<destination>/<cluster-ID>/init_scripts`.
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
+	// The optional ID of the instance pool to which the cluster belongs.
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+
+	Kind Kind `json:"kind,omitempty"`
+	// This field encodes, through a single value, the resources available to
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
+	NodeTypeId string `json:"node_type_id,omitempty"`
+	// Number of worker nodes that this cluster should have. A cluster has one
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
+	//
+	// Note: When reading the properties of a cluster, this field reflects the
+	// desired number of workers rather than the actual current number of
+	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
+	// field will immediately be updated to reflect the target size of 10
+	// workers, whereas the workers listed in `spark_info` will gradually
+	// increase from 5 to 10 as the new nodes are provisioned.
+	NumWorkers int `json:"num_workers,omitempty"`
+	// The ID of the cluster policy used to create the cluster if applicable.
+	PolicyId string `json:"policy_id,omitempty"`
+	// If set, what the configurable throughput (in Mb/s) for the remote disk
+	// is. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
+	// Single user name if data_security_mode is `SINGLE_USER`
+	SingleUserName string `json:"single_user_name,omitempty"`
+	// An object containing a set of optional, user-specified Spark
+	// configuration key-value pairs. Users can also pass in a string of extra
+	// JVM options to the driver and the executors via
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
+	// respectively.
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs. Please note that key-value pair of the form
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
+	// driver and workers.
+	//
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
+	// example below. This ensures that all default databricks managed
+	// environmental variables are included as well.
+	//
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
+	// available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
+	SparkVersion string `json:"spark_version,omitempty"`
+	// SSH public key contents that will be added to each Spark node in this
+	// cluster. The corresponding private keys can be used to login with the
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// If set, what the total initial volume size (in GB) of the remote disks
+	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+	// Flexible node type configuration for worker nodes.
+	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
+
+	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnforcePolicyComplianceForClusterResponseClusterSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnforcePolicyComplianceForClusterResponseClusterSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnforcePolicyComplianceForClusterResponseEnforceResult string
+
+const EnforcePolicyComplianceForClusterResponseEnforceResultApplied EnforcePolicyComplianceForClusterResponseEnforceResult = `APPLIED`
+
+const EnforcePolicyComplianceForClusterResponseEnforceResultDeferred EnforcePolicyComplianceForClusterResponseEnforceResult = `DEFERRED`
+
+const EnforcePolicyComplianceForClusterResponseEnforceResultNoChanges EnforcePolicyComplianceForClusterResponseEnforceResult = `NO_CHANGES`
+
+// String representation for [fmt.Print]
+func (f *EnforcePolicyComplianceForClusterResponseEnforceResult) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EnforcePolicyComplianceForClusterResponseEnforceResult) Set(v string) error {
+	switch v {
+	case `APPLIED`, `DEFERRED`, `NO_CHANGES`:
+		*f = EnforcePolicyComplianceForClusterResponseEnforceResult(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APPLIED", "DEFERRED", "NO_CHANGES"`, v)
+	}
+}
+
+// Values returns all possible values for EnforcePolicyComplianceForClusterResponseEnforceResult.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EnforcePolicyComplianceForClusterResponseEnforceResult) Values() []EnforcePolicyComplianceForClusterResponseEnforceResult {
+	return []EnforcePolicyComplianceForClusterResponseEnforceResult{
+		EnforcePolicyComplianceForClusterResponseEnforceResultApplied,
+		EnforcePolicyComplianceForClusterResponseEnforceResultDeferred,
+		EnforcePolicyComplianceForClusterResponseEnforceResultNoChanges,
+	}
+}
+
+// Type always returns EnforcePolicyComplianceForClusterResponseEnforceResult to satisfy [pflag.Value] interface
+func (f *EnforcePolicyComplianceForClusterResponseEnforceResult) Type() string {
+	return "EnforcePolicyComplianceForClusterResponseEnforceResult"
 }
 
 // The environment entity used to preserve serverless environment side panel,
@@ -2921,6 +3210,10 @@ const EventTypeDecommissionEnded EventType = `DECOMMISSION_ENDED`
 
 const EventTypeDecommissionStarted EventType = `DECOMMISSION_STARTED`
 
+const EventTypeDeferredPolicyEnforcementFailed EventType = `DEFERRED_POLICY_ENFORCEMENT_FAILED`
+
+const EventTypeDeferredPolicyEnforcementScheduled EventType = `DEFERRED_POLICY_ENFORCEMENT_SCHEDULED`
+
 const EventTypeDidNotExpandDisk EventType = `DID_NOT_EXPAND_DISK`
 
 const EventTypeDriverHealthy EventType = `DRIVER_HEALTHY`
@@ -2975,11 +3268,11 @@ func (f *EventType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EventType) Set(v string) error {
 	switch v {
-	case `ADD_NODES_FAILED`, `AUTOMATIC_CLUSTER_UPDATE`, `AUTOSCALING_BACKOFF`, `AUTOSCALING_FAILED`, `AUTOSCALING_STATS_REPORT`, `CLUSTER_MIGRATED`, `CREATING`, `DBFS_DOWN`, `DECOMMISSION_ENDED`, `DECOMMISSION_STARTED`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODES_LOST`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UC_VOLUME_MISCONFIGURED`, `UNPINNED`, `UPSIZE_COMPLETED`:
+	case `ADD_NODES_FAILED`, `AUTOMATIC_CLUSTER_UPDATE`, `AUTOSCALING_BACKOFF`, `AUTOSCALING_FAILED`, `AUTOSCALING_STATS_REPORT`, `CLUSTER_MIGRATED`, `CREATING`, `DBFS_DOWN`, `DECOMMISSION_ENDED`, `DECOMMISSION_STARTED`, `DEFERRED_POLICY_ENFORCEMENT_FAILED`, `DEFERRED_POLICY_ENFORCEMENT_SCHEDULED`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODES_LOST`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UC_VOLUME_MISCONFIGURED`, `UNPINNED`, `UPSIZE_COMPLETED`:
 		*f = EventType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ADD_NODES_FAILED", "AUTOMATIC_CLUSTER_UPDATE", "AUTOSCALING_BACKOFF", "AUTOSCALING_FAILED", "AUTOSCALING_STATS_REPORT", "CLUSTER_MIGRATED", "CREATING", "DBFS_DOWN", "DECOMMISSION_ENDED", "DECOMMISSION_STARTED", "DID_NOT_EXPAND_DISK", "DRIVER_HEALTHY", "DRIVER_NOT_RESPONDING", "DRIVER_UNAVAILABLE", "EDITED", "EXPANDED_DISK", "FAILED_TO_EXPAND_DISK", "INIT_SCRIPTS_FINISHED", "INIT_SCRIPTS_STARTED", "METASTORE_DOWN", "NODES_LOST", "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED", "PINNED", "RESIZING", "RESTARTING", "RUNNING", "SPARK_EXCEPTION", "STARTING", "TERMINATING", "UC_VOLUME_MISCONFIGURED", "UNPINNED", "UPSIZE_COMPLETED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ADD_NODES_FAILED", "AUTOMATIC_CLUSTER_UPDATE", "AUTOSCALING_BACKOFF", "AUTOSCALING_FAILED", "AUTOSCALING_STATS_REPORT", "CLUSTER_MIGRATED", "CREATING", "DBFS_DOWN", "DECOMMISSION_ENDED", "DECOMMISSION_STARTED", "DEFERRED_POLICY_ENFORCEMENT_FAILED", "DEFERRED_POLICY_ENFORCEMENT_SCHEDULED", "DID_NOT_EXPAND_DISK", "DRIVER_HEALTHY", "DRIVER_NOT_RESPONDING", "DRIVER_UNAVAILABLE", "EDITED", "EXPANDED_DISK", "FAILED_TO_EXPAND_DISK", "INIT_SCRIPTS_FINISHED", "INIT_SCRIPTS_STARTED", "METASTORE_DOWN", "NODES_LOST", "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED", "PINNED", "RESIZING", "RESTARTING", "RUNNING", "SPARK_EXCEPTION", "STARTING", "TERMINATING", "UC_VOLUME_MISCONFIGURED", "UNPINNED", "UPSIZE_COMPLETED"`, v)
 	}
 }
 
@@ -2998,6 +3291,8 @@ func (f *EventType) Values() []EventType {
 		EventTypeDbfsDown,
 		EventTypeDecommissionEnded,
 		EventTypeDecommissionStarted,
+		EventTypeDeferredPolicyEnforcementFailed,
+		EventTypeDeferredPolicyEnforcementScheduled,
 		EventTypeDidNotExpandDisk,
 		EventTypeDriverHealthy,
 		EventTypeDriverNotResponding,
@@ -3147,6 +3442,9 @@ type GetClusterComplianceResponse struct {
 	// be out of compliance if the policy was updated after the cluster was last
 	// edited.
 	IsCompliant bool `json:"is_compliant,omitempty"`
+	// Information about the pending enforcement for the cluster. Only present
+	// if a pending enforcement is scheduled for the cluster.
+	PendingEnforcement *PendingEnforcement `json:"pending_enforcement,omitempty"`
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. The values indicate an error message describing the
@@ -5061,6 +5359,73 @@ type NodeTypeFlexibility struct {
 	// A list of node type IDs to use as fallbacks when the primary node type is
 	// unavailable.
 	AlternateNodeTypeIds []string `json:"alternate_node_type_ids,omitempty"`
+}
+
+// Represents a pending enforcement on a cluster, which contains the changes to
+// make to the cluster configuration when the cluster is next terminated or
+// restarted.
+type PendingEnforcement struct {
+	// Whether the pending enforcement will be applied. A pending enforcement
+	// begins in `ACTIVE` state. If the enforcement fails to apply too many
+	// times, the state transitions to `INACTIVE`. Afterwards, the enforcement
+	// must be re-scheduled to become `ACTIVE` again.
+	EnforcementStatus PendingEnforcementEnforcementStatus `json:"enforcement_status,omitempty"`
+	// The time the pending enforcement was initiated.
+	InitiateTime *time.Time `json:"initiate_time,omitempty"`
+	// The user who initiated the pending enforcement.
+	InitiatorUser string `json:"initiator_user,omitempty"`
+	// A list of changes that will be made to the cluster configuration when the
+	// pending enforcement is applied.
+	TargetChanges []ClusterSettingsChange `json:"target_changes,omitempty"`
+	// The new configuration to apply upon cluster termination or restart.
+	TargetSpec *EnforcePolicyComplianceForClusterResponseClusterSettings `json:"target_spec,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PendingEnforcement) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PendingEnforcement) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PendingEnforcementEnforcementStatus string
+
+const PendingEnforcementEnforcementStatusActive PendingEnforcementEnforcementStatus = `ACTIVE`
+
+const PendingEnforcementEnforcementStatusInactive PendingEnforcementEnforcementStatus = `INACTIVE`
+
+// String representation for [fmt.Print]
+func (f *PendingEnforcementEnforcementStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PendingEnforcementEnforcementStatus) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `INACTIVE`:
+		*f = PendingEnforcementEnforcementStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "INACTIVE"`, v)
+	}
+}
+
+// Values returns all possible values for PendingEnforcementEnforcementStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PendingEnforcementEnforcementStatus) Values() []PendingEnforcementEnforcementStatus {
+	return []PendingEnforcementEnforcementStatus{
+		PendingEnforcementEnforcementStatusActive,
+		PendingEnforcementEnforcementStatusInactive,
+	}
+}
+
+// Type always returns PendingEnforcementEnforcementStatus to satisfy [pflag.Value] interface
+func (f *PendingEnforcementEnforcementStatus) Type() string {
+	return "PendingEnforcementEnforcementStatus"
 }
 
 // Error message of a failed pending instances

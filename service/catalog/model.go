@@ -970,7 +970,6 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 127
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1962,7 +1961,6 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 20
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
@@ -7131,7 +7129,6 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 45
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -7274,10 +7271,6 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_MARKETO_OAUTH_M2M = 347; Next id: 348. Reserved
-// numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*,
-// MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
-// MCP_SERVICE_STANDARD).
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -9017,7 +9010,6 @@ type UpdateWorkspaceBindingsResponse struct {
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
 
-// Next ID: 18
 type ValidateCredentialRequest struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
