@@ -29,8 +29,14 @@ func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request Exec
 		}
 		return nil, fmt.Errorf("%s", msg)
 	default:
-		// TODO: parse request.WaitTimeout and use it here
-		return retries.Poll[StatementResponse](ctx, 20*time.Minute,
+		timeout := 20 * time.Minute
+		if request.WaitTimeout != "" {
+			wTimeout, err := time.ParseDuration(request.WaitTimeout)
+			if err == nil && wTimeout > 0 {
+				timeout = wTimeout
+			}
+		}
+		return retries.Poll[StatementResponse](ctx, timeout,
 			func() (*StatementResponse, *retries.Err) {
 				res, err := a.GetStatementByStatementId(ctx, immediateResponse.StatementId)
 				if err != nil {

@@ -11,6 +11,7 @@
 ### Bug Fixes
 
 * Honor `ForceSendFields` for query parameters, including fields nested inside request sub-structs. A zero-valued scalar field (for example a `false` bool such as `cascade` on the pipelines Delete request) listed in `ForceSendFields` is now sent on the wire instead of being dropped by the `url` tag's `omitempty`, matching the existing behavior for JSON request bodies.
+* Parse WaitTimeout and use it as poll timeout in ExecuteAndWait
 
 ### Documentation
 
