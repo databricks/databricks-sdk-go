@@ -89,6 +89,20 @@ func (a *genieImpl) DeleteConversationMessage(ctx context.Context, request Genie
 	return err
 }
 
+func (a *genieImpl) DownloadMessageAttachmentVisualization(ctx context.Context, request DownloadMessageAttachmentVisualizationRequest) (*DownloadMessageAttachmentVisualizationResponse, error) {
+	var downloadMessageAttachmentVisualizationResponse DownloadMessageAttachmentVisualizationResponse
+	path := fmt.Sprintf("/api/2.0/genie/%v/download-visualization", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/octet-stream"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &downloadMessageAttachmentVisualizationResponse)
+	return &downloadMessageAttachmentVisualizationResponse, err
+}
+
 func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)

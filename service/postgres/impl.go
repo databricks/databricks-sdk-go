@@ -85,6 +85,10 @@ func (a *postgresImpl) CreateDatabase(ctx context.Context, request CreateDatabas
 	if request.DatabaseId != "" || slices.Contains(request.ForceSendFields, "DatabaseId") {
 		queryParams["database_id"] = request.DatabaseId
 	}
+
+	if request.ReplaceExisting != false || slices.Contains(request.ForceSendFields, "ReplaceExisting") {
+		queryParams["replace_existing"] = request.ReplaceExisting
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -142,6 +146,10 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", request.Parent)
 	queryParams := make(map[string]any)
+
+	if request.ReplaceExisting != false || slices.Contains(request.ForceSendFields, "ReplaceExisting") {
+		queryParams["replace_existing"] = request.ReplaceExisting
+	}
 
 	if request.RoleId != "" || slices.Contains(request.ForceSendFields, "RoleId") {
 		queryParams["role_id"] = request.RoleId
