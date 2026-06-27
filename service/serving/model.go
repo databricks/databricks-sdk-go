@@ -643,6 +643,9 @@ type CreateServingEndpoint struct {
 	// Tags to be attached to the serving endpoint and automatically propagated
 	// to billing logs.
 	Tags []EndpointTag `json:"tags,omitempty"`
+	// Configuration for persisting endpoint telemetry (logs, traces, and
+	// metrics) to Unity Catalog tables.
+	TelemetryConfig *TelemetryConfig `json:"telemetry_config,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2300,6 +2303,9 @@ type ServingEndpoint struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 	// The task type of the serving endpoint.
 	Task string `json:"task,omitempty"`
+	// Telemetry configuration for the endpoint, including inference-table
+	// payload logging.
+	TelemetryConfig *TelemetryConfig `json:"telemetry_config,omitempty"`
 	// The usage policy associated with serving endpoint.
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
@@ -2399,6 +2405,9 @@ type ServingEndpointDetailed struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 	// The task type of the serving endpoint.
 	Task string `json:"task,omitempty"`
+	// Telemetry configuration for the endpoint, including inference-table
+	// payload logging.
+	TelemetryConfig *TelemetryConfig `json:"telemetry_config,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2599,6 +2608,30 @@ func (f *ServingModelWorkloadType) Values() []ServingModelWorkloadType {
 // Type always returns ServingModelWorkloadType to satisfy [pflag.Value] interface
 func (f *ServingModelWorkloadType) Type() string {
 	return "ServingModelWorkloadType"
+}
+
+type TelemetryConfig struct {
+	// Configuration for inference table payload logging, including sampling.
+	InferenceTableConfig *TelemetryInferenceTableConfig `json:"inference_table_config,omitempty"`
+}
+
+// Inference table payload logging configuration
+type TelemetryInferenceTableConfig struct {
+	// The full name of the inference table created for this endpoint.
+	Name string `json:"name,omitempty"`
+	// Fraction of requests sampled for payload logging, in the range [0.0,
+	// 1.0], where 1.0 logs all requests.
+	SamplingFraction float64 `json:"sampling_fraction,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TelemetryInferenceTableConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TelemetryInferenceTableConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TrafficConfig struct {

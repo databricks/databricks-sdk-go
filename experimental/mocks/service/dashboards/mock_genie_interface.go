@@ -417,6 +417,65 @@ func (_c *MockGenieInterface_DeleteConversationMessage_Call) RunAndReturn(run fu
 	return _c
 }
 
+// DownloadMessageAttachmentVisualization provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) DownloadMessageAttachmentVisualization(ctx context.Context, request dashboards.DownloadMessageAttachmentVisualizationRequest) (*dashboards.DownloadMessageAttachmentVisualizationResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DownloadMessageAttachmentVisualization")
+	}
+
+	var r0 *dashboards.DownloadMessageAttachmentVisualizationResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.DownloadMessageAttachmentVisualizationRequest) (*dashboards.DownloadMessageAttachmentVisualizationResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.DownloadMessageAttachmentVisualizationRequest) *dashboards.DownloadMessageAttachmentVisualizationResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.DownloadMessageAttachmentVisualizationResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.DownloadMessageAttachmentVisualizationRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_DownloadMessageAttachmentVisualization_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DownloadMessageAttachmentVisualization'
+type MockGenieInterface_DownloadMessageAttachmentVisualization_Call struct {
+	*mock.Call
+}
+
+// DownloadMessageAttachmentVisualization is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.DownloadMessageAttachmentVisualizationRequest
+func (_e *MockGenieInterface_Expecter) DownloadMessageAttachmentVisualization(ctx interface{}, request interface{}) *MockGenieInterface_DownloadMessageAttachmentVisualization_Call {
+	return &MockGenieInterface_DownloadMessageAttachmentVisualization_Call{Call: _e.mock.On("DownloadMessageAttachmentVisualization", ctx, request)}
+}
+
+func (_c *MockGenieInterface_DownloadMessageAttachmentVisualization_Call) Run(run func(ctx context.Context, request dashboards.DownloadMessageAttachmentVisualizationRequest)) *MockGenieInterface_DownloadMessageAttachmentVisualization_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.DownloadMessageAttachmentVisualizationRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_DownloadMessageAttachmentVisualization_Call) Return(_a0 *dashboards.DownloadMessageAttachmentVisualizationResponse, _a1 error) *MockGenieInterface_DownloadMessageAttachmentVisualization_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_DownloadMessageAttachmentVisualization_Call) RunAndReturn(run func(context.Context, dashboards.DownloadMessageAttachmentVisualizationRequest) (*dashboards.DownloadMessageAttachmentVisualizationResponse, error)) *MockGenieInterface_DownloadMessageAttachmentVisualization_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ExecuteMessageAttachmentQuery provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) ExecuteMessageAttachmentQuery(ctx context.Context, request dashboards.GenieExecuteMessageAttachmentQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error) {
 	ret := _m.Called(ctx, request)

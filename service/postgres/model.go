@@ -346,6 +346,9 @@ type CreateDatabaseRequest struct {
 	// The Branch where this Database will be created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
+	// If true, update the database if it already exists instead of returning an
+	// error.
+	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -399,6 +402,15 @@ type CreateRoleRequest struct {
 	// The Branch where this Role is created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
+	// If true, update the role if it already exists instead of returning an
+	// error.
+	//
+	// When the role already exists, the provided `role` spec fully replaces the
+	// existing one: `membership_roles` is overwritten, not merged. Leaving
+	// `membership_roles` empty clears all of the role's existing memberships,
+	// including `DATABRICKS_SUPERUSER`. Always send the complete desired list
+	// of memberships when using this field.
+	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
 	// The desired specification of a Role.
 	Role Role `json:"role"`
 	// The ID to use for the Role, which will become the final component of the
@@ -1396,11 +1408,49 @@ type GetSyncedTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Configuration for the initial default branch created during project creation.
+type InitialBranchSpec struct {
+	// Whether the initial default branch should be protected from deletion.
+	IsProtected bool `json:"is_protected,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *InitialBranchSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s InitialBranchSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Configuration for the initial Read/Write endpoint created during project
 // creation.
 type InitialEndpointSpec struct {
+	// The maximum number of Compute Units for the initial endpoint.
+	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
+	// The minimum number of Compute Units for the initial endpoint.
+	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
 	// Settings for HA configuration of the endpoint.
 	Group *EndpointGroupSpec `json:"group,omitempty"`
+	// When set to true, explicitly disables automatic suspension (never
+	// suspend). Should be set to true when provided. Mutually exclusive with
+	// `suspend_timeout_duration`.
+	NoSuspension bool `json:"no_suspension,omitempty"`
+	// Duration of inactivity after which the initial endpoint is automatically
+	// suspended. If specified, should be between 60s and 604800s (1 minute to 1
+	// week). Mutually exclusive with `no_suspension`.
+	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *InitialEndpointSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s InitialEndpointSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListBranchesRequest struct {
@@ -1701,6 +1751,11 @@ type Project struct {
 	// A timestamp indicating when the project was soft-deleted. Empty if the
 	// project is not deleted, otherwise set to a timestamp in the past.
 	DeleteTime *time.Time `json:"delete_time,omitempty"`
+	// Configuration for the initial default branch created as part of project
+	// creation. Allows overriding branch protection. These settings only apply
+	// at creation time and do not affect resources created after project
+	// creation.
+	InitialBranchSpec *InitialBranchSpec `json:"initial_branch_spec,omitempty"`
 	// Configuration settings for the initial Read/Write endpoint created inside
 	// the initial branch for a newly created project. If omitted, the initial
 	// endpoint created will have default settings, without high availability
@@ -1836,6 +1891,8 @@ type ProjectStatus struct {
 	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
 	// The budget policy that is applied to the project.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// The most recent time when any endpoint of this project was active.
+	ComputeLastActiveTime *time.Time `json:"compute_last_active_time,omitempty"`
 	// The effective custom tags associated with the project.
 	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
 	// The full resource path of the default branch of the project

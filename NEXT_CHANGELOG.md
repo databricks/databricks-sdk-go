@@ -18,3 +18,15 @@
 
 ### API Changes
 * Add `Etag` field for [disasterrecovery.UpdateFailoverGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#UpdateFailoverGroupRequest).
+* Add `DownloadMessageAttachmentVisualization` method for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service.
+* Add `Viz` field for [dashboards.GenieAttachment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAttachment).
+* Add `EnableVisualization` field for [dashboards.GenieCreateConversationMessageRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieCreateConversationMessageRequest).
+* Add `EnableVisualization` field for [dashboards.GenieStartConversationMessageRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieStartConversationMessageRequest).
+* Add `ReplaceExisting` field for [postgres.CreateDatabaseRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#CreateDatabaseRequest).
+* Add `ReplaceExisting` field for [postgres.CreateRoleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#CreateRoleRequest).
+* Add `AutoscalingLimitMaxCu`, `AutoscalingLimitMinCu`, `NoSuspension` and `SuspendTimeoutDuration` fields for [postgres.InitialEndpointSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#InitialEndpointSpec).
+* Add `InitialBranchSpec` field for [postgres.Project](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Project).
+* Add `ComputeLastActiveTime` field for [postgres.ProjectStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectStatus).
+* Add `TelemetryConfig` field for [serving.CreateServingEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#CreateServingEndpoint).
+* Add `TelemetryConfig` field for [serving.ServingEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpoint).
+* Add `TelemetryConfig` field for [serving.ServingEndpointDetailed](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointDetailed).
