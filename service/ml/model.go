@@ -214,7 +214,15 @@ type AggregationFunction struct {
 
 	First *FirstFunction `json:"first,omitempty"`
 
+	FirstDistinctN *FirstDistinctNFunction `json:"first_distinct_n,omitempty"`
+
+	FirstN *FirstNFunction `json:"first_n,omitempty"`
+
 	Last *LastFunction `json:"last,omitempty"`
+
+	LastDistinctN *LastDistinctNFunction `json:"last_distinct_n,omitempty"`
+
+	LastN *LastNFunction `json:"last_n,omitempty"`
 
 	Max *MaxFunction `json:"max,omitempty"`
 
@@ -1603,10 +1611,27 @@ type FinalizeLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+// Returns the first N distinct values, ordered by the feature's timeseries
+// column.
+type FirstDistinctNFunction struct {
+	// The input column from which the first N distinct values are returned.
+	Input string `json:"input"`
+	// The number of distinct values to return.
+	N int64 `json:"n"`
+}
+
 // Returns the first value.
 type FirstFunction struct {
 	// The input column from which the first value is returned.
 	Input string `json:"input"`
+}
+
+// Returns the first N values, ordered by the feature's timeseries column.
+type FirstNFunction struct {
+	// The input column from which the first N values are returned.
+	Input string `json:"input"`
+	// The number of values to return.
+	N int64 `json:"n"`
 }
 
 // A flat (non-nested) schema for request-time fields, defined as an ordered
@@ -2288,10 +2313,27 @@ func (s KafkaSubscriptionMode) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Returns the last N distinct values, ordered by the feature's timeseries
+// column.
+type LastDistinctNFunction struct {
+	// The input column from which the last N distinct values are returned.
+	Input string `json:"input"`
+	// The number of distinct values to return.
+	N int64 `json:"n"`
+}
+
 // Returns the last value.
 type LastFunction struct {
 	// The input column from which the last value is returned.
 	Input string `json:"input"`
+}
+
+// Returns the last N values, ordered by the feature's timeseries column.
+type LastNFunction struct {
+	// The input column from which the last N values are returned.
+	Input string `json:"input"`
+	// The number of values to return.
+	N int64 `json:"n"`
 }
 
 // Lineage context information for tracking where an API was invoked. This will

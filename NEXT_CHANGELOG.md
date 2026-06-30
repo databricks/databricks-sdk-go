@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `FirstDistinctN`, `FirstN`, `LastDistinctN` and `LastN` fields for [ml.AggregationFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#AggregationFunction).
