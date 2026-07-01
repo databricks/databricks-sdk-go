@@ -400,10 +400,10 @@ type User struct {
 	AccountUserStatus State `json:"account_user_status,omitempty"`
 	// ExternalId of the user in the customer's IdP.
 	ExternalId string `json:"external_id,omitempty"`
+
+	FullName *UserFullName `json:"full_name,omitempty"`
 	// Internal userId of the user in Databricks.
 	InternalId int64 `json:"internal_id,omitempty"`
-
-	Name *UserName `json:"name,omitempty"`
 	// Username/email of the user.
 	Username string `json:"username,omitempty"`
 
@@ -418,7 +418,7 @@ func (s User) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type UserName struct {
+type UserFullName struct {
 	FamilyName string `json:"family_name,omitempty"`
 
 	GivenName string `json:"given_name,omitempty"`
@@ -426,11 +426,11 @@ type UserName struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *UserName) UnmarshalJSON(b []byte) error {
+func (s *UserFullName) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s UserName) MarshalJSON() ([]byte, error) {
+func (s UserFullName) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

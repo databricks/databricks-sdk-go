@@ -883,6 +883,14 @@ type EndpointHosts struct {
 	// if the enclosing endpoint is a group with greater than 1 computes
 	// configured, and has readable secondaries enabled.
 	ReadOnlyHost string `json:"read_only_host,omitempty"`
+	// The read-only hostname of the compute endpoint, with pooling. This
+	// attribute is always defined for read-only endpoints, and may be defined
+	// for read-write endpoints if configured with read replicas and allow
+	// read-only connections.
+	ReadOnlyPooledHost string `json:"read_only_pooled_host,omitempty"`
+	// The read-write hostname of the compute endpoint, with pooling. This
+	// attribute is only defined for read-write endpoints.
+	ReadWritePooledHost string `json:"read_write_pooled_host,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -966,6 +974,8 @@ type EndpointStatus struct {
 	Group *EndpointGroupStatus `json:"group,omitempty"`
 	// Contains host information for connecting to the endpoint.
 	Hosts *EndpointHosts `json:"hosts,omitempty"`
+	// A timestamp indicating when the compute endpoint was last active.
+	LastActiveTime *time.Time `json:"last_active_time,omitempty"`
 
 	PendingState EndpointStatusState `json:"pending_state,omitempty"`
 
@@ -1351,6 +1361,25 @@ type GenerateDatabaseCredentialRequest struct {
 	// Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Endpoint string `json:"endpoint"`
+	// Timestamp in UTC of when this credential should expire. Must be at least
+	// 300 seconds (5 minutes) and at most 1 hour from the current time.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
+	// Databricks workspace group name. When provided, credentials are generated
+	// with permissions scoped to this group.
+	GroupName string `json:"group_name,omitempty"`
+	// The requested time-to-live for the generated credential token. Must be at
+	// least 300 seconds (5 minutes) and at most 3600 seconds (1 hour).
+	Ttl *duration.Duration `json:"ttl,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenerateDatabaseCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GetBranchRequest struct {
