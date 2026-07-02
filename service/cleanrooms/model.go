@@ -211,7 +211,9 @@ type CleanRoomAssetNotebook struct {
 	// Server generated etag that represents the notebook version.
 	Etag string `json:"etag,omitempty"`
 	// Base 64 representation of the notebook contents. This is the same format
-	// as returned by :method:workspace/export with the format of **HTML**.
+	// as returned by [workspace/export] with the format of **HTML**.
+	//
+	// [workspace/export]: https://docs.databricks.com/api/workspace/workspace/export
 	NotebookContent string `json:"notebook_content"`
 	// Top-level status derived from all reviews
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`

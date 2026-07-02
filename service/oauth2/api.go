@@ -122,15 +122,21 @@ type CustomAppIntegrationInterface interface {
 	// Create Custom OAuth App Integration.
 	//
 	// You can retrieve the custom OAuth app integration via
-	// :method:CustomAppIntegration/get.
+	// [CustomAppIntegration/get].
+	//
+	// [CustomAppIntegration/get]: https://docs.databricks.com/api/account/customappintegration/get
 	Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error)
 
 	// Delete an existing Custom OAuth App Integration. You can retrieve the custom
-	// OAuth app integration via :method:CustomAppIntegration/get.
+	// OAuth app integration via [CustomAppIntegration/get].
+	//
+	// [CustomAppIntegration/get]: https://docs.databricks.com/api/account/customappintegration/get
 	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error
 
 	// Delete an existing Custom OAuth App Integration. You can retrieve the custom
-	// OAuth app integration via :method:CustomAppIntegration/get.
+	// OAuth app integration via [CustomAppIntegration/get].
+	//
+	// [CustomAppIntegration/get]: https://docs.databricks.com/api/account/customappintegration/get
 	DeleteByIntegrationId(ctx context.Context, integrationId string) error
 
 	// Gets the Custom OAuth App Integration for the given integration id.
@@ -152,7 +158,9 @@ type CustomAppIntegrationInterface interface {
 	ListAll(ctx context.Context, request ListCustomAppIntegrationsRequest) ([]GetCustomAppIntegrationOutput, error)
 
 	// Updates an existing custom OAuth App Integration. You can retrieve the custom
-	// OAuth app integration via :method:CustomAppIntegration/get.
+	// OAuth app integration via [CustomAppIntegration/get].
+	//
+	// [CustomAppIntegration/get]: https://docs.databricks.com/api/account/customappintegration/get
 	Update(ctx context.Context, request UpdateCustomAppIntegration) error
 }
 
@@ -172,7 +180,9 @@ type CustomAppIntegrationAPI struct {
 }
 
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
-// OAuth app integration via :method:CustomAppIntegration/get.
+// OAuth app integration via [CustomAppIntegration/get].
+//
+// [CustomAppIntegration/get]: https://docs.databricks.com/api/account/customappintegration/get
 func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
 	return a.customAppIntegrationImpl.Delete(ctx, DeleteCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
@@ -220,15 +230,21 @@ type PublishedAppIntegrationInterface interface {
 	// Create Published OAuth App Integration.
 	//
 	// You can retrieve the published OAuth app integration via
-	// :method:PublishedAppIntegration/get.
+	// [PublishedAppIntegration/get].
+	//
+	// [PublishedAppIntegration/get]: https://docs.databricks.com/api/account/publishedappintegration/get
 	Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error)
 
 	// Delete an existing Published OAuth App Integration. You can retrieve the
-	// published OAuth app integration via :method:PublishedAppIntegration/get.
+	// published OAuth app integration via [PublishedAppIntegration/get].
+	//
+	// [PublishedAppIntegration/get]: https://docs.databricks.com/api/account/publishedappintegration/get
 	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error
 
 	// Delete an existing Published OAuth App Integration. You can retrieve the
-	// published OAuth app integration via :method:PublishedAppIntegration/get.
+	// published OAuth app integration via [PublishedAppIntegration/get].
+	//
+	// [PublishedAppIntegration/get]: https://docs.databricks.com/api/account/publishedappintegration/get
 	DeleteByIntegrationId(ctx context.Context, integrationId string) error
 
 	// Gets the Published OAuth App Integration for the given integration id.
@@ -250,7 +266,9 @@ type PublishedAppIntegrationInterface interface {
 	ListAll(ctx context.Context, request ListPublishedAppIntegrationsRequest) ([]GetPublishedAppIntegrationOutput, error)
 
 	// Updates an existing published OAuth App Integration. You can retrieve the
-	// published OAuth app integration via :method:PublishedAppIntegration/get.
+	// published OAuth app integration via [PublishedAppIntegration/get].
+	//
+	// [PublishedAppIntegration/get]: https://docs.databricks.com/api/account/publishedappintegration/get
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
 }
 
@@ -270,7 +288,9 @@ type PublishedAppIntegrationAPI struct {
 }
 
 // Delete an existing Published OAuth App Integration. You can retrieve the
-// published OAuth app integration via :method:PublishedAppIntegration/get.
+// published OAuth app integration via [PublishedAppIntegration/get].
+//
+// [PublishedAppIntegration/get]: https://docs.databricks.com/api/account/publishedappintegration/get
 func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
 	return a.publishedAppIntegrationImpl.Delete(ctx, DeletePublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
