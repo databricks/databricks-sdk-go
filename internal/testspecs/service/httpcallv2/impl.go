@@ -47,6 +47,21 @@ func (a *httpCallV2Impl) GetResource(ctx context.Context, request GetResourceReq
 	return &resource, err
 }
 
+func (a *httpCallV2Impl) SyncResource(ctx context.Context, request SyncResourceRequest) (*Resource, error) {
+	var resource Resource
+	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v/state:sync", request.PathParamString, request.PathParamInt, request.PathParamBool)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &resource)
+	return &resource, err
+}
+
 func (a *httpCallV2Impl) UpdateResource(ctx context.Context, request UpdateResourceRequest) (*Resource, error) {
 	var resource Resource
 	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", request.NestedPathParamString, request.NestedPathParamInt, request.NestedPathParamBool)

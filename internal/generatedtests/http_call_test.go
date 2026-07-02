@@ -417,3 +417,21 @@ func TestHttpCall_GetResourceWithDoubleRepeatedNestedQueryParam(t *testing.T) {
 		commands.GetResource(ctx, input)
 	})
 }
+
+func TestHttpCall_SyncResourceNoBody(t *testing.T) {
+	input := httpcallv2.SyncResourceRequest{
+		PathParamString: "sync_string",
+		PathParamInt:    123,
+		PathParamBool:   true,
+	}
+	qa.HTTPFixtures{
+		{
+			Method:          "POST",
+			Resource:        "/api/2.0/http-call/sync_string/123/true/state:sync",
+			ExpectedRequest: httpcallv2.SyncResourceRequest{},
+		},
+	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
+		commands := httpcallv2.NewHttpCallV2(client)
+		commands.SyncResource(ctx, input)
+	})
+}
