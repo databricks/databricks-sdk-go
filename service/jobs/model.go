@@ -70,6 +70,10 @@ type AiRuntimeTaskOutput struct {
 	// MLflow run ID for this task execution. Use it to look up the run in
 	// MLflow APIs or the workspace MLflow UI.
 	MlflowRunId string `json:"mlflow_run_id,omitempty"`
+	// Human-readable status message for this run, suitable for display to the
+	// user (for example, that the run is still waiting for GPU compute). Set by
+	// the server only when there is something to surface; empty otherwise.
+	StatusMessage string `json:"status_message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1027,6 +1031,10 @@ type CronSchedule struct {
 	//
 	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	QuartzCronExpression string `json:"quartz_cron_expression"`
+	// SQL condition that must be satisfied before a scheduled run is triggered.
+	// The condition is evaluated after the cron expression fires and must
+	// return a truthy result for the run to proceed.
+	SqlCondition *SqlConditionConfiguration `json:"sql_condition,omitempty"`
 	// A Java timezone ID. The schedule for a job is resolved with respect to
 	// this timezone. See [Java TimeZone] for details. This field is required.
 	//
@@ -4297,6 +4305,12 @@ type RunNow struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// A list of task keys to run inside of the job. If this field is not
 	// provided, all tasks in the job will be run.
+	//
+	// Prefix a task key with `+` to also run its upstream tasks, or suffix it
+	// with `+` to also run its downstream tasks. For example, `+my_task` runs
+	// `my_task` and everything upstream of it, `my_task+` runs `my_task` and
+	// everything downstream of it, and `+my_task+` runs both. A task key with
+	// no `+` runs only that task.
 	Only []string `json:"only,omitempty"`
 	// The performance mode on a serverless job. The performance target
 	// determines the level of compute performance or cost-efficiency for the
@@ -5131,6 +5145,118 @@ func (f *SqlAlertState) Values() []SqlAlertState {
 // Type always returns SqlAlertState to satisfy [pflag.Value] interface
 func (f *SqlAlertState) Type() string {
 	return "SqlAlertState"
+}
+
+type SqlConditionConfiguration struct {
+	// The ID of the SQL query to evaluate as the trigger condition.
+	SqlQueryId string `json:"sql_query_id"`
+	// Determines how the SQL query result is interpreted to decide whether the
+	// condition fires. Must be set to a recognized value when provided. When
+	// unset on an existing serialized configuration, the server preserves the
+	// original semantics by interpreting it as `QUERY_RETURNS_ROWS`. New
+	// configurations should set this explicitly — explicit
+	// `SQL_CONDITION_TRIGGER_MODE_UNSPECIFIED` is rejected at validation.
+	TriggerMode SqlConditionTriggerMode `json:"trigger_mode,omitempty"`
+	// The canonical identifier of the SQL warehouse to run the condition query
+	// against.
+	WarehouseId string `json:"warehouse_id"`
+}
+
+// SQL condition evaluation details captured at the time the run was triggered
+type SqlConditionRunInfoDetails struct {
+	// Whether the last condition evaluation was satisfied (query returned
+	// truthy result).
+	ConditionEvaluationSatisfied bool `json:"condition_evaluation_satisfied,omitempty"`
+	// The ID of the SQL session, used by the UI to track session context. Set
+	// for the QUERY_RETURNS_ROWS trigger mode.
+	ConditionEvaluationSqlSessionId string `json:"condition_evaluation_sql_session_id,omitempty"`
+	// The SQL statement ID of the condition evaluation, set when the condition
+	// is evaluated by running a single SQL statement (the RESULT_VALUE_CHANGES
+	// trigger mode). The UI uses it to link to the query execution details.
+	ConditionEvaluationSqlStatementId string `json:"condition_evaluation_sql_statement_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SqlConditionRunInfoDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlConditionRunInfoDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SqlConditionState struct {
+	// Whether the last condition evaluation was satisfied (query returned
+	// truthy result).
+	LatestConditionEvaluationSatisfied bool `json:"latest_condition_evaluation_satisfied,omitempty"`
+	// The ID of the SQL session, used by UI to track session context. Populated
+	// for QUERY_RETURNS_ROWS, which executes the query through Redash.
+	LatestConditionEvaluationSqlSessionId string `json:"latest_condition_evaluation_sql_session_id,omitempty"`
+	// The SEA statement ID of the SQL statement executed for the latest
+	// condition evaluation. Populated for RESULT_VALUE_CHANGES, which executes
+	// the query through the SQL execution API.
+	LatestConditionEvaluationSqlStatementId string `json:"latest_condition_evaluation_sql_statement_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SqlConditionState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlConditionState) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The strategy used to evaluate a SQL condition trigger against a query result
+// set.
+//
+// * `SQL_CONDITION_TRIGGER_MODE_UNSPECIFIED`: Sentinel zero-value. Not a valid
+// input — the validator rejects this when sent explicitly. Internally treated
+// as `QUERY_RETURNS_ROWS` when reading legacy data that predates this field. *
+// `QUERY_RETURNS_ROWS`: Fires whenever the result set has at least one row.
+// Zero rows means the condition is not met. This is the original SQL condition
+// behavior. * `RESULT_VALUE_CHANGES`: Fires whenever the query's single result
+// value differs from the previous evaluation. The first evaluation always
+// fires. Queries must return exactly one cell (one row, one column).
+type SqlConditionTriggerMode string
+
+// Fires whenever the result set has at least one row. Zero rows means
+const SqlConditionTriggerModeQueryReturnsRows SqlConditionTriggerMode = `QUERY_RETURNS_ROWS`
+
+// Fires whenever the query's single result value differs from the
+const SqlConditionTriggerModeResultValueChanges SqlConditionTriggerMode = `RESULT_VALUE_CHANGES`
+
+// String representation for [fmt.Print]
+func (f *SqlConditionTriggerMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SqlConditionTriggerMode) Set(v string) error {
+	switch v {
+	case `QUERY_RETURNS_ROWS`, `RESULT_VALUE_CHANGES`:
+		*f = SqlConditionTriggerMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "QUERY_RETURNS_ROWS", "RESULT_VALUE_CHANGES"`, v)
+	}
+}
+
+// Values returns all possible values for SqlConditionTriggerMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SqlConditionTriggerMode) Values() []SqlConditionTriggerMode {
+	return []SqlConditionTriggerMode{
+		SqlConditionTriggerModeQueryReturnsRows,
+		SqlConditionTriggerModeResultValueChanges,
+	}
+}
+
+// Type always returns SqlConditionTriggerMode to satisfy [pflag.Value] interface
+func (f *SqlConditionTriggerMode) Type() string {
+	return "SqlConditionTriggerMode"
 }
 
 type SqlDashboardOutput struct {
@@ -6327,6 +6453,8 @@ func (f *TerminationTypeType) Type() string {
 type TriggerInfo struct {
 	// The run id of the Run Job task run
 	RunId int64 `json:"run_id,omitempty"`
+	// SQL condition evaluation details for this run
+	SqlCondition *SqlConditionRunInfoDetails `json:"sql_condition,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6348,12 +6476,19 @@ type TriggerSettings struct {
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// Periodic trigger settings.
 	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
+	// SQL condition that must be satisfied for the trigger to fire. Can be used
+	// in combination with other trigger types and runs *after* other trigger
+	// types conditions are evaluated.
+	SqlCondition *SqlConditionConfiguration `json:"sql_condition,omitempty"`
 
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
 type TriggerStateProto struct {
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
+	// State for SQL condition evaluation, can coexist with other trigger
+	// states.
+	SqlCondition *SqlConditionState `json:"sql_condition,omitempty"`
 
 	Table *TableTriggerState `json:"table,omitempty"`
 }

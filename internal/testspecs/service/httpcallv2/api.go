@@ -30,6 +30,14 @@ type HttpCallV2Interface interface {
 
 	GetResource(ctx context.Context, request GetResourceRequest) (*Resource, error)
 
+	// This mimics a parameterless custom method: a body:"*" request whose fields
+	// are all path-bound, so the request carries Content-Type: application/json but
+	// has no JSON body fields to serialize. The canonical body for such a request
+	// is the empty object {}. The :sync verb sits after a literal path segment
+	// because Databricks rejects a custom verb placed directly after a path
+	// variable as ambiguous.
+	SyncResource(ctx context.Context, request SyncResourceRequest) (*Resource, error)
+
 	// This mimics "new" style post requests which have a body field.
 	//
 	// > Prefer this over the inline form.

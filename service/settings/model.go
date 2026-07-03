@@ -760,13 +760,11 @@ func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// This proto is under development. The network policies applying for ingress
-// traffic. Any changes here should also be synced to
-// estore/namespaces/lakehousenetworkmanager/latest.proto.
+// The network policies applying for ingress traffic.
 type CustomerFacingIngressNetworkPolicy struct {
 	CrossWorkspaceAccess *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess `json:"cross_workspace_access,omitempty"`
-	// The network policy restrictions for private access to the workspace.
-	// Configures how registered private endpoints are allowed or denied access.
+	// The network policy restrictions for private access. Configures how
+	// requests arriving over private connectivity are governed.
 	PrivateAccess *CustomerFacingIngressNetworkPolicyPrivateAccess `json:"private_access,omitempty"`
 	// The network policy restrictions for public access to the workspace.
 	// Configures how public internet traffic is allowed or denied access.
@@ -779,7 +777,7 @@ type CustomerFacingIngressNetworkPolicyAccountApiDestination struct {
 	// Qualifies the breadth of API access for the listed scopes. See
 	// ApiScopeQualifier.
 	ScopeQualifier CustomerFacingIngressNetworkPolicyApiScopeQualifier `json:"scope_qualifier,omitempty"`
-
+	// The API scopes to match. Use "all-apis" to match any account-level API.
 	Scopes []string `json:"scopes,omitempty"`
 }
 
@@ -798,6 +796,7 @@ func (s CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination) Marsh
 	return marshal.Marshal(s)
 }
 
+// The account console UI destination.
 type CustomerFacingIngressNetworkPolicyAccountUiDestination struct {
 	// Must be set to true.
 	AllDestinations bool `json:"all_destinations,omitempty"`
@@ -1051,7 +1050,10 @@ func (s CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin) MarshalJS
 	return marshal.Marshal(s)
 }
 
+// A set of registered endpoints, identified by their endpoint IDs.
 type CustomerFacingIngressNetworkPolicyEndpoints struct {
+	// The IDs of the registered endpoints. Must contain at least one endpoint
+	// ID.
 	EndpointIds []string `json:"endpoint_ids,omitempty"`
 }
 
@@ -1075,14 +1077,26 @@ func (s CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination) MarshalJSO
 	return marshal.Marshal(s)
 }
 
+// Configures how requests arriving over private connectivity, such as
+// registered endpoints, are allowed or denied access.
 type CustomerFacingIngressNetworkPolicyPrivateAccess struct {
+	// Allow rules are evaluated after deny rules. A request matching any allow
+	// rule is allowed; a request matching no rule is denied by default. Only
+	// applies when restriction_mode is RESTRICTED_ACCESS.
 	AllowRules []CustomerFacingIngressNetworkPolicyPrivateIngressRule `json:"allow_rules,omitempty"`
-
+	// Deny rules are evaluated first. A request matching any deny rule is
+	// denied, regardless of allow rules. Only applies when restriction_mode is
+	// RESTRICTED_ACCESS.
 	DenyRules []CustomerFacingIngressNetworkPolicyPrivateIngressRule `json:"deny_rules,omitempty"`
-
+	// The restriction mode for private access.
 	RestrictionMode CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode `json:"restriction_mode"`
 }
 
+// The restriction mode for private access. In ALLOW_ALL_REGISTERED_ENDPOINTS
+// mode, requests arriving through any endpoint registered to the account are
+// allowed, and deny rules and allow rules cannot be set. In RESTRICTED_ACCESS
+// mode, access is restricted based on deny rules and allow rules; requests that
+// do not match any allow rule are denied.
 type CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode string
 
 const CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionModeAllowAllRegisteredEndpoints CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode = `ALLOW_ALL_REGISTERED_ENDPOINTS`
@@ -1120,13 +1134,25 @@ func (f *CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode) Type() 
 	return "CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode"
 }
 
+// An ingress rule is enforced when a request satisfies all specified attributes
+// — including request origin, destination, and authentication.
 type CustomerFacingIngressNetworkPolicyPrivateIngressRule struct {
+	// The authenticated identity the request must match. When unset, the rule
+	// matches all users and service principals. On the account-level network
+	// policy, scoping to specific identities is not currently supported, so
+	// this field must be unset (the rule matches all users and service
+	// principals).
 	Authentication *CustomerFacingIngressNetworkPolicyAuthentication `json:"authentication,omitempty"`
-
+	// The destination the request must match — the resource being accessed,
+	// for example the workspace UI, workspace APIs, or account-level APIs. See
+	// RequestDestination.
 	Destination *CustomerFacingIngressNetworkPolicyRequestDestination `json:"destination,omitempty"`
 	// The label for this ingress rule.
 	Label string `json:"label,omitempty"`
-
+	// The origin the request must match — the private connectivity the
+	// request arrives through, for example a specific set of registered
+	// endpoints or any endpoint registered to the account. See
+	// PrivateRequestOrigin.
 	Origin *CustomerFacingIngressNetworkPolicyPrivateRequestOrigin `json:"origin,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1140,13 +1166,23 @@ func (s CustomerFacingIngressNetworkPolicyPrivateIngressRule) MarshalJSON() ([]b
 	return marshal.Marshal(s)
 }
 
+// The origin of a private access request, identified by the endpoint through
+// which the request arrives.
 type CustomerFacingIngressNetworkPolicyPrivateRequestOrigin struct {
+	// Matches requests arriving over any private connectivity, including
+	// registered endpoints and the workspace's Azure Private Link (ui-api)
+	// endpoints. Can only be used in deny rules of workspace-level network
+	// policies. Must be set to true when specified.
 	AllPrivateAccess bool `json:"all_private_access,omitempty"`
-
+	// Matches requests arriving through any endpoint registered to the account.
+	// Must be set to true when specified.
 	AllRegisteredEndpoints bool `json:"all_registered_endpoints,omitempty"`
-
+	// Matches requests arriving through the workspace's Azure Private Link
+	// (ui-api) endpoints. Can only be used in deny rules of workspace-level
+	// network policies. Must be set to true when specified.
 	AzureWorkspacePrivateLink bool `json:"azure_workspace_private_link,omitempty"`
-
+	// Matches requests arriving through any of the specified registered
+	// endpoints.
 	Endpoints *CustomerFacingIngressNetworkPolicyEndpoints `json:"endpoints,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1247,11 +1283,13 @@ func (s CustomerFacingIngressNetworkPolicyPublicRequestOrigin) MarshalJSON() ([]
 }
 
 type CustomerFacingIngressNetworkPolicyRequestDestination struct {
+	// Matches requests to account-level APIs. Can only be used in the
+	// account-level network policy.
 	AccountApi *CustomerFacingIngressNetworkPolicyAccountApiDestination `json:"account_api,omitempty"`
-	// Account DatabricksOne destination is not supported. DO NOT change the
-	// stage of this destination past PRIVATE_PREVIEW.
+	// Account DatabricksOne destination is not supported.
 	AccountDatabricksOne *CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination `json:"account_databricks_one,omitempty"`
-
+	// Matches requests to the account console UI. Can only be used in the
+	// account-level network policy.
 	AccountUi *CustomerFacingIngressNetworkPolicyAccountUiDestination `json:"account_ui,omitempty"`
 	// When true, match all destinations, no other destination fields can be
 	// set. When not set or false, at least one specific destination must be
