@@ -553,14 +553,16 @@ func (a *PersistentAuth) validateArg() error {
 		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", a.oAuthArgument)
 	}
 	// Assuming a group is a workspace-level concept; the server rejects it at
-	// the account authorize endpoint. Fail fast for account arguments and for
-	// discovery logins explicitly targeting the account selector.
+	// the account authorize endpoint. Allow it only for workspace-level logins:
+	// a workspace argument, or a discovery login (which resolves to a workspace)
+	// that is not explicitly targeting the account selector. Everything else --
+	// account and unified arguments -- is rejected up front. This is an allowlist
+	// rather than a blocklist so new account-capable argument types cannot slip
+	// through by default.
 	if a.assumeGroup != "" {
-		if isAccountArg {
-			return fmt.Errorf("assume_group is only supported for workspace-level logins, got account OAuthArgument %T", a.oAuthArgument)
-		}
-		if a.discoveryAccountTarget {
-			return errors.New("assume_group is only supported for workspace-level logins, not with WithDiscoveryAccountTarget")
+		workspaceLevel := isWorkspaceArg || (isDiscoveryArg && !a.discoveryAccountTarget)
+		if !workspaceLevel {
+			return fmt.Errorf("assume_group is only supported for workspace-level logins, got %T", a.oAuthArgument)
 		}
 	}
 	return nil

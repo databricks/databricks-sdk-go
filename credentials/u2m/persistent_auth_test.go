@@ -1328,21 +1328,75 @@ func TestU2M_AssumeGroup(t *testing.T) {
 	}
 }
 
-func TestWithAssumeGroup_RejectsAccountArgument(t *testing.T) {
-	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+func TestWithAssumeGroup_ArgumentValidation(t *testing.T) {
+	workspaceArg, err := NewBasicWorkspaceOAuthArgument("https://workspace.cloud.databricks.com")
+	if err != nil {
+		t.Fatalf("NewBasicWorkspaceOAuthArgument(): want no error, got %v", err)
+	}
+	accountArg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	if err != nil {
 		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
 	}
-	_, err = NewPersistentAuth(
-		context.Background(),
-		WithOAuthArgument(arg),
-		WithAssumeGroup("123456"),
-	)
-	if err == nil {
-		t.Fatal("NewPersistentAuth(): want error for assume_group with account argument, got nil")
+	unifiedArg, err := NewBasicUnifiedOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicUnifiedOAuthArgument(): want no error, got %v", err)
 	}
-	if !strings.Contains(err.Error(), "workspace-level") {
-		t.Errorf("NewPersistentAuth(): want workspace-level error, got %v", err)
+	discoveryArg, err := NewBasicDiscoveryOAuthArgument("my-profile")
+	if err != nil {
+		t.Fatalf("NewBasicDiscoveryOAuthArgument(): want no error, got %v", err)
+	}
+
+	tests := []struct {
+		name      string
+		opts      []PersistentAuthOption
+		wantError bool
+	}{
+		{
+			name:      "workspace argument is allowed",
+			opts:      []PersistentAuthOption{WithOAuthArgument(workspaceArg), WithAssumeGroup("123456")},
+			wantError: false,
+		},
+		{
+			name:      "discovery login is allowed",
+			opts:      []PersistentAuthOption{WithOAuthArgument(discoveryArg), WithDiscoveryLogin(), WithAssumeGroup("123456")},
+			wantError: false,
+		},
+		{
+			name:      "account argument is rejected",
+			opts:      []PersistentAuthOption{WithOAuthArgument(accountArg), WithAssumeGroup("123456")},
+			wantError: true,
+		},
+		{
+			// Unified arguments are account-capable (they carry an account ID and
+			// authenticate via the account/unified endpoint), so assume_group must
+			// be rejected for them as well.
+			name:      "unified argument is rejected",
+			opts:      []PersistentAuthOption{WithOAuthArgument(unifiedArg), WithAssumeGroup("123456")},
+			wantError: true,
+		},
+		{
+			name:      "discovery login targeting the account selector is rejected",
+			opts:      []PersistentAuthOption{WithOAuthArgument(discoveryArg), WithDiscoveryLogin(), WithDiscoveryAccountTarget(), WithAssumeGroup("123456")},
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := NewPersistentAuth(context.Background(), tt.opts...)
+			if tt.wantError {
+				if err == nil {
+					t.Fatal("NewPersistentAuth(): want error, got nil")
+				}
+				if !strings.Contains(err.Error(), "workspace-level") {
+					t.Errorf("NewPersistentAuth(): want workspace-level error, got %v", err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+			}
+		})
 	}
 }
 
