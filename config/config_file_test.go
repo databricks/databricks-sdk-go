@@ -98,6 +98,42 @@ func TestConfigFile_Scopes(t *testing.T) {
 	}
 }
 
+func TestConfigFile_GroupID(t *testing.T) {
+	tests := []struct {
+		name    string
+		profile string
+		want    string
+	}{
+		{
+			name:    "unset group_id",
+			profile: "group-unset",
+			want:    "",
+		},
+		{
+			name:    "group_id set",
+			profile: "group-set",
+			want:    "123456",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			withMockEnv(t, map[string]string{
+				"HOME": "testdata/group_id",
+			})
+
+			cfg := &Config{Profile: tt.profile}
+			err := cfg.EnsureResolved()
+			if err != nil {
+				t.Fatalf("EnsureResolved failed: %v", err)
+			}
+			if cfg.AssumeGroupID != tt.want {
+				t.Errorf("AssumeGroupID: want %q, got %q", tt.want, cfg.AssumeGroupID)
+			}
+		})
+	}
+}
+
 // Test 1: default_profile resolves correctly (no [DEFAULT] section present)
 func TestConfigFile_DefaultProfileResolves(t *testing.T) {
 	configFixture{

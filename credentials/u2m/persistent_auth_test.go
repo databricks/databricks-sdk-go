@@ -1214,6 +1214,138 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 	}
 }
 
+func TestU2M_AssumeGroup(t *testing.T) {
+	const (
+		testWorkspaceHost = "https://workspace.cloud.databricks.com"
+		testTokenEndpoint = "/oidc/v1/token"
+		testCallbackURL   = "http://localhost:8020"
+	)
+
+	tests := []struct {
+		name        string
+		assumeGroup string
+		wantParam   bool
+		wantValue   string
+	}{
+		{name: "no assume_group", assumeGroup: "", wantParam: false},
+		{name: "with assume_group", assumeGroup: "123456", wantParam: true, wantValue: "123456"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := context.Background()
+
+			var assumeGroupReceived string
+			var assumeGroupPresent bool
+			var stateReceived string
+			browserCalled := make(chan struct{})
+			defer close(browserCalled)
+			browser := func(redirect string) error {
+				u, err := url.ParseRequestURI(redirect)
+				if err != nil {
+					return err
+				}
+				query := u.Query()
+				assumeGroupReceived = query.Get(assumeGroupParamName)
+				_, assumeGroupPresent = query[assumeGroupParamName]
+				stateReceived = query.Get("state")
+				browserCalled <- struct{}{}
+				return nil
+			}
+
+			cache := &tokenCacheMock{
+				store: func(key string, tok *oauth2.Token) error {
+					return nil
+				},
+			}
+
+			arg, err := NewBasicWorkspaceOAuthArgument(testWorkspaceHost)
+			if err != nil {
+				t.Fatalf("NewBasicWorkspaceOAuthArgument(): want no error, got %v", err)
+			}
+
+			opts := []PersistentAuthOption{
+				WithTokenCache(cache),
+				WithBrowser(browser),
+				WithHttpClient(&http.Client{
+					Transport: fixtures.SliceTransport{
+						{
+							Method:   "POST",
+							Resource: testTokenEndpoint,
+							Response: `access_token=token&refresh_token=refresh`,
+							ResponseHeaders: map[string][]string{
+								"Content-Type": {"application/x-www-form-urlencoded"},
+							},
+						},
+					},
+				}),
+				WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+				WithOAuthArgument(arg),
+				WithAssumeGroup(tt.assumeGroup),
+			}
+
+			p, err := NewPersistentAuth(ctx, opts...)
+			if err != nil {
+				t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+			}
+			defer p.Close()
+
+			errc := make(chan error)
+			defer close(errc)
+			go func() {
+				err := p.Challenge()
+				errc <- err
+			}()
+
+			select {
+			case <-browserCalled:
+			case <-time.After(5 * time.Second):
+				t.Fatal("timed out waiting for browser to be called")
+			}
+
+			if assumeGroupPresent != tt.wantParam {
+				t.Errorf("assume_group present = %v, want %v", assumeGroupPresent, tt.wantParam)
+			}
+			if tt.wantParam && assumeGroupReceived != tt.wantValue {
+				t.Errorf("assume_group = %q, want %q", assumeGroupReceived, tt.wantValue)
+			}
+
+			resp, err := http.Get(fmt.Sprintf("%s?code=__CODE__&state=%s", testCallbackURL, stateReceived))
+			if err != nil {
+				t.Fatalf("http.Get(): want no error, got %v", err)
+			}
+			defer resp.Body.Close()
+
+			select {
+			case err = <-errc:
+			case <-time.After(5 * time.Second):
+				t.Fatal("timed out waiting for Challenge() to complete")
+			}
+			if err != nil {
+				t.Fatalf("p.Challenge(): want no error, got %v", err)
+			}
+		})
+	}
+}
+
+func TestWithAssumeGroup_RejectsAccountArgument(t *testing.T) {
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+	}
+	_, err = NewPersistentAuth(
+		context.Background(),
+		WithOAuthArgument(arg),
+		WithAssumeGroup("123456"),
+	)
+	if err == nil {
+		t.Fatal("NewPersistentAuth(): want error for assume_group with account argument, got nil")
+	}
+	if !strings.Contains(err.Error(), "workspace-level") {
+		t.Errorf("NewPersistentAuth(): want workspace-level error, got %v", err)
+	}
+}
+
 func TestChallenge_Discovery(t *testing.T) {
 	// Mock token server that responds to POST /oidc/v1/token.
 	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
