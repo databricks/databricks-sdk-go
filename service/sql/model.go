@@ -1347,7 +1347,7 @@ type CreateWidget struct {
 	// field is ignored if the widget contains a visualization in the
 	// `visualization` field.
 	Text string `json:"text,omitempty"`
-	// Query Vizualization ID returned by :method:queryvisualizations/create.
+	// Query Visualization ID returned by :method:queryvisualizations/create.
 	VisualizationId string `json:"visualization_id,omitempty"`
 	// Width of a widget
 	Width int `json:"width"`
@@ -6264,7 +6264,7 @@ type UpdateWidgetRequest struct {
 	// field is ignored if the widget contains a visualization in the
 	// `visualization` field.
 	Text string `json:"text,omitempty"`
-	// Query Vizualization ID returned by :method:queryvisualizations/create.
+	// Query Visualization ID returned by :method:queryvisualizations/create.
 	VisualizationId string `json:"visualization_id,omitempty"`
 	// Width of a widget
 	Width int `json:"width"`

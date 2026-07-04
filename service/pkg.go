@@ -264,7 +264,7 @@
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
 //
-// - [sql.QueryVisualizationsLegacyAPI]: This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace.
+// - [sql.QueryVisualizationsLegacyAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries within the Databricks Workspace.
 //
 // - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
 //

@@ -557,6 +557,14 @@ type GrantsService interface {
 	// only indication that the end of results has been reached.
 	GetEffective(ctx context.Context, request GetEffectiveRequest) (*EffectivePermissionsList, error)
 
+	// Lists the privilege assignments for a securable. Does not include
+	// inherited privileges. Paginated version of Get Permissions API.
+	List(ctx context.Context, request ListPrivilegeAssignmentsRequest) (*ListPrivilegeAssignmentsResponse, error)
+
+	// Lists the effective privilege assignments for a securable. Includes
+	// inherited privileges. Paginated version of Get Effective Permissions API.
+	ListEffective(ctx context.Context, request ListEffectivePrivilegeAssignmentsRequest) (*ListEffectivePrivilegeAssignmentsResponse, error)
+
 	// Updates the permissions for a securable.
 	Update(ctx context.Context, request UpdatePermissions) (*UpdatePermissionsResponse, error)
 }

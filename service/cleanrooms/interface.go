@@ -91,13 +91,15 @@ type CleanRoomsService interface {
 
 	// Create a new clean room with the specified collaborators. This method is
 	// asynchronous; the returned name field inside the clean_room field can be
-	// used to poll the clean room status, using the :method:cleanrooms/get
-	// method. When this method returns, the clean room will be in a
-	// PROVISIONING state, with only name, owner, comment, created_at and status
-	// populated. The clean room will be usable once it enters an ACTIVE state.
+	// used to poll the clean room status, using the [cleanrooms/get] method.
+	// When this method returns, the clean room will be in a PROVISIONING state,
+	// with only name, owner, comment, created_at and status populated. The
+	// clean room will be usable once it enters an ACTIVE state.
 	//
 	// The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM**
 	// privilege on the metastore.
+	//
+	// [cleanrooms/get]: https://docs.databricks.com/api/workspace/cleanrooms/get
 	Create(ctx context.Context, request CreateCleanRoomRequest) (*CleanRoom, error)
 
 	// Create the output catalog of the clean room.

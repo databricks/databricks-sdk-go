@@ -5,6 +5,7 @@ package catalog
 import (
 	context "context"
 
+	listing "github.com/databricks/databricks-sdk-go/listing"
 	catalog "github.com/databricks/databricks-sdk-go/service/catalog"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -256,6 +257,222 @@ func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) Retur
 }
 
 func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.EffectivePermissionsList, error)) *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// List provides a mock function with given fields: ctx, request
+func (_m *MockGrantsInterface) List(ctx context.Context, request catalog.ListPrivilegeAssignmentsRequest) listing.Iterator[catalog.PrivilegeAssignment] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for List")
+	}
+
+	var r0 listing.Iterator[catalog.PrivilegeAssignment]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListPrivilegeAssignmentsRequest) listing.Iterator[catalog.PrivilegeAssignment]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[catalog.PrivilegeAssignment])
+		}
+	}
+
+	return r0
+}
+
+// MockGrantsInterface_List_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'List'
+type MockGrantsInterface_List_Call struct {
+	*mock.Call
+}
+
+// List is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.ListPrivilegeAssignmentsRequest
+func (_e *MockGrantsInterface_Expecter) List(ctx interface{}, request interface{}) *MockGrantsInterface_List_Call {
+	return &MockGrantsInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
+}
+
+func (_c *MockGrantsInterface_List_Call) Run(run func(ctx context.Context, request catalog.ListPrivilegeAssignmentsRequest)) *MockGrantsInterface_List_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.ListPrivilegeAssignmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockGrantsInterface_List_Call) Return(_a0 listing.Iterator[catalog.PrivilegeAssignment]) *MockGrantsInterface_List_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockGrantsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListPrivilegeAssignmentsRequest) listing.Iterator[catalog.PrivilegeAssignment]) *MockGrantsInterface_List_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockGrantsInterface) ListAll(ctx context.Context, request catalog.ListPrivilegeAssignmentsRequest) ([]catalog.PrivilegeAssignment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAll")
+	}
+
+	var r0 []catalog.PrivilegeAssignment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListPrivilegeAssignmentsRequest) ([]catalog.PrivilegeAssignment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListPrivilegeAssignmentsRequest) []catalog.PrivilegeAssignment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]catalog.PrivilegeAssignment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListPrivilegeAssignmentsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGrantsInterface_ListAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAll'
+type MockGrantsInterface_ListAll_Call struct {
+	*mock.Call
+}
+
+// ListAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.ListPrivilegeAssignmentsRequest
+func (_e *MockGrantsInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockGrantsInterface_ListAll_Call {
+	return &MockGrantsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
+}
+
+func (_c *MockGrantsInterface_ListAll_Call) Run(run func(ctx context.Context, request catalog.ListPrivilegeAssignmentsRequest)) *MockGrantsInterface_ListAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.ListPrivilegeAssignmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockGrantsInterface_ListAll_Call) Return(_a0 []catalog.PrivilegeAssignment, _a1 error) *MockGrantsInterface_ListAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGrantsInterface_ListAll_Call) RunAndReturn(run func(context.Context, catalog.ListPrivilegeAssignmentsRequest) ([]catalog.PrivilegeAssignment, error)) *MockGrantsInterface_ListAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListEffective provides a mock function with given fields: ctx, request
+func (_m *MockGrantsInterface) ListEffective(ctx context.Context, request catalog.ListEffectivePrivilegeAssignmentsRequest) listing.Iterator[catalog.EffectivePrivilegeAssignment] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListEffective")
+	}
+
+	var r0 listing.Iterator[catalog.EffectivePrivilegeAssignment]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListEffectivePrivilegeAssignmentsRequest) listing.Iterator[catalog.EffectivePrivilegeAssignment]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[catalog.EffectivePrivilegeAssignment])
+		}
+	}
+
+	return r0
+}
+
+// MockGrantsInterface_ListEffective_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListEffective'
+type MockGrantsInterface_ListEffective_Call struct {
+	*mock.Call
+}
+
+// ListEffective is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.ListEffectivePrivilegeAssignmentsRequest
+func (_e *MockGrantsInterface_Expecter) ListEffective(ctx interface{}, request interface{}) *MockGrantsInterface_ListEffective_Call {
+	return &MockGrantsInterface_ListEffective_Call{Call: _e.mock.On("ListEffective", ctx, request)}
+}
+
+func (_c *MockGrantsInterface_ListEffective_Call) Run(run func(ctx context.Context, request catalog.ListEffectivePrivilegeAssignmentsRequest)) *MockGrantsInterface_ListEffective_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.ListEffectivePrivilegeAssignmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockGrantsInterface_ListEffective_Call) Return(_a0 listing.Iterator[catalog.EffectivePrivilegeAssignment]) *MockGrantsInterface_ListEffective_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockGrantsInterface_ListEffective_Call) RunAndReturn(run func(context.Context, catalog.ListEffectivePrivilegeAssignmentsRequest) listing.Iterator[catalog.EffectivePrivilegeAssignment]) *MockGrantsInterface_ListEffective_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListEffectiveAll provides a mock function with given fields: ctx, request
+func (_m *MockGrantsInterface) ListEffectiveAll(ctx context.Context, request catalog.ListEffectivePrivilegeAssignmentsRequest) ([]catalog.EffectivePrivilegeAssignment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListEffectiveAll")
+	}
+
+	var r0 []catalog.EffectivePrivilegeAssignment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListEffectivePrivilegeAssignmentsRequest) ([]catalog.EffectivePrivilegeAssignment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListEffectivePrivilegeAssignmentsRequest) []catalog.EffectivePrivilegeAssignment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]catalog.EffectivePrivilegeAssignment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListEffectivePrivilegeAssignmentsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGrantsInterface_ListEffectiveAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListEffectiveAll'
+type MockGrantsInterface_ListEffectiveAll_Call struct {
+	*mock.Call
+}
+
+// ListEffectiveAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.ListEffectivePrivilegeAssignmentsRequest
+func (_e *MockGrantsInterface_Expecter) ListEffectiveAll(ctx interface{}, request interface{}) *MockGrantsInterface_ListEffectiveAll_Call {
+	return &MockGrantsInterface_ListEffectiveAll_Call{Call: _e.mock.On("ListEffectiveAll", ctx, request)}
+}
+
+func (_c *MockGrantsInterface_ListEffectiveAll_Call) Run(run func(ctx context.Context, request catalog.ListEffectivePrivilegeAssignmentsRequest)) *MockGrantsInterface_ListEffectiveAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.ListEffectivePrivilegeAssignmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockGrantsInterface_ListEffectiveAll_Call) Return(_a0 []catalog.EffectivePrivilegeAssignment, _a1 error) *MockGrantsInterface_ListEffectiveAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGrantsInterface_ListEffectiveAll_Call) RunAndReturn(run func(context.Context, catalog.ListEffectivePrivilegeAssignmentsRequest) ([]catalog.EffectivePrivilegeAssignment, error)) *MockGrantsInterface_ListEffectiveAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -4244,19 +4244,6 @@ type GetSecretRequest struct {
 	// The three-level (fully qualified) name of the secret (for example,
 	// **catalog_name.schema_name.secret_name**).
 	FullName string `json:"-" url:"-"`
-	// Whether to include secrets in the response for which you only have the
-	// **BROWSE** privilege, which limits access to metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GetSecretRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetSecretRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetStorageCredentialRequest struct {
@@ -4538,6 +4525,61 @@ func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListEffectivePrivilegeAssignmentsRequest struct {
+	// Full name of securable.
+	FullName string `json:"-" url:"-"`
+	// Specifies the maximum number of privilege assignments to return (page
+	// length). Every EffectivePrivilegeAssignment present in a single page
+	// response is guaranteed to contain all the effective privileges granted on
+	// (or inherited by) the requested Securable for the respective principal.
+	//
+	// If not set, a server-configured default is used. If set to - lesser than
+	// 0: invalid parameter error - 0: page length is set to a server configured
+	// value - lesser than 150 but greater than 0: invalid parameter error (this
+	// is to ensure that server is able to return at least one complete
+	// EffectivePrivilegeAssignment in a single page response) - greater than
+	// (or equal to) 150: page length is the minimum of this value and a server
+	// configured value
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// If provided, only the effective permissions for the specified principal
+	// (user or group) are returned.
+	Principal string `json:"-" url:"principal,omitempty"`
+	// Type of securable.
+	SecurableType string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListEffectivePrivilegeAssignmentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListEffectivePrivilegeAssignmentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListEffectivePrivilegeAssignmentsResponse struct {
+	// The effective privilege assignments for the securable (and optional
+	// principal).
+	EffectivePrivilegeAssignments []EffectivePrivilegeAssignment `json:"effective_privilege_assignments,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListEffectivePrivilegeAssignmentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListEffectivePrivilegeAssignmentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4888,6 +4930,60 @@ func (s ListPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListPrivilegeAssignmentsRequest struct {
+	// Full name of securable.
+	FullName string `json:"-" url:"-"`
+	// Specifies the maximum number of privilege assignments to return (page
+	// length). Every PrivilegeAssignment present in a single page response is
+	// guaranteed to contain all the privileges granted on the requested
+	// Securable for the respective principal.
+	//
+	// If not set, page length is the server configured value. If set to -
+	// lesser than 0: invalid parameter error - 0: page length is set to a
+	// server configured value - lesser than 150 but greater than 0: invalid
+	// parameter error (this is to ensure that server is able to return at least
+	// one complete PrivilegeAssignment in a single page response) - greater
+	// than (or equal to) 150: page length is the minimum of this value and a
+	// server configured value
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// If provided, only the permissions for the specified principal (user or
+	// group) are returned.
+	Principal string `json:"-" url:"principal,omitempty"`
+	// Type of securable.
+	SecurableType string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListPrivilegeAssignmentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPrivilegeAssignmentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListPrivilegeAssignmentsResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListPrivilegeAssignmentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPrivilegeAssignmentsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListQuotasRequest struct {
 	// The number of quotas to return.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -5040,15 +5136,12 @@ type ListSecretsRequest struct {
 	// The name of the catalog under which to list secrets. Both
 	// **catalog_name** and **schema_name** must be specified together.
 	CatalogName string `json:"-" url:"catalog_name,omitempty"`
-	// Whether to include secrets in the response for which you only have the
-	// **BROWSE** privilege, which limits access to metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of secrets to return.
 	//
-	// - If not specified, at most 10000 secrets are returned. - If set to a
+	// - If not specified, at most 1000 secrets are returned. - If set to a
 	// value greater than 0, the page length is the minimum of this value and
-	// 10000. - If set to 0, the page length is set to 10000. - If set to a
-	// value less than 0, an invalid parameter error is returned.
+	// 1000. - If set to 0, the page length is set to 1000. - If set to a value
+	// less than 0, an invalid parameter error is returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token to go to the next page based on previous query.
 	// The maximum page length is determined by a server configured value.
@@ -6746,6 +6839,8 @@ const PrivilegeModifyCleanRoom Privilege = `MODIFY_CLEAN_ROOM`
 
 const PrivilegeReadFiles Privilege = `READ_FILES`
 
+const PrivilegeReadMetadata Privilege = `READ_METADATA`
+
 const PrivilegeReadPrivateFiles Privilege = `READ_PRIVATE_FILES`
 
 const PrivilegeReadVolume Privilege = `READ_VOLUME`
@@ -6786,11 +6881,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FILES`, `READ_METADATA`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FILES", "READ_METADATA", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -6833,6 +6928,7 @@ func (f *Privilege) Values() []Privilege {
 		PrivilegeModify,
 		PrivilegeModifyCleanRoom,
 		PrivilegeReadFiles,
+		PrivilegeReadMetadata,
 		PrivilegeReadPrivateFiles,
 		PrivilegeReadVolume,
 		PrivilegeRefresh,
@@ -7187,10 +7283,6 @@ func (s SchemaInfo) MarshalJSON() ([]byte, error) {
 // (catalog.schema.secret) that securely store sensitive credential data such as
 // passwords, tokens, and keys.
 type Secret struct {
-	// Indicates whether the principal is limited to retrieving metadata for the
-	// associated object through the **BROWSE** privilege when
-	// **include_browse** is enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the secret reside.
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description of the secret.
@@ -7211,8 +7303,6 @@ type Secret struct {
 	// the UI. It is purely informational and does not trigger any automatic
 	// actions or affect the secret's lifecycle.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
-
-	ExternalSecretId string `json:"external_secret_id,omitempty"`
 	// The three-level (fully qualified) name of the secret, in the form of
 	// **catalog_name.schema_name.secret_name**.
 	FullName string `json:"full_name,omitempty"`
@@ -8747,8 +8837,21 @@ type UpdatePermissions struct {
 	Changes []PermissionsChange `json:"changes,omitempty"`
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Optional, default false. Specifies whether all the permissions should be
+	// returned in the response.
+	OmitPermissionsInResponse bool `json:"omit_permissions_in_response,omitempty"`
 	// Type of securable.
 	SecurableType string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdatePermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdatePermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdatePermissionsResponse struct {
@@ -8894,8 +8997,12 @@ type UpdateSecretRequest struct {
 	// The secret object containing the fields to update. Only fields specified
 	// in **update_mask** will be updated.
 	Secret Secret `json:"secret"`
-	// The field mask specifying which fields of the secret to update. Supported
-	// fields: **value**, **comment**, **owner**, **expire_time**.
+	// The field mask specifying which fields of the secret to update. - If
+	// **update_mask** is **"*"**, all fields specified in **secret** are
+	// updated. - If **update_mask** specifies one or more fields, only those
+	// fields are updated. Each specified field must be set in **secret**.
+	// Supported fields: **value**, **comment**, **owner**, **expire_time**. To
+	// change the secret name, delete and recreate the secret.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

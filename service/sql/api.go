@@ -1122,7 +1122,7 @@ func NewQueryVisualizationsLegacy(client *client.DatabricksClient) *QueryVisuali
 }
 
 // This is an evolving API that facilitates the addition and removal of
-// vizualisations from existing queries within the Databricks Workspace. Data
+// visualizations from existing queries within the Databricks Workspace. Data
 // structures may change over time.
 //
 // **Warning**: This API is deprecated. Please see the latest version of the
