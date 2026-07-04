@@ -214,7 +214,15 @@ type AggregationFunction struct {
 
 	First *FirstFunction `json:"first,omitempty"`
 
+	FirstDistinct *FirstDistinctFunction `json:"first_distinct,omitempty"`
+
+	FirstN *FirstNFunction `json:"first_n,omitempty"`
+
 	Last *LastFunction `json:"last,omitempty"`
+
+	LastDistinct *LastDistinctFunction `json:"last_distinct,omitempty"`
+
+	LastN *LastNFunction `json:"last_n,omitempty"`
 
 	Max *MaxFunction `json:"max,omitempty"`
 
@@ -1603,10 +1611,27 @@ type FinalizeLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+// Returns the first N distinct values, ordered by the feature's timeseries
+// column.
+type FirstDistinctFunction struct {
+	// The input column from which the first N distinct values are returned.
+	Input string `json:"input"`
+	// The number of distinct values to return.
+	N int64 `json:"n"`
+}
+
 // Returns the first value.
 type FirstFunction struct {
 	// The input column from which the first value is returned.
 	Input string `json:"input"`
+}
+
+// Returns the first N values, ordered by the feature's timeseries column.
+type FirstNFunction struct {
+	// The input column from which the first N values are returned.
+	Input string `json:"input"`
+	// The number of values to return.
+	N int64 `json:"n"`
 }
 
 // A flat (non-nested) schema for request-time fields, defined as an ordered
@@ -2288,10 +2313,27 @@ func (s KafkaSubscriptionMode) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Returns the last N distinct values, ordered by the feature's timeseries
+// column.
+type LastDistinctFunction struct {
+	// The input column from which the last N distinct values are returned.
+	Input string `json:"input"`
+	// The number of distinct values to return.
+	N int64 `json:"n"`
+}
+
 // Returns the last value.
 type LastFunction struct {
 	// The input column from which the last value is returned.
 	Input string `json:"input"`
+}
+
+// Returns the last N values, ordered by the feature's timeseries column.
+type LastNFunction struct {
+	// The input column from which the last N values are returned.
+	Input string `json:"input"`
+	// The number of values to return.
+	N int64 `json:"n"`
 }
 
 // Lineage context information for tracking where an API was invoked. This will
@@ -3027,6 +3069,34 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A long (multi-day) rolling window served via the hybrid batch + streaming
+// path. The batch pipeline maintains daily partial aggregates for the bulk of
+// the window while the streaming pipeline maintains the most recent day(s), and
+// serving merges them on read. Distinct from RollingWindow so the control plane
+// can explicitly identify long rolling window features rather than inferring
+// hybrid behavior from window_duration.
+type LongRollingWindow struct {
+	// The delay applied to the end of the rolling window (must be
+	// non-negative). For example, delay=1d shifts the window end 1 day before
+	// the evaluation time.
+	Delay *duration.Duration `json:"delay,omitempty"`
+	// The duration of the rolling window. Must be positive and span more than
+	// two days, so that both the batch (N-1 day) and stale-path (N-2 day)
+	// partial aggregates are well defined. The duration need not be a whole
+	// number of days (e.g. 3 days 15 minutes is allowed).
+	WindowDuration duration.Duration `json:"window_duration"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LongRollingWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LongRollingWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A materialized feature represents a feature that is continuously computed and
 // stored.
 type MaterializedFeature struct {
@@ -3648,6 +3718,22 @@ func (f *PermissionLevel) Values() []PermissionLevel {
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
 func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
+}
+
+// A Protocol Buffer schema paired with the name of the message within it that
+// describes the Kafka payload. A .proto file may declare multiple messages;
+// message_name disambiguates.
+type ProtoSchemaSpec struct {
+	// The fully-qualified name of the message within schema_text that describes
+	// the Kafka payload (e.g. "Event" or "com.example.Event" if schema_text
+	// declares a package). Identifies which message is used to decode each
+	// Kafka record — a .proto file may declare multiple messages but only one
+	// represents the payload. Must not be empty.
+	MessageName string `json:"message_name"`
+	// The raw .proto file text (proto2 and proto3 syntax supported, see
+	// https://protobuf.dev/programming-guides/proto3/ and
+	// https://protobuf.dev/programming-guides/proto2/).
+	SchemaText string `json:"schema_text"`
 }
 
 type PublishSpec struct {
@@ -4440,9 +4526,14 @@ func (f *ScalarDataType) Type() string {
 }
 
 type SchemaConfig struct {
+	// Avro schema in JSON format
+	// (https://avro.apache.org/docs/current/specification/).
+	AvroSchema string `json:"avro_schema,omitempty"`
 	// Schema of the JSON object in standard IETF JSON schema format
 	// (https://json-schema.org/).
 	JsonSchema string `json:"json_schema,omitempty"`
+	// Protocol Buffer schema with its payload message name.
+	ProtoSchema *ProtoSchemaSpec `json:"proto_schema,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4995,8 +5086,21 @@ type StreamSourceConfig struct {
 
 // The streaming mode configuration for a streaming materialization pipeline.
 type StreamingMode struct {
+	// The desired data freshness for feature materialization, expressed as a
+	// duration string (e.g. "1 minute").
+	FreshnessTarget string `json:"freshness_target,omitempty"`
 	// The type of streaming mode used by the materialization pipeline.
 	Mode StreamingModeStreamingModeType `json:"mode,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *StreamingMode) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StreamingMode) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type StreamingModeStreamingModeType string
@@ -5103,6 +5207,9 @@ func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
 
 type TimeWindow struct {
 	Continuous *ContinuousWindow `json:"continuous,omitempty"`
+	// A long (multi-day) rolling window served via the hybrid batch + streaming
+	// path.
+	LongRolling *LongRollingWindow `json:"long_rolling,omitempty"`
 
 	Rolling *RollingWindow `json:"rolling,omitempty"`
 

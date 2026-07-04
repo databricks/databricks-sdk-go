@@ -107,6 +107,17 @@ func (s Resource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// This mimics a parameterless custom method's request: all fields are
+// path-bound, so the serialized JSON body is the empty object {}.
+type SyncResourceRequest struct {
+	// Boolean path segment identifying the resource to sync.
+	PathParamBool bool `json:"-" url:"-"`
+	// Integer path segment identifying the resource to sync.
+	PathParamInt int `json:"-" url:"-"`
+	// String path segment identifying the resource to sync.
+	PathParamString string `json:"-" url:"-"`
+}
+
 type UpdateResourceRequest struct {
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,

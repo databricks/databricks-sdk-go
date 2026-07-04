@@ -497,7 +497,9 @@ type IpAccessListsService interface {
 	//
 	// It can take a few minutes for the changes to take effect. **Note**: Your
 	// new IP access list has no effect until you enable the feature. See
-	// :method:workspaceconf/setStatus
+	// [workspaceconf/setStatus]
+	//
+	// [workspaceconf/setStatus]: https://docs.databricks.com/api/workspace/workspaceconf/setstatus
 	Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error)
 
 	// Deletes an IP access list, specified by its list ID.
@@ -521,7 +523,9 @@ type IpAccessListsService interface {
 	// returned with `error_code` value `INVALID_STATE`. It can take a few
 	// minutes for the changes to take effect. Note that your resulting IP
 	// access list has no effect until you enable the feature. See
-	// :method:workspaceconf/setStatus.
+	// [workspaceconf/setStatus].
+	//
+	// [workspaceconf/setStatus]: https://docs.databricks.com/api/workspace/workspaceconf/setstatus
 	Replace(ctx context.Context, request ReplaceIpAccessList) error
 
 	// Updates an existing IP access list, specified by its ID.
@@ -541,7 +545,9 @@ type IpAccessListsService interface {
 	//
 	// It can take a few minutes for the changes to take effect. Note that your
 	// resulting IP access list has no effect until you enable the feature. See
-	// :method:workspaceconf/setStatus.
+	// [workspaceconf/setStatus].
+	//
+	// [workspaceconf/setStatus]: https://docs.databricks.com/api/workspace/workspaceconf/setstatus
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 

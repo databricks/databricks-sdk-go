@@ -1371,6 +1371,100 @@ func (a *grantsImpl) GetEffective(ctx context.Context, request GetEffectiveReque
 	return &effectivePermissionsList, err
 }
 
+// Lists the privilege assignments for a securable. Does not include inherited
+// privileges. Paginated version of Get Permissions API.
+func (a *grantsImpl) List(ctx context.Context, request ListPrivilegeAssignmentsRequest) listing.Iterator[PrivilegeAssignment] {
+
+	getNextPage := func(ctx context.Context, req ListPrivilegeAssignmentsRequest) (*ListPrivilegeAssignmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListPrivilegeAssignmentsResponse) []PrivilegeAssignment {
+		return resp.PrivilegeAssignments
+	}
+	getNextReq := func(resp *ListPrivilegeAssignmentsResponse) *ListPrivilegeAssignmentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the privilege assignments for a securable. Does not include inherited
+// privileges. Paginated version of Get Permissions API.
+func (a *grantsImpl) ListAll(ctx context.Context, request ListPrivilegeAssignmentsRequest) ([]PrivilegeAssignment, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[PrivilegeAssignment](ctx, iterator)
+}
+
+func (a *grantsImpl) internalList(ctx context.Context, request ListPrivilegeAssignmentsRequest) (*ListPrivilegeAssignmentsResponse, error) {
+	var listPrivilegeAssignmentsResponse ListPrivilegeAssignmentsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/privilege-assignments/%v/%v", request.SecurableType, request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPrivilegeAssignmentsResponse)
+	return &listPrivilegeAssignmentsResponse, err
+}
+
+// Lists the effective privilege assignments for a securable. Includes inherited
+// privileges. Paginated version of Get Effective Permissions API.
+func (a *grantsImpl) ListEffective(ctx context.Context, request ListEffectivePrivilegeAssignmentsRequest) listing.Iterator[EffectivePrivilegeAssignment] {
+
+	getNextPage := func(ctx context.Context, req ListEffectivePrivilegeAssignmentsRequest) (*ListEffectivePrivilegeAssignmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListEffective(ctx, req)
+	}
+	getItems := func(resp *ListEffectivePrivilegeAssignmentsResponse) []EffectivePrivilegeAssignment {
+		return resp.EffectivePrivilegeAssignments
+	}
+	getNextReq := func(resp *ListEffectivePrivilegeAssignmentsResponse) *ListEffectivePrivilegeAssignmentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the effective privilege assignments for a securable. Includes inherited
+// privileges. Paginated version of Get Effective Permissions API.
+func (a *grantsImpl) ListEffectiveAll(ctx context.Context, request ListEffectivePrivilegeAssignmentsRequest) ([]EffectivePrivilegeAssignment, error) {
+	iterator := a.ListEffective(ctx, request)
+	return listing.ToSlice[EffectivePrivilegeAssignment](ctx, iterator)
+}
+
+func (a *grantsImpl) internalListEffective(ctx context.Context, request ListEffectivePrivilegeAssignmentsRequest) (*ListEffectivePrivilegeAssignmentsResponse, error) {
+	var listEffectivePrivilegeAssignmentsResponse ListEffectivePrivilegeAssignmentsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/effective-privilege-assignments/%v/%v", request.SecurableType, request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listEffectivePrivilegeAssignmentsResponse)
+	return &listEffectivePrivilegeAssignmentsResponse, err
+}
+
 func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*UpdatePermissionsResponse, error) {
 	var updatePermissionsResponse UpdatePermissionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
