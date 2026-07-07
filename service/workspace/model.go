@@ -149,6 +149,9 @@ func (s CreateCredentialsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateRepoRequest struct {
+	// Git credential ID to use when cloning the repository. The Git credential
+	// must be configured for the current user.
+	GitCredentialId int64 `json:"git_credential_id,omitempty"`
 	// Desired path for the repo in the workspace. Almost any path in the
 	// workspace can be chosen. If repo is created in `/Repos`, path must be in
 	// the format `/Repos/{folder}/{repo-name}`.
@@ -1296,6 +1299,9 @@ type UpdateRepoRequest struct {
 	// Local commits that have been made but not yet pushed to the remote are
 	// preserved.
 	DangerouslyForceDiscardAll bool `json:"dangerously_force_discard_all,omitempty"`
+	// Git credential ID to use for this update operation. The Git credential
+	// must be configured for the current user.
+	GitCredentialId int64 `json:"git_credential_id,omitempty"`
 	// ID of the Git folder (repo) object in the workspace.
 	RepoId int64 `json:"-" url:"-"`
 	// If specified, update the sparse checkout settings. The update will fail
