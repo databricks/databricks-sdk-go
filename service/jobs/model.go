@@ -948,6 +948,9 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// Path of the job parent folder in workspace file tree. If absent, the job
+	// doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run. The performance
 	// target does not apply to tasks that run on Serverless GPU compute.
@@ -2430,6 +2433,9 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// Path of the job parent folder in workspace file tree. If absent, the job
+	// doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run. The performance
 	// target does not apply to tasks that run on Serverless GPU compute.
