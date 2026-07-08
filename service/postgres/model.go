@@ -623,7 +623,7 @@ type DatabaseDatabaseSpec struct {
 	// Database
 	//
 	// A database always has an owner.
-	Role string `json:"role,omitempty"`
+	Role string `json:"role"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

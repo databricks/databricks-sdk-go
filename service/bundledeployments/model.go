@@ -715,6 +715,10 @@ type Resource struct {
 	ResourceType DeploymentResourceType `json:"resource_type"`
 	// Serialized local config state (what the CLI deployed).
 	State *json.RawMessage `json:"state,omitempty"`
+	// When the last operation that updated this resource's recorded state was
+	// applied. Pairs with last_action_type and last_version_id (all three
+	// advance together on that write).
+	UpdateTime *time.Time `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
