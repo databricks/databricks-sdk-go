@@ -282,6 +282,10 @@ type BaseRun struct {
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// ID of the deployment that produced the job when this run was created.
+	// Used to look up deployment metadata from the Deployment Metadata service.
+	// Only set for job runs of jobs with a `BUNDLE` deployment.
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
 	// The actual performance target used by the serverless run during
@@ -393,6 +397,11 @@ type BaseRun struct {
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
+	// ID of the deployment version that produced the job when this run was
+	// created. Identifies a specific snapshot of the deployment in the
+	// Deployment Metadata service. Only set for job runs of jobs with a
+	// `BUNDLE` deployment.
+	VersionId string `json:"version_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3740,6 +3749,10 @@ type Run struct {
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// ID of the deployment that produced the job when this run was created.
+	// Used to look up deployment metadata from the Deployment Metadata service.
+	// Only set for job runs of jobs with a `BUNDLE` deployment.
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
 	// The actual performance target used by the serverless run during
@@ -3856,6 +3869,11 @@ type Run struct {
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
+	// ID of the deployment version that produced the job when this run was
+	// created. Identifies a specific snapshot of the deployment in the
+	// Deployment Metadata service. Only set for job runs of jobs with a
+	// `BUNDLE` deployment.
+	VersionId string `json:"version_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
