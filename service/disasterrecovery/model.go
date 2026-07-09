@@ -369,6 +369,11 @@ type StableUrl struct {
 	// Fully qualified resource name. Format:
 	// accounts/{account_id}/stable-urls/{stable_url_id}.
 	Name string `json:"name,omitempty"`
+	// The stable workspace ID for this stable URL. Generated on creation and
+	// immutable thereafter; identifies the URL across failovers and is the same
+	// value embedded in the `url` (as the `w=` query parameter for SPOG URLs,
+	// or in the `conn-<id>` hostname for Private-Link URLs).
+	StableWorkspaceId string `json:"stable_workspace_id,omitempty"`
 	// The stable URL endpoint. Generated on creation and immutable thereafter.
 	// For non-Private-Link workspaces this is
 	// `https://<spog_host>/?w=<connection_id>`. For Private-Link workspaces

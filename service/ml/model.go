@@ -543,6 +543,11 @@ type CreateExperiment struct {
 	// tag values up to 5000 bytes in size. All storage backends are also
 	// guaranteed to support up to 20 tags per request.
 	Tags []ExperimentTag `json:"tags,omitempty"`
+	// The location where the experiment's traces are stored. When set, the
+	// underlying storage is provisioned and the experiment's traces are routed
+	// to it. When unset, traces are stored in the default MLflow backend. This
+	// field cannot be updated after the experiment is created.
+	TraceLocation *ExperimentTraceLocation `json:"trace_location,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1255,6 +1260,10 @@ type Experiment struct {
 	Name string `json:"name,omitempty"`
 	// Tags: Additional metadata key-value pairs.
 	Tags []ExperimentTag `json:"tags,omitempty"`
+	// The location where the experiment's traces are stored. Unset when traces
+	// are stored in the default MLflow backend. This field cannot be updated
+	// after the experiment is created.
+	TraceLocation *ExperimentTraceLocation `json:"trace_location,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1426,6 +1435,13 @@ func (s *ExperimentTag) UnmarshalJSON(b []byte) error {
 
 func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The storage location for an experiment's traces.
+type ExperimentTraceLocation struct {
+	// A Unity Catalog schema where the experiment's traces are stored as Delta
+	// tables.
+	UcTraceLocation *UcTraceLocation `json:"uc_trace_location,omitempty"`
 }
 
 type Feature struct {
@@ -5308,6 +5324,30 @@ type TumblingWindow struct {
 	// The duration of each tumbling window (non-overlapping, fixed-duration
 	// windows).
 	WindowDuration string `json:"window_duration"`
+}
+
+// A Unity Catalog trace storage location. Traces are stored as Delta tables in
+// the specified catalog and schema.
+type UcTraceLocation struct {
+	// The name of the Unity Catalog catalog.
+	Catalog string `json:"catalog"`
+	// The name of the Unity Catalog schema within `catalog`.
+	Schema string `json:"schema"`
+	// The prefix for the trace tables, which are named
+	// `{catalog}.{schema}.{table_prefix}_otel_*`. May only contain letters,
+	// digits, and underscores, and may be at most 238 characters. When unset, a
+	// server-generated prefix derived from the experiment ID is used.
+	TablePrefix string `json:"table_prefix,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UcTraceLocation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UcTraceLocation) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Details required to edit a comment on a model version.
