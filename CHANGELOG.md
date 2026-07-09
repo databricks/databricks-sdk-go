@@ -1,5 +1,15 @@
 # Version changelog
 
+## Release v0.156.0 (2026-07-09)
+
+### API Changes
+* Add `StableWorkspaceId` field for [disasterrecovery.StableUrl](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#StableUrl).
+* Add `DeploymentId` and `VersionId` fields for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+* Add `DeploymentId` and `VersionId` fields for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+* Add `TraceLocation` field for [ml.CreateExperiment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#CreateExperiment).
+* Add `TraceLocation` field for [ml.Experiment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Experiment).
+
+
 ## Release v0.155.0 (2026-07-08)
 
 ### API Changes
