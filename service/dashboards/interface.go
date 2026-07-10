@@ -35,7 +35,7 @@ type GenieService interface {
 	// Download a rendered image of a message visualization attachment. The
 	// response body is the raw PNG image, not a JSON payload. This is only
 	// available if the attachment is a visualization and the message status is
-	// `COMPLETED`.
+	// `COMPLETED`. This endpoint is not supported for Private Link workspaces.
 	DownloadMessageAttachmentVisualization(ctx context.Context, request DownloadMessageAttachmentVisualizationRequest) (*DownloadMessageAttachmentVisualizationResponse, error)
 
 	// Execute the SQL for a message query attachment. Use this API when the
