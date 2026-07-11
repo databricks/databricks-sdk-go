@@ -141,6 +141,65 @@ func (_c *MockPostgresInterface_CreateCatalog_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// CreateCdfConfig provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) CreateCdfConfig(ctx context.Context, request postgres.CreateCdfConfigRequest) (postgres.CreateCdfConfigOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateCdfConfig")
+	}
+
+	var r0 postgres.CreateCdfConfigOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateCdfConfigRequest) (postgres.CreateCdfConfigOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateCdfConfigRequest) postgres.CreateCdfConfigOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateCdfConfigOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.CreateCdfConfigRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateCdfConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateCdfConfig'
+type MockPostgresInterface_CreateCdfConfig_Call struct {
+	*mock.Call
+}
+
+// CreateCdfConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateCdfConfigRequest
+func (_e *MockPostgresInterface_Expecter) CreateCdfConfig(ctx interface{}, request interface{}) *MockPostgresInterface_CreateCdfConfig_Call {
+	return &MockPostgresInterface_CreateCdfConfig_Call{Call: _e.mock.On("CreateCdfConfig", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateCdfConfig_Call) Run(run func(ctx context.Context, request postgres.CreateCdfConfigRequest)) *MockPostgresInterface_CreateCdfConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.CreateCdfConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateCdfConfig_Call) Return(_a0 postgres.CreateCdfConfigOperationInterface, _a1 error) *MockPostgresInterface_CreateCdfConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateCdfConfig_Call) RunAndReturn(run func(context.Context, postgres.CreateCdfConfigRequest) (postgres.CreateCdfConfigOperationInterface, error)) *MockPostgresInterface_CreateCdfConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateDataApi provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) CreateDataApi(ctx context.Context, request postgres.CreateDataApiRequest) (postgres.CreateDataApiOperationInterface, error) {
 	ret := _m.Called(ctx, request)
@@ -609,6 +668,65 @@ func (_c *MockPostgresInterface_DeleteCatalog_Call) Return(_a0 postgres.DeleteCa
 }
 
 func (_c *MockPostgresInterface_DeleteCatalog_Call) RunAndReturn(run func(context.Context, postgres.DeleteCatalogRequest) (postgres.DeleteCatalogOperationInterface, error)) *MockPostgresInterface_DeleteCatalog_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteCdfConfig provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) DeleteCdfConfig(ctx context.Context, request postgres.DeleteCdfConfigRequest) (postgres.DeleteCdfConfigOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteCdfConfig")
+	}
+
+	var r0 postgres.DeleteCdfConfigOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteCdfConfigRequest) (postgres.DeleteCdfConfigOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteCdfConfigRequest) postgres.DeleteCdfConfigOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteCdfConfigOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteCdfConfigRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteCdfConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteCdfConfig'
+type MockPostgresInterface_DeleteCdfConfig_Call struct {
+	*mock.Call
+}
+
+// DeleteCdfConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteCdfConfigRequest
+func (_e *MockPostgresInterface_Expecter) DeleteCdfConfig(ctx interface{}, request interface{}) *MockPostgresInterface_DeleteCdfConfig_Call {
+	return &MockPostgresInterface_DeleteCdfConfig_Call{Call: _e.mock.On("DeleteCdfConfig", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteCdfConfig_Call) Run(run func(ctx context.Context, request postgres.DeleteCdfConfigRequest)) *MockPostgresInterface_DeleteCdfConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.DeleteCdfConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteCdfConfig_Call) Return(_a0 postgres.DeleteCdfConfigOperationInterface, _a1 error) *MockPostgresInterface_DeleteCdfConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteCdfConfig_Call) RunAndReturn(run func(context.Context, postgres.DeleteCdfConfigRequest) (postgres.DeleteCdfConfigOperationInterface, error)) *MockPostgresInterface_DeleteCdfConfig_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1144,6 +1262,124 @@ func (_c *MockPostgresInterface_GetCatalog_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
+// GetCdfConfig provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetCdfConfig(ctx context.Context, request postgres.GetCdfConfigRequest) (*postgres.CdfConfig, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCdfConfig")
+	}
+
+	var r0 *postgres.CdfConfig
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetCdfConfigRequest) (*postgres.CdfConfig, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetCdfConfigRequest) *postgres.CdfConfig); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.CdfConfig)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetCdfConfigRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetCdfConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCdfConfig'
+type MockPostgresInterface_GetCdfConfig_Call struct {
+	*mock.Call
+}
+
+// GetCdfConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetCdfConfigRequest
+func (_e *MockPostgresInterface_Expecter) GetCdfConfig(ctx interface{}, request interface{}) *MockPostgresInterface_GetCdfConfig_Call {
+	return &MockPostgresInterface_GetCdfConfig_Call{Call: _e.mock.On("GetCdfConfig", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetCdfConfig_Call) Run(run func(ctx context.Context, request postgres.GetCdfConfigRequest)) *MockPostgresInterface_GetCdfConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetCdfConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetCdfConfig_Call) Return(_a0 *postgres.CdfConfig, _a1 error) *MockPostgresInterface_GetCdfConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetCdfConfig_Call) RunAndReturn(run func(context.Context, postgres.GetCdfConfigRequest) (*postgres.CdfConfig, error)) *MockPostgresInterface_GetCdfConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetCdfStatus provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetCdfStatus(ctx context.Context, request postgres.GetCdfStatusRequest) (*postgres.CdfStatus, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCdfStatus")
+	}
+
+	var r0 *postgres.CdfStatus
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetCdfStatusRequest) (*postgres.CdfStatus, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetCdfStatusRequest) *postgres.CdfStatus); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.CdfStatus)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetCdfStatusRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetCdfStatus_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCdfStatus'
+type MockPostgresInterface_GetCdfStatus_Call struct {
+	*mock.Call
+}
+
+// GetCdfStatus is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetCdfStatusRequest
+func (_e *MockPostgresInterface_Expecter) GetCdfStatus(ctx interface{}, request interface{}) *MockPostgresInterface_GetCdfStatus_Call {
+	return &MockPostgresInterface_GetCdfStatus_Call{Call: _e.mock.On("GetCdfStatus", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetCdfStatus_Call) Run(run func(ctx context.Context, request postgres.GetCdfStatusRequest)) *MockPostgresInterface_GetCdfStatus_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetCdfStatusRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetCdfStatus_Call) Return(_a0 *postgres.CdfStatus, _a1 error) *MockPostgresInterface_GetCdfStatus_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetCdfStatus_Call) RunAndReturn(run func(context.Context, postgres.GetCdfStatusRequest) (*postgres.CdfStatus, error)) *MockPostgresInterface_GetCdfStatus_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetDataApi provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) GetDataApi(ctx context.Context, request postgres.GetDataApiRequest) (*postgres.DataApi, error) {
 	ret := _m.Called(ctx, request)
@@ -1661,6 +1897,222 @@ func (_c *MockPostgresInterface_ListBranchesAll_Call) Return(_a0 []postgres.Bran
 }
 
 func (_c *MockPostgresInterface_ListBranchesAll_Call) RunAndReturn(run func(context.Context, postgres.ListBranchesRequest) ([]postgres.Branch, error)) *MockPostgresInterface_ListBranchesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListCdfConfigs provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListCdfConfigs(ctx context.Context, request postgres.ListCdfConfigsRequest) listing.Iterator[postgres.CdfConfig] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListCdfConfigs")
+	}
+
+	var r0 listing.Iterator[postgres.CdfConfig]
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListCdfConfigsRequest) listing.Iterator[postgres.CdfConfig]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[postgres.CdfConfig])
+		}
+	}
+
+	return r0
+}
+
+// MockPostgresInterface_ListCdfConfigs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListCdfConfigs'
+type MockPostgresInterface_ListCdfConfigs_Call struct {
+	*mock.Call
+}
+
+// ListCdfConfigs is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListCdfConfigsRequest
+func (_e *MockPostgresInterface_Expecter) ListCdfConfigs(ctx interface{}, request interface{}) *MockPostgresInterface_ListCdfConfigs_Call {
+	return &MockPostgresInterface_ListCdfConfigs_Call{Call: _e.mock.On("ListCdfConfigs", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListCdfConfigs_Call) Run(run func(ctx context.Context, request postgres.ListCdfConfigsRequest)) *MockPostgresInterface_ListCdfConfigs_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListCdfConfigsRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfConfigs_Call) Return(_a0 listing.Iterator[postgres.CdfConfig]) *MockPostgresInterface_ListCdfConfigs_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfConfigs_Call) RunAndReturn(run func(context.Context, postgres.ListCdfConfigsRequest) listing.Iterator[postgres.CdfConfig]) *MockPostgresInterface_ListCdfConfigs_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListCdfConfigsAll provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListCdfConfigsAll(ctx context.Context, request postgres.ListCdfConfigsRequest) ([]postgres.CdfConfig, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListCdfConfigsAll")
+	}
+
+	var r0 []postgres.CdfConfig
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListCdfConfigsRequest) ([]postgres.CdfConfig, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListCdfConfigsRequest) []postgres.CdfConfig); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]postgres.CdfConfig)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.ListCdfConfigsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_ListCdfConfigsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListCdfConfigsAll'
+type MockPostgresInterface_ListCdfConfigsAll_Call struct {
+	*mock.Call
+}
+
+// ListCdfConfigsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListCdfConfigsRequest
+func (_e *MockPostgresInterface_Expecter) ListCdfConfigsAll(ctx interface{}, request interface{}) *MockPostgresInterface_ListCdfConfigsAll_Call {
+	return &MockPostgresInterface_ListCdfConfigsAll_Call{Call: _e.mock.On("ListCdfConfigsAll", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListCdfConfigsAll_Call) Run(run func(ctx context.Context, request postgres.ListCdfConfigsRequest)) *MockPostgresInterface_ListCdfConfigsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListCdfConfigsRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfConfigsAll_Call) Return(_a0 []postgres.CdfConfig, _a1 error) *MockPostgresInterface_ListCdfConfigsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfConfigsAll_Call) RunAndReturn(run func(context.Context, postgres.ListCdfConfigsRequest) ([]postgres.CdfConfig, error)) *MockPostgresInterface_ListCdfConfigsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListCdfStatuses provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListCdfStatuses(ctx context.Context, request postgres.ListCdfStatusesRequest) listing.Iterator[postgres.CdfStatus] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListCdfStatuses")
+	}
+
+	var r0 listing.Iterator[postgres.CdfStatus]
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListCdfStatusesRequest) listing.Iterator[postgres.CdfStatus]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[postgres.CdfStatus])
+		}
+	}
+
+	return r0
+}
+
+// MockPostgresInterface_ListCdfStatuses_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListCdfStatuses'
+type MockPostgresInterface_ListCdfStatuses_Call struct {
+	*mock.Call
+}
+
+// ListCdfStatuses is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListCdfStatusesRequest
+func (_e *MockPostgresInterface_Expecter) ListCdfStatuses(ctx interface{}, request interface{}) *MockPostgresInterface_ListCdfStatuses_Call {
+	return &MockPostgresInterface_ListCdfStatuses_Call{Call: _e.mock.On("ListCdfStatuses", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListCdfStatuses_Call) Run(run func(ctx context.Context, request postgres.ListCdfStatusesRequest)) *MockPostgresInterface_ListCdfStatuses_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListCdfStatusesRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfStatuses_Call) Return(_a0 listing.Iterator[postgres.CdfStatus]) *MockPostgresInterface_ListCdfStatuses_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfStatuses_Call) RunAndReturn(run func(context.Context, postgres.ListCdfStatusesRequest) listing.Iterator[postgres.CdfStatus]) *MockPostgresInterface_ListCdfStatuses_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListCdfStatusesAll provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListCdfStatusesAll(ctx context.Context, request postgres.ListCdfStatusesRequest) ([]postgres.CdfStatus, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListCdfStatusesAll")
+	}
+
+	var r0 []postgres.CdfStatus
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListCdfStatusesRequest) ([]postgres.CdfStatus, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListCdfStatusesRequest) []postgres.CdfStatus); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]postgres.CdfStatus)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.ListCdfStatusesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_ListCdfStatusesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListCdfStatusesAll'
+type MockPostgresInterface_ListCdfStatusesAll_Call struct {
+	*mock.Call
+}
+
+// ListCdfStatusesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListCdfStatusesRequest
+func (_e *MockPostgresInterface_Expecter) ListCdfStatusesAll(ctx interface{}, request interface{}) *MockPostgresInterface_ListCdfStatusesAll_Call {
+	return &MockPostgresInterface_ListCdfStatusesAll_Call{Call: _e.mock.On("ListCdfStatusesAll", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListCdfStatusesAll_Call) Run(run func(ctx context.Context, request postgres.ListCdfStatusesRequest)) *MockPostgresInterface_ListCdfStatusesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListCdfStatusesRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfStatusesAll_Call) Return(_a0 []postgres.CdfStatus, _a1 error) *MockPostgresInterface_ListCdfStatusesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListCdfStatusesAll_Call) RunAndReturn(run func(context.Context, postgres.ListCdfStatusesRequest) ([]postgres.CdfStatus, error)) *MockPostgresInterface_ListCdfStatusesAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

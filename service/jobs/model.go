@@ -3121,6 +3121,8 @@ const PeriodicTriggerConfigurationTimeUnitDays PeriodicTriggerConfigurationTimeU
 
 const PeriodicTriggerConfigurationTimeUnitHours PeriodicTriggerConfigurationTimeUnit = `HOURS`
 
+const PeriodicTriggerConfigurationTimeUnitMinutes PeriodicTriggerConfigurationTimeUnit = `MINUTES`
+
 const PeriodicTriggerConfigurationTimeUnitWeeks PeriodicTriggerConfigurationTimeUnit = `WEEKS`
 
 // String representation for [fmt.Print]
@@ -3131,11 +3133,11 @@ func (f *PeriodicTriggerConfigurationTimeUnit) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PeriodicTriggerConfigurationTimeUnit) Set(v string) error {
 	switch v {
-	case `DAYS`, `HOURS`, `WEEKS`:
+	case `DAYS`, `HOURS`, `MINUTES`, `WEEKS`:
 		*f = PeriodicTriggerConfigurationTimeUnit(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DAYS", "HOURS", "WEEKS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DAYS", "HOURS", "MINUTES", "WEEKS"`, v)
 	}
 }
 
@@ -3146,6 +3148,7 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Values() []PeriodicTriggerConfigu
 	return []PeriodicTriggerConfigurationTimeUnit{
 		PeriodicTriggerConfigurationTimeUnitDays,
 		PeriodicTriggerConfigurationTimeUnitHours,
+		PeriodicTriggerConfigurationTimeUnitMinutes,
 		PeriodicTriggerConfigurationTimeUnitWeeks,
 	}
 }

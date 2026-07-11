@@ -1246,6 +1246,10 @@ type CreateConnection struct {
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options"`
+	// Parent schema for schema-level connections, in format
+	// "schemas/{catalog}.{schema}". Absent for metastore-level (L1)
+	// connections.
+	Parent string `json:"parent,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
@@ -4453,6 +4457,9 @@ type ListConnectionsRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Optional. Parent schema filter for listing schema-level connections, in
+	// format "schemas/{catalog}.{schema}".
+	Parent string `json:"-" url:"parent,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
