@@ -29,6 +29,12 @@ type PostgresService interface {
 	// Register a Postgres database in the Unity Catalog.
 	CreateCatalog(ctx context.Context, request CreateCatalogRequest) (*Operation, error)
 
+	// Create a Lakebase CDF configuration (CdfConfig). Replicates the tables of
+	// a Postgres schema into a Unity Catalog schema. Returns ALREADY_EXISTS if
+	// a config with the requested id exists, or if another config already
+	// replicates the target Postgres schema.
+	CreateCdfConfig(ctx context.Context, request CreateCdfConfigRequest) (*Operation, error)
+
 	// Enable Data API for a database.
 	CreateDataApi(ctx context.Context, request CreateDataApiRequest) (*Operation, error)
 
@@ -57,6 +63,11 @@ type PostgresService interface {
 	// Delete a Database Catalog.
 	DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) (*Operation, error)
 
+	// Delete a Lakebase CDF configuration (CdfConfig). Stops replication and
+	// removes the config. When force is true, also drops the replicated Delta
+	// tables in Unity Catalog.
+	DeleteCdfConfig(ctx context.Context, request DeleteCdfConfigRequest) (*Operation, error)
+
 	// Disable Data API for a database.
 	DeleteDataApi(ctx context.Context, request DeleteDataApiRequest) (*Operation, error)
 
@@ -84,6 +95,13 @@ type PostgresService interface {
 	// Get a Database Catalog.
 	GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error)
 
+	// Get a single Lakebase CDF configuration (CdfConfig).
+	GetCdfConfig(ctx context.Context, request GetCdfConfigRequest) (*CdfConfig, error)
+
+	// Get the replication status of a single replicated table within a Lakebase
+	// CDF configuration.
+	GetCdfStatus(ctx context.Context, request GetCdfStatusRequest) (*CdfStatus, error)
+
 	// Get Data API configuration for a database.
 	GetDataApi(ctx context.Context, request GetDataApiRequest) (*DataApi, error)
 
@@ -109,6 +127,13 @@ type PostgresService interface {
 
 	// Returns a paginated list of database branches in the project.
 	ListBranches(ctx context.Context, request ListBranchesRequest) (*ListBranchesResponse, error)
+
+	// List the Lakebase CDF configurations (CdfConfigs) under a database.
+	ListCdfConfigs(ctx context.Context, request ListCdfConfigsRequest) (*ListCdfConfigsResponse, error)
+
+	// List the replication statuses of all tables replicated under a Lakebase
+	// CDF configuration.
+	ListCdfStatuses(ctx context.Context, request ListCdfStatusesRequest) (*ListCdfStatusesResponse, error)
 
 	// List Databases.
 	ListDatabases(ctx context.Context, request ListDatabasesRequest) (*ListDatabasesResponse, error)

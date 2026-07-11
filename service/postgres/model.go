@@ -288,6 +288,124 @@ func (s CatalogCatalogStatus) MarshalJSON() ([]byte, error) {
 type CatalogOperationMetadata struct {
 }
 
+// A Lakebase CDF configuration (CdfConfig): one per Postgres schema per
+// database, replicating that schema's tables into a Unity Catalog schema.
+// Immutable once created.
+type CdfConfig struct {
+	// The Unity Catalog catalog that replicated tables are written into. Set at
+	// creation; the CdfConfig is immutable.
+	Catalog string `json:"catalog"`
+	// The user-specified id; equals the final segment of `name`. Defaults to
+	// the Postgres schema name for configs without an explicit id.
+	CdfConfigId string `json:"cdf_config_id,omitempty"`
+	// When the CdfConfig was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Output only. The full resource name of the CdfConfig. Format:
+	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+	Name string `json:"name,omitempty"`
+	// The Postgres schema this CdfConfig replicates from. Unique within the
+	// parent database. Set at creation; the CdfConfig is immutable.
+	PostgresSchema string `json:"postgres_schema"`
+	// The Unity Catalog schema that replicated tables are written into. Set at
+	// creation; the CdfConfig is immutable.
+	Schema string `json:"schema"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CdfConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CdfConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Metadata for CdfConfig long-running operations. Intentionally empty today;
+// fields (e.g. progress) may be added as the operation contract grows.
+type CdfConfigOperationMetadata struct {
+}
+
+// The replication state of a single replicated table (CdfStatus), as reported
+// by the wal2delta extension on the primary compute.
+type CdfState string
+
+const CdfStateCdfStateSkipped CdfState = `CDF_STATE_SKIPPED`
+
+const CdfStateCdfStateSnapshotting CdfState = `CDF_STATE_SNAPSHOTTING`
+
+const CdfStateCdfStateStreaming CdfState = `CDF_STATE_STREAMING`
+
+const CdfStateCdfStateTerminated CdfState = `CDF_STATE_TERMINATED`
+
+// String representation for [fmt.Print]
+func (f *CdfState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CdfState) Set(v string) error {
+	switch v {
+	case `CDF_STATE_SKIPPED`, `CDF_STATE_SNAPSHOTTING`, `CDF_STATE_STREAMING`, `CDF_STATE_TERMINATED`:
+		*f = CdfState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CDF_STATE_SKIPPED", "CDF_STATE_SNAPSHOTTING", "CDF_STATE_STREAMING", "CDF_STATE_TERMINATED"`, v)
+	}
+}
+
+// Values returns all possible values for CdfState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CdfState) Values() []CdfState {
+	return []CdfState{
+		CdfStateCdfStateSkipped,
+		CdfStateCdfStateSnapshotting,
+		CdfStateCdfStateStreaming,
+		CdfStateCdfStateTerminated,
+	}
+}
+
+// Type always returns CdfState to satisfy [pflag.Value] interface
+func (f *CdfState) Type() string {
+	return "CdfState"
+}
+
+// The read-only replication status of a single Postgres table replicated under
+// a CdfConfig. One status exists per replicated table. It is created
+// automatically and cannot be modified.
+type CdfStatus struct {
+	// The high-watermark Log Sequence Number (LSN) committed to Delta Lake.
+	CommittedLsn string `json:"committed_lsn,omitempty"`
+	// When replication for this table was first established.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The last time wal2delta wrote changes for this table.
+	LastSyncTime *time.Time `json:"last_sync_time,omitempty"`
+	// Output only. The full resource name of the CdfStatus. Format:
+	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+	// The {cdf_status} segment is the Postgres table name.
+	Name string `json:"name,omitempty"`
+	// The Postgres table being replicated.
+	PostgresTable string `json:"postgres_table,omitempty"`
+	// The current replication state of this table.
+	State CdfState `json:"state,omitempty"`
+	// Human-readable detail for the current state (e.g. the skip/error reason).
+	// Empty for healthy states.
+	StatusDetail string `json:"status_detail,omitempty"`
+	// The Unity Catalog table receiving replicated data.
+	UcTable string `json:"uc_table,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CdfStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CdfStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateBranchRequest struct {
 	// The Branch to create.
 	Branch Branch `json:"branch"`
@@ -320,6 +438,29 @@ type CreateCatalogRequest struct {
 	// The ID in the Unity Catalog. It becomes the full resource name, for
 	// example "my_catalog" becomes "catalogs/my_catalog".
 	CatalogId string `json:"-" url:"catalog_id"`
+}
+
+type CreateCdfConfigRequest struct {
+	// The CdfConfig to create. The catalog, schema, and postgres_schema fields
+	// are required; all other fields are output only and ignored on input.
+	CdfConfig CdfConfig `json:"cdf_config"`
+	// The user-specified id for the CdfConfig, forming the final segment of its
+	// resource name. Must match the pattern `[a-z][a-z0-9_]{0,62}`. Defaults to
+	// the Postgres schema name when omitted.
+	CdfConfigId string `json:"-" url:"cdf_config_id,omitempty"`
+	// The parent database under which to create the CdfConfig. Format:
+	// projects/{project}/branches/{branch}/databases/{database}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateCdfConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCdfConfigRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateDataApiRequest struct {
@@ -703,6 +844,26 @@ type DeleteCatalogRequest struct {
 	//
 	// Format: "catalogs/{catalog_id}".
 	Name string `json:"-" url:"-"`
+}
+
+type DeleteCdfConfigRequest struct {
+	// When true, also drops the replicated Delta tables in Unity Catalog. When
+	// false (the default), the replicated tables are preserved at their last
+	// synced state.
+	Force bool `json:"-" url:"force,omitempty"`
+	// The resource name of the CdfConfig to delete. Format:
+	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteCdfConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteCdfConfigRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteDataApiRequest struct {
@@ -1392,6 +1553,18 @@ type GetCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetCdfConfigRequest struct {
+	// The resource name of the CdfConfig to retrieve. Format:
+	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+	Name string `json:"-" url:"-"`
+}
+
+type GetCdfStatusRequest struct {
+	// The resource name of the CdfStatus to retrieve. Format:
+	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+	Name string `json:"-" url:"-"`
+}
+
 type GetDataApiRequest struct {
 	// Resource name:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
@@ -1518,6 +1691,86 @@ func (s *ListBranchesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListBranchesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCdfConfigsRequest struct {
+	// Maximum number of CdfConfigs to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token returned by a previous ListCdfConfigs call. Empty on the
+	// first page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent database to list CdfConfigs for. Format:
+	// projects/{project}/branches/{branch}/databases/{database}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCdfConfigsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCdfConfigsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to a ListCdfConfigs request, containing a page of CdfConfigs and a
+// token for fetching the next page.
+type ListCdfConfigsResponse struct {
+	// The CdfConfigs under the parent database.
+	CdfConfigs []CdfConfig `json:"cdf_configs,omitempty"`
+	// Token to retrieve the next page of results; empty when there are no more.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCdfConfigsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCdfConfigsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCdfStatusesRequest struct {
+	// Maximum number of CdfStatuses to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token returned by a previous ListCdfStatuses call. Empty on
+	// the first page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent CdfConfig to list CdfStatuses for. Format:
+	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCdfStatusesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCdfStatusesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to a ListCdfStatuses request, containing a page of replicated table
+// statuses and a token for fetching the next page.
+type ListCdfStatusesResponse struct {
+	// The replicated tables under the parent CdfConfig.
+	CdfStatuses []CdfStatus `json:"cdf_statuses,omitempty"`
+	// Token to retrieve the next page of results; empty when there are no more.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCdfStatusesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCdfStatusesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

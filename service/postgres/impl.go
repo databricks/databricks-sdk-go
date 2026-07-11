@@ -62,6 +62,25 @@ func (a *postgresImpl) CreateCatalog(ctx context.Context, request CreateCatalogR
 	return &operation, err
 }
 
+func (a *postgresImpl) CreateCdfConfig(ctx context.Context, request CreateCdfConfigRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-configs", request.Parent)
+	queryParams := make(map[string]any)
+
+	if request.CdfConfigId != "" || slices.Contains(request.ForceSendFields, "CdfConfigId") {
+		queryParams["cdf_config_id"] = request.CdfConfigId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.CdfConfig, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) CreateDataApi(ctx context.Context, request CreateDataApiRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/data-api", request.Parent)
@@ -212,6 +231,20 @@ func (a *postgresImpl) DeleteCatalog(ctx context.Context, request DeleteCatalogR
 	return &operation, err
 }
 
+func (a *postgresImpl) DeleteCdfConfig(ctx context.Context, request DeleteCdfConfigRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) DeleteDataApi(ctx context.Context, request DeleteDataApiRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
@@ -337,6 +370,34 @@ func (a *postgresImpl) GetCatalog(ctx context.Context, request GetCatalogRequest
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &catalog)
 	return &catalog, err
+}
+
+func (a *postgresImpl) GetCdfConfig(ctx context.Context, request GetCdfConfigRequest) (*CdfConfig, error) {
+	var cdfConfig CdfConfig
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cdfConfig)
+	return &cdfConfig, err
+}
+
+func (a *postgresImpl) GetCdfStatus(ctx context.Context, request GetCdfStatusRequest) (*CdfStatus, error) {
+	var cdfStatus CdfStatus
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cdfStatus)
+	return &cdfStatus, err
 }
 
 func (a *postgresImpl) GetDataApi(ctx context.Context, request GetDataApiRequest) (*DataApi, error) {
@@ -480,6 +541,98 @@ func (a *postgresImpl) internalListBranches(ctx context.Context, request ListBra
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBranchesResponse)
 	return &listBranchesResponse, err
+}
+
+// List the Lakebase CDF configurations (CdfConfigs) under a database.
+func (a *postgresImpl) ListCdfConfigs(ctx context.Context, request ListCdfConfigsRequest) listing.Iterator[CdfConfig] {
+
+	getNextPage := func(ctx context.Context, req ListCdfConfigsRequest) (*ListCdfConfigsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListCdfConfigs(ctx, req)
+	}
+	getItems := func(resp *ListCdfConfigsResponse) []CdfConfig {
+		return resp.CdfConfigs
+	}
+	getNextReq := func(resp *ListCdfConfigsResponse) *ListCdfConfigsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List the Lakebase CDF configurations (CdfConfigs) under a database.
+func (a *postgresImpl) ListCdfConfigsAll(ctx context.Context, request ListCdfConfigsRequest) ([]CdfConfig, error) {
+	iterator := a.ListCdfConfigs(ctx, request)
+	return listing.ToSlice[CdfConfig](ctx, iterator)
+}
+
+func (a *postgresImpl) internalListCdfConfigs(ctx context.Context, request ListCdfConfigsRequest) (*ListCdfConfigsResponse, error) {
+	var listCdfConfigsResponse ListCdfConfigsResponse
+	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-configs", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCdfConfigsResponse)
+	return &listCdfConfigsResponse, err
+}
+
+// List the replication statuses of all tables replicated under a Lakebase CDF
+// configuration.
+func (a *postgresImpl) ListCdfStatuses(ctx context.Context, request ListCdfStatusesRequest) listing.Iterator[CdfStatus] {
+
+	getNextPage := func(ctx context.Context, req ListCdfStatusesRequest) (*ListCdfStatusesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListCdfStatuses(ctx, req)
+	}
+	getItems := func(resp *ListCdfStatusesResponse) []CdfStatus {
+		return resp.CdfStatuses
+	}
+	getNextReq := func(resp *ListCdfStatusesResponse) *ListCdfStatusesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List the replication statuses of all tables replicated under a Lakebase CDF
+// configuration.
+func (a *postgresImpl) ListCdfStatusesAll(ctx context.Context, request ListCdfStatusesRequest) ([]CdfStatus, error) {
+	iterator := a.ListCdfStatuses(ctx, request)
+	return listing.ToSlice[CdfStatus](ctx, iterator)
+}
+
+func (a *postgresImpl) internalListCdfStatuses(ctx context.Context, request ListCdfStatusesRequest) (*ListCdfStatusesResponse, error) {
+	var listCdfStatusesResponse ListCdfStatusesResponse
+	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-statuses", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCdfStatusesResponse)
+	return &listCdfStatusesResponse, err
 }
 
 // List Databases.
