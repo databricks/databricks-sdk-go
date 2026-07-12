@@ -1226,7 +1226,7 @@ type CreateWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -1906,7 +1906,7 @@ type EditWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2061,7 +2061,7 @@ type EndpointInfo struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2667,7 +2667,7 @@ type GetWarehouseResponse struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large - Auto
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -4989,6 +4989,7 @@ func (f *SpotInstancePolicy) Type() string {
 	return "SpotInstancePolicy"
 }
 
+// Starts a SQL warehouse. This API is idempotent.
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
@@ -5207,6 +5208,7 @@ func (f *Status) Type() string {
 	return "Status"
 }
 
+// Stops a SQL warehouse. This API is idempotent.
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
