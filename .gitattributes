@@ -130,6 +130,7 @@ experimental/mocks/service/oauth2/mock_service_principal_secrets_proxy_interface
 experimental/mocks/service/pipelines/mock_pipelines_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_catalog_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_create_cdf_config_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_data_api_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_database_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_endpoint_operation_interface.go linguist-generated=true
@@ -138,6 +139,7 @@ experimental/mocks/service/postgres/mock_create_role_operation_interface.go ling
 experimental/mocks/service/postgres/mock_create_synced_table_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_catalog_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_delete_cdf_config_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_data_api_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_database_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_delete_endpoint_operation_interface.go linguist-generated=true

@@ -17,3 +17,6 @@
 * Add `Parent` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
 * Add `Parent` field for [catalog.ListConnectionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListConnectionsRequest).
 * Add `Minutes` enum value for [jobs.PeriodicTriggerConfigurationTimeUnit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PeriodicTriggerConfigurationTimeUnit).
+* [Breaking] Change `InternalId` field for [iamv2.Group](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#Group) to type `string`.
+* [Breaking] Change `InternalId` field for [iamv2.ServicePrincipal](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ServicePrincipal) to type `string`.
+* [Breaking] Change `InternalId` field for [iamv2.User](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#User) to type `string`.

@@ -128,7 +128,7 @@ type Group struct {
 	// Display name of the group.
 	GroupName string `json:"group_name,omitempty"`
 	// Internal group ID of the group in Databricks.
-	InternalId int64 `json:"internal_id,omitempty"`
+	InternalId string `json:"internal_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -319,7 +319,7 @@ type ServicePrincipal struct {
 	// ExternalId of the service principal in the customer's IdP.
 	ExternalId string `json:"external_id,omitempty"`
 	// Internal service principal ID of the service principal in Databricks.
-	InternalId int64 `json:"internal_id,omitempty"`
+	InternalId string `json:"internal_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -403,7 +403,7 @@ type User struct {
 
 	FullName *UserFullName `json:"full_name,omitempty"`
 	// Internal userId of the user in Databricks.
-	InternalId int64 `json:"internal_id,omitempty"`
+	InternalId string `json:"internal_id,omitempty"`
 	// Username/email of the user.
 	Username string `json:"username,omitempty"`
 
