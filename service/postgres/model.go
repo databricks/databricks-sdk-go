@@ -326,8 +326,7 @@ func (s CdfConfig) MarshalJSON() ([]byte, error) {
 type CdfConfigOperationMetadata struct {
 }
 
-// The replication state of a single replicated table (CdfStatus), as reported
-// by the wal2delta extension on the primary compute.
+// The replication state of a single replicated table (CdfStatus).
 type CdfState string
 
 const CdfStateCdfStateSkipped CdfState = `CDF_STATE_SKIPPED`
@@ -379,7 +378,7 @@ type CdfStatus struct {
 	CommittedLsn string `json:"committed_lsn,omitempty"`
 	// When replication for this table was first established.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// The last time wal2delta wrote changes for this table.
+	// The last time changes for this table were written to Delta Lake.
 	LastSyncTime *time.Time `json:"last_sync_time,omitempty"`
 	// Output only. The full resource name of the CdfStatus. Format:
 	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
