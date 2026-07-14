@@ -1058,10 +1058,44 @@ func (s GoogleAdsConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// User-defined custom report for the Google Ads connector. Mirrors the resource
+// + fields + segments + metrics model that Google Ads GAQL exposes. The
+// customer account this report runs against is supplied by the source schema
+// (namespace), not by this message. The whole message is gated by the parent
+// GoogleAdsOptions.custom_report_options stage; per-field stage annotations are
+// intentionally omitted. Only supported on table-type objects: a custom report
+// requires a destination table, so it cannot be specified at the schema/source
+// level.
+type GoogleAdsCustomReportOptions struct {
+	// (Optional) Metric fields to select (e.g. "metrics.clicks",
+	// "metrics.cost_micros"). Multiple values are joined into the GAQL SELECT
+	// clause.
+	Metrics []string `json:"metrics,omitempty"`
+	// (Required) Google Ads resource to query (e.g. "ad_group_ad",
+	// "keyword_view", "search_term_view"). Must be a resource that has metrics.
+	// Values are validated against Google Ads' field-service catalog at
+	// pipeline plan time.
+	Resource string `json:"resource"`
+	// (Optional) Resource fields to select, in fully-qualified GAQL form (e.g.
+	// "ad_group_ad.ad.id", "ad_group_ad.status"). Multiple values are joined
+	// into the GAQL SELECT clause.
+	ResourceFields []string `json:"resource_fields,omitempty"`
+	// (Optional) Segment fields to select (e.g. "segments.date",
+	// "segments.device"). Must include at least one of segments.date,
+	// segments.week, or segments.month — that segment is used as the
+	// incremental cursor for the table.
+	Segments []string `json:"segments,omitempty"`
+}
+
 // Google Ads specific options for ingestion (object-level). When set, these
 // values override the corresponding fields in GoogleAdsConfig
 // (source_configurations).
 type GoogleAdsOptions struct {
+	// (Optional) Custom report definition. When set, the table is treated as a
+	// user-defined Google Ads custom report: the connector synthesizes a GAQL
+	// query from the resource, fields, segments, and metrics specified here.
+	// When unset, the table must match one of the connector's prebuilt sources.
+	CustomReportOptions *GoogleAdsCustomReportOptions `json:"custom_report_options,omitempty"`
 	// (Optional) Number of days to look back for report tables to capture
 	// late-arriving data. If not specified, defaults to 30 days.
 	LookbackWindowDays int `json:"lookback_window_days,omitempty"`
@@ -1703,6 +1737,11 @@ type MetaMarketingOptions struct {
 	// (Optional) Window in days to revisit data during sync to capture updated
 	// conversion data from the API, shared by prebuilt and custom reports.
 	CustomInsightsLookbackWindow int `json:"custom_insights_lookback_window,omitempty"`
+	// (Optional) Per-table custom report definition. When set, defines the
+	// shape of the insights call for this table
+	// (level/fields/breakdowns/action_breakdowns/etc.). Supersedes the
+	// deprecated flat report-shape fields above.
+	CustomReportOptions *MetaMarketingOptionsMetaMarketingCustomReportOptions `json:"custom_report_options,omitempty"`
 	// (Optional, DEPRECATED — use custom_report_options.level) Granularity of
 	// data to pull (account, ad, adset, campaign)
 	Level string `json:"level,omitempty"`
@@ -1722,6 +1761,38 @@ func (s *MetaMarketingOptions) UnmarshalJSON(b []byte) error {
 }
 
 func (s MetaMarketingOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Defines the shape of a single Meta Ads custom report (one /insights call
+// shape). start_date, custom_insights_lookback_window live on
+// MetaMarketingOptions, not here. Metrics are not customer-selectable; the
+// connector returns a fixed standard metric set.
+type MetaMarketingOptionsMetaMarketingCustomReportOptions struct {
+	// (Optional) Action attribution windows for insights reporting (e.g.
+	// "28d_click", "1d_view")
+	ActionAttributionWindows []string `json:"action_attribution_windows,omitempty"`
+	// (Optional) Action breakdowns to configure for data aggregation
+	ActionBreakdowns []string `json:"action_breakdowns,omitempty"`
+	// (Optional) Timing used to report action statistics (impression,
+	// conversion, mixed, or lifetime)
+	ActionReportTime string `json:"action_report_time,omitempty"`
+	// (Optional) Breakdowns to configure for data aggregation
+	Breakdowns []string `json:"breakdowns,omitempty"`
+	// (Optional) Granularity of data to pull (account, ad, adset, campaign)
+	Level string `json:"level,omitempty"`
+	// (Optional) Value in string by which to aggregate statistics (all_days,
+	// monthly or number of days)
+	TimeIncrement string `json:"time_increment,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MetaMarketingOptionsMetaMarketingCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetaMarketingOptionsMetaMarketingCustomReportOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3308,6 +3379,12 @@ func (f *TableSpecificConfigScdType) Type() string {
 
 // TikTok Ads specific options for ingestion
 type TikTokAdsOptions struct {
+	// (Optional) Custom report definition. When set, the table is treated as a
+	// user-defined TikTok Ads custom report: the connector synthesizes a report
+	// request from the dimensions, metrics, report type, and data level
+	// specified here. Supersedes the deprecated top-level
+	// dimensions/metrics/report_type/ data_level/query_lifetime fields above.
+	CustomReportOptions *TikTokAdsOptionsTikTokAdsCustomReportOptions `json:"custom_report_options,omitempty"`
 	// Deprecated. Use custom_report_options.data_level instead.
 	DataLevel TikTokAdsOptionsTikTokDataLevel `json:"data_level,omitempty"`
 	// Deprecated. Use custom_report_options.dimensions instead.
@@ -3335,6 +3412,38 @@ func (s *TikTokAdsOptions) UnmarshalJSON(b []byte) error {
 }
 
 func (s TikTokAdsOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// User-defined custom report for the TikTok Ads connector. Groups the
+// dimensions + metrics + report type + data level that define a TikTok Ads
+// custom report request.
+type TikTokAdsOptionsTikTokAdsCustomReportOptions struct {
+	// (Optional) Data level for the report. If not specified, defaults to
+	// AUCTION_CAMPAIGN.
+	DataLevel TikTokAdsOptionsTikTokDataLevel `json:"data_level,omitempty"`
+	// (Optional) Dimensions to include in the report (e.g. "campaign_id",
+	// "adgroup_id", "ad_id", "stat_time_day", "stat_time_hour").
+	Dimensions []string `json:"dimensions,omitempty"`
+	// (Optional) Metrics to include in the report (e.g. "spend", "impressions",
+	// "clicks", "conversion", "cpc").
+	Metrics []string `json:"metrics,omitempty"`
+	// (Optional) Whether to request lifetime metrics (all-time aggregated
+	// data). When true, the report returns all-time data. If not specified,
+	// defaults to false.
+	QueryLifetime bool `json:"query_lifetime,omitempty"`
+	// (Optional) Report type for the TikTok Ads API. If not specified, defaults
+	// to BASIC.
+	ReportType TikTokAdsOptionsTikTokReportType `json:"report_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TikTokAdsOptionsTikTokAdsCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TikTokAdsOptionsTikTokAdsCustomReportOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
