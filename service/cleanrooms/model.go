@@ -21,6 +21,10 @@ type CleanRoom struct {
 	Comment string `json:"comment,omitempty"`
 	// When the clean room was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
+	// Whether allow task to write to shared output schema. When enabled, clean
+	// room task runs triggered by the current collaborator can write to the
+	// run-scoped shared output schema which is accessible by all collaborators.
+	EnableSharedOutput bool `json:"enable_shared_output,omitempty"`
 	// The alias of the collaborator tied to the local clean room.
 	LocalCollaboratorAlias string `json:"local_collaborator_alias,omitempty"`
 	// The name of the clean room. It should follow [UC securable naming
@@ -208,6 +212,11 @@ type CleanRoomAssetForeignTableLocalDetails struct {
 }
 
 type CleanRoomAssetNotebook struct {
+	// Optional description of the notebook shown to all collaborators.
+	Description string `json:"description,omitempty"`
+	// The serverless environment version used to execute the notebook (e.g.
+	// "4"). Defaults to "2" if not specified.
+	EnvironmentVersion string `json:"environment_version,omitempty"`
 	// Server generated etag that represents the notebook version.
 	Etag string `json:"etag,omitempty"`
 	// Base 64 representation of the notebook contents. This is the same format
@@ -533,6 +542,13 @@ type CleanRoomNotebookTaskRun struct {
 	OutputSchemaName string `json:"output_schema_name,omitempty"`
 	// Duration of the task run, in milliseconds.
 	RunDuration int64 `json:"run_duration,omitempty"`
+	// Expiration time of the shared output schema of the task run (if any), in
+	// epoch milliseconds.
+	SharedOutputSchemaExpirationTime int64 `json:"shared_output_schema_expiration_time,omitempty"`
+	// Name of the shared output schema associated with the clean rooms notebook
+	// task run. This schema is accessible by all collaborators when
+	// enable_shared_output is true.
+	SharedOutputSchemaName string `json:"shared_output_schema_name,omitempty"`
 	// When the task run started, in epoch milliseconds.
 	StartTime int64 `json:"start_time,omitempty"`
 
@@ -627,6 +643,15 @@ type CleanRoomRemoteDetail struct {
 	Creator *CleanRoomCollaborator `json:"creator,omitempty"`
 	// Egress network policy to apply to the central clean room workspace.
 	EgressNetworkPolicy *settings.EgressNetworkPolicy `json:"egress_network_policy,omitempty"`
+	// Whether to enable shared output for the central clean room. When enabled,
+	// clean room task runs can write to the run-scoped shared output schema
+	// which is accessible by all collaborators.
+	EnableSharedOutput bool `json:"enable_shared_output,omitempty"`
+	// Alias of the provider collaborator. If set, packaged clean rooms mode is
+	// enabled. The consumer's experience is restricted: they can view notebook
+	// names and READMEs, add their own data assets, and trigger runs, but
+	// cannot view notebook code, provider data assets, or notebook run output.
+	PackageProviderCollaboratorAlias string `json:"package_provider_collaborator_alias,omitempty"`
 	// Region of the central clean room.
 	Region string `json:"region,omitempty"`
 
