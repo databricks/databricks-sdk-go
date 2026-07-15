@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.159.0 (2026-07-15)
+
+### API Changes
+* Add `EffectiveWorkspaceId` field for [disasterrecovery.StableUrl](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#StableUrl).
+* Add `SourceMetadataColumn` field for [pipelines.TableSpecificConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpecificConfig).
+* [Breaking] Remove `CodeSourcePath` field for [jobs.AiRuntimeTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTask).
+
+
 ## Release v0.158.0 (2026-07-14)
 
 ### API Changes
