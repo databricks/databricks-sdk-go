@@ -3315,6 +3315,9 @@ type TableSpecificConfig struct {
 	// data. Spark Declarative Pipelines uses this sequencing to handle change
 	// events that arrive out of order.
 	SequenceBy []string `json:"sequence_by,omitempty"`
+	// (Optional) Name of the struct column added to each ingested record to
+	// hold per row source metadata.
+	SourceMetadataColumn string `json:"source_metadata_column,omitempty"`
 	// Table properties to set on the destination table. These are key-value
 	// pairs that configure various Delta table behaviors or any user defined
 	// properties. Example: {"delta.feature.variantType": "supported",
