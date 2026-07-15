@@ -357,6 +357,13 @@ type LocationMappingEntry struct {
 // A stable URL provides a failover-aware endpoint for accessing a workspace.
 // Its lifecycle is independent of any failover group.
 type StableUrl struct {
+	// The workspace this stable URL currently routes to. Set to
+	// `initial_workspace_id` at creation, advanced to the failover group's
+	// primary while attached (including across a failover), and preserved when
+	// the stable URL is detached from its failover group. Read this to see
+	// where an unattached stable URL points: after a failover followed by a
+	// detach it reflects the post-failover primary, not `initial_workspace_id`.
+	EffectiveWorkspaceId string `json:"effective_workspace_id,omitempty"`
 	// Fully qualified resource name of the FailoverGroup this stable URL is
 	// currently linked to, in the format
 	// `accounts/{account_id}/failover-groups/{failover_group_id}`. Empty when
