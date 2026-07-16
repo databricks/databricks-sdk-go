@@ -355,6 +355,51 @@ func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCl
 	return &listCleanRoomNotebookTaskRunsResponse, err
 }
 
+// List all the historical task runs in a clean room.
+func (a *cleanRoomTaskRunsImpl) ListCleanRoomTaskRunsHandler(ctx context.Context, request ListCleanRoomTaskRunsRequest) listing.Iterator[CleanRoomTaskRun] {
+
+	getNextPage := func(ctx context.Context, req ListCleanRoomTaskRunsRequest) (*ListCleanRoomTaskRunsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListCleanRoomTaskRunsHandler(ctx, req)
+	}
+	getItems := func(resp *ListCleanRoomTaskRunsResponse) []CleanRoomTaskRun {
+		return resp.Runs
+	}
+	getNextReq := func(resp *ListCleanRoomTaskRunsResponse) *ListCleanRoomTaskRunsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List all the historical task runs in a clean room.
+func (a *cleanRoomTaskRunsImpl) ListCleanRoomTaskRunsHandlerAll(ctx context.Context, request ListCleanRoomTaskRunsRequest) ([]CleanRoomTaskRun, error) {
+	iterator := a.ListCleanRoomTaskRunsHandler(ctx, request)
+	return listing.ToSlice[CleanRoomTaskRun](ctx, iterator)
+}
+
+func (a *cleanRoomTaskRunsImpl) internalListCleanRoomTaskRunsHandler(ctx context.Context, request ListCleanRoomTaskRunsRequest) (*ListCleanRoomTaskRunsResponse, error) {
+	var listCleanRoomTaskRunsResponse ListCleanRoomTaskRunsResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/task-runs", request.CleanRoomName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomTaskRunsResponse)
+	return &listCleanRoomTaskRunsResponse, err
+}
+
 // unexported type that holds implementations of just CleanRooms API methods
 type cleanRoomsImpl struct {
 	client *client.DatabricksClient

@@ -190,6 +190,114 @@ func (_c *MockCleanRoomTaskRunsInterface_ListByCleanRoomName_Call) RunAndReturn(
 	return _c
 }
 
+// ListCleanRoomTaskRunsHandler provides a mock function with given fields: ctx, request
+func (_m *MockCleanRoomTaskRunsInterface) ListCleanRoomTaskRunsHandler(ctx context.Context, request cleanrooms.ListCleanRoomTaskRunsRequest) listing.Iterator[cleanrooms.CleanRoomTaskRun] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListCleanRoomTaskRunsHandler")
+	}
+
+	var r0 listing.Iterator[cleanrooms.CleanRoomTaskRun]
+	if rf, ok := ret.Get(0).(func(context.Context, cleanrooms.ListCleanRoomTaskRunsRequest) listing.Iterator[cleanrooms.CleanRoomTaskRun]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[cleanrooms.CleanRoomTaskRun])
+		}
+	}
+
+	return r0
+}
+
+// MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListCleanRoomTaskRunsHandler'
+type MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call struct {
+	*mock.Call
+}
+
+// ListCleanRoomTaskRunsHandler is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request cleanrooms.ListCleanRoomTaskRunsRequest
+func (_e *MockCleanRoomTaskRunsInterface_Expecter) ListCleanRoomTaskRunsHandler(ctx interface{}, request interface{}) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call {
+	return &MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call{Call: _e.mock.On("ListCleanRoomTaskRunsHandler", ctx, request)}
+}
+
+func (_c *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call) Run(run func(ctx context.Context, request cleanrooms.ListCleanRoomTaskRunsRequest)) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(cleanrooms.ListCleanRoomTaskRunsRequest))
+	})
+	return _c
+}
+
+func (_c *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call) Return(_a0 listing.Iterator[cleanrooms.CleanRoomTaskRun]) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call) RunAndReturn(run func(context.Context, cleanrooms.ListCleanRoomTaskRunsRequest) listing.Iterator[cleanrooms.CleanRoomTaskRun]) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandler_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListCleanRoomTaskRunsHandlerAll provides a mock function with given fields: ctx, request
+func (_m *MockCleanRoomTaskRunsInterface) ListCleanRoomTaskRunsHandlerAll(ctx context.Context, request cleanrooms.ListCleanRoomTaskRunsRequest) ([]cleanrooms.CleanRoomTaskRun, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListCleanRoomTaskRunsHandlerAll")
+	}
+
+	var r0 []cleanrooms.CleanRoomTaskRun
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, cleanrooms.ListCleanRoomTaskRunsRequest) ([]cleanrooms.CleanRoomTaskRun, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, cleanrooms.ListCleanRoomTaskRunsRequest) []cleanrooms.CleanRoomTaskRun); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]cleanrooms.CleanRoomTaskRun)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, cleanrooms.ListCleanRoomTaskRunsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListCleanRoomTaskRunsHandlerAll'
+type MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call struct {
+	*mock.Call
+}
+
+// ListCleanRoomTaskRunsHandlerAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request cleanrooms.ListCleanRoomTaskRunsRequest
+func (_e *MockCleanRoomTaskRunsInterface_Expecter) ListCleanRoomTaskRunsHandlerAll(ctx interface{}, request interface{}) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call {
+	return &MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call{Call: _e.mock.On("ListCleanRoomTaskRunsHandlerAll", ctx, request)}
+}
+
+func (_c *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call) Run(run func(ctx context.Context, request cleanrooms.ListCleanRoomTaskRunsRequest)) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(cleanrooms.ListCleanRoomTaskRunsRequest))
+	})
+	return _c
+}
+
+func (_c *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call) Return(_a0 []cleanrooms.CleanRoomTaskRun, _a1 error) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call) RunAndReturn(run func(context.Context, cleanrooms.ListCleanRoomTaskRunsRequest) ([]cleanrooms.CleanRoomTaskRun, error)) *MockCleanRoomTaskRunsInterface_ListCleanRoomTaskRunsHandlerAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockCleanRoomTaskRunsInterface creates a new instance of MockCleanRoomTaskRunsInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockCleanRoomTaskRunsInterface(t interface {

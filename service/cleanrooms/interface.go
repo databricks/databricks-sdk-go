@@ -73,13 +73,17 @@ type CleanRoomAutoApprovalRulesService interface {
 	Update(ctx context.Context, request UpdateCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error)
 }
 
-// Clean room task runs are the executions of notebooks in a clean room.
+// Clean room task runs are the executions of notebooks and JAR analyses in a
+// clean room.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CleanRoomTaskRunsService interface {
 
 	// List all the historical notebook task runs in a clean room.
 	List(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) (*ListCleanRoomNotebookTaskRunsResponse, error)
+
+	// List all the historical task runs in a clean room.
+	ListCleanRoomTaskRunsHandler(ctx context.Context, request ListCleanRoomTaskRunsRequest) (*ListCleanRoomTaskRunsResponse, error)
 }
 
 // A clean room uses Delta Sharing and serverless compute to provide a secure

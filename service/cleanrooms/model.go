@@ -111,6 +111,9 @@ type CleanRoomAsset struct {
 	// Local details for a foreign that are only available to its owner. Present
 	// if and only if **asset_type** is **FOREIGN_TABLE**
 	ForeignTableLocalDetails *CleanRoomAssetForeignTableLocalDetails `json:"foreign_table_local_details,omitempty"`
+	// Jar analysis details available to all collaborators of the clean room.
+	// Present if and only if **asset_type** is **JAR_ANALYSIS**
+	JarAnalysis *CleanRoomAssetJarAnalysis `json:"jar_analysis,omitempty"`
 	// A fully qualified name that uniquely identifies the asset within the
 	// clean room. This is also the name displayed in the clean room UI.
 	//
@@ -158,6 +161,8 @@ type CleanRoomAssetAssetType string
 
 const CleanRoomAssetAssetTypeForeignTable CleanRoomAssetAssetType = `FOREIGN_TABLE`
 
+const CleanRoomAssetAssetTypeJarAnalysis CleanRoomAssetAssetType = `JAR_ANALYSIS`
+
 const CleanRoomAssetAssetTypeNotebookFile CleanRoomAssetAssetType = `NOTEBOOK_FILE`
 
 const CleanRoomAssetAssetTypeTable CleanRoomAssetAssetType = `TABLE`
@@ -174,11 +179,11 @@ func (f *CleanRoomAssetAssetType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CleanRoomAssetAssetType) Set(v string) error {
 	switch v {
-	case `FOREIGN_TABLE`, `NOTEBOOK_FILE`, `TABLE`, `VIEW`, `VOLUME`:
+	case `FOREIGN_TABLE`, `JAR_ANALYSIS`, `NOTEBOOK_FILE`, `TABLE`, `VIEW`, `VOLUME`:
 		*f = CleanRoomAssetAssetType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FOREIGN_TABLE", "NOTEBOOK_FILE", "TABLE", "VIEW", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FOREIGN_TABLE", "JAR_ANALYSIS", "NOTEBOOK_FILE", "TABLE", "VIEW", "VOLUME"`, v)
 	}
 }
 
@@ -188,6 +193,7 @@ func (f *CleanRoomAssetAssetType) Set(v string) error {
 func (f *CleanRoomAssetAssetType) Values() []CleanRoomAssetAssetType {
 	return []CleanRoomAssetAssetType{
 		CleanRoomAssetAssetTypeForeignTable,
+		CleanRoomAssetAssetTypeJarAnalysis,
 		CleanRoomAssetAssetTypeNotebookFile,
 		CleanRoomAssetAssetTypeTable,
 		CleanRoomAssetAssetTypeView,
@@ -209,6 +215,42 @@ type CleanRoomAssetForeignTableLocalDetails struct {
 	// The fully qualified name of the foreign table in its owner's local
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
 	LocalName string `json:"local_name"`
+}
+
+type CleanRoomAssetJarAnalysis struct {
+	// The full paths in central to the jar files that are added to the library
+	// during execution (e.g.
+	// /Volumes/creator/schema/volume/folder/my_jar_file.jar) Only returned for
+	// the owner collaborator.
+	CentralJarFilePaths []string `json:"central_jar_file_paths,omitempty"`
+	// Optional description of the jar analysis shown to all collaborators.
+	Description string `json:"description,omitempty"`
+	// The serverless environment version used to execute the JAR analysis (e.g.
+	// "4"). Defaults to "4-scala-preview" if not specified.
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+	// Server generated etag that represents the jar analysis version.
+	Etag string `json:"etag,omitempty"`
+	// The full name of the class containing the main method to be executed.
+	// This class must be contained in a JAR provided as a library The code must
+	// use `SparkContext.getOrCreate` to obtain a Spark context; otherwise, runs
+	// of the job fail
+	MainClassName string `json:"main_class_name,omitempty"`
+	// Top-level status derived from all reviews.
+	ReviewState CleanRoomJarAnalysisReviewJarAnalysisReviewState `json:"review_state,omitempty"`
+	// All existing approvals or rejections.
+	Reviews []CleanRoomJarAnalysisReview `json:"reviews,omitempty"`
+	// Collaborators that can run the jar.
+	RunnerCollaboratorAliases []string `json:"runner_collaborator_aliases,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CleanRoomAssetJarAnalysis) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomAssetJarAnalysis) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetNotebook struct {
@@ -416,6 +458,105 @@ func (s *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
 
 func (s CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// This only applies to a JAR Analysis as a first-class asset in the Clean Room,
+// and not to Volumes
+type CleanRoomJarAnalysisReview struct {
+	// review comment
+	Comment string `json:"comment,omitempty"`
+	// timestamp of when the review was submitted
+	CreatedAtMillis int64 `json:"created_at_millis,omitempty"`
+	// review outcome
+	ReviewState CleanRoomJarAnalysisReviewJarAnalysisReviewState `json:"review_state,omitempty"`
+	// specified when the review was not explicitly made by a user
+	ReviewSubReason CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason `json:"review_sub_reason,omitempty"`
+	// collaborator alias of the reviewer
+	ReviewerCollaboratorAlias string `json:"reviewer_collaborator_alias,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CleanRoomJarAnalysisReview) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomJarAnalysisReview) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CleanRoomJarAnalysisReviewJarAnalysisReviewState string
+
+const CleanRoomJarAnalysisReviewJarAnalysisReviewStateApproved CleanRoomJarAnalysisReviewJarAnalysisReviewState = `APPROVED`
+
+const CleanRoomJarAnalysisReviewJarAnalysisReviewStatePending CleanRoomJarAnalysisReviewJarAnalysisReviewState = `PENDING`
+
+const CleanRoomJarAnalysisReviewJarAnalysisReviewStateRejected CleanRoomJarAnalysisReviewJarAnalysisReviewState = `REJECTED`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewState) Set(v string) error {
+	switch v {
+	case `APPROVED`, `PENDING`, `REJECTED`:
+		*f = CleanRoomJarAnalysisReviewJarAnalysisReviewState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APPROVED", "PENDING", "REJECTED"`, v)
+	}
+}
+
+// Values returns all possible values for CleanRoomJarAnalysisReviewJarAnalysisReviewState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewState) Values() []CleanRoomJarAnalysisReviewJarAnalysisReviewState {
+	return []CleanRoomJarAnalysisReviewJarAnalysisReviewState{
+		CleanRoomJarAnalysisReviewJarAnalysisReviewStateApproved,
+		CleanRoomJarAnalysisReviewJarAnalysisReviewStatePending,
+		CleanRoomJarAnalysisReviewJarAnalysisReviewStateRejected,
+	}
+}
+
+// Type always returns CleanRoomJarAnalysisReviewJarAnalysisReviewState to satisfy [pflag.Value] interface
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewState) Type() string {
+	return "CleanRoomJarAnalysisReviewJarAnalysisReviewState"
+}
+
+type CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason string
+
+const CleanRoomJarAnalysisReviewJarAnalysisReviewSubReasonAutoApproved CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason = `AUTO_APPROVED`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason) Set(v string) error {
+	switch v {
+	case `AUTO_APPROVED`:
+		*f = CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUTO_APPROVED"`, v)
+	}
+}
+
+// Values returns all possible values for CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason) Values() []CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason {
+	return []CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason{
+		CleanRoomJarAnalysisReviewJarAnalysisReviewSubReasonAutoApproved,
+	}
+}
+
+// Type always returns CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason to satisfy [pflag.Value] interface
+func (f *CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason) Type() string {
+	return "CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason"
 }
 
 type CleanRoomNotebookReview struct {
@@ -709,6 +850,115 @@ func (f *CleanRoomStatusEnum) Type() string {
 	return "CleanRoomStatusEnum"
 }
 
+// Stores information about a single task run.
+type CleanRoomTaskRun struct {
+	// Information about the analysis run (etag, updated at)
+	AnalysisDetails *CleanRoomTaskRunCleanRoomTaskAnalysisDetails `json:"analysis_details,omitempty"`
+	// Job run info of the task in the runner's local workspace. This field is
+	// only included in the LIST API if the task was run within the same
+	// workspace the API is being called. If the task run was in a different
+	// workspace under the same metastore, only the workspace_id is included.
+	CollaboratorJobRunInfo *CollaboratorJobRunInfo `json:"collaborator_job_run_info,omitempty"`
+	// Name of the executable.
+	Name string `json:"name,omitempty"`
+	// Information about run output
+	OutputInfo *CleanRoomTaskRunOutputInfo `json:"output_info,omitempty"`
+	// Duration of the task run, in milliseconds.
+	RunDuration int64 `json:"run_duration,omitempty"`
+	// Information about shared output accessible by all collaborators. This
+	// field is only populated when enable_shared_output is true.
+	SharedOutputInfo *CleanRoomTaskRunOutputInfo `json:"shared_output_info,omitempty"`
+	// When the task run started, in epoch milliseconds.
+	StartTime int64 `json:"start_time,omitempty"`
+	// State of the task run.
+	TaskRunState *jobs.CleanRoomTaskRunState `json:"task_run_state,omitempty"`
+	// The type of Clean Room task.
+	TaskType CleanRoomTaskType `json:"task_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CleanRoomTaskRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomTaskRun) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CleanRoomTaskRunCleanRoomTaskAnalysisDetails struct {
+	// Etag of the asset executed in this task run, used to identify the asset
+	// version.
+	Etag string `json:"etag,omitempty"`
+	// The timestamp of when the asset was last updated.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CleanRoomTaskRunCleanRoomTaskAnalysisDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomTaskRunCleanRoomTaskAnalysisDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CleanRoomTaskRunOutputInfo struct {
+	// Expiration time of the output schema of the task run (if any), in epoch
+	// milliseconds.
+	OutputSchemaExpirationTime int64 `json:"output_schema_expiration_time,omitempty"`
+	// Name of the output schema associated with the clean room task run.
+	OutputSchemaName string `json:"output_schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CleanRoomTaskRunOutputInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomTaskRunOutputInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CleanRoomTaskType string
+
+const CleanRoomTaskTypeJar CleanRoomTaskType = `JAR`
+
+const CleanRoomTaskTypeNotebook CleanRoomTaskType = `NOTEBOOK`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomTaskType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomTaskType) Set(v string) error {
+	switch v {
+	case `JAR`, `NOTEBOOK`:
+		*f = CleanRoomTaskType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "JAR", "NOTEBOOK"`, v)
+	}
+}
+
+// Values returns all possible values for CleanRoomTaskType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomTaskType) Values() []CleanRoomTaskType {
+	return []CleanRoomTaskType{
+		CleanRoomTaskTypeJar,
+		CleanRoomTaskTypeNotebook,
+	}
+}
+
+// Type always returns CleanRoomTaskType to satisfy [pflag.Value] interface
+func (f *CleanRoomTaskType) Type() string {
+	return "CleanRoomTaskType"
+}
+
 type CollaboratorJobRunInfo struct {
 	// Alias of the collaborator that triggered the task run.
 	CollaboratorAlias string `json:"collaborator_alias,omitempty"`
@@ -764,6 +1014,8 @@ type CreateCleanRoomAssetReviewRequest struct {
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room
 	CleanRoomName string `json:"-" url:"-"`
+
+	JarAnalysisReview *JarAnalysisVersionReview `json:"jar_analysis_review,omitempty"`
 	// Name of the asset
 	Name string `json:"-" url:"-"`
 
@@ -771,6 +1023,10 @@ type CreateCleanRoomAssetReviewRequest struct {
 }
 
 type CreateCleanRoomAssetReviewResponse struct {
+	// top-level status derived from all reviews
+	JarAnalysisReviewState CleanRoomJarAnalysisReviewJarAnalysisReviewState `json:"jar_analysis_review_state,omitempty"`
+	// All existing jar analysis approvals or rejections
+	JarAnalysisReviews []CleanRoomJarAnalysisReview `json:"jar_analysis_reviews,omitempty"`
 	// Top-level status derived from all reviews
 	NotebookReviewState CleanRoomNotebookReviewNotebookReviewState `json:"notebook_review_state,omitempty"`
 	// All existing notebook approvals or rejections
@@ -849,6 +1105,26 @@ type GetCleanRoomAutoApprovalRuleRequest struct {
 
 type GetCleanRoomRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+type JarAnalysisVersionReview struct {
+	// Review comment
+	Comment string `json:"comment,omitempty"`
+	// Etag identifying the jar analysis version, with its value being a hash of
+	// an internally-generated UUID
+	Etag string `json:"etag"`
+	// Review outcome
+	ReviewState CleanRoomJarAnalysisReviewJarAnalysisReviewState `json:"review_state"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JarAnalysisVersionReview) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JarAnalysisVersionReview) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListCleanRoomAssetRevisionsRequest struct {
@@ -1001,6 +1277,48 @@ func (s *ListCleanRoomNotebookTaskRunsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCleanRoomTaskRunsRequest struct {
+	// Name of the clean room.
+	CleanRoomName string `json:"-" url:"-"`
+	// Executable name.
+	Name string `json:"-" url:"name,omitempty"`
+	// The maximum number of task runs to return. Maximum value of 100.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Filter by the type of Clean Room task.
+	TaskType CleanRoomTaskType `json:"-" url:"task_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCleanRoomTaskRunsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomTaskRunsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCleanRoomTaskRunsResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. page_token should be set to this value for the next request
+	// (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Task runs in the clean room.
+	Runs []CleanRoomTaskRun `json:"runs,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCleanRoomTaskRunsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomTaskRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

@@ -36,7 +36,8 @@ func (s CompleteVersionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateDeploymentRequest struct {
-	// The deployment to create.
+	// The deployment to create. Caller must set `initial_parent_path`; every
+	// other field is populated by the service.
 	Deployment Deployment `json:"deployment"`
 	// The ID to use for the deployment, which will become the final component
 	// of the deployment's resource name (i.e. `deployments/{deployment_id}`).
@@ -99,6 +100,13 @@ type Deployment struct {
 	// Git provenance of the deployment's source, derived from the latest
 	// version.
 	GitInfo *GitInfo `json:"git_info,omitempty"`
+	// The workspace path of the folder where the deployment is initially
+	// created. Includes a leading slash and no trailing slash. On create, the
+	// deployment is registered as a typed BUNDLE_DEPLOYMENT tree node under
+	// this folder, which must already exist. This field is input only and is
+	// not returned in create, get, or list responses. The service rejects
+	// create requests that omit it.
+	InitialParentPath string `json:"initial_parent_path,omitempty"`
 	// The version_id of the most recent deployment version.
 	LastVersionId string `json:"last_version_id,omitempty"`
 	// Resource name of the deployment. Format: deployments/{deployment_id}

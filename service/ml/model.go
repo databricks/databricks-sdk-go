@@ -2352,6 +2352,26 @@ type LastNFunction struct {
 	N int64 `json:"n"`
 }
 
+// A window that spans the entire lifetime of a data source, accumulating from
+// the source's start rather than over a bounded duration. All fields are
+// optional; an empty message denotes the continuous, fully-accurate variant.
+type LifetimeWindow struct {
+	// The slide duration for the discrete (offline) variant: the value updates
+	// only at these boundaries. Must be positive when set. When absent, the
+	// window is continuous (the value is as fresh as the pipeline delivers).
+	SlideDuration *duration.Duration `json:"slide_duration,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LifetimeWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LifetimeWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Lineage context information for tracking where an API was invoked. This will
 // allow us to track lineage, which currently uses caller entity information for
 // use across the Lineage Client and Observability in Lumberjack.
@@ -5223,6 +5243,8 @@ func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
 
 type TimeWindow struct {
 	Continuous *ContinuousWindow `json:"continuous,omitempty"`
+	// A window that spans the entire lifetime of the data source.
+	Lifetime *LifetimeWindow `json:"lifetime,omitempty"`
 	// A long (multi-day) rolling window served via the hybrid batch + streaming
 	// path.
 	LongRolling *LongRollingWindow `json:"long_rolling,omitempty"`
