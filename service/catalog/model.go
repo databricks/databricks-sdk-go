@@ -992,6 +992,8 @@ const ConnectionTypeHttp ConnectionType = `HTTP`
 
 const ConnectionTypeHubspot ConnectionType = `HUBSPOT`
 
+const ConnectionTypeJdbc ConnectionType = `JDBC`
+
 const ConnectionTypeMetaMarketing ConnectionType = `META_MARKETING`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
@@ -1036,11 +1038,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `META_MARKETING`, `MYSQL`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "META_MARKETING", "MYSQL", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1059,6 +1061,7 @@ func (f *ConnectionType) Values() []ConnectionType {
 		ConnectionTypeHiveMetastore,
 		ConnectionTypeHttp,
 		ConnectionTypeHubspot,
+		ConnectionTypeJdbc,
 		ConnectionTypeMetaMarketing,
 		ConnectionTypeMysql,
 		ConnectionTypeOracle,

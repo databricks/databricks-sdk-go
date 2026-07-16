@@ -44,7 +44,7 @@
 //
 // - [cleanrooms.CleanRoomAutoApprovalRulesAPI]: Clean room auto-approval rules automatically create an approval on your behalf when an asset (e.g.
 //
-// - [cleanrooms.CleanRoomTaskRunsAPI]: Clean room task runs are the executions of notebooks in a clean room.
+// - [cleanrooms.CleanRoomTaskRunsAPI]: Clean room task runs are the executions of notebooks and JAR analyses in a clean room.
 //
 // - [cleanrooms.CleanRoomsAPI]: A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other's data.
 //

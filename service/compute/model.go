@@ -4359,6 +4359,25 @@ func (f *InstancePoolAwsAttributesAvailability) Type() string {
 type InstancePoolAzureAttributes struct {
 	// Availability type used for the spot nodes.
 	Availability InstancePoolAzureAttributesAvailability `json:"availability,omitempty"`
+	// The Azure capacity reservation group resource ID to use for launching VMs
+	// in this pool. When specified, VMs will be launched using the provided
+	// capacity reservation.
+	//
+	// NOTE: Omitting this field will clear any existing configured capacity
+	// reservation group on the pool.
+	//
+	// Capacity reservations can only be specified when the workspace uses
+	// injected vnet (i.e. customer defined vnet not managed by databricks).
+	// Ensure the databricks-login-prod Enterprise Application is granted the
+	// following four permissions: 1.
+	// Microsoft.Compute/capacityReservationGroups/read 2.
+	// Microsoft.Compute/capacityReservationGroups/deploy/action 3.
+	// Microsoft.Compute/capacityReservationGroups/capacityReservations/read 4.
+	// Microsoft.Compute/capacityReservationGroups/capacityReservations/deploy/action
+	//
+	// Format:
+	// `/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}`
+	CapacityReservationGroup string `json:"capacity_reservation_group,omitempty"`
 	// With variable pricing, you have option to set a max price, in US dollars
 	// (USD) For example, the value 2 would be a max price of $2.00 USD per
 	// hour. If you set the max price to be -1, the VM won't be evicted based on

@@ -127,7 +127,8 @@ type WorkspaceClient struct {
 	// in a clean room.
 	CleanRoomAutoApprovalRules cleanrooms.CleanRoomAutoApprovalRulesInterface
 
-	// Clean room task runs are the executions of notebooks in a clean room.
+	// Clean room task runs are the executions of notebooks and JAR analyses in
+	// a clean room.
 	CleanRoomTaskRuns cleanrooms.CleanRoomTaskRunsInterface
 
 	// A clean room uses Delta Sharing and serverless compute to provide a
