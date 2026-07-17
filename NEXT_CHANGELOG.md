@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `DataframeSchema` and `TransformationSql` fields for [ml.StreamSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#StreamSource).
