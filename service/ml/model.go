@@ -5098,10 +5098,17 @@ type StreamSchemaConfig struct {
 
 // A Stream entity used as a data source for a feature.
 type StreamSource struct {
+	// Schema of the resulting dataframe after transformations, in Spark
+	// StructType JSON format (from df.schema.json()). Any subsequent functions
+	// operate against this dataframe.
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
 	// The filter condition applied to the source data before aggregation.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// Three-part full name of the Stream (catalog.schema.stream).
 	FullName string `json:"full_name"`
+	// The pipeline runs these SQL statements immediately after conversion into
+	// the schema specified on the Stream object.
+	TransformationSql string `json:"transformation_sql,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5353,12 +5360,17 @@ type TumblingWindow struct {
 type UcTraceLocation struct {
 	// The name of the Unity Catalog catalog.
 	Catalog string `json:"catalog"`
+	// The trace-table prefix actually in effect: `table_prefix` if it was set
+	// on creation, otherwise the server-generated default.
+	EffectiveTablePrefix string `json:"effective_table_prefix,omitempty"`
 	// The name of the Unity Catalog schema within `catalog`.
 	Schema string `json:"schema"`
 	// The prefix for the trace tables, which are named
 	// `{catalog}.{schema}.{table_prefix}_otel_*`. May only contain letters,
 	// digits, and underscores, and may be at most 238 characters. When unset, a
-	// server-generated prefix derived from the experiment ID is used.
+	// server-generated prefix derived from the experiment ID is used and this
+	// field stays empty on read; the resolved value is always available in
+	// `effective_table_prefix`.
 	TablePrefix string `json:"table_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
