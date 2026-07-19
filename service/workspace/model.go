@@ -510,6 +510,9 @@ type GetRepoRequest struct {
 type GetRepoResponse struct {
 	// Branch that the local version of the repo is checked out to.
 	Branch string `json:"branch,omitempty"`
+	// Whether the Git CLI is enabled for this Git folder (repo). When true, Git
+	// commands can be run directly against this Git folder using the Git CLI.
+	GitCliEnabled bool `json:"git_cli_enabled,omitempty"`
 	// SHA-1 hash representing the commit ID of the current HEAD of the repo.
 	HeadCommitId string `json:"head_commit_id,omitempty"`
 	// ID of the Git folder (repo) object in the workspace.
