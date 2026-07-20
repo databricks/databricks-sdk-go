@@ -187,7 +187,7 @@ func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes, "")
+			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes, "", "")
 			u, err := url.Parse(got)
 			if err != nil {
 				t.Fatalf("parsing URL: %v", err)
@@ -216,7 +216,7 @@ func TestBuildDiscoveryAuthorizeURL_Target(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, "localhost:8020", "s", pkce, scopes, tc.target)
+			got := buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, "localhost:8020", "s", pkce, scopes, tc.target, "")
 			u, err := url.Parse(got)
 			if err != nil {
 				t.Fatalf("parsing URL: %v", err)
@@ -227,6 +227,46 @@ func TestBuildDiscoveryAuthorizeURL_Target(t *testing.T) {
 			// destination_url must still be present in every variant.
 			if u.Query().Get("destination_url") == "" {
 				t.Error("destination_url should be set regardless of target")
+			}
+		})
+	}
+}
+
+func TestBuildDiscoveryAuthorizeURL_AssumeGroup(t *testing.T) {
+	pkce := PKCEParams{
+		Challenge:       "c",
+		ChallengeMethod: "S256",
+		Verifier:        "v",
+	}
+	scopes := []string{"offline_access", "all-apis"}
+	tests := []struct {
+		name        string
+		assumeGroup string
+		wantParam   bool
+		wantValue   string
+	}{
+		{name: "no group", assumeGroup: "", wantParam: false},
+		{name: "with group", assumeGroup: "123456", wantParam: true, wantValue: "123456"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, "localhost:8020", "s", pkce, scopes, "", tc.assumeGroup)
+			u, err := url.Parse(got)
+			if err != nil {
+				t.Fatalf("parsing URL: %v", err)
+			}
+			// assume_group lives on the nested destination_url, not the top-level URL.
+			destParsed, err := url.Parse(u.Query().Get("destination_url"))
+			if err != nil {
+				t.Fatalf("parsing destination_url: %v", err)
+			}
+			q := destParsed.Query()
+			_, present := q[assumeGroupParamName]
+			if present != tc.wantParam {
+				t.Errorf("assume_group present = %v, want %v", present, tc.wantParam)
+			}
+			if tc.wantParam && q.Get(assumeGroupParamName) != tc.wantValue {
+				t.Errorf("assume_group = %q, want %q", q.Get(assumeGroupParamName), tc.wantValue)
 			}
 		})
 	}

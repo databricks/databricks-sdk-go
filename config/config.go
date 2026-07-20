@@ -146,6 +146,13 @@ type Config struct {
 	// will disable the fallback mechanism.
 	OAuthCallbackPort int `name:"oauth_callback_port" env:"DATABRICKS_OAUTH_CALLBACK_PORT" auth:"-"`
 
+	// AssumeGroupID is the numeric Databricks group ID to assume during U2M
+	// (user-to-machine) OAuth login. When set, it is sent as the `assume_group`
+	// query parameter on the OAuth authorize request so the resulting token is
+	// scoped to that group. This is only used for U2M authentication and only
+	// for workspace-level logins; it is ignored by other auth types.
+	AssumeGroupID string `name:"group_id" env:"DATABRICKS_GROUP_ID" auth:"-"`
+
 	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT" auth:"google" auth_types:"google-id"`
 	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive" auth_types:"google-credentials"`
 

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -24,6 +25,11 @@ import (
 const (
 	// appClientId is the default client ID used by the SDK for U2M OAuth.
 	appClientID = "databricks-cli"
+
+	// assumeGroupParamName is the query parameter used on the authorize request
+	// to assume a Databricks group during login. Its value is the numeric group
+	// ID to assume. This must match the server-side parameter name.
+	assumeGroupParamName = "assume_group"
 
 	// defaultPort is the default port for the OAuth2 callback server. If the
 	// port is already in use, the next port is tried (8021, 8022, etc.).
@@ -117,6 +123,16 @@ type PersistentAuth struct {
 	// login.databricks.com lands the user on the account selector instead of
 	// the workspace selector. Use for account-only logins.
 	discoveryAccountTarget bool
+
+	// assumeGroup is the numeric Databricks group ID to assume during login.
+	// When set, it is sent as the `assume_group` query parameter on the
+	// authorize request, so the minted access token is scoped to that group.
+	// The value is baked into the authorization code by the server, so it does
+	// not need to be resent on the token exchange or on subsequent API calls.
+	//
+	// Assuming a group is only supported for workspace-level logins; combining
+	// it with an account OAuthArgument is rejected at construction time.
+	assumeGroup string
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -215,6 +231,20 @@ func WithDiscoveryHost(host string) PersistentAuthOption {
 func WithDiscoveryAccountTarget() PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.discoveryAccountTarget = true
+	}
+}
+
+// WithAssumeGroup sets the numeric Databricks group ID to assume during login.
+// When set, it is sent as the `assume_group` query parameter on the authorize
+// request; the server validates that the user may assume the group and bakes
+// the claim into the minted access token, so no header or parameter is needed
+// on subsequent API calls.
+//
+// Assuming a group is only supported for workspace-level logins. Pairing this
+// with an account OAuthArgument causes NewPersistentAuth to return an error.
+func WithAssumeGroup(groupID string) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.assumeGroup = groupID
 	}
 }
 
@@ -522,6 +552,19 @@ func (a *PersistentAuth) validateArg() error {
 	if a.discoveryMode && !isDiscoveryArg {
 		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", a.oAuthArgument)
 	}
+	// Assuming a group is a workspace-level concept; the server rejects it at
+	// the account authorize endpoint. Allow it only for workspace-level logins:
+	// a workspace argument, or a discovery login (which resolves to a workspace)
+	// that is not explicitly targeting the account selector. Everything else --
+	// account and unified arguments -- is rejected up front. This is an allowlist
+	// rather than a blocklist so new account-capable argument types cannot slip
+	// through by default.
+	if a.assumeGroup != "" {
+		workspaceLevel := isWorkspaceArg || (isDiscoveryArg && !a.discoveryAccountTarget)
+		if !workspaceLevel {
+			return fmt.Errorf("assume_group is only supported for workspace-level logins, got %T", a.oAuthArgument)
+		}
+	}
 	return nil
 }
 
@@ -561,16 +604,34 @@ func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("fetching OAuth endpoints: %w", err)
 	}
+	authURL := endpoints.AuthorizationEndpoint
+	// The oauth2 library builds the authorize URL from AuthURL and only lets us
+	// inject PKCE parameters via authhandler. To carry assume_group we pre-encode
+	// it onto AuthURL; AuthCodeURL appends its own params with the correct
+	// separator whether or not a query string is already present.
+	if a.assumeGroup != "" {
+		authURL = appendQueryParam(authURL, assumeGroupParamName, a.assumeGroup)
+	}
 	return &oauth2.Config{
 		ClientID: appClientID,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:   endpoints.AuthorizationEndpoint,
+			AuthURL:   authURL,
 			TokenURL:  endpoints.TokenEndpoint,
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 		RedirectURL: fmt.Sprintf("http://%s", a.redirectAddr),
 		Scopes:      scopes,
 	}, nil
+}
+
+// appendQueryParam appends a single query parameter to a URL, preserving any
+// existing query string. The value is URL-encoded.
+func appendQueryParam(rawURL, key, value string) string {
+	sep := "?"
+	if strings.Contains(rawURL, "?") {
+		sep = "&"
+	}
+	return rawURL + sep + url.Values{key: {value}}.Encode()
 }
 
 func (a *PersistentAuth) stateAndPKCE() (string, *authhandler.PKCEParams, error) {
