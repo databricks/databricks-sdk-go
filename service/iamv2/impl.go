@@ -19,7 +19,7 @@ type accountIamV2Impl struct {
 
 func (a *accountIamV2Impl) CreateWorkspaceAssignmentDetail(ctx context.Context, request CreateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspaceAssignmentDetails", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -30,7 +30,7 @@ func (a *accountIamV2Impl) CreateWorkspaceAssignmentDetail(ctx context.Context, 
 }
 
 func (a *accountIamV2Impl) DeleteWorkspaceAssignmentDetail(ctx context.Context, request DeleteWorkspaceAssignmentDetailRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspaceAssignmentDetails/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -41,7 +41,7 @@ func (a *accountIamV2Impl) DeleteWorkspaceAssignmentDetail(ctx context.Context, 
 
 func (a *accountIamV2Impl) GetWorkspaceAccessDetail(ctx context.Context, request GetWorkspaceAccessDetailRequest) (*WorkspaceAccessDetail, error) {
 	var workspaceAccessDetail WorkspaceAccessDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspaceAccessDetails/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-access-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -52,7 +52,7 @@ func (a *accountIamV2Impl) GetWorkspaceAccessDetail(ctx context.Context, request
 
 func (a *accountIamV2Impl) GetWorkspaceAssignmentDetail(ctx context.Context, request GetWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspaceAssignmentDetails/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -63,7 +63,7 @@ func (a *accountIamV2Impl) GetWorkspaceAssignmentDetail(ctx context.Context, req
 
 func (a *accountIamV2Impl) ListWorkspaceAssignmentDetails(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
 	var listWorkspaceAssignmentDetailsResponse ListWorkspaceAssignmentDetailsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspaceAssignmentDetails", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -74,7 +74,7 @@ func (a *accountIamV2Impl) ListWorkspaceAssignmentDetails(ctx context.Context, r
 
 func (a *accountIamV2Impl) ResolveGroup(ctx context.Context, request ResolveGroupRequest) (*ResolveGroupResponse, error) {
 	var resolveGroupResponse ResolveGroupResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/resolveByExternalId", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/resolve-by-external-id", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -86,7 +86,7 @@ func (a *accountIamV2Impl) ResolveGroup(ctx context.Context, request ResolveGrou
 
 func (a *accountIamV2Impl) ResolveServicePrincipal(ctx context.Context, request ResolveServicePrincipalRequest) (*ResolveServicePrincipalResponse, error) {
 	var resolveServicePrincipalResponse ResolveServicePrincipalResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/servicePrincipals/resolveByExternalId", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/resolve-by-external-id", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -98,7 +98,7 @@ func (a *accountIamV2Impl) ResolveServicePrincipal(ctx context.Context, request 
 
 func (a *accountIamV2Impl) ResolveUser(ctx context.Context, request ResolveUserRequest) (*ResolveUserResponse, error) {
 	var resolveUserResponse ResolveUserResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/resolveByExternalId", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/resolve-by-external-id", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -110,7 +110,7 @@ func (a *accountIamV2Impl) ResolveUser(ctx context.Context, request ResolveUserR
 
 func (a *accountIamV2Impl) UpdateWorkspaceAssignmentDetail(ctx context.Context, request UpdateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspaceAssignmentDetails/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -134,7 +134,7 @@ type workspaceIamV2Impl struct {
 
 func (a *workspaceIamV2Impl) CreateWorkspaceAssignmentDetailProxy(ctx context.Context, request CreateWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := "/api/2.0/identity/workspaceAssignmentDetails"
+	path := "/api/2.0/identity/workspace-assignment-details"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -148,7 +148,7 @@ func (a *workspaceIamV2Impl) CreateWorkspaceAssignmentDetailProxy(ctx context.Co
 }
 
 func (a *workspaceIamV2Impl) DeleteWorkspaceAssignmentDetailProxy(ctx context.Context, request DeleteWorkspaceAssignmentDetailProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/workspaceAssignmentDetails/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/workspace-assignment-details/%v", request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -162,7 +162,7 @@ func (a *workspaceIamV2Impl) DeleteWorkspaceAssignmentDetailProxy(ctx context.Co
 
 func (a *workspaceIamV2Impl) GetWorkspaceAccessDetailLocal(ctx context.Context, request GetWorkspaceAccessDetailLocalRequest) (*WorkspaceAccessDetail, error) {
 	var workspaceAccessDetail WorkspaceAccessDetail
-	path := fmt.Sprintf("/api/2.0/identity/workspaceAccessDetails/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/workspace-access-details/%v", request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -176,7 +176,7 @@ func (a *workspaceIamV2Impl) GetWorkspaceAccessDetailLocal(ctx context.Context, 
 
 func (a *workspaceIamV2Impl) GetWorkspaceAssignmentDetailProxy(ctx context.Context, request GetWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/workspaceAssignmentDetails/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/workspace-assignment-details/%v", request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -190,7 +190,7 @@ func (a *workspaceIamV2Impl) GetWorkspaceAssignmentDetailProxy(ctx context.Conte
 
 func (a *workspaceIamV2Impl) ListWorkspaceAssignmentDetailsProxy(ctx context.Context, request ListWorkspaceAssignmentDetailsProxyRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
 	var listWorkspaceAssignmentDetailsResponse ListWorkspaceAssignmentDetailsResponse
-	path := "/api/2.0/identity/workspaceAssignmentDetails"
+	path := "/api/2.0/identity/workspace-assignment-details"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -204,7 +204,7 @@ func (a *workspaceIamV2Impl) ListWorkspaceAssignmentDetailsProxy(ctx context.Con
 
 func (a *workspaceIamV2Impl) ResolveGroupProxy(ctx context.Context, request ResolveGroupProxyRequest) (*ResolveGroupResponse, error) {
 	var resolveGroupResponse ResolveGroupResponse
-	path := "/api/2.0/identity/groups/resolveByExternalId"
+	path := "/api/2.0/identity/groups/resolve-by-external-id"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -219,7 +219,7 @@ func (a *workspaceIamV2Impl) ResolveGroupProxy(ctx context.Context, request Reso
 
 func (a *workspaceIamV2Impl) ResolveServicePrincipalProxy(ctx context.Context, request ResolveServicePrincipalProxyRequest) (*ResolveServicePrincipalResponse, error) {
 	var resolveServicePrincipalResponse ResolveServicePrincipalResponse
-	path := "/api/2.0/identity/servicePrincipals/resolveByExternalId"
+	path := "/api/2.0/identity/service-principals/resolve-by-external-id"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -234,7 +234,7 @@ func (a *workspaceIamV2Impl) ResolveServicePrincipalProxy(ctx context.Context, r
 
 func (a *workspaceIamV2Impl) ResolveUserProxy(ctx context.Context, request ResolveUserProxyRequest) (*ResolveUserResponse, error) {
 	var resolveUserResponse ResolveUserResponse
-	path := "/api/2.0/identity/users/resolveByExternalId"
+	path := "/api/2.0/identity/users/resolve-by-external-id"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -249,7 +249,7 @@ func (a *workspaceIamV2Impl) ResolveUserProxy(ctx context.Context, request Resol
 
 func (a *workspaceIamV2Impl) UpdateWorkspaceAssignmentDetailProxy(ctx context.Context, request UpdateWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/workspaceAssignmentDetails/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/workspace-assignment-details/%v", request.PrincipalId)
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)

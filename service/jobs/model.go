@@ -3720,9 +3720,8 @@ type ResolvedValues struct {
 	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
 }
 
-// Resolved env_vars for an AiRuntimeTask after dynamic-value substitution.
-// Mirrors the task's `resolved_parameters_field` (env_vars) so Jobs can expand
-// `{{tasks.<key>.values.<name>}}` references before submission.
+// Resolved values for an AiRuntimeTask after dynamic-value substitution, so
+// Jobs can expand `{{tasks.<key>.values.<name>}}` references before submission.
 type ResolvedValuesAiRuntimeTaskResolvedValues struct {
 }
 
@@ -5626,6 +5625,15 @@ type SubmitRun struct {
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// run.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// The performance mode on a serverless one-time run. This field determines
+	// the level of compute performance or cost-efficiency for the run. The
+	// performance target does not apply to tasks that run on Serverless GPU
+	// compute.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the one-time run.
 	Queue *QueueSettings `json:"queue,omitempty"`
 	// Specifies the user or service principal that the job runs as. If not

@@ -3105,34 +3105,6 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// A long (multi-day) rolling window served via the hybrid batch + streaming
-// path. The batch pipeline maintains daily partial aggregates for the bulk of
-// the window while the streaming pipeline maintains the most recent day(s), and
-// serving merges them on read. Distinct from RollingWindow so the control plane
-// can explicitly identify long rolling window features rather than inferring
-// hybrid behavior from window_duration.
-type LongRollingWindow struct {
-	// The delay applied to the end of the rolling window (must be
-	// non-negative). For example, delay=1d shifts the window end 1 day before
-	// the evaluation time.
-	Delay *duration.Duration `json:"delay,omitempty"`
-	// The duration of the rolling window. Must be positive and span more than
-	// two days, so that both the batch (N-1 day) and stale-path (N-2 day)
-	// partial aggregates are well defined. The duration need not be a whole
-	// number of days (e.g. 3 days 15 minutes is allowed).
-	WindowDuration duration.Duration `json:"window_duration"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *LongRollingWindow) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s LongRollingWindow) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // A materialized feature represents a feature that is continuously computed and
 // stored.
 type MaterializedFeature struct {
@@ -4495,6 +4467,33 @@ func (s RunTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A sawtooth window served via the hybrid batch + streaming path. The batch
+// pipeline maintains daily partial aggregates for the bulk of the window while
+// the streaming pipeline maintains the most recent day(s), and serving merges
+// them on read. Same field shape as RollingWindow, but a distinct type so the
+// control plane can explicitly identify hybrid (sawtooth) features rather than
+// inferring hybrid behavior from window_duration.
+type SawtoothWindow struct {
+	// The delay applied to the end of the window (must be non-negative). For
+	// example, delay=1d shifts the window end 1 day before the evaluation time.
+	Delay *duration.Duration `json:"delay,omitempty"`
+	// The duration of the window. Must be positive and span more than two days,
+	// so that both the batch (N-1 day) and stale-path (N-2 day) partial
+	// aggregates are well defined. The duration need not be a whole number of
+	// days (e.g. 3 days 15 minutes is allowed).
+	WindowDuration duration.Duration `json:"window_duration"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SawtoothWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SawtoothWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Scalar data types for request-time field definitions. Only flat (non-nested)
 // types are supported.
 type ScalarDataType string
@@ -5098,10 +5097,17 @@ type StreamSchemaConfig struct {
 
 // A Stream entity used as a data source for a feature.
 type StreamSource struct {
+	// Schema of the resulting dataframe after transformations, in Spark
+	// StructType JSON format (from df.schema.json()). Any subsequent functions
+	// operate against this dataframe.
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
 	// The filter condition applied to the source data before aggregation.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// Three-part full name of the Stream (catalog.schema.stream).
 	FullName string `json:"full_name"`
+	// The pipeline runs these SQL statements immediately after conversion into
+	// the schema specified on the Stream object.
+	TransformationSql string `json:"transformation_sql,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5245,11 +5251,10 @@ type TimeWindow struct {
 	Continuous *ContinuousWindow `json:"continuous,omitempty"`
 	// A window that spans the entire lifetime of the data source.
 	Lifetime *LifetimeWindow `json:"lifetime,omitempty"`
-	// A long (multi-day) rolling window served via the hybrid batch + streaming
-	// path.
-	LongRolling *LongRollingWindow `json:"long_rolling,omitempty"`
 
 	Rolling *RollingWindow `json:"rolling,omitempty"`
+	// A sawtooth window served via the hybrid batch + streaming path.
+	Sawtooth *SawtoothWindow `json:"sawtooth,omitempty"`
 
 	Sliding *SlidingWindow `json:"sliding,omitempty"`
 
@@ -5353,12 +5358,17 @@ type TumblingWindow struct {
 type UcTraceLocation struct {
 	// The name of the Unity Catalog catalog.
 	Catalog string `json:"catalog"`
+	// The trace-table prefix actually in effect: `table_prefix` if it was set
+	// on creation, otherwise the server-generated default.
+	EffectiveTablePrefix string `json:"effective_table_prefix,omitempty"`
 	// The name of the Unity Catalog schema within `catalog`.
 	Schema string `json:"schema"`
 	// The prefix for the trace tables, which are named
 	// `{catalog}.{schema}.{table_prefix}_otel_*`. May only contain letters,
 	// digits, and underscores, and may be at most 238 characters. When unset, a
-	// server-generated prefix derived from the experiment ID is used.
+	// server-generated prefix derived from the experiment ID is used and this
+	// field stays empty on read; the resolved value is always available in
+	// `effective_table_prefix`.
 	TablePrefix string `json:"table_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
