@@ -189,6 +189,11 @@ func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissio
 
 // Returns repos that the calling user has Manage permissions on. Use
 // `next_page_token` to iterate through additional pages.
+//
+// Deprecated: This operation does not return a complete list of the repos in
+// the workspace, because repos with the Git CLI enabled are not included in its
+// results. Instead, use the Repos and Workspace APIs to find repos and their
+// associated metadata in the workspace.
 func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.Iterator[RepoInfo] {
 
 	getNextPage := func(ctx context.Context, req ListReposRequest) (*ListReposResponse, error) {
@@ -215,6 +220,11 @@ func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.
 
 // Returns repos that the calling user has Manage permissions on. Use
 // `next_page_token` to iterate through additional pages.
+//
+// Deprecated: This operation does not return a complete list of the repos in
+// the workspace, because repos with the Git CLI enabled are not included in its
+// results. Instead, use the Repos and Workspace APIs to find repos and their
+// associated metadata in the workspace.
 func (a *reposImpl) ListAll(ctx context.Context, request ListReposRequest) ([]RepoInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[RepoInfo](ctx, iterator)

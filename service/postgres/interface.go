@@ -29,10 +29,10 @@ type PostgresService interface {
 	// Register a Postgres database in the Unity Catalog.
 	CreateCatalog(ctx context.Context, request CreateCatalogRequest) (*Operation, error)
 
-	// Create a Lakebase CDF configuration (CdfConfig). Replicates the tables of
-	// a Postgres schema into a Unity Catalog schema. Returns ALREADY_EXISTS if
-	// a config with the requested id exists, or if another config already
-	// replicates the target Postgres schema.
+	// Create a CDF configuration that materializes the change data feed for all
+	// tables in a Postgres schema as open-format Delta tables in Unity Catalog.
+	// Once created, each table's change history is continuously written to its
+	// corresponding Lakehouse table.
 	CreateCdfConfig(ctx context.Context, request CreateCdfConfigRequest) (*Operation, error)
 
 	// Enable Data API for a database.
@@ -63,9 +63,10 @@ type PostgresService interface {
 	// Delete a Database Catalog.
 	DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) (*Operation, error)
 
-	// Delete a Lakebase CDF configuration (CdfConfig). Stops replication and
-	// removes the config. When force is true, also drops the replicated Delta
-	// tables in Unity Catalog.
+	// Delete a CDF configuration and stop materializing the change data feed.
+	// When force=true, also drops the Delta tables in Unity Catalog. When
+	// force=false (default), the existing tables are preserved at their last
+	// state.
 	DeleteCdfConfig(ctx context.Context, request DeleteCdfConfigRequest) (*Operation, error)
 
 	// Disable Data API for a database.
@@ -95,11 +96,13 @@ type PostgresService interface {
 	// Get a Database Catalog.
 	GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error)
 
-	// Get a single Lakebase CDF configuration (CdfConfig).
+	// Get a single Lakebase CDF configuration, including the source Postgres
+	// schema, target Unity Catalog schema, and the identity under which writes
+	// are authorized.
 	GetCdfConfig(ctx context.Context, request GetCdfConfigRequest) (*CdfConfig, error)
 
-	// Get the replication status of a single replicated table within a Lakebase
-	// CDF configuration.
+	// Get the CDF status of a single table within a Lakebase CDF configuration,
+	// including its current state and the last committed position in the feed.
 	GetCdfStatus(ctx context.Context, request GetCdfStatusRequest) (*CdfStatus, error)
 
 	// Get Data API configuration for a database.
@@ -128,11 +131,14 @@ type PostgresService interface {
 	// Returns a paginated list of database branches in the project.
 	ListBranches(ctx context.Context, request ListBranchesRequest) (*ListBranchesResponse, error)
 
-	// List the Lakebase CDF configurations (CdfConfigs) under a database.
+	// List all CDF configurations for a Lakebase database. Each configuration
+	// maps a Postgres schema to a Unity Catalog schema where the change data
+	// feed is materialized.
 	ListCdfConfigs(ctx context.Context, request ListCdfConfigsRequest) (*ListCdfConfigsResponse, error)
 
-	// List the replication statuses of all tables replicated under a Lakebase
-	// CDF configuration.
+	// List the per-table CDF statuses within a Lakebase CDF configuration. Each
+	// status shows whether a table's change data feed is snapshotting,
+	// streaming, or skipped.
 	ListCdfStatuses(ctx context.Context, request ListCdfStatusesRequest) (*ListCdfStatusesResponse, error)
 
 	// List Databases.
