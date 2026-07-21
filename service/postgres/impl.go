@@ -543,7 +543,9 @@ func (a *postgresImpl) internalListBranches(ctx context.Context, request ListBra
 	return &listBranchesResponse, err
 }
 
-// List the Lakebase CDF configurations (CdfConfigs) under a database.
+// List all CDF configurations for a Lakebase database. Each configuration maps
+// a Postgres schema to a Unity Catalog schema where the change data feed is
+// materialized.
 func (a *postgresImpl) ListCdfConfigs(ctx context.Context, request ListCdfConfigsRequest) listing.Iterator[CdfConfig] {
 
 	getNextPage := func(ctx context.Context, req ListCdfConfigsRequest) (*ListCdfConfigsResponse, error) {
@@ -568,7 +570,9 @@ func (a *postgresImpl) ListCdfConfigs(ctx context.Context, request ListCdfConfig
 	return iterator
 }
 
-// List the Lakebase CDF configurations (CdfConfigs) under a database.
+// List all CDF configurations for a Lakebase database. Each configuration maps
+// a Postgres schema to a Unity Catalog schema where the change data feed is
+// materialized.
 func (a *postgresImpl) ListCdfConfigsAll(ctx context.Context, request ListCdfConfigsRequest) ([]CdfConfig, error) {
 	iterator := a.ListCdfConfigs(ctx, request)
 	return listing.ToSlice[CdfConfig](ctx, iterator)
@@ -588,8 +592,9 @@ func (a *postgresImpl) internalListCdfConfigs(ctx context.Context, request ListC
 	return &listCdfConfigsResponse, err
 }
 
-// List the replication statuses of all tables replicated under a Lakebase CDF
-// configuration.
+// List the per-table CDF statuses within a Lakebase CDF configuration. Each
+// status shows whether a table's change data feed is snapshotting, streaming,
+// or skipped.
 func (a *postgresImpl) ListCdfStatuses(ctx context.Context, request ListCdfStatusesRequest) listing.Iterator[CdfStatus] {
 
 	getNextPage := func(ctx context.Context, req ListCdfStatusesRequest) (*ListCdfStatusesResponse, error) {
@@ -614,8 +619,9 @@ func (a *postgresImpl) ListCdfStatuses(ctx context.Context, request ListCdfStatu
 	return iterator
 }
 
-// List the replication statuses of all tables replicated under a Lakebase CDF
-// configuration.
+// List the per-table CDF statuses within a Lakebase CDF configuration. Each
+// status shows whether a table's change data feed is snapshotting, streaming,
+// or skipped.
 func (a *postgresImpl) ListCdfStatusesAll(ctx context.Context, request ListCdfStatusesRequest) ([]CdfStatus, error) {
 	iterator := a.ListCdfStatuses(ctx, request)
 	return listing.ToSlice[CdfStatus](ctx, iterator)

@@ -222,6 +222,8 @@ type ConnectorOptions struct {
 
 	OutlookOptions *OutlookOptions `json:"outlook_options,omitempty"`
 
+	RedditAdsOptions *RedditAdsOptions `json:"reddit_ads_options,omitempty"`
+
 	SharepointOptions *SharepointOptions `json:"sharepoint_options,omitempty"`
 
 	SmartsheetOptions *SmartsheetOptions `json:"smartsheet_options,omitempty"`
@@ -2776,6 +2778,44 @@ func (f *PublishingMode) Values() []PublishingMode {
 // Type always returns PublishingMode to satisfy [pflag.Value] interface
 func (f *PublishingMode) Type() string {
 	return "PublishingMode"
+}
+
+// Reddit Ads specific options for ingestion
+type RedditAdsOptions struct {
+	// (Optional) Custom report definition. When set, the table is treated as a
+	// user-defined Reddit Ads custom report. When unset, the table must match
+	// one of the connector's prebuilt sources.
+	CustomReportOptions *RedditAdsOptionsRedditAdsCustomReportOptions `json:"custom_report_options,omitempty"`
+	// (Optional) Number of days to look back for report tables during
+	// incremental sync to capture late-arriving conversions and attribution
+	// data. If not specified, defaults to 30 days.
+	LookbackWindowDays int `json:"lookback_window_days,omitempty"`
+	// (Optional) Start date for the initial sync of report tables in YYYY-MM-DD
+	// format. This determines the earliest date from which to sync historical
+	// data. If not specified, defaults to 2 years ago.
+	SyncStartDate string `json:"sync_start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RedditAdsOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RedditAdsOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// User-defined custom report for the Reddit Ads connector. Applies only to the
+// custom_report table — prebuilt tables ignore this.
+type RedditAdsOptionsRedditAdsCustomReportOptions struct {
+	// (Optional) Breakdown dimensions to group report data by. Examples:
+	// CAMPAIGN_ID, DATE, COUNTRY, REGION, AD_ID. Must include at least one time
+	// dimension (DATE or HOUR).
+	Breakdowns []string `json:"breakdowns,omitempty"`
+	// (Optional) Fields to include in the report (maps to the Reddit Ads API
+	// `fields` parameter). Examples: IMPRESSIONS, CLICKS, SPEND, CPC, CTR.
+	Fields []string `json:"fields,omitempty"`
 }
 
 // Specifies a replace_where predicate override for a replace where flow.

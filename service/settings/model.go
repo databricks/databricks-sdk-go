@@ -465,6 +465,8 @@ const ComplianceStandardIsmap ComplianceStandard = `ISMAP`
 
 const ComplianceStandardItarEar ComplianceStandard = `ITAR_EAR`
 
+const ComplianceStandardKsaEccCccDcc ComplianceStandard = `KSA_ECC_CCC_DCC`
+
 const ComplianceStandardKFsi ComplianceStandard = `K_FSI`
 
 const ComplianceStandardNone ComplianceStandard = `NONE`
@@ -479,11 +481,11 @@ func (f *ComplianceStandard) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComplianceStandard) Set(v string) error {
 	switch v {
-	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `GERMANY_C5`, `GERMANY_TISAX`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `K_FSI`, `NONE`, `PCI_DSS`:
+	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `GERMANY_C5`, `GERMANY_TISAX`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `KSA_ECC_CCC_DCC`, `K_FSI`, `NONE`, `PCI_DSS`:
 		*f = ComplianceStandard(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "GERMANY_C5", "GERMANY_TISAX", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "K_FSI", "NONE", "PCI_DSS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "GERMANY_C5", "GERMANY_TISAX", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "KSA_ECC_CCC_DCC", "K_FSI", "NONE", "PCI_DSS"`, v)
 	}
 }
 
@@ -504,6 +506,7 @@ func (f *ComplianceStandard) Values() []ComplianceStandard {
 		ComplianceStandardIrapProtected,
 		ComplianceStandardIsmap,
 		ComplianceStandardItarEar,
+		ComplianceStandardKsaEccCccDcc,
 		ComplianceStandardKFsi,
 		ComplianceStandardNone,
 		ComplianceStandardPciDss,

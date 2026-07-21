@@ -68,6 +68,11 @@ type ReposService interface {
 
 	// Returns repos that the calling user has Manage permissions on. Use
 	// `next_page_token` to iterate through additional pages.
+	//
+	// Deprecated: This operation does not return a complete list of the repos
+	// in the workspace, because repos with the Git CLI enabled are not included
+	// in its results. Instead, use the Repos and Workspace APIs to find repos
+	// and their associated metadata in the workspace.
 	List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they

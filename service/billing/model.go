@@ -643,8 +643,9 @@ type Filter struct {
 	// The policy creator user id to be filtered on. If unspecified, all
 	// policies will be returned.
 	CreatorUserId int64 `json:"creator_user_id,omitempty" url:"creator_user_id,omitempty"`
-	// The policy creator user name to be filtered on. If unspecified, all
-	// policies will be returned.
+	// Deprecated: Do not use this field in new integrations. Creator filtering
+	// will be removed in a future version. The policy creator user name to be
+	// filtered on. If unspecified, all policies will be returned.
 	CreatorUserName string `json:"creator_user_name,omitempty" url:"creator_user_name,omitempty"`
 	// The partial name of policies to be filtered on. If unspecified, all
 	// policies will be returned.
