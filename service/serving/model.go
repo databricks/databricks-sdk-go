@@ -2625,6 +2625,24 @@ func (f *ServingModelWorkloadType) Type() string {
 type TelemetryConfig struct {
 	// Configuration for inference table payload logging, including sampling.
 	InferenceTableConfig *TelemetryInferenceTableConfig `json:"inference_table_config,omitempty"`
+	// The Unity Catalog tables to which endpoint telemetry (logs, traces, and
+	// metrics) is exported. Provide this to create a new telemetry profile for
+	// the endpoint from the given tables.
+	TableNames *UnityCatalogTableNames `json:"table_names,omitempty"`
+	// The ID of an existing telemetry profile to apply to this endpoint.
+	// Provide this to reuse a telemetry profile that has already been created,
+	// instead of specifying table_names.
+	TelemetryProfileId string `json:"telemetry_profile_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TelemetryConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TelemetryConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Inference table payload logging configuration
@@ -2649,6 +2667,31 @@ func (s TelemetryInferenceTableConfig) MarshalJSON() ([]byte, error) {
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served entity.
 	Routes []Route `json:"routes,omitempty"`
+}
+
+type UnityCatalogTableNames struct {
+	// The full three-level Unity Catalog name (catalog.schema.table) of the
+	// table that receives exported annotations.
+	AnnotationsTable string `json:"annotations_table,omitempty"`
+	// The full three-level Unity Catalog name (catalog.schema.table) of the
+	// table that receives exported logs.
+	LogsTable string `json:"logs_table,omitempty"`
+	// The full three-level Unity Catalog name (catalog.schema.table) of the
+	// table that receives exported metrics.
+	MetricsTable string `json:"metrics_table,omitempty"`
+	// The full three-level Unity Catalog name (catalog.schema.table) of the
+	// table that receives exported traces (spans).
+	TracesTable string `json:"traces_table,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UnityCatalogTableNames) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UnityCatalogTableNames) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateInferenceEndpointNotifications struct {
