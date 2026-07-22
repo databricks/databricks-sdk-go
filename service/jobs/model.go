@@ -2004,6 +2004,21 @@ type JobCluster struct {
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
 	NewCluster compute.ClusterSpec `json:"new_cluster"`
+	// The ID of the serverless compute object to bind this cluster to. At most
+	// one JobCluster per job may set this field; the rate limit defined on the
+	// referenced serverless compute applies across all tasks bound to this
+	// cluster.
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JobCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobCluster) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobCompliance struct {

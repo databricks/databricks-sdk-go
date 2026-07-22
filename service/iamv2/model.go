@@ -542,6 +542,10 @@ func (f *WorkspaceAccessDetailView) Type() string {
 type WorkspaceAssignmentDetail struct {
 	// The account ID parent of the workspace where the principal is assigned
 	AccountId string `json:"account_id,omitempty"`
+	// The principal's full effective entitlements granted in this workspace:
+	// every entitlement it holds whether granted directly or via group
+	// membership. Populated on Get; empty on List.
+	EffectiveEntitlements []Entitlement `json:"effective_entitlements,omitempty"`
 	// Entitlements granted directly to the principal on this workspace. The
 	// only client-settable field: create and update manage exactly this set
 	// (including entitlements the principal also holds via a group). Not
