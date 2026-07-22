@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.162.0
+## Release v0.163.0
 
 ### Breaking Changes
 
@@ -13,5 +13,3 @@
 ### Internal Changes
 
 ### API Changes
-* Add `EffectiveEntitlements` field for [iamv2.WorkspaceAssignmentDetail](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceAssignmentDetail).
-* Add `ServerlessComputeId` field for [jobs.JobCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobCluster).
