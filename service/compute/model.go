@@ -500,6 +500,8 @@ type ClusterAttributes struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+	// Controls dependency configuration for the cluster.
+	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
@@ -717,6 +719,8 @@ type ClusterDetails struct {
 	//
 	// - Name: <Databricks internal use>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
+	// Controls dependency configuration for the cluster.
+	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// Node on which the Spark driver resides. The driver node contains the
@@ -1333,6 +1337,8 @@ type ClusterSpec struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+	// Controls dependency configuration for the cluster.
+	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
@@ -1715,6 +1721,8 @@ type CreateCluster struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+	// Controls dependency configuration for the cluster.
+	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
@@ -2268,6 +2276,61 @@ type DeletePolicy struct {
 	PolicyId string `json:"policy_id"`
 }
 
+// Controls dependency configuration for the cluster.
+//
+// * `DEPENDENCY_MODE_AUTO`: Databricks will choose the most appropriate
+// dependency mode based on your compute configuration. *
+// `DEPENDENCY_MODE_ENVIRONMENTS`: Enables a unified dependency management
+// experience across classic and serverless, resulting in increased stability
+// and performance. Supported only on DBR 19+ in Standard access mode. *
+// `DEPENDENCY_MODE_CLUSTER_LIBRARIES`: Legacy mode: dependencies come from
+// cluster libraries and init scripts.
+type DependencyMode string
+
+// <Databricks> will choose the most appropriate dependency mode based on your
+// compute configuration.
+const DependencyModeDependencyModeAuto DependencyMode = `DEPENDENCY_MODE_AUTO`
+
+// Legacy mode: dependencies come from cluster libraries and init scripts.
+const DependencyModeDependencyModeClusterLibraries DependencyMode = `DEPENDENCY_MODE_CLUSTER_LIBRARIES`
+
+// Enables a unified dependency management experience across classic and
+// serverless, resulting in increased stability and performance. Supported only
+// on DBR 19+ in Standard access mode.
+const DependencyModeDependencyModeEnvironments DependencyMode = `DEPENDENCY_MODE_ENVIRONMENTS`
+
+// String representation for [fmt.Print]
+func (f *DependencyMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DependencyMode) Set(v string) error {
+	switch v {
+	case `DEPENDENCY_MODE_AUTO`, `DEPENDENCY_MODE_CLUSTER_LIBRARIES`, `DEPENDENCY_MODE_ENVIRONMENTS`:
+		*f = DependencyMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEPENDENCY_MODE_AUTO", "DEPENDENCY_MODE_CLUSTER_LIBRARIES", "DEPENDENCY_MODE_ENVIRONMENTS"`, v)
+	}
+}
+
+// Values returns all possible values for DependencyMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DependencyMode) Values() []DependencyMode {
+	return []DependencyMode{
+		DependencyModeDependencyModeAuto,
+		DependencyModeDependencyModeClusterLibraries,
+		DependencyModeDependencyModeEnvironments,
+	}
+}
+
+// Type always returns DependencyMode to satisfy [pflag.Value] interface
+func (f *DependencyMode) Type() string {
+	return "DependencyMode"
+}
+
 type DestroyContext struct {
 	ClusterId string `json:"clusterId"`
 
@@ -2528,6 +2591,8 @@ type EditCluster struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+	// Controls dependency configuration for the cluster.
+	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
@@ -2889,6 +2954,8 @@ type EnforcePolicyComplianceForClusterResponseClusterSettings struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+	// Controls dependency configuration for the cluster.
+	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
@@ -6713,6 +6780,8 @@ type UpdateClusterResource struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+	// Controls dependency configuration for the cluster.
+	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
