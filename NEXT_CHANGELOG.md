@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+* Use pure-Go DNS resolver to fix Private Link/PSC connectivity on macOS ([#1589](https://github.com/databricks/databricks-sdk-go/pull/1589)).
+
 ### Documentation
 
 ### Internal Changes
