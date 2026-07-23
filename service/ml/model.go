@@ -1220,8 +1220,8 @@ type DirectMtlsConfig struct {
 }
 
 // Schema definitions provided directly on the Stream, as opposed to referencing
-// a schema registry. In a future milestone, we will support schema registries
-// through a UC Connection.
+// a schema registry. To resolve schemas from a registry instead, use
+// SchemaRegistryConfig.
 type DirectSchemas struct {
 	// Schema for the message key. This is only used for Kafka streams. For
 	// Kafka, at least one of payload_schema or key_schema must be specified.
@@ -2350,26 +2350,6 @@ type LastNFunction struct {
 	Input string `json:"input"`
 	// The number of values to return.
 	N int64 `json:"n"`
-}
-
-// A window that spans the entire lifetime of a data source, accumulating from
-// the source's start rather than over a bounded duration. All fields are
-// optional; an empty message denotes the continuous, fully-accurate variant.
-type LifetimeWindow struct {
-	// The slide duration for the discrete (offline) variant: the value updates
-	// only at these boundaries. Must be positive when set. When absent, the
-	// window is continuous (the value is as fresh as the pipeline delivers).
-	SlideDuration *duration.Duration `json:"slide_duration,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *LifetimeWindow) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s LifetimeWindow) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Lineage context information for tracking where an API was invoked. This will
@@ -4583,6 +4563,95 @@ func (s SchemaConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Schema locator for one side (payload or key) of a message. Identifies which
+// schema to use in the schema registry and the serialization format.
+type SchemaLocator struct {
+	// Confluent Schema Registry schema locator.
+	ConfluentSchema *SchemaLocatorConfluentSchema `json:"confluent_schema,omitempty"`
+	// Serialization format for this schema.
+	Format SchemaLocatorFormat `json:"format"`
+}
+
+// Confluent Schema Registry schema locator. The value to provide for `subject`
+// depends on the naming strategy configured in your registry: -
+// TopicNameStrategy (default): "{topic}-key" or "{topic}-value" e.g. for topic
+// "transactions" use "transactions-value" for the payload and
+// "transactions-key" for the key. - RecordNameStrategy: the fully-qualified
+// record name e.g. "com.example.Payment" for Avro, the bare message name
+// (without package) for Protobuf, or the `title` field value for JSON. -
+// TopicRecordNameStrategy: "{topic}-{fully-qualified-record-name}" e.g.
+// "transactions-com.example.Payment".
+type SchemaLocatorConfluentSchema struct {
+	// The Confluent schema registry subject name.
+	Subject string `json:"subject"`
+}
+
+// Supported serialization formats for a schema registry schema.
+type SchemaLocatorFormat string
+
+const SchemaLocatorFormatFormatAvro SchemaLocatorFormat = `FORMAT_AVRO`
+
+const SchemaLocatorFormatFormatJson SchemaLocatorFormat = `FORMAT_JSON`
+
+const SchemaLocatorFormatFormatProtobuf SchemaLocatorFormat = `FORMAT_PROTOBUF`
+
+// String representation for [fmt.Print]
+func (f *SchemaLocatorFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SchemaLocatorFormat) Set(v string) error {
+	switch v {
+	case `FORMAT_AVRO`, `FORMAT_JSON`, `FORMAT_PROTOBUF`:
+		*f = SchemaLocatorFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FORMAT_AVRO", "FORMAT_JSON", "FORMAT_PROTOBUF"`, v)
+	}
+}
+
+// Values returns all possible values for SchemaLocatorFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SchemaLocatorFormat) Values() []SchemaLocatorFormat {
+	return []SchemaLocatorFormat{
+		SchemaLocatorFormatFormatAvro,
+		SchemaLocatorFormatFormatJson,
+		SchemaLocatorFormatFormatProtobuf,
+	}
+}
+
+// Type always returns SchemaLocatorFormat to satisfy [pflag.Value] interface
+func (f *SchemaLocatorFormat) Type() string {
+	return "SchemaLocatorFormat"
+}
+
+// Configuration for resolving a Stream's schema from an external schema
+// registry (e.g. Confluent).
+type SchemaRegistryConfig struct {
+	// Reference to the schema registry API secret in a Databricks secret scope.
+	ApiSecretRef SecretScopeReference `json:"api_secret_ref"`
+	// Schema locator for the message key. Only used for Kafka streams. At least
+	// one of payload_schema_locator or key_schema_locator must be set.
+	KeySchemaLocator *SchemaLocator `json:"key_schema_locator,omitempty"`
+	// Schema locator for the message payload. For Kafka this is the value. At
+	// least one of payload_schema_locator or key_schema_locator must be set.
+	PayloadSchemaLocator *SchemaLocator `json:"payload_schema_locator,omitempty"`
+	// A Schema Registry UC Connection object.
+	UcConnection string `json:"uc_connection,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SchemaRegistryConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SchemaRegistryConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SearchExperiments struct {
 	// String representing a SQL filter condition (e.g. "name ILIKE
 	// 'my-experiment%'")
@@ -5056,9 +5125,8 @@ type Stream struct {
 	IngestionConfig IngestionConfig `json:"ingestion_config"`
 	// Full three-part (catalog.schema.stream) name of the stream.
 	Name string `json:"name"`
-	// Schema definitions for the stream. Currently only direct schemas are
-	// supported. In a future milestone, we will support schema registries
-	// through a UC Connection.
+	// Schema definitions for the stream, provided either directly on the Stream
+	// or resolved from an external schema registry through a UC Connection.
 	SchemaConfig StreamSchemaConfig `json:"schema_config"`
 	// Source-specific configuration. Determines the streaming platform source.
 	SourceConfig StreamSourceConfig `json:"source_config"`
@@ -5100,12 +5168,13 @@ func (s StreamConnectionConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Schema definitions for the stream. Currently only direct schemas are
-// supported. In a future milestone, we will support schema registries through a
-// UC Connection.
+// Schema definitions for the stream. Feature store supports both direct schemas
+// and schema registries.
 type StreamSchemaConfig struct {
 	// Schema definitions provided directly on the Stream.
 	DirectSchemas *DirectSchemas `json:"direct_schemas,omitempty"`
+	// Resolve schemas from an external schema registry.
+	SchemaRegistryConfig *SchemaRegistryConfig `json:"schema_registry_config,omitempty"`
 }
 
 // A Stream entity used as a data source for a feature.
@@ -5262,8 +5331,6 @@ func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
 
 type TimeWindow struct {
 	Continuous *ContinuousWindow `json:"continuous,omitempty"`
-	// A window that spans the entire lifetime of the data source.
-	Lifetime *LifetimeWindow `json:"lifetime,omitempty"`
 
 	Rolling *RollingWindow `json:"rolling,omitempty"`
 	// A sawtooth window served via the hybrid batch + streaming path.

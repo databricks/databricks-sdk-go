@@ -2780,6 +2780,8 @@ type SyncedTableSyncedTableSpec struct {
 	// The pipeline used for the synced table is returned via the top level
 	// pipeline_id attribute.
 	ExistingPipelineId string `json:"existing_pipeline_id,omitempty"`
+	// Extra PostgreSQL-only columns to add to the synced table.
+	ExtraColumns []SyncedTableSyncedTableSpecExtraColumn `json:"extra_columns,omitempty"`
 	// Specification for creating a new pipeline. At most one of
 	// existing_pipeline_id and new_pipeline_spec should be defined.
 	//
@@ -2825,6 +2827,64 @@ func (s *SyncedTableSyncedTableSpec) UnmarshalJSON(b []byte) error {
 
 func (s SyncedTableSyncedTableSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// An extra PostgreSQL column to add to the synced table.
+type SyncedTableSyncedTableSpecExtraColumn struct {
+	// Name of the column.
+	ColumnName string `json:"column_name"`
+	// PostgreSQL type of the column, for example "tsvector" or "vector(1024)".
+	ColumnType string `json:"column_type"`
+	// SQL expression used to compute the column's value, for example
+	// "to_tsvector('english', content)".
+	Compute string `json:"compute,omitempty"`
+
+	Maintenance SyncedTableSyncedTableSpecExtraColumnMaintenance `json:"maintenance,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTableSyncedTableSpecExtraColumn) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTableSyncedTableSpecExtraColumn) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// How the column's value is populated and kept up to date.
+type SyncedTableSyncedTableSpecExtraColumnMaintenance string
+
+const SyncedTableSyncedTableSpecExtraColumnMaintenanceStoredGenerated SyncedTableSyncedTableSpecExtraColumnMaintenance = `STORED_GENERATED`
+
+// String representation for [fmt.Print]
+func (f *SyncedTableSyncedTableSpecExtraColumnMaintenance) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SyncedTableSyncedTableSpecExtraColumnMaintenance) Set(v string) error {
+	switch v {
+	case `STORED_GENERATED`:
+		*f = SyncedTableSyncedTableSpecExtraColumnMaintenance(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "STORED_GENERATED"`, v)
+	}
+}
+
+// Values returns all possible values for SyncedTableSyncedTableSpecExtraColumnMaintenance.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SyncedTableSyncedTableSpecExtraColumnMaintenance) Values() []SyncedTableSyncedTableSpecExtraColumnMaintenance {
+	return []SyncedTableSyncedTableSpecExtraColumnMaintenance{
+		SyncedTableSyncedTableSpecExtraColumnMaintenanceStoredGenerated,
+	}
+}
+
+// Type always returns SyncedTableSyncedTableSpecExtraColumnMaintenance to satisfy [pflag.Value] interface
+func (f *SyncedTableSyncedTableSpecExtraColumnMaintenance) Type() string {
+	return "SyncedTableSyncedTableSpecExtraColumnMaintenance"
 }
 
 // PostgreSQL-specific target types that can override the default Delta-to-PG
