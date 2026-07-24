@@ -36,12 +36,9 @@ func (s CompleteVersionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateDeploymentRequest struct {
-	// The deployment to create. Caller must set `initial_parent_path`; every
-	// other field is populated by the service.
+	// The deployment to create. The caller must set `initial_parent_path`.
+	// Other fields are ignored on input and populated by the service.
 	Deployment Deployment `json:"deployment"`
-	// The ID to use for the deployment, which will become the final component
-	// of the deployment's resource name (i.e. `deployments/{deployment_id}`).
-	DeploymentId string `json:"-" url:"deployment_id"`
 }
 
 type CreateOperationRequest struct {
@@ -86,26 +83,27 @@ type Deployment struct {
 	// Bundle target deployment mode (development or production), derived from
 	// the most recent version's mode.
 	DeploymentMode DeploymentMode `json:"deployment_mode,omitempty"`
-	// When the deployment was destroyed (i.e. `bundle destroy` completed).
-	// Unset if the deployment has not been destroyed. Named destroy_time (not
-	// delete_time) because this tracks the `databricks bundle destroy` command,
-	// not the API-level deletion.
+	// When deletion was recorded. Unset if deletion has not been recorded. This
+	// response metadata does not determine the deployment's lifecycle status.
 	DestroyTime *time.Time `json:"destroy_time,omitempty"`
 	// The user who destroyed the deployment (email or principal name). Unset if
 	// the deployment has not been destroyed.
 	DestroyedBy string `json:"destroyed_by,omitempty"`
-	// Human-readable name for the deployment. Output only: it is denormalized
-	// from the latest version, not set directly on the deployment.
+	// Human-readable name for the deployment, up to 256 characters. Output
+	// only: clients update it by setting `display_name` when creating a
+	// version.
 	DisplayName string `json:"display_name,omitempty"`
 	// Git provenance of the deployment's source, derived from the latest
 	// version.
 	GitInfo *GitInfo `json:"git_info,omitempty"`
-	// The workspace path of the folder where the deployment is initially
-	// created. Includes a leading slash and no trailing slash. On create, the
-	// deployment is registered as a typed BUNDLE_DEPLOYMENT tree node under
-	// this folder, which must already exist. This field is input only and is
-	// not returned in create, get, or list responses. The service rejects
-	// create requests that omit it.
+	// The workspace path of the existing folder where the deployment is
+	// initially created. Must be absolute and canonical, with single
+	// separators, no `.` or `..` segments, and no trailing slash unless the
+	// path is `/`. It may contain at most 24 path segments, excluding an
+	// optional leading `/Workspace` segment. The complete path may contain up
+	// to 1,024 characters, and each segment may contain up to 511 characters.
+	// This field is input only and is not returned in create, get, or list
+	// responses.
 	InitialParentPath string `json:"initial_parent_path,omitempty"`
 	// The version_id of the most recent deployment version.
 	LastVersionId string `json:"last_version_id,omitempty"`
@@ -388,8 +386,8 @@ func (s HeartbeatResponse) MarshalJSON() ([]byte, error) {
 
 type ListDeploymentsRequest struct {
 	// The maximum number of deployments to return. The service may return fewer
-	// than this value. If unspecified, at most 50 deployments will be returned.
-	// The maximum value is 1000; values above 1000 will be coerced to 1000.
+	// than this value. If unspecified, at most 20 deployments will be returned.
+	// The maximum value is 100; values above 100 will be coerced to 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous `ListDeployments` call. Provide
 	// this to retrieve the subsequent page.
@@ -510,8 +508,8 @@ func (s ListResourcesResponse) MarshalJSON() ([]byte, error) {
 
 type ListVersionsRequest struct {
 	// The maximum number of versions to return. The service may return fewer
-	// than this value. If unspecified, at most 50 versions will be returned.
-	// The maximum value is 1000; values above 1000 will be coerced to 1000.
+	// than this value. If unspecified, at most 20 versions will be returned.
+	// The maximum value is 100; values above 100 will be coerced to 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous `ListVersions` call. Provide this
 	// to retrieve the subsequent page.
@@ -759,7 +757,10 @@ type Version struct {
 	// Bundle target deployment mode (development or production), captured at
 	// the time of this version.
 	DeploymentMode DeploymentMode `json:"deployment_mode,omitempty"`
-	// Display name for the deployment, captured at the time of this version.
+	// Display name for the deployment, captured at the time of this version. Up
+	// to 256 characters. When present, creating the version updates the
+	// deployment display name. An empty value clears it; an absent value leaves
+	// the current deployment display name unchanged.
 	DisplayName string `json:"display_name,omitempty"`
 	// Git provenance of the source, captured at the time of this version.
 	GitInfo *GitInfo `json:"git_info,omitempty"`

@@ -36,10 +36,6 @@ func (a *bundleDeploymentsImpl) CreateDeployment(ctx context.Context, request Cr
 	var deployment Deployment
 	path := "/api/2.0/bundle/deployments"
 	queryParams := make(map[string]any)
-
-	if request.DeploymentId != "" {
-		queryParams["deployment_id"] = request.DeploymentId
-	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

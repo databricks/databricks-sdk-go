@@ -21,10 +21,6 @@ type BundleDeploymentsInterface interface {
 	CompleteVersion(ctx context.Context, request CompleteVersionRequest) (*Version, error)
 
 	// Creates a new deployment in the workspace.
-	//
-	// The caller must provide a `deployment_id` which becomes the final component
-	// of the deployment's resource name. If a deployment with the same ID already
-	// exists, the server returns `ALREADY_EXISTS`.
 	CreateDeployment(ctx context.Context, request CreateDeploymentRequest) (*Deployment, error)
 
 	// Creates a resource operation under a version.
@@ -49,11 +45,6 @@ type BundleDeploymentsInterface interface {
 	CreateVersion(ctx context.Context, request CreateVersionRequest) (*Version, error)
 
 	// Deletes a deployment.
-	//
-	// The deployment is marked as deleted. It and all its children (versions and
-	// their operations) will be permanently deleted after the retention policy
-	// expires. If the deployment has an in-progress version, the server returns
-	// `RESOURCE_CONFLICT`.
 	DeleteDeployment(ctx context.Context, request DeleteDeploymentRequest) error
 
 	// Retrieves a deployment by its resource name.
