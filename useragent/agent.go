@@ -47,6 +47,7 @@ func listKnownAgents() []knownAgent {
 		{envVar: "KIRO", product: "kiro"},                     // https://kiro.dev/ (Amazon)
 		{envVar: "OPENCLAW_SHELL", product: "openclaw"},       // https://github.com/anthropics/openclaw
 		{envVar: "OPENCODE", product: "opencode"},             // https://github.com/opencode-ai/opencode
+		{envVar: "PI_CODING_AGENT", product: "pi"},            // https://pi.dev/ (npm @earendil-works/pi-coding-agent)
 		{envVar: "VSCODE_AGENT", product: "vscode-agent"},     // Set by VS Code 1.121+ for agent-initiated terminal commands (https://code.visualstudio.com/updates/v1_121)
 		{envVar: "WINDSURF_AGENT", product: "windsurf"},       // https://codeium.com/windsurf (Codeium)
 	}
