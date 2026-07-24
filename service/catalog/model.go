@@ -7741,7 +7741,17 @@ const SpecialDestinationSpecialDestinationCredentialOwner SpecialDestination = `
 
 const SpecialDestinationSpecialDestinationExternalLocationOwner SpecialDestination = `SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER`
 
+const SpecialDestinationSpecialDestinationFunctionOwner SpecialDestination = `SPECIAL_DESTINATION_FUNCTION_OWNER`
+
 const SpecialDestinationSpecialDestinationMetastoreOwner SpecialDestination = `SPECIAL_DESTINATION_METASTORE_OWNER`
+
+const SpecialDestinationSpecialDestinationRegisteredModelOwner SpecialDestination = `SPECIAL_DESTINATION_REGISTERED_MODEL_OWNER`
+
+const SpecialDestinationSpecialDestinationSchemaOwner SpecialDestination = `SPECIAL_DESTINATION_SCHEMA_OWNER`
+
+const SpecialDestinationSpecialDestinationTableOwner SpecialDestination = `SPECIAL_DESTINATION_TABLE_OWNER`
+
+const SpecialDestinationSpecialDestinationVolumeOwner SpecialDestination = `SPECIAL_DESTINATION_VOLUME_OWNER`
 
 // String representation for [fmt.Print]
 func (f *SpecialDestination) String() string {
@@ -7751,11 +7761,11 @@ func (f *SpecialDestination) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SpecialDestination) Set(v string) error {
 	switch v {
-	case `SPECIAL_DESTINATION_CATALOG_OWNER`, `SPECIAL_DESTINATION_CONNECTION_OWNER`, `SPECIAL_DESTINATION_CREDENTIAL_OWNER`, `SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER`, `SPECIAL_DESTINATION_METASTORE_OWNER`:
+	case `SPECIAL_DESTINATION_CATALOG_OWNER`, `SPECIAL_DESTINATION_CONNECTION_OWNER`, `SPECIAL_DESTINATION_CREDENTIAL_OWNER`, `SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER`, `SPECIAL_DESTINATION_FUNCTION_OWNER`, `SPECIAL_DESTINATION_METASTORE_OWNER`, `SPECIAL_DESTINATION_REGISTERED_MODEL_OWNER`, `SPECIAL_DESTINATION_SCHEMA_OWNER`, `SPECIAL_DESTINATION_TABLE_OWNER`, `SPECIAL_DESTINATION_VOLUME_OWNER`:
 		*f = SpecialDestination(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "SPECIAL_DESTINATION_CATALOG_OWNER", "SPECIAL_DESTINATION_CONNECTION_OWNER", "SPECIAL_DESTINATION_CREDENTIAL_OWNER", "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER", "SPECIAL_DESTINATION_METASTORE_OWNER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "SPECIAL_DESTINATION_CATALOG_OWNER", "SPECIAL_DESTINATION_CONNECTION_OWNER", "SPECIAL_DESTINATION_CREDENTIAL_OWNER", "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER", "SPECIAL_DESTINATION_FUNCTION_OWNER", "SPECIAL_DESTINATION_METASTORE_OWNER", "SPECIAL_DESTINATION_REGISTERED_MODEL_OWNER", "SPECIAL_DESTINATION_SCHEMA_OWNER", "SPECIAL_DESTINATION_TABLE_OWNER", "SPECIAL_DESTINATION_VOLUME_OWNER"`, v)
 	}
 }
 
@@ -7768,7 +7778,12 @@ func (f *SpecialDestination) Values() []SpecialDestination {
 		SpecialDestinationSpecialDestinationConnectionOwner,
 		SpecialDestinationSpecialDestinationCredentialOwner,
 		SpecialDestinationSpecialDestinationExternalLocationOwner,
+		SpecialDestinationSpecialDestinationFunctionOwner,
 		SpecialDestinationSpecialDestinationMetastoreOwner,
+		SpecialDestinationSpecialDestinationRegisteredModelOwner,
+		SpecialDestinationSpecialDestinationSchemaOwner,
+		SpecialDestinationSpecialDestinationTableOwner,
+		SpecialDestinationSpecialDestinationVolumeOwner,
 	}
 }
 
