@@ -231,6 +231,21 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 	return &endpointTags, err
 }
 
+func (a *servingEndpointsImpl) PatchTelemetryConfig(ctx context.Context, request PatchTelemetryConfigRequest) (*ServingEndpointDetailed, error) {
+	var servingEndpointDetailed ServingEndpointDetailed
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/telemetry-config", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &servingEndpointDetailed)
+	return &servingEndpointDetailed, err
+}
+
 func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*PutResponse, error) {
 	var putResponse PutResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/rate-limits", request.Name)

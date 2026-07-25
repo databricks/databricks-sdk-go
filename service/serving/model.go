@@ -1419,6 +1419,19 @@ type PatchServingEndpointTags struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Updates the telemetry configuration of a serving endpoint.
+type PatchTelemetryConfigRequest struct {
+	// The name of the serving endpoint whose telemetry configuration is being
+	// updated. This field is required.
+	Name string `json:"-" url:"-"`
+	// The telemetry configuration to be applied to the serving endpoint. Can
+	// specify either a telemetry_profile_id to use an existing profile, or
+	// table_names to create a new profile with the specified Unity Catalog
+	// tables. If not provided, the telemetry configuration will be removed from
+	// the endpoint.
+	TelemetryConfig *TelemetryConfig `json:"telemetry_config,omitempty"`
+}
+
 type PayloadTable struct {
 	Name string `json:"name,omitempty"`
 

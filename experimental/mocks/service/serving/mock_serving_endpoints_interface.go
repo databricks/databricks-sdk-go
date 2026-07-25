@@ -1437,6 +1437,65 @@ func (_c *MockServingEndpointsInterface_Patch_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// PatchTelemetryConfig provides a mock function with given fields: ctx, request
+func (_m *MockServingEndpointsInterface) PatchTelemetryConfig(ctx context.Context, request serving.PatchTelemetryConfigRequest) (*serving.ServingEndpointDetailed, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PatchTelemetryConfig")
+	}
+
+	var r0 *serving.ServingEndpointDetailed
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PatchTelemetryConfigRequest) (*serving.ServingEndpointDetailed, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PatchTelemetryConfigRequest) *serving.ServingEndpointDetailed); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.ServingEndpointDetailed)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.PatchTelemetryConfigRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_PatchTelemetryConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchTelemetryConfig'
+type MockServingEndpointsInterface_PatchTelemetryConfig_Call struct {
+	*mock.Call
+}
+
+// PatchTelemetryConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.PatchTelemetryConfigRequest
+func (_e *MockServingEndpointsInterface_Expecter) PatchTelemetryConfig(ctx interface{}, request interface{}) *MockServingEndpointsInterface_PatchTelemetryConfig_Call {
+	return &MockServingEndpointsInterface_PatchTelemetryConfig_Call{Call: _e.mock.On("PatchTelemetryConfig", ctx, request)}
+}
+
+func (_c *MockServingEndpointsInterface_PatchTelemetryConfig_Call) Run(run func(ctx context.Context, request serving.PatchTelemetryConfigRequest)) *MockServingEndpointsInterface_PatchTelemetryConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.PatchTelemetryConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_PatchTelemetryConfig_Call) Return(_a0 *serving.ServingEndpointDetailed, _a1 error) *MockServingEndpointsInterface_PatchTelemetryConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_PatchTelemetryConfig_Call) RunAndReturn(run func(context.Context, serving.PatchTelemetryConfigRequest) (*serving.ServingEndpointDetailed, error)) *MockServingEndpointsInterface_PatchTelemetryConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Put provides a mock function with given fields: ctx, request
 func (_m *MockServingEndpointsInterface) Put(ctx context.Context, request serving.PutRequest) (*serving.PutResponse, error) {
 	ret := _m.Called(ctx, request)
