@@ -1286,6 +1286,30 @@ func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Fanout configuration for multi-table routing from streaming sources. Routes
+// each input record to a destination table based on a routing key derived from
+// the record. The key value becomes the table name suffix:
+// {destination_catalog}.{destination_schema}.{key_value}.
+type IngestionPipelineDefinitionFanoutOptions struct {
+	// Column path or SQL expression whose value determines the destination
+	// table. Supports dotted paths (e.g. "value.event_name") and expressions
+	// (e.g. "value:event_name::string").
+	FanoutBy string `json:"fanout_by,omitempty"`
+	// Optional transforms applied to each route's DataFrame before writing to
+	// the destination table.
+	Transforms []Transformer `json:"transforms,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionPipelineDefinitionFanoutOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionPipelineDefinitionFanoutOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Configurations that are only applicable for query-based ingestion connectors.
 type IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig struct {
 	// The names of the monotonically increasing columns in the source table
@@ -2967,6 +2991,11 @@ type SchemaSpec struct {
 	// name as the source tables are created in this destination schema. The
 	// pipeline fails If a table with the same name already exists.
 	DestinationSchema string `json:"destination_schema"`
+	// Fanout options for multi-table routing from streaming sources. When set,
+	// records are routed to destination tables based on a per-record routing
+	// key. The key value becomes the table name:
+	// {destination_catalog}.{destination_schema}.{key_value}.
+	FanoutOptions *IngestionPipelineDefinitionFanoutOptions `json:"fanout_options,omitempty"`
 	// The source catalog name. Might be optional depending on the type of
 	// source.
 	SourceCatalog string `json:"source_catalog,omitempty"`

@@ -139,7 +139,7 @@ func (s DownloadResponse) MarshalJSON() ([]byte, error) {
 }
 
 type FileInfo struct {
-	// The length of the file in bytes. This field is omitted for directories.
+	// The length of the file in bytes. Set to 0 for directories.
 	FileSize int64 `json:"file_size,omitempty"`
 	// True if the path is a directory.
 	IsDir bool `json:"is_dir,omitempty"`
