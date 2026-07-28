@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.165.0 (2026-07-28)
+
+### API Changes
+* Add `PatchTelemetryConfig` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+* Add `FanoutOptions` field for [pipelines.SchemaSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SchemaSpec).
+* Add `Parameters` field for [sql.AlertV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2).
+
+
 ## Release v0.164.0 (2026-07-27)
 
 ### API Changes
