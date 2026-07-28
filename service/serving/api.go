@@ -116,6 +116,9 @@ type ServingEndpointsInterface interface {
 	// call.
 	Patch(ctx context.Context, request PatchServingEndpointTags) (*EndpointTags, error)
 
+	// Updates the telemetry configuration of a serving endpoint.
+	PatchTelemetryConfig(ctx context.Context, request PatchTelemetryConfigRequest) (*ServingEndpointDetailed, error)
+
 	// Deprecated: Please use AI Gateway to manage rate limits instead.
 	Put(ctx context.Context, request PutRequest) (*PutResponse, error)
 
