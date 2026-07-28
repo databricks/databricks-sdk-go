@@ -497,6 +497,34 @@ func (f *AlertState) Type() string {
 	return "AlertState"
 }
 
+// Redash-owned copy of the internal StatementParameter for the external AlertV2
+// API. The internal `ordinal` and `args` fields are intentionally omitted: the
+// public API supports only flat, named scalar parameters; complex types (ARRAY,
+// MAP, STRUCT) are not supported. This mirrors SEA's public StatementParameter
+// schema, see: cmdexec/sql-exec-api/proto/sql_exec_api_service.proto:763-779
+type AlertStatementParameter struct {
+	// The name of the parameter, referenced in the query as `:name`.
+	Name string `json:"name"`
+	// The SQL data type of the parameter, e.g. STRING, INT, or DATE. Defaults
+	// to STRING. This is a string rather than an enum because scalar subtypes
+	// such as DECIMAL(10, 4) cannot be enumerated. Complex types such as ARRAY,
+	// MAP, and STRUCT are not supported.
+	Type string `json:"type,omitempty"`
+	// The bound value for the parameter, given as a string. If omitted, the
+	// value is interpreted as NULL.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertStatementParameter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertStatementParameter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AlertV2 struct {
 	// The timestamp indicating when the alert was created.
 	CreateTime string `json:"create_time,omitempty"`
@@ -519,6 +547,9 @@ type AlertV2 struct {
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// Query parameters bound when executing the alert query, referenced in the
+	// query text with `:name` syntax. Static values only.
+	Parameters []AlertStatementParameter `json:"parameters,omitempty"`
 	// The workspace path of the folder containing the alert. Can only be set on
 	// create, and cannot be updated.
 	ParentPath string `json:"parent_path,omitempty"`
