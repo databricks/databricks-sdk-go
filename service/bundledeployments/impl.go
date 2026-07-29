@@ -4,8 +4,10 @@ package bundledeployments
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -349,4 +351,26 @@ func (a *bundleDeploymentsImpl) internalListVersions(ctx context.Context, reques
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listVersionsResponse)
 	return &listVersionsResponse, err
+}
+
+func (a *bundleDeploymentsImpl) UpdateOperation(ctx context.Context, request UpdateOperationRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/bundle/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Operation, &operation)
+	return &operation, err
 }

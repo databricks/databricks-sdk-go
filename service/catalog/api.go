@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, Credentials, Entity Tag Assignments, External Lineage, External Locations, External Metadata, Functions, Grants, Metastores, Model Versions, Online Tables, Policies, Quality Monitors, Registered Models, Resource Quotas, Rfa, Schemas, Secrets Uc, Storage Credentials, System Schemas, Table Constraints, Tables, Temporary Path Credentials, Temporary Table Credentials, Temporary Volume Credentials, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Ai Gateway, Artifact Allowlists, Catalogs, Connections, Credentials, Entity Tag Assignments, External Lineage, External Locations, External Metadata, Functions, Grants, Metastores, Model Versions, Online Tables, Policies, Quality Monitors, Registered Models, Resource Quotas, Rfa, Schemas, Secrets Uc, Storage Credentials, System Schemas, Table Constraints, Tables, Temporary Path Credentials, Temporary Table Credentials, Temporary Volume Credentials, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -247,6 +247,196 @@ func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, me
 	return a.accountStorageCredentialsImpl.internalList(ctx, ListAccountStorageCredentialsRequest{
 		MetastoreId: metastoreId,
 	})
+}
+
+type AiGatewayInterface interface {
+
+	// Creates an MCP service in a Unity Catalog schema. An MCP (Model Context
+	// Protocol) service is a governed securable that registers an MCP server and
+	// exposes its tools for discovery, access control, and invocation. The caller
+	// supplies the leaf name in `mcp_service_id`.
+	//
+	// You must be the owner of the parent schema or have the `CREATE_SERVICE` and
+	// `USE_SCHEMA` privileges on the parent schema and `USE_CATALOG` on the parent
+	// catalog. You also need `USE_CONNECTION` on the connection the MCP service
+	// references.
+	CreateMcpService(ctx context.Context, request CreateMcpServiceRequest) (*McpService, error)
+
+	// Creates a model provider service in a Unity Catalog schema. A model provider
+	// service is a governed connection to an external model provider (for example
+	// OpenAI, Azure OpenAI, or Amazon Bedrock) that model services reference to
+	// invoke that provider. The caller supplies the leaf name in
+	// `model_provider_service_id`.
+	//
+	// You must be the owner of the parent schema or have the `CREATE_SERVICE` and
+	// `USE_SCHEMA` privileges on the parent schema and `USE_CATALOG` on the parent
+	// catalog.
+	CreateModelProviderService(ctx context.Context, request CreateModelProviderServiceRequest) (*ModelProviderService, error)
+
+	// Creates a model service in a Unity Catalog schema. A model service is a
+	// governed AI Gateway endpoint that routes inference requests to one or more
+	// model destinations. The caller supplies the leaf name in `model_service_id`.
+	//
+	// You must be the owner of the parent schema or have the `CREATE_SERVICE` and
+	// `USE_SCHEMA` privileges on the parent schema and `USE_CATALOG` on the parent
+	// catalog.
+	CreateModelService(ctx context.Context, request CreateModelServiceRequest) (*ModelService, error)
+
+	// Deletes the MCP service identified by its resource name. Optionally supply an
+	// `etag` to make the delete conditional on the MCP service not having changed
+	// since it was read.
+	//
+	// You must be the owner of the MCP service or have `MANAGE` on it, plus
+	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent schema.
+	DeleteMcpService(ctx context.Context, request DeleteMcpServiceRequest) error
+
+	// Deletes the model provider service identified by its resource name.
+	// Optionally supply an `etag` to make the delete conditional on the model
+	// provider service not having changed since it was read.
+	//
+	// You must be the owner of the model provider service or have `MANAGE` on it,
+	// plus `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema.
+	DeleteModelProviderService(ctx context.Context, request DeleteModelProviderServiceRequest) error
+
+	// Deletes the model service identified by its resource name. Optionally supply
+	// an `etag` to make the delete conditional on the model service not having
+	// changed since it was read.
+	//
+	// You must be the owner of the model service or have `MANAGE` on it, plus
+	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent schema.
+	DeleteModelService(ctx context.Context, request DeleteModelServiceRequest) error
+
+	// Returns the MCP service identified by its resource name.
+	//
+	// You must be the owner of the MCP service or have `EXECUTE`, `READ_METADATA`,
+	// or `MANAGE` on it, plus `USE_CATALOG` on the parent catalog and `USE_SCHEMA`
+	// on the parent schema.
+	GetMcpService(ctx context.Context, request GetMcpServiceRequest) (*McpService, error)
+
+	// Returns the model provider service identified by its resource name.
+	//
+	// You must be the owner of the model provider service or have `EXECUTE`,
+	// `READ_METADATA`, or `MANAGE` on it, plus `USE_CATALOG` on the parent catalog
+	// and `USE_SCHEMA` on the parent schema.
+	GetModelProviderService(ctx context.Context, request GetModelProviderServiceRequest) (*ModelProviderService, error)
+
+	// Returns the model service identified by its resource name.
+	//
+	// You must be the owner of the model service or have `EXECUTE`,
+	// `READ_METADATA`, or `MANAGE` on it, plus `USE_CATALOG` on the parent catalog
+	// and `USE_SCHEMA` on the parent schema.
+	GetModelService(ctx context.Context, request GetModelServiceRequest) (*ModelService, error)
+
+	// Lists the MCP services in a Unity Catalog schema. Provide `parent` as
+	// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+	// `next_page_token` to fetch subsequent pages.
+	//
+	// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema. Only MCP services the caller can access (as owner or through
+	// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListMcpServices(ctx context.Context, request ListMcpServicesRequest) listing.Iterator[McpService]
+
+	// Lists the MCP services in a Unity Catalog schema. Provide `parent` as
+	// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+	// `next_page_token` to fetch subsequent pages.
+	//
+	// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema. Only MCP services the caller can access (as owner or through
+	// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListMcpServicesAll(ctx context.Context, request ListMcpServicesRequest) ([]McpService, error)
+
+	// Lists the model provider services in a Unity Catalog schema. Provide `parent`
+	// as `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+	// `next_page_token` to fetch subsequent pages.
+	//
+	// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema. Only model provider services the caller can access (as owner or
+	// through `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListModelProviderServices(ctx context.Context, request ListModelProviderServicesRequest) listing.Iterator[ModelProviderService]
+
+	// Lists the model provider services in a Unity Catalog schema. Provide `parent`
+	// as `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+	// `next_page_token` to fetch subsequent pages.
+	//
+	// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema. Only model provider services the caller can access (as owner or
+	// through `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListModelProviderServicesAll(ctx context.Context, request ListModelProviderServicesRequest) ([]ModelProviderService, error)
+
+	// Lists the model services in a Unity Catalog schema. Provide `parent` as
+	// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+	// `next_page_token` to fetch subsequent pages.
+	//
+	// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema. Only model services the caller can access (as owner or through
+	// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListModelServices(ctx context.Context, request ListModelServicesRequest) listing.Iterator[ModelService]
+
+	// Lists the model services in a Unity Catalog schema. Provide `parent` as
+	// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+	// `next_page_token` to fetch subsequent pages.
+	//
+	// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema. Only model services the caller can access (as owner or through
+	// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListModelServicesAll(ctx context.Context, request ListModelServicesRequest) ([]ModelService, error)
+
+	// Updates an MCP service. Only the fields named in `update_mask` are changed;
+	// the resource name is immutable. Optionally supply an `etag` to make the
+	// update conditional on the MCP service not having changed since it was read.
+	//
+	// You must be the owner of the MCP service or have `MANAGE` on it, plus
+	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent schema.
+	UpdateMcpService(ctx context.Context, request UpdateMcpServiceRequest) (*McpService, error)
+
+	// Updates a model provider service. Only the fields named in `update_mask` are
+	// changed; the resource name and provider type are immutable. Optionally supply
+	// an `etag` to make the update conditional on the model provider service not
+	// having changed since it was read.
+	//
+	// You must be the owner of the model provider service or have `MANAGE` on it,
+	// plus `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema.
+	UpdateModelProviderService(ctx context.Context, request UpdateModelProviderServiceRequest) (*ModelProviderService, error)
+
+	// Updates a model service. Only the fields named in `update_mask` are changed;
+	// the resource name is immutable. Optionally supply an `etag` to make the
+	// update conditional on the model service not having changed since it was read.
+	//
+	// You must be the owner of the model service or have `MANAGE` on it, plus
+	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent schema.
+	UpdateModelService(ctx context.Context, request UpdateModelServiceRequest) (*ModelService, error)
+}
+
+func NewAiGateway(client *client.DatabricksClient) *AiGatewayAPI {
+	return &AiGatewayAPI{
+		aiGatewayImpl: aiGatewayImpl{
+			client: client,
+		},
+	}
+}
+
+// Govern AI workloads in Unity Catalog. This API manages the Unity Catalog
+// securables that bring centralized access control, lineage, and auditing to
+// AI-serving entities: model services (governed access to foundation models and
+// external LLMs), model provider services (governed connections to external
+// model providers), MCP services (governed Model Context Protocol servers), and
+// agent services (governed agents).
+type AiGatewayAPI struct {
+	aiGatewayImpl
 }
 
 type ArtifactAllowlistsInterface interface {

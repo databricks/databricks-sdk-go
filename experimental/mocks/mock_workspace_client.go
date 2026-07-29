@@ -59,6 +59,7 @@ func NewMockWorkspaceClient(t interface {
 			AccessControl:                       iam.NewMockAccessControlInterface(t),
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			AgentBricks:                         agentbricks.NewMockAgentBricksInterface(t),
+			AiGateway:                           catalog.NewMockAiGatewayInterface(t),
 			AiSearch:                            aisearch.NewMockAiSearchInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
@@ -393,6 +394,14 @@ func (m *MockWorkspaceClient) GetMockAgentBricksAPI() *agentbricks.MockAgentBric
 	api, ok := m.WorkspaceClient.AgentBricks.(*agentbricks.MockAgentBricksInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected AgentBricks to be *agentbricks.MockAgentBricksInterface, actual was %T", m.WorkspaceClient.AgentBricks))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAiGatewayAPI() *catalog.MockAiGatewayInterface {
+	api, ok := m.WorkspaceClient.AiGateway.(*catalog.MockAiGatewayInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AiGateway to be *catalog.MockAiGatewayInterface, actual was %T", m.WorkspaceClient.AiGateway))
 	}
 	return api
 }

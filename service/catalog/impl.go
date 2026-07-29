@@ -281,6 +281,410 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 	return &accountsUpdateStorageCredentialResponse, err
 }
 
+// unexported type that holds implementations of just AiGateway API methods
+type aiGatewayImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *aiGatewayImpl) CreateMcpService(ctx context.Context, request CreateMcpServiceRequest) (*McpService, error) {
+	var mcpService McpService
+	path := "/api/2.1/unity-catalog/mcp-services"
+	queryParams := make(map[string]any)
+
+	if request.McpServiceId != "" {
+		queryParams["mcp_service_id"] = request.McpServiceId
+	}
+
+	if request.Parent != "" {
+		queryParams["parent"] = request.Parent
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.McpService, &mcpService)
+	return &mcpService, err
+}
+
+func (a *aiGatewayImpl) CreateModelProviderService(ctx context.Context, request CreateModelProviderServiceRequest) (*ModelProviderService, error) {
+	var modelProviderService ModelProviderService
+	path := "/api/2.1/unity-catalog/model-provider-services"
+	queryParams := make(map[string]any)
+
+	if request.ModelProviderServiceId != "" {
+		queryParams["model_provider_service_id"] = request.ModelProviderServiceId
+	}
+
+	if request.Parent != "" {
+		queryParams["parent"] = request.Parent
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ModelProviderService, &modelProviderService)
+	return &modelProviderService, err
+}
+
+func (a *aiGatewayImpl) CreateModelService(ctx context.Context, request CreateModelServiceRequest) (*ModelService, error) {
+	var modelService ModelService
+	path := "/api/2.1/unity-catalog/model-services"
+	queryParams := make(map[string]any)
+
+	if request.ModelServiceId != "" {
+		queryParams["model_service_id"] = request.ModelServiceId
+	}
+
+	if request.Parent != "" {
+		queryParams["parent"] = request.Parent
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ModelService, &modelService)
+	return &modelService, err
+}
+
+func (a *aiGatewayImpl) DeleteMcpService(ctx context.Context, request DeleteMcpServiceRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *aiGatewayImpl) DeleteModelProviderService(ctx context.Context, request DeleteModelProviderServiceRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *aiGatewayImpl) DeleteModelService(ctx context.Context, request DeleteModelServiceRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *aiGatewayImpl) GetMcpService(ctx context.Context, request GetMcpServiceRequest) (*McpService, error) {
+	var mcpService McpService
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &mcpService)
+	return &mcpService, err
+}
+
+func (a *aiGatewayImpl) GetModelProviderService(ctx context.Context, request GetModelProviderServiceRequest) (*ModelProviderService, error) {
+	var modelProviderService ModelProviderService
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &modelProviderService)
+	return &modelProviderService, err
+}
+
+func (a *aiGatewayImpl) GetModelService(ctx context.Context, request GetModelServiceRequest) (*ModelService, error) {
+	var modelService ModelService
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &modelService)
+	return &modelService, err
+}
+
+// Lists the MCP services in a Unity Catalog schema. Provide `parent` as
+// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only MCP services the caller can access (as owner or through
+// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+func (a *aiGatewayImpl) ListMcpServices(ctx context.Context, request ListMcpServicesRequest) listing.Iterator[McpService] {
+
+	getNextPage := func(ctx context.Context, req ListMcpServicesRequest) (*ListMcpServicesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListMcpServices(ctx, req)
+	}
+	getItems := func(resp *ListMcpServicesResponse) []McpService {
+		return resp.McpServices
+	}
+	getNextReq := func(resp *ListMcpServicesResponse) *ListMcpServicesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the MCP services in a Unity Catalog schema. Provide `parent` as
+// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only MCP services the caller can access (as owner or through
+// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+func (a *aiGatewayImpl) ListMcpServicesAll(ctx context.Context, request ListMcpServicesRequest) ([]McpService, error) {
+	iterator := a.ListMcpServices(ctx, request)
+	return listing.ToSlice[McpService](ctx, iterator)
+}
+
+func (a *aiGatewayImpl) internalListMcpServices(ctx context.Context, request ListMcpServicesRequest) (*ListMcpServicesResponse, error) {
+	var listMcpServicesResponse ListMcpServicesResponse
+	path := "/api/2.1/unity-catalog/mcp-services"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listMcpServicesResponse)
+	return &listMcpServicesResponse, err
+}
+
+// Lists the model provider services in a Unity Catalog schema. Provide `parent`
+// as `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only model provider services the caller can access (as owner or
+// through `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+func (a *aiGatewayImpl) ListModelProviderServices(ctx context.Context, request ListModelProviderServicesRequest) listing.Iterator[ModelProviderService] {
+
+	getNextPage := func(ctx context.Context, req ListModelProviderServicesRequest) (*ListModelProviderServicesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListModelProviderServices(ctx, req)
+	}
+	getItems := func(resp *ListModelProviderServicesResponse) []ModelProviderService {
+		return resp.ModelProviderServices
+	}
+	getNextReq := func(resp *ListModelProviderServicesResponse) *ListModelProviderServicesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the model provider services in a Unity Catalog schema. Provide `parent`
+// as `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only model provider services the caller can access (as owner or
+// through `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+func (a *aiGatewayImpl) ListModelProviderServicesAll(ctx context.Context, request ListModelProviderServicesRequest) ([]ModelProviderService, error) {
+	iterator := a.ListModelProviderServices(ctx, request)
+	return listing.ToSlice[ModelProviderService](ctx, iterator)
+}
+
+func (a *aiGatewayImpl) internalListModelProviderServices(ctx context.Context, request ListModelProviderServicesRequest) (*ListModelProviderServicesResponse, error) {
+	var listModelProviderServicesResponse ListModelProviderServicesResponse
+	path := "/api/2.1/unity-catalog/model-provider-services"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listModelProviderServicesResponse)
+	return &listModelProviderServicesResponse, err
+}
+
+// Lists the model services in a Unity Catalog schema. Provide `parent` as
+// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only model services the caller can access (as owner or through
+// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+func (a *aiGatewayImpl) ListModelServices(ctx context.Context, request ListModelServicesRequest) listing.Iterator[ModelService] {
+
+	getNextPage := func(ctx context.Context, req ListModelServicesRequest) (*ListModelServicesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListModelServices(ctx, req)
+	}
+	getItems := func(resp *ListModelServicesResponse) []ModelService {
+		return resp.ModelServices
+	}
+	getNextReq := func(resp *ListModelServicesResponse) *ListModelServicesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the model services in a Unity Catalog schema. Provide `parent` as
+// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only model services the caller can access (as owner or through
+// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+func (a *aiGatewayImpl) ListModelServicesAll(ctx context.Context, request ListModelServicesRequest) ([]ModelService, error) {
+	iterator := a.ListModelServices(ctx, request)
+	return listing.ToSlice[ModelService](ctx, iterator)
+}
+
+func (a *aiGatewayImpl) internalListModelServices(ctx context.Context, request ListModelServicesRequest) (*ListModelServicesResponse, error) {
+	var listModelServicesResponse ListModelServicesResponse
+	path := "/api/2.1/unity-catalog/model-services"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listModelServicesResponse)
+	return &listModelServicesResponse, err
+}
+
+func (a *aiGatewayImpl) UpdateMcpService(ctx context.Context, request UpdateMcpServiceRequest) (*McpService, error) {
+	var mcpService McpService
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
+		queryParams["etag"] = request.Etag
+	}
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.McpService, &mcpService)
+	return &mcpService, err
+}
+
+func (a *aiGatewayImpl) UpdateModelProviderService(ctx context.Context, request UpdateModelProviderServiceRequest) (*ModelProviderService, error) {
+	var modelProviderService ModelProviderService
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
+		queryParams["etag"] = request.Etag
+	}
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ModelProviderService, &modelProviderService)
+	return &modelProviderService, err
+}
+
+func (a *aiGatewayImpl) UpdateModelService(ctx context.Context, request UpdateModelServiceRequest) (*ModelService, error) {
+	var modelService ModelService
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
+		queryParams["etag"] = request.Etag
+	}
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ModelService, &modelService)
+	return &modelService, err
+}
+
 // unexported type that holds implementations of just ArtifactAllowlists API methods
 type artifactAllowlistsImpl struct {
 	client *client.DatabricksClient

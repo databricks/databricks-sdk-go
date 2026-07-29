@@ -5154,7 +5154,7 @@ type StreamConnectionConfig struct {
 	DirectMtlsConfig *DirectMtlsConfig `json:"direct_mtls_config,omitempty"`
 	// Name of an existing UC Connection for stream platform access. Must be the
 	// correct type for the streaming platform (e.g. a Kafka Connection for a
-	// Kafka Stream).
+	// Kafka Stream, or a Kinesis Connection for a Kinesis Stream).
 	UcConnectionName string `json:"uc_connection_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

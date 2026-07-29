@@ -58,6 +58,14 @@ type WorkspaceClient struct {
 	// LLM product.
 	AgentBricks agentbricks.AgentBricksInterface
 
+	// Govern AI workloads in Unity Catalog. This API manages the Unity Catalog
+	// securables that bring centralized access control, lineage, and auditing
+	// to AI-serving entities: model services (governed access to foundation
+	// models and external LLMs), model provider services (governed connections
+	// to external model providers), MCP services (governed Model Context
+	// Protocol servers), and agent services (governed agents).
+	AiGateway catalog.AiGatewayInterface
+
 	// **AI Search Endpoint**: Represents the compute resources to host AI
 	// Search indexes. AIP-conformant replacement for the legacy
 	// VectorSearchEndpoints API; functionally equivalent.
@@ -1463,6 +1471,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		AgentBricks:                         agentbricks.NewAgentBricks(databricksClient),
+		AiGateway:                           catalog.NewAiGateway(databricksClient),
 		AiSearch:                            aisearch.NewAiSearch(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
