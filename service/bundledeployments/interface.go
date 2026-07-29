@@ -78,4 +78,18 @@ type BundleDeploymentsService interface {
 	// Lists versions under a deployment, ordered numerically by version_id
 	// descending (most recent first).
 	ListVersions(ctx context.Context, request ListVersionsRequest) (*ListVersionsResponse, error)
+
+	// Updates a resource operation's mutable fields.
+	//
+	// `state`, `error_message`, `resource_id`, and `status` may be updated,
+	// independently; `update_mask` must contain only those paths. All other
+	// fields are immutable. The update is guarded by an optimistic-concurrency
+	// check: the caller sets `operation.sequence_id` to the value it last
+	// observed, and the server rejects the update with `ABORTED` if the
+	// operation has been modified since. On success the server increments
+	// `sequence_id`; updates to `state` and `resource_id` are mirrored onto the
+	// corresponding deployment-level Resource projection. The parent version
+	// must be in progress, delete operations cannot be updated, and after the
+	// update is applied a succeeded operation cannot carry an `error_message`.
+	UpdateOperation(ctx context.Context, request UpdateOperationRequest) (*Operation, error)
 }

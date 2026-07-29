@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -68,6 +69,34 @@ type CreateVersionRequest struct {
 	VersionId string `json:"-" url:"version_id"`
 }
 
+// Dashboard-specific per-resource metadata. Set only for dashboard resources.
+type DashboardMetadata struct {
+	// Path of the file that declares this dashboard, relative to the bundle's
+	// workspace.file_path (Version.workspace_info.file_path) — join the two
+	// to get the file's absolute workspace path.
+	//
+	// For now this lives only on the dashboard metadata, and is a single string
+	// because it was a single string (`relative_path`) in the legacy bundle
+	// metadata.json. We may generalize it in the future: lifting it to a
+	// top-level field on Resource/Operation (every resource type has a
+	// definition location) and converting it to a repeated field, since a
+	// resource can be declared across multiple files/locations.
+	DefinitionPath string `json:"definition_path,omitempty"`
+	// Path of the dashboard's source artifact (its `.lvdash.json`), relative to
+	// the deployment root.
+	SourcePath string `json:"source_path,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteDeploymentRequest struct {
 	// Resource name of the deployment to delete. Format:
 	// deployments/{deployment_id}
@@ -105,6 +134,11 @@ type Deployment struct {
 	// This field is input only and is not returned in create, get, or list
 	// responses.
 	InitialParentPath string `json:"initial_parent_path,omitempty"`
+	// The version_id of the most recent version that completed successfully.
+	// Unset until a version has completed successfully. Unlike last_version_id,
+	// it is not advanced when a version fails, so it always points at the last
+	// known-good deployment state (or is unset if there has never been one).
+	LastSuccessfulVersionId string `json:"last_successful_version_id,omitempty"`
 	// The version_id of the most recent deployment version.
 	LastVersionId string `json:"last_version_id,omitempty"`
 	// Resource name of the deployment. Format: deployments/{deployment_id}
@@ -117,6 +151,9 @@ type Deployment struct {
 	TargetName string `json:"target_name,omitempty"`
 	// When the deployment was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// The user who most recently updated the deployment (email or principal
+	// name).
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// Workspace location of the deployment, derived from the latest version.
 	WorkspaceInfo *WorkspaceInfo `json:"workspace_info,omitempty"`
 
@@ -557,6 +594,8 @@ type Operation struct {
 	ActionType OperationActionType `json:"action_type"`
 	// When the operation was recorded.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Dashboard-specific metadata; set only for dashboard resources.
+	DashboardMetadata *DashboardMetadata `json:"dashboard_metadata,omitempty"`
 	// Error message if the operation failed. Set when status is
 	// OPERATION_STATUS_FAILED. Captures the error encountered while applying
 	// the resource to the workspace. Mutable: may be updated after creation via
@@ -582,6 +621,16 @@ type Operation struct {
 	// from the `resource_key` prefix (e.g. "jobs" → JOB); the caller does not
 	// set this field.
 	ResourceType DeploymentResourceType `json:"resource_type,omitempty"`
+	// Monotonically increasing revision used for optimistic concurrency control
+	// (the AIP-154 concurrency token for this resource, realized as a sequence
+	// number rather than an opaque etag). The server assigns 1 on creation and
+	// increments it on every successful UpdateOperation. It is OPTIONAL rather
+	// than OUTPUT_ONLY because it is dual-purpose: CreateOperation/GetOperation
+	// return the current value, and UpdateOperation reads the caller-supplied
+	// value as a precondition. The caller must echo the value it last observed;
+	// if it no longer matches the server's value, the update is rejected with
+	// ABORTED so the caller can re-read and retry. Ignored on CreateOperation.
+	SequenceId int64 `json:"sequence_id,omitempty"`
 	// Serialized local config state after the operation. Should be unset for
 	// delete operations. Mutable: may be updated after creation via
 	// UpdateOperation. When updating, the caller must echo the last-observed
@@ -592,6 +641,10 @@ type Operation struct {
 	// is retried and eventually succeeds. A succeeded operation cannot carry an
 	// `error_message`.
 	Status OperationStatus `json:"status"`
+	// When the operation was last updated. Set to `create_time` when the
+	// operation is created and to the server timestamp on each successful
+	// UpdateOperation.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -704,6 +757,8 @@ func (f *OperationStatus) Type() string {
 // A resource managed by a deployment. Resources are implicitly created,
 // updated, or deleted when operations are recorded on a version.
 type Resource struct {
+	// Dashboard-specific metadata; set only for dashboard resources.
+	DashboardMetadata *DashboardMetadata `json:"dashboard_metadata,omitempty"`
 	// The action performed on this resource during the last version.
 	LastActionType OperationActionType `json:"last_action_type,omitempty"`
 	// The version_id of the last version where this resource was updated.
@@ -737,6 +792,21 @@ func (s Resource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateOperationRequest struct {
+	// Resource name of the operation. Format:
+	// deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
+	Name string `json:"-" url:"-"`
+	// The operation to update. Its `name` selects the operation; the fields
+	// named in `update_mask` carry the new values; and `sequence_id` carries
+	// the optimistic-concurrency precondition (see the field docs on
+	// Operation). All other fields are ignored.
+	Operation Operation `json:"operation"`
+	// The set of fields to update. Required; supported paths are `state`,
+	// `error_message`, `resource_id`, and `status`. An empty mask or any other
+	// path is rejected with INVALID_PARAMETER_VALUE.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
 // A single invocation of a deploy or destroy command against a deployment.
 // Creating a version acquires an exclusive lock on the parent deployment.
 type Version struct {
@@ -767,6 +837,17 @@ type Version struct {
 	// Resource name of the version. Format:
 	// deployments/{deployment_id}/versions/{version_id}
 	Name string `json:"name,omitempty"`
+	// The version_id this version was created on top of — the deployment's
+	// most recent version at creation time. Leave unset when creating the first
+	// version (the deployment has no prior versions). Set by the client on
+	// creation and immutable thereafter.
+	//
+	// Acts as an optimistic-concurrency precondition: the server requires it to
+	// equal the deployment's current most-recent version (and to be unset when
+	// the deployment has no versions) and returns `INVALID_PARAMETER_VALUE` on
+	// mismatch, so a deploy racing against a concurrent deploy is rejected
+	// rather than silently overwriting it.
+	PreviousVersionId string `json:"previous_version_id,omitempty"`
 	// Status of the version: IN_PROGRESS or COMPLETED.
 	Status VersionStatus `json:"status,omitempty"`
 	// Target name of the deployment, captured at the time of this version.

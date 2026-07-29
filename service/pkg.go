@@ -8,6 +8,8 @@
 //
 // - [agentbricks.AgentBricksAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
+// - [catalog.AiGatewayAPI]: Govern AI workloads in Unity Catalog.
+//
 // - [aisearch.AiSearchAPI]: **AI Search Endpoint**: Represents the compute resources to host AI Search indexes.
 //
 // - [settings.AibiDashboardEmbeddingAccessPolicyAPI]: Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level.
@@ -425,6 +427,7 @@ var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *agentbricks.AgentBricksAPI                         = nil
+	_ *catalog.AiGatewayAPI                               = nil
 	_ *aisearch.AiSearchAPI                               = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
 	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
