@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.167.0 (2026-07-30)
+
+### API Changes
+* Add `AwsAccessKey` field for [catalog.ModelProviderServiceConfigAmazonBedrockProviderDirectConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigAmazonBedrockProviderDirectConfig).
+* Add `EntraServicePrincipal` field for [catalog.ModelProviderServiceConfigAzureOpenAiProviderDirectConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigAzureOpenAiProviderDirectConfig).
+* Add `EntraServicePrincipal` field for [catalog.ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig).
+
+
 ## Release v0.166.0 (2026-07-29)
 
 ### API Changes
