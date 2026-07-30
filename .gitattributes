@@ -21,6 +21,7 @@ experimental/mocks/service/bundledeployments/mock_bundle_deployments_interface.g
 experimental/mocks/service/catalog/mock_account_metastore_assignments_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_metastores_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_storage_credentials_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_ai_gateway_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_artifact_allowlists_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_catalogs_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_connections_interface.go linguist-generated=true

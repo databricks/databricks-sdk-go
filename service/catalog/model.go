@@ -6269,24 +6269,25 @@ type ModelProviderServiceConfigAmazonBedrockProviderConfig struct {
 // Direct form of Amazon Bedrock provider config.
 //
 // Authentication is one of two mutually exclusive modes, exactly one of which
-// must be supplied on Create: - Access keys: set both `aws_access_key_id` and
-// `aws_secret_access_key`, leave `service_credential` unset. - UC service
-// credential: set `service_credential.name` to the AIP-122 resource-name form
-// `credentials/{name}`, leave both access-key fields unset. The credential
-// value lives in UC and is referenced by name, not held on this message.
-// Setting `service_credential` alongside either access-key field is rejected by
-// service-side validation on Create; the proto itself allows any combination on
-// the wire.
+// must be supplied on Create: - Access keys: set `aws_access_key`, leave
+// `service_credential` unset. - UC service credential: set
+// `service_credential.name` to the AIP-122 resource-name form
+// `credentials/{name}`, leave `aws_access_key` unset. The credential value
+// lives in UC and is referenced by name, not held on this message. Setting more
+// than one mode is rejected.
 type ModelProviderServiceConfigAmazonBedrockProviderDirectConfig struct {
-	// AWS access key ID for Bedrock authentication. Required on Create when
-	// using access-key auth; must be paired with `aws_secret_access_key` and is
-	// mutually exclusive with `service_credential`. Treated as
-	// username-equivalent (not a secret value): round-trips on reads and is
-	// scrubbed from audit logs.
+	// AWS access-key-pair auth. Mutually exclusive with `service_credential`.
+	// Supersedes the flat `aws_access_key_id` / `aws_secret_access_key` fields.
+	AwsAccessKey *ModelProviderServiceConfigAwsAccessKey `json:"aws_access_key,omitempty"`
+	// Deprecated flat AWS access key ID. Superseded by
+	// `aws_access_key.access_key_id`. Kept for one migration cycle; the handler
+	// mirrors it to/from `aws_access_key`. Treated as username-equivalent (not
+	// a secret value): round-trips on reads and is scrubbed from audit logs.
 	AwsAccessKeyId string `json:"aws_access_key_id,omitempty"`
-	// AWS secret access key paired with `aws_access_key_id`. Required on Create
-	// when using access-key auth; mutually exclusive with `service_credential`.
-	// Supplied as inline plaintext via `ProviderSecret.plaintext`.
+	// Deprecated flat AWS secret access key. Superseded by
+	// `aws_access_key.secret_access_key`. Kept for one migration cycle; the
+	// handler mirrors it to/from `aws_access_key`. Supplied as inline plaintext
+	// via `ProviderSecret.plaintext`.
 	AwsSecretAccessKey *ModelProviderServiceConfigProviderSecret `json:"aws_secret_access_key,omitempty"`
 	// AWS region where the Bedrock endpoint is hosted (e.g., `us-east-1`).
 	// Required on Create.
@@ -6294,11 +6295,11 @@ type ModelProviderServiceConfigAmazonBedrockProviderDirectConfig struct {
 	// Reference to a UC service credential authorizing Bedrock requests. On
 	// Create the caller supplies `service_credential.name` in the AIP-122
 	// resource-name form `credentials/{name}`. Required on Create when using
-	// UC-service-credential auth; mutually exclusive with the aws_access_key_id
-	// + aws_secret_access_key pair. The credential is referenced by name; its
-	// value is not carried here. On read the resolved `id` and `is_deleted` are
-	// also populated. Only supported on AWS-hosted workspaces; Create requests
-	// from other clouds are rejected with INVALID_PARAMETER_VALUE.
+	// UC-service-credential auth; mutually exclusive with `aws_access_key`. The
+	// credential is referenced by name; its value is not carried here. On read
+	// the resolved `id` and `is_deleted` are also populated. Only supported on
+	// AWS-hosted workspaces; Create requests from other clouds are rejected
+	// with INVALID_PARAMETER_VALUE.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6387,6 +6388,28 @@ func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelaye
 	return "ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType"
 }
 
+// AWS access-key-pair auth for Amazon Bedrock: a SigV4-signing key pair.
+type ModelProviderServiceConfigAwsAccessKey struct {
+	// AWS access key ID. Required on Create when using access-key auth. Treated
+	// as username-equivalent (not a secret value): round-trips on reads and is
+	// scrubbed from audit logs.
+	AccessKeyId string `json:"access_key_id,omitempty"`
+	// AWS secret access key paired with `access_key_id`. Required on Create
+	// when using access-key auth. Supplied as inline plaintext via
+	// `ProviderSecret.plaintext`.
+	SecretAccessKey *ModelProviderServiceConfigProviderSecret `json:"secret_access_key,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelProviderServiceConfigAwsAccessKey) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelProviderServiceConfigAwsAccessKey) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Azure OpenAI provider configuration.
 type ModelProviderServiceConfigAzureOpenAiProviderConfig struct {
 	Direct *ModelProviderServiceConfigAzureOpenAiProviderDirectConfig `json:"direct,omitempty"`
@@ -6394,43 +6417,47 @@ type ModelProviderServiceConfigAzureOpenAiProviderConfig struct {
 
 // Direct form of Azure OpenAI provider config. Exactly one of three
 // mutually-exclusive auth modes must be supplied on Create: - API key: set
-// `api_key`, leave the Entra fields and `service_credential` unset. - Entra ID
-// (service principal): set all of `tenant_id`, `client_id`, and
-// `client_secret`, leave `api_key` and `service_credential` unset. - UC service
-// credential: set `service_credential.name` to the AIP-122 resource-name form
-// `credentials/{name}`, leave `api_key` and all Entra fields unset. The
-// credential value lives in UC and is referenced by name, not held on this
+// `api_key`, leave `entra_service_principal` and `service_credential` unset. -
+// Entra ID (service principal): set `entra_service_principal`, leave `api_key`
+// and `service_credential` unset. - UC service credential: set
+// `service_credential.name` to the AIP-122 resource-name form
+// `credentials/{name}`, leave `api_key` and `entra_service_principal` unset.
+// The credential value lives in UC and is referenced by name, not held on this
 // message. Only supported on Azure-hosted workspaces. Setting more than one
-// mode, or an incomplete Entra triple, is rejected.
+// mode is rejected.
 type ModelProviderServiceConfigAzureOpenAiProviderDirectConfig struct {
-	// Azure OpenAI API key. Mutually exclusive with the Entra fields. Supplied
-	// as inline plaintext via `ProviderSecret.plaintext`.
+	// Azure OpenAI API key. Mutually exclusive with the Entra and
+	// service-credential modes. Supplied as inline plaintext via
+	// `ProviderSecret.plaintext`.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// Full Azure OpenAI endpoint base URL, e.g.
 	// `https://myresource.openai.azure.com`. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
-	// Entra ID client (application) ID for service-principal auth. Set together
-	// with `tenant_id` and `client_secret`; mutually exclusive with `api_key`
-	// and `service_credential`.
+	// Deprecated flat Entra client ID. Superseded by
+	// `entra_service_principal.client_id`. Kept for one migration cycle; the
+	// handler mirrors it to/from `entra_service_principal`.
 	ClientId string `json:"client_id,omitempty"`
-	// Entra ID client secret for service-principal auth. Set together with
-	// `tenant_id` and `client_id`; mutually exclusive with `api_key` and
-	// `service_credential`. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// Deprecated flat Entra client secret. Superseded by
+	// `entra_service_principal.client_secret`. Kept for one migration cycle;
+	// the handler mirrors it to/from `entra_service_principal`. Supplied as
+	// inline plaintext via `ProviderSecret.plaintext`.
 	ClientSecret *ModelProviderServiceConfigProviderSecret `json:"client_secret,omitempty"`
+	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
+	// `service_credential`. Supersedes the flat `tenant_id` / `client_id` /
+	// `client_secret` fields.
+	EntraServicePrincipal *ModelProviderServiceConfigEntraServicePrincipal `json:"entra_service_principal,omitempty"`
 	// Reference to a UC service credential authorizing Azure OpenAI requests.
 	// On Create the caller supplies `service_credential.name` in the AIP-122
 	// resource-name form `credentials/{name}`. Required on Create when using
-	// UC-service-credential auth; mutually exclusive with `api_key` and with
-	// the Entra triple (tenant_id + client_id + client_secret). The credential
-	// is referenced by name; its value is not carried here. On read the
-	// resolved `id` and `is_deleted` are also populated. Only supported on
-	// Azure-hosted workspaces; Create requests from other clouds are rejected
-	// with INVALID_PARAMETER_VALUE.
+	// UC-service-credential auth; mutually exclusive with `api_key` and
+	// `entra_service_principal`. The credential is referenced by name; its
+	// value is not carried here. On read the resolved `id` and `is_deleted` are
+	// also populated. Only supported on Azure-hosted workspaces; Create
+	// requests from other clouds are rejected with INVALID_PARAMETER_VALUE.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
-	// Entra ID (Azure AD) tenant ID for service-principal auth. Set together
-	// with `client_id` and `client_secret`; mutually exclusive with `api_key`
-	// and `service_credential`.
+	// Deprecated flat Entra tenant ID. Superseded by
+	// `entra_service_principal.tenant_id`. Kept for one migration cycle; the
+	// handler mirrors it to/from `entra_service_principal`.
 	TenantId string `json:"tenant_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6475,6 +6502,31 @@ func (s *ModelProviderServiceConfigCustomProviderDirectConfig) UnmarshalJSON(b [
 }
 
 func (s ModelProviderServiceConfigCustomProviderDirectConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Entra ID (Azure AD) service-principal auth: AI Gateway exchanges the
+// `tenant_id` + `client_id` identify the service principal, and the
+// `credential` oneof proves that identity, exchanged for an Entra bearer token
+// on outbound requests via the OAuth2 client-credentials grant. Shared by the
+// Azure OpenAI and Microsoft Foundry provider configs.
+type ModelProviderServiceConfigEntraServicePrincipal struct {
+	// Entra ID client (application) ID. Required on Create.
+	ClientId string `json:"client_id,omitempty"`
+	// Entra ID client secret. Supplied as inline plaintext via
+	// `ProviderSecret.plaintext`.
+	ClientSecret *ModelProviderServiceConfigProviderSecret `json:"client_secret,omitempty"`
+	// Entra ID (Azure AD) tenant ID. Required on Create.
+	TenantId string `json:"tenant_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelProviderServiceConfigEntraServicePrincipal) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelProviderServiceConfigEntraServicePrincipal) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -6567,44 +6619,48 @@ type ModelProviderServiceConfigMicrosoftFoundryProviderConfig struct {
 // Direct form of Microsoft Foundry provider config.
 //
 // Authentication is one of three mutually exclusive modes, exactly one of which
-// must be supplied on Create: - API key: set `api_key`, leave the Entra fields
-// and `service_credential` unset. - Entra ID (service principal): set all of
-// `tenant_id`, `client_id`, and `client_secret`, leave `api_key` and
+// must be supplied on Create: - API key: set `api_key`, leave
+// `entra_service_principal` and `service_credential` unset. - Entra ID (service
+// principal): set `entra_service_principal`, leave `api_key` and
 // `service_credential` unset. AI Gateway exchanges these for an Entra bearer
 // token on outbound requests via the OAuth2 client-credentials grant. - UC
 // service credential: set `service_credential.name` to the AIP-122
-// resource-name form `credentials/{name}`, leave `api_key` and all Entra fields
-// unset. The credential value lives in UC and is referenced by name, not held
-// on this message. Only supported on Azure-hosted workspaces. Setting more than
-// one mode, or an incomplete Entra triple, is rejected.
+// resource-name form `credentials/{name}`, leave `api_key` and
+// `entra_service_principal` unset. The credential value lives in UC and is
+// referenced by name, not held on this message. Only supported on Azure-hosted
+// workspaces. Setting more than one mode is rejected.
 type ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig struct {
-	// Microsoft AI Foundry API key. Mutually exclusive with the Entra fields.
-	// Supplied as inline plaintext via `ProviderSecret.plaintext`.
+	// Microsoft AI Foundry API key. Mutually exclusive with the Entra and
+	// service-credential modes. Supplied as inline plaintext via
+	// `ProviderSecret.plaintext`.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// Microsoft AI Foundry endpoint URL. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
-	// Entra ID client (application) ID for service-principal auth. Set together
-	// with `tenant_id` and `client_secret`; mutually exclusive with `api_key`
-	// and `service_credential`.
+	// Deprecated flat Entra client ID. Superseded by
+	// `entra_service_principal.client_id`. Kept for one migration cycle; the
+	// handler mirrors it to/from `entra_service_principal`.
 	ClientId string `json:"client_id,omitempty"`
-	// Entra ID client secret for service-principal auth. Set together with
-	// `tenant_id` and `client_id`; mutually exclusive with `api_key` and
-	// `service_credential`. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// Deprecated flat Entra client secret. Superseded by
+	// `entra_service_principal.client_secret`. Kept for one migration cycle;
+	// the handler mirrors it to/from `entra_service_principal`. Supplied as
+	// inline plaintext via `ProviderSecret.plaintext`.
 	ClientSecret *ModelProviderServiceConfigProviderSecret `json:"client_secret,omitempty"`
+	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
+	// `service_credential`. Supersedes the flat `tenant_id` / `client_id` /
+	// `client_secret` fields.
+	EntraServicePrincipal *ModelProviderServiceConfigEntraServicePrincipal `json:"entra_service_principal,omitempty"`
 	// Reference to a UC service credential authorizing Microsoft Foundry
 	// requests. On Create the caller supplies `service_credential.name` in the
 	// AIP-122 resource-name form `credentials/{name}`. Required on Create when
 	// using UC-service-credential auth; mutually exclusive with `api_key` and
-	// with the Entra triple (tenant_id + client_id + client_secret). The
-	// credential is referenced by name; its value is not carried here. On read
-	// the resolved `id` and `is_deleted` are also populated. Only supported on
-	// Azure-hosted workspaces; Create requests from other clouds are rejected
-	// with INVALID_PARAMETER_VALUE.
+	// `entra_service_principal`. The credential is referenced by name; its
+	// value is not carried here. On read the resolved `id` and `is_deleted` are
+	// also populated. Only supported on Azure-hosted workspaces; Create
+	// requests from other clouds are rejected with INVALID_PARAMETER_VALUE.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
-	// Entra ID (Azure AD) tenant ID for service-principal auth. Set together
-	// with `client_id` and `client_secret`; mutually exclusive with `api_key`
-	// and `service_credential`.
+	// Deprecated flat Entra tenant ID. Superseded by
+	// `entra_service_principal.tenant_id`. Kept for one migration cycle; the
+	// handler mirrors it to/from `entra_service_principal`.
 	TenantId string `json:"tenant_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

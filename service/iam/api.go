@@ -226,7 +226,8 @@ type AccountUsersV2Interface interface {
 	ListAll(ctx context.Context, request ListAccountUsersRequest) ([]AccountUser, error)
 
 	// Partially updates a user resource by applying the supplied operations on
-	// specific user attributes.
+	// specific user attributes. The `userName` and `emails` attributes cannot be
+	// updated through this API; any supplied changes to them are ignored (no-op).
 	Patch(ctx context.Context, request PatchAccountUserRequest) error
 
 	// Replaces a user's information with the data supplied in request.
@@ -511,7 +512,8 @@ type UsersV2Interface interface {
 	ListAll(ctx context.Context, request ListUsersRequest) ([]User, error)
 
 	// Partially updates a user resource by applying the supplied operations on
-	// specific user attributes.
+	// specific user attributes. The `userName` and `emails` attributes cannot be
+	// updated through this API; any supplied changes to them are ignored (no-op).
 	Patch(ctx context.Context, request PatchUserRequest) error
 
 	// Sets permissions on an object, replacing existing permissions if they exist.
