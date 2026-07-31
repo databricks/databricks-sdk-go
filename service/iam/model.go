@@ -2035,7 +2035,9 @@ type UpdateAccountUserRequest struct {
 	// String that represents a concatenation of given and family names. For
 	// example `John Smith`.
 	DisplayName string `json:"displayName,omitempty"`
-	// All the emails associated with the Databricks user.
+	// All the emails associated with the Databricks user. This attribute cannot
+	// be updated through the SCIM PATCH or PUT APIs; any supplied change is
+	// ignored.
 	Emails []ComplexValue `json:"emails,omitempty"`
 	// External ID is not currently supported. It is reserved for future use.
 	ExternalId string `json:"externalId,omitempty"`
@@ -2045,7 +2047,8 @@ type UpdateAccountUserRequest struct {
 	Name *Name `json:"name,omitempty"`
 	// Indicates if the group has the admin role.
 	Roles []ComplexValue `json:"roles,omitempty"`
-	// Email address of the Databricks user.
+	// Email address of the Databricks user. This attribute cannot be updated
+	// through the SCIM PATCH or PUT APIs; any supplied change is ignored.
 	UserName string `json:"userName,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2157,7 +2160,9 @@ type UpdateUserRequest struct {
 	//
 	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
 	DisplayName string `json:"displayName,omitempty"`
-	// All the emails associated with the Databricks user.
+	// All the emails associated with the Databricks user. This attribute cannot
+	// be updated through the SCIM PATCH or PUT APIs; any supplied change is
+	// ignored.
 	Emails []ComplexValue `json:"emails,omitempty"`
 	// Entitlements assigned to the user. See [assigning entitlements] for a
 	// full list of supported values.
@@ -2176,7 +2181,8 @@ type UpdateUserRequest struct {
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the user.
 	Schemas []UserSchema `json:"schemas,omitempty"`
-	// Email address of the Databricks user.
+	// Email address of the Databricks user. This attribute cannot be updated
+	// through the SCIM PATCH or PUT APIs; any supplied change is ignored.
 	UserName string `json:"userName,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

@@ -230,7 +230,9 @@ type AccountUsersV2Interface interface {
 	// updated through this API; any supplied changes to them are ignored (no-op).
 	Patch(ctx context.Context, request PatchAccountUserRequest) error
 
-	// Replaces a user's information with the data supplied in request.
+	// Replaces a user's information with the data supplied in request. The
+	// `userName` and `emails` attributes cannot be updated through this API; any
+	// supplied changes to them are ignored (no-op).
 	Update(ctx context.Context, request UpdateAccountUserRequest) error
 }
 
@@ -521,7 +523,9 @@ type UsersV2Interface interface {
 	// permissions from their root object.
 	SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 
-	// Replaces a user's information with the data supplied in request.
+	// Replaces a user's information with the data supplied in request. The
+	// `userName` and `emails` attributes cannot be updated through this API; any
+	// supplied changes to them are ignored (no-op).
 	Update(ctx context.Context, request UpdateUserRequest) error
 
 	// Updates the permissions on all passwords. Passwords can inherit permissions

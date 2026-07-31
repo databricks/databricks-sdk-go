@@ -334,6 +334,33 @@ type DeleteSecret struct {
 	Scope string `json:"scope"`
 }
 
+// Additional metadata about a directory.
+type DirectoryInfo struct {
+	// Whether the directory is a Git folder, whose contents are
+	// version-controlled by a remote Git repository. How a Git folder is
+	// represented depends on whether it has Git CLI access:
+	//
+	// - A Git folder with Git CLI access has an object type of ``DIRECTORY``,
+	// with this field set to ``true``. - A standard Git folder, which does not
+	// have Git CLI access, has an object type of ``REPO`` and does not include
+	// this field. - A directory that is not Git-backed has this field set to
+	// ``false``.
+	//
+	// Use this field together with ``object_type`` to identify every Git folder
+	// in a workspace.
+	IsGitFolder bool `json:"is_git_folder,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DirectoryInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DirectoryInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // The format for workspace import and export.
 type ExportFormat string
 
@@ -851,6 +878,9 @@ type Mkdirs struct {
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
 	CreatedAt int64 `json:"created_at,omitempty"`
+	// Additional metadata about the directory. Only set for objects of type
+	// ``DIRECTORY``.
+	DirectoryInfo *DirectoryInfo `json:"directory_info,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// ``NOTEBOOK``. For Jupyter (.ipynb) notebooks, this is always ``PYTHON``.
 	Language Language `json:"language,omitempty"`
