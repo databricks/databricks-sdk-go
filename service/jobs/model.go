@@ -6543,6 +6543,10 @@ type TriggerSettings struct {
 
 type TriggerStateProto struct {
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
+	// Whether this trigger is paused or not. For continuous schedules, it can
+	// differ from the configured pause_status whenever a paused continuous job
+	// is kickstarted by an operation other than an update, such as a run-now.
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// State for SQL condition evaluation, can coexist with other trigger
 	// states.
 	SqlCondition *SqlConditionState `json:"sql_condition,omitempty"`

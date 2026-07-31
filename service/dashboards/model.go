@@ -2345,12 +2345,19 @@ type SubscriptionSubscriberUser struct {
 	UserId int64 `json:"user_id"`
 }
 
+// A text response on a conversation message: the answer, the final summary, or
+// a clarifying follow-up question, along with optional phase and verification
+// metadata.
 type TextAttachment struct {
 	// AI generated message
 	Content string `json:"content,omitempty"`
 
 	Id string `json:"id,omitempty"`
-	// Purpose/intent of this text attachment
+	// Purpose of this text attachment. A completed message may contain more
+	// than one text attachment (for example a clarifying follow-up question
+	// alongside the final answer); use this field to tell them apart.
+	// `TEXT_ATTACHMENT_PURPOSE_ANSWER` marks the final answer/summary and
+	// `FOLLOW_UP_QUESTION` marks a clarifying question.
 	Purpose TextAttachmentPurpose `json:"purpose,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
