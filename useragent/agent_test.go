@@ -129,6 +129,11 @@ func TestLookupAgentProvider(t *testing.T) {
 			envs:   map[string]string{"WINDSURF_AGENT": "1"},
 			expect: "windsurf",
 		},
+		{
+			name:   "pi",
+			envs:   map[string]string{"PI_CODING_AGENT": "true"},
+			expect: "pi",
+		},
 		// AGENT fallback behavior.
 		{
 			name:   "AGENT=cursor falls back to cursor",
