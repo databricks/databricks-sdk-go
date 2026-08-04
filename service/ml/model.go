@@ -2329,6 +2329,20 @@ func (s KafkaSubscriptionMode) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Kinesis-specific configuration for a Stream. For the underlying connector and
+// its source options, see the Databricks documentation on connecting to Amazon
+// Kinesis (https://docs.databricks.com/aws/en/connect/streaming/kinesis).
+type KinesisStreamConfig struct {
+	// Optional Kinesis source options, validated against a server-side
+	// allowlist at request time. Auth and connection details belong on the
+	// parent Stream's `connection_config`, not here.
+	ExtraOptions map[string]string `json:"extra_options,omitempty"`
+	// Kinesis stream ARNs to read from.
+	StreamArns *StreamArnList `json:"stream_arns,omitempty"`
+	// Kinesis stream names to read from.
+	StreamNames *StreamNameList `json:"stream_names,omitempty"`
+}
+
 // Returns the last N distinct values, ordered by the feature's timeseries
 // column.
 type LastDistinctFunction struct {
@@ -5146,6 +5160,13 @@ func (s Stream) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A list of Kinesis stream ARNs to read from.
+type StreamArnList struct {
+	// Kinesis stream ARNs to read from. For example,
+	// 'arn:aws:kinesis:us-west-2:111122223333:stream/stream-a'.
+	Arns []string `json:"arns,omitempty"`
+}
+
 // Specifies how to connect and authenticate to the stream platform.
 type StreamConnectionConfig struct {
 	// Direct mTLS configuration for stream platform access. This is only used
@@ -5166,6 +5187,12 @@ func (s *StreamConnectionConfig) UnmarshalJSON(b []byte) error {
 
 func (s StreamConnectionConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A list of Kinesis stream names to read from.
+type StreamNameList struct {
+	// Kinesis stream names to read from.
+	Names []string `json:"names,omitempty"`
 }
 
 // Schema definitions for the stream. Feature store supports both direct schemas
@@ -5206,6 +5233,8 @@ func (s StreamSource) MarshalJSON() ([]byte, error) {
 type StreamSourceConfig struct {
 	// Configuration for Apache Kafka streams.
 	KafkaStreamConfig *KafkaStreamConfig `json:"kafka_stream_config,omitempty"`
+	// Configuration for AWS Kinesis Data Streams.
+	KinesisStreamConfig *KinesisStreamConfig `json:"kinesis_stream_config,omitempty"`
 }
 
 // The streaming mode configuration for a streaming materialization pipeline.

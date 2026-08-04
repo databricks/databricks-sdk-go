@@ -94,7 +94,8 @@ type JobsService interface {
 	// Retrieves a list of jobs.
 	List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error)
 
-	// List runs in descending order by start time.
+	// List runs in descending order by end time. If a run has not finished, it
+	// falls back to start time.
 	ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error)
 
 	// Re-run one or more tasks. Tasks are re-run as part of the original job

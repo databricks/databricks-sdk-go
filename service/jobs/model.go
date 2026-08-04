@@ -4305,10 +4305,6 @@ type RunNow struct {
 	// launched with that idempotency token.
 	//
 	// This token must have at most 64 characters.
-	//
-	// For more information, see [How to ensure idempotency for jobs].
-	//
-	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
@@ -5636,10 +5632,6 @@ type SubmitRun struct {
 	// launched with that idempotency token.
 	//
 	// This token must have at most 64 characters.
-	//
-	// For more information, see [How to ensure idempotency for jobs].
-	//
-	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this

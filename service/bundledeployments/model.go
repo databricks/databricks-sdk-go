@@ -3,7 +3,6 @@
 package bundledeployments
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
@@ -635,7 +634,20 @@ type Operation struct {
 	// delete operations. Mutable: may be updated after creation via
 	// UpdateOperation. When updating, the caller must echo the last-observed
 	// `sequence_id` as a concurrency precondition.
-	State *json.RawMessage `json:"state,omitempty"`
+	//
+	// Opaque to this service: the string is stored and returned unchanged. This
+	// is deliberately not google.protobuf.Value, whose only numeric case is
+	// `double number_value`, so parsing the client's JSON into it rewrites
+	// every integer as a double - `1` reads back as `1.0`, which no longer
+	// deserializes into an integer field - and silently loses precision above
+	// 2^53, which is within range for IDs the client records.
+	//
+	// A string rather than bytes: the payload is always UTF-8 JSON, and proto3
+	// JSON maps bytes to base64, which inflates every request and response by a
+	// third and makes state unreadable in logs and API responses. Both generate
+	// the same OpenAPI schema ("type": "string"), so the SDKs are identical
+	// either way.
+	State string `json:"state,omitempty"`
 	// Whether the operation succeeded or failed. Mutable: may be updated after
 	// creation via UpdateOperation, e.g. when an operation recorded as failed
 	// is retried and eventually succeeds. A succeeded operation cannot carry an
@@ -774,8 +786,10 @@ type Resource struct {
 	ResourceKey string `json:"resource_key,omitempty"`
 	// The type of the deployment resource.
 	ResourceType DeploymentResourceType `json:"resource_type"`
-	// Serialized local config state (what the CLI deployed).
-	State *json.RawMessage `json:"state,omitempty"`
+	// Serialized local config state (what the CLI deployed). Opaque to this
+	// service; see Operation.state for why this is a string and not
+	// google.protobuf.Value.
+	State string `json:"state,omitempty"`
 	// When the last operation that updated this resource's recorded state was
 	// applied. Pairs with last_action_type and last_version_id (all three
 	// advance together on that write).
