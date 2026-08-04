@@ -145,8 +145,7 @@ type ListWorkspaceAssignmentDetailsProxyRequest struct {
 	// The maximum number of workspace assignment details to return. The service
 	// may return fewer than this value.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// A page token, received from a previous
-	// ListWorkspaceAssignmentDetailsProxy call. Provide this to retrieve the
+	// A page token from a previous list call. Provide this to retrieve the
 	// subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
@@ -245,7 +244,7 @@ func (f *PrincipalType) Type() string {
 
 // Request message for resolving a group with the given external ID from the
 // customer's IdP into Databricks. Will resolve metadata such as the group's
-// groupname, and inherited parent groups.
+// name and inherited parent groups.
 type ResolveGroupProxyRequest struct {
 	// Required. The external ID of the group in the customer's IdP.
 	ExternalId string `json:"external_id"`
@@ -253,7 +252,7 @@ type ResolveGroupProxyRequest struct {
 
 // Request message for resolving a group with the given external ID from the
 // customer's IdP into Databricks. Will resolve metadata such as the group's
-// groupname, and inherited parent groups.
+// name and inherited parent groups.
 type ResolveGroupRequest struct {
 	// Required. The external ID of the group in the customer's IdP.
 	ExternalId string `json:"external_id"`
@@ -266,7 +265,7 @@ type ResolveGroupResponse struct {
 
 // Request message for resolving a service principal with the given external ID
 // from the customer's IdP into Databricks. Will resolve metadata such as the
-// service principal's displayname, status, and inherited parent groups.
+// service principal's display name, status, and inherited parent groups.
 type ResolveServicePrincipalProxyRequest struct {
 	// Required. The external ID of the service principal in the customer's IdP.
 	ExternalId string `json:"external_id"`
@@ -274,7 +273,7 @@ type ResolveServicePrincipalProxyRequest struct {
 
 // Request message for resolving a service principal with the given external ID
 // from the customer's IdP into Databricks. Will resolve metadata such as the
-// service principal's displayname, status, and inherited parent groups.
+// service principal's display name, status, and inherited parent groups.
 type ResolveServicePrincipalRequest struct {
 	// Required. The external ID of the service principal in the customer's IdP.
 	ExternalId string `json:"external_id"`
@@ -287,7 +286,7 @@ type ResolveServicePrincipalResponse struct {
 
 // Request message for resolving a user with the given external ID from the
 // customer's IdP into Databricks. Will resolve metadata such as the user's
-// displayname, status, and inherited parent groups.
+// display name, status, and inherited parent groups.
 type ResolveUserProxyRequest struct {
 	// Required. The external ID of the user in the customer's IdP.
 	ExternalId string `json:"external_id"`
@@ -295,7 +294,7 @@ type ResolveUserProxyRequest struct {
 
 // Request message for resolving a user with the given external ID from the
 // customer's IdP into Databricks. Will resolve metadata such as the user's
-// displayname, status, and inherited parent groups.
+// display name, status, and inherited parent groups.
 type ResolveUserRequest struct {
 	// Required. The external ID of the user in the customer's IdP.
 	ExternalId string `json:"external_id"`
@@ -542,22 +541,21 @@ func (f *WorkspaceAccessDetailView) Type() string {
 // principal, or group) to a workspace, together with the entitlements that
 // assignment grants in the workspace.
 //
-// A WorkspaceAssignmentDetail exists only for principals that are directly
-// assigned to the workspace; principals that merely inherit workspace access
-// through a group are not represented here (see WorkspaceAccessDetail /
-// WorkspaceIdentityDetail for the effective, direct-or-indirect view). Creating
-// the resource assigns the principal to the workspace; deleting it removes the
-// assignment. The `entitlements` field is the only client-settable field and
-// defines the entitlements granted directly on this assignment;
-// `effective_entitlements` is the read-only union of those plus any granted via
-// group membership.
+// This resource covers only principals assigned directly to the workspace.
+// Principals that inherit workspace access through a group are not represented
+// here. See WorkspaceAccessDetail and WorkspaceIdentityDetail for the
+// effective, direct-or-indirect view. Creating the resource assigns the
+// principal to the workspace, and deleting it removes the assignment.
+//
+// `entitlements` is the only client-settable field. It holds the entitlements
+// granted directly on this assignment, including any the principal also holds
+// through a group. `effective_entitlements` is the read-only union of those and
+// any granted through group membership.
 //
 // A direct assignment always carries at least one directly-assigned
-// entitlement: the assignment is what grants the entitlement, so a
-// WorkspaceAssignmentDetail with an empty `entitlements` set is not a valid
-// state. Both create and update require a non-empty `entitlements` set (an
-// empty set is rejected); to remove a principal's assignment entirely, delete
-// the resource.
+// entitlement, because the assignment is what grants it. Create and update both
+// reject an empty `entitlements` set. To remove a principal's assignment
+// entirely, delete the resource.
 //
 // This resource replaces workspace assignment previously managed through the
 // workspace SCIM and permission-assignment APIs, and is intended for account
@@ -565,16 +563,15 @@ func (f *WorkspaceAccessDetailView) Type() string {
 type WorkspaceAssignmentDetail struct {
 	// The account ID parent of the workspace where the principal is assigned
 	AccountId string `json:"account_id,omitempty"`
-	// The principal's full effective entitlements granted in this workspace:
-	// every entitlement it holds whether granted directly or via group
-	// membership. Populated on Get; empty on List.
+	// Every entitlement the principal holds in this workspace, whether granted
+	// directly or through group membership. Get responses populate this field.
+	// List responses leave it empty.
 	EffectiveEntitlements []Entitlement `json:"effective_entitlements,omitempty"`
-	// Entitlements granted directly to the principal on this workspace. The
-	// only client-settable field: create and update manage exactly this set
-	// (including entitlements the principal also holds via a group). Not
-	// populated by ListWorkspaceAssignmentDetails (omitted for scalability);
-	// call GetWorkspaceAssignmentDetail to read the entitlements for a single
-	// principal.
+	// Entitlements granted directly to the principal on this workspace. This is
+	// the only client-settable field. Create and update manage exactly this
+	// set, including entitlements the principal also holds through a group.
+	// List responses leave this field empty. Get a single principal to read its
+	// entitlements.
 	Entitlements []Entitlement `json:"entitlements,omitempty"`
 	// The internal ID of the principal (user/sp/group) in Databricks.
 	PrincipalId int64 `json:"principal_id"`

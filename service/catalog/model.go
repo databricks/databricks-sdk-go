@@ -5011,7 +5011,7 @@ type ListMcpServicesRequest struct {
 	// selective metadata.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of MCP services to return. Defaults to 100 when unset or
-	// 0; the maximum is 1000. Use `next_page_token` to retrieve additional
+	// 0; the maximum is 100. Use `next_page_token` to retrieve additional
 	// pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
@@ -5141,7 +5141,7 @@ type ListModelProviderServicesRequest struct {
 	// access selective metadata.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of provider services to return. Defaults to 100 when unset
-	// or 0; the maximum is 1000. Use `next_page_token` to retrieve additional
+	// or 0; the maximum is 100. Use `next_page_token` to retrieve additional
 	// pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
@@ -5227,7 +5227,7 @@ type ListModelServicesRequest struct {
 	// selective metadata.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of model services to return. Defaults to 100 when unset or
-	// 0; the maximum is 1000. Use `next_page_token` to retrieve additional
+	// 0; the maximum is 100. Use `next_page_token` to retrieve additional
 	// pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
@@ -6279,16 +6279,6 @@ type ModelProviderServiceConfigAmazonBedrockProviderDirectConfig struct {
 	// AWS access-key-pair auth. Mutually exclusive with `service_credential`.
 	// Supersedes the flat `aws_access_key_id` / `aws_secret_access_key` fields.
 	AwsAccessKey *ModelProviderServiceConfigAwsAccessKey `json:"aws_access_key,omitempty"`
-	// Deprecated flat AWS access key ID. Superseded by
-	// `aws_access_key.access_key_id`. Kept for one migration cycle; the handler
-	// mirrors it to/from `aws_access_key`. Treated as username-equivalent (not
-	// a secret value): round-trips on reads and is scrubbed from audit logs.
-	AwsAccessKeyId string `json:"aws_access_key_id,omitempty"`
-	// Deprecated flat AWS secret access key. Superseded by
-	// `aws_access_key.secret_access_key`. Kept for one migration cycle; the
-	// handler mirrors it to/from `aws_access_key`. Supplied as inline plaintext
-	// via `ProviderSecret.plaintext`.
-	AwsSecretAccessKey *ModelProviderServiceConfigProviderSecret `json:"aws_secret_access_key,omitempty"`
 	// AWS region where the Bedrock endpoint is hosted (e.g., `us-east-1`).
 	// Required on Create.
 	Region string `json:"region,omitempty"`
@@ -6433,15 +6423,6 @@ type ModelProviderServiceConfigAzureOpenAiProviderDirectConfig struct {
 	// Full Azure OpenAI endpoint base URL, e.g.
 	// `https://myresource.openai.azure.com`. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
-	// Deprecated flat Entra client ID. Superseded by
-	// `entra_service_principal.client_id`. Kept for one migration cycle; the
-	// handler mirrors it to/from `entra_service_principal`.
-	ClientId string `json:"client_id,omitempty"`
-	// Deprecated flat Entra client secret. Superseded by
-	// `entra_service_principal.client_secret`. Kept for one migration cycle;
-	// the handler mirrors it to/from `entra_service_principal`. Supplied as
-	// inline plaintext via `ProviderSecret.plaintext`.
-	ClientSecret *ModelProviderServiceConfigProviderSecret `json:"client_secret,omitempty"`
 	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
 	// `service_credential`. Supersedes the flat `tenant_id` / `client_id` /
 	// `client_secret` fields.
@@ -6455,10 +6436,6 @@ type ModelProviderServiceConfigAzureOpenAiProviderDirectConfig struct {
 	// also populated. Only supported on Azure-hosted workspaces; Create
 	// requests from other clouds are rejected with INVALID_PARAMETER_VALUE.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
-	// Deprecated flat Entra tenant ID. Superseded by
-	// `entra_service_principal.tenant_id`. Kept for one migration cycle; the
-	// handler mirrors it to/from `entra_service_principal`.
-	TenantId string `json:"tenant_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6589,8 +6566,14 @@ type ModelProviderServiceConfigGeminiEnterpriseProviderConfig struct {
 }
 
 // Direct form of Gemini Enterprise provider config.
+//
+// Authentication is one of two mutually exclusive modes; exactly one must be
+// supplied on Create: - API key: set `api_key`, leave `service_credential`
+// unset. - UC service credential: set `service_credential`, leave `api_key`
+// unset.
 type ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig struct {
-	// Google Gemini Enterprise API key. Required on Create. Supplied as inline
+	// Google Gemini Enterprise API key. Required on Create when using API-key
+	// auth; mutually exclusive with `service_credential`. Supplied as inline
 	// plaintext via `ProviderSecret.plaintext`.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// GCP project ID hosting the Gemini Enterprise endpoint. Required on
@@ -6636,15 +6619,6 @@ type ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig struct {
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// Microsoft AI Foundry endpoint URL. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
-	// Deprecated flat Entra client ID. Superseded by
-	// `entra_service_principal.client_id`. Kept for one migration cycle; the
-	// handler mirrors it to/from `entra_service_principal`.
-	ClientId string `json:"client_id,omitempty"`
-	// Deprecated flat Entra client secret. Superseded by
-	// `entra_service_principal.client_secret`. Kept for one migration cycle;
-	// the handler mirrors it to/from `entra_service_principal`. Supplied as
-	// inline plaintext via `ProviderSecret.plaintext`.
-	ClientSecret *ModelProviderServiceConfigProviderSecret `json:"client_secret,omitempty"`
 	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
 	// `service_credential`. Supersedes the flat `tenant_id` / `client_id` /
 	// `client_secret` fields.
@@ -6658,10 +6632,6 @@ type ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig struct {
 	// also populated. Only supported on Azure-hosted workspaces; Create
 	// requests from other clouds are rejected with INVALID_PARAMETER_VALUE.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
-	// Deprecated flat Entra tenant ID. Superseded by
-	// `entra_service_principal.tenant_id`. Kept for one migration cycle; the
-	// handler mirrors it to/from `entra_service_principal`.
-	TenantId string `json:"tenant_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

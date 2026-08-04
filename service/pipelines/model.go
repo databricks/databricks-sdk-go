@@ -3699,6 +3699,10 @@ type UpdateInfo struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Indicates whether the update is either part of a continuous job run, or
+	// running in legacy continuous pipeline mode. Returned only for GetUpdate;
+	// not populated in ListUpdates responses.
+	Mode UpdateMode `json:"mode,omitempty"`
 	// Key/value map of parameters used to initiate the update
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// The ID of the pipeline.
@@ -3843,6 +3847,43 @@ func (f *UpdateInfoState) Values() []UpdateInfoState {
 // Type always returns UpdateInfoState to satisfy [pflag.Value] interface
 func (f *UpdateInfoState) Type() string {
 	return "UpdateInfoState"
+}
+
+type UpdateMode string
+
+const UpdateModeContinuous UpdateMode = `CONTINUOUS`
+
+const UpdateModeDefault UpdateMode = `DEFAULT`
+
+// String representation for [fmt.Print]
+func (f *UpdateMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UpdateMode) Set(v string) error {
+	switch v {
+	case `CONTINUOUS`, `DEFAULT`:
+		*f = UpdateMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "DEFAULT"`, v)
+	}
+}
+
+// Values returns all possible values for UpdateMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateMode) Values() []UpdateMode {
+	return []UpdateMode{
+		UpdateModeContinuous,
+		UpdateModeDefault,
+	}
+}
+
+// Type always returns UpdateMode to satisfy [pflag.Value] interface
+func (f *UpdateMode) Type() string {
+	return "UpdateMode"
 }
 
 type UpdateStateInfo struct {
