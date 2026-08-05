@@ -32,6 +32,8 @@ func (s ActionConfiguration) MarshalJSON() ([]byte, error) {
 // Type of action that a budget alert executes when its threshold is crossed.
 type ActionConfigurationType string
 
+const ActionConfigurationTypeBlockUsage ActionConfigurationType = `BLOCK_USAGE`
+
 const ActionConfigurationTypeEmailNotification ActionConfigurationType = `EMAIL_NOTIFICATION`
 
 // String representation for [fmt.Print]
@@ -42,11 +44,11 @@ func (f *ActionConfigurationType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ActionConfigurationType) Set(v string) error {
 	switch v {
-	case `EMAIL_NOTIFICATION`:
+	case `BLOCK_USAGE`, `EMAIL_NOTIFICATION`:
 		*f = ActionConfigurationType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EMAIL_NOTIFICATION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCK_USAGE", "EMAIL_NOTIFICATION"`, v)
 	}
 }
 
@@ -55,6 +57,7 @@ func (f *ActionConfigurationType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *ActionConfigurationType) Values() []ActionConfigurationType {
 	return []ActionConfigurationType{
+		ActionConfigurationTypeBlockUsage,
 		ActionConfigurationTypeEmailNotification,
 	}
 }
@@ -70,12 +73,19 @@ type AlertConfiguration struct {
 	ActionConfigurations []ActionConfiguration `json:"action_configurations,omitempty"`
 	// Databricks alert configuration ID.
 	AlertConfigurationId string `json:"alert_configuration_id,omitempty"`
+	// Per-principal threshold overrides for this alert. Only applies to
+	// per-user alerts (`scope_type` =
+	// `ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER`); ignored for shared alerts.
+	PrincipalOverrides []PrincipalOverride `json:"principal_overrides,omitempty"`
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
 	QuantityThreshold string `json:"quantity_threshold,omitempty"`
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
 	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
+	// How the alert threshold is evaluated. Determines whether spend is tracked
+	// in aggregate or per individual user.
+	ScopeType AlertConfigurationScopeType `json:"scope_type,omitempty"`
 	// The time window of usage data for the budget.
 	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
 	// The evaluation method to determine when this budget alert is in a
@@ -125,6 +135,44 @@ func (f *AlertConfigurationQuantityType) Values() []AlertConfigurationQuantityTy
 // Type always returns AlertConfigurationQuantityType to satisfy [pflag.Value] interface
 func (f *AlertConfigurationQuantityType) Type() string {
 	return "AlertConfigurationQuantityType"
+}
+
+// Evaluation scope for an alert configuration.
+type AlertConfigurationScopeType string
+
+const AlertConfigurationScopeTypeAlertConfigurationScopeTypePerUser AlertConfigurationScopeType = `ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER`
+
+const AlertConfigurationScopeTypeAlertConfigurationScopeTypeShared AlertConfigurationScopeType = `ALERT_CONFIGURATION_SCOPE_TYPE_SHARED`
+
+// String representation for [fmt.Print]
+func (f *AlertConfigurationScopeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertConfigurationScopeType) Set(v string) error {
+	switch v {
+	case `ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER`, `ALERT_CONFIGURATION_SCOPE_TYPE_SHARED`:
+		*f = AlertConfigurationScopeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER", "ALERT_CONFIGURATION_SCOPE_TYPE_SHARED"`, v)
+	}
+}
+
+// Values returns all possible values for AlertConfigurationScopeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertConfigurationScopeType) Values() []AlertConfigurationScopeType {
+	return []AlertConfigurationScopeType{
+		AlertConfigurationScopeTypeAlertConfigurationScopeTypePerUser,
+		AlertConfigurationScopeTypeAlertConfigurationScopeTypeShared,
+	}
+}
+
+// Type always returns AlertConfigurationScopeType to satisfy [pflag.Value] interface
+func (f *AlertConfigurationScopeType) Type() string {
+	return "AlertConfigurationScopeType"
 }
 
 type AlertConfigurationTimePeriod string
@@ -212,6 +260,9 @@ type BudgetConfiguration struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// The resource scope for this budget. Determines whether the budget tracks
+	// all resources or a specific resource.
+	ResourceType BudgetResourceType `json:"resource_type,omitempty"`
 	// Update time of this budget configuration.
 	UpdateTime int64 `json:"update_time,omitempty"`
 
@@ -325,6 +376,45 @@ func (s BudgetPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Resource scope for a budget configuration. Determines whether the budget
+// tracks all resources or a specific resource.
+type BudgetResourceType string
+
+const BudgetResourceTypeBudgetResourceTypeAllResources BudgetResourceType = `BUDGET_RESOURCE_TYPE_ALL_RESOURCES`
+
+const BudgetResourceTypeBudgetResourceTypeUnityAiGateway BudgetResourceType = `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`
+
+// String representation for [fmt.Print]
+func (f *BudgetResourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *BudgetResourceType) Set(v string) error {
+	switch v {
+	case `BUDGET_RESOURCE_TYPE_ALL_RESOURCES`, `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`:
+		*f = BudgetResourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BUDGET_RESOURCE_TYPE_ALL_RESOURCES", "BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY"`, v)
+	}
+}
+
+// Values returns all possible values for BudgetResourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *BudgetResourceType) Values() []BudgetResourceType {
+	return []BudgetResourceType{
+		BudgetResourceTypeBudgetResourceTypeAllResources,
+		BudgetResourceTypeBudgetResourceTypeUnityAiGateway,
+	}
+}
+
+// Type always returns BudgetResourceType to satisfy [pflag.Value] interface
+func (f *BudgetResourceType) Type() string {
+	return "BudgetResourceType"
+}
+
 type CreateBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
@@ -376,6 +466,9 @@ type CreateBudgetConfigurationBudget struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// The resource scope for this budget. Determines whether the budget tracks
+	// all resources or a specific resource.
+	ResourceType BudgetResourceType `json:"resource_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -409,12 +502,19 @@ type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
 	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations `json:"action_configurations,omitempty"`
+	// Per-principal threshold overrides for this alert. Only applies to
+	// per-user alerts (`scope_type` =
+	// `ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER`); ignored for shared alerts.
+	PrincipalOverrides []PrincipalOverride `json:"principal_overrides,omitempty"`
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
 	QuantityThreshold string `json:"quantity_threshold,omitempty"`
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
 	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
+	// How the alert threshold is evaluated. Determines whether spend is tracked
+	// in aggregate or per individual user.
+	ScopeType AlertConfigurationScopeType `json:"scope_type,omitempty"`
 	// The time window of usage data for the budget.
 	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
 	// The evaluation method to determine when this budget alert is in a
@@ -1076,6 +1176,26 @@ func (f *OutputFormat) Type() string {
 	return "OutputFormat"
 }
 
+// Per-principal threshold override on a PER_USER alert: bumps the alert's
+// quantity_threshold for one principal_id.
+type PrincipalOverride struct {
+	// Dollar amount that overrides the parent alert's quantity_threshold for
+	// this principal.
+	OverrideThreshold string `json:"override_threshold,omitempty"`
+	// Account-level principal id (user, group, or service principal).
+	PrincipalId int64 `json:"principal_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PrincipalOverride) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PrincipalOverride) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SortSpec struct {
 	// Whether to sort in descending order.
 	Descending bool `json:"descending,omitempty" url:"descending,omitempty"`
@@ -1142,6 +1262,9 @@ type UpdateBudgetConfigurationBudget struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// The resource scope for this budget. Determines whether the budget tracks
+	// all resources or a specific resource.
+	ResourceType BudgetResourceType `json:"resource_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
