@@ -48,6 +48,7 @@ const (
 	cacheUpdateRecoveryAttempts = 5
 
 	cacheUpdateRecoveryInitialDelay = 25 * time.Millisecond
+	cacheUpdateRecoveryDelayFactor  = 2
 
 	// Concurrent refreshes can finish at slightly different times, so their
 	// expiration times need not be identical.
@@ -342,9 +343,9 @@ func isFreshReplacement(old, candidate, cached *oauth2.Token) bool {
 // recoverCacheUpdate checks whether a concurrent cache update completed.
 // Retrying reads instead of writes avoids recreating the write race.
 func (a *PersistentAuth) recoverCacheUpdate(old, candidate *oauth2.Token) *oauth2.Token {
+	delay := cacheUpdateRecoveryInitialDelay
 	for attempt := 0; attempt < cacheUpdateRecoveryAttempts; attempt++ {
 		if attempt > 0 {
-			delay := cacheUpdateRecoveryInitialDelay << (attempt - 1)
 			timer := time.NewTimer(delay)
 			select {
 			case <-a.ctx.Done():
@@ -352,6 +353,7 @@ func (a *PersistentAuth) recoverCacheUpdate(old, candidate *oauth2.Token) *oauth
 				return nil
 			case <-timer.C:
 			}
+			delay *= cacheUpdateRecoveryDelayFactor
 		}
 
 		cached, err := a.cache.Lookup(a.oAuthArgument.GetCacheKey())
