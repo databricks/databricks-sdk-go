@@ -29,8 +29,9 @@ type BundleDeploymentsService interface {
 	// already exists under the version, the server returns `ALREADY_EXISTS`.
 	//
 	// On success the server also updates the corresponding deployment-level
-	// Resource (creating it if this is the first operation for that
-	// resource_key, or removing it if action_type is DELETE).
+	// resource, creating it if this is the first operation for that
+	// resource_key and removing it if the operation records no `state` (see
+	// that field).
 	CreateOperation(ctx context.Context, request CreateOperationRequest) (*Operation, error)
 
 	// Creates a new version under a deployment.
@@ -88,8 +89,11 @@ type BundleDeploymentsService interface {
 	// observed, and the server rejects the update with `ABORTED` if the
 	// operation has been modified since. On success the server increments
 	// `sequence_id`; updates to `state` and `resource_id` are mirrored onto the
-	// corresponding deployment-level Resource projection. The parent version
-	// must be in progress, delete operations cannot be updated, and after the
-	// update is applied a succeeded operation cannot carry an `error_message`.
+	// corresponding deployment-level resource. Listing `state` in `update_mask`
+	// with no value clears it, which removes the resource, so a delete that is
+	// retried until it succeeds must clear `state`. The parent version must be
+	// in progress, and after the update is applied a succeeded operation cannot
+	// carry an `error_message`. See the `state` and `resource_id` fields for
+	// the rest.
 	UpdateOperation(ctx context.Context, request UpdateOperationRequest) (*Operation, error)
 }
