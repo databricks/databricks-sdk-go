@@ -3617,8 +3617,24 @@ func (f *TikTokAdsOptionsTikTokReportType) Type() string {
 type Transformer struct {
 	// Required: the wire format of the data.
 	Format TransformerFormat `json:"format,omitempty"`
+	// Optional input column to transform. When set, the transformer reads from
+	// this column instead of the default source column.
+	InputColumn string `json:"input_column,omitempty"`
 
 	JsonOptions *JsonTransformerOptions `json:"json_options,omitempty"`
+	// Optional output column name. When set, the transformed result is written
+	// to this column instead of replacing the input column.
+	OutputColumn string `json:"output_column,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Transformer) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Transformer) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TransformerFormat string
