@@ -77,7 +77,6 @@ func backoff(attempt int) time.Duration {
 		wait = maxWait
 	}
 	// add some random jitter
-	rand.Seed(time.Now().UnixNano())
 	jitter := rand.Intn(int(maxJitter)-int(minJitter)+1) + int(minJitter)
 	wait += time.Duration(jitter)
 	return wait
@@ -233,8 +232,8 @@ func shouldRetry(err error) bool {
 	if err == nil {
 		return false
 	}
-	e := err.(*Err)
-	if e == nil {
+	e, ok := err.(*Err)
+	if !ok || e == nil {
 		return false
 	}
 	return !e.Halt
