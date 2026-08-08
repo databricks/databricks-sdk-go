@@ -310,11 +310,12 @@ type ServicePrincipal struct {
 	// The parent account ID for the service principal in Databricks.
 	AccountId string `json:"account_id,omitempty"`
 	// The activity status of a service principal in a Databricks account.
-	AccountSpStatus State `json:"account_sp_status,omitempty"`
-	// Application ID of the service principal.
+	AccountSpStatus State `json:"account_sp_status"`
+	// Application ID of the service principal. Set at creation time and cannot
+	// be changed afterwards; when omitted, the server generates one.
 	ApplicationId string `json:"application_id,omitempty"`
 	// Display name of the service principal.
-	DisplayName string `json:"display_name,omitempty"`
+	DisplayName string `json:"display_name"`
 	// ExternalId of the service principal in the customer's IdP.
 	ExternalId string `json:"external_id,omitempty"`
 	// Internal service principal ID of the service principal in Databricks.
@@ -396,15 +397,15 @@ type User struct {
 	// The accountId parent of the user in Databricks.
 	AccountId string `json:"account_id,omitempty"`
 	// The activity status of a user in a Databricks account.
-	AccountUserStatus State `json:"account_user_status,omitempty"`
+	AccountUserStatus State `json:"account_user_status"`
 	// ExternalId of the user in the customer's IdP.
 	ExternalId string `json:"external_id,omitempty"`
 
-	FullName *UserFullName `json:"full_name,omitempty"`
+	FullName UserFullName `json:"full_name"`
 	// Internal userId of the user in Databricks.
 	UserId string `json:"user_id,omitempty"`
 	// Username/email of the user.
-	Username string `json:"username,omitempty"`
+	Username string `json:"username"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

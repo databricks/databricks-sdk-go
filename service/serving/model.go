@@ -2094,6 +2094,8 @@ const ServedModelInputWorkloadTypeGpuSmall ServedModelInputWorkloadType = `GPU_S
 
 const ServedModelInputWorkloadTypeGpuXlarge ServedModelInputWorkloadType = `GPU_XLARGE`
 
+const ServedModelInputWorkloadTypeGpuXlarge8 ServedModelInputWorkloadType = `GPU_XLARGE_8`
+
 const ServedModelInputWorkloadTypeMultigpuMedium ServedModelInputWorkloadType = `MULTIGPU_MEDIUM`
 
 // String representation for [fmt.Print]
@@ -2104,11 +2106,11 @@ func (f *ServedModelInputWorkloadType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServedModelInputWorkloadType) Set(v string) error {
 	switch v {
-	case `CPU`, `CPU_LARGE`, `CPU_MEDIUM`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `GPU_XLARGE`, `MULTIGPU_MEDIUM`:
+	case `CPU`, `CPU_LARGE`, `CPU_MEDIUM`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `GPU_XLARGE`, `GPU_XLARGE_8`, `MULTIGPU_MEDIUM`:
 		*f = ServedModelInputWorkloadType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CPU", "CPU_LARGE", "CPU_MEDIUM", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "GPU_XLARGE", "MULTIGPU_MEDIUM"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CPU", "CPU_LARGE", "CPU_MEDIUM", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "GPU_XLARGE", "GPU_XLARGE_8", "MULTIGPU_MEDIUM"`, v)
 	}
 }
 
@@ -2124,6 +2126,7 @@ func (f *ServedModelInputWorkloadType) Values() []ServedModelInputWorkloadType {
 		ServedModelInputWorkloadTypeGpuMedium,
 		ServedModelInputWorkloadTypeGpuSmall,
 		ServedModelInputWorkloadTypeGpuXlarge,
+		ServedModelInputWorkloadTypeGpuXlarge8,
 		ServedModelInputWorkloadTypeMultigpuMedium,
 	}
 }
@@ -2596,6 +2599,8 @@ const ServingModelWorkloadTypeGpuSmall ServingModelWorkloadType = `GPU_SMALL`
 
 const ServingModelWorkloadTypeGpuXlarge ServingModelWorkloadType = `GPU_XLARGE`
 
+const ServingModelWorkloadTypeGpuXlarge8 ServingModelWorkloadType = `GPU_XLARGE_8`
+
 const ServingModelWorkloadTypeMultigpuMedium ServingModelWorkloadType = `MULTIGPU_MEDIUM`
 
 // String representation for [fmt.Print]
@@ -2606,11 +2611,11 @@ func (f *ServingModelWorkloadType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServingModelWorkloadType) Set(v string) error {
 	switch v {
-	case `CPU`, `CPU_LARGE`, `CPU_MEDIUM`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `GPU_XLARGE`, `MULTIGPU_MEDIUM`:
+	case `CPU`, `CPU_LARGE`, `CPU_MEDIUM`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `GPU_XLARGE`, `GPU_XLARGE_8`, `MULTIGPU_MEDIUM`:
 		*f = ServingModelWorkloadType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CPU", "CPU_LARGE", "CPU_MEDIUM", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "GPU_XLARGE", "MULTIGPU_MEDIUM"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CPU", "CPU_LARGE", "CPU_MEDIUM", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "GPU_XLARGE", "GPU_XLARGE_8", "MULTIGPU_MEDIUM"`, v)
 	}
 }
 
@@ -2626,6 +2631,7 @@ func (f *ServingModelWorkloadType) Values() []ServingModelWorkloadType {
 		ServingModelWorkloadTypeGpuMedium,
 		ServingModelWorkloadTypeGpuSmall,
 		ServingModelWorkloadTypeGpuXlarge,
+		ServingModelWorkloadTypeGpuXlarge8,
 		ServingModelWorkloadTypeMultigpuMedium,
 	}
 }
@@ -2640,7 +2646,10 @@ type TelemetryConfig struct {
 	InferenceTableConfig *TelemetryInferenceTableConfig `json:"inference_table_config,omitempty"`
 	// The Unity Catalog tables to which endpoint telemetry (logs, traces, and
 	// metrics) is exported. Provide this to create a new telemetry profile for
-	// the endpoint from the given tables.
+	// the endpoint from the given tables. This field selects the tables when
+	// writing a telemetry configuration; it is not returned when reading one.
+	// Responses identify the resulting profile with `telemetry_profile_id`
+	// instead.
 	TableNames *UnityCatalogTableNames `json:"table_names,omitempty"`
 	// The ID of an existing telemetry profile to apply to this endpoint.
 	// Provide this to reuse a telemetry profile that has already been created,
