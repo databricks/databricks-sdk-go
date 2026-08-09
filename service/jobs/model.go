@@ -27,6 +27,10 @@ type AiRuntimeTask struct {
 	// parameter server, separate eval node, etc.) with multiple entries are the
 	// eventual intent but not yet supported.
 	Deployments []DeploymentSpec `json:"deployments"`
+	// Optional Docker image URL for a custom container image. When set, the
+	// task runs on the specified container image instead of the default
+	// Databricks client image. Format: `{organization}/{repository}:{tag}`
+	DockerImageUrl string `json:"docker_image_url,omitempty"`
 	// MLflow experiment name for this run. If an experiment with this name
 	// already exists under the calling user, the run is appended to it;
 	// otherwise a new experiment is created. To target a specific MLflow
