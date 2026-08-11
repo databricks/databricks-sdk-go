@@ -999,6 +999,8 @@ const ConnectionTypeMetaMarketing ConnectionType = `META_MARKETING`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
 
+const ConnectionTypeNetsuite ConnectionType = `NETSUITE`
+
 const ConnectionTypeOracle ConnectionType = `ORACLE`
 
 const ConnectionTypeOutlook ConnectionType = `OUTLOOK`
@@ -1039,11 +1041,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1065,6 +1067,7 @@ func (f *ConnectionType) Values() []ConnectionType {
 		ConnectionTypeJdbc,
 		ConnectionTypeMetaMarketing,
 		ConnectionTypeMysql,
+		ConnectionTypeNetsuite,
 		ConnectionTypeOracle,
 		ConnectionTypeOutlook,
 		ConnectionTypePostgresql,
@@ -4162,23 +4165,10 @@ func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetMcpServiceRequest struct {
-	// Whether to include MCP services for which the principal can only access
-	// selective metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Resource name of the MCP service. Format:
 	// `mcp-services/{catalog}.{schema}.{mcp_service}`. Each `{...}` component
 	// is capped at 255 characters individually.
 	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GetMcpServiceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetMcpServiceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetMetastoreRequest struct {
@@ -4242,43 +4232,17 @@ func (s GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
 }
 
 type GetModelProviderServiceRequest struct {
-	// Whether to include provider services for which the principal can only
-	// access selective metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Resource name of the model provider service. Format:
 	// `model-provider-services/{catalog}.{schema}.{model_provider_service}`.
 	// Each `{...}` component is capped at 255 characters individually.
 	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GetModelProviderServiceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetModelProviderServiceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetModelServiceRequest struct {
-	// Whether to include model services for which the principal can only access
-	// selective metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Resource name of the model service. Format:
 	// `model-services/{catalog}.{schema}.{model_service}`. Each `{...}`
 	// component is capped at 255 characters individually.
 	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GetModelServiceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetModelServiceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetModelVersionRequest struct {
@@ -4408,6 +4372,19 @@ type GetSecretRequest struct {
 	// The three-level (fully qualified) name of the secret (for example,
 	// **catalog_name.schema_name.secret_name**).
 	FullName string `json:"-" url:"-"`
+	// Whether to include the secret value in the response. Defaults to false.
+	// Requires the **READ_SECRET** privilege.
+	IncludeValue bool `json:"-" url:"include_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetSecretRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetSecretRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GetStorageCredentialRequest struct {
@@ -5014,9 +4991,6 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListMcpServicesRequest struct {
-	// Whether to include MCP services for which the principal can only access
-	// selective metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of MCP services to return. Defaults to 100 when unset or
 	// 0; the maximum is 100. Use `next_page_token` to retrieve additional
 	// pages.
@@ -5144,9 +5118,6 @@ func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListModelProviderServicesRequest struct {
-	// Whether to include provider services for which the principal can only
-	// access selective metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of provider services to return. Defaults to 100 when unset
 	// or 0; the maximum is 100. Use `next_page_token` to retrieve additional
 	// pages.
@@ -5230,9 +5201,6 @@ func (s ListModelProviderServicesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListModelServicesRequest struct {
-	// Whether to include model services for which the principal can only access
-	// selective metadata.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of model services to return. Defaults to 100 when unset or
 	// 0; the maximum is 100. Use `next_page_token` to retrieve additional
 	// pages.
@@ -5970,9 +5938,6 @@ func (f *MatchType) Type() string {
 // Connection, or Databricks-hosted via an internal server -- and exposes its
 // tools for discovery, authorization, and invocation.
 type McpService struct {
-	// Whether the caller sees only metadata available through the BROWSE
-	// privilege.
-	BrowseOnly bool `json:"browse_only,omitempty"`
 	// User-provided description.
 	Comment string `json:"comment,omitempty"`
 	// Operational configuration: connection, tool selectors, rate limit.
@@ -6141,9 +6106,6 @@ func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
 // provider serving multiple models); a single ModelService can fan out across
 // multiple ModelProviderServices for traffic split or failover.
 type ModelProviderService struct {
-	// Whether the caller sees only metadata available through the BROWSE
-	// privilege.
-	BrowseOnly bool `json:"browse_only,omitempty"`
 	// User-provided description.
 	Comment string `json:"comment,omitempty"`
 	// Behavioral configuration: provider connection, model catalog, and
@@ -6284,7 +6246,6 @@ type ModelProviderServiceConfigAmazonBedrockProviderConfig struct {
 // than one mode is rejected.
 type ModelProviderServiceConfigAmazonBedrockProviderDirectConfig struct {
 	// AWS access-key-pair auth. Mutually exclusive with `service_credential`.
-	// Supersedes the flat `aws_access_key_id` / `aws_secret_access_key` fields.
 	AwsAccessKey *ModelProviderServiceConfigAwsAccessKey `json:"aws_access_key,omitempty"`
 	// AWS region where the Bedrock endpoint is hosted (e.g., `us-east-1`).
 	// Required on Create.
@@ -6431,8 +6392,7 @@ type ModelProviderServiceConfigAzureOpenAiProviderDirectConfig struct {
 	// `https://myresource.openai.azure.com`. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
 	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
-	// `service_credential`. Supersedes the flat `tenant_id` / `client_id` /
-	// `client_secret` fields.
+	// `service_credential`.
 	EntraServicePrincipal *ModelProviderServiceConfigEntraServicePrincipal `json:"entra_service_principal,omitempty"`
 	// Reference to a UC service credential authorizing Azure OpenAI requests.
 	// On Create the caller supplies `service_credential.name` in the AIP-122
@@ -6627,8 +6587,7 @@ type ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig struct {
 	// Microsoft AI Foundry endpoint URL. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
 	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
-	// `service_credential`. Supersedes the flat `tenant_id` / `client_id` /
-	// `client_secret` fields.
+	// `service_credential`.
 	EntraServicePrincipal *ModelProviderServiceConfigEntraServicePrincipal `json:"entra_service_principal,omitempty"`
 	// Reference to a UC service credential authorizing Microsoft Foundry
 	// requests. On Create the caller supplies `service_credential.name` in the
@@ -6732,9 +6691,6 @@ type ModelProviderServiceConfigServiceCredential struct {
 // access control, rate limits, guardrails, and auditing to the traffic it
 // serves.
 type ModelService struct {
-	// Whether the caller sees only metadata available through the BROWSE
-	// privilege.
-	BrowseOnly bool `json:"browse_only,omitempty"`
 	// User-provided description.
 	Comment string `json:"comment,omitempty"`
 	// Operational configuration: destinations, routing, rate limits, inference
@@ -8018,8 +7974,8 @@ type PolicyInfo struct {
 	// Optional list of user or group names that should be excluded from the
 	// policy.
 	ExceptPrincipals []string `json:"except_principals,omitempty"`
-	// Type of securables that the policy should take effect on. Only `TABLE` is
-	// supported at this moment. Required on create and optional on update.
+	// Type of securables that the policy should take effect on. Required on
+	// create and optional on update.
 	ForSecurableType SecurableType `json:"for_securable_type"`
 	// Options for grant policies. Valid only if `policy_type` is
 	// `POLICY_TYPE_GRANT`. Required on create and optional on update. When

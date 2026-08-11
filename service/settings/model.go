@@ -983,6 +983,8 @@ type CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode strin
 
 const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeFullAccess CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `FULL_ACCESS`
 
+const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeLegacyMode CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `LEGACY_MODE`
+
 const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeRestrictedAccess CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `RESTRICTED_ACCESS`
 
 // String representation for [fmt.Print]
@@ -993,11 +995,11 @@ func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) 
 // Set raw string value and validate it against allowed values
 func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) Set(v string) error {
 	switch v {
-	case `FULL_ACCESS`, `RESTRICTED_ACCESS`:
+	case `FULL_ACCESS`, `LEGACY_MODE`, `RESTRICTED_ACCESS`:
 		*f = CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "RESTRICTED_ACCESS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "LEGACY_MODE", "RESTRICTED_ACCESS"`, v)
 	}
 }
 
@@ -1007,6 +1009,7 @@ func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) 
 func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) Values() []CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode {
 	return []CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode{
 		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeFullAccess,
+		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeLegacyMode,
 		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeRestrictedAccess,
 	}
 }
