@@ -45,6 +45,9 @@ type App struct {
 	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.
 	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
+	// Forward the user's access token to the app. Requires stopping and
+	// starting app compute to take effect.
+	ForwardUserAccessToken bool `json:"forward_user_access_token,omitempty"`
 	// Git repository configuration for app deployments. When specified,
 	// deployments can reference code from this repository by providing only the
 	// git reference (branch, tag, or commit).
@@ -1394,6 +1397,9 @@ type AppUpdate struct {
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
 
 	Description string `json:"description,omitempty"`
+	// Forward the user's access token to the app. Requires stopping and
+	// starting app compute to take effect.
+	ForwardUserAccessToken bool `json:"forward_user_access_token,omitempty"`
 
 	GitRepository *GitRepository `json:"git_repository,omitempty"`
 
