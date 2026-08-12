@@ -9,6 +9,19 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+// Top-level configuration for API Source connectors with arbitrary
+// configuration.
+type ApiSourceConnectorConfig struct {
+	// Arbitrary key-value configuration values for the API Source connector.
+	Configs map[string]string `json:"configs,omitempty"`
+}
+
+// Options for API Source connectors with arbitrary configuration.
+type ApiSourceConnectorOptions struct {
+	// Arbitrary key-value configuration options for the API Source connector.
+	Options map[string]string `json:"options,omitempty"`
+}
+
 type ApplyEnvironmentRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
@@ -208,6 +221,9 @@ func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
 // Wrapper message for source-specific options to support multiple connector
 // types
 type ConnectorOptions struct {
+	// Connector-specific options for API Source connectors.
+	ApiSourceConnectorOptions *ApiSourceConnectorOptions `json:"api_source_connector_options,omitempty"`
+
 	ConfluenceOptions *ConfluenceConnectorOptions `json:"confluence_options,omitempty"`
 
 	GdriveOptions *GoogleDriveOptions `json:"gdrive_options,omitempty"`
@@ -3156,6 +3172,8 @@ func (s SourceCatalogConfig) MarshalJSON() ([]byte, error) {
 }
 
 type SourceConfig struct {
+	// Connector-specific top-level configuration for API Source connectors.
+	ApiSourceConnectorConfig *ApiSourceConnectorConfig `json:"api_source_connector_config,omitempty"`
 	// Catalog-level source configuration parameters
 	Catalog *SourceCatalogConfig `json:"catalog,omitempty"`
 
