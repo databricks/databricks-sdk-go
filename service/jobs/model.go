@@ -37,6 +37,13 @@ type AiRuntimeTask struct {
 	// storage location (for example, when running as a service principal), set
 	// `mlflow_experiment_directory`.
 	Experiment string `json:"experiment"`
+	// Optional root location for MLflow artifacts logged by the run. If this
+	// field isn't specified the default artifact location will be in dbfs i.e.
+	// `dbfs:/databricks/mlflow-tracking/<experiment_id>/...` If dbfs access is
+	// restricted or UC is preferred this can be a custom location in UC:
+	// `dbfs:/Volumes/<catalog>/<schema>/<volume>/...` The location should be
+	// unique for each experiment.
+	MlflowArtifactLocation string `json:"mlflow_artifact_location,omitempty"`
 	// Optional workspace directory under which the MLflow experiment named in
 	// `experiment` is created. Must start with `/Workspace`. Set this when
 	// running as a service principal that has no default user directory; for
@@ -242,6 +249,12 @@ type BaseJob struct {
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
+	// Per-trigger runtime information for the multi-trigger surface. Same
+	// length and order as `JobSettings.triggers`; `trigger_details[i]`
+	// corresponds to `triggers[i]`. Sub-fields (`state`, `history`) are
+	// populated independently based on the `GetJob.include_trigger_state` /
+	// `include_trigger_history` flags.
+	TriggerDetails []TriggerDetails `json:"trigger_details,omitempty"`
 	// State of the trigger associated with the job.
 	TriggerState *TriggerStateProto `json:"trigger_state,omitempty"`
 
@@ -881,6 +894,32 @@ type Continuous struct {
 	TaskRetryMode TaskRetryMode `json:"task_retry_mode,omitempty"`
 }
 
+// Continuous trigger. Stripped-down counterpart to `ContinuousSettings`:
+// `pause_status` is owned by the enclosing `TriggerConfiguration` and
+// intentionally omitted here.
+type ContinuousTriggerConfiguration struct {
+	// Whether the continuous job applies task-level retries. Defaults to NEVER.
+	TaskRetryMode TaskRetryMode `json:"task_retry_mode,omitempty"`
+}
+
+type ContinuousTriggerState struct {
+	ConsecutiveFailures int `json:"consecutive_failures,omitempty"`
+
+	IsBackingOff bool `json:"is_backing_off,omitempty"`
+
+	NextAttemptMs int64 `json:"next_attempt_ms,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ContinuousTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ContinuousTriggerState) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateJob struct {
 	// List of permissions to set on the job.
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
@@ -998,6 +1037,12 @@ type CreateJob struct {
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// List of triggers attached to this job. A run starts when any active
+	// trigger evaluates to true. Cannot be set in the same request as the
+	// legacy `schedule`, `trigger`, or `continuous` fields. The 10-trigger cap
+	// is the design's hard limit; rollout steps the effective cap 3 -> 5 -> 10
+	// via internal validation during the preview.
+	Triggers []TriggerConfiguration `json:"triggers,omitempty"`
 	// The id of the user specified usage policy to use for this job. If not
 	// specified, a default usage policy may be applied when creating or
 	// modifying the job. See `effective_usage_policy_id` for the usage policy
@@ -1048,6 +1093,22 @@ type CronSchedule struct {
 	SqlCondition *SqlConditionConfiguration `json:"sql_condition,omitempty"`
 	// A Java timezone ID. The schedule for a job is resolved with respect to
 	// this timezone. See [Java TimeZone] for details. This field is required.
+	//
+	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
+	TimezoneId string `json:"timezone_id"`
+}
+
+// Cron schedule trigger. Stripped-down counterpart to `CronSchedule`:
+// `pause_status` and `sql_condition` are owned by the enclosing
+// `TriggerConfiguration` and intentionally omitted here.
+type CronTriggerConfiguration struct {
+	// A Cron expression using Quartz syntax that describes the schedule for
+	// this trigger. See [Cron Trigger] for details.
+	//
+	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+	QuartzCronExpression string `json:"quartz_cron_expression"`
+	// A Java timezone ID. The schedule is resolved with respect to this
+	// timezone. See [Java TimeZone] for details.
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
@@ -1947,6 +2008,12 @@ type Job struct {
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
+	// Per-trigger runtime information for the multi-trigger surface. Same
+	// length and order as `JobSettings.triggers`; `trigger_details[i]`
+	// corresponds to `triggers[i]`. Sub-fields (`state`, `history`) are
+	// populated independently based on the `GetJob.include_trigger_state` /
+	// `include_trigger_history` flags.
+	TriggerDetails []TriggerDetails `json:"trigger_details,omitempty"`
 	// State of the trigger associated with the job.
 	TriggerState *TriggerStateProto `json:"trigger_state,omitempty"`
 
@@ -2507,6 +2574,12 @@ type JobSettings struct {
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// List of triggers attached to this job. A run starts when any active
+	// trigger evaluates to true. Cannot be set in the same request as the
+	// legacy `schedule`, `trigger`, or `continuous` fields. The 10-trigger cap
+	// is the design's hard limit; rollout steps the effective cap 3 -> 5 -> 10
+	// via internal validation during the preview.
+	Triggers []TriggerConfiguration `json:"triggers,omitempty"`
 	// The id of the user specified usage policy to use for this job. If not
 	// specified, a default usage policy may be applied when creating or
 	// modifying the job. See `effective_usage_policy_id` for the usage policy
@@ -2959,6 +3032,11 @@ func (f *ModelTriggerConfigurationCondition) Type() string {
 	return "ModelTriggerConfigurationCondition"
 }
 
+// Runtime state for a model trigger. Currently empty because model triggers do
+// not expose any trigger-specific runtime state.
+type ModelTriggerState struct {
+}
+
 type NotebookOutput struct {
 	// The value passed to
 	// [dbutils.notebook.exit()](/notebooks/notebook-workflows.html#notebook-workflows-exit).
@@ -3090,6 +3168,30 @@ func (f *PauseStatus) Type() string {
 	return "PauseStatus"
 }
 
+// Per-trigger runtime state for the multi-trigger surface. Mirrors
+// `TriggerConfiguration`'s trigger-type variants 1:1; each entry sets exactly
+// one variant matching the corresponding trigger's type. Variants with no
+// runtime state today (`schedule`, `model`) are emitted as empty messages.
+type PerTriggerState struct {
+	Continuous *ContinuousTriggerState `json:"continuous,omitempty"`
+
+	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
+
+	Model *ModelTriggerState `json:"model,omitempty"`
+	// Whether this trigger is paused or not. Mirrors the configured
+	// pause_status.
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+
+	Periodic *PeriodicTriggerState `json:"periodic,omitempty"`
+
+	Schedule *ScheduleTriggerState `json:"schedule,omitempty"`
+	// State for SQL condition evaluation, can coexist with other trigger
+	// states.
+	SqlCondition *SqlConditionState `json:"sql_condition,omitempty"`
+
+	TableUpdate *TableTriggerState `json:"table_update,omitempty"`
+}
+
 // PerformanceTarget defines how performant (lower latency) or cost efficient
 // the execution of run on serverless compute should be. The performance mode on
 // the job or pipeline should map to a performance setting that is passed to
@@ -3179,6 +3281,20 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Values() []PeriodicTriggerConfigu
 // Type always returns PeriodicTriggerConfigurationTimeUnit to satisfy [pflag.Value] interface
 func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
 	return "PeriodicTriggerConfigurationTimeUnit"
+}
+
+type PeriodicTriggerState struct {
+	NextRunTime int64 `json:"next_run_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PeriodicTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PeriodicTriggerState) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineParams struct {
@@ -5002,6 +5118,11 @@ func (f *RunType) Type() string {
 	return "RunType"
 }
 
+// Runtime state for a schedule trigger. Currently empty because schedule
+// triggers do not expose any trigger-specific runtime state.
+type ScheduleTriggerState struct {
+}
+
 // Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file
 // will be retrieved\ from the local Databricks workspace. When set to `GIT`,
 // the SQL file will be retrieved from a Git repository defined in `git_source`.
@@ -6500,6 +6621,76 @@ func (f *TerminationTypeType) Values() []TerminationTypeType {
 // Type always returns TerminationTypeType to satisfy [pflag.Value] interface
 func (f *TerminationTypeType) Type() string {
 	return "TerminationTypeType"
+}
+
+// A single trigger attached to a job via `JobSettings.triggers`. Exactly one of
+// the trigger-type fields (`periodic`, `schedule`, `continuous`,
+// `file_arrival`, `table_update`, `model`) must be set; mutual exclusivity is
+// enforced in the API handler rather than via `oneof` so that codegen,
+// validation, and JSON serialization across SDKs and Terraform behave
+// consistently.
+type TriggerConfiguration struct {
+	// Continuous trigger configuration.
+	Continuous *ContinuousTriggerConfiguration `json:"continuous,omitempty"`
+	// File arrival trigger configuration.
+	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+	// Model trigger configuration.
+	Model *ModelTriggerConfiguration `json:"model,omitempty"`
+	// Whether this trigger is paused. Defaults to UNPAUSED when unset; the
+	// server always returns an explicit value on read.
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Trigger type: exactly one must be set; mutual exclusivity is enforced in
+	// the API handler Periodic trigger configuration.
+	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
+	// Cron schedule trigger configuration.
+	Schedule *CronTriggerConfiguration `json:"schedule,omitempty"`
+	// Optional SQL condition that gates whether this trigger fires.
+	SqlCondition *SqlConditionConfiguration `json:"sql_condition,omitempty"`
+	// Table update trigger configuration.
+	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
+}
+
+// Per-trigger runtime details returned by `GetJob`. Same length and order as
+// `JobSettings.triggers`; sub-fields are populated independently based on the
+// corresponding `GetJob.include_trigger_state` / `include_trigger_history`
+// flags.
+type TriggerDetails struct {
+	// Recent evaluation history. Populated when
+	// `GetJob.include_trigger_history` is set.
+	History *TriggerHistory `json:"history,omitempty"`
+	// Current runtime state. Populated when `GetJob.include_trigger_state` is
+	// set.
+	State *PerTriggerState `json:"state,omitempty"`
+}
+
+type TriggerEvaluation struct {
+	// Human-readable description of the trigger evaluation result. Explains why
+	// the trigger evaluation triggered or did not trigger a run, or failed.
+	Description string `json:"description,omitempty"`
+	// The ID of the run that was triggered by the trigger evaluation. Only
+	// returned if a run was triggered.
+	RunId int64 `json:"run_id,omitempty"`
+	// Timestamp at which the trigger was evaluated.
+	Timestamp int64 `json:"timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TriggerEvaluation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TriggerEvaluation) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type TriggerHistory struct {
+	// The last time the trigger failed to evaluate.
+	LastFailed *TriggerEvaluation `json:"last_failed,omitempty"`
+	// The last time the trigger was evaluated but did not trigger a run.
+	LastNotTriggered *TriggerEvaluation `json:"last_not_triggered,omitempty"`
+	// The last time the run was triggered due to a file arrival.
+	LastTriggered *TriggerEvaluation `json:"last_triggered,omitempty"`
 }
 
 // Additional details about what triggered the run

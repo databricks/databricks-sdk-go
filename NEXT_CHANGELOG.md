@@ -33,3 +33,11 @@
 * [Breaking] Remove `BrowseOnly` field for [catalog.McpService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#McpService).
 * [Breaking] Remove `BrowseOnly` field for [catalog.ModelProviderService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderService).
 * [Breaking] Remove `BrowseOnly` field for [catalog.ModelService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelService).
+* Add `MlflowArtifactLocation` field for [jobs.AiRuntimeTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTask).
+* Add `TriggerDetails` field for [jobs.BaseJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseJob).
+* Add `Triggers` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+* Add `TriggerDetails` field for [jobs.Job](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Job).
+* Add `Triggers` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+* Add `ApiSourceConnectorOptions` field for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
+* Add `ApiSourceConnectorConfig` field for [pipelines.SourceConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SourceConfig).
+* Add `AllVpcScServices` and `GoogleApiEndpoints` fields for [settings.GcpEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GcpEndpoint).

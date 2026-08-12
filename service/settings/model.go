@@ -2987,6 +2987,12 @@ type FetchIpAccessListResponse struct {
 }
 
 type GcpEndpoint struct {
+	// All Google APIs that support VPC Service Controls (a subset of all Google
+	// APIs).
+	AllVpcScServices bool `json:"all_vpc_sc_services,omitempty"`
+	// Selected Google API hostnames, e.g. "storage.googleapis.com",
+	// "bigquery.googleapis.com".
+	GoogleApiEndpoints *GoogleApiEndpoints `json:"google_api_endpoints,omitempty"`
 	// Output only. The URI of the created PSC endpoint.
 	PscEndpointUri string `json:"psc_endpoint_uri,omitempty"`
 	// The full url of the target service attachment. Example:
@@ -3511,6 +3517,14 @@ type GetTokenResponse struct {
 type GetWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+// Wrapper for a list of Google API hostnames. Wrapped in a message because
+// proto3 oneof does not support repeated fields directly.
+type GoogleApiEndpoints struct {
+	// Google API hostnames, e.g. "storage.googleapis.com",
+	// "bigquery.googleapis.com". Use "googleapis.com" to cover all Google APIs.
+	Endpoints []string `json:"endpoints,omitempty"`
 }
 
 // Definition of an IP Access list
