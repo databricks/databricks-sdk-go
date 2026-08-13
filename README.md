@@ -66,7 +66,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
    ```go
    module sample
 
-   go 1.24
+   go 1.25
 
    require github.com/databricks/databricks-sdk-go v0.9.0
 
