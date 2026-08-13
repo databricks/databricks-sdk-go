@@ -2646,10 +2646,7 @@ type TelemetryConfig struct {
 	InferenceTableConfig *TelemetryInferenceTableConfig `json:"inference_table_config,omitempty"`
 	// The Unity Catalog tables to which endpoint telemetry (logs, traces, and
 	// metrics) is exported. Provide this to create a new telemetry profile for
-	// the endpoint from the given tables. This field selects the tables when
-	// writing a telemetry configuration; it is not returned when reading one.
-	// Responses identify the resulting profile with `telemetry_profile_id`
-	// instead.
+	// the endpoint from the given tables.
 	TableNames *UnityCatalogTableNames `json:"table_names,omitempty"`
 	// The ID of an existing telemetry profile to apply to this endpoint.
 	// Provide this to reuse a telemetry profile that has already been created,

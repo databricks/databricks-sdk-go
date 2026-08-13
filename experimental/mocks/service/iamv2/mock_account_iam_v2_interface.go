@@ -5,6 +5,7 @@ package iamv2
 import (
 	context "context"
 
+	listing "github.com/databricks/databricks-sdk-go/listing"
 	iamv2 "github.com/databricks/databricks-sdk-go/service/iamv2"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -20,6 +21,301 @@ type MockAccountIamV2Interface_Expecter struct {
 
 func (_m *MockAccountIamV2Interface) EXPECT() *MockAccountIamV2Interface_Expecter {
 	return &MockAccountIamV2Interface_Expecter{mock: &_m.Mock}
+}
+
+// CreateDirectGroupMember provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) CreateDirectGroupMember(ctx context.Context, request iamv2.CreateDirectGroupMemberRequest) (*iamv2.DirectGroupMember, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDirectGroupMember")
+	}
+
+	var r0 *iamv2.DirectGroupMember
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateDirectGroupMemberRequest) (*iamv2.DirectGroupMember, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateDirectGroupMemberRequest) *iamv2.DirectGroupMember); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.DirectGroupMember)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateDirectGroupMemberRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_CreateDirectGroupMember_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDirectGroupMember'
+type MockAccountIamV2Interface_CreateDirectGroupMember_Call struct {
+	*mock.Call
+}
+
+// CreateDirectGroupMember is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateDirectGroupMemberRequest
+func (_e *MockAccountIamV2Interface_Expecter) CreateDirectGroupMember(ctx interface{}, request interface{}) *MockAccountIamV2Interface_CreateDirectGroupMember_Call {
+	return &MockAccountIamV2Interface_CreateDirectGroupMember_Call{Call: _e.mock.On("CreateDirectGroupMember", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_CreateDirectGroupMember_Call) Run(run func(ctx context.Context, request iamv2.CreateDirectGroupMemberRequest)) *MockAccountIamV2Interface_CreateDirectGroupMember_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateDirectGroupMemberRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateDirectGroupMember_Call) Return(_a0 *iamv2.DirectGroupMember, _a1 error) *MockAccountIamV2Interface_CreateDirectGroupMember_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateDirectGroupMember_Call) RunAndReturn(run func(context.Context, iamv2.CreateDirectGroupMemberRequest) (*iamv2.DirectGroupMember, error)) *MockAccountIamV2Interface_CreateDirectGroupMember_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateGroup provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) CreateGroup(ctx context.Context, request iamv2.CreateGroupRequest) (*iamv2.Group, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateGroup")
+	}
+
+	var r0 *iamv2.Group
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateGroupRequest) (*iamv2.Group, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateGroupRequest) *iamv2.Group); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.Group)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateGroupRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_CreateGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateGroup'
+type MockAccountIamV2Interface_CreateGroup_Call struct {
+	*mock.Call
+}
+
+// CreateGroup is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateGroupRequest
+func (_e *MockAccountIamV2Interface_Expecter) CreateGroup(ctx interface{}, request interface{}) *MockAccountIamV2Interface_CreateGroup_Call {
+	return &MockAccountIamV2Interface_CreateGroup_Call{Call: _e.mock.On("CreateGroup", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_CreateGroup_Call) Run(run func(ctx context.Context, request iamv2.CreateGroupRequest)) *MockAccountIamV2Interface_CreateGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateGroupRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateGroup_Call) Return(_a0 *iamv2.Group, _a1 error) *MockAccountIamV2Interface_CreateGroup_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateGroup_Call) RunAndReturn(run func(context.Context, iamv2.CreateGroupRequest) (*iamv2.Group, error)) *MockAccountIamV2Interface_CreateGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateServicePrincipal provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) CreateServicePrincipal(ctx context.Context, request iamv2.CreateServicePrincipalRequest) (*iamv2.ServicePrincipal, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateServicePrincipal")
+	}
+
+	var r0 *iamv2.ServicePrincipal
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateServicePrincipalRequest) (*iamv2.ServicePrincipal, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateServicePrincipalRequest) *iamv2.ServicePrincipal); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ServicePrincipal)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateServicePrincipalRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_CreateServicePrincipal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateServicePrincipal'
+type MockAccountIamV2Interface_CreateServicePrincipal_Call struct {
+	*mock.Call
+}
+
+// CreateServicePrincipal is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateServicePrincipalRequest
+func (_e *MockAccountIamV2Interface_Expecter) CreateServicePrincipal(ctx interface{}, request interface{}) *MockAccountIamV2Interface_CreateServicePrincipal_Call {
+	return &MockAccountIamV2Interface_CreateServicePrincipal_Call{Call: _e.mock.On("CreateServicePrincipal", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_CreateServicePrincipal_Call) Run(run func(ctx context.Context, request iamv2.CreateServicePrincipalRequest)) *MockAccountIamV2Interface_CreateServicePrincipal_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateServicePrincipalRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateServicePrincipal_Call) Return(_a0 *iamv2.ServicePrincipal, _a1 error) *MockAccountIamV2Interface_CreateServicePrincipal_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateServicePrincipal_Call) RunAndReturn(run func(context.Context, iamv2.CreateServicePrincipalRequest) (*iamv2.ServicePrincipal, error)) *MockAccountIamV2Interface_CreateServicePrincipal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateUser provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) CreateUser(ctx context.Context, request iamv2.CreateUserRequest) (*iamv2.User, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateUser")
+	}
+
+	var r0 *iamv2.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateUserRequest) (*iamv2.User, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateUserRequest) *iamv2.User); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateUserRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_CreateUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateUser'
+type MockAccountIamV2Interface_CreateUser_Call struct {
+	*mock.Call
+}
+
+// CreateUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateUserRequest
+func (_e *MockAccountIamV2Interface_Expecter) CreateUser(ctx interface{}, request interface{}) *MockAccountIamV2Interface_CreateUser_Call {
+	return &MockAccountIamV2Interface_CreateUser_Call{Call: _e.mock.On("CreateUser", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_CreateUser_Call) Run(run func(ctx context.Context, request iamv2.CreateUserRequest)) *MockAccountIamV2Interface_CreateUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateUserRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateUser_Call) Return(_a0 *iamv2.User, _a1 error) *MockAccountIamV2Interface_CreateUser_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateUser_Call) RunAndReturn(run func(context.Context, iamv2.CreateUserRequest) (*iamv2.User, error)) *MockAccountIamV2Interface_CreateUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateWorkspaceAssignment provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) CreateWorkspaceAssignment(ctx context.Context, request iamv2.CreateWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateWorkspaceAssignment")
+	}
+
+	var r0 *iamv2.WorkspaceAssignment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateWorkspaceAssignmentRequest) *iamv2.WorkspaceAssignment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateWorkspaceAssignmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_CreateWorkspaceAssignment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateWorkspaceAssignment'
+type MockAccountIamV2Interface_CreateWorkspaceAssignment_Call struct {
+	*mock.Call
+}
+
+// CreateWorkspaceAssignment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateWorkspaceAssignmentRequest
+func (_e *MockAccountIamV2Interface_Expecter) CreateWorkspaceAssignment(ctx interface{}, request interface{}) *MockAccountIamV2Interface_CreateWorkspaceAssignment_Call {
+	return &MockAccountIamV2Interface_CreateWorkspaceAssignment_Call{Call: _e.mock.On("CreateWorkspaceAssignment", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_CreateWorkspaceAssignment_Call) Run(run func(ctx context.Context, request iamv2.CreateWorkspaceAssignmentRequest)) *MockAccountIamV2Interface_CreateWorkspaceAssignment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateWorkspaceAssignmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateWorkspaceAssignment_Call) Return(_a0 *iamv2.WorkspaceAssignment, _a1 error) *MockAccountIamV2Interface_CreateWorkspaceAssignment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateWorkspaceAssignment_Call) RunAndReturn(run func(context.Context, iamv2.CreateWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error)) *MockAccountIamV2Interface_CreateWorkspaceAssignment_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // CreateWorkspaceAssignmentDetail provides a mock function with given fields: ctx, request
@@ -81,6 +377,241 @@ func (_c *MockAccountIamV2Interface_CreateWorkspaceAssignmentDetail_Call) RunAnd
 	return _c
 }
 
+// DeleteDirectGroupMember provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) DeleteDirectGroupMember(ctx context.Context, request iamv2.DeleteDirectGroupMemberRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDirectGroupMember")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteDirectGroupMemberRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_DeleteDirectGroupMember_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDirectGroupMember'
+type MockAccountIamV2Interface_DeleteDirectGroupMember_Call struct {
+	*mock.Call
+}
+
+// DeleteDirectGroupMember is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteDirectGroupMemberRequest
+func (_e *MockAccountIamV2Interface_Expecter) DeleteDirectGroupMember(ctx interface{}, request interface{}) *MockAccountIamV2Interface_DeleteDirectGroupMember_Call {
+	return &MockAccountIamV2Interface_DeleteDirectGroupMember_Call{Call: _e.mock.On("DeleteDirectGroupMember", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_DeleteDirectGroupMember_Call) Run(run func(ctx context.Context, request iamv2.DeleteDirectGroupMemberRequest)) *MockAccountIamV2Interface_DeleteDirectGroupMember_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteDirectGroupMemberRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteDirectGroupMember_Call) Return(_a0 error) *MockAccountIamV2Interface_DeleteDirectGroupMember_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteDirectGroupMember_Call) RunAndReturn(run func(context.Context, iamv2.DeleteDirectGroupMemberRequest) error) *MockAccountIamV2Interface_DeleteDirectGroupMember_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteGroup provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) DeleteGroup(ctx context.Context, request iamv2.DeleteGroupRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteGroup")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteGroupRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_DeleteGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteGroup'
+type MockAccountIamV2Interface_DeleteGroup_Call struct {
+	*mock.Call
+}
+
+// DeleteGroup is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteGroupRequest
+func (_e *MockAccountIamV2Interface_Expecter) DeleteGroup(ctx interface{}, request interface{}) *MockAccountIamV2Interface_DeleteGroup_Call {
+	return &MockAccountIamV2Interface_DeleteGroup_Call{Call: _e.mock.On("DeleteGroup", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_DeleteGroup_Call) Run(run func(ctx context.Context, request iamv2.DeleteGroupRequest)) *MockAccountIamV2Interface_DeleteGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteGroupRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteGroup_Call) Return(_a0 error) *MockAccountIamV2Interface_DeleteGroup_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteGroup_Call) RunAndReturn(run func(context.Context, iamv2.DeleteGroupRequest) error) *MockAccountIamV2Interface_DeleteGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteServicePrincipal provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) DeleteServicePrincipal(ctx context.Context, request iamv2.DeleteServicePrincipalRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteServicePrincipal")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteServicePrincipalRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_DeleteServicePrincipal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteServicePrincipal'
+type MockAccountIamV2Interface_DeleteServicePrincipal_Call struct {
+	*mock.Call
+}
+
+// DeleteServicePrincipal is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteServicePrincipalRequest
+func (_e *MockAccountIamV2Interface_Expecter) DeleteServicePrincipal(ctx interface{}, request interface{}) *MockAccountIamV2Interface_DeleteServicePrincipal_Call {
+	return &MockAccountIamV2Interface_DeleteServicePrincipal_Call{Call: _e.mock.On("DeleteServicePrincipal", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_DeleteServicePrincipal_Call) Run(run func(ctx context.Context, request iamv2.DeleteServicePrincipalRequest)) *MockAccountIamV2Interface_DeleteServicePrincipal_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteServicePrincipalRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteServicePrincipal_Call) Return(_a0 error) *MockAccountIamV2Interface_DeleteServicePrincipal_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteServicePrincipal_Call) RunAndReturn(run func(context.Context, iamv2.DeleteServicePrincipalRequest) error) *MockAccountIamV2Interface_DeleteServicePrincipal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteUser provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) DeleteUser(ctx context.Context, request iamv2.DeleteUserRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteUserRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_DeleteUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteUser'
+type MockAccountIamV2Interface_DeleteUser_Call struct {
+	*mock.Call
+}
+
+// DeleteUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteUserRequest
+func (_e *MockAccountIamV2Interface_Expecter) DeleteUser(ctx interface{}, request interface{}) *MockAccountIamV2Interface_DeleteUser_Call {
+	return &MockAccountIamV2Interface_DeleteUser_Call{Call: _e.mock.On("DeleteUser", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_DeleteUser_Call) Run(run func(ctx context.Context, request iamv2.DeleteUserRequest)) *MockAccountIamV2Interface_DeleteUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteUserRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteUser_Call) Return(_a0 error) *MockAccountIamV2Interface_DeleteUser_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteUser_Call) RunAndReturn(run func(context.Context, iamv2.DeleteUserRequest) error) *MockAccountIamV2Interface_DeleteUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteWorkspaceAssignment provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) DeleteWorkspaceAssignment(ctx context.Context, request iamv2.DeleteWorkspaceAssignmentRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteWorkspaceAssignment")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteWorkspaceAssignmentRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteWorkspaceAssignment'
+type MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call struct {
+	*mock.Call
+}
+
+// DeleteWorkspaceAssignment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteWorkspaceAssignmentRequest
+func (_e *MockAccountIamV2Interface_Expecter) DeleteWorkspaceAssignment(ctx interface{}, request interface{}) *MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call {
+	return &MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call{Call: _e.mock.On("DeleteWorkspaceAssignment", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call) Run(run func(ctx context.Context, request iamv2.DeleteWorkspaceAssignmentRequest)) *MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteWorkspaceAssignmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call) Return(_a0 error) *MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call) RunAndReturn(run func(context.Context, iamv2.DeleteWorkspaceAssignmentRequest) error) *MockAccountIamV2Interface_DeleteWorkspaceAssignment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteWorkspaceAssignmentDetail provides a mock function with given fields: ctx, request
 func (_m *MockAccountIamV2Interface) DeleteWorkspaceAssignmentDetail(ctx context.Context, request iamv2.DeleteWorkspaceAssignmentDetailRequest) error {
 	ret := _m.Called(ctx, request)
@@ -124,6 +655,242 @@ func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call) Return
 }
 
 func (_c *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call) RunAndReturn(run func(context.Context, iamv2.DeleteWorkspaceAssignmentDetailRequest) error) *MockAccountIamV2Interface_DeleteWorkspaceAssignmentDetail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDirectGroupMember provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetDirectGroupMember(ctx context.Context, request iamv2.GetDirectGroupMemberRequest) (*iamv2.DirectGroupMember, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDirectGroupMember")
+	}
+
+	var r0 *iamv2.DirectGroupMember
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetDirectGroupMemberRequest) (*iamv2.DirectGroupMember, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetDirectGroupMemberRequest) *iamv2.DirectGroupMember); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.DirectGroupMember)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetDirectGroupMemberRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetDirectGroupMember_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDirectGroupMember'
+type MockAccountIamV2Interface_GetDirectGroupMember_Call struct {
+	*mock.Call
+}
+
+// GetDirectGroupMember is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetDirectGroupMemberRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetDirectGroupMember(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetDirectGroupMember_Call {
+	return &MockAccountIamV2Interface_GetDirectGroupMember_Call{Call: _e.mock.On("GetDirectGroupMember", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetDirectGroupMember_Call) Run(run func(ctx context.Context, request iamv2.GetDirectGroupMemberRequest)) *MockAccountIamV2Interface_GetDirectGroupMember_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetDirectGroupMemberRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetDirectGroupMember_Call) Return(_a0 *iamv2.DirectGroupMember, _a1 error) *MockAccountIamV2Interface_GetDirectGroupMember_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetDirectGroupMember_Call) RunAndReturn(run func(context.Context, iamv2.GetDirectGroupMemberRequest) (*iamv2.DirectGroupMember, error)) *MockAccountIamV2Interface_GetDirectGroupMember_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetGroup provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetGroup(ctx context.Context, request iamv2.GetGroupRequest) (*iamv2.Group, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetGroup")
+	}
+
+	var r0 *iamv2.Group
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetGroupRequest) (*iamv2.Group, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetGroupRequest) *iamv2.Group); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.Group)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetGroupRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGroup'
+type MockAccountIamV2Interface_GetGroup_Call struct {
+	*mock.Call
+}
+
+// GetGroup is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetGroupRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetGroup(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetGroup_Call {
+	return &MockAccountIamV2Interface_GetGroup_Call{Call: _e.mock.On("GetGroup", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetGroup_Call) Run(run func(ctx context.Context, request iamv2.GetGroupRequest)) *MockAccountIamV2Interface_GetGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetGroupRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetGroup_Call) Return(_a0 *iamv2.Group, _a1 error) *MockAccountIamV2Interface_GetGroup_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetGroup_Call) RunAndReturn(run func(context.Context, iamv2.GetGroupRequest) (*iamv2.Group, error)) *MockAccountIamV2Interface_GetGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetServicePrincipal provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetServicePrincipal(ctx context.Context, request iamv2.GetServicePrincipalRequest) (*iamv2.ServicePrincipal, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetServicePrincipal")
+	}
+
+	var r0 *iamv2.ServicePrincipal
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetServicePrincipalRequest) (*iamv2.ServicePrincipal, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetServicePrincipalRequest) *iamv2.ServicePrincipal); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ServicePrincipal)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetServicePrincipalRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetServicePrincipal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetServicePrincipal'
+type MockAccountIamV2Interface_GetServicePrincipal_Call struct {
+	*mock.Call
+}
+
+// GetServicePrincipal is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetServicePrincipalRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetServicePrincipal(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetServicePrincipal_Call {
+	return &MockAccountIamV2Interface_GetServicePrincipal_Call{Call: _e.mock.On("GetServicePrincipal", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetServicePrincipal_Call) Run(run func(ctx context.Context, request iamv2.GetServicePrincipalRequest)) *MockAccountIamV2Interface_GetServicePrincipal_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetServicePrincipalRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetServicePrincipal_Call) Return(_a0 *iamv2.ServicePrincipal, _a1 error) *MockAccountIamV2Interface_GetServicePrincipal_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetServicePrincipal_Call) RunAndReturn(run func(context.Context, iamv2.GetServicePrincipalRequest) (*iamv2.ServicePrincipal, error)) *MockAccountIamV2Interface_GetServicePrincipal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetUser provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetUser(ctx context.Context, request iamv2.GetUserRequest) (*iamv2.User, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetUser")
+	}
+
+	var r0 *iamv2.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetUserRequest) (*iamv2.User, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetUserRequest) *iamv2.User); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetUserRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUser'
+type MockAccountIamV2Interface_GetUser_Call struct {
+	*mock.Call
+}
+
+// GetUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetUserRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetUser(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetUser_Call {
+	return &MockAccountIamV2Interface_GetUser_Call{Call: _e.mock.On("GetUser", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetUser_Call) Run(run func(ctx context.Context, request iamv2.GetUserRequest)) *MockAccountIamV2Interface_GetUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetUserRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetUser_Call) Return(_a0 *iamv2.User, _a1 error) *MockAccountIamV2Interface_GetUser_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetUser_Call) RunAndReturn(run func(context.Context, iamv2.GetUserRequest) (*iamv2.User, error)) *MockAccountIamV2Interface_GetUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -187,6 +954,65 @@ func (_c *MockAccountIamV2Interface_GetWorkspaceAccessDetail_Call) RunAndReturn(
 	return _c
 }
 
+// GetWorkspaceAssignment provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetWorkspaceAssignment(ctx context.Context, request iamv2.GetWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWorkspaceAssignment")
+	}
+
+	var r0 *iamv2.WorkspaceAssignment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetWorkspaceAssignmentRequest) *iamv2.WorkspaceAssignment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetWorkspaceAssignmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetWorkspaceAssignment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWorkspaceAssignment'
+type MockAccountIamV2Interface_GetWorkspaceAssignment_Call struct {
+	*mock.Call
+}
+
+// GetWorkspaceAssignment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetWorkspaceAssignmentRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetWorkspaceAssignment(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetWorkspaceAssignment_Call {
+	return &MockAccountIamV2Interface_GetWorkspaceAssignment_Call{Call: _e.mock.On("GetWorkspaceAssignment", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetWorkspaceAssignment_Call) Run(run func(ctx context.Context, request iamv2.GetWorkspaceAssignmentRequest)) *MockAccountIamV2Interface_GetWorkspaceAssignment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetWorkspaceAssignmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetWorkspaceAssignment_Call) Return(_a0 *iamv2.WorkspaceAssignment, _a1 error) *MockAccountIamV2Interface_GetWorkspaceAssignment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetWorkspaceAssignment_Call) RunAndReturn(run func(context.Context, iamv2.GetWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error)) *MockAccountIamV2Interface_GetWorkspaceAssignment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetWorkspaceAssignmentDetail provides a mock function with given fields: ctx, request
 func (_m *MockAccountIamV2Interface) GetWorkspaceAssignmentDetail(ctx context.Context, request iamv2.GetWorkspaceAssignmentDetailRequest) (*iamv2.WorkspaceAssignmentDetail, error) {
 	ret := _m.Called(ctx, request)
@@ -246,6 +1072,448 @@ func (_c *MockAccountIamV2Interface_GetWorkspaceAssignmentDetail_Call) RunAndRet
 	return _c
 }
 
+// ListDirectGroupMembers provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListDirectGroupMembers(ctx context.Context, request iamv2.ListDirectGroupMembersRequest) (*iamv2.ListDirectGroupMembersResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDirectGroupMembers")
+	}
+
+	var r0 *iamv2.ListDirectGroupMembersResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListDirectGroupMembersRequest) (*iamv2.ListDirectGroupMembersResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListDirectGroupMembersRequest) *iamv2.ListDirectGroupMembersResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ListDirectGroupMembersResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListDirectGroupMembersRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListDirectGroupMembers_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDirectGroupMembers'
+type MockAccountIamV2Interface_ListDirectGroupMembers_Call struct {
+	*mock.Call
+}
+
+// ListDirectGroupMembers is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListDirectGroupMembersRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListDirectGroupMembers(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListDirectGroupMembers_Call {
+	return &MockAccountIamV2Interface_ListDirectGroupMembers_Call{Call: _e.mock.On("ListDirectGroupMembers", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListDirectGroupMembers_Call) Run(run func(ctx context.Context, request iamv2.ListDirectGroupMembersRequest)) *MockAccountIamV2Interface_ListDirectGroupMembers_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListDirectGroupMembersRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListDirectGroupMembers_Call) Return(_a0 *iamv2.ListDirectGroupMembersResponse, _a1 error) *MockAccountIamV2Interface_ListDirectGroupMembers_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListDirectGroupMembers_Call) RunAndReturn(run func(context.Context, iamv2.ListDirectGroupMembersRequest) (*iamv2.ListDirectGroupMembersResponse, error)) *MockAccountIamV2Interface_ListDirectGroupMembers_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListGroups provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListGroups(ctx context.Context, request iamv2.ListGroupsRequest) listing.Iterator[iamv2.Group] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListGroups")
+	}
+
+	var r0 listing.Iterator[iamv2.Group]
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListGroupsRequest) listing.Iterator[iamv2.Group]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[iamv2.Group])
+		}
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_ListGroups_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroups'
+type MockAccountIamV2Interface_ListGroups_Call struct {
+	*mock.Call
+}
+
+// ListGroups is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListGroupsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListGroups(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListGroups_Call {
+	return &MockAccountIamV2Interface_ListGroups_Call{Call: _e.mock.On("ListGroups", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListGroups_Call) Run(run func(ctx context.Context, request iamv2.ListGroupsRequest)) *MockAccountIamV2Interface_ListGroups_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListGroupsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListGroups_Call) Return(_a0 listing.Iterator[iamv2.Group]) *MockAccountIamV2Interface_ListGroups_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListGroups_Call) RunAndReturn(run func(context.Context, iamv2.ListGroupsRequest) listing.Iterator[iamv2.Group]) *MockAccountIamV2Interface_ListGroups_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListGroupsAll provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListGroupsAll(ctx context.Context, request iamv2.ListGroupsRequest) ([]iamv2.Group, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListGroupsAll")
+	}
+
+	var r0 []iamv2.Group
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListGroupsRequest) ([]iamv2.Group, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListGroupsRequest) []iamv2.Group); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]iamv2.Group)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListGroupsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListGroupsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroupsAll'
+type MockAccountIamV2Interface_ListGroupsAll_Call struct {
+	*mock.Call
+}
+
+// ListGroupsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListGroupsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListGroupsAll(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListGroupsAll_Call {
+	return &MockAccountIamV2Interface_ListGroupsAll_Call{Call: _e.mock.On("ListGroupsAll", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListGroupsAll_Call) Run(run func(ctx context.Context, request iamv2.ListGroupsRequest)) *MockAccountIamV2Interface_ListGroupsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListGroupsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListGroupsAll_Call) Return(_a0 []iamv2.Group, _a1 error) *MockAccountIamV2Interface_ListGroupsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListGroupsAll_Call) RunAndReturn(run func(context.Context, iamv2.ListGroupsRequest) ([]iamv2.Group, error)) *MockAccountIamV2Interface_ListGroupsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListServicePrincipals provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListServicePrincipals(ctx context.Context, request iamv2.ListServicePrincipalsRequest) listing.Iterator[iamv2.ServicePrincipal] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListServicePrincipals")
+	}
+
+	var r0 listing.Iterator[iamv2.ServicePrincipal]
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListServicePrincipalsRequest) listing.Iterator[iamv2.ServicePrincipal]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[iamv2.ServicePrincipal])
+		}
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_ListServicePrincipals_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListServicePrincipals'
+type MockAccountIamV2Interface_ListServicePrincipals_Call struct {
+	*mock.Call
+}
+
+// ListServicePrincipals is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListServicePrincipalsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListServicePrincipals(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListServicePrincipals_Call {
+	return &MockAccountIamV2Interface_ListServicePrincipals_Call{Call: _e.mock.On("ListServicePrincipals", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListServicePrincipals_Call) Run(run func(ctx context.Context, request iamv2.ListServicePrincipalsRequest)) *MockAccountIamV2Interface_ListServicePrincipals_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListServicePrincipalsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListServicePrincipals_Call) Return(_a0 listing.Iterator[iamv2.ServicePrincipal]) *MockAccountIamV2Interface_ListServicePrincipals_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListServicePrincipals_Call) RunAndReturn(run func(context.Context, iamv2.ListServicePrincipalsRequest) listing.Iterator[iamv2.ServicePrincipal]) *MockAccountIamV2Interface_ListServicePrincipals_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListServicePrincipalsAll provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListServicePrincipalsAll(ctx context.Context, request iamv2.ListServicePrincipalsRequest) ([]iamv2.ServicePrincipal, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListServicePrincipalsAll")
+	}
+
+	var r0 []iamv2.ServicePrincipal
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListServicePrincipalsRequest) ([]iamv2.ServicePrincipal, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListServicePrincipalsRequest) []iamv2.ServicePrincipal); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]iamv2.ServicePrincipal)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListServicePrincipalsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListServicePrincipalsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListServicePrincipalsAll'
+type MockAccountIamV2Interface_ListServicePrincipalsAll_Call struct {
+	*mock.Call
+}
+
+// ListServicePrincipalsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListServicePrincipalsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListServicePrincipalsAll(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListServicePrincipalsAll_Call {
+	return &MockAccountIamV2Interface_ListServicePrincipalsAll_Call{Call: _e.mock.On("ListServicePrincipalsAll", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListServicePrincipalsAll_Call) Run(run func(ctx context.Context, request iamv2.ListServicePrincipalsRequest)) *MockAccountIamV2Interface_ListServicePrincipalsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListServicePrincipalsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListServicePrincipalsAll_Call) Return(_a0 []iamv2.ServicePrincipal, _a1 error) *MockAccountIamV2Interface_ListServicePrincipalsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListServicePrincipalsAll_Call) RunAndReturn(run func(context.Context, iamv2.ListServicePrincipalsRequest) ([]iamv2.ServicePrincipal, error)) *MockAccountIamV2Interface_ListServicePrincipalsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListTransitiveParentGroups provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListTransitiveParentGroups(ctx context.Context, request iamv2.ListTransitiveParentGroupsRequest) (*iamv2.ListTransitiveParentGroupsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListTransitiveParentGroups")
+	}
+
+	var r0 *iamv2.ListTransitiveParentGroupsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListTransitiveParentGroupsRequest) (*iamv2.ListTransitiveParentGroupsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListTransitiveParentGroupsRequest) *iamv2.ListTransitiveParentGroupsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ListTransitiveParentGroupsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListTransitiveParentGroupsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListTransitiveParentGroups_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListTransitiveParentGroups'
+type MockAccountIamV2Interface_ListTransitiveParentGroups_Call struct {
+	*mock.Call
+}
+
+// ListTransitiveParentGroups is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListTransitiveParentGroupsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListTransitiveParentGroups(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListTransitiveParentGroups_Call {
+	return &MockAccountIamV2Interface_ListTransitiveParentGroups_Call{Call: _e.mock.On("ListTransitiveParentGroups", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListTransitiveParentGroups_Call) Run(run func(ctx context.Context, request iamv2.ListTransitiveParentGroupsRequest)) *MockAccountIamV2Interface_ListTransitiveParentGroups_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListTransitiveParentGroupsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListTransitiveParentGroups_Call) Return(_a0 *iamv2.ListTransitiveParentGroupsResponse, _a1 error) *MockAccountIamV2Interface_ListTransitiveParentGroups_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListTransitiveParentGroups_Call) RunAndReturn(run func(context.Context, iamv2.ListTransitiveParentGroupsRequest) (*iamv2.ListTransitiveParentGroupsResponse, error)) *MockAccountIamV2Interface_ListTransitiveParentGroups_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListUsers provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListUsers(ctx context.Context, request iamv2.ListUsersRequest) listing.Iterator[iamv2.User] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListUsers")
+	}
+
+	var r0 listing.Iterator[iamv2.User]
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListUsersRequest) listing.Iterator[iamv2.User]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[iamv2.User])
+		}
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_ListUsers_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListUsers'
+type MockAccountIamV2Interface_ListUsers_Call struct {
+	*mock.Call
+}
+
+// ListUsers is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListUsersRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListUsers(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListUsers_Call {
+	return &MockAccountIamV2Interface_ListUsers_Call{Call: _e.mock.On("ListUsers", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListUsers_Call) Run(run func(ctx context.Context, request iamv2.ListUsersRequest)) *MockAccountIamV2Interface_ListUsers_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListUsersRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListUsers_Call) Return(_a0 listing.Iterator[iamv2.User]) *MockAccountIamV2Interface_ListUsers_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListUsers_Call) RunAndReturn(run func(context.Context, iamv2.ListUsersRequest) listing.Iterator[iamv2.User]) *MockAccountIamV2Interface_ListUsers_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListUsersAll provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListUsersAll(ctx context.Context, request iamv2.ListUsersRequest) ([]iamv2.User, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListUsersAll")
+	}
+
+	var r0 []iamv2.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListUsersRequest) ([]iamv2.User, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListUsersRequest) []iamv2.User); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]iamv2.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListUsersRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListUsersAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListUsersAll'
+type MockAccountIamV2Interface_ListUsersAll_Call struct {
+	*mock.Call
+}
+
+// ListUsersAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListUsersRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListUsersAll(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListUsersAll_Call {
+	return &MockAccountIamV2Interface_ListUsersAll_Call{Call: _e.mock.On("ListUsersAll", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListUsersAll_Call) Run(run func(ctx context.Context, request iamv2.ListUsersRequest)) *MockAccountIamV2Interface_ListUsersAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListUsersRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListUsersAll_Call) Return(_a0 []iamv2.User, _a1 error) *MockAccountIamV2Interface_ListUsersAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListUsersAll_Call) RunAndReturn(run func(context.Context, iamv2.ListUsersRequest) ([]iamv2.User, error)) *MockAccountIamV2Interface_ListUsersAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListWorkspaceAssignmentDetails provides a mock function with given fields: ctx, request
 func (_m *MockAccountIamV2Interface) ListWorkspaceAssignmentDetails(ctx context.Context, request iamv2.ListWorkspaceAssignmentDetailsRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -301,6 +1569,65 @@ func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call) Return(
 }
 
 func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call) RunAndReturn(run func(context.Context, iamv2.ListWorkspaceAssignmentDetailsRequest) (*iamv2.ListWorkspaceAssignmentDetailsResponse, error)) *MockAccountIamV2Interface_ListWorkspaceAssignmentDetails_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListWorkspaceAssignments provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListWorkspaceAssignments(ctx context.Context, request iamv2.ListWorkspaceAssignmentsRequest) (*iamv2.ListWorkspaceAssignmentsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListWorkspaceAssignments")
+	}
+
+	var r0 *iamv2.ListWorkspaceAssignmentsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) (*iamv2.ListWorkspaceAssignmentsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) *iamv2.ListWorkspaceAssignmentsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ListWorkspaceAssignmentsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListWorkspaceAssignments_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListWorkspaceAssignments'
+type MockAccountIamV2Interface_ListWorkspaceAssignments_Call struct {
+	*mock.Call
+}
+
+// ListWorkspaceAssignments is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListWorkspaceAssignmentsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListWorkspaceAssignments(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
+	return &MockAccountIamV2Interface_ListWorkspaceAssignments_Call{Call: _e.mock.On("ListWorkspaceAssignments", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) Run(run func(ctx context.Context, request iamv2.ListWorkspaceAssignmentsRequest)) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListWorkspaceAssignmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) Return(_a0 *iamv2.ListWorkspaceAssignmentsResponse, _a1 error) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) RunAndReturn(run func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) (*iamv2.ListWorkspaceAssignmentsResponse, error)) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -478,6 +1805,242 @@ func (_c *MockAccountIamV2Interface_ResolveUser_Call) Return(_a0 *iamv2.ResolveU
 }
 
 func (_c *MockAccountIamV2Interface_ResolveUser_Call) RunAndReturn(run func(context.Context, iamv2.ResolveUserRequest) (*iamv2.ResolveUserResponse, error)) *MockAccountIamV2Interface_ResolveUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateGroup provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) UpdateGroup(ctx context.Context, request iamv2.UpdateGroupRequest) (*iamv2.Group, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateGroup")
+	}
+
+	var r0 *iamv2.Group
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateGroupRequest) (*iamv2.Group, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateGroupRequest) *iamv2.Group); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.Group)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.UpdateGroupRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_UpdateGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateGroup'
+type MockAccountIamV2Interface_UpdateGroup_Call struct {
+	*mock.Call
+}
+
+// UpdateGroup is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.UpdateGroupRequest
+func (_e *MockAccountIamV2Interface_Expecter) UpdateGroup(ctx interface{}, request interface{}) *MockAccountIamV2Interface_UpdateGroup_Call {
+	return &MockAccountIamV2Interface_UpdateGroup_Call{Call: _e.mock.On("UpdateGroup", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_UpdateGroup_Call) Run(run func(ctx context.Context, request iamv2.UpdateGroupRequest)) *MockAccountIamV2Interface_UpdateGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.UpdateGroupRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateGroup_Call) Return(_a0 *iamv2.Group, _a1 error) *MockAccountIamV2Interface_UpdateGroup_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateGroup_Call) RunAndReturn(run func(context.Context, iamv2.UpdateGroupRequest) (*iamv2.Group, error)) *MockAccountIamV2Interface_UpdateGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateServicePrincipal provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) UpdateServicePrincipal(ctx context.Context, request iamv2.UpdateServicePrincipalRequest) (*iamv2.ServicePrincipal, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateServicePrincipal")
+	}
+
+	var r0 *iamv2.ServicePrincipal
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateServicePrincipalRequest) (*iamv2.ServicePrincipal, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateServicePrincipalRequest) *iamv2.ServicePrincipal); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ServicePrincipal)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.UpdateServicePrincipalRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_UpdateServicePrincipal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateServicePrincipal'
+type MockAccountIamV2Interface_UpdateServicePrincipal_Call struct {
+	*mock.Call
+}
+
+// UpdateServicePrincipal is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.UpdateServicePrincipalRequest
+func (_e *MockAccountIamV2Interface_Expecter) UpdateServicePrincipal(ctx interface{}, request interface{}) *MockAccountIamV2Interface_UpdateServicePrincipal_Call {
+	return &MockAccountIamV2Interface_UpdateServicePrincipal_Call{Call: _e.mock.On("UpdateServicePrincipal", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_UpdateServicePrincipal_Call) Run(run func(ctx context.Context, request iamv2.UpdateServicePrincipalRequest)) *MockAccountIamV2Interface_UpdateServicePrincipal_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.UpdateServicePrincipalRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateServicePrincipal_Call) Return(_a0 *iamv2.ServicePrincipal, _a1 error) *MockAccountIamV2Interface_UpdateServicePrincipal_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateServicePrincipal_Call) RunAndReturn(run func(context.Context, iamv2.UpdateServicePrincipalRequest) (*iamv2.ServicePrincipal, error)) *MockAccountIamV2Interface_UpdateServicePrincipal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateUser provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) UpdateUser(ctx context.Context, request iamv2.UpdateUserRequest) (*iamv2.User, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateUser")
+	}
+
+	var r0 *iamv2.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateUserRequest) (*iamv2.User, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateUserRequest) *iamv2.User); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.UpdateUserRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_UpdateUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateUser'
+type MockAccountIamV2Interface_UpdateUser_Call struct {
+	*mock.Call
+}
+
+// UpdateUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.UpdateUserRequest
+func (_e *MockAccountIamV2Interface_Expecter) UpdateUser(ctx interface{}, request interface{}) *MockAccountIamV2Interface_UpdateUser_Call {
+	return &MockAccountIamV2Interface_UpdateUser_Call{Call: _e.mock.On("UpdateUser", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_UpdateUser_Call) Run(run func(ctx context.Context, request iamv2.UpdateUserRequest)) *MockAccountIamV2Interface_UpdateUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.UpdateUserRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateUser_Call) Return(_a0 *iamv2.User, _a1 error) *MockAccountIamV2Interface_UpdateUser_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateUser_Call) RunAndReturn(run func(context.Context, iamv2.UpdateUserRequest) (*iamv2.User, error)) *MockAccountIamV2Interface_UpdateUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateWorkspaceAssignment provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) UpdateWorkspaceAssignment(ctx context.Context, request iamv2.UpdateWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateWorkspaceAssignment")
+	}
+
+	var r0 *iamv2.WorkspaceAssignment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.UpdateWorkspaceAssignmentRequest) *iamv2.WorkspaceAssignment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.WorkspaceAssignment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.UpdateWorkspaceAssignmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateWorkspaceAssignment'
+type MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call struct {
+	*mock.Call
+}
+
+// UpdateWorkspaceAssignment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.UpdateWorkspaceAssignmentRequest
+func (_e *MockAccountIamV2Interface_Expecter) UpdateWorkspaceAssignment(ctx interface{}, request interface{}) *MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call {
+	return &MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call{Call: _e.mock.On("UpdateWorkspaceAssignment", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call) Run(run func(ctx context.Context, request iamv2.UpdateWorkspaceAssignmentRequest)) *MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.UpdateWorkspaceAssignmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call) Return(_a0 *iamv2.WorkspaceAssignment, _a1 error) *MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call) RunAndReturn(run func(context.Context, iamv2.UpdateWorkspaceAssignmentRequest) (*iamv2.WorkspaceAssignment, error)) *MockAccountIamV2Interface_UpdateWorkspaceAssignment_Call {
 	_c.Call.Return(run)
 	return _c
 }
