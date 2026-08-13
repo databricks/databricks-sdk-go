@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -1304,6 +1305,8 @@ func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSpace struct {
+	// Time when the Genie space was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Description of the Genie Space
 	Description string `json:"description,omitempty"`
 	// ETag for this space. Pass this value back in the update request to
@@ -1321,6 +1324,9 @@ type GenieSpace struct {
 	SpaceId string `json:"space_id"`
 	// Title of the Genie Space
 	Title string `json:"title"`
+	// Time when the Genie space was last modified, matching the value shown in
+	// the Genie Agent UI.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Warehouse associated with the Genie Space
 	WarehouseId string `json:"warehouse_id,omitempty"`
 

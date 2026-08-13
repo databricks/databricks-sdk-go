@@ -3015,7 +3015,12 @@ type SchemaSpec struct {
 	// The source catalog name. Might be optional depending on the type of
 	// source.
 	SourceCatalog string `json:"source_catalog,omitempty"`
-	// Required. Schema name in the source database.
+	// Schema name in the source database. Currently required; this field will
+	// become optional in an upcoming release, since some source types (for
+	// example streaming / message-bus connectors) do not use it. When that
+	// change ships, this field's type in the generated SDKs and CLI will change
+	// from required to optional (nullable); clients that assume it is always
+	// present should handle its absence.
 	SourceSchema string `json:"source_schema"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
@@ -3332,7 +3337,12 @@ type TableSpec struct {
 	// Schema name in the source database. Might be optional depending on the
 	// type of source.
 	SourceSchema string `json:"source_schema,omitempty"`
-	// Required. Table name in the source database.
+	// Table name in the source database. Currently required; this field will
+	// become optional in an upcoming release, since some source types (for
+	// example streaming / message-bus connectors) do not use it. When that
+	// change ships, this field's type in the generated SDKs and CLI will change
+	// from required to optional (nullable); clients that assume it is always
+	// present should handle its absence.
 	SourceTable string `json:"source_table"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
