@@ -24,6 +24,15 @@ import (
 
 type RequestVisitor func(*http.Request) error
 
+// sensitiveCrossHostHeaders are custom Databricks auth headers carrying credentials that must
+// not be forwarded across a host boundary on redirect (net/http only strips the standard
+// sensitive headers such as Authorization on cross-host redirects).
+var sensitiveCrossHostHeaders = []string{
+	"X-Databricks-Azure-SP-Management-Token",
+	"X-Databricks-GCP-SA-Access-Token",
+	"X-Databricks-Azure-Workspace-Resource-Id",
+}
+
 type ClientConfig struct {
 	AuthVisitor RequestVisitor
 	Visitors    []RequestVisitor
@@ -157,6 +166,21 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 			// progress (e.g. on a slower network connection).
 			Timeout:   0,
 			Transport: transport,
+			// net/http strips sensitive headers (Authorization, Cookie, ...) when a redirect
+			// crosses to a different host, but it does not strip our custom cloud-provider token
+			// headers. Drop those on a cross-host redirect so credentials are not sent to a host
+			// other than the one they were intended for.
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				if len(via) >= 10 {
+					return errors.New("stopped after 10 redirects")
+				}
+				if len(via) > 0 && req.URL.Host != via[0].URL.Host {
+					for _, h := range sensitiveCrossHostHeaders {
+						req.Header.Del(h)
+					}
+				}
+				return nil
+			},
 		},
 	}
 }
