@@ -328,14 +328,17 @@ func needsRefresh(t *oauth2.Token) bool {
 	return !t.Expiry.IsZero() && time.Until(t.Expiry) < tokenRefreshBuffer
 }
 
-// isFreshReplacement reports whether cached changed from old and has
-// approximately the same lifetime as candidate.
+// isFreshReplacement reports whether cached changed from old, is valid, and
+// does not expire significantly sooner than candidate.
 func isFreshReplacement(old, candidate, cached *oauth2.Token) bool {
 	if cached.AccessToken == old.AccessToken || !cached.Valid() {
 		return false
 	}
-	if candidate.Expiry.IsZero() || cached.Expiry.IsZero() {
+	if cached.Expiry.IsZero() {
 		return true
+	}
+	if candidate.Expiry.IsZero() {
+		return false
 	}
 	return !cached.Expiry.Before(candidate.Expiry.Add(-cacheUpdateRecoveryExpiryDelta))
 }

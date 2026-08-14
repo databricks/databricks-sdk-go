@@ -694,37 +694,64 @@ func TestIsFreshReplacement(t *testing.T) {
 	candidate := &oauth2.Token{AccessToken: "candidate", Expiry: now.Add(time.Hour)}
 
 	tests := []struct {
-		name   string
-		cached *oauth2.Token
-		want   bool
+		name      string
+		candidate *oauth2.Token
+		cached    *oauth2.Token
+		want      bool
 	}{
 		{
-			name:   "same token",
-			cached: &oauth2.Token{AccessToken: "old", Expiry: now.Add(time.Hour)},
+			name:      "same token",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "old", Expiry: now.Add(time.Hour)},
+			want:      false,
 		},
 		{
-			name:   "expired replacement",
-			cached: &oauth2.Token{AccessToken: "winner", Expiry: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)},
+			name:      "expired replacement",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)},
+			want:      false,
 		},
 		{
-			name:   "replacement expires too soon",
-			cached: &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(-time.Minute - time.Second)},
+			name:      "replacement expires too soon",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(-time.Minute - time.Second)},
+			want:      false,
 		},
 		{
-			name:   "replacement expiry within tolerance",
-			cached: &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(-time.Minute)},
-			want:   true,
+			name:      "replacement expiry within tolerance",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(-time.Minute)},
+			want:      true,
 		},
 		{
-			name:   "replacement expires later",
-			cached: &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(time.Minute)},
-			want:   true,
+			name:      "replacement expires later",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(time.Minute)},
+			want:      true,
+		},
+		{
+			name:      "expiring candidate and non-expiring replacement",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner"},
+			want:      true,
+		},
+		{
+			name:      "non-expiring candidate and replacement inside refresh buffer",
+			candidate: &oauth2.Token{AccessToken: "candidate"},
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: now.Add(time.Minute)},
+			want:      false,
+		},
+		{
+			name:      "non-expiring candidate and replacement",
+			candidate: &oauth2.Token{AccessToken: "candidate"},
+			cached:    &oauth2.Token{AccessToken: "winner"},
+			want:      true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := isFreshReplacement(old, candidate, tt.cached); got != tt.want {
+			if got := isFreshReplacement(old, tt.candidate, tt.cached); got != tt.want {
 				t.Errorf("isFreshReplacement(): want %t, got %t", tt.want, got)
 			}
 		})
