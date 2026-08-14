@@ -618,6 +618,146 @@ func TestForceRefreshToken_RefreshesValidToken(t *testing.T) {
 	}
 }
 
+func TestForceRefreshToken_RecoversConcurrentCacheUpdate(t *testing.T) {
+	now := time.Date(2100, time.January, 1, 0, 0, 0, 0, time.UTC)
+	old := &oauth2.Token{
+		AccessToken:  "old-access",
+		RefreshToken: "old-refresh",
+		Expiry:       now.Add(time.Hour),
+	}
+	winner := &oauth2.Token{
+		AccessToken:  "winner-access",
+		RefreshToken: "winner-refresh",
+		Expiry:       now.Add(time.Hour - 30*time.Second),
+	}
+	lookupCalls := 0
+	c := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			lookupCalls++
+			if lookupCalls <= 2 {
+				return old, nil
+			}
+			return winner, nil
+		},
+		store: func(key string, tok *oauth2.Token) error {
+			if tok.AccessToken != "candidate-access" {
+				t.Fatalf("store(): want candidate access token, got %q", tok.AccessToken)
+			}
+			return errors.New("concurrent cache update")
+		},
+	}
+	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+	p, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(c),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `access_token=candidate-access&refresh_token=candidate-refresh&expires_in=3600`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/x-www-form-urlencoded"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(arg),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer p.Close()
+
+	tok, err := p.ForceRefreshToken()
+	if err != nil {
+		t.Fatalf("ForceRefreshToken(): want no error, got %v", err)
+	}
+	if tok.AccessToken != winner.AccessToken {
+		t.Errorf("ForceRefreshToken(): want winner access token %q, got %q", winner.AccessToken, tok.AccessToken)
+	}
+	if tok.RefreshToken != "" {
+		t.Errorf("ForceRefreshToken(): want refresh token redacted, got %q", tok.RefreshToken)
+	}
+	if lookupCalls != 3 {
+		t.Errorf("Lookup(): want 3 calls, got %d", lookupCalls)
+	}
+}
+
+func TestIsFreshReplacement(t *testing.T) {
+	now := time.Date(2100, time.January, 1, 0, 0, 0, 0, time.UTC)
+	old := &oauth2.Token{AccessToken: "old", Expiry: now.Add(time.Hour)}
+	candidate := &oauth2.Token{AccessToken: "candidate", Expiry: now.Add(time.Hour)}
+
+	tests := []struct {
+		name      string
+		candidate *oauth2.Token
+		cached    *oauth2.Token
+		want      bool
+	}{
+		{
+			name:      "same token",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "old", Expiry: now.Add(time.Hour)},
+			want:      false,
+		},
+		{
+			name:      "expired replacement",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)},
+			want:      false,
+		},
+		{
+			name:      "replacement expires too soon",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(-time.Minute - time.Second)},
+			want:      false,
+		},
+		{
+			name:      "replacement expiry within tolerance",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(-time.Minute)},
+			want:      true,
+		},
+		{
+			name:      "replacement expires later",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: candidate.Expiry.Add(time.Minute)},
+			want:      true,
+		},
+		{
+			name:      "expiring candidate and non-expiring replacement",
+			candidate: candidate,
+			cached:    &oauth2.Token{AccessToken: "winner"},
+			want:      true,
+		},
+		{
+			name:      "non-expiring candidate and replacement inside refresh buffer",
+			candidate: &oauth2.Token{AccessToken: "candidate"},
+			cached:    &oauth2.Token{AccessToken: "winner", Expiry: now.Add(time.Minute)},
+			want:      false,
+		},
+		{
+			name:      "non-expiring candidate and replacement",
+			candidate: &oauth2.Token{AccessToken: "candidate"},
+			cached:    &oauth2.Token{AccessToken: "winner"},
+			want:      true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := isFreshReplacement(old, tt.candidate, tt.cached); got != tt.want {
+				t.Errorf("isFreshReplacement(): want %t, got %t", tt.want, got)
+			}
+		})
+	}
+}
+
 func TestForceRefreshToken_WithInMemoryCachePreservesCachedRefreshToken(t *testing.T) {
 	tokenCache := cache.NewInMemoryTokenCache()
 	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")

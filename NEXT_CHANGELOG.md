@@ -10,6 +10,8 @@
 
 ### Bug Fixes
 
+- Recover from concurrent OAuth token cache writes by using the fresh token stored by another process.
+
 ### Documentation
 
 ### Internal Changes
