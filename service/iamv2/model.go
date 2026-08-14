@@ -158,6 +158,8 @@ type DirectGroupMember struct {
 	DisplayName string `json:"display_name,omitempty"`
 	// The external ID of the principal in Databricks.
 	ExternalId string `json:"external_id,omitempty"`
+	// The internal ID of the group this member belongs to.
+	GroupId int64 `json:"group_id,omitempty"`
 	// The source of group membership (internal or from identity provider).
 	MembershipSource GroupMembershipSource `json:"membership_source,omitempty"`
 	// Internal ID of the principal in Databricks.
@@ -1300,7 +1302,7 @@ type WorkspaceAssignment struct {
 	// The type of the principal (user/service principal/group) that is
 	// assigned.
 	PrincipalType PrincipalType `json:"principal_type,omitempty"`
-	// The workspace ID where the principal is assigned
+	// The workspace ID where the principal is assigned.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1354,7 +1356,7 @@ type WorkspaceAssignmentDetail struct {
 	PrincipalId int64 `json:"principal_id"`
 
 	PrincipalType PrincipalType `json:"principal_type,omitempty"`
-	// The workspace ID where the principal is assigned
+	// The workspace ID where the principal is assigned.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

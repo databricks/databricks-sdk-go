@@ -340,6 +340,11 @@ func (s GenieConversation) MarshalJSON() ([]byte, error) {
 }
 
 type GenieConversationSummary struct {
+	// Whether this is a classic chat or an agent-mode conversation. Allows
+	// callers to route message retrieval (chat vs. agent endpoint) without an
+	// extra lookup.
+	AgentType GenieConversationType `json:"agent_type,omitempty"`
+
 	ConversationId string `json:"conversation_id"`
 
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
@@ -355,6 +360,46 @@ func (s *GenieConversationSummary) UnmarshalJSON(b []byte) error {
 
 func (s GenieConversationSummary) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The type of a Genie conversation. Distinguishes an agent-mode conversation
+// from a classic chat conversation so callers can route message retrieval
+// accordingly without a per-conversation lookup.
+type GenieConversationType string
+
+const GenieConversationTypeGenieConversationTypeAgent GenieConversationType = `GENIE_CONVERSATION_TYPE_AGENT`
+
+const GenieConversationTypeGenieConversationTypeChat GenieConversationType = `GENIE_CONVERSATION_TYPE_CHAT`
+
+// String representation for [fmt.Print]
+func (f *GenieConversationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GenieConversationType) Set(v string) error {
+	switch v {
+	case `GENIE_CONVERSATION_TYPE_AGENT`, `GENIE_CONVERSATION_TYPE_CHAT`:
+		*f = GenieConversationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GENIE_CONVERSATION_TYPE_AGENT", "GENIE_CONVERSATION_TYPE_CHAT"`, v)
+	}
+}
+
+// Values returns all possible values for GenieConversationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GenieConversationType) Values() []GenieConversationType {
+	return []GenieConversationType{
+		GenieConversationTypeGenieConversationTypeAgent,
+		GenieConversationTypeGenieConversationTypeChat,
+	}
+}
+
+// Type always returns GenieConversationType to satisfy [pflag.Value] interface
+func (f *GenieConversationType) Type() string {
+	return "GenieConversationType"
 }
 
 type GenieCreateConversationMessageRequest struct {
@@ -2382,6 +2427,8 @@ type TextAttachmentPurpose string
 
 const TextAttachmentPurposeFollowUpQuestion TextAttachmentPurpose = `FOLLOW_UP_QUESTION`
 
+const TextAttachmentPurposeTextAttachmentPurposeAnswer TextAttachmentPurpose = `TEXT_ATTACHMENT_PURPOSE_ANSWER`
+
 // String representation for [fmt.Print]
 func (f *TextAttachmentPurpose) String() string {
 	return string(*f)
@@ -2390,11 +2437,11 @@ func (f *TextAttachmentPurpose) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TextAttachmentPurpose) Set(v string) error {
 	switch v {
-	case `FOLLOW_UP_QUESTION`:
+	case `FOLLOW_UP_QUESTION`, `TEXT_ATTACHMENT_PURPOSE_ANSWER`:
 		*f = TextAttachmentPurpose(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FOLLOW_UP_QUESTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FOLLOW_UP_QUESTION", "TEXT_ATTACHMENT_PURPOSE_ANSWER"`, v)
 	}
 }
 
@@ -2404,6 +2451,7 @@ func (f *TextAttachmentPurpose) Set(v string) error {
 func (f *TextAttachmentPurpose) Values() []TextAttachmentPurpose {
 	return []TextAttachmentPurpose{
 		TextAttachmentPurposeFollowUpQuestion,
+		TextAttachmentPurposeTextAttachmentPurposeAnswer,
 	}
 }
 

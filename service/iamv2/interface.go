@@ -20,8 +20,10 @@ type AccountIamV2Service interface {
 	// identity provider, and can be created whether or not Account Identity
 	// Management (AIM) is enabled.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. Use the
-	// ExternalGroup resource to sync groups from the identity provider instead.
+	// When AIM is enabled, supplying an external ID returns an error. To
+	// provision the identity from your identity provider, resolve it by its
+	// external ID with ResolveGroup; to read an existing external identity, use
+	// the ExternalGroup resource.
 	CreateGroup(ctx context.Context, request CreateGroupRequest) (*Group, error)
 
 	// Creates a local service principal in the Databricks account and returns
@@ -29,9 +31,10 @@ type AccountIamV2Service interface {
 	// not synced from the customer's identity provider, and can be created
 	// whether or not Account Identity Management (AIM) is enabled.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. Use the
-	// ExternalServicePrincipal resource to sync service principals from the
-	// identity provider instead.
+	// When AIM is enabled, supplying an external ID returns an error. To
+	// provision the identity from your identity provider, resolve it by its
+	// external ID with ResolveServicePrincipal; to read an existing external
+	// identity, use the ExternalServicePrincipal resource.
 	CreateServicePrincipal(ctx context.Context, request CreateServicePrincipalRequest) (*ServicePrincipal, error)
 
 	// Creates a local user in the Databricks account and returns the created
@@ -39,8 +42,10 @@ type AccountIamV2Service interface {
 	// provider, and can be created whether or not Account Identity Management
 	// (AIM) is enabled.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. Use the
-	// ExternalUser resource to sync users from the identity provider instead.
+	// When AIM is enabled, supplying an external ID returns an error. To
+	// provision the identity from your identity provider, resolve it by its
+	// external ID with ResolveUser; to read an existing external identity, use
+	// the ExternalUser resource.
 	CreateUser(ctx context.Context, request CreateUserRequest) (*User, error)
 
 	// Creates a workspace assignment for a principal. Entitlements are granted
@@ -162,18 +167,29 @@ type AccountIamV2Service interface {
 	// Updates an existing group in the Databricks account. Only the fields
 	// named in the update mask are modified. Returns the updated Group
 	// resource.
+	//
+	// When AIM is enabled and the group is an external identity (its
+	// external_id is set), only external_id can be updated; its other fields
+	// are sourced from your identity provider.
 	UpdateGroup(ctx context.Context, request UpdateGroupRequest) (*Group, error)
 
 	// Updates an existing service principal in the Databricks account. Only the
 	// fields named in the update mask are modified. Returns the updated
 	// ServicePrincipal resource.
+	//
+	// When AIM is enabled and the service principal is an external identity
+	// (its external_id is set), only external_id can be updated; its other
+	// fields are sourced from your identity provider.
 	UpdateServicePrincipal(ctx context.Context, request UpdateServicePrincipalRequest) (*ServicePrincipal, error)
 
 	// Updates an existing user in the Databricks account and returns the
 	// updated user. Only the fields named in the update mask are modified. The
 	// updatable fields are fullName.givenName, fullName.familyName, status, and
-	// externalId. The behavior is the same whether or not Account Identity
-	// Management (AIM) is enabled.
+	// externalId.
+	//
+	// When AIM is enabled and the user is an external identity (its external_id
+	// is set), only external_id can be updated; its other fields are sourced
+	// from your identity provider.
 	UpdateUser(ctx context.Context, request UpdateUserRequest) (*User, error)
 
 	// Updates the entitlements of a directly assigned principal in a workspace.
@@ -203,8 +219,10 @@ type WorkspaceIamV2Service interface {
 	// synced from the customer's identity provider, and can be created whether
 	// or not Account Identity Management (AIM) is enabled.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. Use the
-	// ExternalGroup resource to sync groups from the identity provider instead.
+	// When AIM is enabled, supplying an external ID returns an error. To
+	// provision the identity from your identity provider, resolve it by its
+	// external ID with ResolveGroup; to read an existing external identity, use
+	// the ExternalGroup resource.
 	CreateGroupProxy(ctx context.Context, request CreateGroupProxyRequest) (*Group, error)
 
 	// Creates a local service principal in the Databricks account that parents
@@ -213,9 +231,10 @@ type WorkspaceIamV2Service interface {
 	// provider, and can be created whether or not Account Identity Management
 	// (AIM) is enabled.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. Use the
-	// ExternalServicePrincipal resource to sync service principals from the
-	// identity provider instead.
+	// When AIM is enabled, supplying an external ID returns an error. To
+	// provision the identity from your identity provider, resolve it by its
+	// external ID with ResolveServicePrincipal; to read an existing external
+	// identity, use the ExternalServicePrincipal resource.
 	CreateServicePrincipalProxy(ctx context.Context, request CreateServicePrincipalProxyRequest) (*ServicePrincipal, error)
 
 	// Creates a local user in the Databricks account that parents the calling
@@ -223,8 +242,10 @@ type WorkspaceIamV2Service interface {
 	// synced from the customer's identity provider, and can be created whether
 	// or not Account Identity Management (AIM) is enabled.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. Use the
-	// ExternalUser resource to sync users from the identity provider instead.
+	// When AIM is enabled, supplying an external ID returns an error. To
+	// provision the identity from your identity provider, resolve it by its
+	// external ID with ResolveUser; to read an existing external identity, use
+	// the ExternalUser resource.
 	CreateUserProxy(ctx context.Context, request CreateUserProxyRequest) (*User, error)
 
 	// Creates a workspace assignment detail for a principal in the calling
@@ -358,17 +379,29 @@ type WorkspaceIamV2Service interface {
 	// Updates an existing group in the Databricks account that parents the
 	// calling workspace. Only the fields named in the update mask are modified.
 	// Returns the updated Group resource.
+	//
+	// When AIM is enabled and the group is an external identity (its
+	// external_id is set), only external_id can be updated; its other fields
+	// are sourced from your identity provider.
 	UpdateGroupProxy(ctx context.Context, request UpdateGroupProxyRequest) (*Group, error)
 
 	// Updates an existing service principal in the Databricks account that
 	// parents the calling workspace. Only the fields named in the update mask
 	// are modified. Returns the updated ServicePrincipal resource.
+	//
+	// When AIM is enabled and the service principal is an external identity
+	// (its external_id is set), only external_id can be updated; its other
+	// fields are sourced from your identity provider.
 	UpdateServicePrincipalProxy(ctx context.Context, request UpdateServicePrincipalProxyRequest) (*ServicePrincipal, error)
 
 	// Updates an existing user in the Databricks account that parents the
 	// calling workspace and returns the updated user. Only the fields named in
 	// the update mask are modified. The updatable fields are
 	// fullName.givenName, fullName.familyName, status, and externalId.
+	//
+	// When AIM is enabled and the user is an external identity (its external_id
+	// is set), only external_id can be updated; its other fields are sourced
+	// from your identity provider.
 	UpdateUserProxy(ctx context.Context, request UpdateUserProxyRequest) (*User, error)
 
 	// Updates the entitlements of a directly assigned principal in the calling
