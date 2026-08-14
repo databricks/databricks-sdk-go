@@ -4920,6 +4920,10 @@ type RunTask struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
+	// The id of the serverless compute this task ran on, either explicitly
+	// configured on the task or the workspace default. Only set once the
+	// compute has been resolved at run trigger.
+	EffectiveServerlessComputeId string `json:"effective_serverless_compute_id,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`

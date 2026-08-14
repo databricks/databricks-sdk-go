@@ -228,7 +228,40 @@ func (a *accountIamV2Impl) GetWorkspaceAssignmentDetail(ctx context.Context, req
 	return &workspaceAssignmentDetail, err
 }
 
-func (a *accountIamV2Impl) ListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error) {
+// Lists provisioned direct members of a group with their membership source
+// (internal or from identity provider).
+func (a *accountIamV2Impl) ListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) listing.Iterator[DirectGroupMember] {
+
+	getNextPage := func(ctx context.Context, req ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDirectGroupMembers(ctx, req)
+	}
+	getItems := func(resp *ListDirectGroupMembersResponse) []DirectGroupMember {
+		return resp.DirectGroupMembers
+	}
+	getNextReq := func(resp *ListDirectGroupMembersResponse) *ListDirectGroupMembersRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists provisioned direct members of a group with their membership source
+// (internal or from identity provider).
+func (a *accountIamV2Impl) ListDirectGroupMembersAll(ctx context.Context, request ListDirectGroupMembersRequest) ([]DirectGroupMember, error) {
+	iterator := a.ListDirectGroupMembers(ctx, request)
+	return listing.ToSlice[DirectGroupMember](ctx, iterator)
+}
+
+func (a *accountIamV2Impl) internalListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error) {
 	var listDirectGroupMembersResponse ListDirectGroupMembersResponse
 	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members", a.client.ConfiguredAccountID(), request.GroupId)
 	queryParams := make(map[string]any)
@@ -382,7 +415,44 @@ func (a *accountIamV2Impl) internalListUsers(ctx context.Context, request ListUs
 	return &listUsersResponse, err
 }
 
-func (a *accountIamV2Impl) ListWorkspaceAssignmentDetails(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
+// Lists workspace assignment details for a workspace. The response omits the
+// per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment detail.
+func (a *accountIamV2Impl) ListWorkspaceAssignmentDetails(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) listing.Iterator[WorkspaceAssignmentDetail] {
+
+	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentDetailsRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListWorkspaceAssignmentDetails(ctx, req)
+	}
+	getItems := func(resp *ListWorkspaceAssignmentDetailsResponse) []WorkspaceAssignmentDetail {
+		return resp.WorkspaceAssignmentDetails
+	}
+	getNextReq := func(resp *ListWorkspaceAssignmentDetailsResponse) *ListWorkspaceAssignmentDetailsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists workspace assignment details for a workspace. The response omits the
+// per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment detail.
+func (a *accountIamV2Impl) ListWorkspaceAssignmentDetailsAll(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) ([]WorkspaceAssignmentDetail, error) {
+	iterator := a.ListWorkspaceAssignmentDetails(ctx, request)
+	return listing.ToSlice[WorkspaceAssignmentDetail](ctx, iterator)
+}
+
+func (a *accountIamV2Impl) internalListWorkspaceAssignmentDetails(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
 	var listWorkspaceAssignmentDetailsResponse ListWorkspaceAssignmentDetailsResponse
 	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -811,7 +881,40 @@ func (a *workspaceIamV2Impl) GetWorkspaceIdentityDetail(ctx context.Context, req
 	return &workspaceIdentityDetail, err
 }
 
-func (a *workspaceIamV2Impl) ListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) (*ListDirectGroupMembersResponse, error) {
+// Lists provisioned direct members of a group with their membership source
+// (internal or from identity provider).
+func (a *workspaceIamV2Impl) ListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) listing.Iterator[DirectGroupMember] {
+
+	getNextPage := func(ctx context.Context, req ListDirectGroupMembersProxyRequest) (*ListDirectGroupMembersResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDirectGroupMembersProxy(ctx, req)
+	}
+	getItems := func(resp *ListDirectGroupMembersResponse) []DirectGroupMember {
+		return resp.DirectGroupMembers
+	}
+	getNextReq := func(resp *ListDirectGroupMembersResponse) *ListDirectGroupMembersProxyRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists provisioned direct members of a group with their membership source
+// (internal or from identity provider).
+func (a *workspaceIamV2Impl) ListDirectGroupMembersProxyAll(ctx context.Context, request ListDirectGroupMembersProxyRequest) ([]DirectGroupMember, error) {
+	iterator := a.ListDirectGroupMembersProxy(ctx, request)
+	return listing.ToSlice[DirectGroupMember](ctx, iterator)
+}
+
+func (a *workspaceIamV2Impl) internalListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) (*ListDirectGroupMembersResponse, error) {
 	var listDirectGroupMembersResponse ListDirectGroupMembersResponse
 	path := fmt.Sprintf("/api/2.0/identity/groups/%v/direct-members", request.GroupId)
 	queryParams := make(map[string]any)
@@ -984,7 +1087,44 @@ func (a *workspaceIamV2Impl) internalListUsersProxy(ctx context.Context, request
 	return &listUsersResponse, err
 }
 
-func (a *workspaceIamV2Impl) ListWorkspaceAssignmentDetailsProxy(ctx context.Context, request ListWorkspaceAssignmentDetailsProxyRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
+// Lists workspace assignment details for the calling workspace. The response
+// omits the per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment detail.
+func (a *workspaceIamV2Impl) ListWorkspaceAssignmentDetailsProxy(ctx context.Context, request ListWorkspaceAssignmentDetailsProxyRequest) listing.Iterator[WorkspaceAssignmentDetail] {
+
+	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentDetailsProxyRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListWorkspaceAssignmentDetailsProxy(ctx, req)
+	}
+	getItems := func(resp *ListWorkspaceAssignmentDetailsResponse) []WorkspaceAssignmentDetail {
+		return resp.WorkspaceAssignmentDetails
+	}
+	getNextReq := func(resp *ListWorkspaceAssignmentDetailsResponse) *ListWorkspaceAssignmentDetailsProxyRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists workspace assignment details for the calling workspace. The response
+// omits the per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment detail.
+func (a *workspaceIamV2Impl) ListWorkspaceAssignmentDetailsProxyAll(ctx context.Context, request ListWorkspaceAssignmentDetailsProxyRequest) ([]WorkspaceAssignmentDetail, error) {
+	iterator := a.ListWorkspaceAssignmentDetailsProxy(ctx, request)
+	return listing.ToSlice[WorkspaceAssignmentDetail](ctx, iterator)
+}
+
+func (a *workspaceIamV2Impl) internalListWorkspaceAssignmentDetailsProxy(ctx context.Context, request ListWorkspaceAssignmentDetailsProxyRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
 	var listWorkspaceAssignmentDetailsResponse ListWorkspaceAssignmentDetailsResponse
 	path := "/api/2.0/identity/workspace-assignment-details"
 	queryParams := make(map[string]any)

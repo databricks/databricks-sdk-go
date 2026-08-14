@@ -1931,6 +1931,10 @@ func (s ListRolesResponse) MarshalJSON() ([]byte, error) {
 type NewPipelineSpec struct {
 	// Budget policy to set on the newly created pipeline.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Release channel of the underlying pipeline's runtime. Some source table
+	// configurations (e.g., read-time CDF) require PREVIEW. Defaults to CURRENT
+	// if not specified.
+	PipelineChannel NewPipelineSpecPipelineChannel `json:"pipeline_channel,omitempty"`
 	// UC catalog for the pipeline to store intermediate files (checkpoints,
 	// event logs etc). This needs to be a standard catalog where the user has
 	// permissions to create Delta tables.
@@ -1949,6 +1953,47 @@ func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
 
 func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Release channel of the underlying pipeline's runtime. PREVIEW provides early
+// access to the latest features but may be less stable. Some source table
+// configurations (e.g., read-time CDF) require PREVIEW. Defaults to CURRENT if
+// not specified.
+type NewPipelineSpecPipelineChannel string
+
+const NewPipelineSpecPipelineChannelCurrent NewPipelineSpecPipelineChannel = `CURRENT`
+
+const NewPipelineSpecPipelineChannelPreview NewPipelineSpecPipelineChannel = `PREVIEW`
+
+// String representation for [fmt.Print]
+func (f *NewPipelineSpecPipelineChannel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *NewPipelineSpecPipelineChannel) Set(v string) error {
+	switch v {
+	case `CURRENT`, `PREVIEW`:
+		*f = NewPipelineSpecPipelineChannel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CURRENT", "PREVIEW"`, v)
+	}
+}
+
+// Values returns all possible values for NewPipelineSpecPipelineChannel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *NewPipelineSpecPipelineChannel) Values() []NewPipelineSpecPipelineChannel {
+	return []NewPipelineSpecPipelineChannel{
+		NewPipelineSpecPipelineChannelCurrent,
+		NewPipelineSpecPipelineChannelPreview,
+	}
+}
+
+// Type always returns NewPipelineSpecPipelineChannel to satisfy [pflag.Value] interface
+func (f *NewPipelineSpecPipelineChannel) Type() string {
+	return "NewPipelineSpecPipelineChannel"
 }
 
 // Controls how the Data API exposes the OpenAPI documentation endpoint. Only
@@ -3048,8 +3093,7 @@ type UpdateBranchRequest struct {
 	// Output only. The full resource path of the branch. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
@@ -3060,8 +3104,7 @@ type UpdateDataApiRequest struct {
 	// Resource name:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
@@ -3075,8 +3118,7 @@ type UpdateDatabaseRequest struct {
 	// The resource name of the database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
@@ -3090,8 +3132,7 @@ type UpdateEndpointRequest struct {
 	// Output only. The full resource path of the endpoint. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
@@ -3104,8 +3145,7 @@ type UpdateProjectRequest struct {
 	// The project's `name` field is used to identify the project to update.
 	// Format: projects/{project_id}
 	Project Project `json:"project"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
@@ -3118,7 +3158,6 @@ type UpdateRoleRequest struct {
 	// The role's `name` field is used to identify the role to update. Format:
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	Role Role `json:"role"`
-	// The list of fields to update in Postgres Role. If unspecified, all fields
-	// will be updated when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
