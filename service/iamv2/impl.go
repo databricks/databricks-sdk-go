@@ -463,7 +463,44 @@ func (a *accountIamV2Impl) internalListWorkspaceAssignmentDetails(ctx context.Co
 	return &listWorkspaceAssignmentDetailsResponse, err
 }
 
-func (a *accountIamV2Impl) ListWorkspaceAssignments(ctx context.Context, request ListWorkspaceAssignmentsRequest) (*ListWorkspaceAssignmentsResponse, error) {
+// Lists workspace assignments for a workspace. The response omits the
+// per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment.
+func (a *accountIamV2Impl) ListWorkspaceAssignments(ctx context.Context, request ListWorkspaceAssignmentsRequest) listing.Iterator[WorkspaceAssignment] {
+
+	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentsRequest) (*ListWorkspaceAssignmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListWorkspaceAssignments(ctx, req)
+	}
+	getItems := func(resp *ListWorkspaceAssignmentsResponse) []WorkspaceAssignment {
+		return resp.WorkspaceAssignments
+	}
+	getNextReq := func(resp *ListWorkspaceAssignmentsResponse) *ListWorkspaceAssignmentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists workspace assignments for a workspace. The response omits the
+// per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment.
+func (a *accountIamV2Impl) ListWorkspaceAssignmentsAll(ctx context.Context, request ListWorkspaceAssignmentsRequest) ([]WorkspaceAssignment, error) {
+	iterator := a.ListWorkspaceAssignments(ctx, request)
+	return listing.ToSlice[WorkspaceAssignment](ctx, iterator)
+}
+
+func (a *accountIamV2Impl) internalListWorkspaceAssignments(ctx context.Context, request ListWorkspaceAssignmentsRequest) (*ListWorkspaceAssignmentsResponse, error) {
 	var listWorkspaceAssignmentsResponse ListWorkspaceAssignmentsResponse
 	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -1138,7 +1175,44 @@ func (a *workspaceIamV2Impl) internalListWorkspaceAssignmentDetailsProxy(ctx con
 	return &listWorkspaceAssignmentDetailsResponse, err
 }
 
-func (a *workspaceIamV2Impl) ListWorkspaceAssignmentsProxy(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) (*ListWorkspaceAssignmentsResponse, error) {
+// Lists workspace assignments for the calling workspace. The response omits the
+// per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment.
+func (a *workspaceIamV2Impl) ListWorkspaceAssignmentsProxy(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) listing.Iterator[WorkspaceAssignment] {
+
+	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentsProxyRequest) (*ListWorkspaceAssignmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListWorkspaceAssignmentsProxy(ctx, req)
+	}
+	getItems := func(resp *ListWorkspaceAssignmentsResponse) []WorkspaceAssignment {
+		return resp.WorkspaceAssignments
+	}
+	getNextReq := func(resp *ListWorkspaceAssignmentsResponse) *ListWorkspaceAssignmentsProxyRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists workspace assignments for the calling workspace. The response omits the
+// per-principal entitlement fields (`entitlements` and
+// `effective_entitlements`). To read the entitlements for a single principal,
+// get that principal's assignment.
+func (a *workspaceIamV2Impl) ListWorkspaceAssignmentsProxyAll(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) ([]WorkspaceAssignment, error) {
+	iterator := a.ListWorkspaceAssignmentsProxy(ctx, request)
+	return listing.ToSlice[WorkspaceAssignment](ctx, iterator)
+}
+
+func (a *workspaceIamV2Impl) internalListWorkspaceAssignmentsProxy(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) (*ListWorkspaceAssignmentsResponse, error) {
 	var listWorkspaceAssignmentsResponse ListWorkspaceAssignmentsResponse
 	path := "/api/2.0/identity/workspace-assignments"
 	queryParams := make(map[string]any)

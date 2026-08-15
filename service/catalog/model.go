@@ -1580,11 +1580,10 @@ type CreateMcpServiceRequest struct {
 	// The MCP service to create. The server populates `name` from `parent` +
 	// `mcp_service_id`; clients should leave it unset.
 	McpService McpService `json:"mcp_service"`
-	// Leaf identifier for the MCP service (the unqualified name within the
-	// parent schema, e.g. "my_mcp_service").
+	// Name for the MCP service, e.g. "my_mcp_service".
 	McpServiceId string `json:"-" url:"mcp_service_id"`
-	// Resource name of the parent schema. Format: `schemas/{catalog}.{schema}`.
-	// Each `{...}` component is capped at 255 characters individually.
+	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
+	// `{...}` component is capped at 255 characters individually.
 	Parent string `json:"-" url:"parent"`
 }
 
@@ -1625,11 +1624,10 @@ type CreateModelProviderServiceRequest struct {
 	// The model provider service to create. The server populates `name` from
 	// `parent` + `model_provider_service_id`; clients should leave it unset.
 	ModelProviderService ModelProviderService `json:"model_provider_service"`
-	// Leaf identifier for the provider service (the unqualified name within the
-	// parent schema, e.g. "openai_prod").
+	// Name for the model provider service, e.g. "openai_prod".
 	ModelProviderServiceId string `json:"-" url:"model_provider_service_id"`
-	// Resource name of the parent schema. Format: `schemas/{catalog}.{schema}`.
-	// Each `{...}` component is capped at 255 characters individually.
+	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
+	// `{...}` component is capped at 255 characters individually.
 	Parent string `json:"-" url:"parent"`
 }
 
@@ -1637,11 +1635,10 @@ type CreateModelServiceRequest struct {
 	// The model service to create. The server populates `name` from `parent` +
 	// `model_service_id`; clients should leave it unset.
 	ModelService ModelService `json:"model_service"`
-	// Leaf identifier for the model service (the unqualified name within the
-	// parent schema, e.g. "my_model_service").
+	// Name for the model service, e.g. "my_model_service".
 	ModelServiceId string `json:"-" url:"model_service_id"`
-	// Resource name of the parent schema. Format: `schemas/{catalog}.{schema}`.
-	// Each `{...}` component is capped at 255 characters individually.
+	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
+	// `{...}` component is capped at 255 characters individually.
 	Parent string `json:"-" url:"parent"`
 }
 
@@ -4992,16 +4989,17 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 
 type ListMcpServicesRequest struct {
 	// Maximum number of MCP services to return. Defaults to 100 when unset or
-	// 0; the maximum is 100. Use `next_page_token` to retrieve additional
-	// pages.
+	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Resource name of the parent schema to list within, as
+	// Name of the parent schema to list within, as
 	// `schemas/{catalog}.{schema}`. Each `{...}` component is capped at 255
 	// characters individually.
 	Parent string `json:"-" url:"parent,omitempty"`
-	// View selector controlling which fields are populated per row.
+	// View selector controlling which fields are populated per row. `FULL`
+	// returns the full representation of the service; `BASIC` returns a more
+	// compact version. Defaults to `BASIC` when unset.
 	View ListMcpServicesRequestView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5119,16 +5117,17 @@ func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
 
 type ListModelProviderServicesRequest struct {
 	// Maximum number of provider services to return. Defaults to 100 when unset
-	// or 0; the maximum is 100. Use `next_page_token` to retrieve additional
-	// pages.
+	// or 0; the maximum is 100. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Resource name of the parent schema to list within, as
+	// Name of the parent schema to list within, as
 	// `schemas/{catalog}.{schema}`. Each `{...}` component is capped at 255
 	// characters individually.
 	Parent string `json:"-" url:"parent,omitempty"`
-	// View selector controlling which fields are populated per row.
+	// View selector controlling which fields are populated per row. `FULL`
+	// returns the full representation of the service; `BASIC` returns a more
+	// compact version. Defaults to `BASIC` when unset.
 	View ListModelProviderServicesRequestView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5202,16 +5201,17 @@ func (s ListModelProviderServicesResponse) MarshalJSON() ([]byte, error) {
 
 type ListModelServicesRequest struct {
 	// Maximum number of model services to return. Defaults to 100 when unset or
-	// 0; the maximum is 100. Use `next_page_token` to retrieve additional
-	// pages.
+	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Resource name of the parent schema to list within, as
+	// Name of the parent schema to list within, as
 	// `schemas/{catalog}.{schema}`. Each `{...}` component is capped at 255
 	// characters individually.
 	Parent string `json:"-" url:"parent,omitempty"`
-	// View selector controlling which fields are populated per row.
+	// View selector controlling which fields are populated per row. `FULL`
+	// returns the full representation of the service; `BASIC` returns a more
+	// compact version. Defaults to `BASIC` when unset.
 	View ListModelServicesRequestView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6006,7 +6006,8 @@ type McpServiceConfig struct {
 // dangling source so callers can diagnose a deleted backing connection.
 type McpServiceConfigSourceConnection struct {
 	IsDeleted bool `json:"is_deleted,omitempty"`
-
+	// Name of the UC connection that hosts the MCP server, as
+	// `connections/{catalog}.{schema}.{connection}`.
 	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`

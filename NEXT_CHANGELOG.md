@@ -27,3 +27,7 @@
 * [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignmentDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignmentDetails).
 * [Breaking] Add pagination for [WorkspaceIamV2API.ListDirectGroupMembersProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListDirectGroupMembersProxy).
 * [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentDetailsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentDetailsProxy).
+* Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [database.SyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/database#SyncedTableSpecPgSpecificType).
+* Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [postgres.SyncedTableSyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpecPgSpecificType).
+* [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignments).
+* [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentsProxy).

@@ -1195,6 +1195,10 @@ func (s SyncedTableSpec) MarshalJSON() ([]byte, error) {
 // mapping.
 type SyncedTableSpecPgSpecificType string
 
+const SyncedTableSpecPgSpecificTypePgSpecificTypeHalfvec SyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_HALFVEC`
+
+const SyncedTableSpecPgSpecificTypePgSpecificTypeVarchar SyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VARCHAR`
+
 const SyncedTableSpecPgSpecificTypePgSpecificTypeVector SyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VECTOR`
 
 // String representation for [fmt.Print]
@@ -1205,11 +1209,11 @@ func (f *SyncedTableSpecPgSpecificType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SyncedTableSpecPgSpecificType) Set(v string) error {
 	switch v {
-	case `PG_SPECIFIC_TYPE_VECTOR`:
+	case `PG_SPECIFIC_TYPE_HALFVEC`, `PG_SPECIFIC_TYPE_VARCHAR`, `PG_SPECIFIC_TYPE_VECTOR`:
 		*f = SyncedTableSpecPgSpecificType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_VECTOR"`, v)
+		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_HALFVEC", "PG_SPECIFIC_TYPE_VARCHAR", "PG_SPECIFIC_TYPE_VECTOR"`, v)
 	}
 }
 
@@ -1218,6 +1222,8 @@ func (f *SyncedTableSpecPgSpecificType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *SyncedTableSpecPgSpecificType) Values() []SyncedTableSpecPgSpecificType {
 	return []SyncedTableSpecPgSpecificType{
+		SyncedTableSpecPgSpecificTypePgSpecificTypeHalfvec,
+		SyncedTableSpecPgSpecificTypePgSpecificTypeVarchar,
 		SyncedTableSpecPgSpecificTypePgSpecificTypeVector,
 	}
 }

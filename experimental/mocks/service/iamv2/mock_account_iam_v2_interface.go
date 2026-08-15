@@ -1672,33 +1672,23 @@ func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentDetailsAll_Call) RunA
 }
 
 // ListWorkspaceAssignments provides a mock function with given fields: ctx, request
-func (_m *MockAccountIamV2Interface) ListWorkspaceAssignments(ctx context.Context, request iamv2.ListWorkspaceAssignmentsRequest) (*iamv2.ListWorkspaceAssignmentsResponse, error) {
+func (_m *MockAccountIamV2Interface) ListWorkspaceAssignments(ctx context.Context, request iamv2.ListWorkspaceAssignmentsRequest) listing.Iterator[iamv2.WorkspaceAssignment] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListWorkspaceAssignments")
 	}
 
-	var r0 *iamv2.ListWorkspaceAssignmentsResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) (*iamv2.ListWorkspaceAssignmentsResponse, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) *iamv2.ListWorkspaceAssignmentsResponse); ok {
+	var r0 listing.Iterator[iamv2.WorkspaceAssignment]
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) listing.Iterator[iamv2.WorkspaceAssignment]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iamv2.ListWorkspaceAssignmentsResponse)
+			r0 = ret.Get(0).(listing.Iterator[iamv2.WorkspaceAssignment])
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // MockAccountIamV2Interface_ListWorkspaceAssignments_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListWorkspaceAssignments'
@@ -1720,12 +1710,71 @@ func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) Run(run func(
 	return _c
 }
 
-func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) Return(_a0 *iamv2.ListWorkspaceAssignmentsResponse, _a1 error) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) Return(_a0 listing.Iterator[iamv2.WorkspaceAssignment]) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) RunAndReturn(run func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) listing.Iterator[iamv2.WorkspaceAssignment]) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListWorkspaceAssignmentsAll provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListWorkspaceAssignmentsAll(ctx context.Context, request iamv2.ListWorkspaceAssignmentsRequest) ([]iamv2.WorkspaceAssignment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListWorkspaceAssignmentsAll")
+	}
+
+	var r0 []iamv2.WorkspaceAssignment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) ([]iamv2.WorkspaceAssignment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) []iamv2.WorkspaceAssignment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]iamv2.WorkspaceAssignment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListWorkspaceAssignmentsAll'
+type MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call struct {
+	*mock.Call
+}
+
+// ListWorkspaceAssignmentsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListWorkspaceAssignmentsRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListWorkspaceAssignmentsAll(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call {
+	return &MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call{Call: _e.mock.On("ListWorkspaceAssignmentsAll", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call) Run(run func(ctx context.Context, request iamv2.ListWorkspaceAssignmentsRequest)) *MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListWorkspaceAssignmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call) Return(_a0 []iamv2.WorkspaceAssignment, _a1 error) *MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountIamV2Interface_ListWorkspaceAssignments_Call) RunAndReturn(run func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) (*iamv2.ListWorkspaceAssignmentsResponse, error)) *MockAccountIamV2Interface_ListWorkspaceAssignments_Call {
+func (_c *MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call) RunAndReturn(run func(context.Context, iamv2.ListWorkspaceAssignmentsRequest) ([]iamv2.WorkspaceAssignment, error)) *MockAccountIamV2Interface_ListWorkspaceAssignmentsAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
