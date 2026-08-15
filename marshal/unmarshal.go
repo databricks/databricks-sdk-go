@@ -12,9 +12,13 @@ func Unmarshal(data []byte, v any) error {
 	if len(data) == 0 {
 		return nil
 	}
-	var jsonFields map[string]json.RawMessage
-	err := json.Unmarshal([]byte(data), &jsonFields)
+	data, err := normalizeInt64Strings(data, v)
 	if err != nil {
+		return err
+	}
+
+	var jsonFields map[string]json.RawMessage
+	if err = json.Unmarshal([]byte(data), &jsonFields); err != nil {
 		return err
 	}
 
@@ -22,7 +26,6 @@ func Unmarshal(data []byte, v any) error {
 	value = reflect.Indirect(value)
 
 	objectType := value.Type()
-
 	foundFields := []string{}
 
 	for _, field := range getTypeFields(objectType) {
