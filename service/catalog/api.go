@@ -433,8 +433,7 @@ func NewAiGateway(client *client.DatabricksClient) *AiGatewayAPI {
 // securables that bring centralized access control, lineage, and auditing to
 // AI-serving entities: model services (governed access to foundation models and
 // external LLMs), model provider services (governed connections to external
-// model providers), MCP services (governed Model Context Protocol servers), and
-// agent services (governed agents).
+// model providers), and MCP services (governed Model Context Protocol servers).
 type AiGatewayAPI struct {
 	aiGatewayImpl
 }
