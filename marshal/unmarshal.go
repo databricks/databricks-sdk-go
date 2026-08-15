@@ -78,7 +78,11 @@ func setField(field reflect.Value, value []byte) error {
 	// This library stops converting when it finds a custom Marshaller,
 	// Since strings in YAML may not have quotes, they won't be added.
 	// So we add them manually
-	return json.Unmarshal([]byte(`"`+string(value)+`"`), pointer)
+	quoted, err := json.Marshal(string(value))
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(quoted, pointer)
 }
 
 func setForceSendFields(v any, presentFields []string) error {
