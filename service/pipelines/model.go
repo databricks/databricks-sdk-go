@@ -234,6 +234,10 @@ type ConnectorOptions struct {
 
 	KafkaOptions *KafkaOptions `json:"kafka_options,omitempty"`
 
+	LinkedinAdsOptions *LinkedInAdsOptions `json:"linkedin_ads_options,omitempty"`
+
+	MarketoOptions *MarketoOptions `json:"marketo_options,omitempty"`
+
 	MetaAdsOptions *MetaMarketingOptions `json:"meta_ads_options,omitempty"`
 
 	OutlookOptions *OutlookOptions `json:"outlook_options,omitempty"`
@@ -1568,6 +1572,187 @@ func (s KafkaOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// LinkedIn Ads specific options for ingestion. sync_start_date and
+// lookback_window_days apply to both the prebuilt analytics tables and custom
+// reports. custom_report_options defines a custom (user-defined) adAnalytics
+// report and is only valid on a table object.
+type LinkedInAdsOptions struct {
+	// (Optional) Custom report definition. Only valid on a table object. When
+	// set, the table is synthesized from /rest/adAnalytics using the finder,
+	// pivots, time granularity and metrics here. When unset, the table must
+	// match one of the connector's prebuilt sources.
+	CustomReportOptions *LinkedInAdsOptionsLinkedInAdsCustomReportOptions `json:"custom_report_options,omitempty"`
+	// (Optional) Days to look back during incremental sync for late-arriving
+	// data. If not specified, defaults to 30 days.
+	LookbackWindowDays int `json:"lookback_window_days,omitempty"`
+	// (Optional) Start date for the initial sync of report tables, YYYY-MM-DD.
+	// Earliest date from which to sync historical data; overrides the default
+	// when set. For finder attributedRevenueMetrics, this must be between 30
+	// and 366 days before today. If not specified, defaults to 1 year of
+	// history.
+	SyncStartDate string `json:"sync_start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LinkedInAdsOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LinkedInAdsOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// User-defined custom report for the LinkedIn Ads connector. The destination
+// table name comes from the enclosing TableSpec.destination_table, the start
+// date from the enclosing LinkedInAdsOptions.sync_start_date, and the account
+// it runs against from the source schema (namespace) -- none are repeated here.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptions struct {
+	// (Required) Entity pivots to group by; count/constraints depend on finder.
+	EntityGranularity []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity `json:"entity_granularity,omitempty"`
+	// (Required) adAnalytics finder. See LinkedInAdsFinder.
+	Finder LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder `json:"finder"`
+	// (Optional) LinkedIn metric names for the report. Open vocabulary (not an
+	// enum): the valid set is large (~100) and evolves with the LinkedIn
+	// adAnalytics API, so values are passed through verbatim. If empty, a
+	// pivot-safe default core set is ingested: impressions, clicks,
+	// costInLocalCurrency, externalWebsiteConversions (valid for every pivot).
+	// Ignored for attributedRevenueMetrics (always returns the full
+	// RevenueAttributionMetrics struct).
+	Metrics []string `json:"metrics,omitempty"`
+	// (Optional) Time aggregation. Defaults to DAILY when unspecified. Used by
+	// analytics/statistics; ignored for attributedRevenueMetrics.
+	TimeGranularity LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity `json:"time_granularity,omitempty"`
+}
+
+// Entity pivot to group by.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity string
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaign LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity = `CAMPAIGN`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaignGroup LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity = `CAMPAIGN_GROUP`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCreative LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity = `CREATIVE`
+
+// String representation for [fmt.Print]
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) Set(v string) error {
+	switch v {
+	case `CAMPAIGN`, `CAMPAIGN_GROUP`, `CREATIVE`:
+		*f = LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAMPAIGN", "CAMPAIGN_GROUP", "CREATIVE"`, v)
+	}
+}
+
+// Values returns all possible values for LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) Values() []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity {
+	return []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity{
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaign,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaignGroup,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCreative,
+	}
+}
+
+// Type always returns LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity to satisfy [pflag.Value] interface
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) Type() string {
+	return "LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity"
+}
+
+// adAnalytics finder. Determines call shape, valid pivots, and metric
+// requirements.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder string
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAnalytics LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder = `ANALYTICS`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAttributedRevenueMetrics LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder = `ATTRIBUTED_REVENUE_METRICS`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderStatistics LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder = `STATISTICS`
+
+// String representation for [fmt.Print]
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) Set(v string) error {
+	switch v {
+	case `ANALYTICS`, `ATTRIBUTED_REVENUE_METRICS`, `STATISTICS`:
+		*f = LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ANALYTICS", "ATTRIBUTED_REVENUE_METRICS", "STATISTICS"`, v)
+	}
+}
+
+// Values returns all possible values for LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) Values() []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder {
+	return []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder{
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAnalytics,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAttributedRevenueMetrics,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderStatistics,
+	}
+}
+
+// Type always returns LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder to satisfy [pflag.Value] interface
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) Type() string {
+	return "LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder"
+}
+
+// Time aggregation. Used by analytics/statistics; ignored for
+// attributedRevenueMetrics. Defaults to DAILY when unspecified.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity string
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityAll LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `ALL`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityDaily LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `DAILY`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityMonthly LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `MONTHLY`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityYearly LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `YEARLY`
+
+// String representation for [fmt.Print]
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) Set(v string) error {
+	switch v {
+	case `ALL`, `DAILY`, `MONTHLY`, `YEARLY`:
+		*f = LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL", "DAILY", "MONTHLY", "YEARLY"`, v)
+	}
+}
+
+// Values returns all possible values for LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) Values() []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity {
+	return []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity{
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityAll,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityDaily,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityMonthly,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityYearly,
+	}
+}
+
+// Type always returns LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity to satisfy [pflag.Value] interface
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) Type() string {
+	return "LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity"
+}
+
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
 	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
@@ -1717,6 +1902,24 @@ func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ManualTrigger struct {
+}
+
+// Marketo specific options for ingestion
+type MarketoOptions struct {
+	// (Optional) Start date for the initial sync in YYYY-MM-DD format. This
+	// determines the earliest date from which to sync historical data. If not
+	// specified, complete history is ingested.
+	SyncStartDate string `json:"sync_start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MarketoOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MarketoOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Maturity level for EventDetails.
