@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -33,7 +34,7 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 }
 
 func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
-	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.EndpointName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -47,7 +48,7 @@ func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request 
 
 func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error) {
 	var endpointInfo EndpointInfo
-	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.EndpointName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -61,7 +62,7 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 
 func (a *vectorSearchEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetVectorSearchEndpointPermissionLevelsRequest) (*GetVectorSearchEndpointPermissionLevelsResponse, error) {
 	var getVectorSearchEndpointPermissionLevelsResponse GetVectorSearchEndpointPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v/permissionLevels", request.EndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.EndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -75,7 +76,7 @@ func (a *vectorSearchEndpointsImpl) GetPermissionLevels(ctx context.Context, req
 
 func (a *vectorSearchEndpointsImpl) GetPermissions(ctx context.Context, request GetVectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error) {
 	var vectorSearchEndpointPermissions VectorSearchEndpointPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", request.EndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.EndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -134,7 +135,7 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 
 func (a *vectorSearchEndpointsImpl) PatchEndpoint(ctx context.Context, request PatchEndpointRequest) (*EndpointInfo, error) {
 	var endpointInfo EndpointInfo
-	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.EndpointName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -149,7 +150,7 @@ func (a *vectorSearchEndpointsImpl) PatchEndpoint(ctx context.Context, request P
 
 func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error) {
 	var retrieveUserVisibleMetricsResponse RetrieveUserVisibleMetricsResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/metrics", request.Name)
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/metrics", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -164,7 +165,7 @@ func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Conte
 
 func (a *vectorSearchEndpointsImpl) SetPermissions(ctx context.Context, request VectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error) {
 	var vectorSearchEndpointPermissions VectorSearchEndpointPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", request.EndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.EndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -179,7 +180,7 @@ func (a *vectorSearchEndpointsImpl) SetPermissions(ctx context.Context, request 
 
 func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error) {
 	var patchEndpointBudgetPolicyResponse PatchEndpointBudgetPolicyResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/budget-policy", request.EndpointName)
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/budget-policy", httpclient.EncodeSingleSegmentPathParameter(request.EndpointName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -194,7 +195,7 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Conte
 
 func (a *vectorSearchEndpointsImpl) UpdateEndpointCustomTags(ctx context.Context, request UpdateEndpointCustomTagsRequest) (*UpdateEndpointCustomTagsResponse, error) {
 	var updateEndpointCustomTagsResponse UpdateEndpointCustomTagsResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/tags", request.EndpointName)
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/tags", httpclient.EncodeSingleSegmentPathParameter(request.EndpointName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -209,7 +210,7 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointCustomTags(ctx context.Context
 
 func (a *vectorSearchEndpointsImpl) UpdatePermissions(ctx context.Context, request VectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error) {
 	var vectorSearchEndpointPermissions VectorSearchEndpointPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", request.EndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/vector-search-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.EndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -244,7 +245,7 @@ func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request Creat
 
 func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, request DeleteDataVectorIndexRequest) (*DeleteDataVectorIndexResponse, error) {
 	var deleteDataVectorIndexResponse DeleteDataVectorIndexResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/delete-data", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/delete-data", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -257,7 +258,7 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 }
 
 func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -271,7 +272,7 @@ func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request Delet
 
 func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndexRequest) (*VectorIndex, error) {
 	var vectorIndex VectorIndex
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -330,7 +331,7 @@ func (a *vectorSearchIndexesImpl) internalListIndexes(ctx context.Context, reque
 
 func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error) {
 	var queryVectorIndexResponse QueryVectorIndexResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -345,7 +346,7 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 
 func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error) {
 	var queryVectorIndexResponse QueryVectorIndexResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query-next-page", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query-next-page", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -360,7 +361,7 @@ func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request Que
 
 func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVectorIndexRequest) (*ScanVectorIndexResponse, error) {
 	var scanVectorIndexResponse ScanVectorIndexResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/scan", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/scan", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -374,7 +375,7 @@ func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVec
 }
 
 func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) error {
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/sync", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/sync", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -389,7 +390,7 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 
 func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error) {
 	var upsertDataVectorIndexResponse UpsertDataVectorIndexResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/upsert-data", request.IndexName)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/upsert-data", httpclient.EncodeSingleSegmentPathParameter(request.IndexName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

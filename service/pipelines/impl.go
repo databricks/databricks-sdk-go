@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -19,7 +20,7 @@ type pipelinesImpl struct {
 
 func (a *pipelinesImpl) ApplyEnvironment(ctx context.Context, request ApplyEnvironmentRequest) (*ApplyEnvironmentRequestResponse, error) {
 	var applyEnvironmentRequestResponse ApplyEnvironmentRequestResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/environment/apply", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/environment/apply", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -33,7 +34,7 @@ func (a *pipelinesImpl) ApplyEnvironment(ctx context.Context, request ApplyEnvir
 
 func (a *pipelinesImpl) Clone(ctx context.Context, request ClonePipelineRequest) (*ClonePipelineResponse, error) {
 	var clonePipelineResponse ClonePipelineResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/clone", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/clone", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -62,7 +63,7 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 }
 
 func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -76,7 +77,7 @@ func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineReques
 
 func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
 	var getPipelineResponse GetPipelineResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -90,7 +91,7 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 
 func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
 	var getPipelinePermissionLevelsResponse GetPipelinePermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v/permissionLevels", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -104,7 +105,7 @@ func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipe
 
 func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -118,7 +119,7 @@ func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelineP
 
 func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
 	var getUpdateResponse GetUpdateResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId), httpclient.EncodeSingleSegmentPathParameter(request.UpdateId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -163,7 +164,7 @@ func (a *pipelinesImpl) ListPipelineEventsAll(ctx context.Context, request ListP
 
 func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
 	var listPipelineEventsResponse ListPipelineEventsResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/events", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/events", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -222,7 +223,7 @@ func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListP
 
 func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
 	var listUpdatesResponse ListUpdatesResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -236,7 +237,7 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 
 func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -251,7 +252,7 @@ func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePerm
 
 func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
 	var startUpdateResponse StartUpdateResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -265,7 +266,7 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 }
 
 func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -278,7 +279,7 @@ func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
 }
 
 func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -293,7 +294,7 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 
 func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", httpclient.EncodeSingleSegmentPathParameter(request.PipelineId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

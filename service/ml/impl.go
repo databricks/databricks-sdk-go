@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
@@ -80,7 +81,7 @@ func (a *experimentsImpl) DeleteExperiment(ctx context.Context, request DeleteEx
 }
 
 func (a *experimentsImpl) DeleteLoggedModel(ctx context.Context, request DeleteLoggedModelRequest) error {
-	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", httpclient.EncodeSingleSegmentPathParameter(request.ModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -93,7 +94,7 @@ func (a *experimentsImpl) DeleteLoggedModel(ctx context.Context, request DeleteL
 }
 
 func (a *experimentsImpl) DeleteLoggedModelTag(ctx context.Context, request DeleteLoggedModelTagRequest) error {
-	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags/%v", request.ModelId, request.TagKey)
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.ModelId), httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -150,7 +151,7 @@ func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) erro
 
 func (a *experimentsImpl) FinalizeLoggedModel(ctx context.Context, request FinalizeLoggedModelRequest) (*FinalizeLoggedModelResponse, error) {
 	var finalizeLoggedModelResponse FinalizeLoggedModelResponse
-	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", httpclient.EncodeSingleSegmentPathParameter(request.ModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -238,7 +239,7 @@ func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHis
 
 func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error) {
 	var getLoggedModelResponse GetLoggedModelResponse
-	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", httpclient.EncodeSingleSegmentPathParameter(request.ModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -252,7 +253,7 @@ func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedM
 
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
 	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.ExperimentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -266,7 +267,7 @@ func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetEx
 
 func (a *experimentsImpl) GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", httpclient.EncodeSingleSegmentPathParameter(request.ExperimentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -421,7 +422,7 @@ func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) erro
 }
 
 func (a *experimentsImpl) LogLoggedModelParams(ctx context.Context, request LogLoggedModelParamsRequest) error {
-	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/params", request.ModelId)
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/params", httpclient.EncodeSingleSegmentPathParameter(request.ModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -659,7 +660,7 @@ func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExper
 }
 
 func (a *experimentsImpl) SetLoggedModelTags(ctx context.Context, request SetLoggedModelTagsRequest) error {
-	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags", request.ModelId)
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags", httpclient.EncodeSingleSegmentPathParameter(request.ModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -674,7 +675,7 @@ func (a *experimentsImpl) SetLoggedModelTags(ctx context.Context, request SetLog
 
 func (a *experimentsImpl) SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", httpclient.EncodeSingleSegmentPathParameter(request.ExperimentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -717,7 +718,7 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 
 func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", httpclient.EncodeSingleSegmentPathParameter(request.ExperimentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -826,7 +827,7 @@ func (a *featureEngineeringImpl) CreateStream(ctx context.Context, request Creat
 }
 
 func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -839,7 +840,7 @@ func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request Dele
 }
 
 func (a *featureEngineeringImpl) DeleteKafkaConfig(ctx context.Context, request DeleteKafkaConfigRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -852,7 +853,7 @@ func (a *featureEngineeringImpl) DeleteKafkaConfig(ctx context.Context, request 
 }
 
 func (a *featureEngineeringImpl) DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", httpclient.EncodeSingleSegmentPathParameter(request.MaterializedFeatureId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -865,7 +866,7 @@ func (a *featureEngineeringImpl) DeleteMaterializedFeature(ctx context.Context, 
 }
 
 func (a *featureEngineeringImpl) DeleteStream(ctx context.Context, request DeleteStreamRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -879,7 +880,7 @@ func (a *featureEngineeringImpl) DeleteStream(ctx context.Context, request Delet
 
 func (a *featureEngineeringImpl) GetFeature(ctx context.Context, request GetFeatureRequest) (*Feature, error) {
 	var feature Feature
-	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -893,7 +894,7 @@ func (a *featureEngineeringImpl) GetFeature(ctx context.Context, request GetFeat
 
 func (a *featureEngineeringImpl) GetKafkaConfig(ctx context.Context, request GetKafkaConfigRequest) (*KafkaConfig, error) {
 	var kafkaConfig KafkaConfig
-	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -907,7 +908,7 @@ func (a *featureEngineeringImpl) GetKafkaConfig(ctx context.Context, request Get
 
 func (a *featureEngineeringImpl) GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error) {
 	var materializedFeature MaterializedFeature
-	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", httpclient.EncodeSingleSegmentPathParameter(request.MaterializedFeatureId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -921,7 +922,7 @@ func (a *featureEngineeringImpl) GetMaterializedFeature(ctx context.Context, req
 
 func (a *featureEngineeringImpl) GetStream(ctx context.Context, request GetStreamRequest) (*Stream, error) {
 	var stream Stream
-	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1119,7 +1120,7 @@ func (a *featureEngineeringImpl) internalListStreams(ctx context.Context, reques
 
 func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error) {
 	var feature Feature
-	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1138,7 +1139,7 @@ func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request Upda
 
 func (a *featureEngineeringImpl) UpdateKafkaConfig(ctx context.Context, request UpdateKafkaConfigRequest) (*KafkaConfig, error) {
 	var kafkaConfig KafkaConfig
-	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -1160,7 +1161,7 @@ func (a *featureEngineeringImpl) UpdateKafkaConfig(ctx context.Context, request 
 
 func (a *featureEngineeringImpl) UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error) {
 	var materializedFeature MaterializedFeature
-	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", httpclient.EncodeSingleSegmentPathParameter(request.MaterializedFeatureId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1179,7 +1180,7 @@ func (a *featureEngineeringImpl) UpdateMaterializedFeature(ctx context.Context, 
 
 func (a *featureEngineeringImpl) UpdateStream(ctx context.Context, request UpdateStreamRequest) (*Stream, error) {
 	var stream Stream
-	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/streams/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -1220,7 +1221,7 @@ func (a *featureStoreImpl) CreateOnlineStore(ctx context.Context, request Create
 }
 
 func (a *featureStoreImpl) DeleteOnlineStore(ctx context.Context, request DeleteOnlineStoreRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1233,7 +1234,7 @@ func (a *featureStoreImpl) DeleteOnlineStore(ctx context.Context, request Delete
 }
 
 func (a *featureStoreImpl) DeleteOnlineTable(ctx context.Context, request DeleteOnlineTableRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-store/online-tables/%v", request.OnlineTableName)
+	path := fmt.Sprintf("/api/2.0/feature-store/online-tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.OnlineTableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1247,7 +1248,7 @@ func (a *featureStoreImpl) DeleteOnlineTable(ctx context.Context, request Delete
 
 func (a *featureStoreImpl) GetOnlineStore(ctx context.Context, request GetOnlineStoreRequest) (*OnlineStore, error) {
 	var onlineStore OnlineStore
-	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1306,7 +1307,7 @@ func (a *featureStoreImpl) internalListOnlineStores(ctx context.Context, request
 
 func (a *featureStoreImpl) PublishTable(ctx context.Context, request PublishTableRequest) (*PublishTableResponse, error) {
 	var publishTableResponse PublishTableResponse
-	path := fmt.Sprintf("/api/2.0/feature-store/tables/%v/publish", request.SourceTableName)
+	path := fmt.Sprintf("/api/2.0/feature-store/tables/%v/publish", httpclient.EncodeSingleSegmentPathParameter(request.SourceTableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1321,7 +1322,7 @@ func (a *featureStoreImpl) PublishTable(ctx context.Context, request PublishTabl
 
 func (a *featureStoreImpl) UpdateOnlineStore(ctx context.Context, request UpdateOnlineStoreRequest) (*OnlineStore, error) {
 	var onlineStore OnlineStore
-	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1360,7 +1361,7 @@ func (a *forecastingImpl) CreateExperiment(ctx context.Context, request CreateFo
 
 func (a *forecastingImpl) GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error) {
 	var forecastingExperiment ForecastingExperiment
-	path := fmt.Sprintf("/api/2.0/automl/get-forecasting-experiment/%v", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/automl/get-forecasting-experiment/%v", httpclient.EncodeSingleSegmentPathParameter(request.ExperimentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1379,7 +1380,7 @@ type materializedFeaturesImpl struct {
 
 func (a *materializedFeaturesImpl) CreateFeatureTag(ctx context.Context, request CreateFeatureTagRequest) (*FeatureTag, error) {
 	var featureTag FeatureTag
-	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", request.TableName, request.FeatureName)
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", httpclient.EncodeSingleSegmentPathParameter(request.TableName), httpclient.EncodeSingleSegmentPathParameter(request.FeatureName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1393,7 +1394,7 @@ func (a *materializedFeaturesImpl) CreateFeatureTag(ctx context.Context, request
 }
 
 func (a *materializedFeaturesImpl) DeleteFeatureTag(ctx context.Context, request DeleteFeatureTagRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.TableName), httpclient.EncodeSingleSegmentPathParameter(request.FeatureName), httpclient.EncodeSingleSegmentPathParameter(request.Key))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1407,7 +1408,7 @@ func (a *materializedFeaturesImpl) DeleteFeatureTag(ctx context.Context, request
 
 func (a *materializedFeaturesImpl) GetFeatureLineage(ctx context.Context, request GetFeatureLineageRequest) (*FeatureLineage, error) {
 	var featureLineage FeatureLineage
-	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/lineage", request.TableName, request.FeatureName)
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/lineage", httpclient.EncodeSingleSegmentPathParameter(request.TableName), httpclient.EncodeSingleSegmentPathParameter(request.FeatureName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1421,7 +1422,7 @@ func (a *materializedFeaturesImpl) GetFeatureLineage(ctx context.Context, reques
 
 func (a *materializedFeaturesImpl) GetFeatureTag(ctx context.Context, request GetFeatureTagRequest) (*FeatureTag, error) {
 	var featureTag FeatureTag
-	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.TableName), httpclient.EncodeSingleSegmentPathParameter(request.FeatureName), httpclient.EncodeSingleSegmentPathParameter(request.Key))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1466,7 +1467,7 @@ func (a *materializedFeaturesImpl) ListFeatureTagsAll(ctx context.Context, reque
 
 func (a *materializedFeaturesImpl) internalListFeatureTags(ctx context.Context, request ListFeatureTagsRequest) (*ListFeatureTagsResponse, error) {
 	var listFeatureTagsResponse ListFeatureTagsResponse
-	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", request.TableName, request.FeatureName)
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", httpclient.EncodeSingleSegmentPathParameter(request.TableName), httpclient.EncodeSingleSegmentPathParameter(request.FeatureName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1480,7 +1481,7 @@ func (a *materializedFeaturesImpl) internalListFeatureTags(ctx context.Context, 
 
 func (a *materializedFeaturesImpl) UpdateFeatureTag(ctx context.Context, request UpdateFeatureTagRequest) (*FeatureTag, error) {
 	var featureTag FeatureTag
-	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.TableName), httpclient.EncodeSingleSegmentPathParameter(request.FeatureName), httpclient.EncodeSingleSegmentPathParameter(request.Key))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
@@ -1768,7 +1769,7 @@ func (a *modelRegistryImpl) GetModelVersionDownloadUri(ctx context.Context, requ
 
 func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
 	var getRegisteredModelPermissionLevelsResponse GetRegisteredModelPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v/permissionLevels", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.RegisteredModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1782,7 +1783,7 @@ func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request Get
 
 func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", httpclient.EncodeSingleSegmentPathParameter(request.RegisteredModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2075,7 +2076,7 @@ func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetM
 
 func (a *modelRegistryImpl) SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", httpclient.EncodeSingleSegmentPathParameter(request.RegisteredModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2165,7 +2166,7 @@ func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request Upda
 
 func (a *modelRegistryImpl) UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", httpclient.EncodeSingleSegmentPathParameter(request.RegisteredModelId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

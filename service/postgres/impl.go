@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
@@ -22,7 +23,7 @@ type postgresImpl struct {
 
 func (a *postgresImpl) CreateBranch(ctx context.Context, request CreateBranchRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/branches", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/branches", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.BranchId != "" || slices.Contains(request.ForceSendFields, "BranchId") {
@@ -64,7 +65,7 @@ func (a *postgresImpl) CreateCatalog(ctx context.Context, request CreateCatalogR
 
 func (a *postgresImpl) CreateCdfConfig(ctx context.Context, request CreateCdfConfigRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-configs", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-configs", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.CdfConfigId != "" || slices.Contains(request.ForceSendFields, "CdfConfigId") {
@@ -83,7 +84,7 @@ func (a *postgresImpl) CreateCdfConfig(ctx context.Context, request CreateCdfCon
 
 func (a *postgresImpl) CreateDataApi(ctx context.Context, request CreateDataApiRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/data-api", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/data-api", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -98,7 +99,7 @@ func (a *postgresImpl) CreateDataApi(ctx context.Context, request CreateDataApiR
 
 func (a *postgresImpl) CreateDatabase(ctx context.Context, request CreateDatabaseRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.DatabaseId != "" || slices.Contains(request.ForceSendFields, "DatabaseId") {
@@ -121,7 +122,7 @@ func (a *postgresImpl) CreateDatabase(ctx context.Context, request CreateDatabas
 
 func (a *postgresImpl) CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/endpoints", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/endpoints", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.EndpointId != "" || slices.Contains(request.ForceSendFields, "EndpointId") {
@@ -163,7 +164,7 @@ func (a *postgresImpl) CreateProject(ctx context.Context, request CreateProjectR
 
 func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.ReplaceExisting != false || slices.Contains(request.ForceSendFields, "ReplaceExisting") {
@@ -205,7 +206,7 @@ func (a *postgresImpl) CreateSyncedTable(ctx context.Context, request CreateSync
 
 func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -219,7 +220,7 @@ func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchReq
 
 func (a *postgresImpl) DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -233,7 +234,7 @@ func (a *postgresImpl) DeleteCatalog(ctx context.Context, request DeleteCatalogR
 
 func (a *postgresImpl) DeleteCdfConfig(ctx context.Context, request DeleteCdfConfigRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -247,7 +248,7 @@ func (a *postgresImpl) DeleteCdfConfig(ctx context.Context, request DeleteCdfCon
 
 func (a *postgresImpl) DeleteDataApi(ctx context.Context, request DeleteDataApiRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -261,7 +262,7 @@ func (a *postgresImpl) DeleteDataApi(ctx context.Context, request DeleteDataApiR
 
 func (a *postgresImpl) DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -275,7 +276,7 @@ func (a *postgresImpl) DeleteDatabase(ctx context.Context, request DeleteDatabas
 
 func (a *postgresImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -289,7 +290,7 @@ func (a *postgresImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpoin
 
 func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -303,7 +304,7 @@ func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectR
 
 func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -317,7 +318,7 @@ func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest
 
 func (a *postgresImpl) DeleteSyncedTable(ctx context.Context, request DeleteSyncedTableRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -346,7 +347,7 @@ func (a *postgresImpl) GenerateDatabaseCredential(ctx context.Context, request G
 
 func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error) {
 	var branch Branch
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -360,7 +361,7 @@ func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) 
 
 func (a *postgresImpl) GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error) {
 	var catalog Catalog
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -374,7 +375,7 @@ func (a *postgresImpl) GetCatalog(ctx context.Context, request GetCatalogRequest
 
 func (a *postgresImpl) GetCdfConfig(ctx context.Context, request GetCdfConfigRequest) (*CdfConfig, error) {
 	var cdfConfig CdfConfig
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -388,7 +389,7 @@ func (a *postgresImpl) GetCdfConfig(ctx context.Context, request GetCdfConfigReq
 
 func (a *postgresImpl) GetCdfStatus(ctx context.Context, request GetCdfStatusRequest) (*CdfStatus, error) {
 	var cdfStatus CdfStatus
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -402,7 +403,7 @@ func (a *postgresImpl) GetCdfStatus(ctx context.Context, request GetCdfStatusReq
 
 func (a *postgresImpl) GetDataApi(ctx context.Context, request GetDataApiRequest) (*DataApi, error) {
 	var dataApi DataApi
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -416,7 +417,7 @@ func (a *postgresImpl) GetDataApi(ctx context.Context, request GetDataApiRequest
 
 func (a *postgresImpl) GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error) {
 	var database Database
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -430,7 +431,7 @@ func (a *postgresImpl) GetDatabase(ctx context.Context, request GetDatabaseReque
 
 func (a *postgresImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*Endpoint, error) {
 	var endpoint Endpoint
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -444,7 +445,7 @@ func (a *postgresImpl) GetEndpoint(ctx context.Context, request GetEndpointReque
 
 func (a *postgresImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -458,7 +459,7 @@ func (a *postgresImpl) GetOperation(ctx context.Context, request GetOperationReq
 
 func (a *postgresImpl) GetProject(ctx context.Context, request GetProjectRequest) (*Project, error) {
 	var project Project
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -472,7 +473,7 @@ func (a *postgresImpl) GetProject(ctx context.Context, request GetProjectRequest
 
 func (a *postgresImpl) GetRole(ctx context.Context, request GetRoleRequest) (*Role, error) {
 	var role Role
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -486,7 +487,7 @@ func (a *postgresImpl) GetRole(ctx context.Context, request GetRoleRequest) (*Ro
 
 func (a *postgresImpl) GetSyncedTable(ctx context.Context, request GetSyncedTableRequest) (*SyncedTable, error) {
 	var syncedTable SyncedTable
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -531,7 +532,7 @@ func (a *postgresImpl) ListBranchesAll(ctx context.Context, request ListBranches
 
 func (a *postgresImpl) internalListBranches(ctx context.Context, request ListBranchesRequest) (*ListBranchesResponse, error) {
 	var listBranchesResponse ListBranchesResponse
-	path := fmt.Sprintf("/api/2.0/postgres/%v/branches", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/branches", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -580,7 +581,7 @@ func (a *postgresImpl) ListCdfConfigsAll(ctx context.Context, request ListCdfCon
 
 func (a *postgresImpl) internalListCdfConfigs(ctx context.Context, request ListCdfConfigsRequest) (*ListCdfConfigsResponse, error) {
 	var listCdfConfigsResponse ListCdfConfigsResponse
-	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-configs", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-configs", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -629,7 +630,7 @@ func (a *postgresImpl) ListCdfStatusesAll(ctx context.Context, request ListCdfSt
 
 func (a *postgresImpl) internalListCdfStatuses(ctx context.Context, request ListCdfStatusesRequest) (*ListCdfStatusesResponse, error) {
 	var listCdfStatusesResponse ListCdfStatusesResponse
-	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-statuses", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/cdf-statuses", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -674,7 +675,7 @@ func (a *postgresImpl) ListDatabasesAll(ctx context.Context, request ListDatabas
 
 func (a *postgresImpl) internalListDatabases(ctx context.Context, request ListDatabasesRequest) (*ListDatabasesResponse, error) {
 	var listDatabasesResponse ListDatabasesResponse
-	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/databases", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -719,7 +720,7 @@ func (a *postgresImpl) ListEndpointsAll(ctx context.Context, request ListEndpoin
 
 func (a *postgresImpl) internalListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
-	path := fmt.Sprintf("/api/2.0/postgres/%v/endpoints", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/endpoints", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -811,7 +812,7 @@ func (a *postgresImpl) ListRolesAll(ctx context.Context, request ListRolesReques
 
 func (a *postgresImpl) internalListRoles(ctx context.Context, request ListRolesRequest) (*ListRolesResponse, error) {
 	var listRolesResponse ListRolesResponse
-	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", request.Parent)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -825,7 +826,7 @@ func (a *postgresImpl) internalListRoles(ctx context.Context, request ListRolesR
 
 func (a *postgresImpl) UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -840,7 +841,7 @@ func (a *postgresImpl) UndeleteBranch(ctx context.Context, request UndeleteBranc
 
 func (a *postgresImpl) UndeleteProject(ctx context.Context, request UndeleteProjectRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -855,7 +856,7 @@ func (a *postgresImpl) UndeleteProject(ctx context.Context, request UndeleteProj
 
 func (a *postgresImpl) UpdateBranch(ctx context.Context, request UpdateBranchRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -877,7 +878,7 @@ func (a *postgresImpl) UpdateBranch(ctx context.Context, request UpdateBranchReq
 
 func (a *postgresImpl) UpdateDataApi(ctx context.Context, request UpdateDataApiRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -899,7 +900,7 @@ func (a *postgresImpl) UpdateDataApi(ctx context.Context, request UpdateDataApiR
 
 func (a *postgresImpl) UpdateDatabase(ctx context.Context, request UpdateDatabaseRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -921,7 +922,7 @@ func (a *postgresImpl) UpdateDatabase(ctx context.Context, request UpdateDatabas
 
 func (a *postgresImpl) UpdateEndpoint(ctx context.Context, request UpdateEndpointRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -943,7 +944,7 @@ func (a *postgresImpl) UpdateEndpoint(ctx context.Context, request UpdateEndpoin
 
 func (a *postgresImpl) UpdateProject(ctx context.Context, request UpdateProjectRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -965,7 +966,7 @@ func (a *postgresImpl) UpdateProject(ctx context.Context, request UpdateProjectR
 
 func (a *postgresImpl) UpdateRole(ctx context.Context, request UpdateRoleRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/postgres/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)

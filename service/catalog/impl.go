@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
@@ -22,7 +23,7 @@ type accountMetastoreAssignmentsImpl struct {
 
 func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*AccountsCreateMetastoreAssignmentResponse, error) {
 	var accountsCreateMetastoreAssignmentResponse AccountsCreateMetastoreAssignmentResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -34,7 +35,7 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 
 func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) (*AccountsDeleteMetastoreAssignmentResponse, error) {
 	var accountsDeleteMetastoreAssignmentResponse AccountsDeleteMetastoreAssignmentResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -45,7 +46,7 @@ func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request De
 
 func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error) {
 	var accountsMetastoreAssignment AccountsMetastoreAssignment
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastore", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastore", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -83,7 +84,7 @@ func (a *accountMetastoreAssignmentsImpl) ListAll(ctx context.Context, request L
 
 func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error) {
 	var listAccountMetastoreAssignmentsResponse ListAccountMetastoreAssignmentsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -94,7 +95,7 @@ func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, requ
 
 func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*AccountsUpdateMetastoreAssignmentResponse, error) {
 	var accountsUpdateMetastoreAssignmentResponse AccountsUpdateMetastoreAssignmentResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -111,7 +112,7 @@ type accountMetastoresImpl struct {
 
 func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsCreateMetastoreResponse, error) {
 	var accountsCreateMetastoreResponse AccountsCreateMetastoreResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -123,7 +124,7 @@ func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCrea
 
 func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) (*AccountsDeleteMetastoreResponse, error) {
 	var accountsDeleteMetastoreResponse AccountsDeleteMetastoreResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -134,7 +135,7 @@ func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccoun
 
 func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsGetMetastoreResponse, error) {
 	var accountsGetMetastoreResponse AccountsGetMetastoreResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -171,7 +172,7 @@ func (a *accountMetastoresImpl) ListAll(ctx context.Context) ([]MetastoreInfo, e
 
 func (a *accountMetastoresImpl) internalList(ctx context.Context) (*AccountsListMetastoresResponse, error) {
 	var accountsListMetastoresResponse AccountsListMetastoresResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -182,7 +183,7 @@ func (a *accountMetastoresImpl) internalList(ctx context.Context) (*AccountsList
 
 func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsUpdateMetastoreResponse, error) {
 	var accountsUpdateMetastoreResponse AccountsUpdateMetastoreResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -199,7 +200,7 @@ type accountStorageCredentialsImpl struct {
 
 func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsCreateStorageCredentialInfo, error) {
 	var accountsCreateStorageCredentialInfo AccountsCreateStorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -211,7 +212,7 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 
 func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) (*AccountsDeleteStorageCredentialResponse, error) {
 	var accountsDeleteStorageCredentialResponse AccountsDeleteStorageCredentialResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId), httpclient.EncodeSingleSegmentPathParameter(request.StorageCredentialName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -222,7 +223,7 @@ func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request Dele
 
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId), httpclient.EncodeSingleSegmentPathParameter(request.StorageCredentialName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -260,7 +261,7 @@ func (a *accountStorageCredentialsImpl) ListAll(ctx context.Context, request Lis
 
 func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error) {
 	var listAccountStorageCredentialsResponse ListAccountStorageCredentialsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -271,7 +272,7 @@ func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, reques
 
 func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsUpdateStorageCredentialResponse, error) {
 	var accountsUpdateStorageCredentialResponse AccountsUpdateStorageCredentialResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId), httpclient.EncodeSingleSegmentPathParameter(request.StorageCredentialName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -356,7 +357,7 @@ func (a *aiGatewayImpl) CreateModelService(ctx context.Context, request CreateMo
 }
 
 func (a *aiGatewayImpl) DeleteMcpService(ctx context.Context, request DeleteMcpServiceRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -369,7 +370,7 @@ func (a *aiGatewayImpl) DeleteMcpService(ctx context.Context, request DeleteMcpS
 }
 
 func (a *aiGatewayImpl) DeleteModelProviderService(ctx context.Context, request DeleteModelProviderServiceRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -382,7 +383,7 @@ func (a *aiGatewayImpl) DeleteModelProviderService(ctx context.Context, request 
 }
 
 func (a *aiGatewayImpl) DeleteModelService(ctx context.Context, request DeleteModelServiceRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -396,7 +397,7 @@ func (a *aiGatewayImpl) DeleteModelService(ctx context.Context, request DeleteMo
 
 func (a *aiGatewayImpl) GetMcpService(ctx context.Context, request GetMcpServiceRequest) (*McpService, error) {
 	var mcpService McpService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -410,7 +411,7 @@ func (a *aiGatewayImpl) GetMcpService(ctx context.Context, request GetMcpService
 
 func (a *aiGatewayImpl) GetModelProviderService(ctx context.Context, request GetModelProviderServiceRequest) (*ModelProviderService, error) {
 	var modelProviderService ModelProviderService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -424,7 +425,7 @@ func (a *aiGatewayImpl) GetModelProviderService(ctx context.Context, request Get
 
 func (a *aiGatewayImpl) GetModelService(ctx context.Context, request GetModelServiceRequest) (*ModelService, error) {
 	var modelService ModelService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -609,7 +610,7 @@ func (a *aiGatewayImpl) internalListModelServices(ctx context.Context, request L
 
 func (a *aiGatewayImpl) UpdateMcpService(ctx context.Context, request UpdateMcpServiceRequest) (*McpService, error) {
 	var mcpService McpService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
@@ -635,7 +636,7 @@ func (a *aiGatewayImpl) UpdateMcpService(ctx context.Context, request UpdateMcpS
 
 func (a *aiGatewayImpl) UpdateModelProviderService(ctx context.Context, request UpdateModelProviderServiceRequest) (*ModelProviderService, error) {
 	var modelProviderService ModelProviderService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
@@ -661,7 +662,7 @@ func (a *aiGatewayImpl) UpdateModelProviderService(ctx context.Context, request 
 
 func (a *aiGatewayImpl) UpdateModelService(ctx context.Context, request UpdateModelServiceRequest) (*ModelService, error) {
 	var modelService ModelService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
@@ -740,7 +741,7 @@ func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*Cata
 }
 
 func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -754,7 +755,7 @@ func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest)
 
 func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*CatalogInfo, error) {
 	var catalogInfo CatalogInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -839,7 +840,7 @@ func (a *catalogsImpl) internalList(ctx context.Context, request ListCatalogsReq
 
 func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error) {
 	var catalogInfo CatalogInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -873,7 +874,7 @@ func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) 
 }
 
 func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -887,7 +888,7 @@ func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRe
 
 func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -964,7 +965,7 @@ func (a *connectionsImpl) internalList(ctx context.Context, request ListConnecti
 
 func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -998,7 +999,7 @@ func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCr
 }
 
 func (a *credentialsImpl) DeleteCredential(ctx context.Context, request DeleteCredentialRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", httpclient.EncodeSingleSegmentPathParameter(request.NameArg))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1027,7 +1028,7 @@ func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context
 
 func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredentialRequest) (*CredentialInfo, error) {
 	var credentialInfo CredentialInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", httpclient.EncodeSingleSegmentPathParameter(request.NameArg))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1106,7 +1107,7 @@ func (a *credentialsImpl) internalListCredentials(ctx context.Context, request L
 
 func (a *credentialsImpl) UpdateCredential(ctx context.Context, request UpdateCredentialRequest) (*CredentialInfo, error) {
 	var credentialInfo CredentialInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", httpclient.EncodeSingleSegmentPathParameter(request.NameArg))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1155,7 +1156,7 @@ func (a *entityTagAssignmentsImpl) Create(ctx context.Context, request CreateEnt
 }
 
 func (a *entityTagAssignmentsImpl) Delete(ctx context.Context, request DeleteEntityTagAssignmentRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityName, request.TagKey)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityName), httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1169,7 +1170,7 @@ func (a *entityTagAssignmentsImpl) Delete(ctx context.Context, request DeleteEnt
 
 func (a *entityTagAssignmentsImpl) Get(ctx context.Context, request GetEntityTagAssignmentRequest) (*EntityTagAssignment, error) {
 	var entityTagAssignment EntityTagAssignment
-	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityName, request.TagKey)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityName), httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1224,7 +1225,7 @@ func (a *entityTagAssignmentsImpl) ListAll(ctx context.Context, request ListEnti
 
 func (a *entityTagAssignmentsImpl) internalList(ctx context.Context, request ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error) {
 	var listEntityTagAssignmentsResponse ListEntityTagAssignmentsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags", request.EntityType, request.EntityName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1238,7 +1239,7 @@ func (a *entityTagAssignmentsImpl) internalList(ctx context.Context, request Lis
 
 func (a *entityTagAssignmentsImpl) Update(ctx context.Context, request UpdateEntityTagAssignmentRequest) (*EntityTagAssignment, error) {
 	var entityTagAssignment EntityTagAssignment
-	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityName, request.TagKey)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityName), httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1375,7 +1376,7 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 }
 
 func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExternalLocationRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1389,7 +1390,7 @@ func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExtern
 
 func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error) {
 	var externalLocationInfo ExternalLocationInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1474,7 +1475,7 @@ func (a *externalLocationsImpl) internalList(ctx context.Context, request ListEx
 
 func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error) {
 	var externalLocationInfo ExternalLocationInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1508,7 +1509,7 @@ func (a *externalMetadataImpl) CreateExternalMetadata(ctx context.Context, reque
 }
 
 func (a *externalMetadataImpl) DeleteExternalMetadata(ctx context.Context, request DeleteExternalMetadataRequest) error {
-	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1522,7 +1523,7 @@ func (a *externalMetadataImpl) DeleteExternalMetadata(ctx context.Context, reque
 
 func (a *externalMetadataImpl) GetExternalMetadata(ctx context.Context, request GetExternalMetadataRequest) (*ExternalMetadata, error) {
 	var externalMetadata ExternalMetadata
-	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1589,7 +1590,7 @@ func (a *externalMetadataImpl) internalListExternalMetadata(ctx context.Context,
 
 func (a *externalMetadataImpl) UpdateExternalMetadata(ctx context.Context, request UpdateExternalMetadataRequest) (*ExternalMetadata, error) {
 	var externalMetadata ExternalMetadata
-	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1627,7 +1628,7 @@ func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionReques
 }
 
 func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -1640,7 +1641,7 @@ func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionReques
 
 func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*FunctionInfo, error) {
 	var functionInfo FunctionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1729,7 +1730,7 @@ func (a *functionsImpl) internalList(ctx context.Context, request ListFunctionsR
 
 func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error) {
 	var functionInfo FunctionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1749,7 +1750,7 @@ type grantsImpl struct {
 
 func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error) {
 	var getPermissionsResponse GetPermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1763,7 +1764,7 @@ func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*GetPerm
 
 func (a *grantsImpl) GetEffective(ctx context.Context, request GetEffectiveRequest) (*EffectivePermissionsList, error) {
 	var effectivePermissionsList EffectivePermissionsList
-	path := fmt.Sprintf("/api/2.1/unity-catalog/effective-permissions/%v/%v", request.SecurableType, request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/effective-permissions/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1810,7 +1811,7 @@ func (a *grantsImpl) ListAll(ctx context.Context, request ListPrivilegeAssignmen
 
 func (a *grantsImpl) internalList(ctx context.Context, request ListPrivilegeAssignmentsRequest) (*ListPrivilegeAssignmentsResponse, error) {
 	var listPrivilegeAssignmentsResponse ListPrivilegeAssignmentsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/privilege-assignments/%v/%v", request.SecurableType, request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/privilege-assignments/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1857,7 +1858,7 @@ func (a *grantsImpl) ListEffectiveAll(ctx context.Context, request ListEffective
 
 func (a *grantsImpl) internalListEffective(ctx context.Context, request ListEffectivePrivilegeAssignmentsRequest) (*ListEffectivePrivilegeAssignmentsResponse, error) {
 	var listEffectivePrivilegeAssignmentsResponse ListEffectivePrivilegeAssignmentsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/effective-privilege-assignments/%v/%v", request.SecurableType, request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/effective-privilege-assignments/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1871,7 +1872,7 @@ func (a *grantsImpl) internalListEffective(ctx context.Context, request ListEffe
 
 func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*UpdatePermissionsResponse, error) {
 	var updatePermissionsResponse UpdatePermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1933,7 +1934,7 @@ func (a *metastoresImpl) Current(ctx context.Context) (*MetastoreAssignment, err
 }
 
 func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1947,7 +1948,7 @@ func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequ
 
 func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2055,7 +2056,7 @@ func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) 
 
 func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2088,7 +2089,7 @@ type modelVersionsImpl struct {
 }
 
 func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName), request.Version)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -2101,7 +2102,7 @@ func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersi
 
 func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*ModelVersionInfo, error) {
 	var modelVersionInfo ModelVersionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName), request.Version)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2115,7 +2116,7 @@ func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequ
 
 func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error) {
 	var modelVersionInfo ModelVersionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName), httpclient.EncodeSingleSegmentPathParameter(request.Alias))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2194,7 +2195,7 @@ func (a *modelVersionsImpl) ListAll(ctx context.Context, request ListModelVersio
 
 func (a *modelVersionsImpl) internalList(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
 	var listModelVersionsResponse ListModelVersionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2208,7 +2209,7 @@ func (a *modelVersionsImpl) internalList(ctx context.Context, request ListModelV
 
 func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error) {
 	var modelVersionInfo ModelVersionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName), request.Version)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2242,7 +2243,7 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 }
 
 func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTableRequest) error {
-	path := fmt.Sprintf("/api/2.0/online-tables/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/online-tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2256,7 +2257,7 @@ func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTable
 
 func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error) {
 	var onlineTable OnlineTable
-	path := fmt.Sprintf("/api/2.0/online-tables/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/online-tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2290,7 +2291,7 @@ func (a *policiesImpl) CreatePolicy(ctx context.Context, request CreatePolicyReq
 
 func (a *policiesImpl) DeletePolicy(ctx context.Context, request DeletePolicyRequest) (*DeletePolicyResponse, error) {
 	var deletePolicyResponse DeletePolicyResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableType), httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableFullname), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2304,7 +2305,7 @@ func (a *policiesImpl) DeletePolicy(ctx context.Context, request DeletePolicyReq
 
 func (a *policiesImpl) GetPolicy(ctx context.Context, request GetPolicyRequest) (*PolicyInfo, error) {
 	var policyInfo PolicyInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableType), httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableFullname), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2361,7 +2362,7 @@ func (a *policiesImpl) ListPoliciesAll(ctx context.Context, request ListPolicies
 
 func (a *policiesImpl) internalListPolicies(ctx context.Context, request ListPoliciesRequest) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v", request.OnSecurableType, request.OnSecurableFullname)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableType), httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableFullname))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2375,7 +2376,7 @@ func (a *policiesImpl) internalListPolicies(ctx context.Context, request ListPol
 
 func (a *policiesImpl) UpdatePolicy(ctx context.Context, request UpdatePolicyRequest) (*PolicyInfo, error) {
 	var policyInfo PolicyInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableType), httpclient.EncodeSingleSegmentPathParameter(request.OnSecurableFullname), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
@@ -2398,7 +2399,7 @@ type qualityMonitorsImpl struct {
 }
 
 func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.TableName, request.RefreshId)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", httpclient.EncodeSingleSegmentPathParameter(request.TableName), request.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2413,7 +2414,7 @@ func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelR
 
 func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
 	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", httpclient.EncodeSingleSegmentPathParameter(request.TableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2428,7 +2429,7 @@ func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor)
 
 func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityMonitorRequest) (*DeleteMonitorResponse, error) {
 	var deleteMonitorResponse DeleteMonitorResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", httpclient.EncodeSingleSegmentPathParameter(request.TableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2442,7 +2443,7 @@ func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityM
 
 func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitorRequest) (*MonitorInfo, error) {
 	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", httpclient.EncodeSingleSegmentPathParameter(request.TableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2456,7 +2457,7 @@ func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitor
 
 func (a *qualityMonitorsImpl) GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error) {
 	var monitorRefreshInfo MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v", request.TableName, request.RefreshId)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v", httpclient.EncodeSingleSegmentPathParameter(request.TableName), request.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2470,7 +2471,7 @@ func (a *qualityMonitorsImpl) GetRefresh(ctx context.Context, request GetRefresh
 
 func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRefreshesRequest) (*MonitorRefreshListResponse, error) {
 	var monitorRefreshListResponse MonitorRefreshListResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", httpclient.EncodeSingleSegmentPathParameter(request.TableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2484,7 +2485,7 @@ func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRef
 
 func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request RegenerateDashboardRequest) (*RegenerateDashboardResponse, error) {
 	var regenerateDashboardResponse RegenerateDashboardResponse
-	path := fmt.Sprintf("/api/2.1/quality-monitoring/tables/%v/monitor/dashboard", request.TableName)
+	path := fmt.Sprintf("/api/2.1/quality-monitoring/tables/%v/monitor/dashboard", httpclient.EncodeSingleSegmentPathParameter(request.TableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2499,7 +2500,7 @@ func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request R
 
 func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error) {
 	var monitorRefreshInfo MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", httpclient.EncodeSingleSegmentPathParameter(request.TableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2514,7 +2515,7 @@ func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefresh
 
 func (a *qualityMonitorsImpl) Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error) {
 	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", httpclient.EncodeSingleSegmentPathParameter(request.TableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2548,7 +2549,7 @@ func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegiste
 }
 
 func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -2560,7 +2561,7 @@ func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegiste
 }
 
 func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAliasRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName), httpclient.EncodeSingleSegmentPathParameter(request.Alias))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -2573,7 +2574,7 @@ func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAl
 
 func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredModelRequest) (*RegisteredModelInfo, error) {
 	var registeredModelInfo RegisteredModelInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2664,7 +2665,7 @@ func (a *registeredModelsImpl) internalList(ctx context.Context, request ListReg
 
 func (a *registeredModelsImpl) SetAlias(ctx context.Context, request SetRegisteredModelAliasRequest) (*RegisteredModelAlias, error) {
 	var registeredModelAlias RegisteredModelAlias
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName), httpclient.EncodeSingleSegmentPathParameter(request.Alias))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2679,7 +2680,7 @@ func (a *registeredModelsImpl) SetAlias(ctx context.Context, request SetRegister
 
 func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error) {
 	var registeredModelInfo RegisteredModelInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2699,7 +2700,7 @@ type resourceQuotasImpl struct {
 
 func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaRequest) (*GetQuotaResponse, error) {
 	var getQuotaResponse GetQuotaResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/resource-quotas/%v/%v/%v", request.ParentSecurableType, request.ParentFullName, request.QuotaName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/resource-quotas/%v/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.ParentSecurableType), httpclient.EncodeSingleSegmentPathParameter(request.ParentFullName), httpclient.EncodeSingleSegmentPathParameter(request.QuotaName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2792,7 +2793,7 @@ func (a *rfaImpl) BatchCreateAccessRequests(ctx context.Context, request BatchCr
 
 func (a *rfaImpl) GetAccessRequestDestinations(ctx context.Context, request GetAccessRequestDestinationsRequest) (*AccessRequestDestinations, error) {
 	var accessRequestDestinations AccessRequestDestinations
-	path := fmt.Sprintf("/api/3.0/rfa/destinations/%v/%v", request.SecurableType, request.FullName)
+	path := fmt.Sprintf("/api/3.0/rfa/destinations/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2844,7 +2845,7 @@ func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*Schema
 }
 
 func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2858,7 +2859,7 @@ func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) e
 
 func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*SchemaInfo, error) {
 	var schemaInfo SchemaInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2943,7 +2944,7 @@ func (a *schemasImpl) internalList(ctx context.Context, request ListSchemasReque
 
 func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error) {
 	var schemaInfo SchemaInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2977,7 +2978,7 @@ func (a *secretsUcImpl) CreateSecret(ctx context.Context, request CreateSecretRe
 }
 
 func (a *secretsUcImpl) DeleteSecret(ctx context.Context, request DeleteSecretRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -2991,7 +2992,7 @@ func (a *secretsUcImpl) DeleteSecret(ctx context.Context, request DeleteSecretRe
 
 func (a *secretsUcImpl) GetSecret(ctx context.Context, request GetSecretRequest) (*Secret, error) {
 	var secret Secret
-	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3064,7 +3065,7 @@ func (a *secretsUcImpl) internalListSecrets(ctx context.Context, request ListSec
 
 func (a *secretsUcImpl) UpdateSecret(ctx context.Context, request UpdateSecretRequest) (*Secret, error) {
 	var secret Secret
-	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/secrets/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -3105,7 +3106,7 @@ func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStora
 }
 
 func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStorageCredentialRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3119,7 +3120,7 @@ func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStora
 
 func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3204,7 +3205,7 @@ func (a *storageCredentialsImpl) internalList(ctx context.Context, request ListS
 
 func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3238,7 +3239,7 @@ type systemSchemasImpl struct {
 }
 
 func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId), httpclient.EncodeSingleSegmentPathParameter(request.SchemaName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3251,7 +3252,7 @@ func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest)
 }
 
 func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId), httpclient.EncodeSingleSegmentPathParameter(request.SchemaName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3317,7 +3318,7 @@ func (a *systemSchemasImpl) ListAll(ctx context.Context, request ListSystemSchem
 
 func (a *systemSchemasImpl) internalList(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
 	var listSystemSchemasResponse ListSystemSchemasResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas", request.MetastoreId)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas", httpclient.EncodeSingleSegmentPathParameter(request.MetastoreId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3350,7 +3351,7 @@ func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableCo
 }
 
 func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableConstraintRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/constraints/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/constraints/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3383,7 +3384,7 @@ func (a *tablesImpl) Create(ctx context.Context, request CreateTableRequest) (*T
 }
 
 func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3397,7 +3398,7 @@ func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) err
 
 func (a *tablesImpl) Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error) {
 	var tableExistsResponse TableExistsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/exists", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/exists", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3411,7 +3412,7 @@ func (a *tablesImpl) Exists(ctx context.Context, request ExistsRequest) (*TableE
 
 func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableInfo, error) {
 	var tableInfo TableInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3578,7 +3579,7 @@ func (a *tablesImpl) internalListSummaries(ctx context.Context, request ListSumm
 }
 
 func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.FullName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3672,7 +3673,7 @@ func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestCon
 }
 
 func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -3760,7 +3761,7 @@ func (a *volumesImpl) internalList(ctx context.Context, request ListVolumesReque
 
 func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3774,7 +3775,7 @@ func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*Vol
 
 func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3794,7 +3795,7 @@ type workspaceBindingsImpl struct {
 
 func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*GetCatalogWorkspaceBindingsResponse, error) {
 	var getCatalogWorkspaceBindingsResponse GetCatalogWorkspaceBindingsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3859,7 +3860,7 @@ func (a *workspaceBindingsImpl) GetBindingsAll(ctx context.Context, request GetB
 
 func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error) {
 	var getWorkspaceBindingsResponse GetWorkspaceBindingsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.SecurableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3873,7 +3874,7 @@ func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request
 
 func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*UpdateCatalogWorkspaceBindingsResponse, error) {
 	var updateCatalogWorkspaceBindingsResponse UpdateCatalogWorkspaceBindingsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -3888,7 +3889,7 @@ func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorksp
 
 func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*UpdateWorkspaceBindingsResponse, error) {
 	var updateWorkspaceBindingsResponse UpdateWorkspaceBindingsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.SecurableType), httpclient.EncodeSingleSegmentPathParameter(request.SecurableName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

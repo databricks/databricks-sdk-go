@@ -272,11 +272,45 @@ func TestWithTokenSource(t *testing.T) {
 	require.Equal(t, "awesome token", buf.String())
 }
 
+func TestEncodeSingleSegmentPathParameter(t *testing.T) {
+	tests := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{name: "empty", in: "", want: ""},
+		{name: "plain", in: "abc", want: "abc"},
+		{name: "slash", in: "a/b/c", want: "a%2Fb%2Fc"},
+		{name: "reserved characters and space", in: "a#b?c d", want: "a%23b%3Fc%20d"},
+		{name: "unicode", in: "café/東京", want: "caf%C3%A9%2F%E6%9D%B1%E4%BA%AC"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.want, EncodeSingleSegmentPathParameter(tc.in))
+		})
+	}
+}
+
 func TestEncodeMultiSegmentPathParameter(t *testing.T) {
-	// Slashes should not be encoded.
-	assert.Equal(t, "a/b/c", EncodeMultiSegmentPathParameter("a/b/c"))
-	// # and ? should be encoded.
-	assert.Equal(t, "a%23b%3Fc", EncodeMultiSegmentPathParameter("a#b?c"))
+	tests := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{name: "empty", in: "", want: ""},
+		{name: "plain", in: "abc", want: "abc"},
+		{name: "slashes", in: "a/b/c", want: "a/b/c"},
+		{name: "empty segments", in: "/a//b/", want: "/a//b/"},
+		{name: "reserved characters and space", in: "a/b#c? d", want: "a/b%23c%3F%20d"},
+		{name: "unicode", in: "café/東京", want: "caf%C3%A9/%E6%9D%B1%E4%BA%AC"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.want, EncodeMultiSegmentPathParameter(tc.in))
+		})
+	}
 }
 
 func TestMakeRequestBodyExplicitQueryParams(t *testing.T) {

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -114,7 +115,7 @@ func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
 func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
 	var getJobPermissionLevelsResponse GetJobPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v/permissionLevels", request.JobId)
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.JobId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -128,7 +129,7 @@ func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermis
 
 func (a *jobsImpl) GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", httpclient.EncodeSingleSegmentPathParameter(request.JobId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -305,7 +306,7 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 
 func (a *jobsImpl) SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", httpclient.EncodeSingleSegmentPathParameter(request.JobId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -348,7 +349,7 @@ func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
 
 func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", httpclient.EncodeSingleSegmentPathParameter(request.JobId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -19,7 +20,7 @@ type cleanRoomAssetRevisionsImpl struct {
 
 func (a *cleanRoomAssetRevisionsImpl) Get(ctx context.Context, request GetCleanRoomAssetRevisionRequest) (*CleanRoomAsset, error) {
 	var cleanRoomAsset CleanRoomAsset
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/revisions/%v", request.CleanRoomName, request.AssetType, request.Name, request.Etag)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/revisions/%v", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), request.AssetType, httpclient.EncodeSingleSegmentPathParameter(request.Name), httpclient.EncodeSingleSegmentPathParameter(request.Etag))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -64,7 +65,7 @@ func (a *cleanRoomAssetRevisionsImpl) ListAll(ctx context.Context, request ListC
 
 func (a *cleanRoomAssetRevisionsImpl) internalList(ctx context.Context, request ListCleanRoomAssetRevisionsRequest) (*ListCleanRoomAssetRevisionsResponse, error) {
 	var listCleanRoomAssetRevisionsResponse ListCleanRoomAssetRevisionsResponse
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/revisions", request.CleanRoomName, request.AssetType, request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/revisions", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), request.AssetType, httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -83,7 +84,7 @@ type cleanRoomAssetsImpl struct {
 
 func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
 	var cleanRoomAsset CleanRoomAsset
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", request.CleanRoomName)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -98,7 +99,7 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 
 func (a *cleanRoomAssetsImpl) CreateCleanRoomAssetReview(ctx context.Context, request CreateCleanRoomAssetReviewRequest) (*CreateCleanRoomAssetReviewResponse, error) {
 	var createCleanRoomAssetReviewResponse CreateCleanRoomAssetReviewResponse
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/reviews", request.CleanRoomName, request.AssetType, request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/reviews", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), request.AssetType, httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -112,7 +113,7 @@ func (a *cleanRoomAssetsImpl) CreateCleanRoomAssetReview(ctx context.Context, re
 }
 
 func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error {
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), request.AssetType, httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -126,7 +127,7 @@ func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoo
 
 func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAssetRequest) (*CleanRoomAsset, error) {
 	var cleanRoomAsset CleanRoomAsset
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), request.AssetType, httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -171,7 +172,7 @@ func (a *cleanRoomAssetsImpl) ListAll(ctx context.Context, request ListCleanRoom
 
 func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error) {
 	var listCleanRoomAssetsResponse ListCleanRoomAssetsResponse
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", request.CleanRoomName)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -185,7 +186,7 @@ func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListClea
 
 func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
 	var cleanRoomAsset CleanRoomAsset
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), request.AssetType, httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -205,7 +206,7 @@ type cleanRoomAutoApprovalRulesImpl struct {
 
 func (a *cleanRoomAutoApprovalRulesImpl) Create(ctx context.Context, request CreateCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error) {
 	var cleanRoomAutoApprovalRule CleanRoomAutoApprovalRule
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules", request.CleanRoomName)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -219,7 +220,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) Create(ctx context.Context, request Cre
 }
 
 func (a *cleanRoomAutoApprovalRulesImpl) Delete(ctx context.Context, request DeleteCleanRoomAutoApprovalRuleRequest) error {
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", request.CleanRoomName, request.RuleId)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), httpclient.EncodeSingleSegmentPathParameter(request.RuleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -233,7 +234,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) Delete(ctx context.Context, request Del
 
 func (a *cleanRoomAutoApprovalRulesImpl) Get(ctx context.Context, request GetCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error) {
 	var cleanRoomAutoApprovalRule CleanRoomAutoApprovalRule
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", request.CleanRoomName, request.RuleId)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), httpclient.EncodeSingleSegmentPathParameter(request.RuleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -278,7 +279,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) ListAll(ctx context.Context, request Li
 
 func (a *cleanRoomAutoApprovalRulesImpl) internalList(ctx context.Context, request ListCleanRoomAutoApprovalRulesRequest) (*ListCleanRoomAutoApprovalRulesResponse, error) {
 	var listCleanRoomAutoApprovalRulesResponse ListCleanRoomAutoApprovalRulesResponse
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules", request.CleanRoomName)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -292,7 +293,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) internalList(ctx context.Context, reque
 
 func (a *cleanRoomAutoApprovalRulesImpl) Update(ctx context.Context, request UpdateCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error) {
 	var cleanRoomAutoApprovalRule CleanRoomAutoApprovalRule
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", request.CleanRoomName, request.RuleId)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName), httpclient.EncodeSingleSegmentPathParameter(request.RuleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -343,7 +344,7 @@ func (a *cleanRoomTaskRunsImpl) ListAll(ctx context.Context, request ListCleanRo
 
 func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) (*ListCleanRoomNotebookTaskRunsResponse, error) {
 	var listCleanRoomNotebookTaskRunsResponse ListCleanRoomNotebookTaskRunsResponse
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/runs", request.CleanRoomName)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/runs", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -388,7 +389,7 @@ func (a *cleanRoomTaskRunsImpl) ListCleanRoomTaskRunsHandlerAll(ctx context.Cont
 
 func (a *cleanRoomTaskRunsImpl) internalListCleanRoomTaskRunsHandler(ctx context.Context, request ListCleanRoomTaskRunsRequest) (*ListCleanRoomTaskRunsResponse, error) {
 	var listCleanRoomTaskRunsResponse ListCleanRoomTaskRunsResponse
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/task-runs", request.CleanRoomName)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/task-runs", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -422,7 +423,7 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequ
 
 func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request CreateCleanRoomOutputCatalogRequest) (*CreateCleanRoomOutputCatalogResponse, error) {
 	var createCleanRoomOutputCatalogResponse CreateCleanRoomOutputCatalogResponse
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/output-catalogs", request.CleanRoomName)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/output-catalogs", httpclient.EncodeSingleSegmentPathParameter(request.CleanRoomName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -436,7 +437,7 @@ func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request Create
 }
 
 func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -450,7 +451,7 @@ func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequ
 
 func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoom, error) {
 	var cleanRoom CleanRoom
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -511,7 +512,7 @@ func (a *cleanRoomsImpl) internalList(ctx context.Context, request ListCleanRoom
 
 func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequest) (*CleanRoom, error) {
 	var cleanRoom CleanRoom
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -50,7 +51,7 @@ func (a *consumerFulfillmentsImpl) GetAll(ctx context.Context, request GetListin
 
 func (a *consumerFulfillmentsImpl) internalGet(ctx context.Context, request GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error) {
 	var getListingContentMetadataResponse GetListingContentMetadataResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/content", request.ListingId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/content", httpclient.EncodeSingleSegmentPathParameter(request.ListingId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -103,7 +104,7 @@ func (a *consumerFulfillmentsImpl) ListAll(ctx context.Context, request ListFulf
 
 func (a *consumerFulfillmentsImpl) internalList(ctx context.Context, request ListFulfillmentsRequest) (*ListFulfillmentsResponse, error) {
 	var listFulfillmentsResponse ListFulfillmentsResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/fulfillments", request.ListingId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/fulfillments", httpclient.EncodeSingleSegmentPathParameter(request.ListingId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -122,7 +123,7 @@ type consumerInstallationsImpl struct {
 
 func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateInstallationRequest) (*Installation, error) {
 	var installation Installation
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations", request.ListingId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations", httpclient.EncodeSingleSegmentPathParameter(request.ListingId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -136,7 +137,7 @@ func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateIn
 }
 
 func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) error {
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", httpclient.EncodeSingleSegmentPathParameter(request.ListingId), httpclient.EncodeSingleSegmentPathParameter(request.InstallationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -226,7 +227,7 @@ func (a *consumerInstallationsImpl) ListListingInstallationsAll(ctx context.Cont
 
 func (a *consumerInstallationsImpl) internalListListingInstallations(ctx context.Context, request ListInstallationsRequest) (*ListInstallationsResponse, error) {
 	var listInstallationsResponse ListInstallationsResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations", request.ListingId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations", httpclient.EncodeSingleSegmentPathParameter(request.ListingId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -240,7 +241,7 @@ func (a *consumerInstallationsImpl) internalListListingInstallations(ctx context
 
 func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateInstallationRequest) (*UpdateInstallationResponse, error) {
 	var updateInstallationResponse UpdateInstallationResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", httpclient.EncodeSingleSegmentPathParameter(request.ListingId), httpclient.EncodeSingleSegmentPathParameter(request.InstallationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -274,7 +275,7 @@ func (a *consumerListingsImpl) BatchGet(ctx context.Context, request BatchGetLis
 
 func (a *consumerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
 	var getListingResponse GetListingResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v", request.Id)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -389,7 +390,7 @@ type consumerPersonalizationRequestsImpl struct {
 
 func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, request CreatePersonalizationRequest) (*CreatePersonalizationRequestResponse, error) {
 	var createPersonalizationRequestResponse CreatePersonalizationRequestResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/personalization-requests", request.ListingId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/personalization-requests", httpclient.EncodeSingleSegmentPathParameter(request.ListingId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -404,7 +405,7 @@ func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, reques
 
 func (a *consumerPersonalizationRequestsImpl) Get(ctx context.Context, request GetPersonalizationRequestRequest) (*GetPersonalizationRequestResponse, error) {
 	var getPersonalizationRequestResponse GetPersonalizationRequestResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/personalization-requests", request.ListingId)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/personalization-requests", httpclient.EncodeSingleSegmentPathParameter(request.ListingId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -482,7 +483,7 @@ func (a *consumerProvidersImpl) BatchGet(ctx context.Context, request BatchGetPr
 
 func (a *consumerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
 	var getProviderResponse GetProviderResponse
-	path := fmt.Sprintf("/api/2.1/marketplace-consumer/providers/%v", request.Id)
+	path := fmt.Sprintf("/api/2.1/marketplace-consumer/providers/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -562,7 +563,7 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 }
 
 func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) error {
-	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -621,7 +622,7 @@ func (a *providerExchangeFiltersImpl) internalList(ctx context.Context, request 
 
 func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request UpdateExchangeFilterRequest) (*UpdateExchangeFilterResponse, error) {
 	var updateExchangeFilterResponse UpdateExchangeFilterResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -670,7 +671,7 @@ func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchan
 }
 
 func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) error {
-	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -683,7 +684,7 @@ func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchan
 }
 
 func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error {
-	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges-for-listing/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges-for-listing/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -697,7 +698,7 @@ func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, r
 
 func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequest) (*GetExchangeResponse, error) {
 	var getExchangeResponse GetExchangeResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -846,7 +847,7 @@ func (a *providerExchangesImpl) internalListListingsForExchange(ctx context.Cont
 
 func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchangeRequest) (*UpdateExchangeResponse, error) {
 	var updateExchangeResponse UpdateExchangeResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -880,7 +881,7 @@ func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileReques
 }
 
 func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", request.FileId)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", httpclient.EncodeSingleSegmentPathParameter(request.FileId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -894,7 +895,7 @@ func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileReques
 
 func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*GetFileResponse, error) {
 	var getFileResponse GetFileResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", request.FileId)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", httpclient.EncodeSingleSegmentPathParameter(request.FileId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -972,7 +973,7 @@ func (a *providerListingsImpl) Create(ctx context.Context, request CreateListing
 }
 
 func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) error {
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -986,7 +987,7 @@ func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListing
 
 func (a *providerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
 	var getListingResponse GetListingResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1045,7 +1046,7 @@ func (a *providerListingsImpl) internalList(ctx context.Context, request GetList
 
 func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListingRequest) (*UpdateListingResponse, error) {
 	var updateListingResponse UpdateListingResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1112,7 +1113,7 @@ func (a *providerPersonalizationRequestsImpl) internalList(ctx context.Context, 
 
 func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error) {
 	var updatePersonalizationRequestResponse UpdatePersonalizationRequestResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v/personalization-requests/%v/request-status", request.ListingId, request.RequestId)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v/personalization-requests/%v/request-status", httpclient.EncodeSingleSegmentPathParameter(request.ListingId), httpclient.EncodeSingleSegmentPathParameter(request.RequestId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1175,7 +1176,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) GetLatestVersion(ctx context.C
 
 func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, request UpdateProviderAnalyticsDashboardRequest) (*UpdateProviderAnalyticsDashboardResponse, error) {
 	var updateProviderAnalyticsDashboardResponse UpdateProviderAnalyticsDashboardResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/analytics_dashboard/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/analytics_dashboard/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1209,7 +1210,7 @@ func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProvid
 }
 
 func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1223,7 +1224,7 @@ func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProvid
 
 func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
 	var getProviderResponse GetProviderResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1282,7 +1283,7 @@ func (a *providerProvidersImpl) internalList(ctx context.Context, request ListPr
 
 func (a *providerProvidersImpl) Update(ctx context.Context, request UpdateProviderRequest) (*UpdateProviderResponse, error) {
 	var updateProviderResponse UpdateProviderResponse
-	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

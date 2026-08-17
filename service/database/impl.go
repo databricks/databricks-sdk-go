@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/google/uuid"
@@ -51,7 +52,7 @@ func (a *databaseImpl) CreateDatabaseInstance(ctx context.Context, request Creat
 
 func (a *databaseImpl) CreateDatabaseInstanceRole(ctx context.Context, request CreateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error) {
 	var databaseInstanceRole DatabaseInstanceRole
-	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles", request.InstanceName)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles", httpclient.EncodeSingleSegmentPathParameter(request.InstanceName))
 	queryParams := make(map[string]any)
 
 	if request.DatabaseInstanceName != "" || slices.Contains(request.ForceSendFields, "DatabaseInstanceName") {
@@ -99,7 +100,7 @@ func (a *databaseImpl) CreateSyncedDatabaseTable(ctx context.Context, request Cr
 }
 
 func (a *databaseImpl) DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error {
-	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -112,7 +113,7 @@ func (a *databaseImpl) DeleteDatabaseCatalog(ctx context.Context, request Delete
 }
 
 func (a *databaseImpl) DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error {
-	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -125,7 +126,7 @@ func (a *databaseImpl) DeleteDatabaseInstance(ctx context.Context, request Delet
 }
 
 func (a *databaseImpl) DeleteDatabaseInstanceRole(ctx context.Context, request DeleteDatabaseInstanceRoleRequest) error {
-	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", request.InstanceName, request.Name)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", httpclient.EncodeSingleSegmentPathParameter(request.InstanceName), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -138,7 +139,7 @@ func (a *databaseImpl) DeleteDatabaseInstanceRole(ctx context.Context, request D
 }
 
 func (a *databaseImpl) DeleteDatabaseTable(ctx context.Context, request DeleteDatabaseTableRequest) error {
-	path := fmt.Sprintf("/api/2.0/database/tables/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -151,7 +152,7 @@ func (a *databaseImpl) DeleteDatabaseTable(ctx context.Context, request DeleteDa
 }
 
 func (a *databaseImpl) DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error {
-	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -197,7 +198,7 @@ func (a *databaseImpl) GenerateDatabaseCredential(ctx context.Context, request G
 
 func (a *databaseImpl) GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error) {
 	var databaseCatalog DatabaseCatalog
-	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -211,7 +212,7 @@ func (a *databaseImpl) GetDatabaseCatalog(ctx context.Context, request GetDataba
 
 func (a *databaseImpl) GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error) {
 	var databaseInstance DatabaseInstance
-	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -225,7 +226,7 @@ func (a *databaseImpl) GetDatabaseInstance(ctx context.Context, request GetDatab
 
 func (a *databaseImpl) GetDatabaseInstanceRole(ctx context.Context, request GetDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error) {
 	var databaseInstanceRole DatabaseInstanceRole
-	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", request.InstanceName, request.Name)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", httpclient.EncodeSingleSegmentPathParameter(request.InstanceName), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -239,7 +240,7 @@ func (a *databaseImpl) GetDatabaseInstanceRole(ctx context.Context, request GetD
 
 func (a *databaseImpl) GetDatabaseTable(ctx context.Context, request GetDatabaseTableRequest) (*DatabaseTable, error) {
 	var databaseTable DatabaseTable
-	path := fmt.Sprintf("/api/2.0/database/tables/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -253,7 +254,7 @@ func (a *databaseImpl) GetDatabaseTable(ctx context.Context, request GetDatabase
 
 func (a *databaseImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {
 	var syncedDatabaseTable SyncedDatabaseTable
-	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -298,7 +299,7 @@ func (a *databaseImpl) ListDatabaseCatalogsAll(ctx context.Context, request List
 
 func (a *databaseImpl) internalListDatabaseCatalogs(ctx context.Context, request ListDatabaseCatalogsRequest) (*ListDatabaseCatalogsResponse, error) {
 	var listDatabaseCatalogsResponse ListDatabaseCatalogsResponse
-	path := fmt.Sprintf("/api/2.0/database/instances/%v/catalogs", request.InstanceName)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/catalogs", httpclient.EncodeSingleSegmentPathParameter(request.InstanceName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -351,7 +352,7 @@ func (a *databaseImpl) ListDatabaseInstanceRolesAll(ctx context.Context, request
 
 func (a *databaseImpl) internalListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) (*ListDatabaseInstanceRolesResponse, error) {
 	var listDatabaseInstanceRolesResponse ListDatabaseInstanceRolesResponse
-	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles", request.InstanceName)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles", httpclient.EncodeSingleSegmentPathParameter(request.InstanceName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -441,7 +442,7 @@ func (a *databaseImpl) ListSyncedDatabaseTablesAll(ctx context.Context, request 
 
 func (a *databaseImpl) internalListSyncedDatabaseTables(ctx context.Context, request ListSyncedDatabaseTablesRequest) (*ListSyncedDatabaseTablesResponse, error) {
 	var listSyncedDatabaseTablesResponse ListSyncedDatabaseTablesResponse
-	path := fmt.Sprintf("/api/2.0/database/instances/%v/synced_tables", request.InstanceName)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/synced_tables", httpclient.EncodeSingleSegmentPathParameter(request.InstanceName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -455,7 +456,7 @@ func (a *databaseImpl) internalListSyncedDatabaseTables(ctx context.Context, req
 
 func (a *databaseImpl) UpdateDatabaseCatalog(ctx context.Context, request UpdateDatabaseCatalogRequest) (*DatabaseCatalog, error) {
 	var databaseCatalog DatabaseCatalog
-	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -474,7 +475,7 @@ func (a *databaseImpl) UpdateDatabaseCatalog(ctx context.Context, request Update
 
 func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error) {
 	var databaseInstance DatabaseInstance
-	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -493,7 +494,7 @@ func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request Updat
 
 func (a *databaseImpl) UpdateSyncedDatabaseTable(ctx context.Context, request UpdateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {
 	var syncedDatabaseTable SyncedDatabaseTable
-	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {

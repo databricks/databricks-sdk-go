@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -19,7 +20,7 @@ type accountSettingsV2Impl struct {
 
 func (a *accountSettingsV2Impl) GetPublicAccountSetting(ctx context.Context, request GetPublicAccountSettingRequest) (*Setting, error) {
 	var setting Setting
-	path := fmt.Sprintf("/api/2.1/accounts/%v/settings/%v", a.client.ConfiguredAccountID(), request.Name)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/settings/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -30,7 +31,7 @@ func (a *accountSettingsV2Impl) GetPublicAccountSetting(ctx context.Context, req
 
 func (a *accountSettingsV2Impl) GetPublicAccountUserPreference(ctx context.Context, request GetPublicAccountUserPreferenceRequest) (*UserPreference, error) {
 	var userPreference UserPreference
-	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings/%v", a.client.ConfiguredAccountID(), request.UserId, request.Name)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.UserId), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -76,7 +77,7 @@ func (a *accountSettingsV2Impl) ListAccountSettingsMetadataAll(ctx context.Conte
 
 func (a *accountSettingsV2Impl) internalListAccountSettingsMetadata(ctx context.Context, request ListAccountSettingsMetadataRequest) (*ListAccountSettingsMetadataResponse, error) {
 	var listAccountSettingsMetadataResponse ListAccountSettingsMetadataResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/settings-metadata", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/settings-metadata", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -126,7 +127,7 @@ func (a *accountSettingsV2Impl) ListAccountUserPreferencesMetadataAll(ctx contex
 
 func (a *accountSettingsV2Impl) internalListAccountUserPreferencesMetadata(ctx context.Context, request ListAccountUserPreferencesMetadataRequest) (*ListAccountUserPreferencesMetadataResponse, error) {
 	var listAccountUserPreferencesMetadataResponse ListAccountUserPreferencesMetadataResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings-metadata", a.client.ConfiguredAccountID(), request.UserId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings-metadata", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.UserId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -137,7 +138,7 @@ func (a *accountSettingsV2Impl) internalListAccountUserPreferencesMetadata(ctx c
 
 func (a *accountSettingsV2Impl) PatchPublicAccountSetting(ctx context.Context, request PatchPublicAccountSettingRequest) (*Setting, error) {
 	var setting Setting
-	path := fmt.Sprintf("/api/2.1/accounts/%v/settings/%v", a.client.ConfiguredAccountID(), request.Name)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/settings/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -149,7 +150,7 @@ func (a *accountSettingsV2Impl) PatchPublicAccountSetting(ctx context.Context, r
 
 func (a *accountSettingsV2Impl) PatchPublicAccountUserPreference(ctx context.Context, request PatchPublicAccountUserPreferenceRequest) (*UserPreference, error) {
 	var userPreference UserPreference
-	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings/%v", a.client.ConfiguredAccountID(), request.UserId, request.Name)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.UserId), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -166,7 +167,7 @@ type workspaceSettingsV2Impl struct {
 
 func (a *workspaceSettingsV2Impl) GetPublicWorkspaceSetting(ctx context.Context, request GetPublicWorkspaceSettingRequest) (*Setting, error) {
 	var setting Setting
-	path := fmt.Sprintf("/api/2.1/settings/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/settings/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -229,7 +230,7 @@ func (a *workspaceSettingsV2Impl) internalListWorkspaceSettingsMetadata(ctx cont
 
 func (a *workspaceSettingsV2Impl) PatchPublicWorkspaceSetting(ctx context.Context, request PatchPublicWorkspaceSettingRequest) (*Setting, error) {
 	var setting Setting
-	path := fmt.Sprintf("/api/2.1/settings/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/settings/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

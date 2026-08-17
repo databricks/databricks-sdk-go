@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -33,7 +34,7 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 }
 
 func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -46,7 +47,7 @@ func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderReques
 
 func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error) {
 	var providerInfo ProviderInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -117,7 +118,7 @@ func (a *providersImpl) internalList(ctx context.Context, request ListProvidersR
 
 func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request ListProviderShareAssetsRequest) (*ListProviderShareAssetsResponse, error) {
 	var listProviderShareAssetsResponse ListProviderShareAssetsResponse
-	path := fmt.Sprintf("/api/2.1/data-sharing/providers/%v/shares/%v", request.ProviderName, request.ShareName)
+	path := fmt.Sprintf("/api/2.1/data-sharing/providers/%v/shares/%v", httpclient.EncodeSingleSegmentPathParameter(request.ProviderName), httpclient.EncodeSingleSegmentPathParameter(request.ShareName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -168,7 +169,7 @@ func (a *providersImpl) ListSharesAll(ctx context.Context, request ListSharesReq
 
 func (a *providersImpl) internalListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error) {
 	var listProviderSharesResponse ListProviderSharesResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v/shares", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v/shares", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -182,7 +183,7 @@ func (a *providersImpl) internalListShares(ctx context.Context, request ListShar
 
 func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error) {
 	var providerInfo ProviderInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -201,7 +202,7 @@ type recipientActivationImpl struct {
 }
 
 func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", request.ActivationUrl)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", httpclient.EncodeSingleSegmentPathParameter(request.ActivationUrl))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -215,7 +216,7 @@ func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, requ
 
 func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error) {
 	var retrieveTokenResponse RetrieveTokenResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation/%v", request.ActivationUrl)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation/%v", httpclient.EncodeSingleSegmentPathParameter(request.ActivationUrl))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -234,7 +235,7 @@ type recipientFederationPoliciesImpl struct {
 
 func (a *recipientFederationPoliciesImpl) Create(ctx context.Context, request CreateFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", request.RecipientName)
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", httpclient.EncodeSingleSegmentPathParameter(request.RecipientName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -248,7 +249,7 @@ func (a *recipientFederationPoliciesImpl) Create(ctx context.Context, request Cr
 }
 
 func (a *recipientFederationPoliciesImpl) Delete(ctx context.Context, request DeleteFederationPolicyRequest) error {
-	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", httpclient.EncodeSingleSegmentPathParameter(request.RecipientName), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -262,7 +263,7 @@ func (a *recipientFederationPoliciesImpl) Delete(ctx context.Context, request De
 
 func (a *recipientFederationPoliciesImpl) GetFederationPolicy(ctx context.Context, request GetFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", httpclient.EncodeSingleSegmentPathParameter(request.RecipientName), httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -311,7 +312,7 @@ func (a *recipientFederationPoliciesImpl) ListAll(ctx context.Context, request L
 
 func (a *recipientFederationPoliciesImpl) internalList(ctx context.Context, request ListFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 	var listFederationPoliciesResponse ListFederationPoliciesResponse
-	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", request.RecipientName)
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", httpclient.EncodeSingleSegmentPathParameter(request.RecipientName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -344,7 +345,7 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 }
 
 func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -357,7 +358,7 @@ func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequ
 
 func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -424,7 +425,7 @@ func (a *recipientsImpl) internalList(ctx context.Context, request ListRecipient
 
 func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/rotate-token", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/rotate-token", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -439,7 +440,7 @@ func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipien
 
 func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
 	var getRecipientSharePermissionsResponse GetRecipientSharePermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -453,7 +454,7 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 
 func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -487,7 +488,7 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInf
 }
 
 func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -500,7 +501,7 @@ func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) err
 
 func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error) {
 	var shareInfo ShareInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -567,7 +568,7 @@ func (a *sharesImpl) internalListShares(ctx context.Context, request SharesListR
 
 func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error) {
 	var getSharePermissionsResponse GetSharePermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -581,7 +582,7 @@ func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissi
 
 func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
 	var shareInfo ShareInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -596,7 +597,7 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInf
 
 func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) (*UpdateSharePermissionsResponse, error) {
 	var updateSharePermissionsResponse UpdateSharePermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

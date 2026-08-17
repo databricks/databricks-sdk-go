@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"golang.org/x/exp/slices"
 )
 
@@ -20,7 +21,7 @@ type httpCallV2Impl struct {
 
 func (a *httpCallV2Impl) CreateResource(ctx context.Context, request CreateResourceRequest) (*Resource, error) {
 	var resource Resource
-	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", request.PathParamString, request.PathParamInt, request.PathParamBool)
+	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.PathParamString), request.PathParamInt, request.PathParamBool)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -35,7 +36,7 @@ func (a *httpCallV2Impl) CreateResource(ctx context.Context, request CreateResou
 
 func (a *httpCallV2Impl) GetResource(ctx context.Context, request GetResourceRequest) (*Resource, error) {
 	var resource Resource
-	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", request.PathParamString, request.PathParamInt, request.PathParamBool)
+	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.PathParamString), request.PathParamInt, request.PathParamBool)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -49,7 +50,7 @@ func (a *httpCallV2Impl) GetResource(ctx context.Context, request GetResourceReq
 
 func (a *httpCallV2Impl) SyncResource(ctx context.Context, request SyncResourceRequest) (*Resource, error) {
 	var resource Resource
-	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v/state:sync", request.PathParamString, request.PathParamInt, request.PathParamBool)
+	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v/state:sync", httpclient.EncodeSingleSegmentPathParameter(request.PathParamString), request.PathParamInt, request.PathParamBool)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -64,7 +65,7 @@ func (a *httpCallV2Impl) SyncResource(ctx context.Context, request SyncResourceR
 
 func (a *httpCallV2Impl) UpdateResource(ctx context.Context, request UpdateResourceRequest) (*Resource, error) {
 	var resource Resource
-	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", request.NestedPathParamString, request.NestedPathParamInt, request.NestedPathParamBool)
+	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.NestedPathParamString), request.NestedPathParamInt, request.NestedPathParamBool)
 	queryParams := make(map[string]any)
 
 	if request.FieldMask != nil || slices.Contains(request.ForceSendFields, "FieldMask") {

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
 // unexported type that holds implementations of just JsonMarshallV2 API methods
@@ -17,7 +18,7 @@ type jsonMarshallV2Impl struct {
 
 func (a *jsonMarshallV2Impl) GetResource(ctx context.Context, request GetResourceRequest) (*Resource, error) {
 	var resource Resource
-	path := fmt.Sprintf("/api/2.0/json-marshall/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/json-marshall/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

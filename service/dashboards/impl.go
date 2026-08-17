@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
@@ -20,7 +21,7 @@ type genieImpl struct {
 
 func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error) {
 	var genieMessage GenieMessage
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -35,7 +36,7 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 
 func (a *genieImpl) CreateMessageComment(ctx context.Context, request GenieCreateMessageCommentRequest) (*GenieMessageComment, error) {
 	var genieMessageComment GenieMessageComment
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/comments", request.SpaceId, request.ConversationId, request.MessageId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/comments", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -64,7 +65,7 @@ func (a *genieImpl) CreateSpace(ctx context.Context, request GenieCreateSpaceReq
 }
 
 func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error {
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v", request.SpaceId, request.ConversationId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -77,7 +78,7 @@ func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteC
 }
 
 func (a *genieImpl) DeleteConversationMessage(ctx context.Context, request GenieDeleteConversationMessageRequest) error {
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -91,7 +92,7 @@ func (a *genieImpl) DeleteConversationMessage(ctx context.Context, request Genie
 
 func (a *genieImpl) DownloadMessageAttachmentVisualization(ctx context.Context, request DownloadMessageAttachmentVisualizationRequest) (*DownloadMessageAttachmentVisualizationResponse, error) {
 	var downloadMessageAttachmentVisualizationResponse DownloadMessageAttachmentVisualizationResponse
-	path := fmt.Sprintf("/api/2.0/genie/%v/download-visualization", request.Name)
+	path := fmt.Sprintf("/api/2.0/genie/%v/download-visualization", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/octet-stream"
@@ -105,7 +106,7 @@ func (a *genieImpl) DownloadMessageAttachmentVisualization(ctx context.Context, 
 
 func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId), httpclient.EncodeSingleSegmentPathParameter(request.AttachmentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -120,7 +121,7 @@ func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request G
 
 func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/execute-query", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -135,7 +136,7 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 
 func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error) {
 	var genieGenerateDownloadFullQueryResultResponse GenieGenerateDownloadFullQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId), httpclient.EncodeSingleSegmentPathParameter(request.AttachmentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -150,7 +151,7 @@ func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request
 
 func (a *genieImpl) GenieCreateEvalRun(ctx context.Context, request GenieCreateEvalRunRequest) (*GenieEvalRunResponse, error) {
 	var genieEvalRunResponse GenieEvalRunResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs", request.SpaceId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -165,7 +166,7 @@ func (a *genieImpl) GenieCreateEvalRun(ctx context.Context, request GenieCreateE
 
 func (a *genieImpl) GenieGetEvalResultDetails(ctx context.Context, request GenieGetEvalResultDetailsRequest) (*GenieEvalResultDetails, error) {
 	var genieEvalResultDetails GenieEvalResultDetails
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v/results/%v", request.SpaceId, request.EvalRunId, request.ResultId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v/results/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.EvalRunId), httpclient.EncodeSingleSegmentPathParameter(request.ResultId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -179,7 +180,7 @@ func (a *genieImpl) GenieGetEvalResultDetails(ctx context.Context, request Genie
 
 func (a *genieImpl) GenieGetEvalRun(ctx context.Context, request GenieGetEvalRunRequest) (*GenieEvalRunResponse, error) {
 	var genieEvalRunResponse GenieEvalRunResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v", request.SpaceId, request.EvalRunId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.EvalRunId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -193,7 +194,7 @@ func (a *genieImpl) GenieGetEvalRun(ctx context.Context, request GenieGetEvalRun
 
 func (a *genieImpl) GenieListEvalResults(ctx context.Context, request GenieListEvalResultsRequest) (*GenieListEvalResultsResponse, error) {
 	var genieListEvalResultsResponse GenieListEvalResultsResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v/results", request.SpaceId, request.EvalRunId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs/%v/results", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.EvalRunId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -207,7 +208,7 @@ func (a *genieImpl) GenieListEvalResults(ctx context.Context, request GenieListE
 
 func (a *genieImpl) GenieListEvalRuns(ctx context.Context, request GenieListEvalRunsRequest) (*GenieListEvalRunsResponse, error) {
 	var genieListEvalRunsResponse GenieListEvalRunsResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs", request.SpaceId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -221,7 +222,7 @@ func (a *genieImpl) GenieListEvalRuns(ctx context.Context, request GenieListEval
 
 func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error) {
 	var genieGetDownloadFullQueryResultResponse GenieGetDownloadFullQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId, request.DownloadId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId), httpclient.EncodeSingleSegmentPathParameter(request.AttachmentId), httpclient.EncodeSingleSegmentPathParameter(request.DownloadId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -235,7 +236,7 @@ func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request Geni
 
 func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
 	var genieMessage GenieMessage
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -249,7 +250,7 @@ func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversation
 
 func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/query-result", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/query-result", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId), httpclient.EncodeSingleSegmentPathParameter(request.AttachmentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -263,7 +264,7 @@ func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request
 
 func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result", request.SpaceId, request.ConversationId, request.MessageId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -277,7 +278,7 @@ func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetM
 
 func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId), httpclient.EncodeSingleSegmentPathParameter(request.AttachmentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -291,7 +292,7 @@ func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, reque
 
 func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) (*GenieSpace, error) {
 	var genieSpace GenieSpace
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -305,7 +306,7 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 
 func (a *genieImpl) ListConversationComments(ctx context.Context, request GenieListConversationCommentsRequest) (*GenieListConversationCommentsResponse, error) {
 	var genieListConversationCommentsResponse GenieListConversationCommentsResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/list-comments", request.SpaceId, request.ConversationId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/list-comments", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -319,7 +320,7 @@ func (a *genieImpl) ListConversationComments(ctx context.Context, request GenieL
 
 func (a *genieImpl) ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error) {
 	var genieListConversationMessagesResponse GenieListConversationMessagesResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -333,7 +334,7 @@ func (a *genieImpl) ListConversationMessages(ctx context.Context, request GenieL
 
 func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error) {
 	var genieListConversationsResponse GenieListConversationsResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations", request.SpaceId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -347,7 +348,7 @@ func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConv
 
 func (a *genieImpl) ListMessageComments(ctx context.Context, request GenieListMessageCommentsRequest) (*GenieListMessageCommentsResponse, error) {
 	var genieListMessageCommentsResponse GenieListMessageCommentsResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/comments", request.SpaceId, request.ConversationId, request.MessageId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/comments", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -374,7 +375,7 @@ func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesReque
 }
 
 func (a *genieImpl) SendMessageFeedback(ctx context.Context, request GenieSendMessageFeedbackRequest) error {
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/feedback", request.SpaceId, request.ConversationId, request.MessageId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/feedback", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId), httpclient.EncodeSingleSegmentPathParameter(request.ConversationId), httpclient.EncodeSingleSegmentPathParameter(request.MessageId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -389,7 +390,7 @@ func (a *genieImpl) SendMessageFeedback(ctx context.Context, request GenieSendMe
 
 func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error) {
 	var genieStartConversationResponse GenieStartConversationResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", request.SpaceId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -403,7 +404,7 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 }
 
 func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error {
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -417,7 +418,7 @@ func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceReque
 
 func (a *genieImpl) UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error) {
 	var genieSpace GenieSpace
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", httpclient.EncodeSingleSegmentPathParameter(request.SpaceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -460,7 +461,7 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 
 func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error) {
 	var schedule Schedule
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -475,7 +476,7 @@ func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateSchedul
 
 func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error) {
 	var subscription Subscription
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId), httpclient.EncodeSingleSegmentPathParameter(request.ScheduleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -489,7 +490,7 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 }
 
 func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId), httpclient.EncodeSingleSegmentPathParameter(request.ScheduleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -502,7 +503,7 @@ func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteSchedul
 }
 
 func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId), httpclient.EncodeSingleSegmentPathParameter(request.ScheduleId), httpclient.EncodeSingleSegmentPathParameter(request.SubscriptionId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -516,7 +517,7 @@ func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSub
 
 func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -530,7 +531,7 @@ func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*D
 
 func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error) {
 	var publishedDashboard PublishedDashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -544,7 +545,7 @@ func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDas
 
 func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleRequest) (*Schedule, error) {
 	var schedule Schedule
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId), httpclient.EncodeSingleSegmentPathParameter(request.ScheduleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -558,7 +559,7 @@ func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleReque
 
 func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error) {
 	var subscription Subscription
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId), httpclient.EncodeSingleSegmentPathParameter(request.ScheduleId), httpclient.EncodeSingleSegmentPathParameter(request.SubscriptionId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -648,7 +649,7 @@ func (a *lakeviewImpl) ListSchedulesAll(ctx context.Context, request ListSchedul
 
 func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error) {
 	var listSchedulesResponse ListSchedulesResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -693,7 +694,7 @@ func (a *lakeviewImpl) ListSubscriptionsAll(ctx context.Context, request ListSub
 
 func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
 	var listSubscriptionsResponse ListSubscriptionsResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId), httpclient.EncodeSingleSegmentPathParameter(request.ScheduleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -722,7 +723,7 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 
 func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error) {
 	var publishedDashboard PublishedDashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -737,7 +738,7 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 
 func (a *lakeviewImpl) Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error) {
 	var revertDashboardResponse RevertDashboardResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/revert", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/revert", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -751,7 +752,7 @@ func (a *lakeviewImpl) Revert(ctx context.Context, request RevertDashboardReques
 }
 
 func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -764,7 +765,7 @@ func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest)
 }
 
 func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -778,7 +779,7 @@ func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboard
 
 func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 
 	if request.DatasetCatalog != "" || slices.Contains(request.ForceSendFields, "DatasetCatalog") {
@@ -801,7 +802,7 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 
 func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error) {
 	var schedule Schedule
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId), httpclient.EncodeSingleSegmentPathParameter(request.ScheduleId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -821,7 +822,7 @@ type lakeviewEmbeddedImpl struct {
 
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error) {
 	var getPublishedDashboardTokenInfoResponse GetPublishedDashboardTokenInfoResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
