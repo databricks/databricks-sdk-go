@@ -357,7 +357,7 @@ func (a *aiGatewayImpl) CreateModelService(ctx context.Context, request CreateMo
 }
 
 func (a *aiGatewayImpl) DeleteMcpService(ctx context.Context, request DeleteMcpServiceRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -370,7 +370,7 @@ func (a *aiGatewayImpl) DeleteMcpService(ctx context.Context, request DeleteMcpS
 }
 
 func (a *aiGatewayImpl) DeleteModelProviderService(ctx context.Context, request DeleteModelProviderServiceRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -383,7 +383,7 @@ func (a *aiGatewayImpl) DeleteModelProviderService(ctx context.Context, request 
 }
 
 func (a *aiGatewayImpl) DeleteModelService(ctx context.Context, request DeleteModelServiceRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -397,7 +397,7 @@ func (a *aiGatewayImpl) DeleteModelService(ctx context.Context, request DeleteMo
 
 func (a *aiGatewayImpl) GetMcpService(ctx context.Context, request GetMcpServiceRequest) (*McpService, error) {
 	var mcpService McpService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -411,7 +411,7 @@ func (a *aiGatewayImpl) GetMcpService(ctx context.Context, request GetMcpService
 
 func (a *aiGatewayImpl) GetModelProviderService(ctx context.Context, request GetModelProviderServiceRequest) (*ModelProviderService, error) {
 	var modelProviderService ModelProviderService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -425,7 +425,7 @@ func (a *aiGatewayImpl) GetModelProviderService(ctx context.Context, request Get
 
 func (a *aiGatewayImpl) GetModelService(ctx context.Context, request GetModelServiceRequest) (*ModelService, error) {
 	var modelService ModelService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -610,7 +610,7 @@ func (a *aiGatewayImpl) internalListModelServices(ctx context.Context, request L
 
 func (a *aiGatewayImpl) UpdateMcpService(ctx context.Context, request UpdateMcpServiceRequest) (*McpService, error) {
 	var mcpService McpService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
@@ -636,7 +636,7 @@ func (a *aiGatewayImpl) UpdateMcpService(ctx context.Context, request UpdateMcpS
 
 func (a *aiGatewayImpl) UpdateModelProviderService(ctx context.Context, request UpdateModelProviderServiceRequest) (*ModelProviderService, error) {
 	var modelProviderService ModelProviderService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
@@ -662,7 +662,7 @@ func (a *aiGatewayImpl) UpdateModelProviderService(ctx context.Context, request 
 
 func (a *aiGatewayImpl) UpdateModelService(ctx context.Context, request UpdateModelServiceRequest) (*ModelService, error) {
 	var modelService ModelService
-	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {

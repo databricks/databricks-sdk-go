@@ -92,7 +92,7 @@ func (a *genieImpl) DeleteConversationMessage(ctx context.Context, request Genie
 
 func (a *genieImpl) DownloadMessageAttachmentVisualization(ctx context.Context, request DownloadMessageAttachmentVisualizationRequest) (*DownloadMessageAttachmentVisualizationResponse, error) {
 	var downloadMessageAttachmentVisualizationResponse DownloadMessageAttachmentVisualizationResponse
-	path := fmt.Sprintf("/api/2.0/genie/%v/download-visualization", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/genie/%v/download-visualization", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/octet-stream"

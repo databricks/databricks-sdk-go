@@ -22,7 +22,7 @@ type bundleDeploymentsImpl struct {
 
 func (a *bundleDeploymentsImpl) CompleteVersion(ctx context.Context, request CompleteVersionRequest) (*Version, error) {
 	var version Version
-	path := fmt.Sprintf("/api/2.0/bundle/%v/complete", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v/complete", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -52,7 +52,7 @@ func (a *bundleDeploymentsImpl) CreateDeployment(ctx context.Context, request Cr
 
 func (a *bundleDeploymentsImpl) CreateVersion(ctx context.Context, request CreateVersionRequest) (*Version, error) {
 	var version Version
-	path := fmt.Sprintf("/api/2.0/bundle/%v/versions", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/bundle/%v/versions", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.VersionId != "" {
@@ -70,7 +70,7 @@ func (a *bundleDeploymentsImpl) CreateVersion(ctx context.Context, request Creat
 }
 
 func (a *bundleDeploymentsImpl) DeleteDeployment(ctx context.Context, request DeleteDeploymentRequest) error {
-	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -84,7 +84,7 @@ func (a *bundleDeploymentsImpl) DeleteDeployment(ctx context.Context, request De
 
 func (a *bundleDeploymentsImpl) GetDeployment(ctx context.Context, request GetDeploymentRequest) (*Deployment, error) {
 	var deployment Deployment
-	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -98,7 +98,7 @@ func (a *bundleDeploymentsImpl) GetDeployment(ctx context.Context, request GetDe
 
 func (a *bundleDeploymentsImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -112,7 +112,7 @@ func (a *bundleDeploymentsImpl) GetOperation(ctx context.Context, request GetOpe
 
 func (a *bundleDeploymentsImpl) GetResource(ctx context.Context, request GetResourceRequest) (*Resource, error) {
 	var resource Resource
-	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -126,7 +126,7 @@ func (a *bundleDeploymentsImpl) GetResource(ctx context.Context, request GetReso
 
 func (a *bundleDeploymentsImpl) GetVersion(ctx context.Context, request GetVersionRequest) (*Version, error) {
 	var version Version
-	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -140,7 +140,7 @@ func (a *bundleDeploymentsImpl) GetVersion(ctx context.Context, request GetVersi
 
 func (a *bundleDeploymentsImpl) Heartbeat(ctx context.Context, request HeartbeatRequest) (*HeartbeatResponse, error) {
 	var heartbeatResponse HeartbeatResponse
-	path := fmt.Sprintf("/api/2.0/bundle/%v/heartbeat", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v/heartbeat", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -231,7 +231,7 @@ func (a *bundleDeploymentsImpl) ListOperationsAll(ctx context.Context, request L
 
 func (a *bundleDeploymentsImpl) internalListOperations(ctx context.Context, request ListOperationsRequest) (*ListOperationsResponse, error) {
 	var listOperationsResponse ListOperationsResponse
-	path := fmt.Sprintf("/api/2.0/bundle/%v/operations", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/bundle/%v/operations", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -276,7 +276,7 @@ func (a *bundleDeploymentsImpl) ListResourcesAll(ctx context.Context, request Li
 
 func (a *bundleDeploymentsImpl) internalListResources(ctx context.Context, request ListResourcesRequest) (*ListResourcesResponse, error) {
 	var listResourcesResponse ListResourcesResponse
-	path := fmt.Sprintf("/api/2.0/bundle/%v/resources", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/bundle/%v/resources", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -323,7 +323,7 @@ func (a *bundleDeploymentsImpl) ListVersionsAll(ctx context.Context, request Lis
 
 func (a *bundleDeploymentsImpl) internalListVersions(ctx context.Context, request ListVersionsRequest) (*ListVersionsResponse, error) {
 	var listVersionsResponse ListVersionsResponse
-	path := fmt.Sprintf("/api/2.0/bundle/%v/versions", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/bundle/%v/versions", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -337,7 +337,7 @@ func (a *bundleDeploymentsImpl) internalListVersions(ctx context.Context, reques
 
 func (a *bundleDeploymentsImpl) UpdateOperation(ctx context.Context, request UpdateOperationRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/bundle/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)

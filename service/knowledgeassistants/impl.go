@@ -22,7 +22,7 @@ type knowledgeAssistantsImpl struct {
 
 func (a *knowledgeAssistantsImpl) CreateExample(ctx context.Context, request CreateExampleRequest) (*Example, error) {
 	var example Example
-	path := fmt.Sprintf("/api/2.1/%v/examples", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.1/%v/examples", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -52,7 +52,7 @@ func (a *knowledgeAssistantsImpl) CreateKnowledgeAssistant(ctx context.Context, 
 
 func (a *knowledgeAssistantsImpl) CreateKnowledgeSource(ctx context.Context, request CreateKnowledgeSourceRequest) (*KnowledgeSource, error) {
 	var knowledgeSource KnowledgeSource
-	path := fmt.Sprintf("/api/2.1/%v/knowledge-sources", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.1/%v/knowledge-sources", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -66,7 +66,7 @@ func (a *knowledgeAssistantsImpl) CreateKnowledgeSource(ctx context.Context, req
 }
 
 func (a *knowledgeAssistantsImpl) DeleteExample(ctx context.Context, request DeleteExampleRequest) error {
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -79,7 +79,7 @@ func (a *knowledgeAssistantsImpl) DeleteExample(ctx context.Context, request Del
 }
 
 func (a *knowledgeAssistantsImpl) DeleteKnowledgeAssistant(ctx context.Context, request DeleteKnowledgeAssistantRequest) error {
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -92,7 +92,7 @@ func (a *knowledgeAssistantsImpl) DeleteKnowledgeAssistant(ctx context.Context, 
 }
 
 func (a *knowledgeAssistantsImpl) DeleteKnowledgeSource(ctx context.Context, request DeleteKnowledgeSourceRequest) error {
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -106,7 +106,7 @@ func (a *knowledgeAssistantsImpl) DeleteKnowledgeSource(ctx context.Context, req
 
 func (a *knowledgeAssistantsImpl) GetExample(ctx context.Context, request GetExampleRequest) (*Example, error) {
 	var example Example
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -120,7 +120,7 @@ func (a *knowledgeAssistantsImpl) GetExample(ctx context.Context, request GetExa
 
 func (a *knowledgeAssistantsImpl) GetKnowledgeAssistant(ctx context.Context, request GetKnowledgeAssistantRequest) (*KnowledgeAssistant, error) {
 	var knowledgeAssistant KnowledgeAssistant
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -134,7 +134,7 @@ func (a *knowledgeAssistantsImpl) GetKnowledgeAssistant(ctx context.Context, req
 
 func (a *knowledgeAssistantsImpl) GetKnowledgeSource(ctx context.Context, request GetKnowledgeSourceRequest) (*KnowledgeSource, error) {
 	var knowledgeSource KnowledgeSource
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -207,7 +207,7 @@ func (a *knowledgeAssistantsImpl) ListExamplesAll(ctx context.Context, request L
 
 func (a *knowledgeAssistantsImpl) internalListExamples(ctx context.Context, request ListExamplesRequest) (*ListExamplesResponse, error) {
 	var listExamplesResponse ListExamplesResponse
-	path := fmt.Sprintf("/api/2.1/%v/examples", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.1/%v/examples", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -297,7 +297,7 @@ func (a *knowledgeAssistantsImpl) ListKnowledgeSourcesAll(ctx context.Context, r
 
 func (a *knowledgeAssistantsImpl) internalListKnowledgeSources(ctx context.Context, request ListKnowledgeSourcesRequest) (*ListKnowledgeSourcesResponse, error) {
 	var listKnowledgeSourcesResponse ListKnowledgeSourcesResponse
-	path := fmt.Sprintf("/api/2.1/%v/knowledge-sources", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.1/%v/knowledge-sources", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -325,7 +325,7 @@ func (a *knowledgeAssistantsImpl) SetPermissions(ctx context.Context, request Kn
 }
 
 func (a *knowledgeAssistantsImpl) SyncKnowledgeSources(ctx context.Context, request SyncKnowledgeSourcesRequest) error {
-	path := fmt.Sprintf("/api/2.1/%v/knowledge-sources:sync", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v/knowledge-sources:sync", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -340,7 +340,7 @@ func (a *knowledgeAssistantsImpl) SyncKnowledgeSources(ctx context.Context, requ
 
 func (a *knowledgeAssistantsImpl) UpdateExample(ctx context.Context, request UpdateExampleRequest) (*Example, error) {
 	var example Example
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -362,7 +362,7 @@ func (a *knowledgeAssistantsImpl) UpdateExample(ctx context.Context, request Upd
 
 func (a *knowledgeAssistantsImpl) UpdateKnowledgeAssistant(ctx context.Context, request UpdateKnowledgeAssistantRequest) (*KnowledgeAssistant, error) {
 	var knowledgeAssistant KnowledgeAssistant
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -384,7 +384,7 @@ func (a *knowledgeAssistantsImpl) UpdateKnowledgeAssistant(ctx context.Context, 
 
 func (a *knowledgeAssistantsImpl) UpdateKnowledgeSource(ctx context.Context, request UpdateKnowledgeSourceRequest) (*KnowledgeSource, error) {
 	var knowledgeSource KnowledgeSource
-	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)

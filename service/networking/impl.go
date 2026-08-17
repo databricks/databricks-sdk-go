@@ -20,7 +20,7 @@ type endpointsImpl struct {
 
 func (a *endpointsImpl) CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Endpoint, error) {
 	var endpoint Endpoint
-	path := fmt.Sprintf("/api/networking/v1/%v/endpoints", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/networking/v1/%v/endpoints", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -31,7 +31,7 @@ func (a *endpointsImpl) CreateEndpoint(ctx context.Context, request CreateEndpoi
 }
 
 func (a *endpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
-	path := fmt.Sprintf("/api/networking/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/networking/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -42,7 +42,7 @@ func (a *endpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpoi
 
 func (a *endpointsImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*Endpoint, error) {
 	var endpoint Endpoint
-	path := fmt.Sprintf("/api/networking/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/networking/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -84,7 +84,7 @@ func (a *endpointsImpl) ListEndpointsAll(ctx context.Context, request ListEndpoi
 
 func (a *endpointsImpl) internalListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
-	path := fmt.Sprintf("/api/networking/v1/%v/endpoints", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/networking/v1/%v/endpoints", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

@@ -49,7 +49,7 @@ func (a *environmentsImpl) CreateWorkspaceBaseEnvironment(ctx context.Context, r
 }
 
 func (a *environmentsImpl) DeleteWorkspaceBaseEnvironment(ctx context.Context, request DeleteWorkspaceBaseEnvironmentRequest) error {
-	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -77,7 +77,7 @@ func (a *environmentsImpl) GetDefaultWorkspaceBaseEnvironment(ctx context.Contex
 
 func (a *environmentsImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -91,7 +91,7 @@ func (a *environmentsImpl) GetOperation(ctx context.Context, request GetOperatio
 
 func (a *environmentsImpl) GetWorkspaceBaseEnvironment(ctx context.Context, request GetWorkspaceBaseEnvironmentRequest) (*WorkspaceBaseEnvironment, error) {
 	var workspaceBaseEnvironment WorkspaceBaseEnvironment
-	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -174,7 +174,7 @@ func (a *environmentsImpl) internalListWorkspaceBaseEnvironments(ctx context.Con
 
 func (a *environmentsImpl) RefreshWorkspaceBaseEnvironment(ctx context.Context, request RefreshWorkspaceBaseEnvironmentRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/environments/v1/%v/refresh", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/environments/v1/%v/refresh", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -211,7 +211,7 @@ func (a *environmentsImpl) UpdateDefaultWorkspaceBaseEnvironment(ctx context.Con
 
 func (a *environmentsImpl) UpdateWorkspaceBaseEnvironment(ctx context.Context, request UpdateWorkspaceBaseEnvironmentRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/environments/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

@@ -23,7 +23,7 @@ type disasterRecoveryImpl struct {
 
 func (a *disasterRecoveryImpl) CreateFailoverGroup(ctx context.Context, request CreateFailoverGroupRequest) (*FailoverGroup, error) {
 	var failoverGroup FailoverGroup
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/failover-groups", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/failover-groups", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.FailoverGroupId != "" || slices.Contains(request.ForceSendFields, "FailoverGroupId") {
@@ -43,7 +43,7 @@ func (a *disasterRecoveryImpl) CreateFailoverGroup(ctx context.Context, request 
 
 func (a *disasterRecoveryImpl) CreateStableUrl(ctx context.Context, request CreateStableUrlRequest) (*StableUrl, error) {
 	var stableUrl StableUrl
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/stable-urls", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/stable-urls", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.StableUrlId != "" || slices.Contains(request.ForceSendFields, "StableUrlId") {
@@ -62,7 +62,7 @@ func (a *disasterRecoveryImpl) CreateStableUrl(ctx context.Context, request Crea
 }
 
 func (a *disasterRecoveryImpl) DeleteFailoverGroup(ctx context.Context, request DeleteFailoverGroupRequest) error {
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -72,7 +72,7 @@ func (a *disasterRecoveryImpl) DeleteFailoverGroup(ctx context.Context, request 
 }
 
 func (a *disasterRecoveryImpl) DeleteStableUrl(ctx context.Context, request DeleteStableUrlRequest) error {
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -83,7 +83,7 @@ func (a *disasterRecoveryImpl) DeleteStableUrl(ctx context.Context, request Dele
 
 func (a *disasterRecoveryImpl) FailoverFailoverGroup(ctx context.Context, request FailoverFailoverGroupRequest) (*FailoverGroup, error) {
 	var failoverGroup FailoverGroup
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/failover", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/failover", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -95,7 +95,7 @@ func (a *disasterRecoveryImpl) FailoverFailoverGroup(ctx context.Context, reques
 
 func (a *disasterRecoveryImpl) GetFailoverGroup(ctx context.Context, request GetFailoverGroupRequest) (*FailoverGroup, error) {
 	var failoverGroup FailoverGroup
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -106,7 +106,7 @@ func (a *disasterRecoveryImpl) GetFailoverGroup(ctx context.Context, request Get
 
 func (a *disasterRecoveryImpl) GetStableUrl(ctx context.Context, request GetStableUrlRequest) (*StableUrl, error) {
 	var stableUrl StableUrl
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -154,7 +154,7 @@ func (a *disasterRecoveryImpl) ListFailoverGroupsAll(ctx context.Context, reques
 
 func (a *disasterRecoveryImpl) internalListFailoverGroups(ctx context.Context, request ListFailoverGroupsRequest) (*ListFailoverGroupsResponse, error) {
 	var listFailoverGroupsResponse ListFailoverGroupsResponse
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/failover-groups", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/failover-groups", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -196,7 +196,7 @@ func (a *disasterRecoveryImpl) ListStableUrlsAll(ctx context.Context, request Li
 
 func (a *disasterRecoveryImpl) internalListStableUrls(ctx context.Context, request ListStableUrlsRequest) (*ListStableUrlsResponse, error) {
 	var listStableUrlsResponse ListStableUrlsResponse
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/stable-urls", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v/stable-urls", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -207,7 +207,7 @@ func (a *disasterRecoveryImpl) internalListStableUrls(ctx context.Context, reque
 
 func (a *disasterRecoveryImpl) UpdateFailoverGroup(ctx context.Context, request UpdateFailoverGroupRequest) (*FailoverGroup, error) {
 	var failoverGroup FailoverGroup
-	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/disaster-recovery/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {

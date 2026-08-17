@@ -23,7 +23,7 @@ type aiSearchImpl struct {
 
 func (a *aiSearchImpl) CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Endpoint, error) {
 	var endpoint Endpoint
-	path := fmt.Sprintf("/api/2.0/ai-search/%v/endpoints", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v/endpoints", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.EndpointId != "" || slices.Contains(request.ForceSendFields, "EndpointId") {
@@ -42,7 +42,7 @@ func (a *aiSearchImpl) CreateEndpoint(ctx context.Context, request CreateEndpoin
 
 func (a *aiSearchImpl) CreateIndex(ctx context.Context, request CreateIndexRequest) (*Index, error) {
 	var index Index
-	path := fmt.Sprintf("/api/2.0/ai-search/%v/indexes", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v/indexes", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.IndexId != "" || slices.Contains(request.ForceSendFields, "IndexId") {
@@ -60,7 +60,7 @@ func (a *aiSearchImpl) CreateIndex(ctx context.Context, request CreateIndexReque
 }
 
 func (a *aiSearchImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
-	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -73,7 +73,7 @@ func (a *aiSearchImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpoin
 }
 
 func (a *aiSearchImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
-	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -87,7 +87,7 @@ func (a *aiSearchImpl) DeleteIndex(ctx context.Context, request DeleteIndexReque
 
 func (a *aiSearchImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*Endpoint, error) {
 	var endpoint Endpoint
-	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -101,7 +101,7 @@ func (a *aiSearchImpl) GetEndpoint(ctx context.Context, request GetEndpointReque
 
 func (a *aiSearchImpl) GetIndex(ctx context.Context, request GetIndexRequest) (*Index, error) {
 	var index Index
-	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -146,7 +146,7 @@ func (a *aiSearchImpl) ListEndpointsAll(ctx context.Context, request ListEndpoin
 
 func (a *aiSearchImpl) internalListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
-	path := fmt.Sprintf("/api/2.0/ai-search/%v/endpoints", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v/endpoints", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -191,7 +191,7 @@ func (a *aiSearchImpl) ListIndexesAll(ctx context.Context, request ListIndexesRe
 
 func (a *aiSearchImpl) internalListIndexes(ctx context.Context, request ListIndexesRequest) (*ListIndexesResponse, error) {
 	var listIndexesResponse ListIndexesResponse
-	path := fmt.Sprintf("/api/2.0/ai-search/%v/indexes", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v/indexes", httpclient.EncodeMultiSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -205,7 +205,7 @@ func (a *aiSearchImpl) internalListIndexes(ctx context.Context, request ListInde
 
 func (a *aiSearchImpl) QueryIndex(ctx context.Context, request QueryIndexRequest) (*QueryIndexResponse, error) {
 	var queryIndexResponse QueryIndexResponse
-	path := fmt.Sprintf("/api/2.0/ai-search/%v:query", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v:query", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -220,7 +220,7 @@ func (a *aiSearchImpl) QueryIndex(ctx context.Context, request QueryIndexRequest
 
 func (a *aiSearchImpl) RemoveData(ctx context.Context, request RemoveDataRequest) (*RemoveDataResponse, error) {
 	var removeDataResponse RemoveDataResponse
-	path := fmt.Sprintf("/api/2.0/ai-search/%v:removeData", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v:removeData", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -235,7 +235,7 @@ func (a *aiSearchImpl) RemoveData(ctx context.Context, request RemoveDataRequest
 
 func (a *aiSearchImpl) ScanIndex(ctx context.Context, request ScanIndexRequest) (*ScanIndexResponse, error) {
 	var scanIndexResponse ScanIndexResponse
-	path := fmt.Sprintf("/api/2.0/ai-search/%v:scan", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v:scan", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -250,7 +250,7 @@ func (a *aiSearchImpl) ScanIndex(ctx context.Context, request ScanIndexRequest) 
 
 func (a *aiSearchImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) (*SyncIndexResponse, error) {
 	var syncIndexResponse SyncIndexResponse
-	path := fmt.Sprintf("/api/2.0/ai-search/%v:sync", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v:sync", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -265,7 +265,7 @@ func (a *aiSearchImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) 
 
 func (a *aiSearchImpl) UpdateEndpoint(ctx context.Context, request UpdateEndpointRequest) (*Endpoint, error) {
 	var endpoint Endpoint
-	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -287,7 +287,7 @@ func (a *aiSearchImpl) UpdateEndpoint(ctx context.Context, request UpdateEndpoin
 
 func (a *aiSearchImpl) UpsertData(ctx context.Context, request UpsertDataRequest) (*UpsertDataResponse, error) {
 	var upsertDataResponse UpsertDataResponse
-	path := fmt.Sprintf("/api/2.0/ai-search/%v:upsertData", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/2.0/ai-search/%v:upsertData", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

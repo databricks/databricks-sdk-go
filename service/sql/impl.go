@@ -1098,7 +1098,7 @@ func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequ
 }
 
 func (a *warehousesImpl) DeleteDefaultWarehouseOverride(ctx context.Context, request DeleteDefaultWarehouseOverrideRequest) error {
-	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1140,7 +1140,7 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 
 func (a *warehousesImpl) GetDefaultWarehouseOverride(ctx context.Context, request GetDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error) {
 	var defaultWarehouseOverride DefaultWarehouseOverride
-	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1345,7 +1345,7 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 
 func (a *warehousesImpl) UpdateDefaultWarehouseOverride(ctx context.Context, request UpdateDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error) {
 	var defaultWarehouseOverride DefaultWarehouseOverride
-	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
+	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeMultiSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.AllowMissing != false || slices.Contains(request.ForceSendFields, "AllowMissing") {
