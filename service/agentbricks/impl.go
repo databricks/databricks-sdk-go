@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
 // unexported type that holds implementations of just AgentBricks API methods
@@ -16,7 +17,7 @@ type agentBricksImpl struct {
 }
 
 func (a *agentBricksImpl) CancelOptimize(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error {
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize/cancel", request.Id)
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize/cancel", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -45,7 +46,7 @@ func (a *agentBricksImpl) CreateCustomLlm(ctx context.Context, request CreateCus
 }
 
 func (a *agentBricksImpl) DeleteCustomLlm(ctx context.Context, request DeleteCustomLlmRequest) error {
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -59,7 +60,7 @@ func (a *agentBricksImpl) DeleteCustomLlm(ctx context.Context, request DeleteCus
 
 func (a *agentBricksImpl) GetCustomLlm(ctx context.Context, request GetCustomLlmRequest) (*CustomLlm, error) {
 	var customLlm CustomLlm
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -73,7 +74,7 @@ func (a *agentBricksImpl) GetCustomLlm(ctx context.Context, request GetCustomLlm
 
 func (a *agentBricksImpl) StartOptimize(ctx context.Context, request StartCustomLlmOptimizationRunRequest) (*CustomLlm, error) {
 	var customLlm CustomLlm
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize", request.Id)
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -88,7 +89,7 @@ func (a *agentBricksImpl) StartOptimize(ctx context.Context, request StartCustom
 
 func (a *agentBricksImpl) UpdateCustomLlm(ctx context.Context, request UpdateCustomLlmRequest) (*CustomLlm, error) {
 	var customLlm CustomLlm
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

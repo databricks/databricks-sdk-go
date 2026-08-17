@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
@@ -36,7 +37,7 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*A
 }
 
 func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -50,7 +51,7 @@ func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) erro
 
 func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, error) {
 	var alert Alert
-	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -113,7 +114,7 @@ func (a *alertsImpl) internalList(ctx context.Context, request ListAlertsRequest
 
 func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*Alert, error) {
 	var alert Alert
-	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -147,7 +148,7 @@ func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*Le
 }
 
 func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.AlertId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -161,7 +162,7 @@ func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegac
 
 func (a *alertsLegacyImpl) Get(ctx context.Context, request GetAlertsLegacyRequest) (*LegacyAlert, error) {
 	var legacyAlert LegacyAlert
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.AlertId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -188,7 +189,7 @@ func (a *alertsLegacyImpl) List(ctx context.Context) ([]LegacyAlert, error) {
 }
 
 func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.AlertId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -223,7 +224,7 @@ func (a *alertsV2Impl) CreateAlert(ctx context.Context, request CreateAlertV2Req
 
 func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) (*AlertV2, error) {
 	var alertV2 AlertV2
-	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -281,7 +282,7 @@ func (a *alertsV2Impl) internalListAlerts(ctx context.Context, request ListAlert
 }
 
 func (a *alertsV2Impl) TrashAlert(ctx context.Context, request TrashAlertV2Request) error {
-	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -295,7 +296,7 @@ func (a *alertsV2Impl) TrashAlert(ctx context.Context, request TrashAlertV2Reque
 
 func (a *alertsV2Impl) UpdateAlert(ctx context.Context, request UpdateAlertV2Request) (*AlertV2, error) {
 	var alertV2 AlertV2
-	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/alerts/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -333,7 +334,7 @@ func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget)
 }
 
 func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -347,7 +348,7 @@ func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboa
 
 func (a *dashboardWidgetsImpl) Update(ctx context.Context, request UpdateWidgetRequest) (*Widget, error) {
 	var widget Widget
-	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -366,7 +367,7 @@ type dashboardsImpl struct {
 }
 
 func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -380,7 +381,7 @@ func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequ
 
 func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
-	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -457,7 +458,7 @@ func (a *dashboardsImpl) internalList(ctx context.Context, request ListDashboard
 }
 
 func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -471,7 +472,7 @@ func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRe
 
 func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error) {
 	var dashboard Dashboard
-	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", httpclient.EncodeSingleSegmentPathParameter(request.DashboardId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -510,7 +511,7 @@ type dbsqlPermissionsImpl struct {
 
 func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error) {
 	var getResponse GetResponse
-	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -524,7 +525,7 @@ func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissi
 
 func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*SetResponse, error) {
 	var setResponse SetResponse
-	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -573,7 +574,7 @@ func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*
 }
 
 func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -587,7 +588,7 @@ func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) err
 
 func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query, error) {
 	var query Query
-	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -681,7 +682,7 @@ func (a *queriesImpl) ListVisualizationsAll(ctx context.Context, request ListVis
 
 func (a *queriesImpl) internalListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error) {
 	var listVisualizationsForQueryResponse ListVisualizationsForQueryResponse
-	path := fmt.Sprintf("/api/2.0/sql/queries/%v/visualizations", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v/visualizations", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -695,7 +696,7 @@ func (a *queriesImpl) internalListVisualizations(ctx context.Context, request Li
 
 func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*Query, error) {
 	var query Query
-	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -729,7 +730,7 @@ func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent
 }
 
 func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", httpclient.EncodeSingleSegmentPathParameter(request.QueryId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -743,7 +744,7 @@ func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLeg
 
 func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyRequest) (*LegacyQuery, error) {
 	var legacyQuery LegacyQuery
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", httpclient.EncodeSingleSegmentPathParameter(request.QueryId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -822,7 +823,7 @@ func (a *queriesLegacyImpl) internalList(ctx context.Context, request ListQuerie
 }
 
 func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", httpclient.EncodeSingleSegmentPathParameter(request.QueryId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -836,7 +837,7 @@ func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesL
 
 func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error) {
 	var legacyQuery LegacyQuery
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", httpclient.EncodeSingleSegmentPathParameter(request.QueryId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -889,7 +890,7 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisu
 }
 
 func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisualizationRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -903,7 +904,7 @@ func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisu
 
 func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisualizationRequest) (*Visualization, error) {
 	var visualization Visualization
-	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -937,7 +938,7 @@ func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request Crea
 }
 
 func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -951,7 +952,7 @@ func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request Dele
 
 func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error) {
 	var legacyVisualization LegacyVisualization
-	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -989,7 +990,7 @@ type statementExecutionImpl struct {
 }
 
 func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", httpclient.EncodeSingleSegmentPathParameter(request.StatementId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -1018,7 +1019,7 @@ func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request E
 
 func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetStatementRequest) (*StatementResponse, error) {
 	var statementResponse StatementResponse
-	path := fmt.Sprintf("/api/2.0/sql/statements/%v", request.StatementId)
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v", httpclient.EncodeSingleSegmentPathParameter(request.StatementId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1032,7 +1033,7 @@ func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetSt
 
 func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error) {
 	var resultData ResultData
-	path := fmt.Sprintf("/api/2.0/sql/statements/%v/result/chunks/%v", request.StatementId, request.ChunkIndex)
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v/result/chunks/%v", httpclient.EncodeSingleSegmentPathParameter(request.StatementId), request.ChunkIndex)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1084,7 +1085,7 @@ func (a *warehousesImpl) CreateDefaultWarehouseOverride(ctx context.Context, req
 }
 
 func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1097,7 +1098,7 @@ func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequ
 }
 
 func (a *warehousesImpl) DeleteDefaultWarehouseOverride(ctx context.Context, request DeleteDefaultWarehouseOverrideRequest) error {
-	path := fmt.Sprintf("/api/warehouses/v1/%v", request.Name)
+	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1110,7 +1111,7 @@ func (a *warehousesImpl) DeleteDefaultWarehouseOverride(ctx context.Context, req
 }
 
 func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1125,7 +1126,7 @@ func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest)
 
 func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
 	var getWarehouseResponse GetWarehouseResponse
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1139,7 +1140,7 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 
 func (a *warehousesImpl) GetDefaultWarehouseOverride(ctx context.Context, request GetDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error) {
 	var defaultWarehouseOverride DefaultWarehouseOverride
-	path := fmt.Sprintf("/api/warehouses/v1/%v", request.Name)
+	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1153,7 +1154,7 @@ func (a *warehousesImpl) GetDefaultWarehouseOverride(ctx context.Context, reques
 
 func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
 	var getWarehousePermissionLevelsResponse GetWarehousePermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v/permissionLevels", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.WarehouseId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1167,7 +1168,7 @@ func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWar
 
 func (a *warehousesImpl) GetPermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", httpclient.EncodeSingleSegmentPathParameter(request.WarehouseId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1287,7 +1288,7 @@ func (a *warehousesImpl) internalListDefaultWarehouseOverrides(ctx context.Conte
 
 func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", httpclient.EncodeSingleSegmentPathParameter(request.WarehouseId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1315,7 +1316,7 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 }
 
 func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1329,7 +1330,7 @@ func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error 
 }
 
 func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", httpclient.EncodeSingleSegmentPathParameter(request.Id))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1344,7 +1345,7 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 
 func (a *warehousesImpl) UpdateDefaultWarehouseOverride(ctx context.Context, request UpdateDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error) {
 	var defaultWarehouseOverride DefaultWarehouseOverride
-	path := fmt.Sprintf("/api/warehouses/v1/%v", request.Name)
+	path := fmt.Sprintf("/api/warehouses/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	if request.AllowMissing != false || slices.Contains(request.ForceSendFields, "AllowMissing") {
@@ -1370,7 +1371,7 @@ func (a *warehousesImpl) UpdateDefaultWarehouseOverride(ctx context.Context, req
 
 func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", httpclient.EncodeSingleSegmentPathParameter(request.WarehouseId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

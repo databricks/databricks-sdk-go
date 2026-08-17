@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -161,7 +162,7 @@ func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*GetRepoRe
 
 func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
 	var getRepoPermissionLevelsResponse GetRepoPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v/permissionLevels", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.RepoId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -175,7 +176,7 @@ func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPerm
 
 func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", httpclient.EncodeSingleSegmentPathParameter(request.RepoId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -246,7 +247,7 @@ func (a *reposImpl) internalList(ctx context.Context, request ListReposRequest) 
 
 func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", httpclient.EncodeSingleSegmentPathParameter(request.RepoId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -275,7 +276,7 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error
 
 func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", httpclient.EncodeSingleSegmentPathParameter(request.RepoId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -631,7 +632,7 @@ func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*Exp
 
 func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
 	var getWorkspaceObjectPermissionLevelsResponse GetWorkspaceObjectPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectType), httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -645,7 +646,7 @@ func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWork
 
 func (a *workspaceImpl) GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectType), httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -744,7 +745,7 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 
 func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectType), httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -759,7 +760,7 @@ func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObj
 
 func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectType), httpclient.EncodeSingleSegmentPathParameter(request.WorkspaceObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

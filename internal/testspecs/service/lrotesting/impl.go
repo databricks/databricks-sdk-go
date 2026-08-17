@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
 // unexported type that holds implementations of just LroTesting API methods
@@ -16,7 +17,7 @@ type lroTestingImpl struct {
 }
 
 func (a *lroTestingImpl) CancelOperation(ctx context.Context, request CancelOperationRequest) error {
-	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v/cancel", request.Name)
+	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v/cancel", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -45,7 +46,7 @@ func (a *lroTestingImpl) CreateTestResource(ctx context.Context, request CreateT
 
 func (a *lroTestingImpl) DeleteTestResource(ctx context.Context, request DeleteTestResourceRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/lro-testing/resources/%v", request.ResourceId)
+	path := fmt.Sprintf("/api/2.0/lro-testing/resources/%v", httpclient.EncodeSingleSegmentPathParameter(request.ResourceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -59,7 +60,7 @@ func (a *lroTestingImpl) DeleteTestResource(ctx context.Context, request DeleteT
 
 func (a *lroTestingImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -73,7 +74,7 @@ func (a *lroTestingImpl) GetOperation(ctx context.Context, request GetOperationR
 
 func (a *lroTestingImpl) GetTestResource(ctx context.Context, request GetTestResourceRequest) (*TestResource, error) {
 	var testResource TestResource
-	path := fmt.Sprintf("/api/2.0/lro-testing/resources/%v", request.ResourceId)
+	path := fmt.Sprintf("/api/2.0/lro-testing/resources/%v", httpclient.EncodeSingleSegmentPathParameter(request.ResourceId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

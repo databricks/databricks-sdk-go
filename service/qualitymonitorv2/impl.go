@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -33,7 +34,7 @@ func (a *qualityMonitorV2Impl) CreateQualityMonitor(ctx context.Context, request
 }
 
 func (a *qualityMonitorV2Impl) DeleteQualityMonitor(ctx context.Context, request DeleteQualityMonitorRequest) error {
-	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -47,7 +48,7 @@ func (a *qualityMonitorV2Impl) DeleteQualityMonitor(ctx context.Context, request
 
 func (a *qualityMonitorV2Impl) GetQualityMonitor(ctx context.Context, request GetQualityMonitorRequest) (*QualityMonitor, error) {
 	var qualityMonitor QualityMonitor
-	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -108,7 +109,7 @@ func (a *qualityMonitorV2Impl) internalListQualityMonitor(ctx context.Context, r
 
 func (a *qualityMonitorV2Impl) UpdateQualityMonitor(ctx context.Context, request UpdateQualityMonitorRequest) (*QualityMonitor, error) {
 	var qualityMonitor QualityMonitor
-	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

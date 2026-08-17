@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
@@ -56,7 +57,7 @@ func (a *appsImpl) CreateSpace(ctx context.Context, request CreateSpaceRequest) 
 
 func (a *appsImpl) CreateUpdate(ctx context.Context, request AsyncUpdateAppRequest) (*AppUpdate, error) {
 	var appUpdate AppUpdate
-	path := fmt.Sprintf("/api/2.0/apps/%v/update", request.AppName)
+	path := fmt.Sprintf("/api/2.0/apps/%v/update", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -71,7 +72,7 @@ func (a *appsImpl) CreateUpdate(ctx context.Context, request AsyncUpdateAppReque
 
 func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, error) {
 	var app App
-	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -84,7 +85,7 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, 
 }
 
 func (a *appsImpl) DeleteAppThumbnail(ctx context.Context, request DeleteAppThumbnailRequest) error {
-	path := fmt.Sprintf("/api/2.0/apps/%v/thumbnail", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps/%v/thumbnail", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -98,7 +99,7 @@ func (a *appsImpl) DeleteAppThumbnail(ctx context.Context, request DeleteAppThum
 
 func (a *appsImpl) DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/app-spaces/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -112,7 +113,7 @@ func (a *appsImpl) DeleteSpace(ctx context.Context, request DeleteSpaceRequest) 
 
 func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
 	var appDeployment AppDeployment
-	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", request.AppName)
+	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -127,7 +128,7 @@ func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentReques
 
 func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error) {
 	var app App
-	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -141,7 +142,7 @@ func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error)
 
 func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
 	var appDeployment AppDeployment
-	path := fmt.Sprintf("/api/2.0/apps/%v/deployments/%v", request.AppName, request.DeploymentId)
+	path := fmt.Sprintf("/api/2.0/apps/%v/deployments/%v", httpclient.EncodeSingleSegmentPathParameter(request.AppName), httpclient.EncodeSingleSegmentPathParameter(request.DeploymentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -155,7 +156,7 @@ func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRe
 
 func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermissionLevelsRequest) (*GetAppPermissionLevelsResponse, error) {
 	var getAppPermissionLevelsResponse GetAppPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v/permissionLevels", request.AppName)
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -169,7 +170,7 @@ func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermis
 
 func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissionsRequest) (*AppPermissions, error) {
 	var appPermissions AppPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -183,7 +184,7 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 
 func (a *appsImpl) GetSpace(ctx context.Context, request GetSpaceRequest) (*Space, error) {
 	var space Space
-	path := fmt.Sprintf("/api/2.0/app-spaces/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -197,7 +198,7 @@ func (a *appsImpl) GetSpace(ctx context.Context, request GetSpaceRequest) (*Spac
 
 func (a *appsImpl) GetSpaceOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/app-spaces/%v/operation", request.Name)
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v/operation", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -211,7 +212,7 @@ func (a *appsImpl) GetSpaceOperation(ctx context.Context, request GetOperationRe
 
 func (a *appsImpl) GetUpdate(ctx context.Context, request GetAppUpdateRequest) (*AppUpdate, error) {
 	var appUpdate AppUpdate
-	path := fmt.Sprintf("/api/2.0/apps/%v/update", request.AppName)
+	path := fmt.Sprintf("/api/2.0/apps/%v/update", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -301,7 +302,7 @@ func (a *appsImpl) ListDeploymentsAll(ctx context.Context, request ListAppDeploy
 
 func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
 	var listAppDeploymentsResponse ListAppDeploymentsResponse
-	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", request.AppName)
+	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -360,7 +361,7 @@ func (a *appsImpl) internalListSpaces(ctx context.Context, request ListSpacesReq
 
 func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
 	var appPermissions AppPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -375,7 +376,7 @@ func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsReq
 
 func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, error) {
 	var app App
-	path := fmt.Sprintf("/api/2.0/apps/%v/start", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps/%v/start", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -390,7 +391,7 @@ func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, er
 
 func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, error) {
 	var app App
-	path := fmt.Sprintf("/api/2.0/apps/%v/stop", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps/%v/stop", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -405,7 +406,7 @@ func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, erro
 
 func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
 	var app App
-	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -420,7 +421,7 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 
 func (a *appsImpl) UpdateAppThumbnail(ctx context.Context, request UpdateAppThumbnailRequest) (*AppThumbnail, error) {
 	var appThumbnail AppThumbnail
-	path := fmt.Sprintf("/api/2.0/apps/%v/thumbnail", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps/%v/thumbnail", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -435,7 +436,7 @@ func (a *appsImpl) UpdateAppThumbnail(ctx context.Context, request UpdateAppThum
 
 func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
 	var appPermissions AppPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", httpclient.EncodeSingleSegmentPathParameter(request.AppName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -450,7 +451,7 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 
 func (a *appsImpl) UpdateSpace(ctx context.Context, request UpdateSpaceRequest) (*Operation, error) {
 	var operation Operation
-	path := fmt.Sprintf("/api/2.0/app-spaces/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -492,7 +493,7 @@ func (a *appsSettingsImpl) CreateCustomTemplate(ctx context.Context, request Cre
 
 func (a *appsSettingsImpl) DeleteCustomTemplate(ctx context.Context, request DeleteCustomTemplateRequest) (*CustomTemplate, error) {
 	var customTemplate CustomTemplate
-	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -506,7 +507,7 @@ func (a *appsSettingsImpl) DeleteCustomTemplate(ctx context.Context, request Del
 
 func (a *appsSettingsImpl) GetCustomTemplate(ctx context.Context, request GetCustomTemplateRequest) (*CustomTemplate, error) {
 	var customTemplate CustomTemplate
-	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -565,7 +566,7 @@ func (a *appsSettingsImpl) internalListCustomTemplates(ctx context.Context, requ
 
 func (a *appsSettingsImpl) UpdateCustomTemplate(ctx context.Context, request UpdateCustomTemplateRequest) (*CustomTemplate, error) {
 	var customTemplate CustomTemplate
-	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -33,7 +34,7 @@ func (a *tagPoliciesImpl) CreateTagPolicy(ctx context.Context, request CreateTag
 }
 
 func (a *tagPoliciesImpl) DeleteTagPolicy(ctx context.Context, request DeleteTagPolicyRequest) error {
-	path := fmt.Sprintf("/api/2.1/tag-policies/%v", request.TagKey)
+	path := fmt.Sprintf("/api/2.1/tag-policies/%v", httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -47,7 +48,7 @@ func (a *tagPoliciesImpl) DeleteTagPolicy(ctx context.Context, request DeleteTag
 
 func (a *tagPoliciesImpl) GetTagPolicy(ctx context.Context, request GetTagPolicyRequest) (*TagPolicy, error) {
 	var tagPolicy TagPolicy
-	path := fmt.Sprintf("/api/2.1/tag-policies/%v", request.TagKey)
+	path := fmt.Sprintf("/api/2.1/tag-policies/%v", httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -116,7 +117,7 @@ func (a *tagPoliciesImpl) internalListTagPolicies(ctx context.Context, request L
 
 func (a *tagPoliciesImpl) UpdateTagPolicy(ctx context.Context, request UpdateTagPolicyRequest) (*TagPolicy, error) {
 	var tagPolicy TagPolicy
-	path := fmt.Sprintf("/api/2.1/tag-policies/%v", request.TagKey)
+	path := fmt.Sprintf("/api/2.1/tag-policies/%v", httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -154,7 +155,7 @@ func (a *workspaceEntityTagAssignmentsImpl) CreateTagAssignment(ctx context.Cont
 }
 
 func (a *workspaceEntityTagAssignmentsImpl) DeleteTagAssignment(ctx context.Context, request DeleteTagAssignmentRequest) error {
-	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityId, request.TagKey)
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityId), httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -168,7 +169,7 @@ func (a *workspaceEntityTagAssignmentsImpl) DeleteTagAssignment(ctx context.Cont
 
 func (a *workspaceEntityTagAssignmentsImpl) GetTagAssignment(ctx context.Context, request GetTagAssignmentRequest) (*TagAssignment, error) {
 	var tagAssignment TagAssignment
-	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityId, request.TagKey)
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityId), httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -213,7 +214,7 @@ func (a *workspaceEntityTagAssignmentsImpl) ListTagAssignmentsAll(ctx context.Co
 
 func (a *workspaceEntityTagAssignmentsImpl) internalListTagAssignments(ctx context.Context, request ListTagAssignmentsRequest) (*ListTagAssignmentsResponse, error) {
 	var listTagAssignmentsResponse ListTagAssignmentsResponse
-	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags", request.EntityType, request.EntityId)
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -227,7 +228,7 @@ func (a *workspaceEntityTagAssignmentsImpl) internalListTagAssignments(ctx conte
 
 func (a *workspaceEntityTagAssignmentsImpl) UpdateTagAssignment(ctx context.Context, request UpdateTagAssignmentRequest) (*TagAssignment, error) {
 	var tagAssignment TagAssignment
-	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityId, request.TagKey)
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", httpclient.EncodeSingleSegmentPathParameter(request.EntityType), httpclient.EncodeSingleSegmentPathParameter(request.EntityId), httpclient.EncodeSingleSegmentPathParameter(request.TagKey))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {

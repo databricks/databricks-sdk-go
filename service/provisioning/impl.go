@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"golang.org/x/exp/slices"
 )
 
@@ -18,7 +19,7 @@ type credentialsImpl struct {
 
 func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
 	var credential Credential
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -30,7 +31,7 @@ func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRe
 
 func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) (*Credential, error) {
 	var credential Credential
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.CredentialsId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -41,7 +42,7 @@ func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRe
 
 func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
 	var credential Credential
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.CredentialsId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -52,7 +53,7 @@ func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest)
 
 func (a *credentialsImpl) List(ctx context.Context) ([]Credential, error) {
 	var credentialList []Credential
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -68,7 +69,7 @@ type encryptionKeysImpl struct {
 
 func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -80,7 +81,7 @@ func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerM
 
 func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.CustomerManagedKeyId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -91,7 +92,7 @@ func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptio
 
 func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.CustomerManagedKeyId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -102,7 +103,7 @@ func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRe
 
 func (a *encryptionKeysImpl) List(ctx context.Context) ([]CustomerManagedKey, error) {
 	var customerManagedKeyList []CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -118,7 +119,7 @@ type networksImpl struct {
 
 func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
 	var network Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -130,7 +131,7 @@ func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest)
 
 func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) (*Network, error) {
 	var network Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.NetworkId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -141,7 +142,7 @@ func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest)
 
 func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
 	var network Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.NetworkId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -152,7 +153,7 @@ func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Net
 
 func (a *networksImpl) List(ctx context.Context) ([]Network, error) {
 	var networkList []Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -168,7 +169,7 @@ type privateAccessImpl struct {
 
 func (a *privateAccessImpl) Create(ctx context.Context, request CreatePrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -180,7 +181,7 @@ func (a *privateAccessImpl) Create(ctx context.Context, request CreatePrivateAcc
 
 func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.PrivateAccessSettingsId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -191,7 +192,7 @@ func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAcc
 
 func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.PrivateAccessSettingsId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -202,7 +203,7 @@ func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequ
 
 func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, error) {
 	var privateAccessSettingsList []PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -213,7 +214,7 @@ func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, 
 
 func (a *privateAccessImpl) Replace(ctx context.Context, request ReplacePrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.PrivateAccessSettingsId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -230,7 +231,7 @@ type storageImpl struct {
 
 func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -242,7 +243,7 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 
 func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.StorageConfigurationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -253,7 +254,7 @@ func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) 
 
 func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.StorageConfigurationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -264,7 +265,7 @@ func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*Stor
 
 func (a *storageImpl) List(ctx context.Context) ([]StorageConfiguration, error) {
 	var storageConfigurationList []StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -280,7 +281,7 @@ type vpcEndpointsImpl struct {
 
 func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -292,7 +293,7 @@ func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpoint
 
 func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.VpcEndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -303,7 +304,7 @@ func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpoint
 
 func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.VpcEndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -314,7 +315,7 @@ func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointReques
 
 func (a *vpcEndpointsImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
 	var vpcEndpointList []VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -330,7 +331,7 @@ type workspacesImpl struct {
 
 func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -342,7 +343,7 @@ func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequ
 
 func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -353,7 +354,7 @@ func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequ
 
 func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -364,7 +365,7 @@ func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (
 
 func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
 	var workspaceList []Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -375,7 +376,7 @@ func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
 
 func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {

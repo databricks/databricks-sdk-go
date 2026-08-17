@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -21,7 +22,7 @@ type accountIamV2Impl struct {
 
 func (a *accountIamV2Impl) CreateDirectGroupMember(ctx context.Context, request CreateDirectGroupMemberRequest) (*DirectGroupMember, error) {
 	var directGroupMember DirectGroupMember
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.GroupId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -33,7 +34,7 @@ func (a *accountIamV2Impl) CreateDirectGroupMember(ctx context.Context, request 
 
 func (a *accountIamV2Impl) CreateGroup(ctx context.Context, request CreateGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -45,7 +46,7 @@ func (a *accountIamV2Impl) CreateGroup(ctx context.Context, request CreateGroupR
 
 func (a *accountIamV2Impl) CreateServicePrincipal(ctx context.Context, request CreateServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -57,7 +58,7 @@ func (a *accountIamV2Impl) CreateServicePrincipal(ctx context.Context, request C
 
 func (a *accountIamV2Impl) CreateUser(ctx context.Context, request CreateUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -69,7 +70,7 @@ func (a *accountIamV2Impl) CreateUser(ctx context.Context, request CreateUserReq
 
 func (a *accountIamV2Impl) CreateWorkspaceAssignment(ctx context.Context, request CreateWorkspaceAssignmentRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -81,7 +82,7 @@ func (a *accountIamV2Impl) CreateWorkspaceAssignment(ctx context.Context, reques
 
 func (a *accountIamV2Impl) CreateWorkspaceAssignmentDetail(ctx context.Context, request CreateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -92,7 +93,7 @@ func (a *accountIamV2Impl) CreateWorkspaceAssignmentDetail(ctx context.Context, 
 }
 
 func (a *accountIamV2Impl) DeleteDirectGroupMember(ctx context.Context, request DeleteDirectGroupMemberRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members/%v", a.client.ConfiguredAccountID(), request.GroupId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.GroupId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -102,7 +103,7 @@ func (a *accountIamV2Impl) DeleteDirectGroupMember(ctx context.Context, request 
 }
 
 func (a *accountIamV2Impl) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.GroupId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -112,7 +113,7 @@ func (a *accountIamV2Impl) DeleteGroup(ctx context.Context, request DeleteGroupR
 }
 
 func (a *accountIamV2Impl) DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.ServicePrincipalId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -122,7 +123,7 @@ func (a *accountIamV2Impl) DeleteServicePrincipal(ctx context.Context, request D
 }
 
 func (a *accountIamV2Impl) DeleteUser(ctx context.Context, request DeleteUserRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", a.client.ConfiguredAccountID(), request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.UserId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -132,7 +133,7 @@ func (a *accountIamV2Impl) DeleteUser(ctx context.Context, request DeleteUserReq
 }
 
 func (a *accountIamV2Impl) DeleteWorkspaceAssignment(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -142,7 +143,7 @@ func (a *accountIamV2Impl) DeleteWorkspaceAssignment(ctx context.Context, reques
 }
 
 func (a *accountIamV2Impl) DeleteWorkspaceAssignmentDetail(ctx context.Context, request DeleteWorkspaceAssignmentDetailRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -153,7 +154,7 @@ func (a *accountIamV2Impl) DeleteWorkspaceAssignmentDetail(ctx context.Context, 
 
 func (a *accountIamV2Impl) GetDirectGroupMember(ctx context.Context, request GetDirectGroupMemberRequest) (*DirectGroupMember, error) {
 	var directGroupMember DirectGroupMember
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members/%v", a.client.ConfiguredAccountID(), request.GroupId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.GroupId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -164,7 +165,7 @@ func (a *accountIamV2Impl) GetDirectGroupMember(ctx context.Context, request Get
 
 func (a *accountIamV2Impl) GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.GroupId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -175,7 +176,7 @@ func (a *accountIamV2Impl) GetGroup(ctx context.Context, request GetGroupRequest
 
 func (a *accountIamV2Impl) GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.ServicePrincipalId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -186,7 +187,7 @@ func (a *accountIamV2Impl) GetServicePrincipal(ctx context.Context, request GetS
 
 func (a *accountIamV2Impl) GetUser(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", a.client.ConfiguredAccountID(), request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.UserId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -197,7 +198,7 @@ func (a *accountIamV2Impl) GetUser(ctx context.Context, request GetUserRequest) 
 
 func (a *accountIamV2Impl) GetWorkspaceAccessDetail(ctx context.Context, request GetWorkspaceAccessDetailRequest) (*WorkspaceAccessDetail, error) {
 	var workspaceAccessDetail WorkspaceAccessDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-access-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-access-details/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -208,7 +209,7 @@ func (a *accountIamV2Impl) GetWorkspaceAccessDetail(ctx context.Context, request
 
 func (a *accountIamV2Impl) GetWorkspaceAssignment(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -219,7 +220,7 @@ func (a *accountIamV2Impl) GetWorkspaceAssignment(ctx context.Context, request G
 
 func (a *accountIamV2Impl) GetWorkspaceAssignmentDetail(ctx context.Context, request GetWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -263,7 +264,7 @@ func (a *accountIamV2Impl) ListDirectGroupMembersAll(ctx context.Context, reques
 
 func (a *accountIamV2Impl) internalListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error) {
 	var listDirectGroupMembersResponse ListDirectGroupMembersResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.GroupId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -307,7 +308,7 @@ func (a *accountIamV2Impl) ListGroupsAll(ctx context.Context, request ListGroups
 
 func (a *accountIamV2Impl) internalListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -351,7 +352,7 @@ func (a *accountIamV2Impl) ListServicePrincipalsAll(ctx context.Context, request
 
 func (a *accountIamV2Impl) internalListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalsResponse, error) {
 	var listServicePrincipalsResponse ListServicePrincipalsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -362,7 +363,7 @@ func (a *accountIamV2Impl) internalListServicePrincipals(ctx context.Context, re
 
 func (a *accountIamV2Impl) ListTransitiveParentGroups(ctx context.Context, request ListTransitiveParentGroupsRequest) (*ListTransitiveParentGroupsResponse, error) {
 	var listTransitiveParentGroupsResponse ListTransitiveParentGroupsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/principals/%v/transitive-parent-groups", a.client.ConfiguredAccountID(), request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/principals/%v/transitive-parent-groups", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -406,7 +407,7 @@ func (a *accountIamV2Impl) ListUsersAll(ctx context.Context, request ListUsersRe
 
 func (a *accountIamV2Impl) internalListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -454,7 +455,7 @@ func (a *accountIamV2Impl) ListWorkspaceAssignmentDetailsAll(ctx context.Context
 
 func (a *accountIamV2Impl) internalListWorkspaceAssignmentDetails(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) (*ListWorkspaceAssignmentDetailsResponse, error) {
 	var listWorkspaceAssignmentDetailsResponse ListWorkspaceAssignmentDetailsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -502,7 +503,7 @@ func (a *accountIamV2Impl) ListWorkspaceAssignmentsAll(ctx context.Context, requ
 
 func (a *accountIamV2Impl) internalListWorkspaceAssignments(ctx context.Context, request ListWorkspaceAssignmentsRequest) (*ListWorkspaceAssignmentsResponse, error) {
 	var listWorkspaceAssignmentsResponse ListWorkspaceAssignmentsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -513,7 +514,7 @@ func (a *accountIamV2Impl) internalListWorkspaceAssignments(ctx context.Context,
 
 func (a *accountIamV2Impl) ResolveGroup(ctx context.Context, request ResolveGroupRequest) (*ResolveGroupResponse, error) {
 	var resolveGroupResponse ResolveGroupResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/resolve-by-external-id", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/resolve-by-external-id", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -525,7 +526,7 @@ func (a *accountIamV2Impl) ResolveGroup(ctx context.Context, request ResolveGrou
 
 func (a *accountIamV2Impl) ResolveServicePrincipal(ctx context.Context, request ResolveServicePrincipalRequest) (*ResolveServicePrincipalResponse, error) {
 	var resolveServicePrincipalResponse ResolveServicePrincipalResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/resolve-by-external-id", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/resolve-by-external-id", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -537,7 +538,7 @@ func (a *accountIamV2Impl) ResolveServicePrincipal(ctx context.Context, request 
 
 func (a *accountIamV2Impl) ResolveUser(ctx context.Context, request ResolveUserRequest) (*ResolveUserResponse, error) {
 	var resolveUserResponse ResolveUserResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/resolve-by-external-id", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/resolve-by-external-id", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -549,7 +550,7 @@ func (a *accountIamV2Impl) ResolveUser(ctx context.Context, request ResolveUserR
 
 func (a *accountIamV2Impl) UpdateGroup(ctx context.Context, request UpdateGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.GroupId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -565,7 +566,7 @@ func (a *accountIamV2Impl) UpdateGroup(ctx context.Context, request UpdateGroupR
 
 func (a *accountIamV2Impl) UpdateServicePrincipal(ctx context.Context, request UpdateServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.ServicePrincipalId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -581,7 +582,7 @@ func (a *accountIamV2Impl) UpdateServicePrincipal(ctx context.Context, request U
 
 func (a *accountIamV2Impl) UpdateUser(ctx context.Context, request UpdateUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", a.client.ConfiguredAccountID(), request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.UserId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -597,7 +598,7 @@ func (a *accountIamV2Impl) UpdateUser(ctx context.Context, request UpdateUserReq
 
 func (a *accountIamV2Impl) UpdateWorkspaceAssignment(ctx context.Context, request UpdateWorkspaceAssignmentRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -616,7 +617,7 @@ func (a *accountIamV2Impl) UpdateWorkspaceAssignment(ctx context.Context, reques
 
 func (a *accountIamV2Impl) UpdateWorkspaceAssignmentDetail(ctx context.Context, request UpdateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error) {
 	var workspaceAssignmentDetail WorkspaceAssignmentDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignment-details/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -742,7 +743,7 @@ func (a *workspaceIamV2Impl) DeleteDirectGroupMemberProxy(ctx context.Context, r
 }
 
 func (a *workspaceIamV2Impl) DeleteGroupProxy(ctx context.Context, request DeleteGroupProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/groups/%v", httpclient.EncodeSingleSegmentPathParameter(request.GroupId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -755,7 +756,7 @@ func (a *workspaceIamV2Impl) DeleteGroupProxy(ctx context.Context, request Delet
 }
 
 func (a *workspaceIamV2Impl) DeleteServicePrincipalProxy(ctx context.Context, request DeleteServicePrincipalProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", httpclient.EncodeSingleSegmentPathParameter(request.ServicePrincipalId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -768,7 +769,7 @@ func (a *workspaceIamV2Impl) DeleteServicePrincipalProxy(ctx context.Context, re
 }
 
 func (a *workspaceIamV2Impl) DeleteUserProxy(ctx context.Context, request DeleteUserProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/users/%v", request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/users/%v", httpclient.EncodeSingleSegmentPathParameter(request.UserId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -822,7 +823,7 @@ func (a *workspaceIamV2Impl) GetDirectGroupMemberProxy(ctx context.Context, requ
 
 func (a *workspaceIamV2Impl) GetGroupProxy(ctx context.Context, request GetGroupProxyRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/groups/%v", httpclient.EncodeSingleSegmentPathParameter(request.GroupId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -836,7 +837,7 @@ func (a *workspaceIamV2Impl) GetGroupProxy(ctx context.Context, request GetGroup
 
 func (a *workspaceIamV2Impl) GetServicePrincipalProxy(ctx context.Context, request GetServicePrincipalProxyRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", httpclient.EncodeSingleSegmentPathParameter(request.ServicePrincipalId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -850,7 +851,7 @@ func (a *workspaceIamV2Impl) GetServicePrincipalProxy(ctx context.Context, reque
 
 func (a *workspaceIamV2Impl) GetUserProxy(ctx context.Context, request GetUserProxyRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/users/%v", request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/users/%v", httpclient.EncodeSingleSegmentPathParameter(request.UserId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1273,7 +1274,7 @@ func (a *workspaceIamV2Impl) ResolveUserProxy(ctx context.Context, request Resol
 
 func (a *workspaceIamV2Impl) UpdateGroupProxy(ctx context.Context, request UpdateGroupProxyRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/groups/%v", httpclient.EncodeSingleSegmentPathParameter(request.GroupId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1292,7 +1293,7 @@ func (a *workspaceIamV2Impl) UpdateGroupProxy(ctx context.Context, request Updat
 
 func (a *workspaceIamV2Impl) UpdateServicePrincipalProxy(ctx context.Context, request UpdateServicePrincipalProxyRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", httpclient.EncodeSingleSegmentPathParameter(request.ServicePrincipalId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1311,7 +1312,7 @@ func (a *workspaceIamV2Impl) UpdateServicePrincipalProxy(ctx context.Context, re
 
 func (a *workspaceIamV2Impl) UpdateUserProxy(ctx context.Context, request UpdateUserProxyRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/users/%v", request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/users/%v", httpclient.EncodeSingleSegmentPathParameter(request.UserId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {

@@ -23,7 +23,7 @@ type servingEndpointsImpl struct {
 
 func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {
 	var buildLogsResponse BuildLogsResponse
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/build-logs", request.Name, request.ServedModelName)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/build-logs", httpclient.EncodeSingleSegmentPathParameter(request.Name), httpclient.EncodeSingleSegmentPathParameter(request.ServedModelName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -66,7 +66,7 @@ func (a *servingEndpointsImpl) CreateProvisionedThroughputEndpoint(ctx context.C
 }
 
 func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	cfg := a.client.Config
@@ -79,7 +79,7 @@ func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServing
 
 func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
 	var exportMetricsResponse ExportMetricsResponse
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
@@ -93,7 +93,7 @@ func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request Export
 
 func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -107,7 +107,7 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 
 func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenApiRequest) (*GetOpenApiResponse, error) {
 	var getOpenApiResponse GetOpenApiResponse
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/openapi", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/openapi", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
@@ -121,7 +121,7 @@ func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenAp
 
 func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
 	var getServingEndpointPermissionLevelsResponse GetServingEndpointPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v/permissionLevels", request.ServingEndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.ServingEndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -135,7 +135,7 @@ func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request 
 
 func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.ServingEndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -204,7 +204,7 @@ func (a *servingEndpointsImpl) internalList(ctx context.Context) (*ListEndpoints
 
 func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error) {
 	var serverLogsResponse ServerLogsResponse
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/logs", request.Name, request.ServedModelName)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/logs", httpclient.EncodeSingleSegmentPathParameter(request.Name), httpclient.EncodeSingleSegmentPathParameter(request.ServedModelName))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -218,7 +218,7 @@ func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*
 
 func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEndpointTags) (*EndpointTags, error) {
 	var endpointTags EndpointTags
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/tags", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/tags", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -233,7 +233,7 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 
 func (a *servingEndpointsImpl) PatchTelemetryConfig(ctx context.Context, request PatchTelemetryConfigRequest) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/telemetry-config", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/telemetry-config", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -248,7 +248,7 @@ func (a *servingEndpointsImpl) PatchTelemetryConfig(ctx context.Context, request
 
 func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*PutResponse, error) {
 	var putResponse PutResponse
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/rate-limits", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/rate-limits", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -263,7 +263,7 @@ func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*Pu
 
 func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error) {
 	var putAiGatewayResponse PutAiGatewayResponse
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/ai-gateway", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/ai-gateway", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -278,7 +278,7 @@ func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGa
 
 func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
 	var queryEndpointResponse QueryEndpointResponse
-	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
+	path := fmt.Sprintf("/serving-endpoints/%v/invocations", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -293,7 +293,7 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointI
 
 func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.ServingEndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -308,7 +308,7 @@ func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request Servi
 
 func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -323,7 +323,7 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 
 func (a *servingEndpointsImpl) UpdateNotifications(ctx context.Context, request UpdateInferenceEndpointNotifications) (*UpdateInferenceEndpointNotificationsResponse, error) {
 	var updateInferenceEndpointNotificationsResponse UpdateInferenceEndpointNotificationsResponse
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/notifications", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/notifications", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -338,7 +338,7 @@ func (a *servingEndpointsImpl) UpdateNotifications(ctx context.Context, request 
 
 func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", httpclient.EncodeSingleSegmentPathParameter(request.ServingEndpointId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -353,7 +353,7 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 
 func (a *servingEndpointsImpl) UpdateProvisionedThroughputEndpointConfig(ctx context.Context, request UpdateProvisionedThroughputEndpointConfigRequest) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
-	path := fmt.Sprintf("/api/2.0/serving-endpoints/pt/%v/config", request.Name)
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/pt/%v/config", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

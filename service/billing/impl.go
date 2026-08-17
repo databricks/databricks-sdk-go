@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/google/uuid"
@@ -20,7 +21,7 @@ type billableUsageImpl struct {
 
 func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse DownloadResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
@@ -39,7 +40,7 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 	if request.RequestId == "" {
 		request.RequestId = uuid.New().String()
 	}
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -50,7 +51,7 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 }
 
 func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.PolicyId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -61,7 +62,7 @@ func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolic
 
 func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.PolicyId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -105,7 +106,7 @@ func (a *budgetPolicyImpl) ListAll(ctx context.Context, request ListBudgetPolici
 
 func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
 	var listBudgetPoliciesResponse ListBudgetPoliciesResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -116,7 +117,7 @@ func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetP
 
 func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.PolicyId))
 	queryParams := make(map[string]any)
 
 	if request.LimitConfig != nil {
@@ -137,7 +138,7 @@ type budgetsImpl struct {
 
 func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error) {
 	var createBudgetConfigurationResponse CreateBudgetConfigurationResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -148,7 +149,7 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 }
 
 func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.BudgetId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -159,7 +160,7 @@ func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurat
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
 	var getBudgetConfigurationResponse GetBudgetConfigurationResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.BudgetId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -201,7 +202,7 @@ func (a *budgetsImpl) ListAll(ctx context.Context, request ListBudgetConfigurati
 
 func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
 	var listBudgetConfigurationsResponse ListBudgetConfigurationsResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -212,7 +213,7 @@ func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfig
 
 func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
 	var updateBudgetConfigurationResponse UpdateBudgetConfigurationResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.BudgetId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -229,7 +230,7 @@ type logDeliveryImpl struct {
 
 func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -241,7 +242,7 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 
 func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*GetLogDeliveryConfigurationResponse, error) {
 	var getLogDeliveryConfigurationResponse GetLogDeliveryConfigurationResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.LogDeliveryConfigurationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -285,7 +286,7 @@ func (a *logDeliveryImpl) ListAll(ctx context.Context, request ListLogDeliveryRe
 
 func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 	var wrappedLogDeliveryConfigurations WrappedLogDeliveryConfigurations
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -295,7 +296,7 @@ func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliv
 }
 
 func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()), httpclient.EncodeSingleSegmentPathParameter(request.LogDeliveryConfigurationId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -312,7 +313,7 @@ type usageDashboardsImpl struct {
 
 func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
 	var createBillingUsageDashboardResponse CreateBillingUsageDashboardResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -324,7 +325,7 @@ func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingU
 
 func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
 	var getBillingUsageDashboardResponse GetBillingUsageDashboardResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", httpclient.EncodeSingleSegmentPathParameter(a.client.ConfiguredAccountID()))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

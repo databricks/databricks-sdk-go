@@ -248,6 +248,14 @@ func isForceableQueryKind(k reflect.Kind) bool {
 	}
 }
 
+// EncodeSingleSegmentPathParameter escapes a value that occupies one URL path
+// segment.
+func EncodeSingleSegmentPathParameter(p string) string {
+	return url.PathEscape(p)
+}
+
+// EncodeMultiSegmentPathParameter escapes a value that may occupy multiple URL
+// path segments while preserving its slash separators.
 func EncodeMultiSegmentPathParameter(p string) string {
 	segments := strings.Split(p, "/")
 	b := strings.Builder{}

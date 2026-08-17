@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
 // unexported type that holds implementations of just DataClassification API methods
@@ -19,7 +20,7 @@ type dataClassificationImpl struct {
 
 func (a *dataClassificationImpl) CreateCatalogConfig(ctx context.Context, request CreateCatalogConfigRequest) (*CatalogConfig, error) {
 	var catalogConfig CatalogConfig
-	path := fmt.Sprintf("/api/data-classification/v1/%v/config", request.Parent)
+	path := fmt.Sprintf("/api/data-classification/v1/%v/config", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -33,7 +34,7 @@ func (a *dataClassificationImpl) CreateCatalogConfig(ctx context.Context, reques
 }
 
 func (a *dataClassificationImpl) DeleteCatalogConfig(ctx context.Context, request DeleteCatalogConfigRequest) error {
-	path := fmt.Sprintf("/api/data-classification/v1/%v", request.Name)
+	path := fmt.Sprintf("/api/data-classification/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -47,7 +48,7 @@ func (a *dataClassificationImpl) DeleteCatalogConfig(ctx context.Context, reques
 
 func (a *dataClassificationImpl) GetCatalogConfig(ctx context.Context, request GetCatalogConfigRequest) (*CatalogConfig, error) {
 	var catalogConfig CatalogConfig
-	path := fmt.Sprintf("/api/data-classification/v1/%v", request.Name)
+	path := fmt.Sprintf("/api/data-classification/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -61,7 +62,7 @@ func (a *dataClassificationImpl) GetCatalogConfig(ctx context.Context, request G
 
 func (a *dataClassificationImpl) UpdateCatalogConfig(ctx context.Context, request UpdateCatalogConfigRequest) (*CatalogConfig, error) {
 	var catalogConfig CatalogConfig
-	path := fmt.Sprintf("/api/data-classification/v1/%v", request.Name)
+	path := fmt.Sprintf("/api/data-classification/v1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)

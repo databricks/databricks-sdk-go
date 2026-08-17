@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -19,7 +20,7 @@ type dataQualityImpl struct {
 
 func (a *dataQualityImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) (*CancelRefreshResponse, error) {
 	var cancelRefreshResponse CancelRefreshResponse
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v/cancel", request.ObjectType, request.ObjectId, request.RefreshId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v/cancel", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId), request.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -49,7 +50,7 @@ func (a *dataQualityImpl) CreateMonitor(ctx context.Context, request CreateMonit
 
 func (a *dataQualityImpl) CreateRefresh(ctx context.Context, request CreateRefreshRequest) (*Refresh, error) {
 	var refresh Refresh
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -63,7 +64,7 @@ func (a *dataQualityImpl) CreateRefresh(ctx context.Context, request CreateRefre
 }
 
 func (a *dataQualityImpl) DeleteMonitor(ctx context.Context, request DeleteMonitorRequest) error {
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -76,7 +77,7 @@ func (a *dataQualityImpl) DeleteMonitor(ctx context.Context, request DeleteMonit
 }
 
 func (a *dataQualityImpl) DeleteRefresh(ctx context.Context, request DeleteRefreshRequest) error {
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v", request.ObjectType, request.ObjectId, request.RefreshId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId), request.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -90,7 +91,7 @@ func (a *dataQualityImpl) DeleteRefresh(ctx context.Context, request DeleteRefre
 
 func (a *dataQualityImpl) GetMonitor(ctx context.Context, request GetMonitorRequest) (*Monitor, error) {
 	var monitor Monitor
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -104,7 +105,7 @@ func (a *dataQualityImpl) GetMonitor(ctx context.Context, request GetMonitorRequ
 
 func (a *dataQualityImpl) GetRefresh(ctx context.Context, request GetRefreshRequest) (*Refresh, error) {
 	var refresh Refresh
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v", request.ObjectType, request.ObjectId, request.RefreshId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId), request.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -220,7 +221,7 @@ func (a *dataQualityImpl) ListRefreshAll(ctx context.Context, request ListRefres
 
 func (a *dataQualityImpl) internalListRefresh(ctx context.Context, request ListRefreshRequest) (*ListRefreshResponse, error) {
 	var listRefreshResponse ListRefreshResponse
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -234,7 +235,7 @@ func (a *dataQualityImpl) internalListRefresh(ctx context.Context, request ListR
 
 func (a *dataQualityImpl) UpdateMonitor(ctx context.Context, request UpdateMonitorRequest) (*Monitor, error) {
 	var monitor Monitor
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId))
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -253,7 +254,7 @@ func (a *dataQualityImpl) UpdateMonitor(ctx context.Context, request UpdateMonit
 
 func (a *dataQualityImpl) UpdateRefresh(ctx context.Context, request UpdateRefreshRequest) (*Refresh, error) {
 	var refresh Refresh
-	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v", request.ObjectType, request.ObjectId, request.RefreshId)
+	path := fmt.Sprintf("/api/data-quality/v1/monitors/%v/%v/refreshes/%v", httpclient.EncodeSingleSegmentPathParameter(request.ObjectType), httpclient.EncodeSingleSegmentPathParameter(request.ObjectId), request.RefreshId)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -21,7 +22,7 @@ type supervisorAgentsImpl struct {
 
 func (a *supervisorAgentsImpl) CreateExample(ctx context.Context, request CreateExampleRequest) (*Example, error) {
 	var example Example
-	path := fmt.Sprintf("/api/2.1/%v/examples", request.Parent)
+	path := fmt.Sprintf("/api/2.1/%v/examples", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -51,7 +52,7 @@ func (a *supervisorAgentsImpl) CreateSupervisorAgent(ctx context.Context, reques
 
 func (a *supervisorAgentsImpl) CreateTool(ctx context.Context, request CreateToolRequest) (*Tool, error) {
 	var tool Tool
-	path := fmt.Sprintf("/api/2.1/%v/tools", request.Parent)
+	path := fmt.Sprintf("/api/2.1/%v/tools", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 
 	if request.ToolId != "" {
@@ -69,7 +70,7 @@ func (a *supervisorAgentsImpl) CreateTool(ctx context.Context, request CreateToo
 }
 
 func (a *supervisorAgentsImpl) DeleteExample(ctx context.Context, request DeleteExampleRequest) error {
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -82,7 +83,7 @@ func (a *supervisorAgentsImpl) DeleteExample(ctx context.Context, request Delete
 }
 
 func (a *supervisorAgentsImpl) DeleteSupervisorAgent(ctx context.Context, request DeleteSupervisorAgentRequest) error {
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -95,7 +96,7 @@ func (a *supervisorAgentsImpl) DeleteSupervisorAgent(ctx context.Context, reques
 }
 
 func (a *supervisorAgentsImpl) DeleteTool(ctx context.Context, request DeleteToolRequest) error {
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -109,7 +110,7 @@ func (a *supervisorAgentsImpl) DeleteTool(ctx context.Context, request DeleteToo
 
 func (a *supervisorAgentsImpl) GetExample(ctx context.Context, request GetExampleRequest) (*Example, error) {
 	var example Example
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -123,7 +124,7 @@ func (a *supervisorAgentsImpl) GetExample(ctx context.Context, request GetExampl
 
 func (a *supervisorAgentsImpl) GetPermissionLevels(ctx context.Context, request GetSupervisorAgentPermissionLevelsRequest) (*GetSupervisorAgentPermissionLevelsResponse, error) {
 	var getSupervisorAgentPermissionLevelsResponse GetSupervisorAgentPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v/permissionLevels", request.SupervisorAgentId)
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v/permissionLevels", httpclient.EncodeSingleSegmentPathParameter(request.SupervisorAgentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -137,7 +138,7 @@ func (a *supervisorAgentsImpl) GetPermissionLevels(ctx context.Context, request 
 
 func (a *supervisorAgentsImpl) GetPermissions(ctx context.Context, request GetSupervisorAgentPermissionsRequest) (*SupervisorAgentPermissions, error) {
 	var supervisorAgentPermissions SupervisorAgentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", request.SupervisorAgentId)
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", httpclient.EncodeSingleSegmentPathParameter(request.SupervisorAgentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -151,7 +152,7 @@ func (a *supervisorAgentsImpl) GetPermissions(ctx context.Context, request GetSu
 
 func (a *supervisorAgentsImpl) GetSupervisorAgent(ctx context.Context, request GetSupervisorAgentRequest) (*SupervisorAgent, error) {
 	var supervisorAgent SupervisorAgent
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -165,7 +166,7 @@ func (a *supervisorAgentsImpl) GetSupervisorAgent(ctx context.Context, request G
 
 func (a *supervisorAgentsImpl) GetTool(ctx context.Context, request GetToolRequest) (*Tool, error) {
 	var tool Tool
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -210,7 +211,7 @@ func (a *supervisorAgentsImpl) ListExamplesAll(ctx context.Context, request List
 
 func (a *supervisorAgentsImpl) internalListExamples(ctx context.Context, request ListExamplesRequest) (*ListExamplesResponse, error) {
 	var listExamplesResponse ListExamplesResponse
-	path := fmt.Sprintf("/api/2.1/%v/examples", request.Parent)
+	path := fmt.Sprintf("/api/2.1/%v/examples", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -300,7 +301,7 @@ func (a *supervisorAgentsImpl) ListToolsAll(ctx context.Context, request ListToo
 
 func (a *supervisorAgentsImpl) internalListTools(ctx context.Context, request ListToolsRequest) (*ListToolsResponse, error) {
 	var listToolsResponse ListToolsResponse
-	path := fmt.Sprintf("/api/2.1/%v/tools", request.Parent)
+	path := fmt.Sprintf("/api/2.1/%v/tools", httpclient.EncodeSingleSegmentPathParameter(request.Parent))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -314,7 +315,7 @@ func (a *supervisorAgentsImpl) internalListTools(ctx context.Context, request Li
 
 func (a *supervisorAgentsImpl) SetPermissions(ctx context.Context, request SupervisorAgentPermissionsRequest) (*SupervisorAgentPermissions, error) {
 	var supervisorAgentPermissions SupervisorAgentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", request.SupervisorAgentId)
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", httpclient.EncodeSingleSegmentPathParameter(request.SupervisorAgentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -329,7 +330,7 @@ func (a *supervisorAgentsImpl) SetPermissions(ctx context.Context, request Super
 
 func (a *supervisorAgentsImpl) UpdateExample(ctx context.Context, request UpdateExampleRequest) (*Example, error) {
 	var example Example
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -351,7 +352,7 @@ func (a *supervisorAgentsImpl) UpdateExample(ctx context.Context, request Update
 
 func (a *supervisorAgentsImpl) UpdatePermissions(ctx context.Context, request SupervisorAgentPermissionsRequest) (*SupervisorAgentPermissions, error) {
 	var supervisorAgentPermissions SupervisorAgentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", request.SupervisorAgentId)
+	path := fmt.Sprintf("/api/2.0/permissions/supervisor-agents/%v", httpclient.EncodeSingleSegmentPathParameter(request.SupervisorAgentId))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -366,7 +367,7 @@ func (a *supervisorAgentsImpl) UpdatePermissions(ctx context.Context, request Su
 
 func (a *supervisorAgentsImpl) UpdateSupervisorAgent(ctx context.Context, request UpdateSupervisorAgentRequest) (*SupervisorAgent, error) {
 	var supervisorAgent SupervisorAgent
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -388,7 +389,7 @@ func (a *supervisorAgentsImpl) UpdateSupervisorAgent(ctx context.Context, reques
 
 func (a *supervisorAgentsImpl) UpdateTool(ctx context.Context, request UpdateToolRequest) (*Tool, error) {
 	var tool Tool
-	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/%v", httpclient.EncodeSingleSegmentPathParameter(request.Name))
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
