@@ -187,7 +187,7 @@ func TestBuildDiscoveryAuthorizeURL_HostOverride(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes, "")
+			got := buildDiscoveryAuthorizeURL(tc.host, "localhost:8020", "s", pkce, scopes, "", "")
 			u, err := url.Parse(got)
 			if err != nil {
 				t.Fatalf("parsing URL: %v", err)
@@ -216,7 +216,7 @@ func TestBuildDiscoveryAuthorizeURL_Target(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, "localhost:8020", "s", pkce, scopes, tc.target)
+			got := buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, "localhost:8020", "s", pkce, scopes, tc.target, "")
 			u, err := url.Parse(got)
 			if err != nil {
 				t.Fatalf("parsing URL: %v", err)
@@ -229,6 +229,43 @@ func TestBuildDiscoveryAuthorizeURL_Target(t *testing.T) {
 				t.Error("destination_url should be set regardless of target")
 			}
 		})
+	}
+}
+
+// A hostless CLI login forwards destination_url to the selected workspace, so
+// assume_group must be nested there for the workspace authorization endpoint.
+func TestBuildDiscoveryAuthorizeURL_GroupIDIsNested(t *testing.T) {
+	pkce := PKCEParams{
+		Challenge:       "challenge",
+		ChallengeMethod: "S256",
+		Verifier:        "verifier",
+	}
+	authorizationURL := buildDiscoveryAuthorizeURL(
+		defaultLoginDatabricksHost,
+		"localhost:8020",
+		"state",
+		pkce,
+		[]string{"offline_access", "all-apis"},
+		"",
+		"group-123",
+	)
+
+	topLevelURL, err := url.Parse(authorizationURL)
+	if err != nil {
+		t.Fatalf("url.Parse(): %v", err)
+	}
+
+	if got := topLevelURL.Query().Get("assume_group"); got != "" {
+		t.Errorf("top-level assume_group = %q, want empty", got)
+	}
+
+	destinationURL, err := url.Parse(topLevelURL.Query().Get("destination_url"))
+	if err != nil {
+		t.Fatalf("url.Parse(destination_url): %v", err)
+	}
+
+	if got := destinationURL.Query()["assume_group"]; len(got) != 1 || got[0] != "group-123" {
+		t.Errorf("nested assume_group = %v, want [group-123]", got)
 	}
 }
 
@@ -274,6 +311,12 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 		if r.URL.Path != "/oidc/v1/token" {
 			t.Errorf("token server: want path /oidc/v1/token, got %s", r.URL.Path)
 		}
+		if err := r.ParseForm(); err != nil {
+			t.Errorf("token server: ParseForm(): %v", err)
+		}
+		if _, ok := r.Form["assume_group"]; ok {
+			t.Error("code exchange must not include assume_group")
+		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"access_token":"test-access-token","refresh_token":"test-refresh-token","token_type":"Bearer","expires_in":3600}`)
 	}))
@@ -309,6 +352,7 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
 		WithOAuthArgument(arg),
 		WithDiscoveryLogin(),
+		WithGroupID("group-123"),
 	)
 	if err != nil {
 		t.Fatalf("NewPersistentAuth(): %v", err)
@@ -340,6 +384,9 @@ func TestDiscoveryTokenSource_Challenge(t *testing.T) {
 		dest, err := url.Parse(destURL)
 		if err != nil {
 			t.Fatalf("parsing destination_url: %v", err)
+		}
+		if got := dest.Query()["assume_group"]; len(got) != 1 || got[0] != "group-123" {
+			t.Errorf("nested assume_group = %v, want [group-123]", got)
 		}
 		state = dest.Query().Get("state")
 		if state == "" {

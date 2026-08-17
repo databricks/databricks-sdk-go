@@ -20,6 +20,7 @@ func TestConfigAuthDetails(t *testing.T) {
 
 	ConfigAttributes.ResolveFromStringMapWithSource(c, map[string]string{
 		"azure_client_id": "1234",
+		"group_id":        "group-A",
 	}, Source{Type: SourceFile, Name: "test.file"})
 
 	authDetails := c.GetAuthDetails()
@@ -36,6 +37,10 @@ func TestConfigAuthDetails(t *testing.T) {
 	assert.Equal(t, "1234", authDetails.Configuration["azure_client_id"].Value)
 	assert.Equal(t, "test.file config file", authDetails.Configuration["azure_client_id"].Source.String())
 	assert.True(t, authDetails.Configuration["azure_client_id"].AuthTypeMismatch)
+
+	assert.Equal(t, "group-A", authDetails.Configuration["group_id"].Value)
+	assert.Equal(t, "test.file config file", authDetails.Configuration["group_id"].Source.String())
+	assert.False(t, authDetails.Configuration["group_id"].AuthTypeMismatch)
 }
 
 func TestConfigAuthDetailsToString(t *testing.T) {
