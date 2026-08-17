@@ -41,17 +41,6 @@ type CreateDeploymentRequest struct {
 	Deployment Deployment `json:"deployment"`
 }
 
-type CreateOperationRequest struct {
-	// The resource operation to create.
-	Operation Operation `json:"operation"`
-	// The parent version where this operation will be recorded. Format:
-	// deployments/{deployment_id}/versions/{version_id}
-	Parent string `json:"-" url:"-"`
-	// The key identifying the resource this operation applies to. Becomes the
-	// final component of the operation's name.
-	ResourceKey string `json:"-" url:"resource_key"`
-}
-
 type CreateVersionRequest struct {
 	// The parent deployment where this version will be created. Format:
 	// deployments/{deployment_id}
@@ -586,17 +575,23 @@ func (s ListVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// An operation on a single resource performed during a version. Operations
-// record the result of applying a resource change to the workspace. Most fields
-// are immutable once recorded; `state`, `error_message`, `resource_id`, and
-// `status` may be updated afterwards (via UpdateOperation), guarded by
-// `sequence_id` for optimistic concurrency control.
+// An operation on a single resource performed during a version. The full set of
+// operations for a version is recorded when the version is created: each
+// carries its `resource_key` and `action_type` and starts in
+// `OPERATION_STATUS_PENDING`. As each resource is applied, its operation is
+// updated (via UpdateOperation) to record the result of applying the change to
+// the workspace. `state`, `error_message`, `resource_id`, `status`, and
+// `dashboard_metadata` may be updated afterwards, guarded by `sequence_id` for
+// optimistic concurrency control; all other fields are immutable once recorded.
 type Operation struct {
-	// The type of operation performed on this resource.
-	ActionType OperationActionType `json:"action_type"`
+	// The type of operation performed on this resource. Set when the version is
+	// created and immutable thereafter.
+	ActionType OperationActionType `json:"action_type,omitempty"`
 	// When the operation was recorded.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Dashboard-specific metadata; set only for dashboard resources.
+	// Dashboard-specific metadata; set only for dashboard resources. Mutable:
+	// may be set or updated via UpdateOperation as the resource is applied, and
+	// is mirrored onto the corresponding deployment-level resource.
 	DashboardMetadata *DashboardMetadata `json:"dashboard_metadata,omitempty"`
 	// Error message if the operation failed. Set when status is
 	// OPERATION_STATUS_FAILED. Captures the error encountered while applying
@@ -617,7 +612,8 @@ type Operation struct {
 	// Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar",
 	// "jobs.foo.permissions", "files.<rel-path>"). Can be an arbitrary UTF-8
 	// encoded string key. This key links the operation to the corresponding
-	// deployment-level Resource.
+	// deployment-level Resource. Set when the version is created and immutable
+	// thereafter.
 	ResourceKey string `json:"resource_key,omitempty"`
 	// The type of the deployment resource this operation applies to. Derived
 	// from the `resource_key` prefix (e.g. "jobs" → JOB); the caller does not
@@ -625,13 +621,15 @@ type Operation struct {
 	ResourceType DeploymentResourceType `json:"resource_type,omitempty"`
 	// Monotonically increasing revision used for optimistic concurrency control
 	// (the AIP-154 concurrency token for this resource, realized as a sequence
-	// number rather than an opaque etag). The server assigns 1 on creation and
-	// increments it on every successful UpdateOperation. It is OPTIONAL rather
-	// than OUTPUT_ONLY because it is dual-purpose: CreateOperation/GetOperation
-	// return the current value, and UpdateOperation reads the caller-supplied
-	// value as a precondition. The caller must echo the value it last observed;
-	// if it no longer matches the server's value, the update is rejected with
-	// ABORTED so the caller can re-read and retry. Ignored on CreateOperation.
+	// number rather than an opaque etag). The server assigns 0 when the
+	// operation is created and increments it on every successful
+	// UpdateOperation, so a never-updated operation is at 0 and the first
+	// successful update makes it 1. It is OPTIONAL rather than OUTPUT_ONLY
+	// because it is dual-purpose: GetOperation returns the current value, and
+	// UpdateOperation reads the caller-supplied value as a precondition. The
+	// caller must echo the value it last observed; if it no longer matches the
+	// server's value, the update is rejected with ABORTED so the caller can
+	// re-read and retry.
 	SequenceId int64 `json:"sequence_id,omitempty"`
 	// Serialized local config state after the operation. Its presence records
 	// whether the resource still exists, so an operation that records no state
@@ -657,11 +655,12 @@ type Operation struct {
 	// the same OpenAPI schema ("type": "string"), so the SDKs are identical
 	// either way.
 	State string `json:"state,omitempty"`
-	// Whether the operation succeeded or failed. Mutable: may be updated after
-	// creation via UpdateOperation, e.g. when an operation recorded as failed
-	// is retried and eventually succeeds. A succeeded operation cannot carry an
-	// `error_message`.
-	Status OperationStatus `json:"status"`
+	// Status of the operation. Starts as OPERATION_STATUS_PENDING when the
+	// version is created and moves to a terminal status once the resource is
+	// applied. Mutable: updated via UpdateOperation, e.g. when an operation
+	// recorded as failed is retried and eventually succeeds. A succeeded
+	// operation cannot carry an `error_message`.
+	Status OperationStatus `json:"status,omitempty"`
 	// When the operation was last updated. Set to `create_time` when the
 	// operation is created and to the server timestamp on each successful
 	// UpdateOperation.
@@ -825,8 +824,8 @@ type UpdateOperationRequest struct {
 	// Operation). All other fields are ignored.
 	Operation Operation `json:"operation"`
 	// The set of fields to update. Required; supported paths are `state`,
-	// `error_message`, `resource_id`, and `status`. An empty mask or any other
-	// path is rejected with INVALID_PARAMETER_VALUE.
+	// `error_message`, `resource_id`, `status`, and `dashboard_metadata`. An
+	// empty mask or any other path is rejected with INVALID_PARAMETER_VALUE.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

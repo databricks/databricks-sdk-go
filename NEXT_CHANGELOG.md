@@ -32,3 +32,6 @@
 * [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignments).
 * [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentsProxy).
 * Add `LinkedinAdsOptions` and `MarketoOptions` fields for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
+* [Breaking] Change `ActionType` and `Status` fields for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* Change `ActionType` and `Status` fields for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* [Breaking] Remove `CreateOperation` method for [w.BundleDeployments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#BundleDeploymentsAPI) workspace-level service.
