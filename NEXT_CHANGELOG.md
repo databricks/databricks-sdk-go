@@ -1,10 +1,8 @@
 # NEXT CHANGELOG
 
-## Release v0.173.0
+## Release v0.174.0
 
 ### Breaking Changes
-
- * Raise the minimum supported Go version from 1.24 to 1.25
 
 ### New Features and Improvements
 
@@ -19,6 +17,7 @@
 ### Internal Changes
 
 ### API Changes
+
 * Add `AgentType` field for [dashboards.GenieConversationSummary](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieConversationSummary).
 * Add `GroupId` field for [iamv2.DirectGroupMember](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DirectGroupMember).
 * Add `EffectiveServerlessComputeId` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
@@ -32,3 +31,4 @@
 * Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [postgres.SyncedTableSyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpecPgSpecificType).
 * [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignments).
 * [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentsProxy).
+
