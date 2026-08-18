@@ -8,6 +8,7 @@
 
 ### Bug Fixes
 
+- Select the Azure managed identity endpoint and request protocol from the host environment instead of always using IMDS.
 - Recover from concurrent OAuth token cache writes by using the fresh token stored by another process.
 - Fix Spark runtime selection for major-only runtime versions.
 - Accept JSON numbers and decimal strings when unmarshalling `int64` API response fields.
