@@ -230,6 +230,10 @@ type CheckPolicyRequest struct {
 	ResourceInfo *ResourceInfo `json:"-" url:"resource_info,omitempty"`
 }
 
+func (s *CheckPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CheckPolicyResponse struct {
 	ConsistencyToken ConsistencyToken `json:"consistency_token"`
 
@@ -270,6 +274,10 @@ func (s ComplexValue) MarshalJSON() ([]byte, error) {
 
 type ConsistencyToken struct {
 	Value string `json:"value" url:"value"`
+}
+
+func (s *ConsistencyToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateAccountGroupRequest struct {
@@ -468,9 +476,17 @@ type DeleteAccountGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *DeleteAccountGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteAccountUserRequest struct {
@@ -478,9 +494,17 @@ type DeleteAccountUserRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *DeleteAccountUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteServicePrincipalRequest struct {
@@ -488,9 +512,17 @@ type DeleteServicePrincipalRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *DeleteServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteWorkspaceAssignmentRequest struct {
@@ -500,14 +532,26 @@ type DeleteWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
+func (s *GetAccountGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *GetAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetAccountUserRequest struct {
@@ -559,8 +603,16 @@ type GetAssignableRolesForResourceRequest struct {
 	Resource string `json:"-" url:"resource"`
 }
 
+func (s *GetAssignableRolesForResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAssignableRolesForResourceResponse struct {
 	Roles []Role `json:"roles,omitempty"`
+}
+
+func (s *GetAssignableRolesForResourceResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetGroupRequest struct {
@@ -568,7 +620,15 @@ type GetGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *GetGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPasswordPermissionLevelsRequest struct {
+}
+
+func (s *GetPasswordPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPasswordPermissionLevelsResponse struct {
@@ -576,7 +636,15 @@ type GetPasswordPermissionLevelsResponse struct {
 	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetPasswordPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPasswordPermissionsRequest struct {
+}
+
+func (s *GetPasswordPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPermissionLevelsRequest struct {
@@ -590,9 +658,17 @@ type GetPermissionLevelsRequest struct {
 	RequestObjectType string `json:"-" url:"-"`
 }
 
+func (s *GetPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+func (s *GetPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPermissionRequest struct {
@@ -605,6 +681,10 @@ type GetPermissionRequest struct {
 	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
 	// vector-search-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
+}
+
+func (s *GetPermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetRuleSetRequest struct {
@@ -636,9 +716,17 @@ type GetRuleSetRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
+func (s *GetRuleSetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *GetServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetSortOrder string
@@ -719,6 +807,10 @@ type GetWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *GetWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GrantRule struct {
 	// Principals this grant rule applies to. A principal can be a user (for end
 	// users), a service principal (for applications and compute workloads), or
@@ -728,6 +820,10 @@ type GrantRule struct {
 	Principals []string `json:"principals,omitempty"`
 	// Role that is assigned to the list of principals.
 	Role string `json:"role"`
+}
+
+func (s *GrantRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Group struct {
@@ -1212,6 +1308,10 @@ type ListWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *ListWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type MeRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -1436,6 +1536,10 @@ type PasswordPermissionsRequest struct {
 	AccessControlList []PasswordAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
+func (s *PasswordPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Patch struct {
 	// Type of patch operation.
 	Op PatchOp `json:"op,omitempty"`
@@ -1465,6 +1569,10 @@ type PatchAccountGroupRequest struct {
 	Schemas []PatchSchema `json:"schemas,omitempty"`
 }
 
+func (s *PatchAccountGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PatchAccountServicePrincipalRequest struct {
 	// Unique ID in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -1473,6 +1581,10 @@ type PatchAccountServicePrincipalRequest struct {
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
+func (s *PatchAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PatchAccountUserRequest struct {
@@ -1485,6 +1597,10 @@ type PatchAccountUserRequest struct {
 	Schemas []PatchSchema `json:"schemas,omitempty"`
 }
 
+func (s *PatchAccountUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PatchGroupRequest struct {
 	// Unique ID in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -1493,6 +1609,10 @@ type PatchGroupRequest struct {
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
+func (s *PatchGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Type of patch operation.
@@ -1580,6 +1700,10 @@ type PatchServicePrincipalRequest struct {
 	Schemas []PatchSchema `json:"schemas,omitempty"`
 }
 
+func (s *PatchServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PatchUserRequest struct {
 	// Unique ID in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -1588,6 +1712,10 @@ type PatchUserRequest struct {
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
+func (s *PatchUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Permission struct {
@@ -1632,6 +1760,10 @@ func (s PermissionAssignment) MarshalJSON() ([]byte, error) {
 type PermissionAssignments struct {
 	// Array of permissions assignments defined for a workspace.
 	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
+}
+
+func (s *PermissionAssignments) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Permission level
@@ -1864,6 +1996,10 @@ type Role struct {
 	Name string `json:"name"`
 }
 
+func (s *Role) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RuleSetResponse struct {
 	// Identifies the version of the rule set returned. Etag used for
 	// versioning. The response is at least as fresh as the eTag provided. Etag
@@ -1881,6 +2017,10 @@ type RuleSetResponse struct {
 	Name string `json:"name"`
 }
 
+func (s *RuleSetResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RuleSetUpdateRequest struct {
 	// Identifies the version of the rule set returned. Etag used for
 	// versioning. The response is at least as fresh as the eTag provided. Etag
@@ -1896,6 +2036,10 @@ type RuleSetUpdateRequest struct {
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
 	Name string `json:"name"`
+}
+
+func (s *RuleSetUpdateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ServicePrincipal struct {
@@ -1977,6 +2121,10 @@ type SetObjectPermissions struct {
 	// queries, registered-models, repos, serving-endpoints, supervisor-agents,
 	// vector-search-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
+}
+
+func (s *SetObjectPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateAccountGroupRequest struct {
@@ -2109,11 +2257,19 @@ type UpdateObjectPermissions struct {
 	RequestObjectType string `json:"-" url:"-"`
 }
 
+func (s *UpdateObjectPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateRuleSetRequest struct {
 	// Name of the rule set.
 	Name string `json:"name"`
 
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
+}
+
+func (s *UpdateRuleSetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateServicePrincipalRequest struct {
@@ -2208,6 +2364,10 @@ type UpdateWorkspaceAssignments struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+func (s *UpdateWorkspaceAssignments) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type User struct {
@@ -2336,4 +2496,8 @@ func (f *WorkspacePermission) Type() string {
 type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	Permissions []PermissionOutput `json:"permissions,omitempty"`
+}
+
+func (s *WorkspacePermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

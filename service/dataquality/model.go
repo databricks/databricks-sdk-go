@@ -77,6 +77,10 @@ type AnomalyDetectionConfig struct {
 	ExcludedTableFullNames []string `json:"excluded_table_full_names,omitempty"`
 }
 
+func (s *AnomalyDetectionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request to cancel a refresh.
 type CancelRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
@@ -101,15 +105,27 @@ type CancelRefreshRequest struct {
 	RefreshId int64 `json:"-" url:"-"`
 }
 
+func (s *CancelRefreshRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Response to cancelling a refresh.
 type CancelRefreshResponse struct {
 	// The refresh to cancel.
 	Refresh *Refresh `json:"refresh,omitempty"`
 }
 
+func (s *CancelRefreshResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateMonitorRequest struct {
 	// The monitor to create.
 	Monitor Monitor `json:"monitor"`
+}
+
+func (s *CreateMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateRefreshRequest struct {
@@ -135,6 +151,10 @@ type CreateRefreshRequest struct {
 	Refresh Refresh `json:"refresh"`
 }
 
+func (s *CreateRefreshRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The data quality monitoring workflow cron schedule.
 type CronSchedule struct {
 	// Read only field that indicates whether the schedule is paused or not.
@@ -149,6 +169,10 @@ type CronSchedule struct {
 	// details. The timezone id (e.g., ``America/Los_Angeles``) in which to
 	// evaluate the quartz expression.
 	TimezoneId string `json:"timezone_id"`
+}
+
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The data quality monitoring workflow cron schedule pause status.
@@ -280,6 +304,10 @@ type DataProfilingCustomMetric struct {
 	Type DataProfilingCustomMetricType `json:"type"`
 }
 
+func (s *DataProfilingCustomMetric) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The custom metric type.
 type DataProfilingCustomMetricType string
 
@@ -389,6 +417,10 @@ type DeleteMonitorRequest struct {
 	ObjectType string `json:"-" url:"-"`
 }
 
+func (s *DeleteMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
@@ -412,6 +444,10 @@ type DeleteRefreshRequest struct {
 	RefreshId int64 `json:"-" url:"-"`
 }
 
+func (s *DeleteRefreshRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetMonitorRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
@@ -431,6 +467,10 @@ type GetMonitorRequest struct {
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
 	ObjectType string `json:"-" url:"-"`
+}
+
+func (s *GetMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetRefreshRequest struct {
@@ -454,6 +494,10 @@ type GetRefreshRequest struct {
 	ObjectType string `json:"-" url:"-"`
 	// Unique id of the refresh operation.
 	RefreshId int64 `json:"-" url:"-"`
+}
+
+func (s *GetRefreshRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Inference log configuration.
@@ -634,6 +678,10 @@ type Monitor struct {
 	ObjectType string `json:"object_type"`
 }
 
+func (s *Monitor) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Destination of the data quality monitoring notification.
 type NotificationDestination struct {
 	// The list of email addresses to send the notification to. A maximum of 5
@@ -641,10 +689,18 @@ type NotificationDestination struct {
 	EmailAddresses []string `json:"email_addresses,omitempty"`
 }
 
+func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Settings for sending notifications on the data quality monitoring.
 type NotificationSettings struct {
 	// Destinations to send notifications on failure/timeout.
 	OnFailure *NotificationDestination `json:"on_failure,omitempty"`
+}
+
+func (s *NotificationSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The Refresh object gives information on a refresh of the data quality
@@ -791,6 +847,10 @@ func (f *RefreshTrigger) Type() string {
 type SnapshotConfig struct {
 }
 
+func (s *SnapshotConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Time series analysis configuration.
 type TimeSeriesConfig struct {
 	// List of granularities to use when aggregating data into time windows
@@ -798,6 +858,10 @@ type TimeSeriesConfig struct {
 	Granularities []AggregationGranularity `json:"granularities"`
 	// Column for the timestamp.
 	TimestampColumn string `json:"timestamp_column"`
+}
+
+func (s *TimeSeriesConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateMonitorRequest struct {
@@ -827,6 +891,10 @@ type UpdateMonitorRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateRefreshRequest struct {
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
@@ -852,4 +920,8 @@ type UpdateRefreshRequest struct {
 	RefreshId int64 `json:"-" url:"-"`
 	// The field mask to specify which fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateRefreshRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

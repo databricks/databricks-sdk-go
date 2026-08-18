@@ -16,6 +16,10 @@ type CreateDirectGroupMemberProxyRequest struct {
 	GroupId int64 `json:"-" url:"-"`
 }
 
+func (s *CreateDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateDirectGroupMemberRequest struct {
 	// Required. The direct group member to be added to the group.
 	DirectGroupMember DirectGroupMember `json:"direct_group_member"`
@@ -23,9 +27,17 @@ type CreateDirectGroupMemberRequest struct {
 	GroupId int64 `json:"-" url:"-"`
 }
 
+func (s *CreateDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateGroupProxyRequest struct {
 	// Required. Group to be created in <Databricks>
 	Group Group `json:"group"`
+}
+
+func (s *CreateGroupProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateGroupRequest struct {
@@ -33,9 +45,17 @@ type CreateGroupRequest struct {
 	Group Group `json:"group"`
 }
 
+func (s *CreateGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateServicePrincipalProxyRequest struct {
 	// Required. Service principal to be created in <Databricks>
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
+}
+
+func (s *CreateServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateServicePrincipalRequest struct {
@@ -43,9 +63,17 @@ type CreateServicePrincipalRequest struct {
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 }
 
+func (s *CreateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateUserProxyRequest struct {
 	// Required. User to be created in <Databricks>
 	User User `json:"user"`
+}
+
+func (s *CreateUserProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateUserRequest struct {
@@ -53,9 +81,17 @@ type CreateUserRequest struct {
 	User User `json:"user"`
 }
 
+func (s *CreateUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateWorkspaceAssignmentDetailProxyRequest struct {
 	// Required. Workspace assignment detail to be created in <Databricks>.
 	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
+}
+
+func (s *CreateWorkspaceAssignmentDetailProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateWorkspaceAssignmentDetailRequest struct {
@@ -66,9 +102,17 @@ type CreateWorkspaceAssignmentDetailRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *CreateWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateWorkspaceAssignmentProxyRequest struct {
 	// Required. Workspace assignment to be created in <Databricks>.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
+}
+
+func (s *CreateWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateWorkspaceAssignmentRequest struct {
@@ -79,11 +123,19 @@ type CreateWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *CreateWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDirectGroupMemberProxyRequest struct {
 	// Required. Internal ID of the group in Databricks.
 	GroupId int64 `json:"-" url:"-"`
 	// Required. Internal ID of the principal to be unassigned from the group.
 	PrincipalId int64 `json:"-" url:"-"`
+}
+
+func (s *DeleteDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteDirectGroupMemberRequest struct {
@@ -93,9 +145,17 @@ type DeleteDirectGroupMemberRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 }
 
+func (s *DeleteDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteGroupProxyRequest struct {
 	// Required. Internal ID of the group in Databricks.
 	GroupId string `json:"-" url:"-"`
+}
+
+func (s *DeleteGroupProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteGroupRequest struct {
@@ -103,9 +163,17 @@ type DeleteGroupRequest struct {
 	GroupId string `json:"-" url:"-"`
 }
 
+func (s *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteServicePrincipalProxyRequest struct {
 	// Required. Internal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"-" url:"-"`
+}
+
+func (s *DeleteServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteServicePrincipalRequest struct {
@@ -113,9 +181,17 @@ type DeleteServicePrincipalRequest struct {
 	ServicePrincipalId string `json:"-" url:"-"`
 }
 
+func (s *DeleteServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteUserProxyRequest struct {
 	// Required. Internal ID of the user in Databricks.
 	UserId string `json:"-" url:"-"`
+}
+
+func (s *DeleteUserProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteUserRequest struct {
@@ -123,10 +199,18 @@ type DeleteUserRequest struct {
 	UserId string `json:"-" url:"-"`
 }
 
+func (s *DeleteUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteWorkspaceAssignmentDetailProxyRequest struct {
 	// Required. ID of the principal in Databricks to delete workspace
 	// assignment for.
 	PrincipalId int64 `json:"-" url:"-"`
+}
+
+func (s *DeleteWorkspaceAssignmentDetailProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteWorkspaceAssignmentDetailRequest struct {
@@ -137,10 +221,18 @@ type DeleteWorkspaceAssignmentDetailRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *DeleteWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteWorkspaceAssignmentProxyRequest struct {
 	// Required. ID of the principal in Databricks to delete workspace
 	// assignment for.
 	PrincipalId int64 `json:"-" url:"-"`
+}
+
+func (s *DeleteWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteWorkspaceAssignmentRequest struct {
@@ -149,6 +241,10 @@ type DeleteWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID where the principal has access.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+func (s *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Represents a principal that is a direct member of a group, with its source of
@@ -235,6 +331,10 @@ type GetDirectGroupMemberProxyRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 }
 
+func (s *GetDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetDirectGroupMemberRequest struct {
 	// Required. Internal ID of the group in Databricks.
 	GroupId int64 `json:"-" url:"-"`
@@ -243,9 +343,17 @@ type GetDirectGroupMemberRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 }
 
+func (s *GetDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetGroupProxyRequest struct {
 	// Required. Internal ID of the group in Databricks.
 	GroupId string `json:"-" url:"-"`
+}
+
+func (s *GetGroupProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetGroupRequest struct {
@@ -253,9 +361,17 @@ type GetGroupRequest struct {
 	GroupId string `json:"-" url:"-"`
 }
 
+func (s *GetGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetServicePrincipalProxyRequest struct {
 	// Required. Internal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"-" url:"-"`
+}
+
+func (s *GetServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetServicePrincipalRequest struct {
@@ -263,14 +379,26 @@ type GetServicePrincipalRequest struct {
 	ServicePrincipalId string `json:"-" url:"-"`
 }
 
+func (s *GetServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetUserProxyRequest struct {
 	// Required. Internal ID of the user in Databricks.
 	UserId string `json:"-" url:"-"`
 }
 
+func (s *GetUserProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetUserRequest struct {
 	// Required. Internal ID of the user in Databricks.
 	UserId string `json:"-" url:"-"`
+}
+
+func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetWorkspaceAccessDetailLocalRequest struct {
@@ -279,6 +407,10 @@ type GetWorkspaceAccessDetailLocalRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// Controls what fields are returned.
 	View WorkspaceAccessDetailView `json:"-" url:"view,omitempty"`
+}
+
+func (s *GetWorkspaceAccessDetailLocalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetWorkspaceAccessDetailRequest struct {
@@ -292,10 +424,18 @@ type GetWorkspaceAccessDetailRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *GetWorkspaceAccessDetailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetWorkspaceAssignmentDetailProxyRequest struct {
 	// Required. The internal ID of the principal (user/sp/group) for which the
 	// assignment details are being requested.
 	PrincipalId int64 `json:"-" url:"-"`
+}
+
+func (s *GetWorkspaceAssignmentDetailProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetWorkspaceAssignmentDetailRequest struct {
@@ -307,10 +447,18 @@ type GetWorkspaceAssignmentDetailRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *GetWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetWorkspaceAssignmentProxyRequest struct {
 	// Required. The internal ID of the principal (user/sp/group) for which the
 	// assignment is being requested.
 	PrincipalId int64 `json:"-" url:"-"`
+}
+
+func (s *GetWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetWorkspaceAssignmentRequest struct {
@@ -321,10 +469,18 @@ type GetWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *GetWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetWorkspaceIdentityDetailRequest struct {
 	// Required. The internal ID of the principal (user/sp/group) for which the
 	// identity details are being requested.
 	PrincipalId int64 `json:"-" url:"-"`
+}
+
+func (s *GetWorkspaceIdentityDetailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The details of a Group resource.
@@ -869,6 +1025,10 @@ type ResolveGroupProxyRequest struct {
 	ExternalId string `json:"external_id"`
 }
 
+func (s *ResolveGroupProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request message for resolving a group with the given external ID from the
 // customer's IdP into Databricks. Will resolve metadata such as the group's
 // name and inherited parent groups.
@@ -877,9 +1037,17 @@ type ResolveGroupRequest struct {
 	ExternalId string `json:"external_id"`
 }
 
+func (s *ResolveGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolveGroupResponse struct {
 	// The group that was resolved.
 	Group *Group `json:"group,omitempty"`
+}
+
+func (s *ResolveGroupResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Request message for resolving a service principal with the given external ID
@@ -890,6 +1058,10 @@ type ResolveServicePrincipalProxyRequest struct {
 	ExternalId string `json:"external_id"`
 }
 
+func (s *ResolveServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request message for resolving a service principal with the given external ID
 // from the customer's IdP into Databricks. Will resolve metadata such as the
 // service principal's display name, status, and inherited parent groups.
@@ -898,9 +1070,17 @@ type ResolveServicePrincipalRequest struct {
 	ExternalId string `json:"external_id"`
 }
 
+func (s *ResolveServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolveServicePrincipalResponse struct {
 	// The service principal that was resolved.
 	ServicePrincipal *ServicePrincipal `json:"service_principal,omitempty"`
+}
+
+func (s *ResolveServicePrincipalResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Request message for resolving a user with the given external ID from the
@@ -911,6 +1091,10 @@ type ResolveUserProxyRequest struct {
 	ExternalId string `json:"external_id"`
 }
 
+func (s *ResolveUserProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request message for resolving a user with the given external ID from the
 // customer's IdP into Databricks. Will resolve metadata such as the user's
 // display name, status, and inherited parent groups.
@@ -919,9 +1103,17 @@ type ResolveUserRequest struct {
 	ExternalId string `json:"external_id"`
 }
 
+func (s *ResolveUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolveUserResponse struct {
 	// The user that was resolved.
 	User *User `json:"user,omitempty"`
+}
+
+func (s *ResolveUserResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The details of a ServicePrincipal resource.
@@ -1019,6 +1211,10 @@ type UpdateGroupProxyRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateGroupProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateGroupRequest struct {
 	// Required. Group to be updated in <Databricks>
 	Group Group `json:"group"`
@@ -1026,6 +1222,10 @@ type UpdateGroupRequest struct {
 	GroupId string `json:"-" url:"-"`
 	// Optional. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateServicePrincipalProxyRequest struct {
@@ -1037,6 +1237,10 @@ type UpdateServicePrincipalProxyRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateServicePrincipalRequest struct {
 	// Required. Service Principal to be updated in <Databricks>
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
@@ -1044,6 +1248,10 @@ type UpdateServicePrincipalRequest struct {
 	ServicePrincipalId string `json:"-" url:"-"`
 	// Optional. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateUserProxyRequest struct {
@@ -1055,6 +1263,10 @@ type UpdateUserProxyRequest struct {
 	UserId string `json:"-" url:"-"`
 }
 
+func (s *UpdateUserProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateUserRequest struct {
 	// Optional. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
@@ -1064,6 +1276,10 @@ type UpdateUserRequest struct {
 	UserId string `json:"-" url:"-"`
 }
 
+func (s *UpdateUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateWorkspaceAssignmentDetailProxyRequest struct {
 	// Required. ID of the principal in Databricks.
 	PrincipalId int64 `json:"-" url:"-"`
@@ -1071,6 +1287,10 @@ type UpdateWorkspaceAssignmentDetailProxyRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 	// Required. Workspace assignment detail to be updated in <Databricks>.
 	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
+}
+
+func (s *UpdateWorkspaceAssignmentDetailProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateWorkspaceAssignmentDetailRequest struct {
@@ -1085,6 +1305,10 @@ type UpdateWorkspaceAssignmentDetailRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *UpdateWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateWorkspaceAssignmentProxyRequest struct {
 	// Required. ID of the principal in Databricks.
 	PrincipalId int64 `json:"-" url:"-"`
@@ -1092,6 +1316,10 @@ type UpdateWorkspaceAssignmentProxyRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 	// Required. Workspace assignment to be updated in <Databricks>.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
+}
+
+func (s *UpdateWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateWorkspaceAssignmentRequest struct {
@@ -1106,6 +1334,10 @@ type UpdateWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+func (s *UpdateWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateWorkspaceIdentityDetailRequest struct {
 	// Required. ID of the principal in Databricks.
 	PrincipalId int64 `json:"-" url:"-"`
@@ -1113,6 +1345,10 @@ type UpdateWorkspaceIdentityDetailRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 	// Required. Workspace identity detail to be updated in <Databricks>.
 	WorkspaceIdentityDetail WorkspaceIdentityDetail `json:"workspace_identity_detail"`
+}
+
+func (s *UpdateWorkspaceIdentityDetailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The details of a User resource.

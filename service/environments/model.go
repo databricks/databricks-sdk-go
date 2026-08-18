@@ -125,6 +125,10 @@ type DeleteWorkspaceBaseEnvironmentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Environment specification for a WorkspaceBaseEnvironment. Contains the
 // environment version and dependencies configuration.
 type EnvironmentSpec struct {
@@ -433,9 +437,17 @@ type GetDefaultWorkspaceBaseEnvironmentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDefaultWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetOperationRequest struct {
 	// The name of the operation resource.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetWorkspaceBaseEnvironmentRequest struct {
@@ -443,6 +455,10 @@ type GetWorkspaceBaseEnvironmentRequest struct {
 	// retrieve. Format:
 	// workspace-base-environments/{workspace_base_environment}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListWorkspaceBaseEnvironmentsRequest struct {
@@ -520,6 +536,10 @@ type RefreshWorkspaceBaseEnvironmentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *RefreshWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateDefaultWorkspaceBaseEnvironmentRequest struct {
 	// Required. The default workspace base environment configuration to update.
 	DefaultWorkspaceBaseEnvironment DefaultWorkspaceBaseEnvironment `json:"default_workspace_base_environment"`
@@ -537,11 +557,19 @@ type UpdateDefaultWorkspaceBaseEnvironmentRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateDefaultWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateWorkspaceBaseEnvironmentRequest struct {
 	Name string `json:"-" url:"-"`
 	// Required. The workspace base environment with updated fields. The name
 	// field is used to identify the environment to update.
 	WorkspaceBaseEnvironment WorkspaceBaseEnvironment `json:"workspace_base_environment"`
+}
+
+func (s *UpdateWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A WorkspaceBaseEnvironment defines a workspace-level environment
@@ -639,4 +667,8 @@ func (f *WorkspaceBaseEnvironmentCacheStatus) Type() string {
 // message tracks the progress of the workspace base environment long-running
 // process.
 type WorkspaceBaseEnvironmentOperationMetadata struct {
+}
+
+func (s *WorkspaceBaseEnvironmentOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

@@ -14,8 +14,16 @@ type AddExchangeForListingRequest struct {
 	ListingId string `json:"listing_id"`
 }
 
+func (s *AddExchangeForListingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AddExchangeForListingResponse struct {
 	ExchangeForListing *ExchangeListing `json:"exchange_for_listing,omitempty"`
+}
+
+func (s *AddExchangeForListingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AssetType string
@@ -77,16 +85,32 @@ type BatchGetListingsRequest struct {
 	Ids []string `json:"-" url:"ids,omitempty"`
 }
 
+func (s *BatchGetListingsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BatchGetListingsResponse struct {
 	Listings []Listing `json:"listings,omitempty"`
+}
+
+func (s *BatchGetListingsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type BatchGetProvidersRequest struct {
 	Ids []string `json:"-" url:"ids,omitempty"`
 }
 
+func (s *BatchGetProvidersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BatchGetProvidersResponse struct {
 	Providers []ProviderInfo `json:"providers,omitempty"`
+}
+
+func (s *BatchGetProvidersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Category string
@@ -190,6 +214,10 @@ type ConsumerTerms struct {
 	Version string `json:"version"`
 }
 
+func (s *ConsumerTerms) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // contact info for the consumer requesting data or performing a listing
 // installation
 type ContactInfo struct {
@@ -253,6 +281,10 @@ type CreateExchangeFilterRequest struct {
 	Filter ExchangeFilter `json:"filter"`
 }
 
+func (s *CreateExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateExchangeFilterResponse struct {
 	FilterId string `json:"filter_id,omitempty"`
 
@@ -269,6 +301,10 @@ func (s CreateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
 
 type CreateExchangeRequest struct {
 	Exchange Exchange `json:"exchange"`
+}
+
+func (s *CreateExchangeRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateExchangeResponse struct {
@@ -349,6 +385,10 @@ type CreateListingRequest struct {
 	Listing Listing `json:"listing"`
 }
 
+func (s *CreateListingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateListingResponse struct {
 	ListingId string `json:"listing_id,omitempty"`
 
@@ -410,6 +450,10 @@ func (s CreatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
 
 type CreateProviderRequest struct {
 	Provider ProviderInfo `json:"provider"`
+}
+
+func (s *CreateProviderRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateProviderResponse struct {
@@ -490,16 +534,32 @@ type DataRefreshInfo struct {
 	Unit DataRefresh `json:"unit"`
 }
 
+func (s *DataRefreshInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteExchangeFilterRequest struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteExchangeRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *DeleteExchangeRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteFileRequest struct {
 	FileId string `json:"-" url:"-"`
+}
+
+func (s *DeleteFileRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteInstallationRequest struct {
@@ -508,12 +568,24 @@ type DeleteInstallationRequest struct {
 	ListingId string `json:"-" url:"-"`
 }
 
+func (s *DeleteInstallationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteListingRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *DeleteListingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteProviderRequest struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteProviderRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeltaSharingRecipientType string
@@ -846,16 +918,32 @@ type GetExchangeRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *GetExchangeRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetExchangeResponse struct {
 	Exchange *Exchange `json:"exchange,omitempty"`
+}
+
+func (s *GetExchangeResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetFileRequest struct {
 	FileId string `json:"-" url:"-"`
 }
 
+func (s *GetFileRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetFileResponse struct {
 	FileInfo *FileInfo `json:"file_info,omitempty"`
+}
+
+func (s *GetFileResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetLatestVersionProviderAnalyticsDashboardResponse struct {
@@ -911,8 +999,16 @@ type GetListingRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *GetListingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetListingResponse struct {
 	Listing *Listing `json:"listing,omitempty"`
+}
+
+func (s *GetListingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetListingsRequest struct {
@@ -951,20 +1047,40 @@ type GetPersonalizationRequestRequest struct {
 	ListingId string `json:"-" url:"-"`
 }
 
+func (s *GetPersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPersonalizationRequestResponse struct {
 	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
+}
+
+func (s *GetPersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetProviderRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *GetProviderRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetProviderResponse struct {
 	Provider *ProviderInfo `json:"provider,omitempty"`
 }
 
+func (s *GetProviderResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Installation struct {
 	Installation *InstallationDetail `json:"installation,omitempty"`
+}
+
+func (s *Installation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type InstallationDetail struct {
@@ -1548,8 +1664,16 @@ type ListingFulfillment struct {
 	ShareInfo *ShareInfo `json:"share_info,omitempty"`
 }
 
+func (s *ListingFulfillment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListingSetting struct {
 	Visibility Visibility `json:"visibility,omitempty"`
+}
+
+func (s *ListingSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListingShareType string
@@ -1690,6 +1814,10 @@ type ListingTag struct {
 	// String representation of the tag value. Values should be string literals
 	// (no complex types)
 	TagValues []string `json:"tag_values,omitempty" url:"tag_values,omitempty"`
+}
+
+func (s *ListingTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListingTagType string
@@ -1898,6 +2026,10 @@ type ProviderAnalyticsDashboard struct {
 	Id string `json:"id"`
 }
 
+func (s *ProviderAnalyticsDashboard) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ProviderInfo struct {
 	BusinessContactEmail string `json:"business_contact_email"`
 
@@ -1958,9 +2090,17 @@ type RemoveExchangeForListingRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *RemoveExchangeForListingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RepoInfo struct {
 	// the git repo url e.g. https://github.com/databrickslabs/dolly.git
 	GitRepoUrl string `json:"git_repo_url"`
+}
+
+func (s *RepoInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type RepoInstallation struct {
@@ -1970,6 +2110,10 @@ type RepoInstallation struct {
 	// entrypoint (e.g. a README.md file, or the repo file view in the unified
 	// UI) should just be a relative path
 	RepoPath string `json:"repo_path"`
+}
+
+func (s *RepoInstallation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SearchListingsRequest struct {
@@ -2021,6 +2165,10 @@ type ShareInfo struct {
 	Name string `json:"name"`
 
 	Type ListingShareType `json:"type"`
+}
+
+func (s *ShareInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SharedDataObject struct {
@@ -2097,8 +2245,16 @@ type UpdateExchangeFilterRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *UpdateExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateExchangeFilterResponse struct {
 	Filter *ExchangeFilter `json:"filter,omitempty"`
+}
+
+func (s *UpdateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateExchangeRequest struct {
@@ -2107,8 +2263,16 @@ type UpdateExchangeRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *UpdateExchangeRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateExchangeResponse struct {
 	Exchange *Exchange `json:"exchange,omitempty"`
+}
+
+func (s *UpdateExchangeResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateInstallationRequest struct {
@@ -2135,14 +2299,26 @@ type UpdateInstallationResponse struct {
 	Installation *InstallationDetail `json:"installation,omitempty"`
 }
 
+func (s *UpdateInstallationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateListingRequest struct {
 	Id string `json:"-" url:"-"`
 
 	Listing Listing `json:"listing"`
 }
 
+func (s *UpdateListingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateListingResponse struct {
 	Listing *Listing `json:"listing,omitempty"`
+}
+
+func (s *UpdateListingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdatePersonalizationRequestRequest struct {
@@ -2169,6 +2345,10 @@ func (s UpdatePersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
 
 type UpdatePersonalizationRequestResponse struct {
 	Request *PersonalizationRequest `json:"request,omitempty"`
+}
+
+func (s *UpdatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateProviderAnalyticsDashboardRequest struct {
@@ -2215,8 +2395,16 @@ type UpdateProviderRequest struct {
 	Provider ProviderInfo `json:"provider"`
 }
 
+func (s *UpdateProviderRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateProviderResponse struct {
 	Provider *ProviderInfo `json:"provider,omitempty"`
+}
+
+func (s *UpdateProviderResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Visibility string

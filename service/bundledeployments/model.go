@@ -41,6 +41,10 @@ type CreateDeploymentRequest struct {
 	Deployment Deployment `json:"deployment"`
 }
 
+func (s *CreateDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateVersionRequest struct {
 	// The parent deployment where this version will be created. Format:
 	// deployments/{deployment_id}
@@ -55,6 +59,10 @@ type CreateVersionRequest struct {
 	// increase by exactly 1. If the value is not numerically greater, the
 	// server returns `INVALID_PARAMETER_VALUE`.
 	VersionId string `json:"-" url:"version_id"`
+}
+
+func (s *CreateVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Dashboard-specific per-resource metadata. Set only for dashboard resources.
@@ -89,6 +97,10 @@ type DeleteDeploymentRequest struct {
 	// Resource name of the deployment to delete. Format:
 	// deployments/{deployment_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A bundle deployment registered with the control plane.
@@ -350,10 +362,18 @@ type GetDeploymentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetOperationRequest struct {
 	// The name of the resource operation to retrieve. Format:
 	// deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetResourceRequest struct {
@@ -362,10 +382,18 @@ type GetResourceRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetVersionRequest struct {
 	// The name of the version to retrieve. Format:
 	// deployments/{deployment_id}/versions/{version_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Git provenance of a bundle's source, captured at deploy time. Lets consumers
@@ -394,6 +422,10 @@ type HeartbeatRequest struct {
 	// The version whose lock to renew. Format:
 	// deployments/{deployment_id}/versions/{version_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *HeartbeatRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Response for Heartbeat.
@@ -827,6 +859,10 @@ type UpdateOperationRequest struct {
 	// `error_message`, `resource_id`, `status`, and `dashboard_metadata`. An
 	// empty mask or any other path is rejected with INVALID_PARAMETER_VALUE.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A single invocation of a deploy or destroy command against a deployment.

@@ -166,6 +166,10 @@ type AlertTaskOutput struct {
 	AlertState AlertEvaluationState `json:"alert_state,omitempty"`
 }
 
+func (s *AlertTaskOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Represents a subscriber that will receive alert notifications. A subscriber
 // can be either a user (via email) or a notification destination (via
 // destination_id).
@@ -449,6 +453,10 @@ type CancelRun struct {
 	RunId int64 `json:"run_id"`
 }
 
+func (s *CancelRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Copied from elastic-spark-common/api/messages/runs.proto. Using the original
 // definition to remove coupling with jobs API definition
 type CleanRoomTaskRunLifeCycleState string
@@ -596,6 +604,10 @@ type CleanRoomTaskRunState struct {
 	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
 }
 
+func (s *CleanRoomTaskRunState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Clean Rooms notebook task for V1 Clean Room service (GA). Replaces the
 // deprecated CleanRoomNotebookTask (defined above) which was for V0 service.
 type CleanRoomsNotebookTask struct {
@@ -628,6 +640,10 @@ type CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput struct {
 	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
 	// Information on how to access the output schema for the clean room run
 	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
+}
+
+func (s *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ClusterInstance struct {
@@ -693,6 +709,10 @@ type Compute struct {
 	HardwareAccelerator compute.HardwareAcceleratorType `json:"hardware_accelerator,omitempty"`
 }
 
+func (s *Compute) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ComputeConfig struct {
 	// IDof the GPU pool to use.
 	GpuNodePoolId string `json:"gpu_node_pool_id,omitempty"`
@@ -724,6 +744,10 @@ type ComputeSpec struct {
 	// number of accelerators per node is encoded in the enum value —
 	// `GPU_8xH100` means 8 H100 GPUs per node.
 	AcceleratorType ComputeSpecAcceleratorType `json:"accelerator_type"`
+}
+
+func (s *ComputeSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Hardware accelerator type for the AiRuntime workload. Per-node accelerator
@@ -826,6 +850,10 @@ type ConditionTask struct {
 	Right string `json:"right"`
 }
 
+func (s *ConditionTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
 // operands. This means that `“12.0” == “12”` will evaluate to `false`.
 // * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`
@@ -894,12 +922,20 @@ type Continuous struct {
 	TaskRetryMode TaskRetryMode `json:"task_retry_mode,omitempty"`
 }
 
+func (s *Continuous) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Continuous trigger. Stripped-down counterpart to `ContinuousSettings`:
 // `pause_status` is owned by the enclosing `TriggerConfiguration` and
 // intentionally omitted here.
 type ContinuousTriggerConfiguration struct {
 	// Whether the continuous job applies task-level retries. Defaults to NEVER.
 	TaskRetryMode TaskRetryMode `json:"task_retry_mode,omitempty"`
+}
+
+func (s *ContinuousTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ContinuousTriggerState struct {
@@ -1097,6 +1133,10 @@ type CronSchedule struct {
 	TimezoneId string `json:"timezone_id"`
 }
 
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Cron schedule trigger. Stripped-down counterpart to `CronSchedule`:
 // `pause_status` and `sql_condition` are owned by the enclosing
 // `TriggerConfiguration` and intentionally omitted here.
@@ -1111,6 +1151,10 @@ type CronTriggerConfiguration struct {
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
+}
+
+func (s *CronTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DashboardPageSnapshot struct {
@@ -1165,6 +1209,10 @@ func (s DashboardTask) MarshalJSON() ([]byte, error) {
 type DashboardTaskOutput struct {
 	// Should only be populated for manual PDF download jobs.
 	PageSnapshots []DashboardPageSnapshot `json:"page_snapshots,omitempty"`
+}
+
+func (s *DashboardTaskOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Format of response retrieved from dbt Cloud, for inclusion in output
@@ -1422,9 +1470,17 @@ type DeleteJob struct {
 	JobId int64 `json:"job_id"`
 }
 
+func (s *DeleteJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId int64 `json:"run_id"`
+}
+
+func (s *DeleteRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // DeploymentSpec: configuration for one deployment within an AiRuntimeTask.
@@ -1548,11 +1604,19 @@ type ExportRunOutput struct {
 	Views []ViewItem `json:"views,omitempty"`
 }
 
+func (s *ExportRunOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
 	RunId int64 `json:"-" url:"run_id"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
 	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
+}
+
+func (s *ExportRunRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type FileArrivalTriggerConfiguration struct {
@@ -1601,6 +1665,10 @@ type ForEachStats struct {
 	ErrorMessageStats []ForEachTaskErrorMessageStats `json:"error_message_stats,omitempty"`
 	// Describes stats of the iteration. Only latest retries are considered.
 	TaskRunStats *ForEachTaskTaskRunStats `json:"task_run_stats,omitempty"`
+}
+
+func (s *ForEachStats) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ForEachTask struct {
@@ -1762,14 +1830,26 @@ type GetJobPermissionLevelsRequest struct {
 	JobId string `json:"-" url:"-"`
 }
 
+func (s *GetJobPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetJobPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetJobPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetJobPermissionsRequest struct {
 	// The job for which to get or manage permissions.
 	JobId string `json:"-" url:"-"`
+}
+
+func (s *GetJobPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetJobRequest struct {
@@ -1799,6 +1879,10 @@ type GetPolicyComplianceRequest struct {
 	JobId int64 `json:"-" url:"job_id"`
 }
 
+func (s *GetPolicyComplianceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPolicyComplianceResponse struct {
 	// Whether the job is compliant with its policies or not. Jobs could be out
 	// of compliance if a policy they are using was updated after the job was
@@ -1826,6 +1910,10 @@ func (s GetPolicyComplianceResponse) MarshalJSON() ([]byte, error) {
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run.
 	RunId int64 `json:"-" url:"run_id"`
+}
+
+func (s *GetRunOutputRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetRunRequest struct {
@@ -2283,6 +2371,10 @@ type JobEnvironment struct {
 	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
+func (s *JobEnvironment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type JobNotificationSettings struct {
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is canceled.
@@ -2327,6 +2419,10 @@ type JobParameterDefinition struct {
 	// The name of the defined parameter. May only contain alphanumeric
 	// characters, `_`, `-`, and `.`
 	Name string `json:"name"`
+}
+
+func (s *JobParameterDefinition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type JobPermission struct {
@@ -2429,6 +2525,10 @@ type JobPermissionsRequest struct {
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// The job for which to get or manage permissions.
 	JobId string `json:"-" url:"-"`
+}
+
+func (s *JobPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Write-only setting. Specifies the user or service principal that the job runs
@@ -2617,6 +2717,10 @@ type JobSource struct {
 	JobConfigPath string `json:"job_config_path"`
 }
 
+func (s *JobSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Dirty state indicates the job is not fully synced with the job specification
 // in the remote repository.
 //
@@ -2779,9 +2883,17 @@ type JobsHealthRule struct {
 	Value int64 `json:"value"`
 }
 
+func (s *JobsHealthRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // An optional set of health rules that can be defined for this job.
 type JobsHealthRules struct {
 	Rules []JobsHealthRule `json:"rules,omitempty"`
+}
+
+func (s *JobsHealthRules) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListJobComplianceForPolicyResponse struct {
@@ -3035,6 +3147,10 @@ func (f *ModelTriggerConfigurationCondition) Type() string {
 type ModelTriggerState struct {
 }
 
+func (s *ModelTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type NotebookOutput struct {
 	// The value passed to
 	// [dbutils.notebook.exit()](/notebooks/notebook-workflows.html#notebook-workflows-exit).
@@ -3190,6 +3306,10 @@ type PerTriggerState struct {
 	TableUpdate *TableTriggerState `json:"table_update,omitempty"`
 }
 
+func (s *PerTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // PerformanceTarget defines how performant (lower latency) or cost efficient
 // the execution of run on serverless compute should be. The performance mode on
 // the job or pipeline should map to a performance setting that is passed to
@@ -3236,6 +3356,10 @@ type PeriodicTriggerConfiguration struct {
 	Interval int `json:"interval"`
 	// The unit of time for the interval.
 	Unit PeriodicTriggerConfigurationTimeUnit `json:"unit"`
+}
+
+func (s *PeriodicTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PeriodicTriggerConfigurationTimeUnit string
@@ -3469,6 +3593,10 @@ type PythonWheelTask struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
+func (s *PythonWheelTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type QueueDetails struct {
 	Code QueueDetailsCodeCode `json:"code,omitempty"`
 	// A descriptive message with the queuing details. This field is
@@ -3538,6 +3666,10 @@ func (f *QueueDetailsCodeCode) Type() string {
 type QueueSettings struct {
 	// If true, enable queueing for the job. This is a required field.
 	Enabled bool `json:"enabled"`
+}
+
+func (s *QueueSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type RepairHistoryItem struct {
@@ -3778,6 +3910,10 @@ type ResetJob struct {
 	NewSettings JobSettings `json:"new_settings"`
 }
 
+func (s *ResetJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolvedConditionTaskValues struct {
 	Left string `json:"left,omitempty"`
 
@@ -3798,12 +3934,24 @@ type ResolvedDbtTaskValues struct {
 	Commands []string `json:"commands,omitempty"`
 }
 
+func (s *ResolvedDbtTaskValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolvedNotebookTaskValues struct {
 	BaseParameters map[string]string `json:"base_parameters,omitempty"`
 }
 
+func (s *ResolvedNotebookTaskValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolvedParamPairValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
+}
+
+func (s *ResolvedParamPairValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ResolvedPipelineTaskValues struct {
@@ -3812,10 +3960,18 @@ type ResolvedPipelineTaskValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
+func (s *ResolvedPipelineTaskValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolvedPythonWheelTaskValues struct {
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 
 	Parameters []string `json:"parameters,omitempty"`
+}
+
+func (s *ResolvedPythonWheelTaskValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ResolvedRunJobTaskValues struct {
@@ -3824,8 +3980,16 @@ type ResolvedRunJobTaskValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
+func (s *ResolvedRunJobTaskValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ResolvedStringParamsValues struct {
 	Parameters []string `json:"parameters,omitempty"`
+}
+
+func (s *ResolvedStringParamsValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ResolvedValues struct {
@@ -3857,9 +4021,17 @@ type ResolvedValues struct {
 	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
 }
 
+func (s *ResolvedValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Resolved values for an AiRuntimeTask after dynamic-value substitution, so
 // Jobs can expand `{{tasks.<key>.values.<name>}}` references before submission.
 type ResolvedValuesAiRuntimeTaskResolvedValues struct {
+}
+
+func (s *ResolvedValuesAiRuntimeTaskResolvedValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Run was retrieved successfully
@@ -4260,6 +4432,10 @@ type RunJobTask struct {
 	//
 	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SqlParams map[string]string `json:"sql_params,omitempty"`
+}
+
+func (s *RunJobTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A value indicating the run's lifecycle state. The possible values are: *
@@ -4724,6 +4900,10 @@ type RunParameters struct {
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
+func (s *RunParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A value indicating the run's result. The possible values are: * `SUCCESS`:
 // The task completed successfully. * `FAILED`: The task completed with an
 // error. * `TIMEDOUT`: The run was stopped after reaching the timeout. *
@@ -4847,6 +5027,10 @@ type RunStatus struct {
 	// If the run is in a TERMINATING or TERMINATED state, details about the
 	// reason for terminating the run.
 	TerminationDetails *TerminationDetails `json:"termination_details,omitempty"`
+}
+
+func (s *RunStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Used when outputting a child run, in GetRun or ListRuns.
@@ -5125,6 +5309,10 @@ func (f *RunType) Type() string {
 type ScheduleTriggerState struct {
 }
 
+func (s *ScheduleTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file
 // will be retrieved\ from the local Databricks workspace. When set to `GIT`,
 // the SQL file will be retrieved from a Git repository defined in `git_source`.
@@ -5233,6 +5421,10 @@ type SparkPythonTask struct {
 	Source Source `json:"source,omitempty"`
 }
 
+func (s *SparkPythonTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SparkSubmitTask struct {
 	// Command-line parameters passed to spark submit.
 	//
@@ -5243,9 +5435,17 @@ type SparkSubmitTask struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
+func (s *SparkSubmitTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SparseCheckout struct {
 	// List of patterns to include for sparse checkout.
 	Patterns []string `json:"patterns,omitempty"`
+}
+
+func (s *SparseCheckout) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SqlAlertOutput struct {
@@ -5329,6 +5529,10 @@ type SqlConditionConfiguration struct {
 	// The canonical identifier of the SQL warehouse to run the condition query
 	// against.
 	WarehouseId string `json:"warehouse_id"`
+}
+
+func (s *SqlConditionConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // SQL condition evaluation details captured at the time the run was triggered
@@ -5527,6 +5731,10 @@ type SqlOutput struct {
 	QueryOutput *SqlQueryOutput `json:"query_output,omitempty"`
 }
 
+func (s *SqlOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SqlOutputError struct {
 	// The error message when execution fails.
 	Message string `json:"message,omitempty"`
@@ -5600,6 +5808,10 @@ type SqlTask struct {
 	WarehouseId string `json:"warehouse_id"`
 }
 
+func (s *SqlTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SqlTaskAlert struct {
 	// The canonical identifier of the SQL alert.
 	AlertId string `json:"alert_id"`
@@ -5656,9 +5868,17 @@ type SqlTaskFile struct {
 	Source Source `json:"source,omitempty"`
 }
 
+func (s *SqlTaskFile) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SqlTaskQuery struct {
 	// The canonical identifier of the SQL query.
 	QueryId string `json:"query_id"`
+}
+
+func (s *SqlTaskQuery) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SqlTaskSubscription struct {
@@ -6652,6 +6872,10 @@ type TriggerConfiguration struct {
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
+func (s *TriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Per-trigger runtime details returned by `GetJob`. Same length and order as
 // `JobSettings.triggers`; sub-fields are populated independently based on the
 // corresponding `GetJob.include_trigger_state` / `include_trigger_history`
@@ -6663,6 +6887,10 @@ type TriggerDetails struct {
 	// Current runtime state. Populated when `GetJob.include_trigger_state` is
 	// set.
 	State *PerTriggerState `json:"state,omitempty"`
+}
+
+func (s *TriggerDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type TriggerEvaluation struct {
@@ -6693,6 +6921,10 @@ type TriggerHistory struct {
 	LastNotTriggered *TriggerEvaluation `json:"last_not_triggered,omitempty"`
 	// The last time the run was triggered due to a file arrival.
 	LastTriggered *TriggerEvaluation `json:"last_triggered,omitempty"`
+}
+
+func (s *TriggerHistory) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Additional details about what triggered the run
@@ -6730,6 +6962,10 @@ type TriggerSettings struct {
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
+func (s *TriggerSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type TriggerStateProto struct {
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
 	// Whether this trigger is paused or not. For continuous schedules, it can
@@ -6741,6 +6977,10 @@ type TriggerStateProto struct {
 	SqlCondition *SqlConditionState `json:"sql_condition,omitempty"`
 
 	Table *TableTriggerState `json:"table,omitempty"`
+}
+
+func (s *TriggerStateProto) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The type of trigger that fired this run.
@@ -6841,6 +7081,10 @@ type UpdateJob struct {
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
+}
+
+func (s *UpdateJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ViewItem struct {
@@ -6953,6 +7197,10 @@ type Webhook struct {
 	Id string `json:"id"`
 }
 
+func (s *Webhook) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type WebhookNotifications struct {
 	// An optional list of system notification IDs to call when the duration of
 	// a run exceeds the threshold specified for the `RUN_DURATION_SECONDS`
@@ -6978,6 +7226,10 @@ type WebhookNotifications struct {
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
 	OnSuccess []Webhook `json:"on_success,omitempty"`
+}
+
+func (s *WebhookNotifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type WidgetErrorDetail struct {

@@ -14,9 +14,17 @@ type CancelOperationRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *CancelOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateTestResourceRequest struct {
 	// The resource to create
 	Resource TestResource `json:"resource"`
+}
+
+func (s *CreateTestResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Databricks Error that is returned by all Databricks APIs.
@@ -43,6 +51,10 @@ func (s DatabricksServiceExceptionWithDetailsProto) MarshalJSON() ([]byte, error
 type DeleteTestResourceRequest struct {
 	// Resource ID to delete
 	ResourceId string `json:"-" url:"-"`
+}
+
+func (s *DeleteTestResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Error codes returned by Databricks APIs to indicate specific failure
@@ -326,9 +338,17 @@ type GetOperationRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetTestResourceRequest struct {
 	// Resource ID to get
 	ResourceId string `json:"-" url:"-"`
+}
+
+func (s *GetTestResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // This resource represents a long-running operation that is the result of a

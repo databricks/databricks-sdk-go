@@ -87,6 +87,10 @@ type CreateQualityMonitorRequest struct {
 	QualityMonitor QualityMonitor `json:"quality_monitor"`
 }
 
+func (s *CreateQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
@@ -94,11 +98,19 @@ type DeleteQualityMonitorRequest struct {
 	ObjectType string `json:"-" url:"-"`
 }
 
+func (s *DeleteQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: schema.
 	ObjectType string `json:"-" url:"-"`
+}
+
+func (s *GetQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListQualityMonitorRequest struct {
@@ -160,6 +172,10 @@ type QualityMonitor struct {
 	ValidityCheckConfigurations []ValidityCheckConfiguration `json:"validity_check_configurations,omitempty"`
 }
 
+func (s *QualityMonitor) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RangeValidityCheck struct {
 	// List of column names to check for range validity
 	ColumnNames []string `json:"column_names,omitempty"`
@@ -184,6 +200,10 @@ type UniquenessValidityCheck struct {
 	ColumnNames []string `json:"column_names,omitempty"`
 }
 
+func (s *UniquenessValidityCheck) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
@@ -191,6 +211,10 @@ type UpdateQualityMonitorRequest struct {
 	ObjectType string `json:"-" url:"-"`
 
 	QualityMonitor QualityMonitor `json:"quality_monitor"`
+}
+
+func (s *UpdateQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ValidityCheckConfiguration struct {
