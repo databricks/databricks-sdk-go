@@ -241,6 +241,10 @@ type AggregationFunction struct {
 	VarSamp *VarSampFunction `json:"var_samp,omitempty"`
 }
 
+func (s *AggregationFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to identify and approve a model version stage transition
 // request.
 type ApproveTransitionRequest struct {
@@ -278,6 +282,10 @@ func (s ApproveTransitionRequest) MarshalJSON() ([]byte, error) {
 type ApproveTransitionRequestResponse struct {
 	// New activity generated as a result of this operation.
 	Activity *Activity `json:"activity,omitempty"`
+}
+
+func (s *ApproveTransitionRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Computes the approximate count of distinct values.
@@ -348,6 +356,10 @@ type AvgFunction struct {
 	Input string `json:"input"`
 }
 
+func (s *AvgFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BackfillSource struct {
 	// The full three-part name (catalog, schema, name) of the Delta table
 	// containing the historical data to backfill.
@@ -374,9 +386,17 @@ type BatchCreateMaterializedFeaturesRequest struct {
 	Requests []CreateMaterializedFeatureRequest `json:"requests"`
 }
 
+func (s *BatchCreateMaterializedFeaturesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BatchCreateMaterializedFeaturesResponse struct {
 	// The created materialized features with assigned IDs.
 	MaterializedFeatures []MaterializedFeature `json:"materialized_features,omitempty"`
+}
+
+func (s *BatchCreateMaterializedFeaturesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ColumnIdentifier struct {
@@ -388,11 +408,19 @@ type ColumnIdentifier struct {
 	VariantExprPath string `json:"variant_expr_path"`
 }
 
+func (s *ColumnIdentifier) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A ColumnSelection function, equivalent to the LAST() record of an entity over
 // a lifetime ContinuousWindow
 type ColumnSelection struct {
 	// Column name from source to select as the feature value.
 	Column string `json:"column"`
+}
+
+func (s *ColumnSelection) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // An action that a user (with sufficient permissions) could take on an activity
@@ -516,6 +544,10 @@ type CountFunction struct {
 	Input string `json:"input"`
 }
 
+func (s *CountFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to create a comment on a model version.
 type CreateComment struct {
 	// User-provided comment on the action.
@@ -526,9 +558,17 @@ type CreateComment struct {
 	Version string `json:"version"`
 }
 
+func (s *CreateComment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCommentResponse struct {
 	// New comment object
 	Comment *CommentObject `json:"comment,omitempty"`
+}
+
+func (s *CreateCommentResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateExperiment struct {
@@ -580,12 +620,20 @@ type CreateFeatureRequest struct {
 	Feature Feature `json:"feature"`
 }
 
+func (s *CreateFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateFeatureTagRequest struct {
 	FeatureName string `json:"-" url:"-"`
 
 	FeatureTag FeatureTag `json:"feature_tag"`
 
 	TableName string `json:"-" url:"-"`
+}
+
+func (s *CreateFeatureTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateForecastingExperimentRequest struct {
@@ -680,6 +728,10 @@ type CreateKafkaConfigRequest struct {
 	KafkaConfig KafkaConfig `json:"kafka_config"`
 }
 
+func (s *CreateKafkaConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateLoggedModelRequest struct {
 	// The ID of the experiment that owns the model.
 	ExperimentId string `json:"experiment_id"`
@@ -710,9 +762,17 @@ type CreateLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+func (s *CreateLoggedModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateMaterializedFeatureRequest struct {
 	// The materialized feature to create.
 	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
+}
+
+func (s *CreateMaterializedFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateModelRequest struct {
@@ -736,6 +796,10 @@ func (s CreateModelRequest) MarshalJSON() ([]byte, error) {
 
 type CreateModelResponse struct {
 	RegisteredModel *Model `json:"registered_model,omitempty"`
+}
+
+func (s *CreateModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateModelVersionRequest struct {
@@ -770,9 +834,17 @@ type CreateModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
+func (s *CreateModelVersionResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateOnlineStoreRequest struct {
 	// Online store to create.
 	OnlineStore OnlineStore `json:"online_store"`
+}
+
+func (s *CreateOnlineStoreRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to create a registry webhook.
@@ -872,9 +944,17 @@ type CreateRunResponse struct {
 	Run *Run `json:"run,omitempty"`
 }
 
+func (s *CreateRunResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateStreamRequest struct {
 	// The Stream to create.
 	Stream Stream `json:"stream"`
+}
+
+func (s *CreateStreamRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to create a model version stage transition request.
@@ -912,8 +992,16 @@ type CreateTransitionRequestResponse struct {
 	Request *TransitionRequest `json:"request,omitempty"`
 }
 
+func (s *CreateTransitionRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
+}
+
+func (s *CreateWebhookResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A cron-based schedule trigger for the materialization pipeline.
@@ -933,6 +1021,20 @@ func (s CronSchedule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A CustomUdf function applies a registered Unity Catalog function row-wise to
+// source columns, producing a single output column per row.
+type CustomUdf struct {
+	// Fully qualified 3-part Unity Catalog path of the function to apply.
+	FunctionPath string `json:"function_path"`
+	// Binds each UC function parameter to a source column. May be empty for
+	// zero-argument functions (e.g. a timestamp generator).
+	InputBindings []InputBinding `json:"input_bindings,omitempty"`
+}
+
+func (s *CustomUdf) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Specifies the data source backing a feature. Exactly one source type must be
 // set.
 type DataSource struct {
@@ -944,6 +1046,10 @@ type DataSource struct {
 	RequestSource *RequestSource `json:"request_source,omitempty"`
 	// A Stream data source.
 	StreamSource *StreamSource `json:"stream_source,omitempty"`
+}
+
+func (s *DataSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Dataset. Represents a reference to data used for training, testing, or
@@ -990,9 +1096,17 @@ type DatasetInput struct {
 	Tags []InputTag `json:"tags,omitempty"`
 }
 
+func (s *DatasetInput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCommentRequest struct {
 	// Unique identifier of an activity
 	Id string `json:"-" url:"id"`
+}
+
+func (s *DeleteCommentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteExperiment struct {
@@ -1000,9 +1114,17 @@ type DeleteExperiment struct {
 	ExperimentId string `json:"experiment_id"`
 }
 
+func (s *DeleteExperiment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteFeatureRequest struct {
 	// Name of the feature to delete.
 	FullName string `json:"-" url:"-"`
+}
+
+func (s *DeleteFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteFeatureTagRequest struct {
@@ -1014,14 +1136,26 @@ type DeleteFeatureTagRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
+func (s *DeleteFeatureTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteKafkaConfigRequest struct {
 	// Name of the Kafka config to delete.
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteKafkaConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteLoggedModelRequest struct {
 	// The ID of the logged model to delete.
 	ModelId string `json:"-" url:"-"`
+}
+
+func (s *DeleteLoggedModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteLoggedModelTagRequest struct {
@@ -1031,14 +1165,26 @@ type DeleteLoggedModelTagRequest struct {
 	TagKey string `json:"-" url:"-"`
 }
 
+func (s *DeleteLoggedModelTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteMaterializedFeatureRequest struct {
 	// The ID of the materialized feature to delete.
 	MaterializedFeatureId string `json:"-" url:"-"`
 }
 
+func (s *DeleteMaterializedFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
+}
+
+func (s *DeleteModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteModelTagRequest struct {
@@ -1049,11 +1195,19 @@ type DeleteModelTagRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
+func (s *DeleteModelTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
 	// Model version number
 	Version string `json:"-" url:"version"`
+}
+
+func (s *DeleteModelVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteModelVersionTagRequest struct {
@@ -1066,9 +1220,17 @@ type DeleteModelVersionTagRequest struct {
 	Version string `json:"-" url:"version"`
 }
 
+func (s *DeleteModelVersionTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteOnlineStoreRequest struct {
 	// Name of the online store to delete.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteOnlineStoreRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteOnlineTableRequest struct {
@@ -1076,9 +1238,17 @@ type DeleteOnlineTableRequest struct {
 	OnlineTableName string `json:"-" url:"-"`
 }
 
+func (s *DeleteOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId string `json:"run_id"`
+}
+
+func (s *DeleteRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteRuns struct {
@@ -1123,11 +1293,19 @@ type DeleteStreamRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteStreamRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteTag struct {
 	// Name of the tag. Maximum size is 255 bytes. Must be provided.
 	Key string `json:"key"`
 	// ID of the run that the tag was logged under. Must be provided.
 	RunId string `json:"run_id"`
+}
+
+func (s *DeleteTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteTransitionRequestRequest struct {
@@ -1168,9 +1346,17 @@ type DeleteTransitionRequestResponse struct {
 	Activity *Activity `json:"activity,omitempty"`
 }
 
+func (s *DeleteTransitionRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
 	Id string `json:"-" url:"id"`
+}
+
+func (s *DeleteWebhookRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeltaTableSource struct {
@@ -1219,6 +1405,10 @@ type DirectMtlsConfig struct {
 	MtlsConfig MtlsConfig `json:"mtls_config"`
 }
 
+func (s *DirectMtlsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Schema definitions provided directly on the Stream, as opposed to referencing
 // a schema registry. To resolve schemas from a registry instead, use
 // SchemaRegistryConfig.
@@ -1232,6 +1422,10 @@ type DirectSchemas struct {
 	PayloadSchema *SchemaConfig `json:"payload_schema,omitempty"`
 }
 
+func (s *DirectSchemas) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type EntityColumn struct {
 	// The name of the entity column. For Kafka sources, use dot-prefixed path
 	// notation to reference fields within the key or value schema (e.g.,
@@ -1241,6 +1435,10 @@ type EntityColumn struct {
 	// Colon-prefixed notation (e.g., "value:user_id") is supported for
 	// backwards compatibility but is deprecated; migrate to dot notation.
 	Name string `json:"name"`
+}
+
+func (s *EntityColumn) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // An experiment and its metadata.
@@ -1419,6 +1617,10 @@ type ExperimentPermissionsRequest struct {
 	ExperimentId string `json:"-" url:"-"`
 }
 
+func (s *ExperimentPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A tag for an experiment.
 type ExperimentTag struct {
 	// The tag key.
@@ -1442,6 +1644,10 @@ type ExperimentTraceLocation struct {
 	// A Unity Catalog schema where the experiment's traces are stored as Delta
 	// tables.
 	UcTraceLocation *UcTraceLocation `json:"uc_trace_location,omitempty"`
+}
+
+func (s *ExperimentTraceLocation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Feature struct {
@@ -1512,6 +1718,10 @@ type FeatureLineage struct {
 	OnlineFeatures []FeatureLineageOnlineFeature `json:"online_features,omitempty"`
 }
 
+func (s *FeatureLineage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type FeatureLineageFeatureSpec struct {
 	// The full name of the feature spec in Unity Catalog.
 	Name string `json:"name,omitempty"`
@@ -1566,6 +1776,10 @@ type FeatureList struct {
 	Features []LinkedFeature `json:"features,omitempty"`
 }
 
+func (s *FeatureList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Represents a tag on a feature in a feature table.
 type FeatureTag struct {
 	Key string `json:"key"`
@@ -1591,6 +1805,10 @@ type FieldDefinition struct {
 	DataType ScalarDataType `json:"data_type"`
 	// The name of the field.
 	Name string `json:"name"`
+}
+
+func (s *FieldDefinition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Metadata of a single artifact file or directory.
@@ -1622,9 +1840,17 @@ type FinalizeLoggedModelRequest struct {
 	Status LoggedModelStatus `json:"status"`
 }
 
+func (s *FinalizeLoggedModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type FinalizeLoggedModelResponse struct {
 	// The updated logged model.
 	Model *LoggedModel `json:"model,omitempty"`
+}
+
+func (s *FinalizeLoggedModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Returns the first N distinct values, ordered by the feature's timeseries
@@ -1636,10 +1862,18 @@ type FirstDistinctFunction struct {
 	N int64 `json:"n"`
 }
 
+func (s *FirstDistinctFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Returns the first value.
 type FirstFunction struct {
 	// The input column from which the first value is returned.
 	Input string `json:"input"`
+}
+
+func (s *FirstFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Returns the first N values, ordered by the feature's timeseries column.
@@ -1650,11 +1884,19 @@ type FirstNFunction struct {
 	N int64 `json:"n"`
 }
 
+func (s *FirstNFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A flat (non-nested) schema for request-time fields, defined as an ordered
 // list of field definitions. This schema only supports scalar types.
 type FlatSchema struct {
 	// The list of fields in this schema.
 	Fields []FieldDefinition `json:"fields"`
+}
+
+func (s *FlatSchema) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Represents a forecasting experiment with its unique identifier, URL, and
@@ -1729,6 +1971,8 @@ type Function struct {
 	AggregationFunction *AggregationFunction `json:"aggregation_function,omitempty"`
 	// Selects the latest value of a single column in a data source
 	ColumnSelection *ColumnSelection `json:"column_selection,omitempty"`
+	// Applies a registered Unity Catalog function row-wise to source columns.
+	CustomUdf *CustomUdf `json:"custom_udf,omitempty"`
 	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
 	// for backwards compatibility. Extra parameters for parameterized
 	// functions.
@@ -1736,6 +1980,10 @@ type Function struct {
 	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
 	// for backwards compatibility. The type of the function.
 	FunctionType FunctionFunctionType `json:"function_type,omitempty"`
+}
+
+func (s *Function) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Deprecated: Use typed fields on function-specific messages (e.g.
@@ -1746,6 +1994,10 @@ type FunctionExtraParameter struct {
 	Key string `json:"key"`
 	// The value of the parameter.
 	Value string `json:"value"`
+}
+
+func (s *FunctionExtraParameter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Deprecated: Use the function-specific messages in
@@ -1826,9 +2078,17 @@ type GetByNameRequest struct {
 	ExperimentName string `json:"-" url:"experiment_name"`
 }
 
+func (s *GetByNameRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetExperimentByNameResponse struct {
 	// Experiment details.
 	Experiment *Experiment `json:"experiment,omitempty"`
+}
+
+func (s *GetExperimentByNameResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetExperimentPermissionLevelsRequest struct {
@@ -1836,9 +2096,17 @@ type GetExperimentPermissionLevelsRequest struct {
 	ExperimentId string `json:"-" url:"-"`
 }
 
+func (s *GetExperimentPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetExperimentPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []ExperimentPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+func (s *GetExperimentPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetExperimentPermissionsRequest struct {
@@ -1846,14 +2114,26 @@ type GetExperimentPermissionsRequest struct {
 	ExperimentId string `json:"-" url:"-"`
 }
 
+func (s *GetExperimentPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"-" url:"experiment_id"`
 }
 
+func (s *GetExperimentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetExperimentResponse struct {
 	// Experiment details.
 	Experiment *Experiment `json:"experiment,omitempty"`
+}
+
+func (s *GetExperimentResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetFeatureLineageRequest struct {
@@ -1863,9 +2143,17 @@ type GetFeatureLineageRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
+func (s *GetFeatureLineageRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetFeatureRequest struct {
 	// Name of the feature to get.
 	FullName string `json:"-" url:"-"`
+}
+
+func (s *GetFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetFeatureTagRequest struct {
@@ -1876,9 +2164,17 @@ type GetFeatureTagRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
+func (s *GetFeatureTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetForecastingExperimentRequest struct {
 	// The unique ID of a forecasting experiment
 	ExperimentId string `json:"-" url:"-"`
+}
+
+func (s *GetForecastingExperimentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetHistoryRequest struct {
@@ -1912,11 +2208,19 @@ type GetKafkaConfigRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetKafkaConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetLatestVersionsRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"name"`
 	// List of stages.
 	Stages []string `json:"stages,omitempty"`
+}
+
+func (s *GetLatestVersionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetLatestVersionsResponse struct {
@@ -1926,9 +2230,17 @@ type GetLatestVersionsResponse struct {
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
 }
 
+func (s *GetLatestVersionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetLoggedModelRequest struct {
 	// The ID of the logged model to retrieve.
 	ModelId string `json:"-" url:"-"`
+}
+
+func (s *GetLoggedModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetLoggedModelResponse struct {
@@ -1936,9 +2248,17 @@ type GetLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+func (s *GetLoggedModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetMaterializedFeatureRequest struct {
 	// The ID of the materialized feature.
 	MaterializedFeatureId string `json:"-" url:"-"`
+}
+
+func (s *GetMaterializedFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetMetricHistoryResponse struct {
@@ -1968,8 +2288,16 @@ type GetModelRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
+func (s *GetModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetModelResponse struct {
 	RegisteredModelDatabricks *ModelDatabricks `json:"registered_model_databricks,omitempty"`
+}
+
+func (s *GetModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetModelVersionDownloadUriRequest struct {
@@ -1977,6 +2305,10 @@ type GetModelVersionDownloadUriRequest struct {
 	Name string `json:"-" url:"name"`
 	// Model version number
 	Version string `json:"-" url:"version"`
+}
+
+func (s *GetModelVersionDownloadUriRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetModelVersionDownloadUriResponse struct {
@@ -2001,8 +2333,16 @@ type GetModelVersionRequest struct {
 	Version string `json:"-" url:"version"`
 }
 
+func (s *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
+}
+
+func (s *GetModelVersionResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetOnlineStoreRequest struct {
@@ -2010,9 +2350,17 @@ type GetOnlineStoreRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetOnlineStoreRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetRegisteredModelPermissionLevelsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
+}
+
+func (s *GetRegisteredModelPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetRegisteredModelPermissionLevelsResponse struct {
@@ -2020,9 +2368,17 @@ type GetRegisteredModelPermissionLevelsResponse struct {
 	PermissionLevels []RegisteredModelPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetRegisteredModelPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetRegisteredModelPermissionsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
+}
+
+func (s *GetRegisteredModelPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetRunRequest struct {
@@ -2049,9 +2405,17 @@ type GetRunResponse struct {
 	Run *Run `json:"run,omitempty"`
 }
 
+func (s *GetRunResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetStreamRequest struct {
 	// Full three-part name (catalog.schema.stream) of the Stream to get.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetStreamRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type HttpUrlSpec struct {
@@ -2168,12 +2532,28 @@ func (s IngestionDestination) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Binds a single UC function parameter to a source column.
+type InputBinding struct {
+	// Source column whose value is passed for this parameter at execution time.
+	Column string `json:"column"`
+	// Name of the UC function parameter.
+	Parameter string `json:"parameter"`
+}
+
+func (s *InputBinding) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Tag for a dataset input.
 type InputTag struct {
 	// The tag key.
 	Key string `json:"key"`
 	// The tag value.
 	Value string `json:"value"`
+}
+
+func (s *InputTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type JobContext struct {
@@ -2265,6 +2645,10 @@ type KafkaConfig struct {
 	ValueSchema *SchemaConfig `json:"value_schema,omitempty"`
 }
 
+func (s *KafkaConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type KafkaSource struct {
 	// Deprecated: Use Feature.entity instead. Kept for backwards compatibility.
 	// The entity column identifiers of the Kafka source.
@@ -2302,6 +2686,10 @@ type KafkaStreamConfig struct {
 	ExtraOptions map[string]string `json:"extra_options,omitempty"`
 	// Options to configure which Kafka topics to pull data from.
 	SubscriptionMode KafkaSubscriptionMode `json:"subscription_mode"`
+}
+
+func (s *KafkaStreamConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Subscription mode for Kafka topic selection, matching standard Spark
@@ -2343,6 +2731,10 @@ type KinesisStreamConfig struct {
 	StreamNames *StreamNameList `json:"stream_names,omitempty"`
 }
 
+func (s *KinesisStreamConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Returns the last N distinct values, ordered by the feature's timeseries
 // column.
 type LastDistinctFunction struct {
@@ -2352,10 +2744,18 @@ type LastDistinctFunction struct {
 	N int64 `json:"n"`
 }
 
+func (s *LastDistinctFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Returns the last value.
 type LastFunction struct {
 	// The input column from which the last value is returned.
 	Input string `json:"input"`
+}
+
+func (s *LastFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Returns the last N values, ordered by the feature's timeseries column.
@@ -2364,6 +2764,10 @@ type LastNFunction struct {
 	Input string `json:"input"`
 	// The number of values to return.
 	N int64 `json:"n"`
+}
+
+func (s *LastNFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Lineage context information for tracking where an API was invoked. This will
@@ -2780,9 +3184,17 @@ type ListTransitionRequestsRequest struct {
 	Version string `json:"-" url:"version"`
 }
 
+func (s *ListTransitionRequestsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListTransitionRequestsResponse struct {
 	// Array of open transition requests.
 	Requests []Activity `json:"requests,omitempty"`
+}
+
+func (s *ListTransitionRequestsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListWebhooksRequest struct {
@@ -2876,11 +3288,19 @@ type LogInputs struct {
 	RunId string `json:"run_id"`
 }
 
+func (s *LogInputs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type LogLoggedModelParamsRequest struct {
 	// The ID of the logged model to log params for.
 	ModelId string `json:"-" url:"-"`
 	// Parameters to attach to the model.
 	Params []LoggedModelParameter `json:"params,omitempty"`
+}
+
+func (s *LogLoggedModelParamsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type LogMetric struct {
@@ -2942,6 +3362,10 @@ type LogOutputsRequest struct {
 	RunId string `json:"run_id"`
 }
 
+func (s *LogOutputsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type LogParam struct {
 	// Name of the param. Maximum size is 255 bytes.
 	Key string `json:"key"`
@@ -2973,12 +3397,20 @@ type LoggedModel struct {
 	Info *LoggedModelInfo `json:"info,omitempty"`
 }
 
+func (s *LoggedModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A LoggedModelData message includes logged model params and linked metrics.
 type LoggedModelData struct {
 	// Performance metrics linked to the model.
 	Metrics []Metric `json:"metrics,omitempty"`
 	// Immutable string key-value pairs of the model.
 	Params []LoggedModelParameter `json:"params,omitempty"`
+}
+
+func (s *LoggedModelData) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A LoggedModelInfo includes logged model attributes, tags, and registration
@@ -3194,6 +3626,10 @@ type MaxFunction struct {
 	Input string `json:"input"`
 }
 
+func (s *MaxFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Metric associated with a run, represented as a key-value pair.
 type Metric struct {
 	// The dataset digest of the dataset associated with the metric, e.g. an md5
@@ -3232,6 +3668,10 @@ func (s Metric) MarshalJSON() ([]byte, error) {
 type MinFunction struct {
 	// The input column from which the minimum is computed.
 	Input string `json:"input"`
+}
+
+func (s *MinFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Model struct {
@@ -3300,12 +3740,20 @@ type ModelInput struct {
 	ModelId string `json:"model_id"`
 }
 
+func (s *ModelInput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Represents a LoggedModel output of a Run.
 type ModelOutput struct {
 	// The unique identifier of the model.
 	ModelId string `json:"model_id"`
 	// The step at which the model was produced.
 	Step int64 `json:"step"`
+}
+
+func (s *ModelOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Tag for a registered model
@@ -3556,6 +4004,10 @@ type OfflineStoreConfig struct {
 	TableNamePrefix string `json:"table_name_prefix"`
 }
 
+func (s *OfflineStoreConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // An OnlineStore is a logical database instance that stores and serves features
 // online.
 type OnlineStore struct {
@@ -3602,6 +4054,10 @@ type OnlineStoreConfig struct {
 	// Prefix for Unity Catalog table name. The materialized feature will be
 	// stored in a Lakebase table with this prefix and a generated postfix.
 	TableNamePrefix string `json:"table_name_prefix"`
+}
+
+func (s *OnlineStoreConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type OnlineStoreState string
@@ -3738,6 +4194,10 @@ type ProtoSchemaSpec struct {
 	SchemaText string `json:"schema_text"`
 }
 
+func (s *ProtoSchemaSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PublishSpec struct {
 	// The name of the target online store.
 	OnlineStore string `json:"online_store"`
@@ -3746,6 +4206,10 @@ type PublishSpec struct {
 	// The publish mode of the pipeline that syncs the online table with the
 	// source table.
 	PublishMode PublishSpecPublishMode `json:"publish_mode"`
+}
+
+func (s *PublishSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PublishSpecPublishMode string
@@ -3793,6 +4257,10 @@ type PublishTableRequest struct {
 	PublishSpec PublishSpec `json:"publish_spec"`
 	// The full three-part (catalog, schema, table) name of the source table.
 	SourceTableName string `json:"-" url:"-"`
+}
+
+func (s *PublishTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PublishTableResponse struct {
@@ -3959,6 +4427,10 @@ type RegisteredModelPermissionsRequest struct {
 	AccessControlList []RegisteredModelAccessControlRequest `json:"access_control_list,omitempty"`
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
+}
+
+func (s *RegisteredModelPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // .. note:: Experimental: This entity may change or be removed in a future
@@ -4231,6 +4703,10 @@ type RejectTransitionRequestResponse struct {
 	Activity *Activity `json:"activity,omitempty"`
 }
 
+func (s *RejectTransitionRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RenameModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"name"`
@@ -4252,6 +4728,10 @@ type RenameModelResponse struct {
 	RegisteredModel *Model `json:"registered_model,omitempty"`
 }
 
+func (s *RenameModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A request-time data source whose value is provided at inference time: offline
 // batch scoring or online serving endpoint
 type RequestSource struct {
@@ -4259,14 +4739,26 @@ type RequestSource struct {
 	FlatSchema *FlatSchema `json:"flat_schema,omitempty"`
 }
 
+func (s *RequestSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RestoreExperiment struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
 }
 
+func (s *RestoreExperiment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RestoreRun struct {
 	// ID of the run to restore.
 	RunId string `json:"run_id"`
+}
+
+func (s *RestoreRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type RestoreRuns struct {
@@ -4339,6 +4831,10 @@ type Run struct {
 	Inputs *RunInputs `json:"inputs,omitempty"`
 }
 
+func (s *Run) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Run data (metrics, params, and tags).
 type RunData struct {
 	// Run metrics.
@@ -4347,6 +4843,10 @@ type RunData struct {
 	Params []Param `json:"params,omitempty"`
 	// Additional metadata key-value pairs.
 	Tags []RunTag `json:"tags,omitempty"`
+}
+
+func (s *RunData) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Metadata of a single run.
@@ -4442,6 +4942,10 @@ type RunInputs struct {
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
 	// Model inputs to the Run.
 	ModelInputs []ModelInput `json:"model_inputs,omitempty"`
+}
+
+func (s *RunInputs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Tag for a run.
@@ -4586,6 +5090,10 @@ type SchemaLocator struct {
 	Format SchemaLocatorFormat `json:"format"`
 }
 
+func (s *SchemaLocator) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Confluent Schema Registry schema locator. The value to provide for `subject`
 // depends on the naming strategy configured in your registry: -
 // TopicNameStrategy (default): "{topic}-key" or "{topic}-value" e.g. for topic
@@ -4598,6 +5106,10 @@ type SchemaLocator struct {
 type SchemaLocatorConfluentSchema struct {
 	// The Confluent schema registry subject name.
 	Subject string `json:"subject"`
+}
+
+func (s *SchemaLocatorConfluentSchema) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Supported serialization formats for a schema registry schema.
@@ -4962,6 +5474,10 @@ type SecretScopeReference struct {
 	Scope string `json:"scope"`
 }
 
+func (s *SecretScopeReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	ExperimentId string `json:"experiment_id"`
@@ -4972,11 +5488,19 @@ type SetExperimentTag struct {
 	Value string `json:"value"`
 }
 
+func (s *SetExperimentTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SetLoggedModelTagsRequest struct {
 	// The ID of the logged model to set the tags on.
 	ModelId string `json:"-" url:"-"`
 	// The tags to set on the logged model.
 	Tags []LoggedModelTag `json:"tags,omitempty"`
+}
+
+func (s *SetLoggedModelTagsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SetModelTagRequest struct {
@@ -4993,6 +5517,10 @@ type SetModelTagRequest struct {
 	Value string `json:"value"`
 }
 
+func (s *SetModelTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SetModelVersionTagRequest struct {
 	// Name of the tag. Maximum size depends on storage backend. If a tag with
 	// this name already exists, its preexisting value will be replaced by the
@@ -5007,6 +5535,10 @@ type SetModelVersionTagRequest struct {
 	Value string `json:"value"`
 	// Model version number.
 	Version string `json:"version"`
+}
+
+func (s *SetModelVersionTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SetTag struct {
@@ -5112,10 +5644,18 @@ type StddevPopFunction struct {
 	Input string `json:"input"`
 }
 
+func (s *StddevPopFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Computes the sample standard deviation.
 type StddevSampFunction struct {
 	// The input column from which the sample standard deviation is computed.
 	Input string `json:"input"`
+}
+
+func (s *StddevSampFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A Stream is a governed UC entity representing an external streaming data
@@ -5167,6 +5707,10 @@ type StreamArnList struct {
 	Arns []string `json:"arns,omitempty"`
 }
 
+func (s *StreamArnList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Specifies how to connect and authenticate to the stream platform.
 type StreamConnectionConfig struct {
 	// Direct mTLS configuration for stream platform access. This is only used
@@ -5195,6 +5739,10 @@ type StreamNameList struct {
 	Names []string `json:"names,omitempty"`
 }
 
+func (s *StreamNameList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Schema definitions for the stream. Feature store supports both direct schemas
 // and schema registries.
 type StreamSchemaConfig struct {
@@ -5202,6 +5750,10 @@ type StreamSchemaConfig struct {
 	DirectSchemas *DirectSchemas `json:"direct_schemas,omitempty"`
 	// Resolve schemas from an external schema registry.
 	SchemaRegistryConfig *SchemaRegistryConfig `json:"schema_registry_config,omitempty"`
+}
+
+func (s *StreamSchemaConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A Stream entity used as a data source for a feature.
@@ -5235,6 +5787,10 @@ type StreamSourceConfig struct {
 	KafkaStreamConfig *KafkaStreamConfig `json:"kafka_stream_config,omitempty"`
 	// Configuration for AWS Kinesis Data Streams.
 	KinesisStreamConfig *KinesisStreamConfig `json:"kinesis_stream_config,omitempty"`
+}
+
+func (s *StreamSourceConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The streaming mode configuration for a streaming materialization pipeline.
@@ -5327,8 +5883,16 @@ type SumFunction struct {
 	Input string `json:"input"`
 }
 
+func (s *SumFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A trigger that fires when the upstream source table changes.
 type TableTrigger struct {
+}
+
+func (s *TableTrigger) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to test a registry webhook.
@@ -5339,6 +5903,10 @@ type TestRegistryWebhookRequest struct {
 	Event RegistryWebhookEvent `json:"event,omitempty"`
 	// Webhook ID
 	Id string `json:"id"`
+}
+
+func (s *TestRegistryWebhookRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type TestRegistryWebhookResponse struct {
@@ -5370,6 +5938,10 @@ type TimeWindow struct {
 	Tumbling *TumblingWindow `json:"tumbling,omitempty"`
 }
 
+func (s *TimeWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type TimeseriesColumn struct {
 	// The name of the timeseries column. For Kafka sources, use dot-prefixed
 	// path notation to reference fields within the key or value schema (e.g.,
@@ -5380,6 +5952,10 @@ type TimeseriesColumn struct {
 	// supported for backwards compatibility but is deprecated; migrate to dot
 	// notation.
 	Name string `json:"name"`
+}
+
+func (s *TimeseriesColumn) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to transition a model version's stage.
@@ -5456,10 +6032,18 @@ type TransitionStageResponse struct {
 	ModelVersionDatabricks *ModelVersionDatabricks `json:"model_version_databricks,omitempty"`
 }
 
+func (s *TransitionStageResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type TumblingWindow struct {
 	// The duration of each tumbling window (non-overlapping, fixed-duration
 	// windows).
 	WindowDuration string `json:"window_duration"`
+}
+
+func (s *TumblingWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A Unity Catalog trace storage location. Traces are stored as Delta tables in
@@ -5499,9 +6083,17 @@ type UpdateComment struct {
 	Id string `json:"id"`
 }
 
+func (s *UpdateComment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateCommentResponse struct {
 	// Updated comment object
 	Comment *CommentObject `json:"comment,omitempty"`
+}
+
+func (s *UpdateCommentResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateExperiment struct {
@@ -5531,6 +6123,10 @@ type UpdateFeatureRequest struct {
 	FullName string `json:"-" url:"-"`
 	// The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateFeatureTagRequest struct {
@@ -5566,6 +6162,10 @@ type UpdateKafkaConfigRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateKafkaConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateMaterializedFeatureRequest struct {
 	// The materialized feature to update.
 	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
@@ -5574,6 +6174,10 @@ type UpdateMaterializedFeatureRequest struct {
 	// Provide the materialization feature fields which should be updated.
 	// Currently, only the pipeline_state field can be updated.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateMaterializedFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateModelRequest struct {
@@ -5595,6 +6199,10 @@ func (s UpdateModelRequest) MarshalJSON() ([]byte, error) {
 
 type UpdateModelResponse struct {
 	RegisteredModel *Model `json:"registered_model,omitempty"`
+}
+
+func (s *UpdateModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateModelVersionRequest struct {
@@ -5621,6 +6229,10 @@ type UpdateModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
+func (s *UpdateModelVersionResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateOnlineStoreRequest struct {
 	// The name of the online store. This is the unique identifier for the
 	// online store.
@@ -5629,6 +6241,10 @@ type UpdateOnlineStoreRequest struct {
 	OnlineStore OnlineStore `json:"online_store"`
 	// The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateOnlineStoreRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a registry webhook. Only the fields that need to
@@ -5720,6 +6336,10 @@ type UpdateRunResponse struct {
 	RunInfo *RunInfo `json:"run_info,omitempty"`
 }
 
+func (s *UpdateRunResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Status of a run.
 type UpdateRunStatus string
 
@@ -5776,8 +6396,16 @@ type UpdateStreamRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateStreamRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
+}
+
+func (s *UpdateWebhookResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Computes the population variance.
@@ -5786,10 +6414,18 @@ type VarPopFunction struct {
 	Input string `json:"input"`
 }
 
+func (s *VarPopFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Computes the sample variance.
 type VarSampFunction struct {
 	// The input column from which the sample variance is computed.
 	Input string `json:"input"`
+}
+
+func (s *VarSampFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Qualifier for the view type.

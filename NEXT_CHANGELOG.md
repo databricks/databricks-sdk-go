@@ -31,4 +31,7 @@
 * Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [postgres.SyncedTableSyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpecPgSpecificType).
 * [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignments).
 * [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentsProxy).
-
+* Add `DefaultGitSource`, `GitSource` and `SourceCodePath` fields for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `AutoDeploy` and `CallerCredentialId` fields for [apps.GitRepository](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#GitRepository).
+* Add `CustomUdf` field for [ml.Function](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Function).
+* Add `EffectiveServerlessComputeId` field for [pipelines.GetPipelineResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#GetPipelineResponse).

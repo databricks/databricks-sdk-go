@@ -16,17 +16,33 @@ type ApiSourceConnectorConfig struct {
 	Configs map[string]string `json:"configs,omitempty"`
 }
 
+func (s *ApiSourceConnectorConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Options for API Source connectors with arbitrary configuration.
 type ApiSourceConnectorOptions struct {
 	// Arbitrary key-value configuration options for the API Source connector.
 	Options map[string]string `json:"options,omitempty"`
 }
 
+func (s *ApiSourceConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ApplyEnvironmentRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
+func (s *ApplyEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ApplyEnvironmentRequestResponse struct {
+}
+
+func (s *ApplyEnvironmentRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Policy for auto full refresh.
@@ -200,6 +216,10 @@ type ConfluenceConnectorOptions struct {
 	IncludeConfluenceSpaces []string `json:"include_confluence_spaces,omitempty"`
 }
 
+func (s *ConfluenceConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ConnectionParameters struct {
 	// Source catalog for initial connection. This is necessary for schema
 	// exploration in some database systems like Oracle, and optional but
@@ -251,6 +271,10 @@ type ConnectorOptions struct {
 	TiktokAdsOptions *TikTokAdsOptions `json:"tiktok_ads_options,omitempty"`
 
 	ZendeskSupportOptions *ZendeskSupportOptions `json:"zendesk_support_options,omitempty"`
+}
+
+func (s *ConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // For certain database sources LakeFlow Connect offers both query based and cdc
@@ -942,9 +966,17 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
+func (s *Filters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPipelinePermissionLevelsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
+}
+
+func (s *GetPipelinePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPipelinePermissionLevelsResponse struct {
@@ -952,13 +984,25 @@ type GetPipelinePermissionLevelsResponse struct {
 	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetPipelinePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
 }
 
+func (s *GetPipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
+}
+
+func (s *GetPipelineRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPipelineResponse struct {
@@ -972,6 +1016,8 @@ type GetPipelineResponse struct {
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Publishing mode of the pipeline
 	EffectivePublishingMode PublishingMode `json:"effective_publishing_mode,omitempty"`
+	// Serverless compute ID resolved for the pipeline.
+	EffectiveServerlessComputeId string `json:"effective_serverless_compute_id,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
@@ -1055,9 +1101,17 @@ type GetUpdateRequest struct {
 	UpdateId string `json:"-" url:"-"`
 }
 
+func (s *GetUpdateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetUpdateResponse struct {
 	// The current update info.
 	Update *UpdateInfo `json:"update,omitempty"`
+}
+
+func (s *GetUpdateResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GoogleAdsConfig struct {
@@ -1107,6 +1161,10 @@ type GoogleAdsCustomReportOptions struct {
 	// segments.week, or segments.month — that segment is used as the
 	// incremental cursor for the table.
 	Segments []string `json:"segments,omitempty"`
+}
+
+func (s *GoogleAdsCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Google Ads specific options for ingestion (object-level). When set, these
@@ -1207,6 +1265,10 @@ type IngestionConfig struct {
 	Schema *SchemaSpec `json:"schema,omitempty"`
 	// Select a specific source table.
 	Table *TableSpec `json:"table,omitempty"`
+}
+
+func (s *IngestionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type IngestionGatewayPipelineDefinition struct {
@@ -1514,6 +1576,10 @@ type JiraConnectorOptions struct {
 	IncludeJiraSpaces []string `json:"include_jira_spaces,omitempty"`
 }
 
+func (s *JiraConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type JsonTransformerOptions struct {
 	// Parse the entire value as a single Variant column.
 	AsVariant bool `json:"as_variant,omitempty"`
@@ -1623,6 +1689,10 @@ type LinkedInAdsOptionsLinkedInAdsCustomReportOptions struct {
 	// (Optional) Time aggregation. Defaults to DAILY when unspecified. Used by
 	// analytics/statistics; ignored for attributedRevenueMetrics.
 	TimeGranularity LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity `json:"time_granularity,omitempty"`
+}
+
+func (s *LinkedInAdsOptionsLinkedInAdsCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Entity pivot to group by.
@@ -1904,6 +1974,10 @@ func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
 type ManualTrigger struct {
 }
 
+func (s *ManualTrigger) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Marketo specific options for ingestion
 type MarketoOptions struct {
 	// (Optional) Start date for the initial sync in YYYY-MM-DD format. This
@@ -2067,6 +2141,10 @@ type Notifications struct {
 	Alerts []string `json:"alerts,omitempty"`
 	// A list of email addresses notified when a configured alert is triggered.
 	EmailRecipients []string `json:"email_recipients,omitempty"`
+}
+
+func (s *Notifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Proto representing a window
@@ -2473,6 +2551,10 @@ type PipelineClusterAutoscale struct {
 	Mode PipelineClusterAutoscaleMode `json:"mode,omitempty"`
 }
 
+func (s *PipelineClusterAutoscale) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Databricks Enhanced Autoscaling optimizes cluster utilization by
 // automatically allocating cluster resources based on workload volume, with
 // minimal impact to the data processing latency of your pipelines. Enhanced
@@ -2707,6 +2789,10 @@ type PipelinePermissionsRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
+func (s *PipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PipelineSpec struct {
 	// Budget policy of this pipeline.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
@@ -2924,6 +3010,10 @@ type PipelineTrigger struct {
 	Manual *ManualTrigger `json:"manual,omitempty"`
 }
 
+func (s *PipelineTrigger) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The environment entity used to preserve serverless environment side panel,
 // jobs' environment for non-notebook task, and SDP's environment for classic
 // and serverless pipelines. In this minimal environment spec, only pip
@@ -2964,6 +3054,10 @@ func (s PipelinesEnvironment) MarshalJSON() ([]byte, error) {
 type PostgresCatalogConfig struct {
 	// Optional. The Postgres slot configuration to use for logical replication
 	SlotConfig *PostgresSlotConfig `json:"slot_config,omitempty"`
+}
+
+func (s *PostgresCatalogConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // PostgresSlotConfig contains the configuration for a Postgres logical
@@ -3059,6 +3153,10 @@ type RedditAdsOptionsRedditAdsCustomReportOptions struct {
 	// (Optional) Fields to include in the report (maps to the Reddit Ads API
 	// `fields` parameter). Examples: IMPRESSIONS, CLICKS, SPEND, CPC, CTR.
 	Fields []string `json:"fields,omitempty"`
+}
+
+func (s *RedditAdsOptionsRedditAdsCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Specifies a replace_where predicate override for a replace where flow.
@@ -3388,6 +3486,10 @@ type SourceConfig struct {
 	GoogleAdsConfig *GoogleAdsConfig `json:"google_ads_config,omitempty"`
 }
 
+func (s *SourceConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type StackFrame struct {
 	// Class from which the method call originated
 	DeclaringClass string `json:"declaring_class,omitempty"`
@@ -3523,6 +3625,10 @@ func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 
 type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
+}
+
+func (s *StopRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type TableSpec struct {
@@ -3910,6 +4016,10 @@ type Truncation struct {
 	// List of fields that were truncated from this event. If empty or absent,
 	// no truncation occurred.
 	TruncatedFields []TruncationTruncationDetail `json:"truncated_fields,omitempty"`
+}
+
+func (s *Truncation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details about a specific field that was truncated.

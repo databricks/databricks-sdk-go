@@ -33,6 +33,11 @@ type App struct {
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user that created the app.
 	Creator string `json:"creator,omitempty"`
+	// The Git source of the app's most recent active deployment, including the
+	// repository configuration and the resolved reference. Populated by the
+	// system after a Git-based deployment and used as the default reference
+	// when automatic deployments are enabled.
+	DefaultGitSource *GitSource `json:"default_git_source,omitempty"`
 	// The default workspace file system path of the source code from which app
 	// deployment are created. This field tracks the workspace source code path
 	// of the last active deployment.
@@ -52,6 +57,10 @@ type App struct {
 	// deployments can reference code from this repository by providing only the
 	// git reference (branch, tag, or commit).
 	GitRepository *GitRepository `json:"git_repository,omitempty"`
+	// The Git source to deploy from, specifying the reference to check out
+	// (branch, tag, or commit) and an optional path to the app source code
+	// within the repository configured in git_repository.
+	GitSource *GitSource `json:"git_source,omitempty"`
 	// The unique identifier of the app.
 	Id string `json:"id,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
@@ -72,6 +81,8 @@ type App struct {
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+
+	SourceCodePath string `json:"source_code_path,omitempty"`
 	// Name of the space this app belongs to.
 	Space string `json:"space,omitempty"`
 
@@ -326,6 +337,10 @@ type AppManifestAppResourceExperimentSpec struct {
 	Permission AppManifestAppResourceExperimentSpecExperimentPermission `json:"permission"`
 }
 
+func (s *AppManifestAppResourceExperimentSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AppManifestAppResourceExperimentSpecExperimentPermission string
 
 const AppManifestAppResourceExperimentSpecExperimentPermissionCanEdit AppManifestAppResourceExperimentSpecExperimentPermission = `CAN_EDIT`
@@ -370,6 +385,10 @@ type AppManifestAppResourceJobSpec struct {
 	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
 	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
 	Permission AppManifestAppResourceJobSpecJobPermission `json:"permission"`
+}
+
+func (s *AppManifestAppResourceJobSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AppManifestAppResourceJobSpecJobPermission string
@@ -421,6 +440,10 @@ type AppManifestAppResourceSecretSpec struct {
 	Permission AppManifestAppResourceSecretSpecSecretPermission `json:"permission"`
 }
 
+func (s *AppManifestAppResourceSecretSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Permission to grant on the secret scope. Supported permissions are: "READ",
 // "WRITE", "MANAGE".
 type AppManifestAppResourceSecretSpecSecretPermission string
@@ -467,6 +490,10 @@ type AppManifestAppResourceServingEndpointSpec struct {
 	// Permission to grant on the serving endpoint. Supported permissions are:
 	// "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
 	Permission AppManifestAppResourceServingEndpointSpecServingEndpointPermission `json:"permission"`
+}
+
+func (s *AppManifestAppResourceServingEndpointSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AppManifestAppResourceServingEndpointSpecServingEndpointPermission string
@@ -546,6 +573,10 @@ type AppManifestAppResourceSqlWarehouseSpec struct {
 	Permission AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission `json:"permission"`
 }
 
+func (s *AppManifestAppResourceSqlWarehouseSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission string
 
 const AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermissionCanManage AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission = `CAN_MANAGE`
@@ -590,6 +621,10 @@ type AppManifestAppResourceUcSecurableSpec struct {
 	Permission AppManifestAppResourceUcSecurableSpecUcSecurablePermission `json:"permission"`
 
 	SecurableType AppManifestAppResourceUcSecurableSpecUcSecurableType `json:"securable_type"`
+}
+
+func (s *AppManifestAppResourceUcSecurableSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AppManifestAppResourceUcSecurableSpecUcSecurablePermission string
@@ -780,6 +815,10 @@ type AppPermissionsRequest struct {
 	AppName string `json:"-" url:"-"`
 }
 
+func (s *AppPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AppResource struct {
 	App *AppResourceApp `json:"app,omitempty"`
 
@@ -874,6 +913,10 @@ type AppResourceDatabase struct {
 	Permission AppResourceDatabaseDatabasePermission `json:"permission"`
 }
 
+func (s *AppResourceDatabase) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AppResourceDatabaseDatabasePermission string
 
 const AppResourceDatabaseDatabasePermissionCanConnectAndCreate AppResourceDatabaseDatabasePermission = `CAN_CONNECT_AND_CREATE`
@@ -912,6 +955,10 @@ type AppResourceExperiment struct {
 	ExperimentId string `json:"experiment_id"`
 
 	Permission AppResourceExperimentExperimentPermission `json:"permission"`
+}
+
+func (s *AppResourceExperiment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AppResourceExperimentExperimentPermission string
@@ -960,6 +1007,10 @@ type AppResourceGenieSpace struct {
 	Permission AppResourceGenieSpaceGenieSpacePermission `json:"permission"`
 
 	SpaceId string `json:"space_id"`
+}
+
+func (s *AppResourceGenieSpace) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AppResourceGenieSpaceGenieSpacePermission string
@@ -1011,6 +1062,10 @@ type AppResourceJob struct {
 	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
 	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
 	Permission AppResourceJobJobPermission `json:"permission"`
+}
+
+func (s *AppResourceJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AppResourceJobJobPermission string
@@ -1118,6 +1173,10 @@ type AppResourceSecret struct {
 	Scope string `json:"scope"`
 }
 
+func (s *AppResourceSecret) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Permission to grant on the secret scope. Supported permissions are: "READ",
 // "WRITE", "MANAGE".
 type AppResourceSecretSecretPermission string
@@ -1168,6 +1227,10 @@ type AppResourceServingEndpoint struct {
 	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
 }
 
+func (s *AppResourceServingEndpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AppResourceServingEndpointServingEndpointPermission string
 
 const AppResourceServingEndpointServingEndpointPermissionCanManage AppResourceServingEndpointServingEndpointPermission = `CAN_MANAGE`
@@ -1214,6 +1277,10 @@ type AppResourceSqlWarehouse struct {
 	// Permission to grant on the SQL warehouse. Supported permissions are:
 	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
 	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
+}
+
+func (s *AppResourceSqlWarehouse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AppResourceSqlWarehouseSqlWarehousePermission string
@@ -1561,6 +1628,10 @@ type AsyncUpdateAppRequest struct {
 	UpdateMask string `json:"update_mask"`
 }
 
+func (s *AsyncUpdateAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ComputeSize string
 
 const ComputeSizeLarge ComputeSize = `LARGE`
@@ -1681,6 +1752,10 @@ type CreateAppDeploymentRequest struct {
 	AppName string `json:"-" url:"-"`
 }
 
+func (s *CreateAppDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateAppRequest struct {
 	App App `json:"app"`
 	// If true, the app will not be started after creation.
@@ -1701,8 +1776,16 @@ type CreateCustomTemplateRequest struct {
 	Template CustomTemplate `json:"template"`
 }
 
+func (s *CreateCustomTemplateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateSpaceRequest struct {
 	Space Space `json:"space"`
+}
+
+func (s *CreateSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CustomTemplate struct {
@@ -1760,9 +1843,17 @@ type DeleteAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteAppThumbnailRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteAppThumbnailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteCustomTemplateRequest struct {
@@ -1770,9 +1861,17 @@ type DeleteCustomTemplateRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteCustomTemplateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteSpaceRequest struct {
 	// The name of the app space.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EnvVar struct {
@@ -2078,9 +2177,17 @@ type GetAppDeploymentRequest struct {
 	DeploymentId string `json:"-" url:"-"`
 }
 
+func (s *GetAppDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAppPermissionLevelsRequest struct {
 	// The app for which to get or manage permissions.
 	AppName string `json:"-" url:"-"`
+}
+
+func (s *GetAppPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetAppPermissionLevelsResponse struct {
@@ -2088,9 +2195,17 @@ type GetAppPermissionLevelsResponse struct {
 	PermissionLevels []AppPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetAppPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAppPermissionsRequest struct {
 	// The app for which to get or manage permissions.
 	AppName string `json:"-" url:"-"`
+}
+
+func (s *GetAppPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetAppRequest struct {
@@ -2098,9 +2213,17 @@ type GetAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAppUpdateRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
+}
+
+func (s *GetAppUpdateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetCustomTemplateRequest struct {
@@ -2108,9 +2231,17 @@ type GetCustomTemplateRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetCustomTemplateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetOperationRequest struct {
 	// The name of the operation resource.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetSpaceRequest struct {
@@ -2118,14 +2249,34 @@ type GetSpaceRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Git repository configuration specifying the location of the repository.
 type GitRepository struct {
+	// When true, automatically deploys the app on push events to the branch
+	// configured in the app's deployment_source.git_source.
+	AutoDeploy bool `json:"auto_deploy,omitempty"`
+	// ID of a personal access token Git credential owned by the caller, used to
+	// grant the app's service principal access to this repository.
+	CallerCredentialId int64 `json:"caller_credential_id,omitempty"`
 	// Git provider. Case insensitive. Supported values: gitHub,
 	// gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices,
 	// gitLab, gitLabEnterpriseEdition, awsCodeCommit.
 	Provider string `json:"provider"`
 	// URL of the Git repository.
 	Url string `json:"url"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GitRepository) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GitRepository) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Complete git source specification including repository location and
@@ -2538,14 +2689,26 @@ type StartAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *StartAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type StopAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
+func (s *StopAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A single telemetry export destination with its configuration and status.
 type TelemetryExportDestination struct {
 	UnityCatalog *UnityCatalog `json:"unity_catalog,omitempty"`
+}
+
+func (s *TelemetryExportDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Unity Catalog Destinations for OTEL telemetry export.
@@ -2558,11 +2721,19 @@ type UnityCatalog struct {
 	TracesTable string `json:"traces_table"`
 }
 
+func (s *UnityCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateAppRequest struct {
 	App App `json:"app"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *UpdateAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateAppThumbnailRequest struct {
@@ -2572,6 +2743,10 @@ type UpdateAppThumbnailRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *UpdateAppThumbnailRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateCustomTemplateRequest struct {
 	// The name of the template. It must contain only alphanumeric characters,
 	// hyphens, underscores, and whitespaces. It must be unique within the
@@ -2579,6 +2754,10 @@ type UpdateCustomTemplateRequest struct {
 	Name string `json:"-" url:"-"`
 
 	Template CustomTemplate `json:"template"`
+}
+
+func (s *UpdateCustomTemplateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateSpaceRequest struct {
@@ -2600,4 +2779,8 @@ type UpdateSpaceRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

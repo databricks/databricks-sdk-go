@@ -53,6 +53,10 @@ type AiGatewayConfig struct {
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
 }
 
+func (s *AiGatewayConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AiGatewayGuardrailParameters struct {
 	// List of invalid keywords. AI guardrail uses keyword or string matching to
 	// decide if the keyword exists in the request or response content.
@@ -79,6 +83,10 @@ func (s AiGatewayGuardrailParameters) MarshalJSON() ([]byte, error) {
 type AiGatewayGuardrailPiiBehavior struct {
 	// Configuration for input guardrail filters.
 	Behavior AiGatewayGuardrailPiiBehaviorBehavior `json:"behavior,omitempty"`
+}
+
+func (s *AiGatewayGuardrailPiiBehavior) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AiGatewayGuardrailPiiBehaviorBehavior string
@@ -126,6 +134,10 @@ type AiGatewayGuardrails struct {
 	Input *AiGatewayGuardrailParameters `json:"input,omitempty"`
 	// Configuration for output guardrail filters.
 	Output *AiGatewayGuardrailParameters `json:"output,omitempty"`
+}
+
+func (s *AiGatewayGuardrails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AiGatewayInferenceTableConfig struct {
@@ -473,6 +485,10 @@ type AutoCaptureState struct {
 	PayloadTable *PayloadTable `json:"payload_table,omitempty"`
 }
 
+func (s *AutoCaptureState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BearerTokenAuth struct {
 	// The Databricks secret key reference for a token. If you prefer to paste
 	// your token directly, see `token_plaintext`.
@@ -501,9 +517,17 @@ type BuildLogsRequest struct {
 	ServedModelName string `json:"-" url:"-"`
 }
 
+func (s *BuildLogsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BuildLogsResponse struct {
 	// The logs associated with building the served entity's environment.
 	Logs string `json:"logs"`
+}
+
+func (s *BuildLogsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ChatMessage struct {
@@ -670,6 +694,10 @@ type CustomProviderConfig struct {
 	CustomProviderUrl string `json:"custom_provider_url"`
 }
 
+func (s *CustomProviderConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details necessary to query this object's API through the DataPlane APIs.
 type DataPlaneInfo struct {
 	// Authorization details as a string.
@@ -727,8 +755,16 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
+func (s *DataframeSplitInput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteServingEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EmailNotifications struct {
@@ -738,6 +774,10 @@ type EmailNotifications struct {
 	// A list of email addresses to be notified when an endpoint successfully
 	// updates its configuration or state.
 	OnUpdateSuccess []string `json:"on_update_success,omitempty"`
+}
+
+func (s *EmailNotifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EmbeddingsV1ResponseEmbeddingElement struct {
@@ -811,6 +851,10 @@ type EndpointCoreConfigInput struct {
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
 }
 
+func (s *EndpointCoreConfigInput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type EndpointCoreConfigOutput struct {
 	// Configuration for legacy Inference Tables which automatically log
 	// requests and responses to Unity Catalog. Deprecated: please use AI
@@ -844,6 +888,10 @@ type EndpointCoreConfigSummary struct {
 	// (Deprecated, use served_entities instead) The list of served models under
 	// the serving endpoint config.
 	ServedModels []ServedModelSpec `json:"served_models,omitempty"`
+}
+
+func (s *EndpointCoreConfigSummary) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EndpointPendingConfig struct {
@@ -889,6 +937,10 @@ type EndpointState struct {
 	// active configuration are ready. If any of the actively served entities
 	// are in a non-ready state, the endpoint state will be NOT_READY.
 	Ready EndpointStateReady `json:"ready,omitempty"`
+}
+
+func (s *EndpointState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EndpointStateConfigUpdate string
@@ -992,14 +1044,26 @@ type EndpointTags struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
+func (s *EndpointTags) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
 	Name string `json:"-" url:"-"`
 }
 
+func (s *ExportMetricsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ExportMetricsResponse struct {
 	Contents io.ReadCloser `json:"-"`
+}
+
+func (s *ExportMetricsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Simple Proto message for testing
@@ -1114,6 +1178,10 @@ type ExternalModel struct {
 	Task string `json:"task"`
 }
 
+func (s *ExternalModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ExternalModelProvider string
 
 const ExternalModelProviderAi21labs ExternalModelProvider = `ai21labs`
@@ -1201,6 +1269,10 @@ type FallbackConfig struct {
 	Enabled bool `json:"enabled"`
 }
 
+func (s *FallbackConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // All fields are not sensitive as they are hard-coded in the system and made
 // available to customers.
 type FoundationModel struct {
@@ -1229,8 +1301,16 @@ type GetOpenApiRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetOpenApiRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetOpenApiResponse struct {
 	Contents io.ReadCloser `json:"-"`
+}
+
+func (s *GetOpenApiResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetServingEndpointPermissionLevelsRequest struct {
@@ -1238,9 +1318,17 @@ type GetServingEndpointPermissionLevelsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
+func (s *GetServingEndpointPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetServingEndpointPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []ServingEndpointPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+func (s *GetServingEndpointPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetServingEndpointPermissionsRequest struct {
@@ -1248,9 +1336,17 @@ type GetServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
+func (s *GetServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetServingEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GoogleCloudVertexAiConfig struct {
@@ -1300,9 +1396,17 @@ type HttpRequestResponse struct {
 	Contents io.ReadCloser `json:"-"`
 }
 
+func (s *HttpRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListEndpointsResponse struct {
 	// The list of endpoints.
 	Endpoints []ServingEndpoint `json:"endpoints,omitempty"`
+}
+
+func (s *ListEndpointsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type LogsRequest struct {
@@ -1314,11 +1418,19 @@ type LogsRequest struct {
 	ServedModelName string `json:"-" url:"-"`
 }
 
+func (s *LogsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A representation of all DataPlaneInfo for operations that can be done on a
 // model through Data Plane APIs.
 type ModelDataPlaneInfo struct {
 	// Information required to query DataPlane API 'query' endpoint.
 	QueryInfo *DataPlaneInfo `json:"query_info,omitempty"`
+}
+
+func (s *ModelDataPlaneInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Configs needed to create an OpenAI model route.
@@ -1419,6 +1531,10 @@ type PatchServingEndpointTags struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *PatchServingEndpointTags) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Updates the telemetry configuration of a serving endpoint.
 type PatchTelemetryConfigRequest struct {
 	// The name of the serving endpoint whose telemetry configuration is being
@@ -1430,6 +1546,10 @@ type PatchTelemetryConfigRequest struct {
 	// tables. If not provided, the telemetry configuration will be removed from
 	// the endpoint.
 	TelemetryConfig *TelemetryConfig `json:"telemetry_config,omitempty"`
+}
+
+func (s *PatchTelemetryConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PayloadTable struct {
@@ -1455,6 +1575,10 @@ type PtEndpointCoreConfig struct {
 	ServedEntities []PtServedModel `json:"served_entities,omitempty"`
 
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+}
+
+func (s *PtEndpointCoreConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PtServedModel struct {
@@ -1514,6 +1638,10 @@ type PutAiGatewayRequest struct {
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
 }
 
+func (s *PutAiGatewayRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PutAiGatewayResponse struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
@@ -1534,6 +1662,10 @@ type PutAiGatewayResponse struct {
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
 }
 
+func (s *PutAiGatewayResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PutRequest struct {
 	// The name of the serving endpoint whose rate limits are being updated.
 	// This field is required.
@@ -1542,9 +1674,17 @@ type PutRequest struct {
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
 }
 
+func (s *PutRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PutResponse struct {
 	// The list of endpoint rate limits.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+}
+
+func (s *PutResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type QueryEndpointInput struct {
@@ -1712,6 +1852,10 @@ type RateLimit struct {
 	// Renewal period field for a serving endpoint rate limit. Currently, only
 	// 'minute' is supported.
 	RenewalPeriod RateLimitRenewalPeriod `json:"renewal_period"`
+}
+
+func (s *RateLimit) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type RateLimitKey string
@@ -2297,6 +2441,10 @@ type ServerLogsResponse struct {
 	Logs string `json:"logs"`
 }
 
+func (s *ServerLogsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ServingEndpoint struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
@@ -2581,6 +2729,10 @@ type ServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
+func (s *ServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Please keep this in sync with workload types in
 // InferenceEndpointEntities.scala.
 type ServingModelWorkloadType string
@@ -2688,6 +2840,10 @@ type TrafficConfig struct {
 	Routes []Route `json:"routes,omitempty"`
 }
 
+func (s *TrafficConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UnityCatalogTableNames struct {
 	// The full three-level Unity Catalog name (catalog.schema.table) of the
 	// table that receives exported annotations.
@@ -2722,6 +2878,10 @@ type UpdateInferenceEndpointNotifications struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *UpdateInferenceEndpointNotifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateInferenceEndpointNotificationsResponse struct {
 	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
 
@@ -2742,6 +2902,10 @@ type UpdateProvisionedThroughputEndpointConfigRequest struct {
 	Config PtEndpointCoreConfig `json:"config"`
 	// The name of the pt endpoint to update. This field is required.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *UpdateProvisionedThroughputEndpointConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type V1ResponseChoiceElement struct {

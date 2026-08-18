@@ -55,6 +55,10 @@ type Adlsgen2Info struct {
 	Destination string `json:"destination"`
 }
 
+func (s *Adlsgen2Info) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. Note that `max_workers` must be strictly greater than
@@ -347,10 +351,18 @@ func (s CancelPendingClusterEnforcementRequest) MarshalJSON() ([]byte, error) {
 type CancelPendingClusterEnforcementResponse struct {
 }
 
+func (s *CancelPendingClusterEnforcementResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ChangeClusterOwner struct {
 	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
 	OwnerUsername string `json:"owner_username"`
+}
+
+func (s *ChangeClusterOwner) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ClientsTypes struct {
@@ -375,9 +387,17 @@ type CloneCluster struct {
 	SourceClusterId string `json:"source_cluster_id"`
 }
 
+func (s *CloneCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CloudProviderNodeInfo struct {
 	// Status as reported by the cloud provider
 	Status []CloudProviderNodeStatus `json:"status,omitempty"`
+}
+
+func (s *CloudProviderNodeInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CloudProviderNodeStatus string
@@ -944,6 +964,10 @@ type ClusterLogConf struct {
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
+func (s *ClusterLogConf) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ClusterPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
@@ -1041,6 +1065,10 @@ type ClusterPermissionsRequest struct {
 	AccessControlList []ClusterAccessControlRequest `json:"access_control_list,omitempty"`
 	// The cluster for which to get or manage permissions.
 	ClusterId string `json:"-" url:"-"`
+}
+
+func (s *ClusterPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ClusterPolicyAccessControlRequest struct {
@@ -1178,6 +1206,10 @@ type ClusterPolicyPermissionsRequest struct {
 	AccessControlList []ClusterPolicyAccessControlRequest `json:"access_control_list,omitempty"`
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
+}
+
+func (s *ClusterPolicyPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Represents a change to the cluster settings required for the cluster to
@@ -1474,6 +1506,10 @@ type ClusterStatus struct {
 	ClusterId string `json:"-" url:"cluster_id"`
 }
 
+func (s *ClusterStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Command struct {
 	// Running cluster id
 	ClusterId string `json:"clusterId,omitempty"`
@@ -1550,6 +1586,10 @@ type CommandStatusRequest struct {
 	CommandId string `json:"-" url:"commandId"`
 
 	ContextId string `json:"-" url:"contextId"`
+}
+
+func (s *CommandStatusRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CommandStatusResponse struct {
@@ -1655,6 +1695,10 @@ type ContextStatusRequest struct {
 	ClusterId string `json:"-" url:"clusterId"`
 
 	ContextId string `json:"-" url:"contextId"`
+}
+
+func (s *ContextStatusRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ContextStatusResponse struct {
@@ -2256,9 +2300,17 @@ type DbfsStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
+func (s *DbfsStorageInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCluster struct {
 	// The cluster to be terminated.
 	ClusterId string `json:"cluster_id"`
+}
+
+func (s *DeleteCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteGlobalInitScriptRequest struct {
@@ -2266,14 +2318,26 @@ type DeleteGlobalInitScriptRequest struct {
 	ScriptId string `json:"-" url:"-"`
 }
 
+func (s *DeleteGlobalInitScriptRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteInstancePool struct {
 	// The instance pool to be terminated.
 	InstancePoolId string `json:"instance_pool_id"`
 }
 
+func (s *DeleteInstancePool) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeletePolicy struct {
 	// The ID of the policy to delete.
 	PolicyId string `json:"policy_id"`
+}
+
+func (s *DeletePolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Controls dependency configuration for the cluster.
@@ -2337,6 +2401,10 @@ type DestroyContext struct {
 	ContextId string `json:"contextId"`
 }
 
+func (s *DestroyContext) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Describes the disks that are launched for each instance in the spark cluster.
 // For example, if the cluster has 3 instances, each instance is configured to
 // launch 2 disks, 100 GiB each, then Databricks will launch a total of 6 disks,
@@ -2391,6 +2459,10 @@ type DiskType struct {
 	AzureDiskVolumeType DiskTypeAzureDiskVolumeType `json:"azure_disk_volume_type,omitempty"`
 
 	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
+}
+
+func (s *DiskType) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // All Azure Disk types that Databricks supports. See
@@ -3529,9 +3601,17 @@ type GcsStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
+func (s *GcsStorageInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetClusterComplianceRequest struct {
 	// The ID of the cluster to get the compliance status
 	ClusterId string `json:"-" url:"cluster_id"`
+}
+
+func (s *GetClusterComplianceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetClusterComplianceResponse struct {
@@ -3564,9 +3644,17 @@ type GetClusterPermissionLevelsRequest struct {
 	ClusterId string `json:"-" url:"-"`
 }
 
+func (s *GetClusterPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetClusterPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []ClusterPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+func (s *GetClusterPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetClusterPermissionsRequest struct {
@@ -3574,9 +3662,17 @@ type GetClusterPermissionsRequest struct {
 	ClusterId string `json:"-" url:"-"`
 }
 
+func (s *GetClusterPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetClusterPolicyPermissionLevelsRequest struct {
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
+}
+
+func (s *GetClusterPolicyPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetClusterPolicyPermissionLevelsResponse struct {
@@ -3584,9 +3680,17 @@ type GetClusterPolicyPermissionLevelsResponse struct {
 	PermissionLevels []ClusterPolicyPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetClusterPolicyPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetClusterPolicyPermissionsRequest struct {
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
+}
+
+func (s *GetClusterPolicyPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetClusterPolicyRequest struct {
@@ -3594,9 +3698,17 @@ type GetClusterPolicyRequest struct {
 	PolicyId string `json:"-" url:"policy_id"`
 }
 
+func (s *GetClusterPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetClusterRequest struct {
 	// The cluster about which to retrieve information.
 	ClusterId string `json:"-" url:"cluster_id"`
+}
+
+func (s *GetClusterRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetEvents struct {
@@ -3720,6 +3832,10 @@ type GetGlobalInitScriptRequest struct {
 	ScriptId string `json:"-" url:"-"`
 }
 
+func (s *GetGlobalInitScriptRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetInstancePool struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
@@ -3823,9 +3939,17 @@ type GetInstancePoolPermissionLevelsRequest struct {
 	InstancePoolId string `json:"-" url:"-"`
 }
 
+func (s *GetInstancePoolPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetInstancePoolPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []InstancePoolPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+func (s *GetInstancePoolPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetInstancePoolPermissionsRequest struct {
@@ -3833,9 +3957,17 @@ type GetInstancePoolPermissionsRequest struct {
 	InstancePoolId string `json:"-" url:"-"`
 }
 
+func (s *GetInstancePoolPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetInstancePoolRequest struct {
 	// The canonical unique identifier for the instance pool.
 	InstancePoolId string `json:"-" url:"instance_pool_id"`
+}
+
+func (s *GetInstancePoolRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPolicyFamilyRequest struct {
@@ -3859,6 +3991,10 @@ func (s GetPolicyFamilyRequest) MarshalJSON() ([]byte, error) {
 type GetSparkVersionsResponse struct {
 	// All the available Spark versions.
 	Versions []SparkVersion `json:"versions,omitempty"`
+}
+
+func (s *GetSparkVersionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GlobalInitScriptCreateRequest struct {
@@ -4138,6 +4274,10 @@ type InitScriptInfo struct {
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
+func (s *InitScriptInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type InitScriptInfoAndExecutionDetails struct {
 	// destination needs to be provided, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
@@ -4191,6 +4331,10 @@ type InstallLibraries struct {
 	ClusterId string `json:"cluster_id"`
 	// The libraries to install.
 	Libraries []Library `json:"libraries"`
+}
+
+func (s *InstallLibraries) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type InstancePoolAccessControlRequest struct {
@@ -4638,6 +4782,10 @@ type InstancePoolPermissionsRequest struct {
 	InstancePoolId string `json:"-" url:"-"`
 }
 
+func (s *InstancePoolPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The state of a Cluster. The current allowable state transitions are as
 // follows:
 //
@@ -4710,6 +4858,10 @@ type InstancePoolStatus struct {
 	// of the pool. The pending_instance_errors is emptied once the number of
 	// exiting available instances reaches the min_idle of the pool.
 	PendingInstanceErrors []PendingInstanceError `json:"pending_instance_errors,omitempty"`
+}
+
+func (s *InstancePoolStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type InstanceProfile struct {
@@ -4965,6 +5117,10 @@ type ListAllClusterLibraryStatusesResponse struct {
 	Statuses []ClusterLibraryStatuses `json:"statuses,omitempty"`
 }
 
+func (s *ListAllClusterLibraryStatusesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListAvailableZonesResponse struct {
 	// The availability zone if no ``zone_id`` is provided in the cluster
 	// creation request.
@@ -5035,6 +5191,10 @@ type ListClusterPoliciesRequest struct {
 	// The order in which the policies get listed. * `DESC` - Sort result list
 	// in descending order. * `ASC` - Sort result list in ascending order.
 	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+}
+
+func (s *ListClusterPoliciesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListClustersFilterBy struct {
@@ -5110,6 +5270,10 @@ type ListClustersSortBy struct {
 	// highest to lowest precedence: cluster state, pinned or unpinned, then
 	// cluster name.
 	Field ListClustersSortByField `json:"field,omitempty" url:"field,omitempty"`
+}
+
+func (s *ListClustersSortBy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListClustersSortByDirection string
@@ -5190,8 +5354,16 @@ type ListGlobalInitScriptsResponse struct {
 	Scripts []GlobalInitScriptDetails `json:"scripts,omitempty"`
 }
 
+func (s *ListGlobalInitScriptsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListInstancePools struct {
 	InstancePools []InstancePoolAndStats `json:"instance_pools,omitempty"`
+}
+
+func (s *ListInstancePools) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListInstanceProfilesResponse struct {
@@ -5199,14 +5371,26 @@ type ListInstanceProfilesResponse struct {
 	InstanceProfiles []InstanceProfile `json:"instance_profiles,omitempty"`
 }
 
+func (s *ListInstanceProfilesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListNodeTypesResponse struct {
 	// The list of available Spark node types.
 	NodeTypes []NodeType `json:"node_types,omitempty"`
 }
 
+func (s *ListNodeTypesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListPoliciesResponse struct {
 	// List of policies.
 	Policies []Policy `json:"policies,omitempty"`
+}
+
+func (s *ListPoliciesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListPolicyFamiliesRequest struct {
@@ -5321,6 +5505,10 @@ func (f *ListSortOrder) Type() string {
 type LocalFileInfo struct {
 	// local file destination, e.g. `file:/my/local/file.sh`
 	Destination string `json:"destination"`
+}
+
+func (s *LocalFileInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type LogAnalyticsInfo struct {
@@ -5485,6 +5673,10 @@ type NodeTypeFlexibility struct {
 	AlternateNodeTypeIds []string `json:"alternate_node_type_ids,omitempty"`
 }
 
+func (s *NodeTypeFlexibility) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Represents a pending enforcement on a cluster, which contains the changes to
 // make to the cluster configuration when the cluster is next terminated or
 // restarted.
@@ -5574,8 +5766,16 @@ type PermanentDeleteCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
+func (s *PermanentDeleteCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PinCluster struct {
 	ClusterId string `json:"cluster_id"`
+}
+
+func (s *PinCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Describes a Cluster Policy entity.
@@ -5702,6 +5902,10 @@ func (s RCranLibrary) MarshalJSON() ([]byte, error) {
 type RemoveInstanceProfile struct {
 	// The ARN of the instance profile to remove. This field is required.
 	InstanceProfileArn string `json:"instance_profile_arn"`
+}
+
+func (s *RemoveInstanceProfile) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ResizeCluster struct {
@@ -5997,6 +6201,10 @@ type StartCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
+func (s *StartCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The state of a Cluster. The current allowable state transitions are as
 // follows:
 //
@@ -6067,6 +6275,10 @@ type TerminationReason struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// type of the termination
 	Type TerminationReasonType `json:"type,omitempty"`
+}
+
+func (s *TerminationReason) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The status code indicating why the cluster was terminated
@@ -6713,8 +6925,16 @@ type UninstallLibraries struct {
 	Libraries []Library `json:"libraries"`
 }
 
+func (s *UninstallLibraries) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UnpinCluster struct {
 	ClusterId string `json:"cluster_id"`
+}
+
+func (s *UnpinCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateCluster struct {
@@ -6737,6 +6957,10 @@ type UpdateCluster struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	UpdateMask string `json:"update_mask"`
+}
+
+func (s *UpdateCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateClusterResource struct {
@@ -6920,14 +7144,26 @@ type VolumesStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
+func (s *VolumesStorageInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Cluster Attributes showing for clusters workload types.
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	Clients ClientsTypes `json:"clients"`
 }
 
+func (s *WorkloadType) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A storage location in Workspace Filesystem (WSFS)
 type WorkspaceStorageInfo struct {
 	// wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`
 	Destination string `json:"destination"`
+}
+
+func (s *WorkspaceStorageInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

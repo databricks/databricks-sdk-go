@@ -151,12 +151,24 @@ type AlertCondition struct {
 	Threshold *AlertConditionThreshold `json:"threshold,omitempty"`
 }
 
+func (s *AlertCondition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AlertConditionOperand struct {
 	Column *AlertOperandColumn `json:"column,omitempty"`
 }
 
+func (s *AlertConditionOperand) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AlertConditionThreshold struct {
 	Value *AlertOperandValue `json:"value,omitempty"`
+}
+
+func (s *AlertConditionThreshold) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // UNSPECIFIED - default unspecify value for proto enum, do not use it in the
@@ -645,6 +657,10 @@ type AlertV2Operand struct {
 	Value *AlertV2OperandValue `json:"value,omitempty"`
 }
 
+func (s *AlertV2Operand) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AlertV2OperandColumn struct {
 	// If not set, the behavior is equivalent to using `First row` in the UI.
 	Aggregation Aggregation `json:"aggregation,omitempty"`
@@ -743,6 +759,10 @@ type CancelExecutionRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
+}
+
+func (s *CancelExecutionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Configures the channel name and DBSQL version of the warehouse.
@@ -1117,6 +1137,10 @@ type CreateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
 }
 
+func (s *CreateAlertV2Request) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateDefaultWarehouseOverrideRequest struct {
 	// Required. The default warehouse override to create.
 	DefaultWarehouseOverride DefaultWarehouseOverride `json:"default_warehouse_override"`
@@ -1124,6 +1148,10 @@ type CreateDefaultWarehouseOverrideRequest struct {
 	// component of the override's resource name. Can be a numeric user ID or
 	// the literal string "me" for the current user.
 	DefaultWarehouseOverrideId string `json:"-" url:"default_warehouse_override_id"`
+}
+
+func (s *CreateDefaultWarehouseOverrideRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateQueryRequest struct {
@@ -1212,6 +1240,10 @@ func (s CreateQueryVisualizationsLegacyRequest) MarshalJSON() ([]byte, error) {
 
 type CreateVisualizationRequest struct {
 	Visualization *CreateVisualizationRequestVisualization `json:"visualization,omitempty"`
+}
+
+func (s *CreateVisualizationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateVisualizationRequestVisualization struct {
@@ -1409,6 +1441,10 @@ type CronSchedule struct {
 	TimezoneId string `json:"timezone_id"`
 }
 
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A JSON representing a dashboard containing widgets of visualizations and text
 // boxes.
 type Dashboard struct {
@@ -1590,6 +1626,10 @@ type DateRange struct {
 	End string `json:"end"`
 
 	Start string `json:"start"`
+}
+
+func (s *DateRange) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DateRangeValue struct {
@@ -1822,13 +1862,25 @@ type DeleteAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
+func (s *DeleteAlertsLegacyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
+}
+
+func (s *DeleteDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteDashboardWidgetRequest struct {
 	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteDashboardWidgetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteDefaultWarehouseOverrideRequest struct {
@@ -1839,8 +1891,16 @@ type DeleteDefaultWarehouseOverrideRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteDefaultWarehouseOverrideRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
+}
+
+func (s *DeleteQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteQueryVisualizationsLegacyRequest struct {
@@ -1848,13 +1908,25 @@ type DeleteQueryVisualizationsLegacyRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *DeleteQueryVisualizationsLegacyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteVisualizationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteWarehouseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Disposition string
@@ -2222,6 +2294,10 @@ func (s EndpointTagPair) MarshalJSON() ([]byte, error) {
 
 type EndpointTags struct {
 	CustomTags []EndpointTagPair `json:"custom_tags,omitempty"`
+}
+
+func (s *EndpointTags) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EnumValue struct {
@@ -2596,16 +2672,32 @@ type GetAlertRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *GetAlertRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAlertV2Request struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *GetAlertV2Request) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
+func (s *GetAlertsLegacyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
+}
+
+func (s *GetDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetDbsqlPermissionRequest struct {
@@ -2613,6 +2705,10 @@ type GetDbsqlPermissionRequest struct {
 	ObjectId string `json:"-" url:"-"`
 	// The type of object permissions to check.
 	ObjectType ObjectTypePlural `json:"-" url:"-"`
+}
+
+func (s *GetDbsqlPermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetDefaultWarehouseOverrideRequest struct {
@@ -2624,12 +2720,24 @@ type GetDefaultWarehouseOverrideRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDefaultWarehouseOverrideRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
+func (s *GetQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetQueryRequest struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *GetQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetResponse struct {
@@ -2656,6 +2764,10 @@ type GetStatementRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
+func (s *GetStatementRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
 	// The statement ID is returned upon successfully submitting a SQL
@@ -2663,9 +2775,17 @@ type GetStatementResultChunkNRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
+func (s *GetStatementResultChunkNRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetWarehousePermissionLevelsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
+}
+
+func (s *GetWarehousePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetWarehousePermissionLevelsResponse struct {
@@ -2673,14 +2793,26 @@ type GetWarehousePermissionLevelsResponse struct {
 	PermissionLevels []WarehousePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetWarehousePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetWarehousePermissionsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
 }
 
+func (s *GetWarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *GetWarehouseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetWarehouseResponse struct {
@@ -4087,6 +4219,10 @@ type QueryFilter struct {
 	WarehouseIds []string `json:"warehouse_ids,omitempty" url:"warehouse_ids,omitempty"`
 }
 
+func (s *QueryFilter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type QueryInfo struct {
 	// The ID of the cached query if this result retrieved from cache
 	CacheQueryId string `json:"cache_query_id,omitempty"`
@@ -4555,12 +4691,24 @@ type RepeatedEndpointConfPairs struct {
 	ConfigurationPairs []EndpointConfPair `json:"configuration_pairs,omitempty"`
 }
 
+func (s *RepeatedEndpointConfPairs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RestoreDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
+func (s *RestoreDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RestoreQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
+}
+
+func (s *RestoreQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Contains the result data of a single chunk when using `INLINE` disposition.
@@ -4863,6 +5011,10 @@ type SetRequest struct {
 	ObjectType ObjectTypePlural `json:"-" url:"-"`
 }
 
+func (s *SetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SetResponse struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
 	// An object's type and UUID, separated by a forward slash (/) character.
@@ -5024,6 +5176,10 @@ func (f *SpotInstancePolicy) Type() string {
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *StartRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // * State of a warehouse.
@@ -5245,8 +5401,16 @@ type StopRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *StopRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Success struct {
 	Message SuccessMessage `json:"message,omitempty"`
+}
+
+func (s *Success) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SuccessMessage string
@@ -5325,6 +5489,10 @@ type TerminationReason struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// type of the termination
 	Type TerminationReasonType `json:"type,omitempty"`
+}
+
+func (s *TerminationReason) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The status code indicating why the cluster was terminated
@@ -6033,6 +6201,10 @@ type TrashAlertRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *TrashAlertRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type TrashAlertV2Request struct {
 	Id string `json:"-" url:"-"`
 	// Whether to permanently delete the alert. If not set, the alert will only
@@ -6052,6 +6224,10 @@ func (s TrashAlertV2Request) MarshalJSON() ([]byte, error) {
 
 type TrashQueryRequest struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *TrashQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateAlertRequest struct {
@@ -6141,6 +6317,10 @@ type UpdateAlertV2Request struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateAlertV2Request) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateDefaultWarehouseOverrideRequest struct {
@@ -6259,6 +6439,10 @@ type UpdateVisualizationRequest struct {
 	UpdateMask string `json:"update_mask"`
 
 	Visualization *UpdateVisualizationRequestVisualization `json:"visualization,omitempty"`
+}
+
+func (s *UpdateVisualizationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateVisualizationRequestVisualization struct {
@@ -6511,6 +6695,10 @@ type WarehousePermissionsRequest struct {
 	AccessControlList []WarehouseAccessControlRequest `json:"access_control_list,omitempty"`
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
+}
+
+func (s *WarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // * Configuration values to enable or disable the access to specific warehouse

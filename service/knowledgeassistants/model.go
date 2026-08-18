@@ -18,9 +18,17 @@ type CreateExampleRequest struct {
 	Parent string `json:"-" url:"-"`
 }
 
+func (s *CreateExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateKnowledgeAssistantRequest struct {
 	// The Knowledge Assistant to create.
 	KnowledgeAssistant KnowledgeAssistant `json:"knowledge_assistant"`
+}
+
+func (s *CreateKnowledgeAssistantRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateKnowledgeSourceRequest struct {
@@ -30,10 +38,18 @@ type CreateKnowledgeSourceRequest struct {
 	Parent string `json:"-" url:"-"`
 }
 
+func (s *CreateKnowledgeSourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteExampleRequest struct {
 	// The resource name of the example to delete. Format:
 	// knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteKnowledgeAssistantRequest struct {
@@ -42,10 +58,18 @@ type DeleteKnowledgeAssistantRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteKnowledgeAssistantRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteKnowledgeSourceRequest struct {
 	// The resource name of the Knowledge Source to delete. Format:
 	// knowledge-assistants/{knowledge_assistant_id}/knowledge-sources/{knowledge_source_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteKnowledgeSourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // An example associated with a Knowledge Assistant. Contains a question and
@@ -87,10 +111,18 @@ type FileTableSpec struct {
 	TableName string `json:"table_name"`
 }
 
+func (s *FileTableSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // FilesSpec specifies a files source configuration.
 type FilesSpec struct {
 	// A UC volume path that includes a list of files.
 	Path string `json:"path"`
+}
+
+func (s *FilesSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetExampleRequest struct {
@@ -99,9 +131,17 @@ type GetExampleRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetKnowledgeAssistantPermissionLevelsRequest struct {
 	// The knowledge assistant for which to get or manage permissions.
 	KnowledgeAssistantId string `json:"-" url:"-"`
+}
+
+func (s *GetKnowledgeAssistantPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetKnowledgeAssistantPermissionLevelsResponse struct {
@@ -109,9 +149,17 @@ type GetKnowledgeAssistantPermissionLevelsResponse struct {
 	PermissionLevels []KnowledgeAssistantPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetKnowledgeAssistantPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetKnowledgeAssistantPermissionsRequest struct {
 	// The knowledge assistant for which to get or manage permissions.
 	KnowledgeAssistantId string `json:"-" url:"-"`
+}
+
+func (s *GetKnowledgeAssistantPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetKnowledgeAssistantRequest struct {
@@ -120,10 +168,18 @@ type GetKnowledgeAssistantRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetKnowledgeAssistantRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetKnowledgeSourceRequest struct {
 	// The resource name of the Knowledge Source. Format:
 	// knowledge-assistants/{knowledge_assistant_id}/knowledge-sources/{knowledge_source_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetKnowledgeSourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // IndexSpec specifies a vector search index source configuration.
@@ -136,6 +192,10 @@ type IndexSpec struct {
 	IndexName string `json:"index_name"`
 	// The column that includes the document text for retrieval.
 	TextCol string `json:"text_col"`
+}
+
+func (s *IndexSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Entity message that represents a knowledge assistant. Note: REQUIRED
@@ -321,6 +381,10 @@ type KnowledgeAssistantPermissionsRequest struct {
 	AccessControlList []KnowledgeAssistantAccessControlRequest `json:"access_control_list,omitempty"`
 	// The knowledge assistant for which to get or manage permissions.
 	KnowledgeAssistantId string `json:"-" url:"-"`
+}
+
+func (s *KnowledgeAssistantPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type KnowledgeAssistantState string
@@ -571,6 +635,10 @@ type SyncKnowledgeSourcesRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *SyncKnowledgeSourcesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateExampleRequest struct {
 	Example Example `json:"example"`
 	// The resource name of the example to update. Format:
@@ -579,6 +647,10 @@ type UpdateExampleRequest struct {
 	// Comma-delimited list of fields to update on the example. Allowed values:
 	// `question`, `guidelines`. Examples: - `question` - `question,guidelines`
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateKnowledgeAssistantRequest struct {
@@ -596,6 +668,10 @@ type UpdateKnowledgeAssistantRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateKnowledgeAssistantRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateKnowledgeSourceRequest struct {
 	// The Knowledge Source update payload. Only fields listed in update_mask
 	// are updated. REQUIRED annotations on Knowledge Source fields describe
@@ -609,4 +685,8 @@ type UpdateKnowledgeSourceRequest struct {
 	// values: `display_name`, `description`. Examples: - `display_name` -
 	// `display_name,description`
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateKnowledgeSourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

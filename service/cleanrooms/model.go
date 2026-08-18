@@ -211,10 +211,18 @@ type CleanRoomAssetForeignTable struct {
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
+func (s *CleanRoomAssetForeignTable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CleanRoomAssetForeignTableLocalDetails struct {
 	// The fully qualified name of the foreign table in its owner's local
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
 	LocalName string `json:"local_name"`
+}
+
+func (s *CleanRoomAssetForeignTableLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CleanRoomAssetJarAnalysis struct {
@@ -329,6 +337,10 @@ type CleanRoomAssetTable struct {
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
+func (s *CleanRoomAssetTable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CleanRoomAssetTableLocalDetails struct {
 	// The fully qualified name of the table in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*table_name*
@@ -337,9 +349,17 @@ type CleanRoomAssetTableLocalDetails struct {
 	Partitions []sharing.Partition `json:"partitions,omitempty"`
 }
 
+func (s *CleanRoomAssetTableLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CleanRoomAssetView struct {
 	// The metadata information of the columns in the view
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
+}
+
+func (s *CleanRoomAssetView) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CleanRoomAssetViewLocalDetails struct {
@@ -348,10 +368,18 @@ type CleanRoomAssetViewLocalDetails struct {
 	LocalName string `json:"local_name"`
 }
 
+func (s *CleanRoomAssetViewLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CleanRoomAssetVolumeLocalDetails struct {
 	// The fully qualified name of the volume in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*volume_name*
 	LocalName string `json:"local_name"`
+}
+
+func (s *CleanRoomAssetVolumeLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CleanRoomAutoApprovalRule struct {
@@ -1009,6 +1037,10 @@ type CreateCleanRoomAssetRequest struct {
 	CleanRoomName string `json:"-" url:"-"`
 }
 
+func (s *CreateCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCleanRoomAssetReviewRequest struct {
 	// Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
@@ -1022,6 +1054,10 @@ type CreateCleanRoomAssetReviewRequest struct {
 	NotebookReview *NotebookVersionReview `json:"notebook_review,omitempty"`
 }
 
+func (s *CreateCleanRoomAssetReviewRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCleanRoomAssetReviewResponse struct {
 	// top-level status derived from all reviews
 	JarAnalysisReviewState CleanRoomJarAnalysisReviewJarAnalysisReviewState `json:"jar_analysis_review_state,omitempty"`
@@ -1033,10 +1069,18 @@ type CreateCleanRoomAssetReviewResponse struct {
 	NotebookReviews []CleanRoomNotebookReview `json:"notebook_reviews,omitempty"`
 }
 
+func (s *CreateCleanRoomAssetReviewResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCleanRoomAutoApprovalRuleRequest struct {
 	AutoApprovalRule CleanRoomAutoApprovalRule `json:"auto_approval_rule"`
 	// The name of the clean room this auto-approval rule belongs to.
 	CleanRoomName string `json:"-" url:"-"`
+}
+
+func (s *CreateCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateCleanRoomOutputCatalogRequest struct {
@@ -1046,12 +1090,24 @@ type CreateCleanRoomOutputCatalogRequest struct {
 	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
+func (s *CreateCleanRoomOutputCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCleanRoomOutputCatalogResponse struct {
 	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
+func (s *CreateCleanRoomOutputCatalogResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCleanRoomRequest struct {
 	CleanRoom CleanRoom `json:"clean_room"`
+}
+
+func (s *CreateCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteCleanRoomAssetRequest struct {
@@ -1064,15 +1120,27 @@ type DeleteCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCleanRoomAutoApprovalRuleRequest struct {
 	CleanRoomName string `json:"-" url:"-"`
 
 	RuleId string `json:"-" url:"-"`
 }
 
+func (s *DeleteCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetCleanRoomAssetRequest struct {
@@ -1083,6 +1151,10 @@ type GetCleanRoomAssetRequest struct {
 	// The fully qualified name of the asset, it is same as the name field in
 	// CleanRoomAsset.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetCleanRoomAssetRevisionRequest struct {
@@ -1097,14 +1169,26 @@ type GetCleanRoomAssetRevisionRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetCleanRoomAssetRevisionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetCleanRoomAutoApprovalRuleRequest struct {
 	CleanRoomName string `json:"-" url:"-"`
 
 	RuleId string `json:"-" url:"-"`
 }
 
+func (s *GetCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetCleanRoomRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type JarAnalysisVersionReview struct {
@@ -1396,6 +1480,10 @@ type UpdateCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *UpdateCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateCleanRoomAutoApprovalRuleRequest struct {
 	// The auto-approval rule to update. The rule_id field is used to identify
 	// the rule to update.
@@ -1406,8 +1494,16 @@ type UpdateCleanRoomAutoApprovalRuleRequest struct {
 	RuleId string `json:"-" url:"-"`
 }
 
+func (s *UpdateCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateCleanRoomRequest struct {
 	CleanRoom *CleanRoom `json:"clean_room,omitempty"`
 	// Name of the clean room.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *UpdateCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

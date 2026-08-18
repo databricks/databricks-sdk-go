@@ -167,10 +167,18 @@ type DeleteEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteIndexRequest struct {
 	// Full resource name of the index to delete. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Specification for a Delta Sync index — the index is kept in sync with a
@@ -517,10 +525,18 @@ type GetEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetIndexRequest struct {
 	// Full resource name of the index. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // An AI Search index — a searchable collection of vectors and metadata hosted
@@ -883,6 +899,10 @@ type QueryIndexResponse struct {
 	Result *ResultData `json:"result,omitempty"`
 }
 
+func (s *QueryIndexResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request to remove rows by primary key from a Direct Access AI Search index.
 // Named RemoveData (not DeleteData) so the linter does not classify it as a
 // standard AIP-135 Delete method — it deletes rows within an index, not the
@@ -895,12 +915,20 @@ type RemoveDataRequest struct {
 	PrimaryKeys []string `json:"primary_keys"`
 }
 
+func (s *RemoveDataRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Response for RemoveData.
 type RemoveDataResponse struct {
 	// Per-row outcome of the delete.
 	Result *DataModificationResult `json:"result,omitempty"`
 	// Overall status of the delete.
 	Status DataModificationStatus `json:"status,omitempty"`
+}
+
+func (s *RemoveDataResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Configuration for reranking query results with a reranker model.
@@ -966,6 +994,10 @@ func (f *RerankerConfigModelType) Type() string {
 type RerankerConfigRerankerParameters struct {
 	// Columns whose values are concatenated and sent to the reranker.
 	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
+}
+
+func (s *RerankerConfigRerankerParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The rows of a query result set.
@@ -1103,9 +1135,17 @@ type SyncIndexRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *SyncIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Response for SyncIndex. Empty today; reserved so future sync metadata (e.g.
 // an operation handle) can be added without breaking the wire contract.
 type SyncIndexResponse struct {
+}
+
+func (s *SyncIndexResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // State of the most recent throughput change request issued against a Storage
@@ -1174,6 +1214,10 @@ type UpdateEndpointRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request to upsert rows into a Direct Access AI Search index.
 type UpsertDataRequest struct {
 	// JSON document describing the rows to upsert.
@@ -1183,10 +1227,18 @@ type UpsertDataRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *UpsertDataRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Response for UpsertData.
 type UpsertDataResponse struct {
 	// Per-row outcome of the upsert.
 	Result *DataModificationResult `json:"result,omitempty"`
 	// Overall status of the upsert.
 	Status DataModificationStatus `json:"status,omitempty"`
+}
+
+func (s *UpsertDataResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

@@ -16,6 +16,10 @@ type App struct {
 	Name string `json:"name"`
 }
 
+func (s *App) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateExampleRequest struct {
 	// The example to create under the parent Supervisor Agent.
 	Example Example `json:"example"`
@@ -24,9 +28,17 @@ type CreateExampleRequest struct {
 	Parent string `json:"-" url:"-"`
 }
 
+func (s *CreateExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateSupervisorAgentRequest struct {
 	// The Supervisor Agent to create.
 	SupervisorAgent SupervisorAgent `json:"supervisor_agent"`
+}
+
+func (s *CreateSupervisorAgentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateToolRequest struct {
@@ -40,10 +52,18 @@ type CreateToolRequest struct {
 	ToolId string `json:"-" url:"tool_id"`
 }
 
+func (s *CreateToolRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteExampleRequest struct {
 	// The resource name of the example to delete. Format:
 	// supervisor-agents/{supervisor_agent_id}/examples/{example_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteSupervisorAgentRequest struct {
@@ -52,10 +72,18 @@ type DeleteSupervisorAgentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteSupervisorAgentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteToolRequest struct {
 	// The resource name of the Tool. Format:
 	// supervisor-agents/{supervisor_agent_id}/tools/{tool_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteToolRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // An example associated with a Supervisor Agent. Contains a question and
@@ -88,10 +116,18 @@ type GenieSpace struct {
 	Id string `json:"id"`
 }
 
+func (s *GenieSpace) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetExampleRequest struct {
 	// The resource name of the example. Format:
 	// supervisor-agents/{supervisor_agent_id}/examples/{example_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetSupervisorAgentPermissionLevelsRequest struct {
@@ -99,14 +135,26 @@ type GetSupervisorAgentPermissionLevelsRequest struct {
 	SupervisorAgentId string `json:"-" url:"-"`
 }
 
+func (s *GetSupervisorAgentPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSupervisorAgentPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []SupervisorAgentPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetSupervisorAgentPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSupervisorAgentPermissionsRequest struct {
 	// The supervisor agent for which to get or manage permissions.
 	SupervisorAgentId string `json:"-" url:"-"`
+}
+
+func (s *GetSupervisorAgentPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetSupervisorAgentRequest struct {
@@ -115,10 +163,18 @@ type GetSupervisorAgentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetSupervisorAgentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetToolRequest struct {
 	// The resource name of the Tool. Format:
 	// supervisor-agents/{supervisor_agent_id}/tools/{tool_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetToolRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type KnowledgeAssistant struct {
@@ -427,6 +483,10 @@ type SupervisorAgentPermissionsRequest struct {
 	SupervisorAgentId string `json:"-" url:"-"`
 }
 
+func (s *SupervisorAgentPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Tool struct {
 	App *App `json:"app,omitempty"`
 	// Description of what this tool does (user-facing).
@@ -474,9 +534,17 @@ type UcConnection struct {
 	Name string `json:"name"`
 }
 
+func (s *UcConnection) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UcFunction struct {
 	// Full uc function name
 	Name string `json:"name"`
+}
+
+func (s *UcFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateExampleRequest struct {
@@ -489,6 +557,10 @@ type UpdateExampleRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateExampleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateSupervisorAgentRequest struct {
 	// The resource name of the SupervisorAgent. Format:
 	// supervisor-agents/{supervisor_agent_id}
@@ -497,6 +569,10 @@ type UpdateSupervisorAgentRequest struct {
 	SupervisorAgent SupervisorAgent `json:"supervisor_agent"`
 	// Field mask for fields to be updated.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateSupervisorAgentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateToolRequest struct {
@@ -509,7 +585,15 @@ type UpdateToolRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateToolRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Volume struct {
 	// Full uc volume name
 	Name string `json:"name"`
+}
+
+func (s *Volume) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

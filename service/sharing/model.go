@@ -160,6 +160,10 @@ type CreateFederationPolicyRequest struct {
 	RecipientName string `json:"-" url:"-"`
 }
 
+func (s *CreateFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateProvider struct {
 	AuthenticationType AuthenticationType `json:"authentication_type"`
 	// Description about the provider.
@@ -247,9 +251,17 @@ type DeleteFederationPolicyRequest struct {
 	RecipientName string `json:"-" url:"-"`
 }
 
+func (s *DeleteFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteProviderRequest struct {
 	// Name of the provider.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteProviderRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteRecipientRequest struct {
@@ -257,9 +269,17 @@ type DeleteRecipientRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteRecipientRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteShareRequest struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteShareRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Represents a UC dependency.
@@ -269,10 +289,18 @@ type DeltaSharingDependency struct {
 	Table *DeltaSharingTableDependency `json:"table,omitempty"`
 }
 
+func (s *DeltaSharingDependency) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Represents a list of dependencies.
 type DeltaSharingDependencyList struct {
 	// An array of Dependency.
 	Dependencies []DeltaSharingDependency `json:"dependencies,omitempty"`
+}
+
+func (s *DeltaSharingDependencyList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeltaSharingFunction struct {
@@ -426,6 +454,10 @@ type FunctionParameterInfos struct {
 	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
 }
 
+func (s *FunctionParameterInfos) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type FunctionParameterMode string
 
 const FunctionParameterModeIn FunctionParameterMode = `IN`
@@ -508,6 +540,10 @@ type GetActivationUrlInfoRequest struct {
 	ActivationUrl string `json:"-" url:"-"`
 }
 
+func (s *GetActivationUrlInfoRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the policy to be retrieved.
 	Name string `json:"-" url:"-"`
@@ -516,14 +552,26 @@ type GetFederationPolicyRequest struct {
 	RecipientName string `json:"-" url:"-"`
 }
 
+func (s *GetFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetProviderRequest struct {
 	// Name of the provider.
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetProviderRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetRecipientRequest struct {
 	// Name of the recipient.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetRecipientRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetRecipientSharePermissionsResponse struct {
@@ -584,6 +632,10 @@ func (s GetShareRequest) MarshalJSON() ([]byte, error) {
 type IpAccessList struct {
 	// Allowed IP Addresses in CIDR notation. Limit of 100.
 	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
+}
+
+func (s *IpAccessList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListFederationPoliciesRequest struct {
@@ -659,6 +711,10 @@ type ListProviderShareAssetsResponse struct {
 	Tables []Table `json:"tables,omitempty"`
 	// The list of volumes in the share.
 	Volumes []Volume `json:"volumes,omitempty"`
+}
+
+func (s *ListProviderShareAssetsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListProviderSharesResponse struct {
@@ -879,9 +935,17 @@ type OidcFederationPolicy struct {
 	SubjectClaim string `json:"subject_claim"`
 }
 
+func (s *OidcFederationPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Partition struct {
 	// An array of partition values.
 	Values []PartitionValue `json:"values,omitempty"`
+}
+
+func (s *Partition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PartitionValue struct {
@@ -1346,6 +1410,10 @@ type RetrieveTokenRequest struct {
 	ActivationUrl string `json:"-" url:"-"`
 }
 
+func (s *RetrieveTokenRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RetrieveTokenResponse struct {
 	// The token used to authorize the recipient.
 	BearerToken string `json:"bearerToken,omitempty"`
@@ -1377,11 +1445,19 @@ type RotateRecipientToken struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *RotateRecipientToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // An object with __properties__ containing map of key-value properties attached
 // to the securable.
 type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties"`
+}
+
+func (s *SecurablePropertiesKvPairs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Share struct {
@@ -1724,6 +1800,10 @@ type SharedDataObjectUpdate struct {
 	DataObject *SharedDataObject `json:"data_object,omitempty"`
 }
 
+func (s *SharedDataObjectUpdate) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SharedDataObjectUpdateAction string
 
 const SharedDataObjectUpdateActionAdd SharedDataObjectUpdateAction = `ADD`
@@ -1965,6 +2045,10 @@ func (s UpdateSharePermissions) MarshalJSON() ([]byte, error) {
 type UpdateSharePermissionsResponse struct {
 	// The privileges assigned to each principal
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+func (s *UpdateSharePermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Volume struct {
