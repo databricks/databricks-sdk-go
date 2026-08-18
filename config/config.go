@@ -132,9 +132,9 @@ type Config struct {
 	// GroupID is the ID of the Databricks group whose role is assumed through
 	// role-based access control (RBAC).
 	//
-	// Warning: Group role assumption currently works only for workspace
-	// authorization. Unified authentication passes the group ID to the OAuth
-	// server for compatibility with future support.
+	// Warning: As of August 2026, group role assumption works only for workspace
+	// authorization. Unified authentication still passes the group ID to the OAuth
+	// server and may work in the future if server support is added.
 	GroupID string `name:"group_id" env:"DATABRICKS_GROUP_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`

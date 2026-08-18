@@ -229,8 +229,9 @@ func WithDiscoveryAccountTarget() PersistentAuthOption {
 // exchange, refresh, and API requests do not resend it.
 //
 // Warning: Account authentication does not support group role assumption.
-// Unified authentication passes the group ID to the OAuth server, which may
-// reject it until unified group role assumption is supported.
+// As of August 2026, unified authentication rejects the group ID. The SDK still
+// passes it to the OAuth server so unified role assumption may work in the future
+// if server support is added.
 func WithGroupID(groupID string) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.groupID = groupID
@@ -566,7 +567,8 @@ func (a *PersistentAuth) resolveScopes() []string {
 	return scopes
 }
 
-// oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
+// oauth2Config returns the common OAuth2 configuration used for authorization
+// and token refresh.
 func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	scopes := a.resolveScopes()
 
@@ -600,7 +602,8 @@ func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	}, nil
 }
 
-// authorizationConfig adds parameters used only by the OAuth authorization request.
+// authorizationConfig extends the common OAuth2 configuration with parameters
+// used only for the initial authorization request, such as group role assumption.
 func (a *PersistentAuth) authorizationConfig() (*oauth2.Config, error) {
 	config, err := a.oauth2Config()
 	if err != nil {
