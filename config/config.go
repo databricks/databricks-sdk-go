@@ -261,7 +261,7 @@ type Config struct {
 	// internal client used in for authentication purposes:
 	//  - Databricks Metadata Service: request/refresh tokens from parent processes, like Databricks VSCode extension
 	//	- Azure Active Directory (AAD): request/refresh OAuth tokens
-	//  - Azure Instance Metadata Service (IMDS): request/refresh OAuth tokens for Azure Managed Identity
+	//  - Azure managed identity endpoints: request/refresh OAuth tokens for Azure Managed Identity
 	//  - Azure Resource Manager (ARM): resolve host if only Azure Databricks Resource ID provided
 	refreshClient *httpclient.ApiClient
 

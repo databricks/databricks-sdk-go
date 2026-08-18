@@ -44,6 +44,7 @@ func assertHeaders(t *testing.T, cfg *Config, expectedHeaders map[string]string)
 }
 
 func TestMsiHappyFlow(t *testing.T) {
+	withMockEnv(t, map[string]string{})
 	assertHeaders(t, &Config{
 		AzureUseMSI:     true,
 		AzureResourceID: "/a/b/c",
@@ -84,6 +85,7 @@ func TestMsiHappyFlow(t *testing.T) {
 }
 
 func TestMsiFailsOnResolveWorkspace(t *testing.T) {
+	withMockEnv(t, map[string]string{})
 	_, err := authenticateRequest(&Config{
 		AzureUseMSI:     true,
 		AzureResourceID: "/a/b/c",
@@ -106,6 +108,7 @@ func TestMsiFailsOnResolveWorkspace(t *testing.T) {
 }
 
 func TestMsiTokenNotFound(t *testing.T) {
+	withMockEnv(t, map[string]string{})
 	_, err := authenticateRequest(&Config{
 		AzureUseMSI:     true,
 		AzureClientID:   "abc",
@@ -122,6 +125,7 @@ func TestMsiTokenNotFound(t *testing.T) {
 }
 
 func TestMsiHappyFlowWithHostAndNoResourceID(t *testing.T) {
+	withMockEnv(t, map[string]string{})
 	assertHeaders(t, &Config{
 		Host:        "https://adb-123.4.azuredatabricks.net",
 		AzureUseMSI: true,
@@ -149,6 +153,7 @@ func TestMsiHappyFlowWithHostAndNoResourceID(t *testing.T) {
 }
 
 func TestMsiInvalidTokenExpiry(t *testing.T) {
+	withMockEnv(t, map[string]string{})
 	_, err := authenticateRequest(&Config{
 		AzureUseMSI:     true,
 		AzureResourceID: "/a/b/c",
