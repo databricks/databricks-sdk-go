@@ -4802,9 +4802,10 @@ func (s RestoreRunsResponse) MarshalJSON() ([]byte, error) {
 // replacement for ContinuousWindow: `delay` is the non-negative counterpart of
 // the legacy non-positive `ContinuousWindow.offset`.
 type RollingWindow struct {
-	// The delay applied to the end of the rolling window (must be
-	// non-negative). For example, delay=1d shifts the window end 1 day before
-	// the evaluation time.
+	// Non-negative analytic lag that evaluates the window this far in the past.
+	// Use this for timing variations unrelated to source lateness, such as a
+	// 30-day count as of one week ago. If unset, the analytic lag is zero. It
+	// composes with source.lateness when both are set.
 	Delay *duration.Duration `json:"delay,omitempty"`
 	// The duration of the rolling window. Must be positive when set; absent
 	// means lifetime (aggregate over the entity's entire history).
@@ -4973,8 +4974,7 @@ func (s RunTag) MarshalJSON() ([]byte, error) {
 // control plane can explicitly identify hybrid (sawtooth) features rather than
 // inferring hybrid behavior from window_duration.
 type SawtoothWindow struct {
-	// The delay applied to the end of the window (must be non-negative). For
-	// example, delay=1d shifts the window end 1 day before the evaluation time.
+	// Delay is not currently supported for Sawtooth windows.
 	Delay *duration.Duration `json:"delay,omitempty"`
 	// The duration of the window. Must be positive and span more than two days
 	// when set, so that both the batch (N-1 day) and stale-path (N-2 day)

@@ -2794,6 +2794,9 @@ func (f *ServingModelWorkloadType) Type() string {
 }
 
 type TelemetryConfig struct {
+	// The telemetry signals to enable for this endpoint. If empty or omitted,
+	// all signals are enabled; otherwise only the listed signals are enabled.
+	EnabledTelemetryFeatures []TelemetryFeature `json:"enabled_telemetry_features,omitempty"`
 	// Configuration for inference table payload logging, including sampling.
 	InferenceTableConfig *TelemetryInferenceTableConfig `json:"inference_table_config,omitempty"`
 	// The Unity Catalog tables to which endpoint telemetry (logs, traces, and
@@ -2814,6 +2817,51 @@ func (s *TelemetryConfig) UnmarshalJSON(b []byte) error {
 
 func (s TelemetryConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A telemetry signal that a serving endpoint can export to Unity Catalog. Use
+// these values to select which signals the endpoint exports.
+type TelemetryFeature string
+
+const TelemetryFeatureTelemetryFeatureInferenceTable TelemetryFeature = `TELEMETRY_FEATURE_INFERENCE_TABLE`
+
+const TelemetryFeatureTelemetryFeatureLogs TelemetryFeature = `TELEMETRY_FEATURE_LOGS`
+
+const TelemetryFeatureTelemetryFeatureMetrics TelemetryFeature = `TELEMETRY_FEATURE_METRICS`
+
+const TelemetryFeatureTelemetryFeatureTraces TelemetryFeature = `TELEMETRY_FEATURE_TRACES`
+
+// String representation for [fmt.Print]
+func (f *TelemetryFeature) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TelemetryFeature) Set(v string) error {
+	switch v {
+	case `TELEMETRY_FEATURE_INFERENCE_TABLE`, `TELEMETRY_FEATURE_LOGS`, `TELEMETRY_FEATURE_METRICS`, `TELEMETRY_FEATURE_TRACES`:
+		*f = TelemetryFeature(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TELEMETRY_FEATURE_INFERENCE_TABLE", "TELEMETRY_FEATURE_LOGS", "TELEMETRY_FEATURE_METRICS", "TELEMETRY_FEATURE_TRACES"`, v)
+	}
+}
+
+// Values returns all possible values for TelemetryFeature.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TelemetryFeature) Values() []TelemetryFeature {
+	return []TelemetryFeature{
+		TelemetryFeatureTelemetryFeatureInferenceTable,
+		TelemetryFeatureTelemetryFeatureLogs,
+		TelemetryFeatureTelemetryFeatureMetrics,
+		TelemetryFeatureTelemetryFeatureTraces,
+	}
+}
+
+// Type always returns TelemetryFeature to satisfy [pflag.Value] interface
+func (f *TelemetryFeature) Type() string {
+	return "TelemetryFeature"
 }
 
 // Inference table payload logging configuration

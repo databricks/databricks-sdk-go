@@ -87,8 +87,7 @@ type CreateCredentialsRequest struct {
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure
 	// DevOps Services, including Microsoft Entra ID authentication),
 	// `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
-	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`
-	// (deprecated by AWS, not accepting new customers).
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`.
 	GitProvider string `json:"git_provider"`
 	// The username provided with your Git provider account and associated with
 	// the credential. For most Git providers it is only used to set the Git
@@ -168,8 +167,7 @@ type CreateRepoRequest struct {
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure
 	// DevOps Services, including Microsoft Entra ID authentication),
 	// `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
-	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`
-	// (deprecated by AWS, not accepting new customers).
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`.
 	Provider string `json:"provider"`
 	// If specified, the repo will be created with sparse checkout enabled. You
 	// cannot enable/disable sparse checkout after the repo is created.
@@ -200,8 +198,7 @@ type CreateRepoResponse struct {
 	Path string `json:"path,omitempty"`
 	// Git provider of the linked Git repository, e.g. `gitHub`,
 	// `azureDevOpsServices`, `bitbucketServer` (Bitbucket Data Center),
-	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`
-	// (deprecated).
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`.
 	Provider string `json:"provider,omitempty"`
 	// Sparse checkout settings for the Git folder (repo).
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
@@ -255,7 +252,7 @@ type CredentialInfo struct {
 	// `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services,
 	// including Microsoft Entra ID authentication), `gitHubEnterprise`,
 	// `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition`
-	// (GitLab Self-Managed), or `awsCodeCommit` (deprecated).
+	// (GitLab Self-Managed), or `awsCodeCommit`.
 	GitProvider string `json:"git_provider,omitempty"`
 	// The username provided with your Git provider account and associated with
 	// the credential. For most Git providers it is only used to set the Git
@@ -596,8 +593,7 @@ type GetRepoResponse struct {
 	Path string `json:"path,omitempty"`
 	// Git provider of the linked Git repository, e.g. `gitHub`,
 	// `azureDevOpsServices`, `bitbucketServer` (Bitbucket Data Center),
-	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`
-	// (deprecated).
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`.
 	Provider string `json:"provider,omitempty"`
 	// Sparse checkout settings for the Git folder (repo).
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
@@ -1153,8 +1149,7 @@ type RepoInfo struct {
 	Path string `json:"path,omitempty"`
 	// Git provider of the remote git repository, e.g. `gitHub`,
 	// `azureDevOpsServices`, `bitbucketServer` (Bitbucket Data Center),
-	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`
-	// (deprecated).
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), or `awsCodeCommit`.
 	Provider string `json:"provider,omitempty"`
 	// Sparse checkout config for the git folder (repo).
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
@@ -1397,8 +1392,7 @@ type UpdateCredentialsRequest struct {
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure
 	// DevOps Services, including Microsoft Entra ID authentication),
 	// `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
-	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`
-	// (deprecated by AWS, not accepting new customers).
+	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`.
 	GitProvider string `json:"git_provider"`
 	// The username provided with your Git provider account and associated with
 	// the credential. For most Git providers it is only used to set the Git
