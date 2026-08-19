@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `EnabledTelemetryFeatures` field for [serving.TelemetryConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#TelemetryConfig).
