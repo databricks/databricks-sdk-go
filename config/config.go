@@ -146,8 +146,8 @@ type Config struct {
 	// will disable the fallback mechanism.
 	OAuthCallbackPort int `name:"oauth_callback_port" env:"DATABRICKS_OAUTH_CALLBACK_PORT" auth:"-"`
 
-	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT" auth:"google" auth_types:"google-id"`
-	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive" auth_types:"google-credentials"`
+	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT" auth:"google" auth_types:"google-id,oauth-m2m-gcp"`
+	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive" auth_types:"google-credentials,oauth-m2m-gcp"`
 
 	// Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
 	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure" auth_types:"azure-cli,azure-msi"`
@@ -176,8 +176,8 @@ type Config struct {
 	// versions of Go SDK.
 	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
 
-	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m"`
-	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m"`
+	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m,oauth-m2m-gcp"`
+	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m,oauth-m2m-gcp"`
 
 	// Scopes is a list of OAuth scopes to request when authenticating.
 	//
