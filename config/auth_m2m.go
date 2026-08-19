@@ -22,6 +22,24 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if cfg.ClientID == "" || cfg.ClientSecret == "" {
 		return nil, nil
 	}
+	ts, err := databricksOAuthTokenSource(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return credentials.NewOAuthCredentialsProviderFromTokenSource(
+		auth.NewCachedTokenSource(ts, cacheOptions(cfg)...),
+	), nil
+}
+
+// databricksOAuthTokenSource returns a token source that mints Databricks OAuth
+// access tokens for the configured service principal (client_id/client_secret)
+// via the client-credentials grant.
+//
+// The returned source is uncached: it performs a network call on each Token()
+// and does not itself dedupe. Callers must wrap it in auth.NewCachedTokenSource
+// (as M2mCredentials does), or pass it to serviceToServiceVisitor, which caches
+// internally.
+func databricksOAuthTokenSource(ctx context.Context, cfg *Config) (auth.TokenSource, error) {
 	endpoints, err := cfg.getOidcEndpoints(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("oidc: %w", err)
@@ -52,7 +70,5 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return ccfg.Token(ctx)
 	})
 
-	return credentials.NewOAuthCredentialsProviderFromTokenSource(
-		auth.NewCachedTokenSource(auth.NewRetryingTokenSource(ts), cacheOptions(cfg)...),
-	), nil
+	return auth.NewRetryingTokenSource(ts), nil
 }
