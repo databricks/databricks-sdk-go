@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.175.0 (2026-08-19)
+
+### API Changes
+* Add `EnabledTelemetryFeatures` field for [serving.TelemetryConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#TelemetryConfig).
+
+
 ## Release v0.174.0 (2026-08-18)
 
 ### Bug Fixes
