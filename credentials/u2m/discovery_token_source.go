@@ -58,7 +58,7 @@ const discoveryTargetAccount = "ACCOUNT"
 // the discovery OAuth flow. The OIDC authorize path with all OAuth query params
 // is URL-encoded as the destination_url parameter.
 func BuildDiscoveryAuthorizeURL(redirectAddr, state string, pkce PKCEParams, scopes []string) string {
-	return buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, redirectAddr, state, pkce, scopes, "")
+	return buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, redirectAddr, state, pkce, scopes, "", "")
 }
 
 // buildDiscoveryAuthorizeURL builds the discovery authorize URL against the
@@ -67,7 +67,7 @@ func BuildDiscoveryAuthorizeURL(redirectAddr, state string, pkce PKCEParams, sco
 // non-empty it is set as the top-level `target` query parameter, which
 // login.databricks.com uses to route the user to a specific selector page
 // (e.g. "ACCOUNT" for the account selector).
-func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParams, scopes []string, target string) string {
+func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParams, scopes []string, target, groupID string) string {
 	// Build the nested OIDC authorize path with query parameters.
 	authParams := url.Values{}
 	authParams.Set("client_id", appClientID)
@@ -77,6 +77,11 @@ func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParam
 	authParams.Set("state", state)
 	authParams.Set("code_challenge", pkce.Challenge)
 	authParams.Set("code_challenge_method", pkce.ChallengeMethod)
+
+	if groupID != "" {
+		authParams.Set("assume_group", groupID)
+	}
+
 	destinationURL := "/oidc/v1/authorize?" + authParams.Encode()
 
 	// Wrap the authorize path as the destination_url query parameter on the
@@ -138,7 +143,7 @@ func (d *discoveryTokenSource) challenge() error {
 	if host == "" {
 		host = defaultLoginDatabricksHost
 	}
-	authorizeURL := buildDiscoveryAuthorizeURL(host, d.pa.redirectAddr, state, pkce, scopes, d.target)
+	authorizeURL := buildDiscoveryAuthorizeURL(host, d.pa.redirectAddr, state, pkce, scopes, d.target, d.pa.groupID)
 
 	code, returnedState, issuer, err := cb.handlerWithIssuer(authorizeURL)
 	if err != nil {

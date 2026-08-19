@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -129,6 +130,10 @@ type PersistentAuth struct {
 	// login.databricks.com lands the user on the account selector instead of
 	// the workspace selector. Use for account-only logins.
 	discoveryAccountTarget bool
+
+	// groupID is the ID of the Databricks group whose role is assumed through
+	// RBAC. The authorization code and refresh token retain this selection.
+	groupID string
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -227,6 +232,21 @@ func WithDiscoveryHost(host string) PersistentAuthOption {
 func WithDiscoveryAccountTarget() PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.discoveryAccountTarget = true
+	}
+}
+
+// WithGroupID configures the ID of the Databricks group whose role is assumed
+// during a new U2M browser authorization through role-based access control
+// (RBAC). The group ID is sent only on the authorization request; code
+// exchange, refresh, and API requests do not resend it.
+//
+// Warning: Account authentication does not support group role assumption.
+// As of August 2026, unified authentication rejects the group ID. The SDK still
+// passes it to the OAuth server so unified role assumption may work in the future
+// if server support is added.
+func WithGroupID(groupID string) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.groupID = groupID
 	}
 }
 
@@ -458,9 +478,9 @@ func (a *PersistentAuth) Challenge() error {
 	// the callback server is not created, we need to close the listener manually.
 	defer a.Close()
 
-	cfg, err := a.oauth2Config()
+	cfg, err := a.authorizationConfig()
 	if err != nil {
-		return fmt.Errorf("fetching oauth config: %w", err)
+		return fmt.Errorf("building authorization config: %w", err)
 	}
 	cb, err := a.newCallbackServer()
 	if err != nil {
@@ -576,6 +596,14 @@ func (a *PersistentAuth) validateArg() error {
 	if a.discoveryMode && !isDiscoveryArg {
 		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", a.oAuthArgument)
 	}
+	// Account authentication does not support group role assumption.
+	if a.groupID != "" && isAccountArg {
+		return errors.New("group ID is not supported for account authentication")
+	}
+	// Account-target discovery does not support group role assumption.
+	if a.groupID != "" && isDiscoveryArg && a.discoveryAccountTarget {
+		return errors.New("group ID is not supported for account discovery")
+	}
 	return nil
 }
 
@@ -593,7 +621,8 @@ func (a *PersistentAuth) resolveScopes() []string {
 	return scopes
 }
 
-// oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
+// oauth2Config returns the common OAuth2 configuration used for authorization
+// and token refresh.
 func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	scopes := a.resolveScopes()
 
@@ -625,6 +654,39 @@ func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 		RedirectURL: fmt.Sprintf("http://%s", a.redirectAddr),
 		Scopes:      scopes,
 	}, nil
+}
+
+// authorizationConfig extends the common OAuth2 configuration with parameters
+// used only for the initial authorization request, such as group role assumption.
+func (a *PersistentAuth) authorizationConfig() (*oauth2.Config, error) {
+	config, err := a.oauth2Config()
+	if err != nil {
+		return nil, err
+	}
+
+	if a.groupID == "" {
+		return config, nil
+	}
+
+	config.Endpoint.AuthURL, err = authorizationURLWithGroupID(config.Endpoint.AuthURL, a.groupID)
+	if err != nil {
+		return nil, fmt.Errorf("adding group ID to authorization endpoint: %w", err)
+	}
+
+	return config, nil
+}
+
+func authorizationURLWithGroupID(rawURL, groupID string) (string, error) {
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		return "", fmt.Errorf("parsing authorization endpoint %q: %w", rawURL, err)
+	}
+
+	query := parsedURL.Query()
+	query.Set("assume_group", groupID)
+	parsedURL.RawQuery = query.Encode()
+
+	return parsedURL.String(), nil
 }
 
 func (a *PersistentAuth) stateAndPKCE() (string, *authhandler.PKCEParams, error) {
