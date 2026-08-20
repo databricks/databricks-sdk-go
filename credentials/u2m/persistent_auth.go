@@ -227,11 +227,6 @@ func WithDiscoveryAccountTarget() PersistentAuthOption {
 // during a new U2M browser authorization through role-based access control
 // (RBAC). The group ID is sent only on the authorization request; code
 // exchange, refresh, and API requests do not resend it.
-//
-// Warning: Account authentication does not support group role assumption.
-// As of August 2026, unified authentication rejects the group ID. The SDK still
-// passes it to the OAuth server so unified role assumption may work in the future
-// if server support is added.
 func WithGroupID(groupID string) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.groupID = groupID
@@ -541,14 +536,6 @@ func (a *PersistentAuth) validateArg() error {
 	}
 	if a.discoveryMode && !isDiscoveryArg {
 		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", a.oAuthArgument)
-	}
-	// Account authentication does not support group role assumption.
-	if a.groupID != "" && isAccountArg {
-		return errors.New("group ID is not supported for account authentication")
-	}
-	// Account-target discovery does not support group role assumption.
-	if a.groupID != "" && isDiscoveryArg && a.discoveryAccountTarget {
-		return errors.New("group ID is not supported for account discovery")
 	}
 	return nil
 }

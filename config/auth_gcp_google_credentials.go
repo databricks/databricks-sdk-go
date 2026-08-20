@@ -23,6 +23,9 @@ func (c GoogleCredentials) Name() string {
 }
 
 func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	if cfg.GoogleCredentials == "" || !cfg.IsGcp() {
 		return nil, nil
 	}

@@ -105,22 +105,26 @@ func TestConfigFile_GroupIDLoadingAndPrecedence(t *testing.T) {
 		direct      string
 		environment string
 		want        string
+		wantSource  SourceType
 	}{
 		{
-			name:    "loads group ID from selected profile",
-			profile: "group",
-			want:    "profile-group",
+			name:       "loads group ID from selected profile",
+			profile:    "group",
+			want:       "profile-group",
+			wantSource: SourceFile,
 		},
 		{
-			name:    "profile without group ID leaves value empty",
-			profile: "normal",
-			want:    "",
+			name:       "profile without group ID leaves value empty",
+			profile:    "normal",
+			want:       "",
+			wantSource: SourceDynamicConfig,
 		},
 		{
 			name:        "environment group ID overrides profile",
 			profile:     "group",
 			environment: "environment-group",
 			want:        "environment-group",
+			wantSource:  SourceEnv,
 		},
 		{
 			name:        "direct group ID overrides environment and profile",
@@ -128,6 +132,7 @@ func TestConfigFile_GroupIDLoadingAndPrecedence(t *testing.T) {
 			direct:      "direct-group",
 			environment: "environment-group",
 			want:        "direct-group",
+			wantSource:  SourceDynamicConfig,
 		},
 	}
 
@@ -152,6 +157,9 @@ func TestConfigFile_GroupIDLoadingAndPrecedence(t *testing.T) {
 
 			if cfg.GroupID != testCase.want {
 				t.Errorf("GroupID = %q, want %q", cfg.GroupID, testCase.want)
+			}
+			if got := cfg.getSource(configAttribute(t, "group_id")).Type; got != testCase.wantSource {
+				t.Errorf("group_id source = %q, want %q", got, testCase.wantSource)
 			}
 		})
 	}

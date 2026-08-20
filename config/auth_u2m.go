@@ -19,6 +19,9 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if cfg.Host == "" {
 		return nil, fmt.Errorf("host is required")
 	}
+	if err := validateCliGroupID(cfg); err != nil {
+		return nil, err
+	}
 
 	// We only partially support custom scopes with databricks-cli auth.
 	// Users can specify their scopes when logging in with `databricks auth login`,
@@ -41,6 +44,30 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, err
 	}
 	return credentials.NewOAuthCredentialsProviderFromTokenSource(auth.NewCachedTokenSource(ts, cacheOptions(cfg)...)), nil
+}
+
+// ErrCustomGroupIDNotSupported is returned when a group ID is specified in
+// code or the environment with databricks-cli auth. Role selection belongs to
+// the CLI profile because `databricks auth token` has no group argument.
+const ErrCustomGroupIDNotSupported = "cannot set group_id when using the CLI authentication method. " +
+	"Use the CLI to manage the group for the selected profile"
+
+// validateCliGroupID ensures that databricks-cli role selection comes from the
+// selected configuration profile rather than code or environment overrides.
+func validateCliGroupID(cfg *Config) error {
+	if cfg.GroupID == "" {
+		return nil
+	}
+	for _, attr := range ConfigAttributes {
+		if attr.Name != "group_id" {
+			continue
+		}
+		if cfg.getSource(&attr).Type == SourceFile {
+			return nil
+		}
+		return errors.New(ErrCustomGroupIDNotSupported)
+	}
+	return nil
 }
 
 // ErrCustomScopesNotSupported is returned when custom scopes are specified

@@ -35,6 +35,9 @@ func (c AzureMsiCredentials) Name() string {
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && cfg.Host == "") {
 		return nil, nil
 	}

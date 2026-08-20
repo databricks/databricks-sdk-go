@@ -240,32 +240,48 @@ func TestBuildDiscoveryAuthorizeURL_GroupIDIsNested(t *testing.T) {
 		ChallengeMethod: "S256",
 		Verifier:        "verifier",
 	}
-	authorizationURL := buildDiscoveryAuthorizeURL(
-		defaultLoginDatabricksHost,
-		"localhost:8020",
-		"state",
-		pkce,
-		[]string{"offline_access", "all-apis"},
-		"",
-		"group-123",
-	)
 
-	topLevelURL, err := url.Parse(authorizationURL)
-	if err != nil {
-		t.Fatalf("url.Parse(): %v", err)
+	testCases := []struct {
+		name   string
+		target string
+	}{
+		{
+			name: "workspace discovery",
+		},
+		{
+			name:   "account discovery",
+			target: discoveryTargetAccount,
+		},
 	}
 
-	if got := topLevelURL.Query().Get("assume_group"); got != "" {
-		t.Errorf("top-level assume_group = %q, want empty", got)
-	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			authorizationURL := buildDiscoveryAuthorizeURL(
+				defaultLoginDatabricksHost,
+				"localhost:8020",
+				"state",
+				pkce,
+				[]string{"offline_access", "all-apis"},
+				testCase.target,
+				"group-123",
+			)
 
-	destinationURL, err := url.Parse(topLevelURL.Query().Get("destination_url"))
-	if err != nil {
-		t.Fatalf("url.Parse(destination_url): %v", err)
-	}
+			topLevelURL, err := url.Parse(authorizationURL)
+			if err != nil {
+				t.Fatalf("url.Parse(): %v", err)
+			}
+			if got := topLevelURL.Query().Get("assume_group"); got != "" {
+				t.Errorf("top-level assume_group = %q, want empty", got)
+			}
 
-	if got := destinationURL.Query()["assume_group"]; len(got) != 1 || got[0] != "group-123" {
-		t.Errorf("nested assume_group = %v, want [group-123]", got)
+			destinationURL, err := url.Parse(topLevelURL.Query().Get("destination_url"))
+			if err != nil {
+				t.Fatalf("url.Parse(destination_url): %v", err)
+			}
+			if got := destinationURL.Query()["assume_group"]; len(got) != 1 || got[0] != "group-123" {
+				t.Errorf("nested assume_group = %v, want [group-123]", got)
+			}
+		})
 	}
 }
 

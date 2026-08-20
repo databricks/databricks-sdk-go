@@ -51,6 +51,186 @@ func TestM2mHappyFlow(t *testing.T) {
 	)
 }
 
+// m2mGroupRoleTokenFixture provides the common token endpoint expectations
+// used by the workspace, unified, and account group-role tests.
+func m2mGroupRoleTokenFixture() fixtures.HTTPFixture {
+	return fixtures.HTTPFixture{
+		ExpectedRequest: url.Values{
+			"assume_group": {"group-123"},
+			"grant_type":   {"client_credentials"},
+			"scope":        {"all-apis"},
+		},
+		Response: oauth2.Token{
+			TokenType:   "Bearer",
+			AccessToken: "role-token",
+		},
+	}
+}
+
+// TestM2mCredentials_GroupRoleWorkspace verifies that workspace OAuth
+// discovery leads to a token request containing assume_group.
+func TestM2mCredentials_GroupRoleWorkspace(t *testing.T) {
+	cfg := &Config{
+		Host:         "a",
+		ClientID:     "b",
+		ClientSecret: "c",
+		GroupID:      "group-123",
+		AuthType:     "oauth-m2m",
+		HTTPTransport: fixtures.MappingTransport{
+			"GET /oidc/.well-known/oauth-authorization-server": {
+				Response: u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://localhost/dummy/token",
+				},
+			},
+			"POST /dummy/token": m2mGroupRoleTokenFixture(),
+		},
+		ConfigFile: "/dev/null",
+	}
+
+	assertHeaders(t, cfg, map[string]string{
+		"Authorization": "Bearer role-token",
+	})
+}
+
+// TestM2mCredentials_GroupRoleUnified verifies that unified OAuth discovery
+// forwards assume_group to the account-scoped token endpoint.
+func TestM2mCredentials_GroupRoleUnified(t *testing.T) {
+	cfg := &Config{
+		Host:         "https://unified.cloud.databricks.com",
+		AccountID:    "account-123",
+		ClientID:     "b",
+		ClientSecret: "c",
+		GroupID:      "group-123",
+		AuthType:     "oauth-m2m",
+		HostMetadataResolver: func(context.Context, string) (*HostMetadata, error) {
+			return &HostMetadata{
+				HostType:     UnifiedHost,
+				OIDCEndpoint: "https://unified.cloud.databricks.com/oidc/accounts/{account_id}",
+			}, nil
+		},
+		HTTPTransport: fixtures.MappingTransport{
+			"GET /oidc/accounts/account-123/.well-known/oauth-authorization-server": {
+				Response: u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://localhost/oidc/accounts/account-123/v1/token",
+				},
+			},
+			"POST /oidc/accounts/account-123/v1/token": m2mGroupRoleTokenFixture(),
+		},
+		ConfigFile: "/dev/null",
+	}
+
+	assertHeaders(t, cfg, map[string]string{
+		"Authorization": "Bearer role-token",
+	})
+}
+
+// TestM2mCredentials_GroupRoleAccount verifies that account M2M forwards
+// assume_group directly to its account-scoped token endpoint.
+func TestM2mCredentials_GroupRoleAccount(t *testing.T) {
+	cfg := &Config{
+		Host:         "accounts.cloud.databricks.com",
+		AccountID:    "account-123",
+		ClientID:     "b",
+		ClientSecret: "c",
+		GroupID:      "group-123",
+		AuthType:     "oauth-m2m",
+		HTTPTransport: fixtures.MappingTransport{
+			"POST /oidc/accounts/account-123/v1/token": m2mGroupRoleTokenFixture(),
+		},
+		ConfigFile: "/dev/null",
+	}
+
+	assertHeaders(t, cfg, map[string]string{
+		"Authorization": "Bearer role-token",
+	})
+}
+
+// TestM2mGroupRoleServerRejectionDoesNotFallback verifies that a rejected role
+// request is not retried without assume_group.
+func TestM2mGroupRoleServerRejectionDoesNotFallback(t *testing.T) {
+	var tokenCalls int32
+
+	transport := &postCountingTransport{
+		calls: &tokenCalls,
+		inner: fixtures.MappingTransport{
+			"GET /oidc/.well-known/oauth-authorization-server": {
+				Response: u2m.OAuthAuthorizationServer{TokenEndpoint: "https://localhost/token"},
+			},
+			"POST /token": {
+				Status: http.StatusBadRequest,
+				ExpectedRequest: url.Values{
+					"assume_group": {"group-123"},
+					"grant_type":   {"client_credentials"},
+					"scope":        {"all-apis"},
+				},
+				Response: `{"error":"invalid_target"}`,
+			},
+		},
+	}
+
+	cfg := &Config{
+		Host:          "a",
+		ClientID:      "b",
+		ClientSecret:  "c",
+		GroupID:       "group-123",
+		AuthType:      "oauth-m2m",
+		HTTPTransport: transport,
+		ConfigFile:    "/dev/null",
+	}
+
+	_, err := authenticateRequest(cfg)
+	if err == nil {
+		t.Fatal("authenticateRequest() error = nil, want token server rejection")
+	}
+
+	if got := atomic.LoadInt32(&tokenCalls); got != 1 {
+		t.Errorf("token endpoint calls = %d, want 1", got)
+	}
+}
+
+// TestM2mCredentials_CachesAreIsolatedByClient verifies that clients assuming
+// different group roles do not reuse each other's M2M access tokens.
+func TestM2mCredentials_CachesAreIsolatedByClient(t *testing.T) {
+	server, tokenCalls := newGroupTokenServer(t)
+
+	testCases := []struct {
+		name    string
+		groupID string
+		want    string
+	}{
+		{
+			name:    "group A",
+			groupID: "group-a",
+			want:    "Bearer token-group-a",
+		},
+		{
+			name:    "group B",
+			groupID: "group-b",
+			want:    "Bearer token-group-b",
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			cfg := &Config{
+				Host:         server.URL,
+				ClientID:     "client-id",
+				ClientSecret: "client-secret",
+				GroupID:      testCase.groupID,
+				AuthType:     "oauth-m2m",
+				ConfigFile:   "/dev/null",
+			}
+
+			for range 2 {
+				assertHeaders(t, cfg, map[string]string{"Authorization": testCase.want})
+			}
+		})
+	}
+
+	if *tokenCalls != len(testCases) {
+		t.Errorf("Token endpoint was called %d times; want one call per client", *tokenCalls)
+	}
+}
+
 func TestM2mHappyFlowForAccount(t *testing.T) {
 	assertHeaders(t,
 		&Config{

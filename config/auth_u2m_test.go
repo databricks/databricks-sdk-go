@@ -184,6 +184,73 @@ func TestU2MCredentials_Configure_CustomScopesError(t *testing.T) {
 	}
 }
 
+// TestU2MCredentials_Configure_GroupIDSource verifies that databricks-cli
+// accepts profile group IDs and rejects code or environment overrides.
+func TestU2MCredentials_Configure_GroupIDSource(t *testing.T) {
+	testCases := []struct {
+		name    string
+		source  Source
+		wantErr string
+	}{
+		{
+			name: "code is rejected",
+			source: Source{
+				Type: SourceDynamicConfig,
+			},
+			wantErr: ErrCustomGroupIDNotSupported,
+		},
+		{
+			name: "environment is rejected",
+			source: Source{
+				Type: SourceEnv,
+				Name: "DATABRICKS_GROUP_ID",
+			},
+			wantErr: ErrCustomGroupIDNotSupported,
+		},
+		{
+			name: "profile is accepted",
+			source: Source{
+				Type: SourceFile,
+				Name: ".databrickscfg",
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			if runtime.GOOS == "windows" {
+				t.Skip("Skipping on Windows")
+			}
+			cfg := &Config{
+				Host:              "https://workspace.cloud.databricks.com",
+				GroupID:           "group-123",
+				DatabricksCliPath: createMockCli(t, mockCliTokenResponse(t)),
+			}
+			cfg.SetAttrSource(configAttribute(t, "group_id"), testCase.source)
+			_, err := (u2mCredentials{}).Configure(context.Background(), cfg)
+			var gotErr string
+			if err != nil {
+				gotErr = err.Error()
+			}
+			if gotErr != testCase.wantErr {
+				t.Errorf("Configure() error = %q, want %q", gotErr, testCase.wantErr)
+			}
+		})
+	}
+}
+
+// configAttribute returns the named configuration attribute for test setup.
+func configAttribute(t *testing.T, name string) *ConfigAttribute {
+	t.Helper()
+	for i := range ConfigAttributes {
+		if ConfigAttributes[i].Name == name {
+			return &ConfigAttributes[i]
+		}
+	}
+	t.Fatalf("configuration attribute %q not found", name)
+	return nil
+}
+
 func createMockCli(t *testing.T, script string) string {
 	t.Helper()
 	cli := filepath.Join(t.TempDir(), "databricks")
