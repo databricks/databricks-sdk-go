@@ -199,6 +199,11 @@ func TestM2mCredentials_CachesAreIsolatedByClient(t *testing.T) {
 		want    string
 	}{
 		{
+			name:    "normal access",
+			groupID: "",
+			want:    "Bearer token-normal",
+		},
+		{
 			name:    "group A",
 			groupID: "group-a",
 			want:    "Bearer token-group-a",

@@ -123,6 +123,11 @@ func TestOIDCCredentials_CachesAreIsolatedByClient(t *testing.T) {
 		want    string
 	}{
 		{
+			name:    "normal access",
+			groupID: "",
+			want:    "Bearer token-normal",
+		},
+		{
 			name:    "group A",
 			groupID: "group-a",
 			want:    "Bearer token-group-a",
@@ -153,7 +158,7 @@ func TestOIDCCredentials_CachesAreIsolatedByClient(t *testing.T) {
 		})
 	}
 
-	if *tokenCalls != 2 {
+	if *tokenCalls != len(testCases) {
 		t.Errorf("Token endpoint was called %d times; want one call per client", *tokenCalls)
 	}
 }

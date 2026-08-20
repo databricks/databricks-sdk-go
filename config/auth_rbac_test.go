@@ -38,6 +38,10 @@ func newGroupTokenServer(t *testing.T) (*httptest.Server, *int) {
 			}
 
 			groupID := req.Form.Get("assume_group")
+			if groupID == "" {
+				groupID = "normal"
+			}
+
 			if err := json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "token-" + groupID,
 				"token_type":   "Bearer",
