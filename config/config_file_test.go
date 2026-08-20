@@ -99,6 +99,17 @@ func TestConfigFile_Scopes(t *testing.T) {
 }
 
 func TestConfigFile_GroupIDLoadingAndPrecedence(t *testing.T) {
+	var groupIDAttribute *ConfigAttribute
+	for i := range ConfigAttributes {
+		if ConfigAttributes[i].Name == "group_id" {
+			groupIDAttribute = &ConfigAttributes[i]
+			break
+		}
+	}
+	if groupIDAttribute == nil {
+		t.Fatal("group_id configuration attribute not found")
+	}
+
 	testCases := []struct {
 		name        string
 		profile     string
@@ -158,7 +169,7 @@ func TestConfigFile_GroupIDLoadingAndPrecedence(t *testing.T) {
 			if cfg.GroupID != testCase.want {
 				t.Errorf("GroupID = %q, want %q", cfg.GroupID, testCase.want)
 			}
-			if got := cfg.getSource(configAttribute(t, "group_id")).Type; got != testCase.wantSource {
+			if got := cfg.getSource(groupIDAttribute).Type; got != testCase.wantSource {
 				t.Errorf("group_id source = %q, want %q", got, testCase.wantSource)
 			}
 		})

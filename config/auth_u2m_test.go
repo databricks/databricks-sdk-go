@@ -184,18 +184,6 @@ func TestU2MCredentials_Configure_CustomScopesError(t *testing.T) {
 	}
 }
 
-// configAttribute returns the named configuration attribute for test setup.
-func configAttribute(t *testing.T, name string) *ConfigAttribute {
-	t.Helper()
-	for i := range ConfigAttributes {
-		if ConfigAttributes[i].Name == name {
-			return &ConfigAttributes[i]
-		}
-	}
-	t.Fatalf("configuration attribute %q not found", name)
-	return nil
-}
-
 func createMockCli(t *testing.T, script string) string {
 	t.Helper()
 	cli := filepath.Join(t.TempDir(), "databricks")
