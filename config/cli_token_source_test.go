@@ -250,12 +250,8 @@ func TestBuildCliCommand(t *testing.T) {
 			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile"},
 		},
 		{
-			name: "profile with newest CLI — uses --profile and --force-refresh",
-			cfg: &Config{
-				Profile: "my-profile",
-				Host:    host,
-				GroupID: "group-123",
-			},
+			name:    "profile with newest CLI — uses --profile and --force-refresh",
+			cfg:     &Config{Profile: "my-profile", Host: host},
 			ver:     "v0.296.0",
 			wantCmd: []string{cliPath, "auth", "token", "--profile", "my-profile", "--force-refresh"},
 		},
