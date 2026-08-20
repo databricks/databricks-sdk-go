@@ -134,8 +134,9 @@ type Config struct {
 	// Databricks OAuth credential strategy and fixes the role for this client.
 	//
 	// Warning: As of August 2026, group role assumption works only for workspace
-	// authorization. M2M and WIF still pass the group ID to OAuth servers for
-	// other host types, which may work in the future if server support is added.
+	// authorization. Account and unified authentication are not supported. M2M
+	// and WIF still pass the group ID to those OAuth servers so they can support
+	// group role assumption in the future without requiring an SDK change.
 	GroupID string `name:"group_id" env:"DATABRICKS_GROUP_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`

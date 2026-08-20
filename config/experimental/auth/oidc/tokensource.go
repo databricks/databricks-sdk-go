@@ -30,7 +30,11 @@ type DatabricksOIDCTokenSourceConfig struct {
 	Host string
 
 	// GroupID is the ID of the Databricks group whose role the exchanged token
-	// assumes. It must be empty for account authentication.
+	// assumes.
+	//
+	// Warning: As of August 2026, group role assumption works only for workspace
+	// authentication. Account and unified authentication are not supported. The
+	// group ID is still sent to those token endpoints for the server to validate.
 	GroupID string
 
 	// TokenEndpointProvider returns the token endpoint for the Databricks OIDC

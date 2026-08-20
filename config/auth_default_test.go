@@ -150,8 +150,23 @@ func TestCredentialsChain_GroupRoleFallbackSkipsNormalAccess(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Configure() error = %v", err)
 	}
-	if gotProvider == nil || failedRoleStrategy.calls != 1 || roleStrategy.calls != 1 {
-		t.Errorf("Configure() = (%v, failed calls %d, successful calls %d), want both role providers called once", gotProvider, failedRoleStrategy.calls, roleStrategy.calls)
+	if gotProvider == nil {
+		t.Fatal("Configure() provider = nil, want role credentials provider")
+	}
+	if failedRoleStrategy.calls != 1 {
+		t.Errorf("failed role strategy calls = %d, want 1", failedRoleStrategy.calls)
+	}
+	if roleStrategy.calls != 1 {
+		t.Errorf("successful role strategy calls = %d, want 1", roleStrategy.calls)
+	}
+
+	req := &http.Request{Header: make(http.Header)}
+	if err := gotProvider.SetHeaders(req); err != nil {
+		t.Fatalf("SetHeaders() error = %v", err)
+	}
+
+	if got := req.Header.Get("Authorization"); got != "Bearer role-token" {
+		t.Errorf("Authorization header = %q, want %q", got, "Bearer role-token")
 	}
 }
 
