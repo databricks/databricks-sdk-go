@@ -132,6 +132,7 @@ type Config struct {
 	// GroupID is the ID of the Databricks group whose role is assumed through
 	// role-based access control (RBAC). A non-empty value requires a supported
 	// Databricks OAuth credential strategy and fixes the role for this client.
+	// Databricks CLI authentication does not support group role assumption.
 	//
 	// Warning: As of August 2026, group role assumption works only for workspace
 	// authorization. Account and unified authentication are not supported. M2M

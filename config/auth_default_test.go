@@ -52,6 +52,12 @@ func TestBuiltInCredentials_GroupRoleUnsupportedStrategiesDecline(t *testing.T) 
 			},
 		},
 		{
+			strategy: u2mCredentials{},
+			cfg: &Config{
+				Host: "https://workspace.cloud.databricks.com",
+			},
+		},
+		{
 			strategy: MetadataServiceCredentials{},
 			cfg: &Config{
 				Host:               "https://workspace.cloud.databricks.com",
