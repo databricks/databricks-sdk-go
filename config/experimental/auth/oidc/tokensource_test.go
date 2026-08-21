@@ -3,6 +3,7 @@ package oidc
 import (
 	"context"
 	"errors"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -409,4 +410,93 @@ func TestWIF_Scopes(t *testing.T) {
 			}
 		})
 	}
+}
+
+// TestDatabricksOIDCTokenSource_GroupRoleForm verifies that workspace, account,
+// and unified token exchanges send the requested group to the selected token
+// endpoint, including subsequent exchanges.
+func TestDatabricksOIDCTokenSource_GroupRoleForm(t *testing.T) {
+	testCases := []struct {
+		name          string
+		host          string
+		accountID     string
+		tokenEndpoint string
+	}{
+		{
+			name:          "workspace",
+			host:          "https://workspace.cloud.databricks.com",
+			tokenEndpoint: "https://workspace.cloud.databricks.com/oidc/v1/token",
+		},
+		{
+			name:          "account",
+			host:          "https://accounts.cloud.databricks.com",
+			accountID:     "account-123",
+			tokenEndpoint: "https://accounts.cloud.databricks.com/oidc/accounts/account-123/v1/token",
+		},
+		{
+			name:          "unified",
+			host:          "https://unified.cloud.databricks.com",
+			accountID:     "account-123",
+			tokenEndpoint: "https://unified.cloud.databricks.com/oidc/accounts/account-123/v1/token",
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			requestCount := 0
+			transport := roundTripFunc(func(req *http.Request) (*http.Response, error) {
+				requestCount++
+
+				if got := req.URL.String(); got != testCase.tokenEndpoint {
+					t.Errorf("Token request endpoint = %q, want %q", got, testCase.tokenEndpoint)
+				}
+				if err := req.ParseForm(); err != nil {
+					t.Fatalf("Token request body could not be parsed: %v", err)
+				}
+				if got := req.Form.Get("assume_group"); got != "group-123" {
+					t.Errorf("assume_group = %q, want %q", got, "group-123")
+				}
+
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Status:     "200 OK",
+					Header:     http.Header{"Content-Type": {"application/json"}},
+					Body:       io.NopCloser(strings.NewReader(`{"access_token":"role-token","token_type":"Bearer"}`)),
+					Request:    req,
+				}, nil
+			})
+
+			ts := NewDatabricksOIDCTokenSource(DatabricksOIDCTokenSourceConfig{
+				ClientID:  "client-id",
+				AccountID: testCase.accountID,
+				Host:      testCase.host,
+				GroupID:   "group-123",
+				TokenEndpointProvider: func(context.Context) (*u2m.OAuthAuthorizationServer, error) {
+					return &u2m.OAuthAuthorizationServer{TokenEndpoint: testCase.tokenEndpoint}, nil
+				},
+				IDTokenSource: IDTokenSourceFn(func(context.Context, string) (*IDToken, error) {
+					return &IDToken{Value: "id-token"}, nil
+				}),
+			})
+
+			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{Transport: transport})
+
+			for exchange := range 2 {
+				if _, err := ts.Token(ctx); err != nil {
+					t.Fatalf("Token exchange %d failed: %v", exchange+1, err)
+				}
+			}
+
+			if requestCount != 2 {
+				t.Errorf("Token endpoint was called %d times, want 2 calls", requestCount)
+			}
+		})
+	}
+}
+
+type roundTripFunc func(*http.Request) (*http.Response, error)
+
+// RoundTrip calls the function used as an HTTP transport by the test.
+func (f roundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
+	return f(req)
 }

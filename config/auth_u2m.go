@@ -16,6 +16,9 @@ func (u u2mCredentials) Name() string {
 }
 
 func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, u.Name()); err != nil {
+		return nil, err
+	}
 	if cfg.Host == "" {
 		return nil, fmt.Errorf("host is required")
 	}

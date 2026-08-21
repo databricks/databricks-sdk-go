@@ -45,6 +45,9 @@ func (c AzureClientSecretCredentials) tokenSourceFor(
 // If we are authenticated as SP and wish to create one we want to fail early.
 // Also see https://github.com/databricks/terraform-provider-databricks/issues/1490.
 func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" {
 		return nil, nil
 	}

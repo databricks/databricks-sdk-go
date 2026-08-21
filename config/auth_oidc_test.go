@@ -1,11 +1,13 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 )
 
@@ -107,5 +109,56 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 				t.Errorf("Authorization header: got %q, want %q", got, wantAuthHeader)
 			}
 		})
+	}
+}
+
+// TestOIDCCredentials_CachesAreIsolatedByClient verifies that clients assuming
+// different group roles do not reuse each other's WIF access tokens.
+func TestOIDCCredentials_CachesAreIsolatedByClient(t *testing.T) {
+	server, tokenCalls := newGroupTokenServer(t)
+
+	testCases := []struct {
+		name    string
+		groupID string
+		want    string
+	}{
+		{
+			name:    "normal access",
+			groupID: "",
+			want:    "Bearer token-normal",
+		},
+		{
+			name:    "group A",
+			groupID: "group-a",
+			want:    "Bearer token-group-a",
+		},
+		{
+			name:    "group B",
+			groupID: "group-b",
+			want:    "Bearer token-group-b",
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			cfg := &Config{
+				Host:          server.URL,
+				ClientID:      "client-id",
+				GroupID:       testCase.groupID,
+				TokenAudience: "audience",
+				ConfigFile:    "/dev/null",
+			}
+			cfg.Credentials = oidcStrategy(cfg, "test-oidc", oidc.IDTokenSourceFn(func(context.Context, string) (*oidc.IDToken, error) {
+				return &oidc.IDToken{Value: "id-token"}, nil
+			}))
+
+			for range 2 {
+				assertHeaders(t, cfg, map[string]string{"Authorization": testCase.want})
+			}
+		})
+	}
+
+	if *tokenCalls != len(testCases) {
+		t.Errorf("Token endpoint was called %d times; want one call per client", *tokenCalls)
 	}
 }

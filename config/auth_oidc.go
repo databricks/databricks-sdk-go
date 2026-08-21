@@ -92,6 +92,7 @@ func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsSt
 	oidcConfig := oidc.DatabricksOIDCTokenSourceConfig{
 		ClientID:              cfg.ClientID,
 		Host:                  cfg.CanonicalHostName(),
+		GroupID:               cfg.GroupID,
 		TokenEndpointProvider: cfg.getOidcEndpoints,
 		Audience:              cfg.TokenAudience,
 		IDTokenSource:         ts,

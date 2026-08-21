@@ -64,6 +64,9 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner 
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	if !cfg.IsAzure() {
 		return nil, nil
 	}

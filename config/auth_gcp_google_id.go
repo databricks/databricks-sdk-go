@@ -22,6 +22,9 @@ func (c GoogleDefaultCredentials) Name() string {
 }
 
 func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	if cfg.GoogleServiceAccount == "" || !cfg.IsGcp() {
 		return nil, nil
 	}

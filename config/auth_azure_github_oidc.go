@@ -24,6 +24,9 @@ func (c AzureGithubOIDCCredentials) Name() string {
 
 // Configure implements [CredentialsStrategy.Configure].
 func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	// Sanity check that the config is configured for Azure Databricks.
 	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" || cfg.ActionsIDTokenRequestURL == "" || cfg.ActionsIDTokenRequestToken == "" {
 		return nil, nil
