@@ -98,6 +98,65 @@ func TestConfigFile_Scopes(t *testing.T) {
 	}
 }
 
+func TestConfigFile_GroupIDLoadingAndPrecedence(t *testing.T) {
+	testCases := []struct {
+		name        string
+		profile     string
+		direct      string
+		environment string
+		want        string
+	}{
+		{
+			name:    "loads group ID from selected profile",
+			profile: "group",
+			want:    "profile-group",
+		},
+		{
+			name:    "profile without group ID leaves value empty",
+			profile: "normal",
+			want:    "",
+		},
+		{
+			name:        "environment group ID overrides profile",
+			profile:     "group",
+			environment: "environment-group",
+			want:        "environment-group",
+		},
+		{
+			name:        "direct group ID overrides environment and profile",
+			profile:     "group",
+			direct:      "direct-group",
+			environment: "environment-group",
+			want:        "direct-group",
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			withMockEnv(t, map[string]string{
+				"HOME":                "testdata/group_id",
+				"DATABRICKS_GROUP_ID": testCase.environment,
+			})
+
+			cfg := &Config{
+				Profile: testCase.profile,
+				GroupID: testCase.direct,
+			}
+
+			if err := ConfigAttributes.Configure(cfg); err != nil {
+				t.Fatalf("ConfigAttributes.Configure(): %v", err)
+			}
+			if err := ConfigFile.Configure(cfg); err != nil {
+				t.Fatalf("ConfigFile.Configure(): %v", err)
+			}
+
+			if cfg.GroupID != testCase.want {
+				t.Errorf("GroupID = %q, want %q", cfg.GroupID, testCase.want)
+			}
+		})
+	}
+}
+
 // Test 1: default_profile resolves correctly (no [DEFAULT] section present)
 func TestConfigFile_DefaultProfileResolves(t *testing.T) {
 	configFixture{

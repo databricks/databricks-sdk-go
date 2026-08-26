@@ -12,4 +12,8 @@
 
 ### Internal Changes
 
+- Added group ID configuration and U2M OAuth support for CLI role assumption.
+  Account authentication is rejected, while unified authentication passes the
+  group ID to the OAuth server for compatibility with future support.
+
 ### API Changes

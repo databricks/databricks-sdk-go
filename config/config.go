@@ -129,6 +129,14 @@ type Config struct {
 	// server disambiguates.
 	WorkspaceID string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
 
+	// GroupID is the ID of the Databricks group whose role is assumed through
+	// role-based access control (RBAC).
+	//
+	// Warning: As of August 2026, group role assumption works only for workspace
+	// authorization. Unified authentication still passes the group ID to the OAuth
+	// server and may work in the future if server support is added.
+	GroupID string `name:"group_id" env:"DATABRICKS_GROUP_ID"`
+
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
 	Username string `name:"username" env:"DATABRICKS_USERNAME" auth:"basic"`
 	Password string `name:"password" env:"DATABRICKS_PASSWORD" auth:"basic,sensitive"`

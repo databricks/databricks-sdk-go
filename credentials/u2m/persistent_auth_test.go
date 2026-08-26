@@ -1041,6 +1041,189 @@ func TestChallenge(t *testing.T) {
 	}
 }
 
+func TestAuthorizationConfig_GroupIDOnlyChangesAuthorizationEndpoint(t *testing.T) {
+	argument, err := NewBasicWorkspaceOAuthArgument("https://workspace.cloud.databricks.com")
+	if err != nil {
+		t.Fatalf("NewBasicWorkspaceOAuthArgument(): %v", err)
+	}
+
+	persistentAuth, err := NewPersistentAuth(
+		context.Background(),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(argument),
+		WithGroupID("group-A"),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+
+	baseConfig, err := persistentAuth.oauth2Config()
+	if err != nil {
+		t.Fatalf("oauth2Config(): %v", err)
+	}
+
+	if strings.Contains(baseConfig.Endpoint.AuthURL, "assume_group") {
+		t.Errorf("oauth2Config() AuthURL = %q, want no assume_group", baseConfig.Endpoint.AuthURL)
+	}
+
+	config, err := persistentAuth.authorizationConfig()
+	if err != nil {
+		t.Fatalf("authorizationConfig(): %v", err)
+	}
+
+	authorizationURL, err := url.Parse(config.Endpoint.AuthURL)
+	if err != nil {
+		t.Fatalf("url.Parse(AuthURL): %v", err)
+	}
+
+	if got := authorizationURL.Query()["assume_group"]; len(got) != 1 || got[0] != "group-A" {
+		t.Errorf("authorization assume_group = %v, want [group-A]", got)
+	}
+	if strings.Contains(config.Endpoint.TokenURL, "assume_group") {
+		t.Errorf("TokenURL = %q, want no assume_group", config.Endpoint.TokenURL)
+	}
+}
+
+func TestChallenge_GroupIDStoresTokenUnderProfileKey(t *testing.T) {
+	const profile = "prod"
+
+	var storedKey string
+	tokenCache := &tokenCacheMock{
+		store: func(key string, _ *oauth2.Token) error {
+			storedKey = key
+			return nil
+		},
+	}
+
+	browserOpened := make(chan string, 1)
+	argument, err := NewProfileWorkspaceOAuthArgument("https://workspace.cloud.databricks.com", profile)
+	if err != nil {
+		t.Fatalf("NewProfileWorkspaceOAuthArgument(): %v", err)
+	}
+
+	persistentAuth, err := NewPersistentAuth(
+		context.Background(),
+		WithTokenCache(tokenCache),
+		WithBrowser(func(authorizationURL string) error {
+			browserOpened <- authorizationURL
+			return nil
+		}),
+		WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/v1/token",
+					Response: `{"access_token":"access","refresh_token":"refresh","token_type":"Bearer","expires_in":3600}`,
+					ResponseHeaders: map[string][]string{
+						"Content-Type": {"application/json"},
+					},
+				},
+			},
+		}),
+		WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		WithOAuthArgument(argument),
+		WithGroupID("group-A"),
+	)
+	if err != nil {
+		t.Fatalf("NewPersistentAuth(): %v", err)
+	}
+	defer persistentAuth.Close()
+
+	completeChallenge(t, persistentAuth, browserOpened)
+
+	if storedKey != profile {
+		t.Errorf("Store() key = %q, want %q", storedKey, profile)
+	}
+}
+
+func TestWithGroupID_ArgumentValidation(t *testing.T) {
+	workspaceArgument, err := NewBasicWorkspaceOAuthArgument("https://workspace.cloud.databricks.com")
+	if err != nil {
+		t.Fatalf("NewBasicWorkspaceOAuthArgument(): %v", err)
+	}
+
+	accountArgument, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "account")
+	if err != nil {
+		t.Fatalf("NewBasicAccountOAuthArgument(): %v", err)
+	}
+
+	unifiedAccountArgument, err := NewBasicUnifiedOAuthArgument("https://unified.cloud.databricks.com", "account")
+	if err != nil {
+		t.Fatalf("NewBasicUnifiedOAuthArgument(): %v", err)
+	}
+
+	discoveryArgument, err := NewBasicDiscoveryOAuthArgument("profile")
+	if err != nil {
+		t.Fatalf("NewBasicDiscoveryOAuthArgument(): %v", err)
+	}
+
+	testCases := []struct {
+		name      string
+		options   []PersistentAuthOption
+		groupID   string
+		wantError string
+	}{
+		{
+			name:    "workspace",
+			options: []PersistentAuthOption{WithOAuthArgument(workspaceArgument)},
+			groupID: "group-A",
+		},
+		{
+			name:      "account",
+			options:   []PersistentAuthOption{WithOAuthArgument(accountArgument)},
+			groupID:   "group-A",
+			wantError: "group ID is not supported for account authentication",
+		},
+		{
+			name:    "unified is passed to the OAuth server",
+			options: []PersistentAuthOption{WithOAuthArgument(unifiedAccountArgument)},
+			groupID: "group-A",
+		},
+		{
+			name: "discovery",
+			options: []PersistentAuthOption{
+				WithOAuthArgument(discoveryArgument),
+				WithDiscoveryLogin(),
+			},
+			groupID: "group-A",
+		},
+		{
+			name: "account discovery",
+			options: []PersistentAuthOption{
+				WithOAuthArgument(discoveryArgument),
+				WithDiscoveryLogin(),
+				WithDiscoveryAccountTarget(),
+			},
+			groupID:   "group-A",
+			wantError: "group ID is not supported for account discovery",
+		},
+		{
+			name: "empty group does not change discovery",
+			options: []PersistentAuthOption{
+				WithOAuthArgument(discoveryArgument),
+				WithDiscoveryLogin(),
+			},
+			groupID: "",
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			options := append(testCase.options, WithGroupID(testCase.groupID))
+			_, err := NewPersistentAuth(context.Background(), options...)
+			if testCase.wantError != "" {
+				if err == nil || err.Error() != testCase.wantError {
+					t.Fatalf("NewPersistentAuth() error = %v, want %q", err, testCase.wantError)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("NewPersistentAuth(): %v", err)
+			}
+		})
+	}
+}
+
 func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	ctx := context.Background()
 	browserOpened := make(chan string)
@@ -1472,5 +1655,54 @@ func TestChallenge_Discovery(t *testing.T) {
 	}
 	if storedToken.RefreshToken != "discovery-refresh-token" {
 		t.Errorf("refresh token = %q, want %q", storedToken.RefreshToken, "discovery-refresh-token")
+	}
+}
+
+// ----------------------------------------------------------------------------
+// Test helper functions
+// ----------------------------------------------------------------------------
+
+// completeChallenge simulates the callback for a browser authorization URL and
+// waits for the OAuth challenge to finish.
+func completeChallenge(t *testing.T, persistentAuth *PersistentAuth, browserOpened <-chan string) {
+	t.Helper()
+
+	errorChannel := make(chan error, 1)
+	go func() {
+		errorChannel <- persistentAuth.Challenge()
+	}()
+
+	var authorizationURL string
+	select {
+	case authorizationURL = <-browserOpened:
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for browser authorization")
+	}
+
+	parsedAuthorizationURL, err := url.ParseRequestURI(authorizationURL)
+	if err != nil {
+		t.Fatalf("url.ParseRequestURI(): %v", err)
+	}
+
+	state := parsedAuthorizationURL.Query().Get("state")
+	callbackClient := &http.Client{Timeout: 5 * time.Second}
+	callbackURL := fmt.Sprintf("http://%s?code=code&state=%s", persistentAuth.redirectAddr, url.QueryEscape(state))
+	response, err := callbackClient.Get(callbackURL)
+	if err != nil {
+		t.Fatalf("callback: %v", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		t.Fatalf("callback status = %d, want %d", response.StatusCode, http.StatusOK)
+	}
+
+	select {
+	case err := <-errorChannel:
+		if err != nil {
+			t.Fatalf("Challenge(): %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for Challenge() to complete")
 	}
 }
