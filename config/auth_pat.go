@@ -15,6 +15,9 @@ func (c PatCredentials) Name() string {
 }
 
 func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	// Host inference is not supported for PAT authentication. This is
 	// arguably a redundant check as requests will fail anyway if no
 	// host is provided. This check exists for backward compatibility

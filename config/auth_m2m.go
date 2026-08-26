@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -40,6 +41,9 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		AuthStyle:    oauth2.AuthStyleInHeader,
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       cfg.GetScopes(),
+	}
+	if cfg.GroupID != "" {
+		ccfg.EndpointParams = url.Values{"assume_group": {cfg.GroupID}}
 	}
 	ts := auth.TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
 		// Callers like CredentialsProvider.SetHeaders pass context.Background()

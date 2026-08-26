@@ -596,14 +596,6 @@ func (a *PersistentAuth) validateArg() error {
 	if a.discoveryMode && !isDiscoveryArg {
 		return fmt.Errorf("discovery login requires DiscoveryOAuthArgument, got %T", a.oAuthArgument)
 	}
-	// Account authentication does not support group role assumption.
-	if a.groupID != "" && isAccountArg {
-		return errors.New("group ID is not supported for account authentication")
-	}
-	// Account-target discovery does not support group role assumption.
-	if a.groupID != "" && isDiscoveryArg && a.discoveryAccountTarget {
-		return errors.New("group ID is not supported for account discovery")
-	}
 	return nil
 }
 

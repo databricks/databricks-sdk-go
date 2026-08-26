@@ -51,6 +51,9 @@ func (c MetadataServiceCredentials) Name() string {
 }
 
 func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if err := unsupportedGroupRoleAssumption(cfg, c.Name()); err != nil {
+		return nil, err
+	}
 	if cfg.MetadataServiceURL == "" || cfg.Host == "" {
 		return nil, nil
 	}
