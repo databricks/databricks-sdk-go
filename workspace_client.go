@@ -62,8 +62,8 @@ type WorkspaceClient struct {
 	// securables that bring centralized access control, lineage, and auditing
 	// to AI-serving entities: model services (governed access to foundation
 	// models and external LLMs), model provider services (governed connections
-	// to external model providers), MCP services (governed Model Context
-	// Protocol servers), and agent services (governed agents).
+	// to external model providers), and MCP services (governed Model Context
+	// Protocol servers).
 	AiGateway catalog.AiGatewayInterface
 
 	// **AI Search Endpoint**: Represents the compute resources to host AI

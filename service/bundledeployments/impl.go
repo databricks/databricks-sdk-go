@@ -49,25 +49,6 @@ func (a *bundleDeploymentsImpl) CreateDeployment(ctx context.Context, request Cr
 	return &deployment, err
 }
 
-func (a *bundleDeploymentsImpl) CreateOperation(ctx context.Context, request CreateOperationRequest) (*Operation, error) {
-	var operation Operation
-	path := fmt.Sprintf("/api/2.0/bundle/%v/operations", request.Parent)
-	queryParams := make(map[string]any)
-
-	if request.ResourceKey != "" {
-		queryParams["resource_key"] = request.ResourceKey
-	}
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.WorkspaceID != "" {
-		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
-	}
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Operation, &operation)
-	return &operation, err
-}
-
 func (a *bundleDeploymentsImpl) CreateVersion(ctx context.Context, request CreateVersionRequest) (*Version, error) {
 	var version Version
 	path := fmt.Sprintf("/api/2.0/bundle/%v/versions", request.Parent)

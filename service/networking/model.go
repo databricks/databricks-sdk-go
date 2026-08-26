@@ -60,8 +60,16 @@ type CreateEndpointRequest struct {
 	Parent string `json:"-" url:"-"`
 }
 
+func (s *CreateEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteEndpointRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Endpoint represents a cloud networking resource in a user's cloud account and
@@ -218,6 +226,10 @@ func (s GcpPscEndpointInfo) MarshalJSON() ([]byte, error) {
 
 type GetEndpointRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListEndpointsRequest struct {

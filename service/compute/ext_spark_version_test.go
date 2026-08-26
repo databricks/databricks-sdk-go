@@ -37,3 +37,22 @@ func TestGetSparkVersionsResponse_Select_WithDuplicateSparkVersionsDifferentScal
 	require.NoError(t, err)
 	require.Equal(t, "16.4.x-scala2.13", selected)
 }
+
+func TestGetSparkVersionsResponse_Select_WithMajorOnlyRuntimeVersion(t *testing.T) {
+	resp := GetSparkVersionsResponse{
+		Versions: []SparkVersion{
+			{
+				Key:  "17.3.x-scala2.13",
+				Name: "17.3 LTS (includes Apache Spark 4.0.0, Scala 2.13)",
+			},
+			{
+				Key:  "18.x-scala2.13",
+				Name: "18 LTS (includes Apache Spark 4.1.0, Scala 2.13)",
+			},
+		},
+	}
+
+	selected, err := resp.Select(SparkVersionRequest{LongTermSupport: true, Latest: true, Scala: "2.13"})
+	require.NoError(t, err)
+	require.Equal(t, "18.x-scala2.13", selected)
+}

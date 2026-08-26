@@ -286,10 +286,18 @@ type BudgetConfigurationFilter struct {
 	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause `json:"workspace_id,omitempty"`
 }
 
+func (s *BudgetConfigurationFilter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BudgetConfigurationFilterClause struct {
 	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
 
 	Values []string `json:"values,omitempty"`
+}
+
+func (s *BudgetConfigurationFilterClause) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type BudgetConfigurationFilterOperator string
@@ -346,6 +354,10 @@ type BudgetConfigurationFilterWorkspaceIdClause struct {
 	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
 
 	Values []int64 `json:"values,omitempty"`
+}
+
+func (s *BudgetConfigurationFilterWorkspaceIdClause) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Contains the BudgetPolicy details.
@@ -537,9 +549,17 @@ type CreateBudgetConfigurationRequest struct {
 	Budget CreateBudgetConfigurationBudget `json:"budget"`
 }
 
+func (s *CreateBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateBudgetConfigurationResponse struct {
 	// The created budget configuration.
 	Budget *BudgetConfiguration `json:"budget,omitempty"`
+}
+
+func (s *CreateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A request to create a BudgetPolicy.
@@ -648,9 +668,17 @@ type DeleteBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" url:"-"`
 }
 
+func (s *DeleteBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteBudgetPolicyRequest struct {
 	// The Id of the policy.
 	PolicyId string `json:"-" url:"-"`
+}
+
+func (s *DeleteBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // * The status string for log delivery. Possible values are: `CREATED`: There
@@ -737,6 +765,10 @@ type DownloadResponse struct {
 	Contents io.ReadCloser `json:"-"`
 }
 
+func (s *DownloadResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Structured representation of a filter to be applied to a list of policies.
 // All specified filters will be applied in conjunction.
 type Filter struct {
@@ -804,8 +836,16 @@ type GetBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" url:"-"`
 }
 
+func (s *GetBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetBudgetConfigurationResponse struct {
 	Budget *BudgetConfiguration `json:"budget,omitempty"`
+}
+
+func (s *GetBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetBudgetPolicyRequest struct {
@@ -813,9 +853,17 @@ type GetBudgetPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
+func (s *GetBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetLogDeliveryConfigurationResponse struct {
 	// The fetched log delivery configuration
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
+}
+
+func (s *GetLogDeliveryConfigurationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetLogDeliveryRequest struct {
@@ -823,9 +871,17 @@ type GetLogDeliveryRequest struct {
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
 }
 
+func (s *GetLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The limit configuration of the policy. Limit configuration provide a budget
 // policy level cost control by enforcing the limit.
 type LimitConfig struct {
+}
+
+func (s *LimitConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListBudgetConfigurationsRequest struct {
@@ -1285,9 +1341,17 @@ type UpdateBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" url:"-"`
 }
 
+func (s *UpdateBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateBudgetConfigurationResponse struct {
 	// The updated budget.
 	Budget *BudgetConfiguration `json:"budget,omitempty"`
+}
+
+func (s *UpdateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateBudgetPolicyRequest struct {
@@ -1303,6 +1367,10 @@ type UpdateBudgetPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
+func (s *UpdateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // * Update Log Delivery Configuration
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// The log delivery configuration id of customer
@@ -1313,6 +1381,10 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
+}
+
+func (s *UpdateLogDeliveryConfigurationStatusRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UsageDashboardMajorVersion string
@@ -1394,9 +1466,17 @@ type WrappedCreateLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration"`
 }
 
+func (s *WrappedCreateLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type WrappedLogDeliveryConfiguration struct {
 	// The created log delivery configuration
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
+}
+
+func (s *WrappedLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type WrappedLogDeliveryConfigurations struct {

@@ -12,6 +12,10 @@ type CancelCustomLlmOptimizationRunRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *CancelCustomLlmOptimizationRunRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCustomLlmRequest struct {
 	// This will soon be deprecated!! Optional: UC path for agent artifacts. If
 	// you are using a dataset that you only have read permissions, please
@@ -75,9 +79,17 @@ type Dataset struct {
 	Table Table `json:"table"`
 }
 
+func (s *Dataset) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCustomLlmRequest struct {
 	// The id of the custom llm
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteCustomLlmRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetCustomLlmRequest struct {
@@ -85,9 +97,17 @@ type GetCustomLlmRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+func (s *GetCustomLlmRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type StartCustomLlmOptimizationRunRequest struct {
 	// The Id of the tile.
 	Id string `json:"-" url:"-"`
+}
+
+func (s *StartCustomLlmOptimizationRunRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // States of Custom LLM optimization lifecycle.
@@ -179,4 +199,8 @@ type UpdateCustomLlmRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	UpdateMask string `json:"update_mask"`
+}
+
+func (s *UpdateCustomLlmRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

@@ -79,6 +79,10 @@ type DeleteStableUrlRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteStableUrlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request to failover a failover group to a new primary region.
 type FailoverFailoverGroupRequest struct {
 	// Opaque version string for optimistic locking. If provided, must match the
@@ -244,10 +248,18 @@ type GetFailoverGroupRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetFailoverGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetStableUrlRequest struct {
 	// The fully qualified resource name. Format:
 	// accounts/{account_id}/stable-urls/{stable_url_id}.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetStableUrlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListFailoverGroupsRequest struct {
@@ -345,6 +357,10 @@ type LocationMapping struct {
 	UriByRegion []LocationMappingEntry `json:"uri_by_region"`
 }
 
+func (s *LocationMapping) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A single entry in a location mapping, mapping a region to a storage URI. Used
 // instead of map<string, string> for proto2 compatibility.
 type LocationMappingEntry struct {
@@ -352,6 +368,10 @@ type LocationMappingEntry struct {
 	Region string `json:"region"`
 	// The storage URI for this region.
 	Uri string `json:"uri"`
+}
+
+func (s *LocationMappingEntry) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A stable URL provides a failover-aware endpoint for accessing a workspace.
@@ -404,6 +424,10 @@ type UcCatalog struct {
 	Name string `json:"name"`
 }
 
+func (s *UcCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Unity Catalog replication configuration (top-level, not per-set).
 type UcReplicationConfig struct {
 	// UC catalogs to replicate.
@@ -413,6 +437,10 @@ type UcReplicationConfig struct {
 	DataReplicationWorkspaceSet string `json:"data_replication_workspace_set"`
 	// Location mappings - storage URI per region for each location.
 	LocationMappings []LocationMapping `json:"location_mappings,omitempty"`
+}
+
+func (s *UcReplicationConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateFailoverGroupRequest struct {

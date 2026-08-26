@@ -18,6 +18,10 @@ type GetResourceRequest struct {
 	Resource Resource `json:"-" url:"resource"`
 }
 
+func (s *GetResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type NestedMessage struct {
 	OptionalDuration *duration.Duration `json:"optional_duration,omitempty" url:"optional_duration,omitempty"`
 
@@ -117,6 +121,10 @@ type RepeatedFields struct {
 	TestRepeatedEnum []TestEnum `json:"test_repeated_enum,omitempty" url:"test_repeated_enum,omitempty"`
 }
 
+func (s *RepeatedFields) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RequiredFields struct {
 	RequiredBool bool `json:"required_bool" url:"required_bool"`
 
@@ -148,6 +156,10 @@ type RequiredFields struct {
 	TestRequiredEnum TestEnum `json:"test_required_enum" url:"test_required_enum"`
 }
 
+func (s *RequiredFields) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // We separate this into 3 submessages to simplify test cases. E.g., any
 // required top level field needs to be included in the expected json for each
 // test case.
@@ -157,6 +169,10 @@ type Resource struct {
 	RepeatedFields *RepeatedFields `json:"repeated_fields,omitempty" url:"repeated_fields,omitempty"`
 
 	RequiredFields *RequiredFields `json:"required_fields,omitempty" url:"required_fields,omitempty"`
+}
+
+func (s *Resource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type TestEnum string

@@ -12,6 +12,10 @@ type AibiDashboardEmbeddingAccessPolicy struct {
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
 }
 
+func (s *AibiDashboardEmbeddingAccessPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AibiDashboardEmbeddingAccessPolicyAccessPolicyType string
 
 const AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeAllowAllDomains AibiDashboardEmbeddingAccessPolicyAccessPolicyType = `ALLOW_ALL_DOMAINS`
@@ -56,8 +60,16 @@ type AibiDashboardEmbeddingApprovedDomains struct {
 	ApprovedDomains []string `json:"approved_domains,omitempty"`
 }
 
+func (s *AibiDashboardEmbeddingApprovedDomains) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AllowedAppsUserApiScopesMessage struct {
 	AllowedScopes []string `json:"allowed_scopes,omitempty"`
+}
+
+func (s *AllowedAppsUserApiScopesMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type BooleanMessage struct {
@@ -126,6 +138,10 @@ type ClusterAutoRestartMessageMaintenanceWindow struct {
 	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule `json:"week_day_based_schedule,omitempty"`
 }
 
+func (s *ClusterAutoRestartMessageMaintenanceWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ClusterAutoRestartMessageMaintenanceWindowDayOfWeek string
 
 const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekFriday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `FRIDAY`
@@ -184,6 +200,10 @@ type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
 	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
 
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
+}
+
+func (s *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency string
@@ -260,6 +280,10 @@ type CollaborationPlatformConnectivityMessage struct {
 	Connectivity CollaborationPlatformConnectivityMessageConnectivity `json:"connectivity"`
 }
 
+func (s *CollaborationPlatformConnectivityMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CollaborationPlatformConnectivityMessageConnectivity string
 
 const CollaborationPlatformConnectivityMessageConnectivityAllowAll CollaborationPlatformConnectivityMessageConnectivity = `ALLOW_ALL`
@@ -307,6 +331,10 @@ type GetPublicAccountSettingRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetPublicAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPublicAccountUserPreferenceRequest struct {
 	// User Setting name.
 	Name string `json:"-" url:"-"`
@@ -314,9 +342,17 @@ type GetPublicAccountUserPreferenceRequest struct {
 	UserId string `json:"-" url:"-"`
 }
 
+func (s *GetPublicAccountUserPreferenceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPublicWorkspaceSettingRequest struct {
 	// Name of the setting
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetPublicWorkspaceSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type IntegerMessage struct {
@@ -484,12 +520,20 @@ type PatchPublicAccountSettingRequest struct {
 	Setting Setting `json:"setting"`
 }
 
+func (s *PatchPublicAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PatchPublicAccountUserPreferenceRequest struct {
 	Name string `json:"-" url:"-"`
 
 	Setting UserPreference `json:"setting"`
 	// User ID of the user whose setting is being updated.
 	UserId string `json:"-" url:"-"`
+}
+
+func (s *PatchPublicAccountUserPreferenceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PatchPublicWorkspaceSettingRequest struct {
@@ -499,8 +543,16 @@ type PatchPublicWorkspaceSettingRequest struct {
 	Setting Setting `json:"setting"`
 }
 
+func (s *PatchPublicWorkspaceSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PersonalComputeMessage struct {
 	Value PersonalComputeMessagePersonalComputeMessageEnum `json:"value,omitempty"`
+}
+
+func (s *PersonalComputeMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // ON: Grants all users in all workspaces access to the Personal Compute default

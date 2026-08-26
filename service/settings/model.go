@@ -67,6 +67,10 @@ type AibiDashboardEmbeddingAccessPolicy struct {
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
 }
 
+func (s *AibiDashboardEmbeddingAccessPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AibiDashboardEmbeddingAccessPolicyAccessPolicyType string
 
 const AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeAllowAllDomains AibiDashboardEmbeddingAccessPolicyAccessPolicyType = `ALLOW_ALL_DOMAINS`
@@ -137,6 +141,10 @@ func (s AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error)
 
 type AibiDashboardEmbeddingApprovedDomains struct {
 	ApprovedDomains []string `json:"approved_domains,omitempty"`
+}
+
+func (s *AibiDashboardEmbeddingApprovedDomains) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type AibiDashboardEmbeddingApprovedDomainsSetting struct {
@@ -261,6 +269,10 @@ type ClusterAutoRestartMessageMaintenanceWindow struct {
 	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule `json:"week_day_based_schedule,omitempty"`
 }
 
+func (s *ClusterAutoRestartMessageMaintenanceWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ClusterAutoRestartMessageMaintenanceWindowDayOfWeek string
 
 const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekFriday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `FRIDAY`
@@ -319,6 +331,10 @@ type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
 	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
 
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
+}
+
+func (s *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency string
@@ -530,6 +546,10 @@ type Config struct {
 	Slack *SlackConfig `json:"slack,omitempty"`
 }
 
+func (s *Config) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to configure a block list or allow list.
 type CreateIpAccessList struct {
 	IpAddresses []string `json:"ip_addresses,omitempty"`
@@ -539,13 +559,25 @@ type CreateIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
+func (s *CreateIpAccessList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // An IP access list was successfully created.
 type CreateIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
+func (s *CreateIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateNetworkConnectivityConfigRequest struct {
 	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration `json:"network_connectivity_config"`
+}
+
+func (s *CreateNetworkConnectivityConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Properties of the new network connectivity configuration.
@@ -561,9 +593,17 @@ type CreateNetworkConnectivityConfiguration struct {
 	Region string `json:"region"`
 }
 
+func (s *CreateNetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateNetworkPolicyRequest struct {
 	// Network policy configuration details.
 	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
+}
+
+func (s *CreateNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateNotificationDestinationRequest struct {
@@ -675,6 +715,10 @@ type CreatePrivateEndpointRuleRequest struct {
 	PrivateEndpointRule CreatePrivateEndpointRule `json:"private_endpoint_rule"`
 }
 
+func (s *CreatePrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateTokenRequest struct {
 	// Whether to enable autoscoping for this token. When true, the token will
 	// automatically collect inferred API path scopes as it is used.
@@ -774,6 +818,10 @@ type CustomerFacingIngressNetworkPolicy struct {
 	PublicAccess *CustomerFacingIngressNetworkPolicyPublicAccess `json:"public_access,omitempty"`
 }
 
+func (s *CustomerFacingIngressNetworkPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Matches account-level Databricks API endpoints for an ingress network policy
 // rule.
 type CustomerFacingIngressNetworkPolicyAccountApiDestination struct {
@@ -782,6 +830,10 @@ type CustomerFacingIngressNetworkPolicyAccountApiDestination struct {
 	ScopeQualifier CustomerFacingIngressNetworkPolicyApiScopeQualifier `json:"scope_qualifier,omitempty"`
 	// The API scopes to match. Use "all-apis" to match any account-level API.
 	Scopes []string `json:"scopes,omitempty"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyAccountApiDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination struct {
@@ -876,6 +928,10 @@ type CustomerFacingIngressNetworkPolicyAuthentication struct {
 	Identities []CustomerFacingIngressNetworkPolicyAuthenticationIdentity `json:"identities,omitempty"`
 
 	IdentityType CustomerFacingIngressNetworkPolicyAuthenticationIdentityType `json:"identity_type,omitempty"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyAuthentication) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CustomerFacingIngressNetworkPolicyAuthenticationIdentity struct {
@@ -979,9 +1035,15 @@ type CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess struct {
 	RestrictionMode CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode `json:"restriction_mode"`
 }
 
+func (s *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode string
 
 const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeFullAccess CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `FULL_ACCESS`
+
+const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeLegacyMode CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `LEGACY_MODE`
 
 const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeRestrictedAccess CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `RESTRICTED_ACCESS`
 
@@ -993,11 +1055,11 @@ func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) 
 // Set raw string value and validate it against allowed values
 func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) Set(v string) error {
 	switch v {
-	case `FULL_ACCESS`, `RESTRICTED_ACCESS`:
+	case `FULL_ACCESS`, `LEGACY_MODE`, `RESTRICTED_ACCESS`:
 		*f = CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "RESTRICTED_ACCESS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "LEGACY_MODE", "RESTRICTED_ACCESS"`, v)
 	}
 }
 
@@ -1007,6 +1069,7 @@ func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) 
 func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) Values() []CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode {
 	return []CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode{
 		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeFullAccess,
+		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeLegacyMode,
 		CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeRestrictedAccess,
 	}
 }
@@ -1060,9 +1123,17 @@ type CustomerFacingIngressNetworkPolicyEndpoints struct {
 	EndpointIds []string `json:"endpoint_ids,omitempty"`
 }
 
+func (s *CustomerFacingIngressNetworkPolicyEndpoints) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CustomerFacingIngressNetworkPolicyIpRanges struct {
 	// We only support IPv4 and IPv4 CIDR notation for now.
 	IpRanges []string `json:"ip_ranges,omitempty"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyIpRanges) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination struct {
@@ -1093,6 +1164,10 @@ type CustomerFacingIngressNetworkPolicyPrivateAccess struct {
 	DenyRules []CustomerFacingIngressNetworkPolicyPrivateIngressRule `json:"deny_rules,omitempty"`
 	// The restriction mode for private access.
 	RestrictionMode CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode `json:"restriction_mode"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyPrivateAccess) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The restriction mode for private access. In ALLOW_ALL_REGISTERED_ENDPOINTS
@@ -1205,6 +1280,10 @@ type CustomerFacingIngressNetworkPolicyPublicAccess struct {
 	DenyRules []CustomerFacingIngressNetworkPolicyPublicIngressRule `json:"deny_rules,omitempty"`
 
 	RestrictionMode CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode `json:"restriction_mode"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyPublicAccess) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode string
@@ -1328,8 +1407,16 @@ type CustomerFacingIngressNetworkPolicyWorkspaceApiDestination struct {
 	Scopes []string `json:"scopes,omitempty"`
 }
 
+func (s *CustomerFacingIngressNetworkPolicyWorkspaceApiDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CustomerFacingIngressNetworkPolicyWorkspaceIdList struct {
 	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
+}
+
+func (s *CustomerFacingIngressNetworkPolicyWorkspaceIdList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CustomerFacingIngressNetworkPolicyWorkspaceUiDestination struct {
@@ -1598,9 +1685,17 @@ type DeleteAccountIpAccessEnableResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteAccountIpAccessEnableResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
+}
+
+func (s *DeleteAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
@@ -1636,6 +1731,10 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1667,6 +1766,10 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"etag"`
+}
+
+func (s *DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteDashboardEmailSubscriptionsRequest struct {
@@ -1702,6 +1805,10 @@ type DeleteDashboardEmailSubscriptionsResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteDashboardEmailSubscriptionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDefaultNamespaceSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1733,6 +1840,10 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"etag"`
+}
+
+func (s *DeleteDefaultNamespaceSettingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteDefaultWarehouseIdRequest struct {
@@ -1768,6 +1879,10 @@ type DeleteDefaultWarehouseIdResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteDefaultWarehouseIdResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDisableLegacyAccessRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1799,6 +1914,10 @@ type DeleteDisableLegacyAccessResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"etag"`
+}
+
+func (s *DeleteDisableLegacyAccessResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteDisableLegacyDbfsRequest struct {
@@ -1834,6 +1953,10 @@ type DeleteDisableLegacyDbfsResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteDisableLegacyDbfsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDisableLegacyFeaturesRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1867,9 +1990,17 @@ type DeleteDisableLegacyFeaturesResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteDisableLegacyFeaturesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
+}
+
+func (s *DeleteIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteLlmProxyPartnerPoweredWorkspaceRequest struct {
@@ -1905,9 +2036,17 @@ type DeleteLlmProxyPartnerPoweredWorkspaceResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteLlmProxyPartnerPoweredWorkspaceResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
+}
+
+func (s *DeleteNetworkConnectivityConfigurationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteNetworkPolicyRequest struct {
@@ -1915,8 +2054,16 @@ type DeleteNetworkPolicyRequest struct {
 	NetworkPolicyId string `json:"-" url:"-"`
 }
 
+func (s *DeleteNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteNotificationDestinationRequest struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *DeleteNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeletePersonalComputeSettingRequest struct {
@@ -1952,11 +2099,19 @@ type DeletePersonalComputeSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeletePersonalComputeSettingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeletePrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 	// Your private endpoint rule ID.
 	PrivateEndpointRuleId string `json:"-" url:"-"`
+}
+
+func (s *DeletePrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteRestrictWorkspaceAdminsSettingRequest struct {
@@ -1992,6 +2147,10 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteRestrictWorkspaceAdminsSettingResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteSqlResultsDownloadRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2025,9 +2184,17 @@ type DeleteSqlResultsDownloadResponse struct {
 	Etag string `json:"etag"`
 }
 
+func (s *DeleteSqlResultsDownloadResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to revoke.
 	TokenId string `json:"-" url:"-"`
+}
+
+func (s *DeleteTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DestinationType string
@@ -2169,6 +2336,10 @@ type EgressNetworkPolicy struct {
 	InternetAccess *EgressNetworkPolicyInternetAccessPolicy `json:"internet_access,omitempty"`
 }
 
+func (s *EgressNetworkPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type EgressNetworkPolicyInternetAccessPolicy struct {
 	AllowedInternetDestinations []EgressNetworkPolicyInternetAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
 
@@ -2178,6 +2349,10 @@ type EgressNetworkPolicyInternetAccessPolicy struct {
 	LogOnlyMode *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode `json:"log_only_mode,omitempty"`
 
 	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode `json:"restriction_mode,omitempty"`
+}
+
+func (s *EgressNetworkPolicyInternetAccessPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Users can specify accessible internet destinations when outbound access is
@@ -2278,6 +2453,10 @@ type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
 	LogOnlyModeType EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType `json:"log_only_mode_type,omitempty"`
 
 	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType `json:"workloads,omitempty"`
+}
+
+func (s *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType string
@@ -2496,9 +2675,17 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
 }
 
+func (s *EgressNetworkPolicyNetworkAccessPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination struct {
 	// The workspace IDs to allow egress traffic to.
 	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
+}
+
+func (s *EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Users can specify accessible internet destinations when outbound access is
@@ -2565,6 +2752,10 @@ type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement struct {
 	// policy, while DRY_RUN only logs violations without blocking. When not
 	// specified, defaults to ENFORCED.
 	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode `json:"enforcement_mode,omitempty"`
+}
+
+func (s *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The values should match the list of workloads used in networkconfig.proto
@@ -2790,6 +2981,10 @@ type EmailConfig struct {
 	Addresses []string `json:"addresses,omitempty"`
 }
 
+func (s *EmailConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type EnableExportNotebook struct {
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
@@ -2973,9 +3168,17 @@ type ExchangeTokenRequest struct {
 	TokenType []TokenType `json:"tokenType"`
 }
 
+func (s *ExchangeTokenRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Exhanged tokens were successfully returned.
 type ExchangeTokenResponse struct {
 	Values []ExchangeToken `json:"values,omitempty"`
+}
+
+func (s *ExchangeTokenResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // An IP access list was successfully returned.
@@ -2983,7 +3186,17 @@ type FetchIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
+func (s *FetchIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GcpEndpoint struct {
+	// All Google APIs that support VPC Service Controls (a subset of all Google
+	// APIs).
+	AllVpcScServices bool `json:"all_vpc_sc_services,omitempty"`
+	// Selected Google API hostnames, e.g. "storage.googleapis.com",
+	// "bigquery.googleapis.com".
+	GoogleApiEndpoints *GoogleApiEndpoints `json:"google_api_endpoints,omitempty"`
 	// Output only. The URI of the created PSC endpoint.
 	PscEndpointUri string `json:"psc_endpoint_uri,omitempty"`
 	// The full url of the target service attachment. Example:
@@ -3050,6 +3263,10 @@ func (s GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
 type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
+}
+
+func (s *GetAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
@@ -3330,13 +3547,25 @@ type GetIpAccessListRequest struct {
 	IpAccessListId string `json:"-" url:"-"`
 }
 
+func (s *GetIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
+}
+
+func (s *GetIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // IP access lists were successfully returned.
 type GetIpAccessListsResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+}
+
+func (s *GetIpAccessListsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetLlmProxyPartnerPoweredAccountRequest struct {
@@ -3407,13 +3636,25 @@ type GetNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
+func (s *GetNetworkConnectivityConfigurationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to retrieve.
 	NetworkPolicyId string `json:"-" url:"-"`
 }
 
+func (s *GetNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetNotificationDestinationRequest struct {
 	Id string `json:"-" url:"-"`
+}
+
+func (s *GetNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPersonalComputeSettingRequest struct {
@@ -3442,6 +3683,10 @@ type GetPrivateEndpointRuleRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 	// Your private endpoint rule ID.
 	PrivateEndpointRuleId string `json:"-" url:"-"`
+}
+
+func (s *GetPrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetRestrictWorkspaceAdminsSettingRequest struct {
@@ -3490,9 +3735,17 @@ type GetStatusRequest struct {
 	Keys string `json:"-" url:"keys"`
 }
 
+func (s *GetStatusRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetTokenManagementRequest struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" url:"-"`
+}
+
+func (s *GetTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetTokenPermissionLevelsResponse struct {
@@ -3500,14 +3753,38 @@ type GetTokenPermissionLevelsResponse struct {
 	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetTokenPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Token with specified Token ID was successfully returned.
 type GetTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 }
 
+func (s *GetTokenResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+func (s *GetWorkspaceNetworkOptionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Wrapper for a list of Google API hostnames. Wrapped in a message because
+// proto3 oneof does not support repeated fields directly.
+type GoogleApiEndpoints struct {
+	// Google API hostnames, e.g. "storage.googleapis.com",
+	// "bigquery.googleapis.com". Use "googleapis.com" to cover all Google APIs.
+	Endpoints []string `json:"endpoints,omitempty"`
+}
+
+func (s *GoogleApiEndpoints) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Definition of an IP Access list
@@ -3547,6 +3824,10 @@ func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
 // IP access lists were successfully returned.
 type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+}
+
+func (s *ListIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListNetworkConnectivityConfigurationsRequest struct {
@@ -3708,6 +3989,10 @@ type ListPublicTokensResponse struct {
 	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
 }
 
+func (s *ListPublicTokensResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListTokenManagementRequest struct {
 	// User ID of the user that created the token.
 	CreatedById int64 `json:"-" url:"created_by_id,omitempty"`
@@ -3729,6 +4014,10 @@ func (s ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
 type ListTokensResponse struct {
 	// Token metadata of each user-created token in the workspace
 	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
+}
+
+func (s *ListTokensResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Type of IP access list. Valid values are as follows and are case-sensitive:
@@ -3901,6 +4190,10 @@ type NccAwsStableIpRule struct {
 	CidrBlocks []string `json:"cidr_blocks,omitempty"`
 }
 
+func (s *NccAwsStableIpRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Properties of the new private endpoint rule. Note that you must approve the
 // endpoint in Azure portal after initialization.
 type NccAzurePrivateEndpointRule struct {
@@ -4047,11 +4340,19 @@ type NccEgressConfig struct {
 	TargetRules *NccEgressTargetRules `json:"target_rules,omitempty"`
 }
 
+func (s *NccEgressConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Default rules don't have specific targets.
 type NccEgressDefaultRules struct {
 	AwsStableIpRule *NccAwsStableIpRule `json:"aws_stable_ip_rule,omitempty"`
 
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule `json:"azure_service_endpoint_rule,omitempty"`
+}
+
+func (s *NccEgressDefaultRules) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Target rule controls the egress rules that are dedicated to specific
@@ -4062,6 +4363,10 @@ type NccEgressTargetRules struct {
 	AwsPrivateEndpointRules []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule `json:"aws_private_endpoint_rules,omitempty"`
 
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule `json:"azure_private_endpoint_rules,omitempty"`
+}
+
+func (s *NccEgressTargetRules) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Properties of the new private endpoint rule. Note that you must approve the
@@ -4240,6 +4545,10 @@ type NetworkPolicyEgress struct {
 	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy `json:"network_access,omitempty"`
 }
 
+func (s *NetworkPolicyEgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type NotificationDestination struct {
 	// The configuration for the notification destination. Will be exactly one
 	// of the nested configs. Only returns for users with workspace admin
@@ -4299,6 +4608,10 @@ func (s PartitionId) MarshalJSON() ([]byte, error) {
 
 type PersonalComputeMessage struct {
 	Value PersonalComputeMessageEnum `json:"value"`
+}
+
+func (s *PersonalComputeMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // ON: Grants all users in all workspaces access to the Personal Compute default
@@ -4418,6 +4731,10 @@ type ReplaceIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
+func (s *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RestrictWorkspaceAdminsMessage struct {
 	// When true, workspace admins cannot create governance tags. ALLOW_ALL
 	// status does not override this; they are independent.
@@ -4505,6 +4822,10 @@ func (s RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	TokenId string `json:"token_id"`
+}
+
+func (s *RevokeTokenRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SlackConfig struct {
@@ -4752,6 +5073,10 @@ type TokenPermissionsRequest struct {
 	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
+func (s *TokenPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is
 // supported.
 type TokenType string
@@ -4821,6 +5146,10 @@ type UpdateAccountIpAccessEnableRequest struct {
 	Setting AccountIpAccessEnable `json:"setting"`
 }
 
+func (s *UpdateAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -4840,6 +5169,10 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
+}
+
+func (s *UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -4863,6 +5196,10 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
 }
 
+func (s *UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -4882,6 +5219,10 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting AutomaticClusterUpdateSetting `json:"setting"`
+}
+
+func (s *UpdateAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -4905,6 +5246,10 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	Setting ComplianceSecurityProfileSetting `json:"setting"`
 }
 
+func (s *UpdateComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateCspEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -4924,6 +5269,10 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting CspEnablementAccountSetting `json:"setting"`
+}
+
+func (s *UpdateCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -4947,6 +5296,10 @@ type UpdateDashboardEmailSubscriptionsRequest struct {
 	Setting DashboardEmailSubscriptions `json:"setting"`
 }
 
+func (s *UpdateDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -4966,6 +5319,10 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting DefaultNamespaceSetting `json:"setting"`
+}
+
+func (s *UpdateDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -4989,6 +5346,10 @@ type UpdateDefaultWarehouseIdRequest struct {
 	Setting DefaultWarehouseId `json:"setting"`
 }
 
+func (s *UpdateDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateDisableLegacyAccessRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -5008,6 +5369,10 @@ type UpdateDisableLegacyAccessRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyAccess `json:"setting"`
+}
+
+func (s *UpdateDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -5031,6 +5396,10 @@ type UpdateDisableLegacyDbfsRequest struct {
 	Setting DisableLegacyDbfs `json:"setting"`
 }
 
+func (s *UpdateDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateDisableLegacyFeaturesRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -5050,6 +5419,10 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyFeatures `json:"setting"`
+}
+
+func (s *UpdateDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -5073,6 +5446,10 @@ type UpdateEnableExportNotebookRequest struct {
 	Setting EnableExportNotebook `json:"setting"`
 }
 
+func (s *UpdateEnableExportNotebookRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateEnableNotebookTableClipboardRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -5092,6 +5469,10 @@ type UpdateEnableNotebookTableClipboardRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting EnableNotebookTableClipboard `json:"setting"`
+}
+
+func (s *UpdateEnableNotebookTableClipboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -5115,6 +5496,10 @@ type UpdateEnableResultsDownloadingRequest struct {
 	Setting EnableResultsDownloading `json:"setting"`
 }
 
+func (s *UpdateEnableResultsDownloadingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -5136,6 +5521,10 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
 }
 
+func (s *UpdateEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateEsmEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -5155,6 +5544,10 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting EsmEnablementAccountSetting `json:"setting"`
+}
+
+func (s *UpdateEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update an IP access list.
@@ -5202,6 +5595,10 @@ type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 	Setting LlmProxyPartnerPoweredAccount `json:"setting"`
 }
 
+func (s *UpdateLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -5221,6 +5618,10 @@ type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting LlmProxyPartnerPoweredEnforce `json:"setting"`
+}
+
+func (s *UpdateLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details required to update a setting.
@@ -5244,6 +5645,10 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	Setting LlmProxyPartnerPoweredWorkspace `json:"setting"`
 }
 
+func (s *UpdateLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateNccPrivateEndpointRuleRequest struct {
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
@@ -5261,11 +5666,19 @@ type UpdateNccPrivateEndpointRuleRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateNccPrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateNetworkPolicyRequest struct {
 	// Updated network policy configuration details.
 	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 	// The unique identifier for the network policy.
 	NetworkPolicyId string `json:"-" url:"-"`
+}
+
+func (s *UpdateNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateNotificationDestinationRequest struct {
@@ -5307,6 +5720,10 @@ type UpdatePersonalComputeSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting PersonalComputeSetting `json:"setting"`
+}
+
+func (s *UpdatePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Properties of the new private endpoint rule. Note that you must approve the
@@ -5366,6 +5783,10 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
 }
 
+func (s *UpdateRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Details required to update a setting.
 type UpdateSqlResultsDownloadRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -5385,6 +5806,10 @@ type UpdateSqlResultsDownloadRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting SqlResultsDownload `json:"setting"`
+}
+
+func (s *UpdateSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // For the list of supported token scopes, see
@@ -5410,6 +5835,10 @@ type UpdateTokenManagementRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"update_mask"`
 }
 
+func (s *UpdateTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // For the list of supported token scopes, see
 // https://docs.databricks.com/api/workspace/api/scopes.
 type UpdateTokenRequest struct {
@@ -5433,7 +5862,15 @@ type UpdateTokenRequest struct {
 	UpdateMask fieldmask.FieldMask `json:"update_mask"`
 }
 
+func (s *UpdateTokenRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateTokenResponse struct {
+}
+
+func (s *UpdateTokenResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateWorkspaceNetworkOptionRequest struct {
@@ -5441,6 +5878,10 @@ type UpdateWorkspaceNetworkOptionRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 	// The network option details for the workspace.
 	WorkspaceNetworkOption WorkspaceNetworkOption `json:"workspace_network_option"`
+}
+
+func (s *UpdateWorkspaceNetworkOptionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type WorkspaceConf map[string]string

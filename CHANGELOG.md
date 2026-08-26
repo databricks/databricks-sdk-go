@@ -1,5 +1,114 @@
 # Version changelog
 
+## Release v0.175.0 (2026-08-19)
+
+### API Changes
+* Add `EnabledTelemetryFeatures` field for [serving.TelemetryConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#TelemetryConfig).
+
+
+## Release v0.174.0 (2026-08-18)
+
+### Bug Fixes
+
+- Recover from concurrent OAuth token cache writes by using the fresh token stored by another process.
+- Fix Spark runtime selection for major-only runtime versions.
+- Accept JSON numbers and decimal strings when unmarshalling `int64` API response fields.
+
+### API Changes
+
+* Add `AgentType` field for [dashboards.GenieConversationSummary](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieConversationSummary).
+* Add `GroupId` field for [iamv2.DirectGroupMember](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DirectGroupMember).
+* Add `EffectiveServerlessComputeId` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `PipelineChannel` field for [postgres.NewPipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#NewPipelineSpec).
+* Add `TextAttachmentPurposeAnswer` enum value for [dashboards.TextAttachmentPurpose](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#TextAttachmentPurpose).
+* [Breaking] Add pagination for [AccountIamV2API.ListDirectGroupMembers](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListDirectGroupMembers).
+* [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignmentDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignmentDetails).
+* [Breaking] Add pagination for [WorkspaceIamV2API.ListDirectGroupMembersProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListDirectGroupMembersProxy).
+* [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentDetailsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentDetailsProxy).
+* Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [database.SyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/database#SyncedTableSpecPgSpecificType).
+* Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [postgres.SyncedTableSyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpecPgSpecificType).
+* [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignments).
+* [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentsProxy).
+* Add `DefaultGitSource`, `GitSource` and `SourceCodePath` fields for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `AutoDeploy` and `CallerCredentialId` fields for [apps.GitRepository](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#GitRepository).
+* Add `CustomUdf` field for [ml.Function](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Function).
+* Add `EffectiveServerlessComputeId` field for [pipelines.GetPipelineResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#GetPipelineResponse).
+
+
+## Release v0.173.0 (2026-08-17)
+
+### Breaking Changes
+
+ * Raise the minimum supported Go version from 1.24 to 1.25
+
+### Bug Fixes
+
+- Recover from concurrent OAuth token cache writes by using the fresh token stored by another process.
+- Fix Spark runtime selection for major-only runtime versions.
+
+### API Changes
+* Add `AgentType` field for [dashboards.GenieConversationSummary](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieConversationSummary).
+* Add `GroupId` field for [iamv2.DirectGroupMember](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DirectGroupMember).
+* Add `EffectiveServerlessComputeId` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `PipelineChannel` field for [postgres.NewPipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#NewPipelineSpec).
+* Add `TextAttachmentPurposeAnswer` enum value for [dashboards.TextAttachmentPurpose](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#TextAttachmentPurpose).
+* [Breaking] Add pagination for [AccountIamV2API.ListDirectGroupMembers](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListDirectGroupMembers).
+* [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignmentDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignmentDetails).
+* [Breaking] Add pagination for [WorkspaceIamV2API.ListDirectGroupMembersProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListDirectGroupMembersProxy).
+* [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentDetailsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentDetailsProxy).
+* Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [database.SyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/database#SyncedTableSpecPgSpecificType).
+* Add `PgSpecificTypeHalfvec` and `PgSpecificTypeVarchar` enum values for [postgres.SyncedTableSyncedTableSpecPgSpecificType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#SyncedTableSyncedTableSpecPgSpecificType).
+* [Breaking] Add pagination for [AccountIamV2API.ListWorkspaceAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API.ListWorkspaceAssignments).
+* [Breaking] Add pagination for [WorkspaceIamV2API.ListWorkspaceAssignmentsProxy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API.ListWorkspaceAssignmentsProxy).
+* Add `LinkedinAdsOptions` and `MarketoOptions` fields for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
+* [Breaking] Change `ActionType` and `Status` fields for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* Change `ActionType` and `Status` fields for [bundledeployments.Operation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#Operation) to no longer be required.
+* [Breaking] Remove `CreateOperation` method for [w.BundleDeployments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#BundleDeploymentsAPI) workspace-level service.
+
+
+## Release v0.172.0 (2026-08-13)
+
+### API Changes
+* Add `CreateDirectGroupMember`, `CreateGroup`, `CreateServicePrincipal`, `CreateUser`, `CreateWorkspaceAssignment`, `DeleteDirectGroupMember`, `DeleteGroup`, `DeleteServicePrincipal`, `DeleteUser`, `DeleteWorkspaceAssignment`, `GetDirectGroupMember`, `GetGroup`, `GetServicePrincipal`, `GetUser`, `GetWorkspaceAssignment`, `ListDirectGroupMembers`, `ListGroups`, `ListServicePrincipals`, `ListTransitiveParentGroups`, `ListUsers`, `ListWorkspaceAssignments`, `UpdateGroup`, `UpdateServicePrincipal`, `UpdateUser` and `UpdateWorkspaceAssignment` methods for [a.AccountIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API) account-level service.
+* Add `CreateDirectGroupMemberProxy`, `CreateGroupProxy`, `CreateServicePrincipalProxy`, `CreateUserProxy`, `CreateWorkspaceAssignmentProxy`, `DeleteDirectGroupMemberProxy`, `DeleteGroupProxy`, `DeleteServicePrincipalProxy`, `DeleteUserProxy`, `DeleteWorkspaceAssignmentProxy`, `GetDirectGroupMemberProxy`, `GetGroupProxy`, `GetServicePrincipalProxy`, `GetUserProxy`, `GetWorkspaceAssignmentProxy`, `GetWorkspaceIdentityDetail`, `ListDirectGroupMembersProxy`, `ListGroupsProxy`, `ListServicePrincipalsProxy`, `ListTransitiveParentGroupsProxy`, `ListUsersProxy`, `ListWorkspaceAssignmentsProxy`, `UpdateGroupProxy`, `UpdateServicePrincipalProxy`, `UpdateUserProxy`, `UpdateWorkspaceAssignmentProxy` and `UpdateWorkspaceIdentityDetail` methods for [w.WorkspaceIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API) workspace-level service.
+* Add `CreateTime` and `UpdateTime` fields for [dashboards.GenieSpace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieSpace).
+* Change `NewCluster` field for [jobs.JobCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobCluster) to no longer be required.
+* [Breaking] Change `NewCluster` field for [jobs.JobCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobCluster) to no longer be required.
+
+
+## Release v0.171.0 (2026-08-12)
+
+### API Changes
+* Add `ForwardUserAccessToken` field for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `ForwardUserAccessToken` field for [apps.AppUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppUpdate).
+* Add `IncludeValue` field for [catalog.GetSecretRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetSecretRequest).
+* Add `DockerImageUrl` field for [jobs.AiRuntimeTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTask).
+* Add `InputColumn` and `OutputColumn` fields for [pipelines.Transformer](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#Transformer).
+* Add `Netsuite` enum value for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
+* Add `GpuXlarge8` enum value for [serving.ServedModelInputWorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInputWorkloadType).
+* Add `GpuXlarge8` enum value for [serving.ServingModelWorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingModelWorkloadType).
+* Add `LegacyMode` enum value for [settings.CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode).
+* Change `AccountSpStatus` and `DisplayName` fields for [iamv2.ServicePrincipal](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ServicePrincipal) to be required.
+* Change `AccountUserStatus`, `FullName` and `Username` fields for [iamv2.User](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#User) to be required.
+* [Breaking] Remove `IncludeBrowse` field for [catalog.GetMcpServiceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetMcpServiceRequest).
+* [Breaking] Remove `IncludeBrowse` field for [catalog.GetModelProviderServiceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetModelProviderServiceRequest).
+* [Breaking] Remove `IncludeBrowse` field for [catalog.GetModelServiceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetModelServiceRequest).
+* [Breaking] Remove `IncludeBrowse` field for [catalog.ListMcpServicesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListMcpServicesRequest).
+* [Breaking] Remove `IncludeBrowse` field for [catalog.ListModelProviderServicesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListModelProviderServicesRequest).
+* [Breaking] Remove `IncludeBrowse` field for [catalog.ListModelServicesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListModelServicesRequest).
+* [Breaking] Remove `BrowseOnly` field for [catalog.McpService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#McpService).
+* [Breaking] Remove `BrowseOnly` field for [catalog.ModelProviderService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderService).
+* [Breaking] Remove `BrowseOnly` field for [catalog.ModelService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelService).
+* Add `MlflowArtifactLocation` field for [jobs.AiRuntimeTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTask).
+* Add `TriggerDetails` field for [jobs.BaseJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseJob).
+* Add `Triggers` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+* Add `TriggerDetails` field for [jobs.Job](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Job).
+* Add `Triggers` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+* Add `ApiSourceConnectorOptions` field for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
+* Add `ApiSourceConnectorConfig` field for [pipelines.SourceConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SourceConfig).
+* Add `AllVpcScServices` and `GoogleApiEndpoints` fields for [settings.GcpEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GcpEndpoint).
+
+
 ## Release v0.170.0 (2026-08-05)
 
 ### API Changes

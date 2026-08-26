@@ -240,7 +240,6 @@ func TestBuildDiscoveryAuthorizeURL_GroupIDIsNested(t *testing.T) {
 		ChallengeMethod: "S256",
 		Verifier:        "verifier",
 	}
-
 	testCases := []struct {
 		name   string
 		target string

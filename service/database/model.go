@@ -12,9 +12,17 @@ type CreateDatabaseCatalogRequest struct {
 	Catalog DatabaseCatalog `json:"catalog"`
 }
 
+func (s *CreateDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateDatabaseInstanceRequest struct {
 	// Instance to create.
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
+}
+
+func (s *CreateDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateDatabaseInstanceRoleRequest struct {
@@ -39,8 +47,16 @@ type CreateDatabaseTableRequest struct {
 	Table DatabaseTable `json:"table"`
 }
 
+func (s *CreateDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateSyncedDatabaseTableRequest struct {
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
+}
+
+func (s *CreateSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CustomTag struct {
@@ -465,6 +481,10 @@ type DeleteDatabaseCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDatabaseInstanceRequest struct {
 	// By default, an instance cannot be deleted if it has descendant instances
 	// created via PITR. If this flag is specified as true, all descendent
@@ -512,6 +532,10 @@ func (s DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
 
 type DeleteDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteSyncedDatabaseTableRequest struct {
@@ -595,9 +619,17 @@ type GetDatabaseCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetDatabaseInstanceRequest struct {
 	// Name of the cluster to get.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetDatabaseInstanceRoleRequest struct {
@@ -606,12 +638,24 @@ type GetDatabaseInstanceRoleRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListDatabaseCatalogsRequest struct {
@@ -885,6 +929,10 @@ type RequestedClaims struct {
 	Resources []RequestedResource `json:"resources,omitempty"`
 }
 
+func (s *RequestedClaims) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Might add WRITE in the future
 type RequestedClaimsPermissionSet string
 
@@ -1098,6 +1146,10 @@ type SyncedTableProvisioningStatus struct {
 	InitialPipelineSyncProgress *SyncedTablePipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 }
 
+func (s *SyncedTableProvisioningStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SyncedTableSchedulingPolicy string
 
 const SyncedTableSchedulingPolicyContinuous SyncedTableSchedulingPolicy = `CONTINUOUS`
@@ -1195,6 +1247,10 @@ func (s SyncedTableSpec) MarshalJSON() ([]byte, error) {
 // mapping.
 type SyncedTableSpecPgSpecificType string
 
+const SyncedTableSpecPgSpecificTypePgSpecificTypeHalfvec SyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_HALFVEC`
+
+const SyncedTableSpecPgSpecificTypePgSpecificTypeVarchar SyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VARCHAR`
+
 const SyncedTableSpecPgSpecificTypePgSpecificTypeVector SyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VECTOR`
 
 // String representation for [fmt.Print]
@@ -1205,11 +1261,11 @@ func (f *SyncedTableSpecPgSpecificType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SyncedTableSpecPgSpecificType) Set(v string) error {
 	switch v {
-	case `PG_SPECIFIC_TYPE_VECTOR`:
+	case `PG_SPECIFIC_TYPE_HALFVEC`, `PG_SPECIFIC_TYPE_VARCHAR`, `PG_SPECIFIC_TYPE_VECTOR`:
 		*f = SyncedTableSpecPgSpecificType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_VECTOR"`, v)
+		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_HALFVEC", "PG_SPECIFIC_TYPE_VARCHAR", "PG_SPECIFIC_TYPE_VECTOR"`, v)
 	}
 }
 
@@ -1218,6 +1274,8 @@ func (f *SyncedTableSpecPgSpecificType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *SyncedTableSpecPgSpecificType) Values() []SyncedTableSpecPgSpecificType {
 	return []SyncedTableSpecPgSpecificType{
+		SyncedTableSpecPgSpecificTypePgSpecificTypeHalfvec,
+		SyncedTableSpecPgSpecificTypePgSpecificTypeVarchar,
 		SyncedTableSpecPgSpecificTypePgSpecificTypeVector,
 	}
 }
@@ -1391,6 +1449,10 @@ type UpdateDatabaseCatalogRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateDatabaseInstanceRequest struct {
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
 	// The name of the instance. This is the unique identifier for the instance.
@@ -1401,6 +1463,10 @@ type UpdateDatabaseInstanceRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateSyncedDatabaseTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
@@ -1408,4 +1474,8 @@ type UpdateSyncedDatabaseTableRequest struct {
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
 	// The list of fields to update. Setting this field is not yet supported.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

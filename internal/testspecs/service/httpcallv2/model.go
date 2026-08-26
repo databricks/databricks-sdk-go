@@ -118,6 +118,10 @@ type SyncResourceRequest struct {
 	PathParamString string `json:"-" url:"-"`
 }
 
+func (s *SyncResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateResourceRequest struct {
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,

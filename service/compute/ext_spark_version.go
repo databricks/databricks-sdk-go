@@ -34,7 +34,7 @@ func (s sparkVersionsType) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-var dbrVersionRegex = regexp.MustCompile(`^(\d+\.\d+)\.x-.*`)
+var dbrVersionRegex = regexp.MustCompile(`^(\d+(?:\.\d+)?)\.x-.*`)
 
 func extractDbrVersions(s string) string {
 	m := dbrVersionRegex.FindStringSubmatch(s)

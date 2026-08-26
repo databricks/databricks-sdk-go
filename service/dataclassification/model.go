@@ -20,6 +20,10 @@ type AutoTaggingConfig struct {
 	ClassificationTag string `json:"classification_tag"`
 }
 
+func (s *AutoTaggingConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Auto-tagging mode.
 type AutoTaggingConfigAutoTaggingMode string
 
@@ -99,6 +103,10 @@ type CatalogConfigSchemaNames struct {
 	Names []string `json:"names"`
 }
 
+func (s *CatalogConfigSchemaNames) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCatalogConfigRequest struct {
 	// The configuration to create.
 	CatalogConfig CatalogConfig `json:"catalog_config"`
@@ -106,14 +114,26 @@ type CreateCatalogConfigRequest struct {
 	Parent string `json:"-" url:"-"`
 }
 
+func (s *CreateCatalogConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCatalogConfigRequest struct {
 	// Resource name in the format: catalogs/{catalog_name}/config
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteCatalogConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetCatalogConfigRequest struct {
 	// Resource name in the format: catalogs/{catalog_name}/config
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetCatalogConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateCatalogConfigRequest struct {
@@ -124,4 +144,8 @@ type UpdateCatalogConfigRequest struct {
 	Name string `json:"-" url:"-"`
 	// Field mask specifying which fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateCatalogConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

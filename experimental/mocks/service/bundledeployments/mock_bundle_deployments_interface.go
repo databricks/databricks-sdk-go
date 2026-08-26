@@ -141,65 +141,6 @@ func (_c *MockBundleDeploymentsInterface_CreateDeployment_Call) RunAndReturn(run
 	return _c
 }
 
-// CreateOperation provides a mock function with given fields: ctx, request
-func (_m *MockBundleDeploymentsInterface) CreateOperation(ctx context.Context, request bundledeployments.CreateOperationRequest) (*bundledeployments.Operation, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CreateOperation")
-	}
-
-	var r0 *bundledeployments.Operation
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, bundledeployments.CreateOperationRequest) (*bundledeployments.Operation, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, bundledeployments.CreateOperationRequest) *bundledeployments.Operation); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*bundledeployments.Operation)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, bundledeployments.CreateOperationRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockBundleDeploymentsInterface_CreateOperation_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateOperation'
-type MockBundleDeploymentsInterface_CreateOperation_Call struct {
-	*mock.Call
-}
-
-// CreateOperation is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request bundledeployments.CreateOperationRequest
-func (_e *MockBundleDeploymentsInterface_Expecter) CreateOperation(ctx interface{}, request interface{}) *MockBundleDeploymentsInterface_CreateOperation_Call {
-	return &MockBundleDeploymentsInterface_CreateOperation_Call{Call: _e.mock.On("CreateOperation", ctx, request)}
-}
-
-func (_c *MockBundleDeploymentsInterface_CreateOperation_Call) Run(run func(ctx context.Context, request bundledeployments.CreateOperationRequest)) *MockBundleDeploymentsInterface_CreateOperation_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(bundledeployments.CreateOperationRequest))
-	})
-	return _c
-}
-
-func (_c *MockBundleDeploymentsInterface_CreateOperation_Call) Return(_a0 *bundledeployments.Operation, _a1 error) *MockBundleDeploymentsInterface_CreateOperation_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockBundleDeploymentsInterface_CreateOperation_Call) RunAndReturn(run func(context.Context, bundledeployments.CreateOperationRequest) (*bundledeployments.Operation, error)) *MockBundleDeploymentsInterface_CreateOperation_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // CreateVersion provides a mock function with given fields: ctx, request
 func (_m *MockBundleDeploymentsInterface) CreateVersion(ctx context.Context, request bundledeployments.CreateVersionRequest) (*bundledeployments.Version, error) {
 	ret := _m.Called(ctx, request)

@@ -50,6 +50,10 @@ func (s Branch) MarshalJSON() ([]byte, error) {
 type BranchOperationMetadata struct {
 }
 
+func (s *BranchOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type BranchSpec struct {
 	// Absolute expiration timestamp. When set, the branch will expire at this
 	// time. Mutually exclusive with `ttl` and `no_expiry`. When updating, use
@@ -288,6 +292,10 @@ func (s CatalogCatalogStatus) MarshalJSON() ([]byte, error) {
 type CatalogOperationMetadata struct {
 }
 
+func (s *CatalogOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A Lakebase CDF configuration (CdfConfig): one per Postgres schema per
 // database, replicating that schema's tables into a Unity Catalog schema.
 // Immutable once created.
@@ -324,6 +332,10 @@ func (s CdfConfig) MarshalJSON() ([]byte, error) {
 // Metadata for CdfConfig long-running operations. Intentionally empty today;
 // fields (e.g. progress) may be added as the operation contract grows.
 type CdfConfigOperationMetadata struct {
+}
+
+func (s *CdfConfigOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The replication state of a single replicated table (CdfStatus).
@@ -439,6 +451,10 @@ type CreateCatalogRequest struct {
 	CatalogId string `json:"-" url:"catalog_id"`
 }
 
+func (s *CreateCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateCdfConfigRequest struct {
 	// The CdfConfig to create. The catalog, schema, and postgres_schema fields
 	// are required; all other fields are output only and ignored on input.
@@ -468,6 +484,10 @@ type CreateDataApiRequest struct {
 	// Parent database:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Parent string `json:"-" url:"-"`
+}
+
+func (s *CreateDataApiRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateDatabaseRequest struct {
@@ -538,6 +558,10 @@ type CreateProjectRequest struct {
 	ProjectId string `json:"-" url:"project_id"`
 }
 
+func (s *CreateProjectRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateRoleRequest struct {
 	// The Branch where this Role is created. Format:
 	// projects/{project_id}/branches/{branch_id}
@@ -589,6 +613,10 @@ type CreateSyncedTableRequest struct {
 	// Lakehouse Federation. 2. Postgres table named "{table}" in schema
 	// "{schema}" in the connected Postgres database
 	SyncedTableId string `json:"-" url:"synced_table_id"`
+}
+
+func (s *CreateSyncedTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // DataApi represents the Data API (PostgREST) configuration for a Database. At
@@ -699,6 +727,10 @@ func (s DataApiDataApiStatus) MarshalJSON() ([]byte, error) {
 type DataApiOperationMetadata struct {
 }
 
+func (s *DataApiOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Database represents a Postgres database within a Branch.
 type Database struct {
 	// A timestamp indicating when the database was created.
@@ -799,6 +831,10 @@ func (s DatabaseDatabaseStatus) MarshalJSON() ([]byte, error) {
 type DatabaseOperationMetadata struct {
 }
 
+func (s *DatabaseOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Databricks Error that is returned by all Databricks APIs.
 type DatabricksServiceExceptionWithDetailsProto struct {
 	Details []json.RawMessage `json:"details,omitempty"`
@@ -845,6 +881,10 @@ type DeleteCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCdfConfigRequest struct {
 	// When true, also drops the replicated Delta tables in Unity Catalog. When
 	// false (the default), the replicated tables are preserved at their last
@@ -871,16 +911,28 @@ type DeleteDataApiRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteDataApiRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDatabaseRequest struct {
 	// The resource name of the postgres database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteDatabaseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteEndpointRequest struct {
 	// The full resource path of the endpoint to delete. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteProjectRequest struct {
@@ -929,6 +981,10 @@ type DeleteSyncedTableRequest struct {
 	// "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema,
 	// table) are the UC entity names.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteSyncedTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeltaTableSyncInfo struct {
@@ -1066,10 +1122,18 @@ func (s EndpointHosts) MarshalJSON() ([]byte, error) {
 type EndpointOperationMetadata struct {
 }
 
+func (s *EndpointOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A collection of settings for a compute endpoint.
 type EndpointSettings struct {
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
+}
+
+func (s *EndpointSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EndpointSpec struct {
@@ -1545,11 +1609,19 @@ type GetBranchRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetCatalogRequest struct {
 	// The full resource path of the catalog to retrieve.
 	//
 	// Format: "catalogs/{catalog_id}".
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetCdfConfigRequest struct {
@@ -1558,10 +1630,18 @@ type GetCdfConfigRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetCdfConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetCdfStatusRequest struct {
 	// The resource name of the CdfStatus to retrieve. Format:
 	// projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetCdfStatusRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetDataApiRequest struct {
@@ -1570,10 +1650,18 @@ type GetDataApiRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDataApiRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetDatabaseRequest struct {
 	// The name of the Database to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetDatabaseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetEndpointRequest struct {
@@ -1582,9 +1670,17 @@ type GetEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetOperationRequest struct {
 	// The name of the operation resource.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetProjectRequest struct {
@@ -1593,10 +1689,18 @@ type GetProjectRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetProjectRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetRoleRequest struct {
 	// The full resource path of the role to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetSyncedTableRequest struct {
@@ -1604,6 +1708,10 @@ type GetSyncedTableRequest struct {
 	// "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema,
 	// table) are the entity names in the Unity Catalog.
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetSyncedTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Configuration for the initial default branch created during project creation.
@@ -1931,6 +2039,10 @@ func (s ListRolesResponse) MarshalJSON() ([]byte, error) {
 type NewPipelineSpec struct {
 	// Budget policy to set on the newly created pipeline.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Release channel of the underlying pipeline's runtime. Some source table
+	// configurations (e.g., read-time CDF) require PREVIEW. Defaults to CURRENT
+	// if not specified.
+	PipelineChannel NewPipelineSpecPipelineChannel `json:"pipeline_channel,omitempty"`
 	// UC catalog for the pipeline to store intermediate files (checkpoints,
 	// event logs etc). This needs to be a standard catalog where the user has
 	// permissions to create Delta tables.
@@ -1949,6 +2061,47 @@ func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
 
 func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Release channel of the underlying pipeline's runtime. PREVIEW provides early
+// access to the latest features but may be less stable. Some source table
+// configurations (e.g., read-time CDF) require PREVIEW. Defaults to CURRENT if
+// not specified.
+type NewPipelineSpecPipelineChannel string
+
+const NewPipelineSpecPipelineChannelCurrent NewPipelineSpecPipelineChannel = `CURRENT`
+
+const NewPipelineSpecPipelineChannelPreview NewPipelineSpecPipelineChannel = `PREVIEW`
+
+// String representation for [fmt.Print]
+func (f *NewPipelineSpecPipelineChannel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *NewPipelineSpecPipelineChannel) Set(v string) error {
+	switch v {
+	case `CURRENT`, `PREVIEW`:
+		*f = NewPipelineSpecPipelineChannel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CURRENT", "PREVIEW"`, v)
+	}
+}
+
+// Values returns all possible values for NewPipelineSpecPipelineChannel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *NewPipelineSpecPipelineChannel) Values() []NewPipelineSpecPipelineChannel {
+	return []NewPipelineSpecPipelineChannel{
+		NewPipelineSpecPipelineChannelCurrent,
+		NewPipelineSpecPipelineChannelPreview,
+	}
+}
+
+// Type always returns NewPipelineSpecPipelineChannel to satisfy [pflag.Value] interface
+func (f *NewPipelineSpecPipelineChannel) Type() string {
+	return "NewPipelineSpecPipelineChannel"
 }
 
 // Controls how the Data API exposes the OpenAPI documentation endpoint. Only
@@ -2120,6 +2273,10 @@ func (s ProjectDefaultEndpointSettings) MarshalJSON() ([]byte, error) {
 }
 
 type ProjectOperationMetadata struct {
+}
+
+func (s *ProjectOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ProjectSpec struct {
@@ -2299,6 +2456,10 @@ type RequestedClaims struct {
 	PermissionSet RequestedClaimsPermissionSet `json:"permission_set,omitempty"`
 
 	Resources []RequestedResource `json:"resources,omitempty"`
+}
+
+func (s *RequestedClaims) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type RequestedClaimsPermissionSet string
@@ -2526,6 +2687,10 @@ func (f *RoleMembershipRole) Type() string {
 type RoleOperationMetadata struct {
 }
 
+func (s *RoleOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type RoleRoleSpec struct {
 	// The desired API-exposed Postgres role attribute to associate with the
 	// role. Optional.
@@ -2644,6 +2809,10 @@ func (s SyncedTable) MarshalJSON() ([]byte, error) {
 
 // Metadata for SyncedTable long-running operations.
 type SyncedTableOperationMetadata struct {
+}
+
+func (s *SyncedTableOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Progress information of the Synced Table data synchronization pipeline.
@@ -2891,6 +3060,10 @@ func (f *SyncedTableSyncedTableSpecExtraColumnMaintenance) Type() string {
 // mapping.
 type SyncedTableSyncedTableSpecPgSpecificType string
 
+const SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeHalfvec SyncedTableSyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_HALFVEC`
+
+const SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVarchar SyncedTableSyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VARCHAR`
+
 const SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVector SyncedTableSyncedTableSpecPgSpecificType = `PG_SPECIFIC_TYPE_VECTOR`
 
 // String representation for [fmt.Print]
@@ -2901,11 +3074,11 @@ func (f *SyncedTableSyncedTableSpecPgSpecificType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SyncedTableSyncedTableSpecPgSpecificType) Set(v string) error {
 	switch v {
-	case `PG_SPECIFIC_TYPE_VECTOR`:
+	case `PG_SPECIFIC_TYPE_HALFVEC`, `PG_SPECIFIC_TYPE_VARCHAR`, `PG_SPECIFIC_TYPE_VECTOR`:
 		*f = SyncedTableSyncedTableSpecPgSpecificType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_VECTOR"`, v)
+		return fmt.Errorf(`value "%s" is not one of "PG_SPECIFIC_TYPE_HALFVEC", "PG_SPECIFIC_TYPE_VARCHAR", "PG_SPECIFIC_TYPE_VECTOR"`, v)
 	}
 }
 
@@ -2914,6 +3087,8 @@ func (f *SyncedTableSyncedTableSpecPgSpecificType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *SyncedTableSyncedTableSpecPgSpecificType) Values() []SyncedTableSyncedTableSpecPgSpecificType {
 	return []SyncedTableSyncedTableSpecPgSpecificType{
+		SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeHalfvec,
+		SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVarchar,
 		SyncedTableSyncedTableSpecPgSpecificTypePgSpecificTypeVector,
 	}
 }
@@ -3032,11 +3207,19 @@ type UndeleteBranchRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *UndeleteBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request to restore a soft-deleted project within its retention period.
 type UndeleteProjectRequest struct {
 	// The full resource path of the project to undelete. Format:
 	// projects/{project_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *UndeleteProjectRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateBranchRequest struct {
@@ -3048,9 +3231,12 @@ type UpdateBranchRequest struct {
 	// Output only. The full resource path of the branch. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateDataApiRequest struct {
@@ -3060,9 +3246,12 @@ type UpdateDataApiRequest struct {
 	// Resource name:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateDataApiRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateDatabaseRequest struct {
@@ -3075,9 +3264,12 @@ type UpdateDatabaseRequest struct {
 	// The resource name of the database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateDatabaseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateEndpointRequest struct {
@@ -3090,9 +3282,12 @@ type UpdateEndpointRequest struct {
 	// Output only. The full resource path of the endpoint. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateProjectRequest struct {
@@ -3104,9 +3299,12 @@ type UpdateProjectRequest struct {
 	// The project's `name` field is used to identify the project to update.
 	// Format: projects/{project_id}
 	Project Project `json:"project"`
-	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateProjectRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateRoleRequest struct {
@@ -3118,7 +3316,10 @@ type UpdateRoleRequest struct {
 	// The role's `name` field is used to identify the role to update. Format:
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	Role Role `json:"role"`
-	// The list of fields to update in Postgres Role. If unspecified, all fields
-	// will be updated when possible.
+	// The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

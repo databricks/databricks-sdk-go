@@ -177,12 +177,24 @@ type DeleteAccountFederationPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
+func (s *DeleteAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteCustomAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
 }
 
+func (s *DeleteCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeletePublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
+}
+
+func (s *DeletePublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteServicePrincipalFederationPolicyRequest struct {
@@ -192,11 +204,19 @@ type DeleteServicePrincipalFederationPolicyRequest struct {
 	ServicePrincipalId int64 `json:"-" url:"-"`
 }
 
+func (s *DeleteServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteServicePrincipalSecretRequest struct {
 	// The secret ID.
 	SecretId string `json:"-" url:"-"`
 	// The service principal ID.
 	ServicePrincipalId string `json:"-" url:"-"`
+}
+
+func (s *DeleteServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type FederationPolicy struct {
@@ -240,6 +260,10 @@ type GetAccountFederationPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
+func (s *GetAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetCustomAppIntegrationOutput struct {
 	// The client id of the custom OAuth app
 	ClientId string `json:"client_id,omitempty"`
@@ -281,6 +305,10 @@ func (s GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 type GetCustomAppIntegrationRequest struct {
 	// The OAuth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
+}
+
+func (s *GetCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetCustomAppIntegrationsOutput struct {
@@ -329,6 +357,10 @@ type GetPublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
 }
 
+func (s *GetPublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPublishedAppIntegrationsOutput struct {
 	// List of Published OAuth App Integrations defined for the account.
 	Apps []GetPublishedAppIntegrationOutput `json:"apps,omitempty"`
@@ -369,6 +401,10 @@ type GetServicePrincipalFederationPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`
+}
+
+func (s *GetServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListAccountFederationPoliciesRequest struct {
@@ -690,10 +726,18 @@ type UpdateCustomAppIntegration struct {
 	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 }
 
+func (s *UpdateCustomAppIntegration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdatePublishedAppIntegration struct {
 	IntegrationId string `json:"-" url:"-"`
 	// Token access policy to be updated in the published OAuth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+}
+
+func (s *UpdatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateServicePrincipalFederationPolicyRequest struct {

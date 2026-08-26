@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -83,6 +84,10 @@ type CreateScheduleRequest struct {
 	Schedule Schedule `json:"schedule"`
 }
 
+func (s *CreateScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateSubscriptionRequest struct {
 	// UUID identifying the dashboard to which the subscription belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -90,6 +95,10 @@ type CreateSubscriptionRequest struct {
 	ScheduleId string `json:"-" url:"-"`
 	// The subscription to create. A schedule is limited to 100 subscriptions.
 	Subscription Subscription `json:"subscription"`
+}
+
+func (s *CreateSubscriptionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CronSchedule struct {
@@ -103,6 +112,10 @@ type CronSchedule struct {
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
+}
+
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Dashboard struct {
@@ -233,8 +246,16 @@ type DownloadMessageAttachmentVisualizationRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DownloadMessageAttachmentVisualizationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DownloadMessageAttachmentVisualizationResponse struct {
 	Contents io.ReadCloser `json:"-"`
+}
+
+func (s *DownloadMessageAttachmentVisualizationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type EvaluationStatusType string
@@ -339,6 +360,11 @@ func (s GenieConversation) MarshalJSON() ([]byte, error) {
 }
 
 type GenieConversationSummary struct {
+	// Whether this is a classic chat or an agent-mode conversation. Allows
+	// callers to route message retrieval (chat vs. agent endpoint) without an
+	// extra lookup.
+	AgentType GenieConversationType `json:"agent_type,omitempty"`
+
 	ConversationId string `json:"conversation_id"`
 
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
@@ -354,6 +380,46 @@ func (s *GenieConversationSummary) UnmarshalJSON(b []byte) error {
 
 func (s GenieConversationSummary) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The type of a Genie conversation. Distinguishes an agent-mode conversation
+// from a classic chat conversation so callers can route message retrieval
+// accordingly without a per-conversation lookup.
+type GenieConversationType string
+
+const GenieConversationTypeGenieConversationTypeAgent GenieConversationType = `GENIE_CONVERSATION_TYPE_AGENT`
+
+const GenieConversationTypeGenieConversationTypeChat GenieConversationType = `GENIE_CONVERSATION_TYPE_CHAT`
+
+// String representation for [fmt.Print]
+func (f *GenieConversationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GenieConversationType) Set(v string) error {
+	switch v {
+	case `GENIE_CONVERSATION_TYPE_AGENT`, `GENIE_CONVERSATION_TYPE_CHAT`:
+		*f = GenieConversationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GENIE_CONVERSATION_TYPE_AGENT", "GENIE_CONVERSATION_TYPE_CHAT"`, v)
+	}
+}
+
+// Values returns all possible values for GenieConversationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GenieConversationType) Values() []GenieConversationType {
+	return []GenieConversationType{
+		GenieConversationTypeGenieConversationTypeAgent,
+		GenieConversationTypeGenieConversationTypeChat,
+	}
+}
+
+// Type always returns GenieConversationType to satisfy [pflag.Value] interface
+func (f *GenieConversationType) Type() string {
+	return "GenieConversationType"
 }
 
 type GenieCreateConversationMessageRequest struct {
@@ -387,6 +453,10 @@ type GenieCreateEvalRunRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieCreateEvalRunRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieCreateMessageCommentRequest struct {
 	// Comment text content.
 	Content string `json:"content"`
@@ -396,6 +466,10 @@ type GenieCreateMessageCommentRequest struct {
 	MessageId string `json:"-" url:"-"`
 	// The ID associated with the Genie space.
 	SpaceId string `json:"-" url:"-"`
+}
+
+func (s *GenieCreateMessageCommentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GenieCreateSpaceRequest struct {
@@ -434,11 +508,19 @@ type GenieDeleteConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieDeleteConversationMessageRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieDeleteConversationRequest struct {
 	// The ID of the conversation to delete.
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the Genie space where the conversation is located.
 	SpaceId string `json:"-" url:"-"`
+}
+
+func (s *GenieDeleteConversationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GenieEvalAssessment string
@@ -692,6 +774,10 @@ type GenieExecuteMessageAttachmentQueryRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieExecuteMessageAttachmentQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieExecuteMessageQueryRequest struct {
 	// Conversation ID
 	ConversationId string `json:"-" url:"-"`
@@ -699,6 +785,10 @@ type GenieExecuteMessageQueryRequest struct {
 	MessageId string `json:"-" url:"-"`
 	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
+}
+
+func (s *GenieExecuteMessageQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Feedback containing rating and optional comment
@@ -771,6 +861,10 @@ type GenieGenerateDownloadFullQueryResultRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieGenerateDownloadFullQueryResultRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieGenerateDownloadFullQueryResultResponse struct {
 	// Download ID. Use this ID to track the download request in subsequent
 	// polling calls
@@ -801,6 +895,10 @@ type GenieGetConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieGetConversationMessageRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieGetDownloadFullQueryResultRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -818,10 +916,18 @@ type GenieGetDownloadFullQueryResultRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieGetDownloadFullQueryResultRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieGetDownloadFullQueryResultResponse struct {
 	// SQL Statement Execution response. See [Get status, manifest, and result
 	// first chunk](:method:statementexecution/getstatement) for more details.
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
+}
+
+func (s *GenieGetDownloadFullQueryResultResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GenieGetEvalResultDetailsRequest struct {
@@ -834,11 +940,19 @@ type GenieGetEvalResultDetailsRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieGetEvalResultDetailsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieGetEvalRunRequest struct {
 	EvalRunId string `json:"-" url:"-"`
 	// The ID associated with the Genie space where the evaluation run is
 	// located.
 	SpaceId string `json:"-" url:"-"`
+}
+
+func (s *GenieGetEvalRunRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GenieGetMessageAttachmentQueryResultRequest struct {
@@ -852,6 +966,10 @@ type GenieGetMessageAttachmentQueryResultRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieGetMessageAttachmentQueryResultRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieGetMessageQueryResultRequest struct {
 	// Conversation ID
 	ConversationId string `json:"-" url:"-"`
@@ -861,10 +979,18 @@ type GenieGetMessageQueryResultRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+func (s *GenieGetMessageQueryResultRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieGetMessageQueryResultResponse struct {
 	// SQL Statement Execution response. See [Get status, manifest, and result
 	// first chunk](:method:statementexecution/getstatement) for more details.
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
+}
+
+func (s *GenieGetMessageQueryResultResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GenieGetQueryResultByAttachmentRequest struct {
@@ -876,6 +1002,10 @@ type GenieGetQueryResultByAttachmentRequest struct {
 	MessageId string `json:"-" url:"-"`
 	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
+}
+
+func (s *GenieGetQueryResultByAttachmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GenieGetSpaceRequest struct {
@@ -1304,6 +1434,8 @@ func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSpace struct {
+	// Time when the Genie space was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Description of the Genie Space
 	Description string `json:"description,omitempty"`
 	// ETag for this space. Pass this value back in the update request to
@@ -1321,6 +1453,9 @@ type GenieSpace struct {
 	SpaceId string `json:"space_id"`
 	// Title of the Genie Space
 	Title string `json:"title"`
+	// Time when the Genie space was last modified, matching the value shown in
+	// the Genie Agent UI.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Warehouse associated with the Genie Space
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
@@ -1365,15 +1500,27 @@ type GenieStartConversationResponse struct {
 	MessageId string `json:"message_id"`
 }
 
+func (s *GenieStartConversationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Follow-up questions suggested by Genie
 type GenieSuggestedQuestionsAttachment struct {
 	// The suggested follow-up questions
 	Questions []string `json:"questions,omitempty"`
 }
 
+func (s *GenieSuggestedQuestionsAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieTrashSpaceRequest struct {
 	// The ID associated with the Genie space to be sent to the trash.
 	SpaceId string `json:"-" url:"-"`
+}
+
+func (s *GenieTrashSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GenieUpdateSpaceRequest struct {
@@ -1433,9 +1580,17 @@ type GetDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
+func (s *GetDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPublishedDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
+}
+
+func (s *GetPublishedDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPublishedDashboardTokenInfoRequest struct {
@@ -1487,6 +1642,10 @@ type GetScheduleRequest struct {
 	ScheduleId string `json:"-" url:"-"`
 }
 
+func (s *GetScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSubscriptionRequest struct {
 	// UUID identifying the dashboard which the subscription belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -1494,6 +1653,10 @@ type GetSubscriptionRequest struct {
 	ScheduleId string `json:"-" url:"-"`
 	// UUID identifying the subscription.
 	SubscriptionId string `json:"-" url:"-"`
+}
+
+func (s *GetSubscriptionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type LifecycleState string
@@ -2111,6 +2274,10 @@ type RevertDashboardResponse struct {
 	Dashboard *Dashboard `json:"dashboard,omitempty"`
 }
 
+func (s *RevertDashboardResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Schedule struct {
 	// A timestamp indicating when the schedule was created.
 	CreateTime string `json:"create_time,omitempty"`
@@ -2297,6 +2464,10 @@ type Subscriber struct {
 	UserSubscriber *SubscriptionSubscriberUser `json:"user_subscriber,omitempty"`
 }
 
+func (s *Subscriber) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Subscription struct {
 	// A timestamp indicating when the subscription was created.
 	CreateTime string `json:"create_time,omitempty"`
@@ -2340,9 +2511,17 @@ type SubscriptionSubscriberDestination struct {
 	DestinationId string `json:"destination_id"`
 }
 
+func (s *SubscriptionSubscriberDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SubscriptionSubscriberUser struct {
 	// UserId of the subscriber.
 	UserId int64 `json:"user_id"`
+}
+
+func (s *SubscriptionSubscriberUser) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A text response on a conversation message: the answer, the final summary, or
@@ -2376,6 +2555,8 @@ type TextAttachmentPurpose string
 
 const TextAttachmentPurposeFollowUpQuestion TextAttachmentPurpose = `FOLLOW_UP_QUESTION`
 
+const TextAttachmentPurposeTextAttachmentPurposeAnswer TextAttachmentPurpose = `TEXT_ATTACHMENT_PURPOSE_ANSWER`
+
 // String representation for [fmt.Print]
 func (f *TextAttachmentPurpose) String() string {
 	return string(*f)
@@ -2384,11 +2565,11 @@ func (f *TextAttachmentPurpose) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TextAttachmentPurpose) Set(v string) error {
 	switch v {
-	case `FOLLOW_UP_QUESTION`:
+	case `FOLLOW_UP_QUESTION`, `TEXT_ATTACHMENT_PURPOSE_ANSWER`:
 		*f = TextAttachmentPurpose(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FOLLOW_UP_QUESTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FOLLOW_UP_QUESTION", "TEXT_ATTACHMENT_PURPOSE_ANSWER"`, v)
 	}
 }
 
@@ -2398,6 +2579,7 @@ func (f *TextAttachmentPurpose) Set(v string) error {
 func (f *TextAttachmentPurpose) Values() []TextAttachmentPurpose {
 	return []TextAttachmentPurpose{
 		TextAttachmentPurposeFollowUpQuestion,
+		TextAttachmentPurposeTextAttachmentPurposeAnswer,
 	}
 }
 
@@ -2495,9 +2677,17 @@ type TrashDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
+func (s *TrashDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UnpublishDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
+}
+
+func (s *UnpublishDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateDashboardRequest struct {
@@ -2533,4 +2723,8 @@ type UpdateScheduleRequest struct {
 	Schedule Schedule `json:"schedule"`
 	// UUID identifying the schedule.
 	ScheduleId string `json:"-" url:"-"`
+}
+
+func (s *UpdateScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

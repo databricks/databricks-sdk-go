@@ -12,9 +12,13 @@ func Unmarshal(data []byte, v any) error {
 	if len(data) == 0 {
 		return nil
 	}
-	var jsonFields map[string]json.RawMessage
-	err := json.Unmarshal([]byte(data), &jsonFields)
+	data, err := normalizeInt64Strings(data, v)
 	if err != nil {
+		return err
+	}
+
+	var jsonFields map[string]json.RawMessage
+	if err = json.Unmarshal([]byte(data), &jsonFields); err != nil {
 		return err
 	}
 
@@ -22,7 +26,6 @@ func Unmarshal(data []byte, v any) error {
 	value = reflect.Indirect(value)
 
 	objectType := value.Type()
-
 	foundFields := []string{}
 
 	for _, field := range getTypeFields(objectType) {
@@ -75,7 +78,11 @@ func setField(field reflect.Value, value []byte) error {
 	// This library stops converting when it finds a custom Marshaller,
 	// Since strings in YAML may not have quotes, they won't be added.
 	// So we add them manually
-	return json.Unmarshal([]byte(`"`+string(value)+`"`), pointer)
+	quoted, err := json.Marshal(string(value))
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(quoted, pointer)
 }
 
 func setForceSendFields(v any, presentFields []string) error {

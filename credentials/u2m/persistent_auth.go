@@ -42,6 +42,18 @@ const (
 	// token is proactively refreshed. This prevents callers from receiving
 	// near-expired tokens that may expire before the next request.
 	tokenRefreshBuffer = 5 * time.Minute
+
+	// Cache update recovery checks immediately and then waits for 25, 50, 100,
+	// and 200 milliseconds. This gives a concurrent cache writer time to finish
+	// while bounding the delay for persistent storage failures to 375 milliseconds.
+	cacheUpdateRecoveryAttempts = 5
+
+	cacheUpdateRecoveryInitialDelay = 25 * time.Millisecond
+	cacheUpdateRecoveryDelayFactor  = 2
+
+	// Concurrent refreshes can finish at slightly different times, so their
+	// expiration times need not be identical.
+	cacheUpdateRecoveryExpiryDelta = time.Minute
 )
 
 var (
@@ -227,6 +239,11 @@ func WithDiscoveryAccountTarget() PersistentAuthOption {
 // during a new U2M browser authorization through role-based access control
 // (RBAC). The group ID is sent only on the authorization request; code
 // exchange, refresh, and API requests do not resend it.
+//
+// Warning: Account authentication does not support group role assumption.
+// As of August 2026, unified authentication rejects the group ID. The SDK still
+// passes it to the OAuth server so unified role assumption may work in the future
+// if server support is added.
 func WithGroupID(groupID string) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.groupID = groupID
@@ -331,6 +348,45 @@ func needsRefresh(t *oauth2.Token) bool {
 	return !t.Expiry.IsZero() && time.Until(t.Expiry) < tokenRefreshBuffer
 }
 
+// isFreshReplacement reports whether cached changed from old, is valid, and
+// does not expire significantly sooner than candidate.
+func isFreshReplacement(old, candidate, cached *oauth2.Token) bool {
+	if cached.AccessToken == old.AccessToken || !cached.Valid() {
+		return false
+	}
+	if cached.Expiry.IsZero() {
+		return true
+	}
+	if candidate.Expiry.IsZero() {
+		return false
+	}
+	return !cached.Expiry.Before(candidate.Expiry.Add(-cacheUpdateRecoveryExpiryDelta))
+}
+
+// recoverCacheUpdate checks whether a concurrent cache update completed.
+// Retrying reads instead of writes avoids recreating the write race.
+func (a *PersistentAuth) recoverCacheUpdate(old, candidate *oauth2.Token) *oauth2.Token {
+	delay := cacheUpdateRecoveryInitialDelay
+	for attempt := 0; attempt < cacheUpdateRecoveryAttempts; attempt++ {
+		if attempt > 0 {
+			timer := time.NewTimer(delay)
+			select {
+			case <-a.ctx.Done():
+				timer.Stop()
+				return nil
+			case <-timer.C:
+			}
+			delay *= cacheUpdateRecoveryDelayFactor
+		}
+
+		cached, err := a.cache.Lookup(a.oAuthArgument.GetCacheKey())
+		if err == nil && isFreshReplacement(old, candidate, cached) {
+			return cached
+		}
+	}
+	return nil
+}
+
 // refresh refreshes the token for the given OAuthArgument, storing the new
 // token in the cache.
 //
@@ -397,6 +453,9 @@ func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) 
 	}
 	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
 	if err != nil {
+		if cached := a.recoverCacheUpdate(oldToken, t); cached != nil {
+			return cached, nil
+		}
 		return nil, fmt.Errorf("cache update: %w", err)
 	}
 	return t, nil

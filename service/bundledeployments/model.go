@@ -41,15 +41,8 @@ type CreateDeploymentRequest struct {
 	Deployment Deployment `json:"deployment"`
 }
 
-type CreateOperationRequest struct {
-	// The resource operation to create.
-	Operation Operation `json:"operation"`
-	// The parent version where this operation will be recorded. Format:
-	// deployments/{deployment_id}/versions/{version_id}
-	Parent string `json:"-" url:"-"`
-	// The key identifying the resource this operation applies to. Becomes the
-	// final component of the operation's name.
-	ResourceKey string `json:"-" url:"resource_key"`
+func (s *CreateDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type CreateVersionRequest struct {
@@ -66,6 +59,10 @@ type CreateVersionRequest struct {
 	// increase by exactly 1. If the value is not numerically greater, the
 	// server returns `INVALID_PARAMETER_VALUE`.
 	VersionId string `json:"-" url:"version_id"`
+}
+
+func (s *CreateVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Dashboard-specific per-resource metadata. Set only for dashboard resources.
@@ -102,11 +99,17 @@ type DeleteDeploymentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *DeleteDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A bundle deployment registered with the control plane.
 type Deployment struct {
 	// When the deployment was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// The user who created the deployment (email or principal name).
+	// The user who created the deployment (email or principal name). Empty if
+	// authoritative deployment metadata does not identify a creator or the
+	// principal cannot be resolved.
 	CreatedBy string `json:"created_by,omitempty"`
 	// Bundle target deployment mode (development or production), derived from
 	// the most recent version's mode.
@@ -151,7 +154,8 @@ type Deployment struct {
 	// When the deployment was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// The user who most recently updated the deployment (email or principal
-	// name).
+	// name). Empty if authoritative deployment metadata does not identify a
+	// modifier or the principal cannot be resolved.
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// Workspace location of the deployment, derived from the latest version.
 	WorkspaceInfo *WorkspaceInfo `json:"workspace_info,omitempty"`
@@ -358,10 +362,18 @@ type GetDeploymentRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetOperationRequest struct {
 	// The name of the resource operation to retrieve. Format:
 	// deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetResourceRequest struct {
@@ -370,10 +382,18 @@ type GetResourceRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *GetResourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetVersionRequest struct {
 	// The name of the version to retrieve. Format:
 	// deployments/{deployment_id}/versions/{version_id}
 	Name string `json:"-" url:"-"`
+}
+
+func (s *GetVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Git provenance of a bundle's source, captured at deploy time. Lets consumers
@@ -404,6 +424,10 @@ type HeartbeatRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+func (s *HeartbeatRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Response for Heartbeat.
 type HeartbeatResponse struct {
 	// The new lock expiry time after renewal.
@@ -423,7 +447,7 @@ func (s HeartbeatResponse) MarshalJSON() ([]byte, error) {
 type ListDeploymentsRequest struct {
 	// The maximum number of deployments to return. The service may return fewer
 	// than this value. If unspecified, at most 20 deployments will be returned.
-	// The maximum value is 100; values above 100 will be coerced to 100.
+	// The maximum value is 1000; values above 1000 will be coerced to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous `ListDeployments` call. Provide
 	// this to retrieve the subsequent page.
@@ -583,17 +607,23 @@ func (s ListVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// An operation on a single resource performed during a version. Operations
-// record the result of applying a resource change to the workspace. Most fields
-// are immutable once recorded; `state`, `error_message`, `resource_id`, and
-// `status` may be updated afterwards (via UpdateOperation), guarded by
-// `sequence_id` for optimistic concurrency control.
+// An operation on a single resource performed during a version. The full set of
+// operations for a version is recorded when the version is created: each
+// carries its `resource_key` and `action_type` and starts in
+// `OPERATION_STATUS_PENDING`. As each resource is applied, its operation is
+// updated (via UpdateOperation) to record the result of applying the change to
+// the workspace. `state`, `error_message`, `resource_id`, `status`, and
+// `dashboard_metadata` may be updated afterwards, guarded by `sequence_id` for
+// optimistic concurrency control; all other fields are immutable once recorded.
 type Operation struct {
-	// The type of operation performed on this resource.
-	ActionType OperationActionType `json:"action_type"`
+	// The type of operation performed on this resource. Set when the version is
+	// created and immutable thereafter.
+	ActionType OperationActionType `json:"action_type,omitempty"`
 	// When the operation was recorded.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Dashboard-specific metadata; set only for dashboard resources.
+	// Dashboard-specific metadata; set only for dashboard resources. Mutable:
+	// may be set or updated via UpdateOperation as the resource is applied, and
+	// is mirrored onto the corresponding deployment-level resource.
 	DashboardMetadata *DashboardMetadata `json:"dashboard_metadata,omitempty"`
 	// Error message if the operation failed. Set when status is
 	// OPERATION_STATUS_FAILED. Captures the error encountered while applying
@@ -606,15 +636,16 @@ type Operation struct {
 	// deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
 	Name string `json:"name,omitempty"`
 	// ID of the actual resource in the workspace (e.g. the job ID, pipeline
-	// ID). Optional at creation: CREATE and RECREATE operations produce a new
-	// resource whose ID is not yet known when the operation is recorded.
-	// Mutable: may be filled in (or corrected) later via UpdateOperation once
-	// the ID is known.
+	// ID). Required whenever `state` is set, because state records a resource
+	// that exists. A CREATE or RECREATE that has not produced its resource yet
+	// records neither. Mutable: may be filled in (or corrected) later via
+	// UpdateOperation once the ID is known.
 	ResourceId string `json:"resource_id,omitempty"`
 	// Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar",
 	// "jobs.foo.permissions", "files.<rel-path>"). Can be an arbitrary UTF-8
 	// encoded string key. This key links the operation to the corresponding
-	// deployment-level Resource.
+	// deployment-level Resource. Set when the version is created and immutable
+	// thereafter.
 	ResourceKey string `json:"resource_key,omitempty"`
 	// The type of the deployment resource this operation applies to. Derived
 	// from the `resource_key` prefix (e.g. "jobs" → JOB); the caller does not
@@ -622,18 +653,26 @@ type Operation struct {
 	ResourceType DeploymentResourceType `json:"resource_type,omitempty"`
 	// Monotonically increasing revision used for optimistic concurrency control
 	// (the AIP-154 concurrency token for this resource, realized as a sequence
-	// number rather than an opaque etag). The server assigns 1 on creation and
-	// increments it on every successful UpdateOperation. It is OPTIONAL rather
-	// than OUTPUT_ONLY because it is dual-purpose: CreateOperation/GetOperation
-	// return the current value, and UpdateOperation reads the caller-supplied
-	// value as a precondition. The caller must echo the value it last observed;
-	// if it no longer matches the server's value, the update is rejected with
-	// ABORTED so the caller can re-read and retry. Ignored on CreateOperation.
+	// number rather than an opaque etag). The server assigns 0 when the
+	// operation is created and increments it on every successful
+	// UpdateOperation, so a never-updated operation is at 0 and the first
+	// successful update makes it 1. It is OPTIONAL rather than OUTPUT_ONLY
+	// because it is dual-purpose: GetOperation returns the current value, and
+	// UpdateOperation reads the caller-supplied value as a precondition. The
+	// caller must echo the value it last observed; if it no longer matches the
+	// server's value, the update is rejected with ABORTED so the caller can
+	// re-read and retry.
 	SequenceId int64 `json:"sequence_id,omitempty"`
-	// Serialized local config state after the operation. Should be unset for
-	// delete operations. Mutable: may be updated after creation via
-	// UpdateOperation. When updating, the caller must echo the last-observed
-	// `sequence_id` as a concurrency precondition.
+	// Serialized local config state after the operation. Its presence records
+	// whether the resource still exists, so an operation that records no state
+	// removes its resource from the deployment. It may be unset only for an
+	// operation that left no resource behind: a `DELETE` that succeeded, or a
+	// `CREATE` or `RECREATE` that failed. It is required otherwise, including
+	// for a failed `DELETE`, whose resource survives.
+	//
+	// Mutable: may be updated after creation via UpdateOperation. When
+	// updating, the caller must echo the last-observed `sequence_id` as a
+	// concurrency precondition.
 	//
 	// Opaque to this service: the string is stored and returned unchanged. This
 	// is deliberately not google.protobuf.Value, whose only numeric case is
@@ -648,11 +687,12 @@ type Operation struct {
 	// the same OpenAPI schema ("type": "string"), so the SDKs are identical
 	// either way.
 	State string `json:"state,omitempty"`
-	// Whether the operation succeeded or failed. Mutable: may be updated after
-	// creation via UpdateOperation, e.g. when an operation recorded as failed
-	// is retried and eventually succeeds. A succeeded operation cannot carry an
-	// `error_message`.
-	Status OperationStatus `json:"status"`
+	// Status of the operation. Starts as OPERATION_STATUS_PENDING when the
+	// version is created and moves to a terminal status once the resource is
+	// applied. Mutable: updated via UpdateOperation, e.g. when an operation
+	// recorded as failed is retried and eventually succeeds. A succeeded
+	// operation cannot carry an `error_message`.
+	Status OperationStatus `json:"status,omitempty"`
 	// When the operation was last updated. Set to `create_time` when the
 	// operation is created and to the server timestamp on each successful
 	// UpdateOperation.
@@ -816,9 +856,13 @@ type UpdateOperationRequest struct {
 	// Operation). All other fields are ignored.
 	Operation Operation `json:"operation"`
 	// The set of fields to update. Required; supported paths are `state`,
-	// `error_message`, `resource_id`, and `status`. An empty mask or any other
-	// path is rejected with INVALID_PARAMETER_VALUE.
+	// `error_message`, `resource_id`, `status`, and `dashboard_metadata`. An
+	// empty mask or any other path is rejected with INVALID_PARAMETER_VALUE.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateOperationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A single invocation of a deploy or destroy command against a deployment.

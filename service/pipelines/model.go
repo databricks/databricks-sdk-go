@@ -9,11 +9,40 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+// Top-level configuration for API Source connectors with arbitrary
+// configuration.
+type ApiSourceConnectorConfig struct {
+	// Arbitrary key-value configuration values for the API Source connector.
+	Configs map[string]string `json:"configs,omitempty"`
+}
+
+func (s *ApiSourceConnectorConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Options for API Source connectors with arbitrary configuration.
+type ApiSourceConnectorOptions struct {
+	// Arbitrary key-value configuration options for the API Source connector.
+	Options map[string]string `json:"options,omitempty"`
+}
+
+func (s *ApiSourceConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ApplyEnvironmentRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
+func (s *ApplyEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ApplyEnvironmentRequestResponse struct {
+}
+
+func (s *ApplyEnvironmentRequestResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Policy for auto full refresh.
@@ -187,6 +216,10 @@ type ConfluenceConnectorOptions struct {
 	IncludeConfluenceSpaces []string `json:"include_confluence_spaces,omitempty"`
 }
 
+func (s *ConfluenceConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ConnectionParameters struct {
 	// Source catalog for initial connection. This is necessary for schema
 	// exploration in some database systems like Oracle, and optional but
@@ -208,6 +241,9 @@ func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
 // Wrapper message for source-specific options to support multiple connector
 // types
 type ConnectorOptions struct {
+	// Connector-specific options for API Source connectors.
+	ApiSourceConnectorOptions *ApiSourceConnectorOptions `json:"api_source_connector_options,omitempty"`
+
 	ConfluenceOptions *ConfluenceConnectorOptions `json:"confluence_options,omitempty"`
 
 	GdriveOptions *GoogleDriveOptions `json:"gdrive_options,omitempty"`
@@ -217,6 +253,10 @@ type ConnectorOptions struct {
 	JiraOptions *JiraConnectorOptions `json:"jira_options,omitempty"`
 
 	KafkaOptions *KafkaOptions `json:"kafka_options,omitempty"`
+
+	LinkedinAdsOptions *LinkedInAdsOptions `json:"linkedin_ads_options,omitempty"`
+
+	MarketoOptions *MarketoOptions `json:"marketo_options,omitempty"`
 
 	MetaAdsOptions *MetaMarketingOptions `json:"meta_ads_options,omitempty"`
 
@@ -231,6 +271,10 @@ type ConnectorOptions struct {
 	TiktokAdsOptions *TikTokAdsOptions `json:"tiktok_ads_options,omitempty"`
 
 	ZendeskSupportOptions *ZendeskSupportOptions `json:"zendesk_support_options,omitempty"`
+}
+
+func (s *ConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // For certain database sources LakeFlow Connect offers both query based and cdc
@@ -922,9 +966,17 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
+func (s *Filters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPipelinePermissionLevelsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
+}
+
+func (s *GetPipelinePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPipelinePermissionLevelsResponse struct {
@@ -932,13 +984,25 @@ type GetPipelinePermissionLevelsResponse struct {
 	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetPipelinePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
 }
 
+func (s *GetPipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetPipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
+}
+
+func (s *GetPipelineRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetPipelineResponse struct {
@@ -952,6 +1016,8 @@ type GetPipelineResponse struct {
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Publishing mode of the pipeline
 	EffectivePublishingMode PublishingMode `json:"effective_publishing_mode,omitempty"`
+	// Serverless compute ID resolved for the pipeline.
+	EffectiveServerlessComputeId string `json:"effective_serverless_compute_id,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
@@ -1035,9 +1101,17 @@ type GetUpdateRequest struct {
 	UpdateId string `json:"-" url:"-"`
 }
 
+func (s *GetUpdateRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetUpdateResponse struct {
 	// The current update info.
 	Update *UpdateInfo `json:"update,omitempty"`
+}
+
+func (s *GetUpdateResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GoogleAdsConfig struct {
@@ -1087,6 +1161,10 @@ type GoogleAdsCustomReportOptions struct {
 	// segments.week, or segments.month — that segment is used as the
 	// incremental cursor for the table.
 	Segments []string `json:"segments,omitempty"`
+}
+
+func (s *GoogleAdsCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Google Ads specific options for ingestion (object-level). When set, these
@@ -1187,6 +1265,10 @@ type IngestionConfig struct {
 	Schema *SchemaSpec `json:"schema,omitempty"`
 	// Select a specific source table.
 	Table *TableSpec `json:"table,omitempty"`
+}
+
+func (s *IngestionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type IngestionGatewayPipelineDefinition struct {
@@ -1494,6 +1576,10 @@ type JiraConnectorOptions struct {
 	IncludeJiraSpaces []string `json:"include_jira_spaces,omitempty"`
 }
 
+func (s *JiraConnectorOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type JsonTransformerOptions struct {
 	// Parse the entire value as a single Variant column.
 	AsVariant bool `json:"as_variant,omitempty"`
@@ -1550,6 +1636,191 @@ func (s *KafkaOptions) UnmarshalJSON(b []byte) error {
 
 func (s KafkaOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// LinkedIn Ads specific options for ingestion. sync_start_date and
+// lookback_window_days apply to both the prebuilt analytics tables and custom
+// reports. custom_report_options defines a custom (user-defined) adAnalytics
+// report and is only valid on a table object.
+type LinkedInAdsOptions struct {
+	// (Optional) Custom report definition. Only valid on a table object. When
+	// set, the table is synthesized from /rest/adAnalytics using the finder,
+	// pivots, time granularity and metrics here. When unset, the table must
+	// match one of the connector's prebuilt sources.
+	CustomReportOptions *LinkedInAdsOptionsLinkedInAdsCustomReportOptions `json:"custom_report_options,omitempty"`
+	// (Optional) Days to look back during incremental sync for late-arriving
+	// data. If not specified, defaults to 30 days.
+	LookbackWindowDays int `json:"lookback_window_days,omitempty"`
+	// (Optional) Start date for the initial sync of report tables, YYYY-MM-DD.
+	// Earliest date from which to sync historical data; overrides the default
+	// when set. For finder attributedRevenueMetrics, this must be between 30
+	// and 366 days before today. If not specified, defaults to 1 year of
+	// history.
+	SyncStartDate string `json:"sync_start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LinkedInAdsOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LinkedInAdsOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// User-defined custom report for the LinkedIn Ads connector. The destination
+// table name comes from the enclosing TableSpec.destination_table, the start
+// date from the enclosing LinkedInAdsOptions.sync_start_date, and the account
+// it runs against from the source schema (namespace) -- none are repeated here.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptions struct {
+	// (Required) Entity pivots to group by; count/constraints depend on finder.
+	EntityGranularity []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity `json:"entity_granularity,omitempty"`
+	// (Required) adAnalytics finder. See LinkedInAdsFinder.
+	Finder LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder `json:"finder"`
+	// (Optional) LinkedIn metric names for the report. Open vocabulary (not an
+	// enum): the valid set is large (~100) and evolves with the LinkedIn
+	// adAnalytics API, so values are passed through verbatim. If empty, a
+	// pivot-safe default core set is ingested: impressions, clicks,
+	// costInLocalCurrency, externalWebsiteConversions (valid for every pivot).
+	// Ignored for attributedRevenueMetrics (always returns the full
+	// RevenueAttributionMetrics struct).
+	Metrics []string `json:"metrics,omitempty"`
+	// (Optional) Time aggregation. Defaults to DAILY when unspecified. Used by
+	// analytics/statistics; ignored for attributedRevenueMetrics.
+	TimeGranularity LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity `json:"time_granularity,omitempty"`
+}
+
+func (s *LinkedInAdsOptionsLinkedInAdsCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Entity pivot to group by.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity string
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaign LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity = `CAMPAIGN`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaignGroup LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity = `CAMPAIGN_GROUP`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCreative LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity = `CREATIVE`
+
+// String representation for [fmt.Print]
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) Set(v string) error {
+	switch v {
+	case `CAMPAIGN`, `CAMPAIGN_GROUP`, `CREATIVE`:
+		*f = LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAMPAIGN", "CAMPAIGN_GROUP", "CREATIVE"`, v)
+	}
+}
+
+// Values returns all possible values for LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) Values() []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity {
+	return []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity{
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaign,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCampaignGroup,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularityCreative,
+	}
+}
+
+// Type always returns LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity to satisfy [pflag.Value] interface
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity) Type() string {
+	return "LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity"
+}
+
+// adAnalytics finder. Determines call shape, valid pivots, and metric
+// requirements.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder string
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAnalytics LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder = `ANALYTICS`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAttributedRevenueMetrics LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder = `ATTRIBUTED_REVENUE_METRICS`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderStatistics LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder = `STATISTICS`
+
+// String representation for [fmt.Print]
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) Set(v string) error {
+	switch v {
+	case `ANALYTICS`, `ATTRIBUTED_REVENUE_METRICS`, `STATISTICS`:
+		*f = LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ANALYTICS", "ATTRIBUTED_REVENUE_METRICS", "STATISTICS"`, v)
+	}
+}
+
+// Values returns all possible values for LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) Values() []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder {
+	return []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder{
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAnalytics,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderAttributedRevenueMetrics,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinderStatistics,
+	}
+}
+
+// Type always returns LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder to satisfy [pflag.Value] interface
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder) Type() string {
+	return "LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder"
+}
+
+// Time aggregation. Used by analytics/statistics; ignored for
+// attributedRevenueMetrics. Defaults to DAILY when unspecified.
+type LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity string
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityAll LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `ALL`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityDaily LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `DAILY`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityMonthly LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `MONTHLY`
+
+const LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityYearly LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity = `YEARLY`
+
+// String representation for [fmt.Print]
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) Set(v string) error {
+	switch v {
+	case `ALL`, `DAILY`, `MONTHLY`, `YEARLY`:
+		*f = LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL", "DAILY", "MONTHLY", "YEARLY"`, v)
+	}
+}
+
+// Values returns all possible values for LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) Values() []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity {
+	return []LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity{
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityAll,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityDaily,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityMonthly,
+		LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularityYearly,
+	}
+}
+
+// Type always returns LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity to satisfy [pflag.Value] interface
+func (f *LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity) Type() string {
+	return "LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity"
 }
 
 type ListPipelineEventsRequest struct {
@@ -1703,6 +1974,28 @@ func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
 type ManualTrigger struct {
 }
 
+func (s *ManualTrigger) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Marketo specific options for ingestion
+type MarketoOptions struct {
+	// (Optional) Start date for the initial sync in YYYY-MM-DD format. This
+	// determines the earliest date from which to sync historical data. If not
+	// specified, complete history is ingested.
+	SyncStartDate string `json:"sync_start_date,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MarketoOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MarketoOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Maturity level for EventDetails.
 type MaturityLevel string
 
@@ -1848,6 +2141,10 @@ type Notifications struct {
 	Alerts []string `json:"alerts,omitempty"`
 	// A list of email addresses notified when a configured alert is triggered.
 	EmailRecipients []string `json:"email_recipients,omitempty"`
+}
+
+func (s *Notifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Proto representing a window
@@ -2254,6 +2551,10 @@ type PipelineClusterAutoscale struct {
 	Mode PipelineClusterAutoscaleMode `json:"mode,omitempty"`
 }
 
+func (s *PipelineClusterAutoscale) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Databricks Enhanced Autoscaling optimizes cluster utilization by
 // automatically allocating cluster resources based on workload volume, with
 // minimal impact to the data processing latency of your pipelines. Enhanced
@@ -2488,6 +2789,10 @@ type PipelinePermissionsRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
+func (s *PipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type PipelineSpec struct {
 	// Budget policy of this pipeline.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
@@ -2705,6 +3010,10 @@ type PipelineTrigger struct {
 	Manual *ManualTrigger `json:"manual,omitempty"`
 }
 
+func (s *PipelineTrigger) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // The environment entity used to preserve serverless environment side panel,
 // jobs' environment for non-notebook task, and SDP's environment for classic
 // and serverless pipelines. In this minimal environment spec, only pip
@@ -2745,6 +3054,10 @@ func (s PipelinesEnvironment) MarshalJSON() ([]byte, error) {
 type PostgresCatalogConfig struct {
 	// Optional. The Postgres slot configuration to use for logical replication
 	SlotConfig *PostgresSlotConfig `json:"slot_config,omitempty"`
+}
+
+func (s *PostgresCatalogConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // PostgresSlotConfig contains the configuration for a Postgres logical
@@ -2840,6 +3153,10 @@ type RedditAdsOptionsRedditAdsCustomReportOptions struct {
 	// (Optional) Fields to include in the report (maps to the Reddit Ads API
 	// `fields` parameter). Examples: IMPRESSIONS, CLICKS, SPEND, CPC, CTR.
 	Fields []string `json:"fields,omitempty"`
+}
+
+func (s *RedditAdsOptionsRedditAdsCustomReportOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Specifies a replace_where predicate override for a replace where flow.
@@ -2999,7 +3316,12 @@ type SchemaSpec struct {
 	// The source catalog name. Might be optional depending on the type of
 	// source.
 	SourceCatalog string `json:"source_catalog,omitempty"`
-	// Required. Schema name in the source database.
+	// Schema name in the source database. Currently required; this field will
+	// become optional in an upcoming release, since some source types (for
+	// example streaming / message-bus connectors) do not use it. When that
+	// change ships, this field's type in the generated SDKs and CLI will change
+	// from required to optional (nullable); clients that assume it is always
+	// present should handle its absence.
 	SourceSchema string `json:"source_schema"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
@@ -3156,10 +3478,16 @@ func (s SourceCatalogConfig) MarshalJSON() ([]byte, error) {
 }
 
 type SourceConfig struct {
+	// Connector-specific top-level configuration for API Source connectors.
+	ApiSourceConnectorConfig *ApiSourceConnectorConfig `json:"api_source_connector_config,omitempty"`
 	// Catalog-level source configuration parameters
 	Catalog *SourceCatalogConfig `json:"catalog,omitempty"`
 
 	GoogleAdsConfig *GoogleAdsConfig `json:"google_ads_config,omitempty"`
+}
+
+func (s *SourceConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type StackFrame struct {
@@ -3299,6 +3627,10 @@ type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
+func (s *StopRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type TableSpec struct {
 	// (Optional) Source Specific Connector Options
 	ConnectorOptions *ConnectorOptions `json:"connector_options,omitempty"`
@@ -3314,7 +3646,12 @@ type TableSpec struct {
 	// Schema name in the source database. Might be optional depending on the
 	// type of source.
 	SourceSchema string `json:"source_schema,omitempty"`
-	// Required. Table name in the source database.
+	// Table name in the source database. Currently required; this field will
+	// become optional in an upcoming release, since some source types (for
+	// example streaming / message-bus connectors) do not use it. When that
+	// change ships, this field's type in the generated SDKs and CLI will change
+	// from required to optional (nullable); clients that assume it is always
+	// present should handle its absence.
 	SourceTable string `json:"source_table"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
@@ -3617,8 +3954,24 @@ func (f *TikTokAdsOptionsTikTokReportType) Type() string {
 type Transformer struct {
 	// Required: the wire format of the data.
 	Format TransformerFormat `json:"format,omitempty"`
+	// Optional input column to transform. When set, the transformer reads from
+	// this column instead of the default source column.
+	InputColumn string `json:"input_column,omitempty"`
 
 	JsonOptions *JsonTransformerOptions `json:"json_options,omitempty"`
+	// Optional output column name. When set, the transformed result is written
+	// to this column instead of replacing the input column.
+	OutputColumn string `json:"output_column,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Transformer) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Transformer) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TransformerFormat string
@@ -3663,6 +4016,10 @@ type Truncation struct {
 	// List of fields that were truncated from this event. If empty or absent,
 	// no truncation occurred.
 	TruncatedFields []TruncationTruncationDetail `json:"truncated_fields,omitempty"`
+}
+
+func (s *Truncation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Details about a specific field that was truncated.

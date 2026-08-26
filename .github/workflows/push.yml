@@ -28,7 +28,6 @@ jobs:
       fail-fast: false
       matrix:
         goVersion:
-          - "1.24"
           - "1.25"
           - "1.26"
     steps:

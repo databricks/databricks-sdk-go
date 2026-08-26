@@ -10,8 +10,16 @@ type CreateTagAssignmentRequest struct {
 	TagAssignment TagAssignment `json:"tag_assignment"`
 }
 
+func (s *CreateTagAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateTagPolicyRequest struct {
 	TagPolicy TagPolicy `json:"tag_policy"`
+}
+
+func (s *CreateTagPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteTagAssignmentRequest struct {
@@ -26,8 +34,16 @@ type DeleteTagAssignmentRequest struct {
 	TagKey string `json:"-" url:"-"`
 }
 
+func (s *DeleteTagAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteTagPolicyRequest struct {
 	TagKey string `json:"-" url:"-"`
+}
+
+func (s *DeleteTagPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetTagAssignmentRequest struct {
@@ -42,8 +58,16 @@ type GetTagAssignmentRequest struct {
 	TagKey string `json:"-" url:"-"`
 }
 
+func (s *GetTagAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetTagPolicyRequest struct {
 	TagKey string `json:"-" url:"-"`
+}
+
+func (s *GetTagPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ListTagAssignmentsRequest struct {
@@ -198,6 +222,10 @@ type UpdateTagAssignmentRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateTagAssignmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateTagPolicyRequest struct {
 	TagKey string `json:"-" url:"-"`
 
@@ -216,6 +244,14 @@ type UpdateTagPolicyRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+func (s *UpdateTagPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type Value struct {
 	Name string `json:"name"`
+}
+
+func (s *Value) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }

@@ -71,6 +71,10 @@ type CreateVectorIndexRequest struct {
 	PrimaryKey string `json:"primary_key"`
 }
 
+func (s *CreateVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CustomTag struct {
 	// Key field for an AI Search endpoint tag.
 	Key string `json:"key"`
@@ -153,6 +157,10 @@ type DeleteDataVectorIndexRequest struct {
 	PrimaryKeys []string `json:"-" url:"primary_keys"`
 }
 
+func (s *DeleteDataVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
 	Result *DeleteDataResult `json:"result,omitempty"`
@@ -160,14 +168,26 @@ type DeleteDataVectorIndexResponse struct {
 	Status DeleteDataStatus `json:"status,omitempty"`
 }
 
+func (s *DeleteDataVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteEndpointRequest struct {
 	// Name of the AI Search endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
+func (s *DeleteEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
+}
+
+func (s *DeleteIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeltaSyncVectorIndexSpecRequest struct {
@@ -501,6 +521,10 @@ type GetEndpointRequest struct {
 	EndpointName string `json:"-" url:"-"`
 }
 
+func (s *GetEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetIndexRequest struct {
 	// If true, the URL returned for the index is guaranteed to be compatible
 	// with the reranker. Currently this means we return the CP URL regardless
@@ -527,14 +551,26 @@ type GetVectorSearchEndpointPermissionLevelsRequest struct {
 	EndpointId string `json:"-" url:"-"`
 }
 
+func (s *GetVectorSearchEndpointPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetVectorSearchEndpointPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []VectorSearchEndpointPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+func (s *GetVectorSearchEndpointPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetVectorSearchEndpointPermissionsRequest struct {
 	// The vector search endpoint for which to get or manage permissions.
 	EndpointId string `json:"-" url:"-"`
+}
+
+func (s *GetVectorSearchEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The subtype of the AI Search index, determining the indexing and retrieval
@@ -639,6 +675,10 @@ type ListValue struct {
 	Values []Value `json:"values,omitempty"`
 }
 
+func (s *ListValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type ListVectorIndexesResponse struct {
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
@@ -739,6 +779,10 @@ type MetricValues struct {
 	Values []MetricValue `json:"values,omitempty"`
 }
 
+func (s *MetricValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type MiniVectorIndex struct {
 	// The user who created the index.
 	Creator string `json:"creator,omitempty"`
@@ -771,6 +815,10 @@ type PatchEndpointBudgetPolicyRequest struct {
 	BudgetPolicyId string `json:"budget_policy_id"`
 	// Name of the AI Search endpoint
 	EndpointName string `json:"-" url:"-"`
+}
+
+func (s *PatchEndpointBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PatchEndpointBudgetPolicyResponse struct {
@@ -985,6 +1033,10 @@ type RerankerConfigRerankerParameters struct {
 	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 }
 
+func (s *RerankerConfigRerankerParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Data returned in the query result.
 type ResultData struct {
 	// Data rows returned in the query.
@@ -1152,9 +1204,17 @@ type Struct struct {
 	Fields []MapStringValueEntry `json:"fields,omitempty"`
 }
 
+func (s *Struct) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
 	IndexName string `json:"-" url:"-"`
+}
+
+func (s *SyncIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateEndpointCustomTagsRequest struct {
@@ -1162,6 +1222,10 @@ type UpdateEndpointCustomTagsRequest struct {
 	CustomTags []CustomTag `json:"custom_tags"`
 	// Name of the AI Search endpoint
 	EndpointName string `json:"-" url:"-"`
+}
+
+func (s *UpdateEndpointCustomTagsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateEndpointCustomTagsResponse struct {
@@ -1246,11 +1310,19 @@ type UpsertDataVectorIndexRequest struct {
 	InputsJson string `json:"inputs_json"`
 }
 
+func (s *UpsertDataVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpsertDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
 	Result *UpsertDataResult `json:"result,omitempty"`
 	// Status of the upsert operation.
 	Status UpsertDataStatus `json:"status,omitempty"`
+}
+
+func (s *UpsertDataVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Value struct {
@@ -1518,4 +1590,8 @@ type VectorSearchEndpointPermissionsRequest struct {
 	AccessControlList []VectorSearchEndpointAccessControlRequest `json:"access_control_list,omitempty"`
 	// The vector search endpoint for which to get or manage permissions.
 	EndpointId string `json:"-" url:"-"`
+}
+
+func (s *VectorSearchEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
