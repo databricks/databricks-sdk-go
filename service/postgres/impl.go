@@ -184,6 +184,25 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 	return &operation, err
 }
 
+func (a *postgresImpl) CreateSnapshot(ctx context.Context, request CreateSnapshotRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/snapshots", request.Parent)
+	queryParams := make(map[string]any)
+
+	if request.SnapshotId != "" {
+		queryParams["snapshot_id"] = request.SnapshotId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Snapshot, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) CreateSyncedTable(ctx context.Context, request CreateSyncedTableRequest) (*Operation, error) {
 	var operation Operation
 	path := "/api/2.0/postgres/synced_tables"
@@ -302,6 +321,20 @@ func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectR
 }
 
 func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) DeleteSnapshot(ctx context.Context, request DeleteSnapshotRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -482,6 +515,34 @@ func (a *postgresImpl) GetRole(ctx context.Context, request GetRoleRequest) (*Ro
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &role)
 	return &role, err
+}
+
+func (a *postgresImpl) GetSnapshot(ctx context.Context, request GetSnapshotRequest) (*Snapshot, error) {
+	var snapshot Snapshot
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &snapshot)
+	return &snapshot, err
+}
+
+func (a *postgresImpl) GetSnapshotSchedule(ctx context.Context, request GetSnapshotScheduleRequest) (*SnapshotSchedule, error) {
+	var snapshotSchedule SnapshotSchedule
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &snapshotSchedule)
+	return &snapshotSchedule, err
 }
 
 func (a *postgresImpl) GetSyncedTable(ctx context.Context, request GetSyncedTableRequest) (*SyncedTable, error) {
@@ -823,6 +884,51 @@ func (a *postgresImpl) internalListRoles(ctx context.Context, request ListRolesR
 	return &listRolesResponse, err
 }
 
+// Returns a paginated list of snapshots in the project.
+func (a *postgresImpl) ListSnapshots(ctx context.Context, request ListSnapshotsRequest) listing.Iterator[Snapshot] {
+
+	getNextPage := func(ctx context.Context, req ListSnapshotsRequest) (*ListSnapshotsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSnapshots(ctx, req)
+	}
+	getItems := func(resp *ListSnapshotsResponse) []Snapshot {
+		return resp.Snapshots
+	}
+	getNextReq := func(resp *ListSnapshotsResponse) *ListSnapshotsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Returns a paginated list of snapshots in the project.
+func (a *postgresImpl) ListSnapshotsAll(ctx context.Context, request ListSnapshotsRequest) ([]Snapshot, error) {
+	iterator := a.ListSnapshots(ctx, request)
+	return listing.ToSlice[Snapshot](ctx, iterator)
+}
+
+func (a *postgresImpl) internalListSnapshots(ctx context.Context, request ListSnapshotsRequest) (*ListSnapshotsResponse, error) {
+	var listSnapshotsResponse ListSnapshotsResponse
+	path := fmt.Sprintf("/api/2.0/postgres/%v/snapshots", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSnapshotsResponse)
+	return &listSnapshotsResponse, err
+}
+
 func (a *postgresImpl) UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", request.Name)
@@ -982,5 +1088,27 @@ func (a *postgresImpl) UpdateRole(ctx context.Context, request UpdateRoleRequest
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Role, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) UpdateSnapshotSchedule(ctx context.Context, request UpdateSnapshotScheduleRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.SnapshotSchedule, &operation)
 	return &operation, err
 }

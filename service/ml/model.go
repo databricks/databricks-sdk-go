@@ -399,21 +399,8 @@ func (s *BatchCreateMaterializedFeaturesResponse) UnmarshalJSON(b []byte) error 
 	return marshal.Unmarshal(b, s)
 }
 
-type ColumnIdentifier struct {
-	// String representation of the column name using dot-prefixed path
-	// notation. For nested fields, the leaf value is what will be present in
-	// materialized tables and expected to match at query time. For example, the
-	// leaf node of value.trip_details.location_details.pickup_zip is
-	// pickup_zip.
-	VariantExprPath string `json:"variant_expr_path"`
-}
-
-func (s *ColumnIdentifier) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
 // A ColumnSelection function, equivalent to the LAST() record of an entity over
-// a lifetime ContinuousWindow
+// a lifetime window
 type ColumnSelection struct {
 	// Column name from source to select as the feature value.
 	Column string `json:"column"`
@@ -513,24 +500,6 @@ func (s *CommentObject) UnmarshalJSON(b []byte) error {
 }
 
 func (s CommentObject) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Deprecated: use RollingWindow with `delay` instead.
-type ContinuousWindow struct {
-	// The offset of the continuous window (must be non-positive).
-	Offset string `json:"offset,omitempty"`
-	// The duration of the continuous window (must be positive).
-	WindowDuration string `json:"window_duration"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ContinuousWindow) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ContinuousWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1042,6 +1011,10 @@ type DataSource struct {
 	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
 	// A Kafka stream data source.
 	KafkaSource *KafkaSource `json:"kafka_source,omitempty"`
+	// Completeness timing for this Feature's use of the source. This
+	// configuration is part of the Feature definition; it does not modify the
+	// underlying table or stream.
+	Lateness *SourceLateness `json:"lateness,omitempty"`
 	// A request-time data source.
 	RequestSource *RequestSource `json:"request_source,omitempty"`
 	// A Stream data source.
@@ -1365,18 +1338,12 @@ type DeltaTableSource struct {
 	// transformation_sql is specified. Example:
 	// {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}
 	DataframeSchema string `json:"dataframe_schema,omitempty"`
-	// Deprecated: Use Feature.entity instead. Kept for backwards compatibility.
-	// The entity columns of the Delta table.
-	EntityColumns []string `json:"entity_columns,omitempty"`
 	// Single WHERE clause to filter delta table before applying
 	// transformations. Will be row-wise evaluated, so should only include
 	// conditionals and projections.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part (catalog, schema, table) name of the Delta table.
 	FullName string `json:"full_name"`
-	// Deprecated: Use Feature.timeseries_column instead. Kept for backwards
-	// compatibility. The timeseries column of the Delta table.
-	TimeseriesColumn string `json:"timeseries_column,omitempty"`
 	// A single SQL SELECT expression applied after filter_condition. Should
 	// contains all the columns needed (eg. "SELECT *, col_a + col_b AS col_c
 	// FROM x.y.z WHERE col_a > 0" would have `transformation_sql` "*, col_a +
@@ -1662,19 +1629,12 @@ type Feature struct {
 	// The entity columns for the feature, used as aggregation keys and for
 	// query-time lookup.
 	Entities []EntityColumn `json:"entities,omitempty"`
-	// Deprecated: Use DeltaTableSource.filter_condition or
-	// KafkaSource.filter_condition instead. Kept for backwards compatibility.
-	// The filter condition applied to the source data before aggregation.
-	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part name (catalog, schema, name) of the feature. This is
 	// the feature's resource identifier; the catalog_name, schema_name, and
 	// name fields below are OUTPUT_ONLY decomposed views of this value.
 	FullName string `json:"full_name"`
 	// The function by which the feature is computed.
 	Function Function `json:"function"`
-	// Deprecated: Use AggregationFunction.inputs instead. Kept for backwards
-	// compatibility. The input columns from which the feature is computed.
-	Inputs []string `json:"inputs,omitempty"`
 	// Lineage context information for this feature. WARNING: This field is
 	// primarily intended for internal use by Databricks systems and is
 	// automatically populated when features are created through Databricks
@@ -1690,10 +1650,6 @@ type Feature struct {
 	SchemaName string `json:"schema_name,omitempty"`
 	// The data source of the feature.
 	Source DataSource `json:"source"`
-	// Deprecated: Use Function.aggregation_function.time_window instead. Kept
-	// for backwards compatibility. The time window in which the feature is
-	// computed.
-	TimeWindow *TimeWindow `json:"time_window,omitempty"`
 	// Column recording time, used for point-in-time joins, backfills, and
 	// aggregations.
 	TimeseriesColumn *TimeseriesColumn `json:"timeseries_column,omitempty"`
@@ -1973,104 +1929,10 @@ type Function struct {
 	ColumnSelection *ColumnSelection `json:"column_selection,omitempty"`
 	// Applies a registered Unity Catalog function row-wise to source columns.
 	CustomUdf *CustomUdf `json:"custom_udf,omitempty"`
-	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
-	// for backwards compatibility. Extra parameters for parameterized
-	// functions.
-	ExtraParameters []FunctionExtraParameter `json:"extra_parameters,omitempty"`
-	// Deprecated: Use the function oneof with AggregationFunction instead. Kept
-	// for backwards compatibility. The type of the function.
-	FunctionType FunctionFunctionType `json:"function_type,omitempty"`
 }
 
 func (s *Function) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
-}
-
-// Deprecated: Use typed fields on function-specific messages (e.g.
-// ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter
-// instead. Kept for backwards compatibility.
-type FunctionExtraParameter struct {
-	// The name of the parameter.
-	Key string `json:"key"`
-	// The value of the parameter.
-	Value string `json:"value"`
-}
-
-func (s *FunctionExtraParameter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-// Deprecated: Use the function-specific messages in
-// AggregationFunction.function_type oneof instead. Kept for backwards
-// compatibility.
-type FunctionFunctionType string
-
-const FunctionFunctionTypeApproxCountDistinct FunctionFunctionType = `APPROX_COUNT_DISTINCT`
-
-const FunctionFunctionTypeApproxPercentile FunctionFunctionType = `APPROX_PERCENTILE`
-
-const FunctionFunctionTypeAvg FunctionFunctionType = `AVG`
-
-const FunctionFunctionTypeCount FunctionFunctionType = `COUNT`
-
-const FunctionFunctionTypeFirst FunctionFunctionType = `FIRST`
-
-const FunctionFunctionTypeLast FunctionFunctionType = `LAST`
-
-const FunctionFunctionTypeMax FunctionFunctionType = `MAX`
-
-const FunctionFunctionTypeMin FunctionFunctionType = `MIN`
-
-const FunctionFunctionTypeStddevPop FunctionFunctionType = `STDDEV_POP`
-
-const FunctionFunctionTypeStddevSamp FunctionFunctionType = `STDDEV_SAMP`
-
-const FunctionFunctionTypeSum FunctionFunctionType = `SUM`
-
-const FunctionFunctionTypeVarPop FunctionFunctionType = `VAR_POP`
-
-const FunctionFunctionTypeVarSamp FunctionFunctionType = `VAR_SAMP`
-
-// String representation for [fmt.Print]
-func (f *FunctionFunctionType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *FunctionFunctionType) Set(v string) error {
-	switch v {
-	case `APPROX_COUNT_DISTINCT`, `APPROX_PERCENTILE`, `AVG`, `COUNT`, `FIRST`, `LAST`, `MAX`, `MIN`, `STDDEV_POP`, `STDDEV_SAMP`, `SUM`, `VAR_POP`, `VAR_SAMP`:
-		*f = FunctionFunctionType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "APPROX_COUNT_DISTINCT", "APPROX_PERCENTILE", "AVG", "COUNT", "FIRST", "LAST", "MAX", "MIN", "STDDEV_POP", "STDDEV_SAMP", "SUM", "VAR_POP", "VAR_SAMP"`, v)
-	}
-}
-
-// Values returns all possible values for FunctionFunctionType.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *FunctionFunctionType) Values() []FunctionFunctionType {
-	return []FunctionFunctionType{
-		FunctionFunctionTypeApproxCountDistinct,
-		FunctionFunctionTypeApproxPercentile,
-		FunctionFunctionTypeAvg,
-		FunctionFunctionTypeCount,
-		FunctionFunctionTypeFirst,
-		FunctionFunctionTypeLast,
-		FunctionFunctionTypeMax,
-		FunctionFunctionTypeMin,
-		FunctionFunctionTypeStddevPop,
-		FunctionFunctionTypeStddevSamp,
-		FunctionFunctionTypeSum,
-		FunctionFunctionTypeVarPop,
-		FunctionFunctionTypeVarSamp,
-	}
-}
-
-// Type always returns FunctionFunctionType to satisfy [pflag.Value] interface
-func (f *FunctionFunctionType) Type() string {
-	return "FunctionFunctionType"
 }
 
 type GetByNameRequest struct {
@@ -2650,17 +2512,11 @@ func (s *KafkaConfig) UnmarshalJSON(b []byte) error {
 }
 
 type KafkaSource struct {
-	// Deprecated: Use Feature.entity instead. Kept for backwards compatibility.
-	// The entity column identifiers of the Kafka source.
-	EntityColumnIdentifiers []ColumnIdentifier `json:"entity_column_identifiers,omitempty"`
 	// The filter condition applied to the source data before aggregation.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// Name of the Kafka source, used to identify it. This is used to look up
 	// the corresponding KafkaConfig object. Can be distinct from topic name.
 	Name string `json:"name"`
-	// Deprecated: Use Feature.timeseries_column instead. Kept for backwards
-	// compatibility. The timeseries column identifier of the Kafka source.
-	TimeseriesColumnIdentifier *ColumnIdentifier `json:"timeseries_column_identifier,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3534,11 +3390,6 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 // A materialized feature represents a feature that is continuously computed and
 // stored.
 type MaterializedFeature struct {
-	// The quartz cron expression that defines the schedule of the
-	// materialization pipeline. The schedule is evaluated in the UTC timezone.
-	// Hidden from GraphQL: superseded by the `trigger` oneof
-	// (cron_schedule_trigger), so not exposed to Catalog Explorer.
-	CronSchedule string `json:"cron_schedule,omitempty"`
 	// A cron-based schedule trigger for the materialization pipeline.
 	CronScheduleTrigger *CronSchedule `json:"cron_schedule_trigger,omitempty"`
 	// The full name of the feature in Unity Catalog.
@@ -4798,9 +4649,7 @@ func (s RestoreRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// A rolling time window with an optional delay. This is the SQL-spec-aligned
-// replacement for ContinuousWindow: `delay` is the non-negative counterpart of
-// the legacy non-positive `ContinuousWindow.offset`.
+// A rolling time window with an optional non-negative delay.
 type RollingWindow struct {
 	// Non-negative analytic lag that evaluates the window this far in the past.
 	// Use this for timing variations unrelated to source lateness, such as a
@@ -5565,6 +5414,17 @@ func (s SetTag) MarshalJSON() ([]byte, error) {
 }
 
 type SlidingWindow struct {
+	// Non-negative analytic lag that evaluates the window this far in the past.
+	// Use this for timing variations unrelated to source lateness, such as a
+	// 30-day count as of one week ago. If unset, the analytic lag is zero. It
+	// composes with source.lateness when both are set.
+	Delay *duration.Duration `json:"delay,omitempty"`
+	// Non-negative phase shift from the default midnight UTC alignment. For
+	// example, offset=22h on a 24h slide produces boundaries at 22:00 UTC
+	// (17:00 New York in standard time) instead of midnight UTC. If unset, the
+	// offset is zero. Must be shorter than slide_duration (and therefore
+	// window_duration).
+	Offset *duration.Duration `json:"offset,omitempty"`
 	// The slide duration (interval by which windows advance, must be positive
 	// and less than duration).
 	SlideDuration string `json:"slide_duration"`
@@ -5580,6 +5440,28 @@ func (s *SlidingWindow) UnmarshalJSON(b []byte) error {
 }
 
 func (s SlidingWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Configures when event-time data from this source is considered complete for a
+// Feature.
+type SourceLateness struct {
+	// Non-negative time to wait after a window ends before treating its source
+	// data as complete. Training shifts the eligible evaluation time backwards
+	// by this duration so it does not join data that would still have been
+	// settling online. Materialization waits for the duration to elapse before
+	// publishing the window. If unset, source data is considered settled
+	// immediately.
+	SettlingDelay *duration.Duration `json:"settling_delay,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SourceLateness) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SourceLateness) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5927,19 +5809,33 @@ func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
 }
 
 type TimeWindow struct {
-	Continuous *ContinuousWindow `json:"continuous,omitempty"`
-
 	Rolling *RollingWindow `json:"rolling,omitempty"`
 	// A sawtooth window served via the hybrid batch + streaming path.
 	Sawtooth *SawtoothWindow `json:"sawtooth,omitempty"`
 
 	Sliding *SlidingWindow `json:"sliding,omitempty"`
+	// Earliest event-time boundary at which the Feature may emit an output.
+	// This gates outputs, not the historical inputs read by a window. For
+	// example, a 365-day window with start_time=2026-01-01 begins emitting
+	// partial-window values on that date instead of waiting for 365 days of
+	// data; a lifetime window produces no output before start_time. If unset,
+	// tumbling and fixed-duration sliding windows first emit at an
+	// offset-aligned boundary after a full window can be formed. If unset,
+	// lifetime sliding windows and rolling windows emit as soon as eligible
+	// source data exists.
+	StartTime *time.Time `json:"start_time,omitempty"`
 
 	Tumbling *TumblingWindow `json:"tumbling,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TimeWindow) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s TimeWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TimeseriesColumn struct {
@@ -6037,13 +5933,29 @@ func (s *TransitionStageResponse) UnmarshalJSON(b []byte) error {
 }
 
 type TumblingWindow struct {
+	// Non-negative analytic lag that evaluates the window this far in the past.
+	// Use this for timing variations unrelated to source lateness, such as a
+	// 30-day count as of one week ago. If unset, the analytic lag is zero. It
+	// composes with source.lateness when both are set.
+	Delay *duration.Duration `json:"delay,omitempty"`
+	// Non-negative phase shift from the default midnight UTC alignment. For
+	// example, offset=22h on a 24h window produces boundaries at 22:00 UTC
+	// (17:00 New York in standard time) instead of midnight UTC. If unset, the
+	// offset is zero. Must be shorter than window_duration.
+	Offset *duration.Duration `json:"offset,omitempty"`
 	// The duration of each tumbling window (non-overlapping, fixed-duration
 	// windows).
 	WindowDuration string `json:"window_duration"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TumblingWindow) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s TumblingWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A Unity Catalog trace storage location. Traces are stored as Delta tables in

@@ -718,6 +718,183 @@ func (_c *MockWorkspaceIamV2Interface_GetDirectGroupMemberProxy_Call) RunAndRetu
 	return _c
 }
 
+// GetExternalGroupProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) GetExternalGroupProxy(ctx context.Context, request iamv2.GetExternalGroupProxyRequest) (*iamv2.ExternalGroup, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExternalGroupProxy")
+	}
+
+	var r0 *iamv2.ExternalGroup
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalGroupProxyRequest) (*iamv2.ExternalGroup, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalGroupProxyRequest) *iamv2.ExternalGroup); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ExternalGroup)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetExternalGroupProxyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExternalGroupProxy'
+type MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call struct {
+	*mock.Call
+}
+
+// GetExternalGroupProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetExternalGroupProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) GetExternalGroupProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call {
+	return &MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call{Call: _e.mock.On("GetExternalGroupProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call) Run(run func(ctx context.Context, request iamv2.GetExternalGroupProxyRequest)) *MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetExternalGroupProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call) Return(_a0 *iamv2.ExternalGroup, _a1 error) *MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call) RunAndReturn(run func(context.Context, iamv2.GetExternalGroupProxyRequest) (*iamv2.ExternalGroup, error)) *MockWorkspaceIamV2Interface_GetExternalGroupProxy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetExternalServicePrincipalProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) GetExternalServicePrincipalProxy(ctx context.Context, request iamv2.GetExternalServicePrincipalProxyRequest) (*iamv2.ExternalServicePrincipal, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExternalServicePrincipalProxy")
+	}
+
+	var r0 *iamv2.ExternalServicePrincipal
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalServicePrincipalProxyRequest) (*iamv2.ExternalServicePrincipal, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalServicePrincipalProxyRequest) *iamv2.ExternalServicePrincipal); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ExternalServicePrincipal)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetExternalServicePrincipalProxyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExternalServicePrincipalProxy'
+type MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call struct {
+	*mock.Call
+}
+
+// GetExternalServicePrincipalProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetExternalServicePrincipalProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) GetExternalServicePrincipalProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call {
+	return &MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call{Call: _e.mock.On("GetExternalServicePrincipalProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call) Run(run func(ctx context.Context, request iamv2.GetExternalServicePrincipalProxyRequest)) *MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetExternalServicePrincipalProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call) Return(_a0 *iamv2.ExternalServicePrincipal, _a1 error) *MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call) RunAndReturn(run func(context.Context, iamv2.GetExternalServicePrincipalProxyRequest) (*iamv2.ExternalServicePrincipal, error)) *MockWorkspaceIamV2Interface_GetExternalServicePrincipalProxy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetExternalUserProxy provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceIamV2Interface) GetExternalUserProxy(ctx context.Context, request iamv2.GetExternalUserProxyRequest) (*iamv2.ExternalUser, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExternalUserProxy")
+	}
+
+	var r0 *iamv2.ExternalUser
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalUserProxyRequest) (*iamv2.ExternalUser, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalUserProxyRequest) *iamv2.ExternalUser); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ExternalUser)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetExternalUserProxyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceIamV2Interface_GetExternalUserProxy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExternalUserProxy'
+type MockWorkspaceIamV2Interface_GetExternalUserProxy_Call struct {
+	*mock.Call
+}
+
+// GetExternalUserProxy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetExternalUserProxyRequest
+func (_e *MockWorkspaceIamV2Interface_Expecter) GetExternalUserProxy(ctx interface{}, request interface{}) *MockWorkspaceIamV2Interface_GetExternalUserProxy_Call {
+	return &MockWorkspaceIamV2Interface_GetExternalUserProxy_Call{Call: _e.mock.On("GetExternalUserProxy", ctx, request)}
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalUserProxy_Call) Run(run func(ctx context.Context, request iamv2.GetExternalUserProxyRequest)) *MockWorkspaceIamV2Interface_GetExternalUserProxy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetExternalUserProxyRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalUserProxy_Call) Return(_a0 *iamv2.ExternalUser, _a1 error) *MockWorkspaceIamV2Interface_GetExternalUserProxy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceIamV2Interface_GetExternalUserProxy_Call) RunAndReturn(run func(context.Context, iamv2.GetExternalUserProxyRequest) (*iamv2.ExternalUser, error)) *MockWorkspaceIamV2Interface_GetExternalUserProxy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetGroupProxy provides a mock function with given fields: ctx, request
 func (_m *MockWorkspaceIamV2Interface) GetGroupProxy(ctx context.Context, request iamv2.GetGroupProxyRequest) (*iamv2.Group, error) {
 	ret := _m.Called(ctx, request)

@@ -495,6 +495,65 @@ func (_c *MockPostgresInterface_CreateRole_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
+// CreateSnapshot provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) CreateSnapshot(ctx context.Context, request postgres.CreateSnapshotRequest) (postgres.CreateSnapshotOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateSnapshot")
+	}
+
+	var r0 postgres.CreateSnapshotOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateSnapshotRequest) (postgres.CreateSnapshotOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateSnapshotRequest) postgres.CreateSnapshotOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateSnapshotOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.CreateSnapshotRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateSnapshot_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateSnapshot'
+type MockPostgresInterface_CreateSnapshot_Call struct {
+	*mock.Call
+}
+
+// CreateSnapshot is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateSnapshotRequest
+func (_e *MockPostgresInterface_Expecter) CreateSnapshot(ctx interface{}, request interface{}) *MockPostgresInterface_CreateSnapshot_Call {
+	return &MockPostgresInterface_CreateSnapshot_Call{Call: _e.mock.On("CreateSnapshot", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateSnapshot_Call) Run(run func(ctx context.Context, request postgres.CreateSnapshotRequest)) *MockPostgresInterface_CreateSnapshot_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.CreateSnapshotRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateSnapshot_Call) Return(_a0 postgres.CreateSnapshotOperationInterface, _a1 error) *MockPostgresInterface_CreateSnapshot_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateSnapshot_Call) RunAndReturn(run func(context.Context, postgres.CreateSnapshotRequest) (postgres.CreateSnapshotOperationInterface, error)) *MockPostgresInterface_CreateSnapshot_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateSyncedTable provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) CreateSyncedTable(ctx context.Context, request postgres.CreateSyncedTableRequest) (postgres.CreateSyncedTableOperationInterface, error) {
 	ret := _m.Called(ctx, request)
@@ -1022,6 +1081,65 @@ func (_c *MockPostgresInterface_DeleteRole_Call) Return(_a0 postgres.DeleteRoleO
 }
 
 func (_c *MockPostgresInterface_DeleteRole_Call) RunAndReturn(run func(context.Context, postgres.DeleteRoleRequest) (postgres.DeleteRoleOperationInterface, error)) *MockPostgresInterface_DeleteRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteSnapshot provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) DeleteSnapshot(ctx context.Context, request postgres.DeleteSnapshotRequest) (postgres.DeleteSnapshotOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSnapshot")
+	}
+
+	var r0 postgres.DeleteSnapshotOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteSnapshotRequest) (postgres.DeleteSnapshotOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteSnapshotRequest) postgres.DeleteSnapshotOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteSnapshotOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteSnapshotRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteSnapshot_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSnapshot'
+type MockPostgresInterface_DeleteSnapshot_Call struct {
+	*mock.Call
+}
+
+// DeleteSnapshot is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteSnapshotRequest
+func (_e *MockPostgresInterface_Expecter) DeleteSnapshot(ctx interface{}, request interface{}) *MockPostgresInterface_DeleteSnapshot_Call {
+	return &MockPostgresInterface_DeleteSnapshot_Call{Call: _e.mock.On("DeleteSnapshot", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteSnapshot_Call) Run(run func(ctx context.Context, request postgres.DeleteSnapshotRequest)) *MockPostgresInterface_DeleteSnapshot_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.DeleteSnapshotRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteSnapshot_Call) Return(_a0 postgres.DeleteSnapshotOperationInterface, _a1 error) *MockPostgresInterface_DeleteSnapshot_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteSnapshot_Call) RunAndReturn(run func(context.Context, postgres.DeleteSnapshotRequest) (postgres.DeleteSnapshotOperationInterface, error)) *MockPostgresInterface_DeleteSnapshot_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1730,6 +1848,124 @@ func (_c *MockPostgresInterface_GetRole_Call) Return(_a0 *postgres.Role, _a1 err
 }
 
 func (_c *MockPostgresInterface_GetRole_Call) RunAndReturn(run func(context.Context, postgres.GetRoleRequest) (*postgres.Role, error)) *MockPostgresInterface_GetRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetSnapshot provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetSnapshot(ctx context.Context, request postgres.GetSnapshotRequest) (*postgres.Snapshot, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSnapshot")
+	}
+
+	var r0 *postgres.Snapshot
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetSnapshotRequest) (*postgres.Snapshot, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetSnapshotRequest) *postgres.Snapshot); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.Snapshot)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetSnapshotRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetSnapshot_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSnapshot'
+type MockPostgresInterface_GetSnapshot_Call struct {
+	*mock.Call
+}
+
+// GetSnapshot is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetSnapshotRequest
+func (_e *MockPostgresInterface_Expecter) GetSnapshot(ctx interface{}, request interface{}) *MockPostgresInterface_GetSnapshot_Call {
+	return &MockPostgresInterface_GetSnapshot_Call{Call: _e.mock.On("GetSnapshot", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetSnapshot_Call) Run(run func(ctx context.Context, request postgres.GetSnapshotRequest)) *MockPostgresInterface_GetSnapshot_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetSnapshotRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetSnapshot_Call) Return(_a0 *postgres.Snapshot, _a1 error) *MockPostgresInterface_GetSnapshot_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetSnapshot_Call) RunAndReturn(run func(context.Context, postgres.GetSnapshotRequest) (*postgres.Snapshot, error)) *MockPostgresInterface_GetSnapshot_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetSnapshotSchedule provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetSnapshotSchedule(ctx context.Context, request postgres.GetSnapshotScheduleRequest) (*postgres.SnapshotSchedule, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSnapshotSchedule")
+	}
+
+	var r0 *postgres.SnapshotSchedule
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetSnapshotScheduleRequest) (*postgres.SnapshotSchedule, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetSnapshotScheduleRequest) *postgres.SnapshotSchedule); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.SnapshotSchedule)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetSnapshotScheduleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetSnapshotSchedule_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSnapshotSchedule'
+type MockPostgresInterface_GetSnapshotSchedule_Call struct {
+	*mock.Call
+}
+
+// GetSnapshotSchedule is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetSnapshotScheduleRequest
+func (_e *MockPostgresInterface_Expecter) GetSnapshotSchedule(ctx interface{}, request interface{}) *MockPostgresInterface_GetSnapshotSchedule_Call {
+	return &MockPostgresInterface_GetSnapshotSchedule_Call{Call: _e.mock.On("GetSnapshotSchedule", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetSnapshotSchedule_Call) Run(run func(ctx context.Context, request postgres.GetSnapshotScheduleRequest)) *MockPostgresInterface_GetSnapshotSchedule_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetSnapshotScheduleRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetSnapshotSchedule_Call) Return(_a0 *postgres.SnapshotSchedule, _a1 error) *MockPostgresInterface_GetSnapshotSchedule_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetSnapshotSchedule_Call) RunAndReturn(run func(context.Context, postgres.GetSnapshotScheduleRequest) (*postgres.SnapshotSchedule, error)) *MockPostgresInterface_GetSnapshotSchedule_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2549,6 +2785,114 @@ func (_c *MockPostgresInterface_ListRolesAll_Call) RunAndReturn(run func(context
 	return _c
 }
 
+// ListSnapshots provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListSnapshots(ctx context.Context, request postgres.ListSnapshotsRequest) listing.Iterator[postgres.Snapshot] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSnapshots")
+	}
+
+	var r0 listing.Iterator[postgres.Snapshot]
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListSnapshotsRequest) listing.Iterator[postgres.Snapshot]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[postgres.Snapshot])
+		}
+	}
+
+	return r0
+}
+
+// MockPostgresInterface_ListSnapshots_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSnapshots'
+type MockPostgresInterface_ListSnapshots_Call struct {
+	*mock.Call
+}
+
+// ListSnapshots is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListSnapshotsRequest
+func (_e *MockPostgresInterface_Expecter) ListSnapshots(ctx interface{}, request interface{}) *MockPostgresInterface_ListSnapshots_Call {
+	return &MockPostgresInterface_ListSnapshots_Call{Call: _e.mock.On("ListSnapshots", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListSnapshots_Call) Run(run func(ctx context.Context, request postgres.ListSnapshotsRequest)) *MockPostgresInterface_ListSnapshots_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListSnapshotsRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListSnapshots_Call) Return(_a0 listing.Iterator[postgres.Snapshot]) *MockPostgresInterface_ListSnapshots_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListSnapshots_Call) RunAndReturn(run func(context.Context, postgres.ListSnapshotsRequest) listing.Iterator[postgres.Snapshot]) *MockPostgresInterface_ListSnapshots_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSnapshotsAll provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListSnapshotsAll(ctx context.Context, request postgres.ListSnapshotsRequest) ([]postgres.Snapshot, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSnapshotsAll")
+	}
+
+	var r0 []postgres.Snapshot
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListSnapshotsRequest) ([]postgres.Snapshot, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListSnapshotsRequest) []postgres.Snapshot); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]postgres.Snapshot)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.ListSnapshotsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_ListSnapshotsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSnapshotsAll'
+type MockPostgresInterface_ListSnapshotsAll_Call struct {
+	*mock.Call
+}
+
+// ListSnapshotsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListSnapshotsRequest
+func (_e *MockPostgresInterface_Expecter) ListSnapshotsAll(ctx interface{}, request interface{}) *MockPostgresInterface_ListSnapshotsAll_Call {
+	return &MockPostgresInterface_ListSnapshotsAll_Call{Call: _e.mock.On("ListSnapshotsAll", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListSnapshotsAll_Call) Run(run func(ctx context.Context, request postgres.ListSnapshotsRequest)) *MockPostgresInterface_ListSnapshotsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListSnapshotsRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListSnapshotsAll_Call) Return(_a0 []postgres.Snapshot, _a1 error) *MockPostgresInterface_ListSnapshotsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListSnapshotsAll_Call) RunAndReturn(run func(context.Context, postgres.ListSnapshotsRequest) ([]postgres.Snapshot, error)) *MockPostgresInterface_ListSnapshotsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UndeleteBranch provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) UndeleteBranch(ctx context.Context, request postgres.UndeleteBranchRequest) (postgres.UndeleteBranchOperationInterface, error) {
 	ret := _m.Called(ctx, request)
@@ -3017,6 +3361,65 @@ func (_c *MockPostgresInterface_UpdateRole_Call) Return(_a0 postgres.UpdateRoleO
 }
 
 func (_c *MockPostgresInterface_UpdateRole_Call) RunAndReturn(run func(context.Context, postgres.UpdateRoleRequest) (postgres.UpdateRoleOperationInterface, error)) *MockPostgresInterface_UpdateRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateSnapshotSchedule provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) UpdateSnapshotSchedule(ctx context.Context, request postgres.UpdateSnapshotScheduleRequest) (postgres.UpdateSnapshotScheduleOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateSnapshotSchedule")
+	}
+
+	var r0 postgres.UpdateSnapshotScheduleOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateSnapshotScheduleRequest) (postgres.UpdateSnapshotScheduleOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateSnapshotScheduleRequest) postgres.UpdateSnapshotScheduleOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.UpdateSnapshotScheduleOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateSnapshotScheduleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_UpdateSnapshotSchedule_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateSnapshotSchedule'
+type MockPostgresInterface_UpdateSnapshotSchedule_Call struct {
+	*mock.Call
+}
+
+// UpdateSnapshotSchedule is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.UpdateSnapshotScheduleRequest
+func (_e *MockPostgresInterface_Expecter) UpdateSnapshotSchedule(ctx interface{}, request interface{}) *MockPostgresInterface_UpdateSnapshotSchedule_Call {
+	return &MockPostgresInterface_UpdateSnapshotSchedule_Call{Call: _e.mock.On("UpdateSnapshotSchedule", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_UpdateSnapshotSchedule_Call) Run(run func(ctx context.Context, request postgres.UpdateSnapshotScheduleRequest)) *MockPostgresInterface_UpdateSnapshotSchedule_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.UpdateSnapshotScheduleRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateSnapshotSchedule_Call) Return(_a0 postgres.UpdateSnapshotScheduleOperationInterface, _a1 error) *MockPostgresInterface_UpdateSnapshotSchedule_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateSnapshotSchedule_Call) RunAndReturn(run func(context.Context, postgres.UpdateSnapshotScheduleRequest) (postgres.UpdateSnapshotScheduleOperationInterface, error)) *MockPostgresInterface_UpdateSnapshotSchedule_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -54,6 +54,10 @@ type PostgresService interface {
 	// Creates a new Postgres role in the branch.
 	CreateRole(ctx context.Context, request CreateRoleRequest) (*Operation, error)
 
+	// Creates a snapshot, an immutable point-in-time copy of a branch's data,
+	// within the project.
+	CreateSnapshot(ctx context.Context, request CreateSnapshotRequest) (*Operation, error)
+
 	// Create a Synced Table.
 	CreateSyncedTable(ctx context.Context, request CreateSyncedTableRequest) (*Operation, error)
 
@@ -83,6 +87,9 @@ type PostgresService interface {
 
 	// Deletes the specified Postgres role.
 	DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error)
+
+	// Deletes the specified snapshot.
+	DeleteSnapshot(ctx context.Context, request DeleteSnapshotRequest) (*Operation, error)
 
 	// Delete a Synced Table.
 	DeleteSyncedTable(ctx context.Context, request DeleteSyncedTableRequest) (*Operation, error)
@@ -125,6 +132,13 @@ type PostgresService interface {
 	// authentication method and permissions.
 	GetRole(ctx context.Context, request GetRoleRequest) (*Role, error)
 
+	// Retrieves information about the specified snapshot.
+	GetSnapshot(ctx context.Context, request GetSnapshotRequest) (*Snapshot, error)
+
+	// Retrieves the snapshot schedule for a branch. A branch with no configured
+	// schedule returns an empty schedule (not NOT_FOUND).
+	GetSnapshotSchedule(ctx context.Context, request GetSnapshotScheduleRequest) (*SnapshotSchedule, error)
+
 	// Get a Synced Table.
 	GetSyncedTable(ctx context.Context, request GetSyncedTableRequest) (*SyncedTable, error)
 
@@ -154,6 +168,9 @@ type PostgresService interface {
 	// Returns a paginated list of Postgres roles in the branch.
 	ListRoles(ctx context.Context, request ListRolesRequest) (*ListRolesResponse, error)
 
+	// Returns a paginated list of snapshots in the project.
+	ListSnapshots(ctx context.Context, request ListSnapshotsRequest) (*ListSnapshotsResponse, error)
+
 	// Undeletes the specified database branch.
 	UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error)
 
@@ -179,4 +196,8 @@ type PostgresService interface {
 
 	// Update a role for a branch.
 	UpdateRole(ctx context.Context, request UpdateRoleRequest) (*Operation, error)
+
+	// Sets the snapshot schedule for a branch. The `schedule` field is replaced
+	// wholesale; an empty schedule disables automatic snapshots.
+	UpdateSnapshotSchedule(ctx context.Context, request UpdateSnapshotScheduleRequest) (*Operation, error)
 }

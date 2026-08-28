@@ -72,6 +72,12 @@ type GenieService interface {
 	// ----
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
 
+	// Cancels an in-flight agent-mode response. `response_id` is the id
+	// returned in the `response.created` event from the agent-mode responses
+	// endpoint. The response stops at the next agent boundary and its terminal
+	// state is returned.
+	GenieCancelResponse(ctx context.Context, request GenieCancelResponseRequest) (*GenieMessage, error)
+
 	// Create and run evaluations for multiple benchmark questions in a Genie
 	// space.
 	GenieCreateEvalRun(ctx context.Context, request GenieCreateEvalRunRequest) (*GenieEvalRunResponse, error)
@@ -170,6 +176,8 @@ type GenieService interface {
 type LakeviewService interface {
 
 	// Create a draft dashboard.
+	//
+	// Requires the Databricks SQL access entitlement.
 	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
 
 	// Create dashboard schedule.
@@ -185,9 +193,14 @@ type LakeviewService interface {
 	DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error
 
 	// Get a draft dashboard.
+	//
+	// Requires the Databricks SQL access entitlement.
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Get the current published dashboard.
+	//
+	// Requires one of the following entitlements: Workspace access, Databricks
+	// SQL access, or Consumer access.
 	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
 
 	// Get dashboard schedule.
@@ -197,6 +210,8 @@ type LakeviewService interface {
 	GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error)
 
 	// List dashboards.
+	//
+	// Requires the Databricks SQL access entitlement.
 	List(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error)
 
 	// List dashboard schedules.
@@ -209,19 +224,29 @@ type LakeviewService interface {
 	Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error)
 
 	// Publish the current draft dashboard.
+	//
+	// Requires the Databricks SQL access entitlement.
 	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
 
 	// Revert a dashboard's definition in draft mode to the last published
 	// version.
+	//
+	// Requires the Databricks SQL access entitlement.
 	Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error)
 
 	// Trash a dashboard.
+	//
+	// Requires the Databricks SQL access entitlement.
 	Trash(ctx context.Context, request TrashDashboardRequest) error
 
 	// Unpublish the dashboard.
+	//
+	// Requires the Databricks SQL access entitlement.
 	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
 
 	// Update a draft dashboard.
+	//
+	// Requires the Databricks SQL access entitlement.
 	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
 
 	// Update dashboard schedule.
@@ -235,5 +260,8 @@ type LakeviewEmbeddedService interface {
 
 	// Get a required authorization details and scopes of a published dashboard
 	// to mint an OAuth token.
+	//
+	// Requires one of the following entitlements: Workspace access, Databricks
+	// SQL access, or Consumer access.
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 }

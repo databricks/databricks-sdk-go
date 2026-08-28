@@ -79,6 +79,12 @@ type BranchSpec struct {
 	// The point in time on the source branch from which this branch was
 	// created.
 	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
+	// The snapshot this branch was created from. When set, the branch's data
+	// comes from the snapshot rather than a source branch, so source_branch,
+	// source_branch_lsn, and source_branch_time must be empty. The snapshot
+	// must be AVAILABLE and belong to this branch's project. Format:
+	// projects/{project_id}/snapshots/{snapshot_id}
+	SourceSnapshot string `json:"source_snapshot,omitempty"`
 	// Relative time-to-live duration. When set, the branch will expire at
 	// creation_time + ttl. Mutually exclusive with `expire_time` and
 	// `no_expiry`. When updating, use `spec.expiration` in the update_mask.
@@ -126,6 +132,10 @@ type BranchStatus struct {
 	// The point in time on the source branch from which this branch was
 	// created.
 	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
+	// The snapshot this branch was restored from. Set only for branches created
+	// by restoring a snapshot; unset for all other branches. Format:
+	// projects/{project_id}/snapshots/{snapshot_id}
+	SourceSnapshot string `json:"source_snapshot,omitempty"`
 	// A timestamp indicating when the `current_state` began.
 	StateChangeTime *time.Time `json:"state_change_time,omitempty"`
 
@@ -598,6 +608,21 @@ func (s CreateRoleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateSnapshotRequest struct {
+	// The project in which to create the snapshot. Format:
+	// projects/{project_id}
+	Parent string `json:"-" url:"-"`
+	// The snapshot to create.
+	Snapshot Snapshot `json:"snapshot"`
+	// Client-chosen ID for the snapshot. It becomes the final segment of the
+	// snapshot resource name and cannot be changed after creation.
+	SnapshotId string `json:"-" url:"snapshot_id"`
+}
+
+func (s *CreateSnapshotRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateSyncedTableRequest struct {
 	SyncedTable SyncedTable `json:"synced_table"`
 	// The ID to use for the Synced Table. This becomes the final component of
@@ -617,6 +642,22 @@ type CreateSyncedTableRequest struct {
 
 func (s *CreateSyncedTableRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Take a snapshot once per day, at the configured hour.
+type DailySchedule struct {
+	// The hour of the day, in UTC, at which to take the snapshot, in [0, 23].
+	Hour int `json:"hour,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DailySchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DailySchedule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // DataApi represents the Data API (PostgREST) configuration for a Database. At
@@ -856,6 +897,59 @@ func (s DatabricksServiceExceptionWithDetailsProto) MarshalJSON() ([]byte, error
 	return marshal.Marshal(s)
 }
 
+// The day of the week on which a weekly snapshot is taken.
+type DayOfWeek string
+
+const DayOfWeekFriday DayOfWeek = `FRIDAY`
+
+const DayOfWeekMonday DayOfWeek = `MONDAY`
+
+const DayOfWeekSaturday DayOfWeek = `SATURDAY`
+
+const DayOfWeekSunday DayOfWeek = `SUNDAY`
+
+const DayOfWeekThursday DayOfWeek = `THURSDAY`
+
+const DayOfWeekTuesday DayOfWeek = `TUESDAY`
+
+const DayOfWeekWednesday DayOfWeek = `WEDNESDAY`
+
+// String representation for [fmt.Print]
+func (f *DayOfWeek) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DayOfWeek) Set(v string) error {
+	switch v {
+	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
+		*f = DayOfWeek(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
+	}
+}
+
+// Values returns all possible values for DayOfWeek.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DayOfWeek) Values() []DayOfWeek {
+	return []DayOfWeek{
+		DayOfWeekFriday,
+		DayOfWeekMonday,
+		DayOfWeekSaturday,
+		DayOfWeekSunday,
+		DayOfWeekThursday,
+		DayOfWeekTuesday,
+		DayOfWeekWednesday,
+	}
+}
+
+// Type always returns DayOfWeek to satisfy [pflag.Value] interface
+func (f *DayOfWeek) Type() string {
+	return "DayOfWeek"
+}
+
 type DeleteBranchRequest struct {
 	// The full resource path of the branch to delete. Format:
 	// projects/{project_id}/branches/{branch_id}
@@ -974,6 +1068,16 @@ func (s *DeleteRoleRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteRoleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DeleteSnapshotRequest struct {
+	// The resource name of the snapshot to delete. Format:
+	// projects/{project_id}/snapshots/{snapshot_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteSnapshotRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteSyncedTableRequest struct {
@@ -1703,6 +1807,26 @@ func (s *GetRoleRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetSnapshotRequest struct {
+	// The resource name of the snapshot to retrieve. Format:
+	// projects/{project_id}/snapshots/{snapshot_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetSnapshotRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetSnapshotScheduleRequest struct {
+	// The resource name of the branch's snapshot schedule. Format:
+	// projects/{project_id}/branches/{branch_id}/snapshot-schedule
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetSnapshotScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSyncedTableRequest struct {
 	// The Full resource name of the synced table. Format:
 	// "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema,
@@ -2033,6 +2157,63 @@ func (s *ListRolesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListRolesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSnapshotsRequest struct {
+	// Maximum number of snapshots to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token from a previous response; omit for the first page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The project that owns the snapshots. Format: projects/{project_id}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSnapshotsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSnapshotsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSnapshotsResponse struct {
+	// Token to retrieve the next page; empty if there are no more pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The snapshots in the project.
+	Snapshots []Snapshot `json:"snapshots,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSnapshotsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSnapshotsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Take a snapshot once per month, on the configured day at the configured hour.
+type MonthlySchedule struct {
+	// The day of the month on which to take the snapshot, in [1, 31]. In
+	// shorter months the snapshot is taken on the last day instead (day 31 runs
+	// on Feb 28 or 29, and on Apr 30), so every month gets exactly one
+	// snapshot.
+	Day int `json:"day"`
+	// The hour of the day, in UTC, at which to take the snapshot, in [0, 23].
+	Hour int `json:"hour,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MonthlySchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MonthlySchedule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2775,6 +2956,151 @@ func (s RoleRoleStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// One cadence at which automatic snapshots are taken.
+type ScheduleCadence struct {
+	// Take a snapshot once per day.
+	DailySchedule *DailySchedule `json:"daily_schedule,omitempty"`
+	// Take a snapshot once per month.
+	MonthlySchedule *MonthlySchedule `json:"monthly_schedule,omitempty"`
+	// How long snapshots from this cadence are kept before automatic deletion.
+	// Must be at least 1 hour. Applied when a snapshot is taken; not
+	// retroactive, so changing it affects only later snapshots.
+	Retention duration.Duration `json:"retention"`
+	// Take a snapshot once per week.
+	WeeklySchedule *WeeklySchedule `json:"weekly_schedule,omitempty"`
+}
+
+func (s *ScheduleCadence) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// An immutable, point-in-time copy of a branch's data within a project. It
+// remains available after the source branch is deleted.
+type Snapshot struct {
+	// When the snapshot was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The resource name of the snapshot. Format:
+	// projects/{project_id}/snapshots/{snapshot_id}
+	Name string `json:"name,omitempty"`
+	// The user-chosen ID; the final segment of `name`.
+	SnapshotId string `json:"snapshot_id,omitempty"`
+	// Client-provided configuration of the snapshot.
+	Spec *SnapshotSpec `json:"spec,omitempty"`
+	// Server-observed state of the snapshot.
+	Status *SnapshotStatus `json:"status,omitempty"`
+	// Unique system-generated ID for the snapshot.
+	Uid string `json:"uid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Snapshot) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Snapshot) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Metadata for the long-running snapshot Create and Delete operations.
+type SnapshotOperationMetadata struct {
+}
+
+func (s *SnapshotOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The automatic snapshot cadences for a branch. There is exactly one schedule
+// per branch (singleton); it is configured in place, not created or deleted.
+//
+// Name: projects/{project_id}/branches/{branch_id}/snapshot-schedule
+type SnapshotSchedule struct {
+	// The resource name of the branch's snapshot schedule. Format:
+	// projects/{project_id}/branches/{branch_id}/snapshot-schedule
+	Name string `json:"name,omitempty"`
+	// The cadences at which automatic snapshots are taken. Update replaces the
+	// whole set; an empty set disables automatic snapshots. Order is not
+	// significant. When several cadences fire together, one snapshot is taken,
+	// retained for the longest of their retentions.
+	Schedule []ScheduleCadence `json:"schedule,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SnapshotSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SnapshotSchedule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Metadata for the long-running snapshot schedule Update operation.
+type SnapshotScheduleOperationMetadata struct {
+}
+
+func (s *SnapshotScheduleOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Client-provided configuration of the snapshot.
+type SnapshotSpec struct {
+	// Absolute time at which the snapshot is deleted. Mutually exclusive with
+	// `ttl` and `no_expiry`.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
+	// If true, the snapshot never expires. Mutually exclusive with `ttl` and
+	// `expire_time`.
+	NoExpiry bool `json:"no_expiry,omitempty"`
+	// The source branch to snapshot. Format:
+	// projects/{project_id}/branches/{branch_id}
+	SourceBranch string `json:"source_branch"`
+	// LSN to snapshot from, e.g. `16/B374D848`. Mutually exclusive with
+	// `source_branch_time`.
+	SourceBranchLsn string `json:"source_branch_lsn,omitempty"`
+	// Timestamp to snapshot from. Mutually exclusive with `source_branch_lsn`.
+	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
+	// Time-to-live. The snapshot expires this long after it is created.
+	// Mutually exclusive with `expire_time` and `no_expiry`. Reads report the
+	// resolved absolute `expire_time` instead.
+	Ttl *duration.Duration `json:"ttl,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SnapshotSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SnapshotSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Server-observed state of a snapshot.
+type SnapshotStatus struct {
+	// Incremental storage size in bytes since the previous snapshot. Unset when
+	// the snapshot is not billed on incremental usage.
+	DiffSizeBytes int64 `json:"diff_size_bytes,omitempty"`
+	// Absolute time at which the snapshot is deleted.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
+	// Full logical size of the snapshot, in bytes.
+	FullSizeBytes int64 `json:"full_size_bytes,omitempty"`
+	// True if the snapshot never expires.
+	NoExpiry bool `json:"no_expiry,omitempty"`
+	// The source branch the snapshot was taken from. Format:
+	// projects/{project_id}/branches/{branch_id}
+	SourceBranch string `json:"source_branch,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SnapshotStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SnapshotStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SyncedTable struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The Full resource name of the synced table in Postgres where
@@ -3322,4 +3648,38 @@ type UpdateRoleRequest struct {
 
 func (s *UpdateRoleRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type UpdateSnapshotScheduleRequest struct {
+	// The resource name of the branch's snapshot schedule. Format:
+	// projects/{project_id}/branches/{branch_id}/snapshot-schedule
+	Name string `json:"-" url:"-"`
+	// The snapshot schedule to set. Its `name` identifies the branch. Format:
+	// projects/{project_id}/branches/{branch_id}/snapshot-schedule
+	SnapshotSchedule SnapshotSchedule `json:"snapshot_schedule"`
+	// Fields to update. The only updatable path is `schedule`, which replaces
+	// the entire set of cadences.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateSnapshotScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Take a snapshot once per week, on the configured day at the configured hour.
+type WeeklySchedule struct {
+	// The day of the week on which to take the snapshot.
+	DayOfWeek DayOfWeek `json:"day_of_week"`
+	// The hour of the day, in UTC, at which to take the snapshot, in [0, 23].
+	Hour int `json:"hour,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *WeeklySchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WeeklySchedule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

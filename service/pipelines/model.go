@@ -122,6 +122,11 @@ type ClonePipelineRequest struct {
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	//
+	// Deprecated: wrap the pipeline in a continuous job instead, which also
+	// lets you take advantage of job-level settings such as performance mode.
+	// When the pipeline is started by a continuous job, the job's setting takes
+	// precedence and this field is ignored.
 	Continuous bool `json:"continuous,omitempty"`
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
@@ -262,6 +267,8 @@ type ConnectorOptions struct {
 
 	OutlookOptions *OutlookOptions `json:"outlook_options,omitempty"`
 
+	RabbitmqOptions *RabbitmqOptions `json:"rabbitmq_options,omitempty"`
+
 	RedditAdsOptions *RedditAdsOptions `json:"reddit_ads_options,omitempty"`
 
 	SharepointOptions *SharepointOptions `json:"sharepoint_options,omitempty"`
@@ -337,6 +344,11 @@ type CreatePipeline struct {
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	//
+	// Deprecated: wrap the pipeline in a continuous job instead, which also
+	// lets you take advantage of job-level settings such as performance mode.
+	// When the pipeline is started by a continuous job, the job's setting takes
+	// precedence and this field is ignored.
 	Continuous bool `json:"continuous,omitempty"`
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
@@ -620,6 +632,11 @@ type EditPipeline struct {
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	//
+	// Deprecated: wrap the pipeline in a continuous job instead, which also
+	// lets you take advantage of job-level settings such as performance mode.
+	// When the pipeline is started by a continuous job, the job's setting takes
+	// precedence and this field is ignored.
 	Continuous bool `json:"continuous,omitempty"`
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
@@ -1507,6 +1524,8 @@ const IngestionSourceTypeOracle IngestionSourceType = `ORACLE`
 
 const IngestionSourceTypePostgresql IngestionSourceType = `POSTGRESQL`
 
+const IngestionSourceTypeRabbitmq IngestionSourceType = `RABBITMQ`
+
 const IngestionSourceTypeSalesforce IngestionSourceType = `SALESFORCE`
 
 const IngestionSourceTypeServicenow IngestionSourceType = `SERVICENOW`
@@ -1529,11 +1548,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `RABBITMQ`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "RABBITMQ", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1555,6 +1574,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeNetsuite,
 		IngestionSourceTypeOracle,
 		IngestionSourceTypePostgresql,
+		IngestionSourceTypeRabbitmq,
 		IngestionSourceTypeSalesforce,
 		IngestionSourceTypeServicenow,
 		IngestionSourceTypeSharepoint,
@@ -2479,8 +2499,10 @@ type PipelineCluster struct {
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// A label for the cluster specification, either `default` to configure the
-	// default cluster, or `maintenance` to configure the maintenance cluster.
-	// This field is optional. The default value is `default`.
+	// default cluster settings applied to both the update and maintenance
+	// clusters, `updates` to configure the update cluster, or `maintenance` to
+	// configure the maintenance cluster. This field is optional. The default
+	// value is `default`.
 	Label string `json:"label,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -2809,6 +2831,11 @@ type PipelineSpec struct {
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	//
+	// Deprecated: wrap the pipeline in a continuous job instead, which also
+	// lets you take advantage of job-level settings such as performance mode.
+	// When the pipeline is started by a continuous job, the job's setting takes
+	// precedence and this field is ignored.
 	Continuous bool `json:"continuous,omitempty"`
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
@@ -3117,6 +3144,19 @@ func (f *PublishingMode) Type() string {
 	return "PublishingMode"
 }
 
+// RabbitMQ specific options for ingestion. Performance tuning options
+// (consumers_per_task, max_messages_per_fetch, etc.) are intentionally not
+// exposed in the public API. The managed connector uses sensible defaults
+// internally. These can be added later if user demand arises.
+type RabbitmqOptions struct {
+	// (Required) RabbitMQ queue name to consume from.
+	Queue string `json:"queue"`
+}
+
+func (s *RabbitmqOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Reddit Ads specific options for ingestion
 type RedditAdsOptions struct {
 	// (Optional) Custom report definition. When set, the table is treated as a
@@ -3316,13 +3356,11 @@ type SchemaSpec struct {
 	// The source catalog name. Might be optional depending on the type of
 	// source.
 	SourceCatalog string `json:"source_catalog,omitempty"`
-	// Schema name in the source database. Currently required; this field will
-	// become optional in an upcoming release, since some source types (for
-	// example streaming / message-bus connectors) do not use it. When that
-	// change ships, this field's type in the generated SDKs and CLI will change
-	// from required to optional (nullable); clients that assume it is always
+	// Schema name in the source database. Optional: some source types (for
+	// example streaming or message-bus connectors) do not use it, so it may be
+	// absent from a pipeline's definition. Clients that assume it is always
 	// present should handle its absence.
-	SourceSchema string `json:"source_schema"`
+	SourceSchema string `json:"source_schema,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
 	// table_configuration defined in the IngestionPipelineDefinition object.
@@ -3646,13 +3684,11 @@ type TableSpec struct {
 	// Schema name in the source database. Might be optional depending on the
 	// type of source.
 	SourceSchema string `json:"source_schema,omitempty"`
-	// Table name in the source database. Currently required; this field will
-	// become optional in an upcoming release, since some source types (for
-	// example streaming / message-bus connectors) do not use it. When that
-	// change ships, this field's type in the generated SDKs and CLI will change
-	// from required to optional (nullable); clients that assume it is always
+	// Table name in the source database. Optional: some source types (for
+	// example streaming or message-bus connectors) do not use it, so it may be
+	// absent from a pipeline's definition. Clients that assume it is always
 	// present should handle its absence.
-	SourceTable string `json:"source_table"`
+	SourceTable string `json:"source_table,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object and the SchemaSpec.

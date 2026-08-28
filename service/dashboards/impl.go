@@ -148,6 +148,21 @@ func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request
 	return &genieGenerateDownloadFullQueryResultResponse, err
 }
 
+func (a *genieImpl) GenieCancelResponse(ctx context.Context, request GenieCancelResponseRequest) (*GenieMessage, error) {
+	var genieMessage GenieMessage
+	path := fmt.Sprintf("/api/2.0/genie/agents/%v/conversations/%v/responses/%v/cancel", request.AgentId, request.ConversationId, request.ResponseId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieMessage)
+	return &genieMessage, err
+}
+
 func (a *genieImpl) GenieCreateEvalRun(ctx context.Context, request GenieCreateEvalRunRequest) (*GenieEvalRunResponse, error) {
 	var genieEvalRunResponse GenieEvalRunResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/eval-runs", request.SpaceId)
@@ -571,6 +586,8 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 }
 
 // List dashboards.
+//
+// Requires the Databricks SQL access entitlement.
 func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
 
 	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListDashboardsResponse, error) {
@@ -596,6 +613,8 @@ func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) 
 }
 
 // List dashboards.
+//
+// Requires the Databricks SQL access entitlement.
 func (a *lakeviewImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Dashboard](ctx, iterator)
