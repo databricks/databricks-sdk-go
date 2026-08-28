@@ -653,6 +653,65 @@ func (_c *MockGenieInterface_GenerateDownloadFullQueryResult_Call) RunAndReturn(
 	return _c
 }
 
+// GenieCancelResponse provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) GenieCancelResponse(ctx context.Context, request dashboards.GenieCancelResponseRequest) (*dashboards.GenieMessage, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenieCancelResponse")
+	}
+
+	var r0 *dashboards.GenieMessage
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieCancelResponseRequest) (*dashboards.GenieMessage, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieCancelResponseRequest) *dashboards.GenieMessage); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieMessage)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieCancelResponseRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GenieCancelResponse_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GenieCancelResponse'
+type MockGenieInterface_GenieCancelResponse_Call struct {
+	*mock.Call
+}
+
+// GenieCancelResponse is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieCancelResponseRequest
+func (_e *MockGenieInterface_Expecter) GenieCancelResponse(ctx interface{}, request interface{}) *MockGenieInterface_GenieCancelResponse_Call {
+	return &MockGenieInterface_GenieCancelResponse_Call{Call: _e.mock.On("GenieCancelResponse", ctx, request)}
+}
+
+func (_c *MockGenieInterface_GenieCancelResponse_Call) Run(run func(ctx context.Context, request dashboards.GenieCancelResponseRequest)) *MockGenieInterface_GenieCancelResponse_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieCancelResponseRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GenieCancelResponse_Call) Return(_a0 *dashboards.GenieMessage, _a1 error) *MockGenieInterface_GenieCancelResponse_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GenieCancelResponse_Call) RunAndReturn(run func(context.Context, dashboards.GenieCancelResponseRequest) (*dashboards.GenieMessage, error)) *MockGenieInterface_GenieCancelResponse_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GenieCreateEvalRun provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) GenieCreateEvalRun(ctx context.Context, request dashboards.GenieCreateEvalRunRequest) (*dashboards.GenieEvalRunResponse, error) {
 	ret := _m.Called(ctx, request)

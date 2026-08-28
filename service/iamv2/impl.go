@@ -162,6 +162,39 @@ func (a *accountIamV2Impl) GetDirectGroupMember(ctx context.Context, request Get
 	return &directGroupMember, err
 }
 
+func (a *accountIamV2Impl) GetExternalGroup(ctx context.Context, request GetExternalGroupRequest) (*ExternalGroup, error) {
+	var externalGroup ExternalGroup
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalGroup)
+	return &externalGroup, err
+}
+
+func (a *accountIamV2Impl) GetExternalServicePrincipal(ctx context.Context, request GetExternalServicePrincipalRequest) (*ExternalServicePrincipal, error) {
+	var externalServicePrincipal ExternalServicePrincipal
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalServicePrincipal)
+	return &externalServicePrincipal, err
+}
+
+func (a *accountIamV2Impl) GetExternalUser(ctx context.Context, request GetExternalUserRequest) (*ExternalUser, error) {
+	var externalUser ExternalUser
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalUser)
+	return &externalUser, err
+}
+
 func (a *accountIamV2Impl) GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
@@ -818,6 +851,48 @@ func (a *workspaceIamV2Impl) GetDirectGroupMemberProxy(ctx context.Context, requ
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &directGroupMember)
 	return &directGroupMember, err
+}
+
+func (a *workspaceIamV2Impl) GetExternalGroupProxy(ctx context.Context, request GetExternalGroupProxyRequest) (*ExternalGroup, error) {
+	var externalGroup ExternalGroup
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalGroup)
+	return &externalGroup, err
+}
+
+func (a *workspaceIamV2Impl) GetExternalServicePrincipalProxy(ctx context.Context, request GetExternalServicePrincipalProxyRequest) (*ExternalServicePrincipal, error) {
+	var externalServicePrincipal ExternalServicePrincipal
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalServicePrincipal)
+	return &externalServicePrincipal, err
+}
+
+func (a *workspaceIamV2Impl) GetExternalUserProxy(ctx context.Context, request GetExternalUserProxyRequest) (*ExternalUser, error) {
+	var externalUser ExternalUser
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalUser)
+	return &externalUser, err
 }
 
 func (a *workspaceIamV2Impl) GetGroupProxy(ctx context.Context, request GetGroupProxyRequest) (*Group, error) {

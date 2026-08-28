@@ -76,6 +76,9 @@ type BundleDeploymentsService interface {
 	// descending (most recent first).
 	ListVersions(ctx context.Context, request ListVersionsRequest) (*ListVersionsResponse, error)
 
+	// Updates a deployment.
+	UpdateDeployment(ctx context.Context, request UpdateDeploymentRequest) (*Deployment, error)
+
 	// Updates a resource operation's mutable fields.
 	//
 	// `state`, `error_message`, `resource_id`, `status`, and

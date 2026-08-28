@@ -2488,6 +2488,11 @@ func (s Operation) MarshalJSON() ([]byte, error) {
 }
 
 type Space struct {
+	// The group whose permissions users assume via Role Authorization for apps
+	// in this space. When set, user tokens assume the role of this group
+	// instead of doing regular obo token downscoping. Set only at space
+	// creation.
+	AssumeGroupId string `json:"assume_group_id,omitempty"`
 	// The creation time of the app space. Formatted timestamp in ISO 6801.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The email of the user that created the app space.

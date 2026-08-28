@@ -841,10 +841,10 @@ func (s ColumnInfo) MarshalJSON() ([]byte, error) {
 type ColumnMask struct {
 	// The full name of the column mask SQL UDF.
 	FunctionName string `json:"function_name,omitempty"`
-	// The list of additional table columns or literals to be passed as
-	// additional arguments to a column mask function. This is the replacement
-	// of the deprecated using_column_names field and carries information about
-	// the types (alias or constant) of the arguments to the mask function.
+	// The list of table columns or literals to be passed as additional
+	// arguments to a column mask function, carrying the type (column reference
+	// vs constant literal) of each argument. Deprecated: use using_column_names
+	// instead.
 	UsingArguments []PolicyFunctionArgument `json:"using_arguments,omitempty"`
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
@@ -897,6 +897,19 @@ func (s *ColumnRelationship) UnmarshalJSON(b []byte) error {
 
 func (s ColumnRelationship) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Extracts the value of a column-level tag: get_column_tag_value(col,
+// "tagKey").
+type ColumnTagValueExtraction struct {
+	// The alias from MATCH COLUMNS that identifies the column.
+	ColumnAlias string `json:"column_alias"`
+	// 1024 matches the max_length on FunctionArgument.constant above.
+	TagKey string `json:"tag_key"`
+}
+
+func (s *ColumnTagValueExtraction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ColumnTypeName string
@@ -3632,11 +3645,26 @@ func (s ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// An expression that is evaluated at query time against per-request context.
+// New variants (e.g., identity attributes) are added as additional oneof cases.
+type FunctionArgExpression struct {
+	// An expression that introspects tags at query time.
+	TagIntrospection *TagIntrospectionExpression `json:"tag_introspection,omitempty"`
+}
+
+func (s *FunctionArgExpression) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type FunctionArgument struct {
 	// The alias of a matched column.
 	Alias string `json:"alias,omitempty"`
 	// A constant literal.
 	Constant string `json:"constant,omitempty"`
+	// An expression evaluated at query time. Wraps per-request expression
+	// variants (e.g., tag introspection) so new variants can be added without
+	// extending the FunctionArgument oneof.
+	FunctionArgExpression *FunctionArgExpression `json:"function_arg_expression,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10216,10 +10244,10 @@ func (f *TableOperation) Type() string {
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
 	FunctionName string `json:"function_name"`
-	// The list of additional table columns or literals to be passed as
-	// additional arguments to a row filter function. This is the replacement of
-	// the deprecated input_column_names field and carries information about the
-	// types (alias or constant) of the arguments to the filter function.
+	// The list of table columns or literals to be passed as additional
+	// arguments to a row filter function, carrying the type (column reference
+	// vs constant literal) of each argument. Deprecated: use input_column_names
+	// instead.
 	InputArguments []PolicyFunctionArgument `json:"input_arguments,omitempty"`
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
@@ -10343,6 +10371,18 @@ func (f *TagAssignmentSourceType) Type() string {
 	return "TagAssignmentSourceType"
 }
 
+// An expression that introspects tags at query time.
+type TagIntrospectionExpression struct {
+	// Extracts the value of a column-level tag.
+	ColumnTagValue *ColumnTagValueExtraction `json:"column_tag_value,omitempty"`
+	// Extracts the value of a securable-level tag.
+	TagValue *TagValueExtraction `json:"tag_value,omitempty"`
+}
+
+func (s *TagIntrospectionExpression) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type TagKeyValue struct {
 	// name of the tag
 	Key string `json:"key,omitempty"`
@@ -10358,6 +10398,16 @@ func (s *TagKeyValue) UnmarshalJSON(b []byte) error {
 
 func (s TagKeyValue) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Extracts the value of a securable-level tag: get_tag_value("tagKey").
+type TagValueExtraction struct {
+	// 1024 matches the max_length on FunctionArgument.constant above.
+	TagKey string `json:"tag_key"`
+}
+
+func (s *TagValueExtraction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type TemporaryCredentials struct {

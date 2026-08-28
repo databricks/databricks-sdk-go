@@ -974,6 +974,65 @@ func (_c *MockBundleDeploymentsInterface_ListVersionsAll_Call) RunAndReturn(run 
 	return _c
 }
 
+// UpdateDeployment provides a mock function with given fields: ctx, request
+func (_m *MockBundleDeploymentsInterface) UpdateDeployment(ctx context.Context, request bundledeployments.UpdateDeploymentRequest) (*bundledeployments.Deployment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDeployment")
+	}
+
+	var r0 *bundledeployments.Deployment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, bundledeployments.UpdateDeploymentRequest) (*bundledeployments.Deployment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, bundledeployments.UpdateDeploymentRequest) *bundledeployments.Deployment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*bundledeployments.Deployment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, bundledeployments.UpdateDeploymentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockBundleDeploymentsInterface_UpdateDeployment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDeployment'
+type MockBundleDeploymentsInterface_UpdateDeployment_Call struct {
+	*mock.Call
+}
+
+// UpdateDeployment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request bundledeployments.UpdateDeploymentRequest
+func (_e *MockBundleDeploymentsInterface_Expecter) UpdateDeployment(ctx interface{}, request interface{}) *MockBundleDeploymentsInterface_UpdateDeployment_Call {
+	return &MockBundleDeploymentsInterface_UpdateDeployment_Call{Call: _e.mock.On("UpdateDeployment", ctx, request)}
+}
+
+func (_c *MockBundleDeploymentsInterface_UpdateDeployment_Call) Run(run func(ctx context.Context, request bundledeployments.UpdateDeploymentRequest)) *MockBundleDeploymentsInterface_UpdateDeployment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(bundledeployments.UpdateDeploymentRequest))
+	})
+	return _c
+}
+
+func (_c *MockBundleDeploymentsInterface_UpdateDeployment_Call) Return(_a0 *bundledeployments.Deployment, _a1 error) *MockBundleDeploymentsInterface_UpdateDeployment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockBundleDeploymentsInterface_UpdateDeployment_Call) RunAndReturn(run func(context.Context, bundledeployments.UpdateDeploymentRequest) (*bundledeployments.Deployment, error)) *MockBundleDeploymentsInterface_UpdateDeployment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateOperation provides a mock function with given fields: ctx, request
 func (_m *MockBundleDeploymentsInterface) UpdateOperation(ctx context.Context, request bundledeployments.UpdateOperationRequest) (*bundledeployments.Operation, error) {
 	ret := _m.Called(ctx, request)

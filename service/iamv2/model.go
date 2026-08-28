@@ -323,6 +323,127 @@ func (f *Entitlement) Type() string {
 	return "Entitlement"
 }
 
+// An external group from the customer's Identity Provider, resolved into
+// Databricks. This is a read-only resource keyed by the IdP external ID. The
+// Get method may trigger an idempotent sync from the customer's IdP to
+// provision or refresh the group's data in Databricks.
+type ExternalGroup struct {
+	// The parent account ID, from Databricks.
+	AccountId string `json:"account_id,omitempty"`
+	// Display name of the group from the customer's IdP.
+	DisplayName string `json:"display_name,omitempty"`
+	// The external ID of the group in the customer's IdP.
+	ExternalGroupId string `json:"external_group_id,omitempty"`
+	// Internal groupId of the group in Databricks.
+	InternalId string `json:"internal_id,omitempty"`
+	// The resource name of the external group. The format depends on the API
+	// that returned it: - Account-scoped:
+	// accounts/{account_id}/external-groups/{external_group_id} -
+	// Workspace-scoped: external-groups/{external_group_id}
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalGroup) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalGroup) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// An external service principal from the customer's Identity Provider, resolved
+// into Databricks. This is a read-only resource keyed by the IdP external ID.
+// The Get method may trigger an idempotent sync from the customer's IdP to
+// provision or refresh the service principal's data in Databricks.
+type ExternalServicePrincipal struct {
+	// The parent account ID, from Databricks.
+	AccountId string `json:"account_id,omitempty"`
+	// The activity status of the service principal in the Databricks account.
+	AccountSpStatus State `json:"account_sp_status,omitempty"`
+	// Application ID of the service principal, from the customer's IdP.
+	ApplicationId string `json:"application_id,omitempty"`
+	// Display name of the service principal, from the customer's IdP.
+	DisplayName string `json:"display_name,omitempty"`
+	// The external ID of the service principal in the customer's IdP.
+	ExternalServicePrincipalId string `json:"external_service_principal_id,omitempty"`
+	// Internal servicePrincipalId of the service principal in Databricks.
+	InternalId string `json:"internal_id,omitempty"`
+	// The resource name of the external service principal. The format depends
+	// on the API that returned it: - Account-scoped:
+	// accounts/{account_id}/external-service-principals/{external_service_principal_id}
+	// - Workspace-scoped:
+	// external-service-principals/{external_service_principal_id}
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalServicePrincipal) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalServicePrincipal) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// An external user from the customer's Identity Provider, resolved into
+// Databricks. This is a read-only resource that allows customers to look up
+// external user identities by their IdP external ID and retrieve the
+// corresponding Databricks internal ID and metadata. The Get method may trigger
+// an idempotent sync from the customer's IdP to provision or refresh the user's
+// data in Databricks.
+type ExternalUser struct {
+	// The parent account ID, from Databricks.
+	AccountId string `json:"account_id,omitempty"`
+	// The activity status of the user in the Databricks account.
+	AccountUserStatus State `json:"account_user_status,omitempty"`
+	// Display name of the user from the customer's IdP.
+	DisplayName string `json:"display_name,omitempty"`
+	// The external ID of the user in the customer's IdP.
+	ExternalUserId string `json:"external_user_id,omitempty"`
+	// The full name of the user, from the customer's IdP.
+	FullName *FullName `json:"full_name,omitempty"`
+	// Internal userId of the user in Databricks.
+	InternalId string `json:"internal_id,omitempty"`
+	// The resource name of the external user. The format depends on the API
+	// that returned it: - Account-scoped:
+	// accounts/{account_id}/external-users/{external_user_id} -
+	// Workspace-scoped: external-users/{external_user_id}
+	Name string `json:"name,omitempty"`
+	// Username/email of the user, from Databricks.
+	Username string `json:"username,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalUser) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalUser) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The full name of a user.
+type FullName struct {
+	// The family (last) name of the user, from the customer's IdP.
+	FamilyName string `json:"family_name,omitempty"`
+	// The given (first) name of the user, from the customer's IdP.
+	GivenName string `json:"given_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FullName) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FullName) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetDirectGroupMemberProxyRequest struct {
 	// Required. Internal ID of the group in Databricks.
 	GroupId int64 `json:"-" url:"-"`
@@ -344,6 +465,66 @@ type GetDirectGroupMemberRequest struct {
 }
 
 func (s *GetDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetExternalGroupProxyRequest struct {
+	// Required. The resource name of the external group. Format:
+	// external-groups/{external_group_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetExternalGroupProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetExternalGroupRequest struct {
+	// Required. The resource name of the external group. Format:
+	// accounts/{account_id}/external-groups/{external_group_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetExternalGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetExternalServicePrincipalProxyRequest struct {
+	// Required. The resource name of the external service principal. Format:
+	// external-service-principals/{external_service_principal_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetExternalServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetExternalServicePrincipalRequest struct {
+	// Required. The resource name of the external service principal. Format:
+	// accounts/{account_id}/external-service-principals/{external_service_principal_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetExternalServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetExternalUserProxyRequest struct {
+	// Required. The resource name of the external user. Format:
+	// external-users/{external_user_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetExternalUserProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetExternalUserRequest struct {
+	// Required. The resource name of the external user. Format:
+	// accounts/{account_id}/external-users/{external_user_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetExternalUserRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -548,8 +729,8 @@ type ListDirectGroupMembersProxyRequest struct {
 	// being listed.
 	GroupId int64 `json:"-" url:"-"`
 	// The maximum number of members to return. The service may return fewer
-	// than this value. If not provided, defaults to 1000 (also the maximum
-	// allowed).
+	// than this value. If not provided, defaults to 1000, which is also the
+	// maximum allowed. Requests for more than the maximum are clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token from a previous list call. Provide this to retrieve the
 	// subsequent page.
@@ -571,8 +752,8 @@ type ListDirectGroupMembersRequest struct {
 	// being listed.
 	GroupId int64 `json:"-" url:"-"`
 	// The maximum number of members to return. The service may return fewer
-	// than this value. If not provided, defaults to 1000 (also the maximum
-	// allowed).
+	// than this value. If not provided, defaults to 1000, which is also the
+	// maximum allowed. Requests for more than the maximum are clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListDirectGroupMembers call.
 	// Provide this to retrieve the subsequent page.
@@ -612,7 +793,8 @@ type ListGroupsProxyRequest struct {
 	// Optional. Allows filtering groups by group name or external id.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// The maximum number of groups to return. The service may return fewer than
-	// this value.
+	// this value. If not provided, defaults to 1000, which is also the maximum
+	// allowed. Requests for more than the maximum are clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListGroups call. Provide this to
 	// retrieve the subsequent page.
@@ -633,7 +815,8 @@ type ListGroupsRequest struct {
 	// Optional. Allows filtering groups by group name or external id.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// The maximum number of groups to return. The service may return fewer than
-	// this value.
+	// this value. If not provided, defaults to 1000, which is also the maximum
+	// allowed. Requests for more than the maximum are clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListGroups call. Provide this to
 	// retrieve the subsequent page.
@@ -673,7 +856,8 @@ type ListServicePrincipalsProxyRequest struct {
 	// external id.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// The maximum number of SPs to return. The service may return fewer than
-	// this value.
+	// this value. If not provided, defaults to 1000, which is also the maximum
+	// allowed. Requests for more than the maximum are clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListServicePrincipals call.
 	// Provide this to retrieve the subsequent page.
@@ -695,7 +879,9 @@ type ListServicePrincipalsRequest struct {
 	// external id.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// The maximum number of service principals to return. The service may
-	// return fewer than this value.
+	// return fewer than this value. If not provided, defaults to 1000, which is
+	// also the maximum allowed. Requests for more than the maximum are clamped
+	// to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListServicePrincipals call.
 	// Provide this to retrieve the subsequent page.
@@ -733,8 +919,9 @@ func (s ListServicePrincipalsResponse) MarshalJSON() ([]byte, error) {
 
 type ListTransitiveParentGroupsProxyRequest struct {
 	// The maximum number of parent groups to return. The service may return
-	// fewer than this value. If not provided, defaults to 1000 (also the
-	// maximum allowed).
+	// fewer than this value. If not provided, defaults to 1000, which is also
+	// the maximum allowed. Requests for more than the maximum are clamped to
+	// 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListTransitiveParentGroups call.
 	// Provide this to retrieve the subsequent page.
@@ -756,8 +943,9 @@ func (s ListTransitiveParentGroupsProxyRequest) MarshalJSON() ([]byte, error) {
 
 type ListTransitiveParentGroupsRequest struct {
 	// The maximum number of parent groups to return. The service may return
-	// fewer than this value. If not provided, defaults to 1000 (also the
-	// maximum allowed).
+	// fewer than this value. If not provided, defaults to 1000, which is also
+	// the maximum allowed. Requests for more than the maximum are clamped to
+	// 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListTransitiveParentGroups call.
 	// Provide this to retrieve the subsequent page.
@@ -800,7 +988,8 @@ type ListUsersProxyRequest struct {
 	// Optional. Allows filtering users by username or external id.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// The maximum number of users to return. The service may return fewer than
-	// this value.
+	// this value. If not provided, defaults to 1000, which is also the maximum
+	// allowed. Requests for more than the maximum are clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListUsers call. Provide this to
 	// retrieve the subsequent page.
@@ -821,7 +1010,8 @@ type ListUsersRequest struct {
 	// Optional. Allows filtering users by username or external id.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// The maximum number of users to return. The service may return fewer than
-	// this value.
+	// this value. If not provided, defaults to 1000, which is also the maximum
+	// allowed. Requests for more than the maximum are clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListUsers call. Provide this to
 	// retrieve the subsequent page.
@@ -858,7 +1048,9 @@ func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
 
 type ListWorkspaceAssignmentDetailsProxyRequest struct {
 	// The maximum number of workspace assignment details to return. The service
-	// may return fewer than this value.
+	// may return fewer than this value. If not provided, defaults to 1000,
+	// which is also the maximum allowed. Requests for more than the maximum are
+	// clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token from a previous list call. Provide this to retrieve the
 	// subsequent page.
@@ -877,7 +1069,9 @@ func (s ListWorkspaceAssignmentDetailsProxyRequest) MarshalJSON() ([]byte, error
 
 type ListWorkspaceAssignmentDetailsRequest struct {
 	// The maximum number of workspace assignment details to return. The service
-	// may return fewer than this value.
+	// may return fewer than this value. If not provided, defaults to 1000,
+	// which is also the maximum allowed. Requests for more than the maximum are
+	// clamped to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListWorkspaceAssignmentDetails
 	// call. Provide this to retrieve the subsequent page.
@@ -918,7 +1112,9 @@ func (s ListWorkspaceAssignmentDetailsResponse) MarshalJSON() ([]byte, error) {
 
 type ListWorkspaceAssignmentsProxyRequest struct {
 	// The maximum number of workspace assignments to return. The service may
-	// return fewer than this value.
+	// return fewer than this value. If not provided, defaults to 1000, which is
+	// also the maximum allowed. Requests for more than the maximum are clamped
+	// to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token from a previous list call. Provide this to retrieve the
 	// subsequent page.
@@ -937,7 +1133,9 @@ func (s ListWorkspaceAssignmentsProxyRequest) MarshalJSON() ([]byte, error) {
 
 type ListWorkspaceAssignmentsRequest struct {
 	// The maximum number of workspace assignments to return. The service may
-	// return fewer than this value.
+	// return fewer than this value. If not provided, defaults to 1000, which is
+	// also the maximum allowed. Requests for more than the maximum are clamped
+	// to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous ListWorkspaceAssignments call.
 	// Provide this to retrieve the subsequent page.

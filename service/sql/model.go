@@ -509,21 +509,20 @@ func (f *AlertState) Type() string {
 	return "AlertState"
 }
 
-// Redash-owned copy of the internal StatementParameter for the external AlertV2
-// API. The internal `ordinal` and `args` fields are intentionally omitted: the
-// public API supports only flat, named scalar parameters; complex types (ARRAY,
-// MAP, STRUCT) are not supported. This mirrors SEA's public StatementParameter
-// schema, see: cmdexec/sql-exec-api/proto/sql_exec_api_service.proto:763-779
+// A named parameter bound to the alert query. Only flat, named scalar
+// parameters are supported; complex types such as ARRAY, MAP, and STRUCT are
+// not.
 type AlertStatementParameter struct {
-	// The name of the parameter, referenced in the query as `:name`.
+	// The name of the parameter. Reference it in the query text as `:name`.
+	// Required, must be non-empty, and must be unique across the alert's
+	// parameters.
 	Name string `json:"name"`
-	// The SQL data type of the parameter, e.g. STRING, INT, or DATE. Defaults
-	// to STRING. This is a string rather than an enum because scalar subtypes
-	// such as DECIMAL(10, 4) cannot be enumerated. Complex types such as ARRAY,
-	// MAP, and STRUCT are not supported.
+	// The SQL data type of the parameter, for example `STRING`, `INT`, or
+	// `DECIMAL(10, 2)`. If no type is given the type is assumed to be `STRING`.
+	// Complex types such as `ARRAY`, `MAP`, and `STRUCT` are not supported.
 	Type string `json:"type,omitempty"`
-	// The bound value for the parameter, given as a string. If omitted, the
-	// value is interpreted as NULL.
+	// The value bound to the parameter, represented as a string. If omitted,
+	// the value is interpreted as NULL.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -552,15 +551,29 @@ type AlertV2 struct {
 	EffectiveRunAs *AlertV2RunAs `json:"effective_run_as,omitempty"`
 
 	Evaluation AlertV2Evaluation `json:"evaluation"`
-	// UUID identifying the alert.
+	// The canonical identifier of the alert to retrieve information about.
 	Id string `json:"id,omitempty"`
 	// Indicates whether the query is trashed.
 	LifecycleState AlertLifecycleState `json:"lifecycle_state,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
-	// Query parameters bound when executing the alert query, referenced in the
-	// query text with `:name` syntax. Static values only.
+	// A list of parameters to pass into the alert SQL query statement
+	// containing parameter markers. Static values only.
+	//
+	// Reference a parameter in the query text as `:name`. Each parameter must
+	// have a unique, non-empty name. Each parameter consists of a name, a
+	// value, and optionally a type. To represent a NULL value, the `value`
+	// field may be omitted or set to `null` explicitly. If the `type` field is
+	// omitted, the value is interpreted as a string.
+	//
+	// If the type is given, parameters will be checked for type correctness
+	// according to the given type. A value is correct if the provided string
+	// can be converted to the requested type using the `cast` function. The
+	// exact semantics are described in the section [`cast` function] of the SQL
+	// language reference.
+	//
+	// [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	Parameters []AlertStatementParameter `json:"parameters,omitempty"`
 	// The workspace path of the folder containing the alert. Can only be set on
 	// create, and cannot be updated.
@@ -6303,7 +6316,7 @@ func (s UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 
 type UpdateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
-	// UUID identifying the alert.
+	// The canonical identifier of the alert to retrieve information about.
 	Id string `json:"-" url:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,

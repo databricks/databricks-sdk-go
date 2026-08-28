@@ -55,11 +55,7 @@ type AccountIamV2Service interface {
 	// which entitlements were granted.
 	CreateWorkspaceAssignment(ctx context.Context, request CreateWorkspaceAssignmentRequest) (*WorkspaceAssignment, error)
 
-	// Creates a workspace assignment detail for a principal. Entitlements are
-	// granted one at a time rather than atomically. If the request fails
-	// partway through, the principal stays assigned to the workspace with only
-	// some of the requested entitlements. Get the assignment detail afterwards
-	// to confirm which entitlements were granted.
+	// Creates a workspace assignment detail for a principal.
 	CreateWorkspaceAssignmentDetail(ctx context.Context, request CreateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error)
 
 	// Deletes a group membership (unassigns a principal from a group).
@@ -89,6 +85,24 @@ type AccountIamV2Service interface {
 
 	// Gets a provisioned direct member of a group.
 	GetDirectGroupMember(ctx context.Context, request GetDirectGroupMemberRequest) (*DirectGroupMember, error)
+
+	// Retrieves an external group with the given external ID from the
+	// customer's IdP. If the group does not exist, it will be created in the
+	// account. If the customer is not onboarded onto Automatic Identity
+	// Management (AIM), this will return an error.
+	GetExternalGroup(ctx context.Context, request GetExternalGroupRequest) (*ExternalGroup, error)
+
+	// Retrieves an external service principal with the given external ID from
+	// the customer's IdP. If the service principal does not exist, it will be
+	// created. If the customer is not onboarded onto Automatic Identity
+	// Management (AIM), this will return an error.
+	GetExternalServicePrincipal(ctx context.Context, request GetExternalServicePrincipalRequest) (*ExternalServicePrincipal, error)
+
+	// Retrieves an external user with the given external ID from the customer's
+	// IdP. If the user does not exist, it will be created. If the customer is
+	// not onboarded onto Automatic Identity Management (AIM), this will return
+	// an error.
+	GetExternalUser(ctx context.Context, request GetExternalUserRequest) (*ExternalUser, error)
 
 	// Fetches a group from the Databricks account by its internal ID.
 	GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error)
@@ -249,10 +263,7 @@ type WorkspaceIamV2Service interface {
 	CreateUserProxy(ctx context.Context, request CreateUserProxyRequest) (*User, error)
 
 	// Creates a workspace assignment detail for a principal in the calling
-	// workspace. Entitlements are granted one at a time rather than atomically.
-	// If the request fails partway through, the principal stays assigned to the
-	// workspace with only some of the requested entitlements. Get the
-	// assignment detail afterwards to confirm which entitlements were granted.
+	// workspace.
 	CreateWorkspaceAssignmentDetailProxy(ctx context.Context, request CreateWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error)
 
 	// Creates a workspace assignment for a principal in the calling workspace.
@@ -293,6 +304,26 @@ type WorkspaceIamV2Service interface {
 
 	// Gets a provisioned direct member of a group.
 	GetDirectGroupMemberProxy(ctx context.Context, request GetDirectGroupMemberProxyRequest) (*DirectGroupMember, error)
+
+	// Retrieves an external group with the given external ID from the
+	// customer's IdP. If the group does not exist, it will be created in the
+	// account. If the customer is not onboarded onto Automatic Identity
+	// Management (AIM), this will return an error. Workspace-scoped variant for
+	// workspace-authenticated callers.
+	GetExternalGroupProxy(ctx context.Context, request GetExternalGroupProxyRequest) (*ExternalGroup, error)
+
+	// Retrieves an external service principal with the given external ID from
+	// the customer's IdP. If the service principal does not exist, it will be
+	// created. If the customer is not onboarded onto Automatic Identity
+	// Management (AIM), this will return an error. Workspace-scoped variant for
+	// workspace-authenticated callers.
+	GetExternalServicePrincipalProxy(ctx context.Context, request GetExternalServicePrincipalProxyRequest) (*ExternalServicePrincipal, error)
+
+	// Retrieves an external user with the given external ID from the customer's
+	// IdP. If the user does not exist, it will be created. If the customer is
+	// not onboarded onto Automatic Identity Management (AIM), this will return
+	// an error. Workspace-scoped variant for workspace-authenticated callers.
+	GetExternalUserProxy(ctx context.Context, request GetExternalUserProxyRequest) (*ExternalUser, error)
 
 	// Fetches a group by its internal ID from the Databricks account that
 	// parents the calling workspace.

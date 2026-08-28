@@ -617,7 +617,7 @@ type ClusterAttributes struct {
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
-	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	// should be. Supported for GCP.
 	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
@@ -883,7 +883,7 @@ type ClusterDetails struct {
 	// when the cluster is in a `TERMINATING` or `TERMINATED` state.
 	TerminationReason *TerminationReason `json:"termination_reason,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
-	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	// should be. Supported for GCP.
 	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
@@ -1477,7 +1477,7 @@ type ClusterSpec struct {
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
-	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	// should be. Supported for GCP.
 	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
@@ -1873,7 +1873,7 @@ type CreateCluster struct {
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
-	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	// should be. Supported for GCP.
 	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
@@ -2771,7 +2771,7 @@ type EditCluster struct {
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
-	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	// should be. Supported for GCP.
 	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
@@ -3134,7 +3134,7 @@ type EnforcePolicyComplianceForClusterResponseClusterSettings struct {
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
-	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	// should be. Supported for GCP.
 	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
@@ -4136,6 +4136,8 @@ type HardwareAcceleratorType string
 
 const HardwareAcceleratorTypeGpu1xA10 HardwareAcceleratorType = `GPU_1xA10`
 
+const HardwareAcceleratorTypeGpu1xH100 HardwareAcceleratorType = `GPU_1xH100`
+
 const HardwareAcceleratorTypeGpu8xH100 HardwareAcceleratorType = `GPU_8xH100`
 
 // String representation for [fmt.Print]
@@ -4146,11 +4148,11 @@ func (f *HardwareAcceleratorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *HardwareAcceleratorType) Set(v string) error {
 	switch v {
-	case `GPU_1xA10`, `GPU_8xH100`:
+	case `GPU_1xA10`, `GPU_1xH100`, `GPU_8xH100`:
 		*f = HardwareAcceleratorType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_8xH100"`, v)
+		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_1xH100", "GPU_8xH100"`, v)
 	}
 }
 
@@ -4160,6 +4162,7 @@ func (f *HardwareAcceleratorType) Set(v string) error {
 func (f *HardwareAcceleratorType) Values() []HardwareAcceleratorType {
 	return []HardwareAcceleratorType{
 		HardwareAcceleratorTypeGpu1xA10,
+		HardwareAcceleratorTypeGpu1xH100,
 		HardwareAcceleratorTypeGpu8xH100,
 	}
 }
@@ -5671,10 +5674,19 @@ type NodeTypeFlexibility struct {
 	// A list of node type IDs to use as fallbacks when the primary node type is
 	// unavailable.
 	AlternateNodeTypeIds []string `json:"alternate_node_type_ids,omitempty"`
+	// The AWS Context ID for EC2 Fleet. When set (non-empty), the value is
+	// passed to AWS CreateFleet API to create the EC2 Fleet.
+	AwsContextId string `json:"aws_context_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NodeTypeFlexibility) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s NodeTypeFlexibility) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Represents a pending enforcement on a cluster, which contains the changes to
@@ -7112,7 +7124,7 @@ type UpdateClusterResource struct {
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
-	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
+	// should be. Supported for GCP.
 	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//

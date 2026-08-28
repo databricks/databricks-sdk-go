@@ -332,6 +332,21 @@ func (s GenieAttachment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Request to cancel an in-flight agent-mode response.
+type GenieCancelResponseRequest struct {
+	// The ID of the Genie agent (synonymous with the Genie space ID).
+	AgentId string `json:"-" url:"-"`
+	// The ID of the conversation containing the response.
+	ConversationId string `json:"-" url:"-"`
+	// The ID of the response to cancel (the id from the `response.created`
+	// event).
+	ResponseId string `json:"-" url:"-"`
+}
+
+func (s *GenieCancelResponseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GenieConversation struct {
 	// Conversation ID
 	ConversationId string `json:"conversation_id"`

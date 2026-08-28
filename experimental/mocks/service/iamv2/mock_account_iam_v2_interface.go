@@ -718,6 +718,183 @@ func (_c *MockAccountIamV2Interface_GetDirectGroupMember_Call) RunAndReturn(run 
 	return _c
 }
 
+// GetExternalGroup provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetExternalGroup(ctx context.Context, request iamv2.GetExternalGroupRequest) (*iamv2.ExternalGroup, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExternalGroup")
+	}
+
+	var r0 *iamv2.ExternalGroup
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalGroupRequest) (*iamv2.ExternalGroup, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalGroupRequest) *iamv2.ExternalGroup); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ExternalGroup)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetExternalGroupRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetExternalGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExternalGroup'
+type MockAccountIamV2Interface_GetExternalGroup_Call struct {
+	*mock.Call
+}
+
+// GetExternalGroup is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetExternalGroupRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetExternalGroup(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetExternalGroup_Call {
+	return &MockAccountIamV2Interface_GetExternalGroup_Call{Call: _e.mock.On("GetExternalGroup", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalGroup_Call) Run(run func(ctx context.Context, request iamv2.GetExternalGroupRequest)) *MockAccountIamV2Interface_GetExternalGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetExternalGroupRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalGroup_Call) Return(_a0 *iamv2.ExternalGroup, _a1 error) *MockAccountIamV2Interface_GetExternalGroup_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalGroup_Call) RunAndReturn(run func(context.Context, iamv2.GetExternalGroupRequest) (*iamv2.ExternalGroup, error)) *MockAccountIamV2Interface_GetExternalGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetExternalServicePrincipal provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetExternalServicePrincipal(ctx context.Context, request iamv2.GetExternalServicePrincipalRequest) (*iamv2.ExternalServicePrincipal, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExternalServicePrincipal")
+	}
+
+	var r0 *iamv2.ExternalServicePrincipal
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalServicePrincipalRequest) (*iamv2.ExternalServicePrincipal, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalServicePrincipalRequest) *iamv2.ExternalServicePrincipal); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ExternalServicePrincipal)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetExternalServicePrincipalRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetExternalServicePrincipal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExternalServicePrincipal'
+type MockAccountIamV2Interface_GetExternalServicePrincipal_Call struct {
+	*mock.Call
+}
+
+// GetExternalServicePrincipal is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetExternalServicePrincipalRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetExternalServicePrincipal(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetExternalServicePrincipal_Call {
+	return &MockAccountIamV2Interface_GetExternalServicePrincipal_Call{Call: _e.mock.On("GetExternalServicePrincipal", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalServicePrincipal_Call) Run(run func(ctx context.Context, request iamv2.GetExternalServicePrincipalRequest)) *MockAccountIamV2Interface_GetExternalServicePrincipal_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetExternalServicePrincipalRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalServicePrincipal_Call) Return(_a0 *iamv2.ExternalServicePrincipal, _a1 error) *MockAccountIamV2Interface_GetExternalServicePrincipal_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalServicePrincipal_Call) RunAndReturn(run func(context.Context, iamv2.GetExternalServicePrincipalRequest) (*iamv2.ExternalServicePrincipal, error)) *MockAccountIamV2Interface_GetExternalServicePrincipal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetExternalUser provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetExternalUser(ctx context.Context, request iamv2.GetExternalUserRequest) (*iamv2.ExternalUser, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExternalUser")
+	}
+
+	var r0 *iamv2.ExternalUser
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalUserRequest) (*iamv2.ExternalUser, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetExternalUserRequest) *iamv2.ExternalUser); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.ExternalUser)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetExternalUserRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetExternalUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExternalUser'
+type MockAccountIamV2Interface_GetExternalUser_Call struct {
+	*mock.Call
+}
+
+// GetExternalUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetExternalUserRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetExternalUser(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetExternalUser_Call {
+	return &MockAccountIamV2Interface_GetExternalUser_Call{Call: _e.mock.On("GetExternalUser", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalUser_Call) Run(run func(ctx context.Context, request iamv2.GetExternalUserRequest)) *MockAccountIamV2Interface_GetExternalUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetExternalUserRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalUser_Call) Return(_a0 *iamv2.ExternalUser, _a1 error) *MockAccountIamV2Interface_GetExternalUser_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetExternalUser_Call) RunAndReturn(run func(context.Context, iamv2.GetExternalUserRequest) (*iamv2.ExternalUser, error)) *MockAccountIamV2Interface_GetExternalUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetGroup provides a mock function with given fields: ctx, request
 func (_m *MockAccountIamV2Interface) GetGroup(ctx context.Context, request iamv2.GetGroupRequest) (*iamv2.Group, error) {
 	ret := _m.Called(ctx, request)

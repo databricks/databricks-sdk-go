@@ -139,6 +139,15 @@ func (f *AlertEvaluationState) Type() string {
 type AlertTask struct {
 	// The alert_id is the canonical identifier of the alert.
 	AlertId string `json:"alert_id,omitempty"`
+	// Per-run parameter overrides, keyed by parameter name, applied onto the
+	// alert's stored query parameters before the query is executed. Only scalar
+	// values are supported. Values may reference job parameters with
+	// `{{job.parameters.*}}`, which are resolved before the task runs. An
+	// override whose key does not match a stored parameter fails the task run.
+	// Limited to 10000 characters when serialized as JSON; keys must be 1-100
+	// characters and contain only letters, digits, underscores, dashes, and
+	// periods.
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// The subscribers receive alert evaluation result notifications after the
 	// alert task is completed. The number of subscriptions is limited to 100.
 	Subscribers []AlertTaskSubscriber `json:"subscribers,omitempty"`
@@ -914,6 +923,9 @@ func (f *ConditionTaskOp) Type() string {
 }
 
 type Continuous struct {
+	// Defines when platform-initiated maintenance may run for this job. If
+	// unspecified, maintenance may run at any time.
+	MaintenanceWindow *MaintenanceWindow `json:"maintenance_window,omitempty"`
 	// Indicate whether the continuous execution of the job is paused or not.
 	// Defaults to UNPAUSED.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
@@ -930,6 +942,9 @@ func (s *Continuous) UnmarshalJSON(b []byte) error {
 // `pause_status` is owned by the enclosing `TriggerConfiguration` and
 // intentionally omitted here.
 type ContinuousTriggerConfiguration struct {
+	// Defines when platform-initiated maintenance may run for this trigger. If
+	// unspecified, maintenance may run at any time.
+	MaintenanceWindow *MaintenanceWindow `json:"maintenance_window,omitempty"`
 	// Whether the continuous job applies task-level retries. Defaults to NEVER.
 	TaskRetryMode TaskRetryMode `json:"task_retry_mode,omitempty"`
 }
@@ -967,6 +982,9 @@ type CreateJob struct {
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
+	//
+	// Pipelines started by a continuous job also run continuously, regardless
+	// of their own pipeline mode setting.
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
@@ -1213,6 +1231,59 @@ type DashboardTaskOutput struct {
 
 func (s *DashboardTaskOutput) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Days of week that can be referenced by Jobs scheduling settings.
+type DayOfWeek string
+
+const DayOfWeekFriday DayOfWeek = `FRIDAY`
+
+const DayOfWeekMonday DayOfWeek = `MONDAY`
+
+const DayOfWeekSaturday DayOfWeek = `SATURDAY`
+
+const DayOfWeekSunday DayOfWeek = `SUNDAY`
+
+const DayOfWeekThursday DayOfWeek = `THURSDAY`
+
+const DayOfWeekTuesday DayOfWeek = `TUESDAY`
+
+const DayOfWeekWednesday DayOfWeek = `WEDNESDAY`
+
+// String representation for [fmt.Print]
+func (f *DayOfWeek) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DayOfWeek) Set(v string) error {
+	switch v {
+	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
+		*f = DayOfWeek(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
+	}
+}
+
+// Values returns all possible values for DayOfWeek.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DayOfWeek) Values() []DayOfWeek {
+	return []DayOfWeek{
+		DayOfWeekFriday,
+		DayOfWeekMonday,
+		DayOfWeekSaturday,
+		DayOfWeekSunday,
+		DayOfWeekThursday,
+		DayOfWeekTuesday,
+		DayOfWeekWednesday,
+	}
+}
+
+// Type always returns DayOfWeek to satisfy [pflag.Value] interface
+func (f *DayOfWeek) Type() string {
+	return "DayOfWeek"
 }
 
 // Format of response retrieved from dbt Cloud, for inclusion in output
@@ -2567,6 +2638,9 @@ type JobSettings struct {
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
+	//
+	// Pipelines started by a continuous job also run continuously, regardless
+	// of their own pipeline mode setting.
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
@@ -3069,6 +3143,28 @@ func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A recurring weekly time window during which platform-initiated maintenance is
+// allowed to run for a continuous job.
+type MaintenanceWindow struct {
+	// The day of week on which maintenance is allowed to happen. This field is
+	// required.
+	DayOfWeek DayOfWeek `json:"day_of_week"`
+	// An integer between 0 and 23 denoting the start hour for the maintenance
+	// window in the 24-hour day. Platform-initiated maintenance is triggered
+	// only within a one-hour window starting at this hour. This field is
+	// required.
+	StartHour int `json:"start_hour"`
+	// A Java timezone ID. The maintenance window is resolved with respect to
+	// this timezone. See [Java TimeZone] for details. This field is required.
+	//
+	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
+	TimezoneId string `json:"timezone_id"`
+}
+
+func (s *MaintenanceWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type ModelTriggerConfiguration struct {
@@ -6847,10 +6943,10 @@ func (f *TerminationTypeType) Type() string {
 
 // A single trigger attached to a job via `JobSettings.triggers`. Exactly one of
 // the trigger-type fields (`periodic`, `schedule`, `continuous`,
-// `file_arrival`, `table_update`, `model`) must be set; mutual exclusivity is
-// enforced in the API handler rather than via `oneof` so that codegen,
-// validation, and JSON serialization across SDKs and Terraform behave
-// consistently.
+// `file_arrival`, `table_update`, `model`, `job_completion`) must be set;
+// mutual exclusivity is enforced in the API handler rather than via `oneof` so
+// that codegen, validation, and JSON serialization across SDKs and Terraform
+// behave consistently.
 type TriggerConfiguration struct {
 	// Continuous trigger configuration.
 	Continuous *ContinuousTriggerConfiguration `json:"continuous,omitempty"`
