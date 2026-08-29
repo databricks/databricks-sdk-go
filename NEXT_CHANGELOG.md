@@ -46,3 +46,4 @@
 * [Breaking] Remove `EntityColumnIdentifiers` and `TimeseriesColumnIdentifier` fields for [ml.KafkaSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#KafkaSource).
 * [Breaking] Remove `CronSchedule` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
 * [Breaking] Remove `Continuous` field for [ml.TimeWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#TimeWindow).
+* Add `Model`, `ModelService`, `McpService` and `ModelProviderService` enum values for [catalog.SecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableType).
