@@ -9683,7 +9683,15 @@ const SecurableTypeExternalMetadata SecurableType = `EXTERNAL_METADATA`
 
 const SecurableTypeFunction SecurableType = `FUNCTION`
 
+const SecurableTypeMcpService SecurableType = `MCP_SERVICE`
+
 const SecurableTypeMetastore SecurableType = `METASTORE`
+
+const SecurableTypeModel SecurableType = `MODEL`
+
+const SecurableTypeModelProviderService SecurableType = `MODEL_PROVIDER_SERVICE`
+
+const SecurableTypeModelService SecurableType = `MODEL_SERVICE`
 
 const SecurableTypePipeline SecurableType = `PIPELINE`
 
@@ -9711,11 +9719,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `METASTORE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
+	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `MCP_SERVICE`, `METASTORE`, `MODEL`, `MODEL_PROVIDER_SERVICE`, `MODEL_SERVICE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "METASTORE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "MCP_SERVICE", "METASTORE", "MODEL", "MODEL_PROVIDER_SERVICE", "MODEL_SERVICE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -9731,7 +9739,11 @@ func (f *SecurableType) Values() []SecurableType {
 		SecurableTypeExternalLocation,
 		SecurableTypeExternalMetadata,
 		SecurableTypeFunction,
+		SecurableTypeMcpService,
 		SecurableTypeMetastore,
+		SecurableTypeModel,
+		SecurableTypeModelProviderService,
+		SecurableTypeModelService,
 		SecurableTypePipeline,
 		SecurableTypeProvider,
 		SecurableTypeRecipient,
