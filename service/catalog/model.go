@@ -6739,56 +6739,10 @@ func (s *ModelProviderServiceConfigAnthropicProviderDirectConfig) UnmarshalJSON(
 // is the signal that the provider service uses relayed auth; `plan_type`
 // further distinguishes which Anthropic subscription tier the token belongs to.
 type ModelProviderServiceConfigAnthropicProviderRelayedConfig struct {
-	// Which Anthropic subscription tier the relayed token belongs to. Optional;
-	// when unset the MPS gets the full governance surface (see
-	// TEAM_ENTERPRISE). Immutable after Create, so the tier cannot be flipped
-	// in place.
-	PlanType ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType `json:"plan_type,omitempty"`
 }
 
 func (s *ModelProviderServiceConfigAnthropicProviderRelayedConfig) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
-}
-
-// Which Anthropic subscription tier the relayed OAuth token belongs to.
-// Immutable after Create (switching tiers changes which governance controls the
-// platform enforces). Only MAX and TEAM_ENTERPRISE differ in the governance
-// surface the gateway can enforce, not in how the token is relayed.
-type ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType string
-
-const ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeMax ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType = `ANTHROPIC_RELAYED_PLAN_TYPE_MAX`
-
-const ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeTeamEnterprise ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType = `ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE`
-
-// String representation for [fmt.Print]
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) Set(v string) error {
-	switch v {
-	case `ANTHROPIC_RELAYED_PLAN_TYPE_MAX`, `ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE`:
-		*f = ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ANTHROPIC_RELAYED_PLAN_TYPE_MAX", "ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE"`, v)
-	}
-}
-
-// Values returns all possible values for ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) Values() []ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType {
-	return []ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType{
-		ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeMax,
-		ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeTeamEnterprise,
-	}
-}
-
-// Type always returns ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType to satisfy [pflag.Value] interface
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) Type() string {
-	return "ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType"
 }
 
 // AWS access-key-pair auth for Amazon Bedrock: a SigV4-signing key pair.
@@ -8736,6 +8690,8 @@ const PrivilegeExecute Privilege = `EXECUTE`
 
 const PrivilegeExecuteCleanRoomTask Privilege = `EXECUTE_CLEAN_ROOM_TASK`
 
+const PrivilegeExternalUseLocation Privilege = `EXTERNAL_USE_LOCATION`
+
 const PrivilegeExternalUseSchema Privilege = `EXTERNAL_USE_SCHEMA`
 
 const PrivilegeManage Privilege = `MANAGE`
@@ -8790,11 +8746,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FILES`, `READ_METADATA`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_LOCATION`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FILES`, `READ_METADATA`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FILES", "READ_METADATA", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_LOCATION", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FILES", "READ_METADATA", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -8831,6 +8787,7 @@ func (f *Privilege) Values() []Privilege {
 		PrivilegeCreateVolume,
 		PrivilegeExecute,
 		PrivilegeExecuteCleanRoomTask,
+		PrivilegeExternalUseLocation,
 		PrivilegeExternalUseSchema,
 		PrivilegeManage,
 		PrivilegeManageAllowlist,
