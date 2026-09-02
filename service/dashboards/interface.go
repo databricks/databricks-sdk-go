@@ -199,8 +199,12 @@ type LakeviewService interface {
 
 	// Get the current published dashboard.
 	//
-	// Requires one of the following entitlements: Workspace access, Databricks
-	// SQL access, or Consumer access.
+	// The caller must be a workspace user with one of the following
+	// entitlements: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
 	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
 
 	// Get dashboard schedule.
@@ -261,7 +265,11 @@ type LakeviewEmbeddedService interface {
 	// Get a required authorization details and scopes of a published dashboard
 	// to mint an OAuth token.
 	//
-	// Requires one of the following entitlements: Workspace access, Databricks
-	// SQL access, or Consumer access.
+	// The caller must be a workspace user with one of the following
+	// entitlements: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 }

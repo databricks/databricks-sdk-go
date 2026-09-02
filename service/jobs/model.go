@@ -753,10 +753,21 @@ type ComputeSpec struct {
 	// number of accelerators per node is encoded in the enum value —
 	// `GPU_8xH100` means 8 H100 GPUs per node.
 	AcceleratorType ComputeSpecAcceleratorType `json:"accelerator_type"`
+	// Optional ID of a pre-provisioned accelerator capacity reservation to run
+	// this AI Runtime workload on. When set, the workload is scheduled onto the
+	// referenced reserved capacity instead of the on-demand capacity shared
+	// among all Databricks customers.
+	ProvisionedCapacityId string `json:"provisioned_capacity_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComputeSpec) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s ComputeSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Hardware accelerator type for the AiRuntime workload. Per-node accelerator

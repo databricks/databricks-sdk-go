@@ -8,6 +8,8 @@
 //
 // - [agentbricks.AgentBricksAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
+// - [aifunctions.AiFunctionsAPI]: Transform and enrich data with AI on Databricks.
+//
 // - [catalog.AiGatewayAPI]: Govern AI workloads in Unity Catalog.
 //
 // - [aisearch.AiSearchAPI]: **AI Search Endpoint**: Represents the compute resources to host AI Search indexes.
@@ -381,6 +383,7 @@ package service
 
 import (
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
@@ -427,6 +430,7 @@ var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *agentbricks.AgentBricksAPI                         = nil
+	_ *aifunctions.AiFunctionsAPI                         = nil
 	_ *catalog.AiGatewayAPI                               = nil
 	_ *aisearch.AiSearchAPI                               = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil

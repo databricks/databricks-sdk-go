@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/bundledeployments"
@@ -57,6 +58,9 @@ type WorkspaceClient struct {
 	// The Custom LLMs service manages state and powers the UI for the Custom
 	// LLM product.
 	AgentBricks agentbricks.AgentBricksInterface
+
+	// Transform and enrich data with AI on Databricks.
+	AiFunctions aifunctions.AiFunctionsInterface
 
 	// Govern AI workloads in Unity Catalog. This API manages the Unity Catalog
 	// securables that bring centralized access control, lineage, and auditing
@@ -1471,6 +1475,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		AgentBricks:                         agentbricks.NewAgentBricks(databricksClient),
+		AiFunctions:                         aifunctions.NewAiFunctions(databricksClient),
 		AiGateway:                           catalog.NewAiGateway(databricksClient),
 		AiSearch:                            aisearch.NewAiSearch(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
