@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/bundledeployments"
@@ -30,6 +31,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/postgres"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sandbox"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingsv2"
@@ -59,6 +61,7 @@ func NewMockWorkspaceClient(t interface {
 			AccessControl:                       iam.NewMockAccessControlInterface(t),
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			AgentBricks:                         agentbricks.NewMockAgentBricksInterface(t),
+			AiFunctions:                         aifunctions.NewMockAiFunctionsInterface(t),
 			AiGateway:                           catalog.NewMockAiGatewayInterface(t),
 			AiSearch:                            aisearch.NewMockAiSearchInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
@@ -155,6 +158,7 @@ func NewMockWorkspaceClient(t interface {
 			Repos:                               workspace.NewMockReposInterface(t),
 			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
 			Rfa:                                 catalog.NewMockRfaInterface(t),
+			Sandbox:                             sandbox.NewMockSandboxInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			SecretsUc:                           catalog.NewMockSecretsUcInterface(t),
@@ -394,6 +398,14 @@ func (m *MockWorkspaceClient) GetMockAgentBricksAPI() *agentbricks.MockAgentBric
 	api, ok := m.WorkspaceClient.AgentBricks.(*agentbricks.MockAgentBricksInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected AgentBricks to be *agentbricks.MockAgentBricksInterface, actual was %T", m.WorkspaceClient.AgentBricks))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAiFunctionsAPI() *aifunctions.MockAiFunctionsInterface {
+	api, ok := m.WorkspaceClient.AiFunctions.(*aifunctions.MockAiFunctionsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AiFunctions to be *aifunctions.MockAiFunctionsInterface, actual was %T", m.WorkspaceClient.AiFunctions))
 	}
 	return api
 }
@@ -1162,6 +1174,14 @@ func (m *MockWorkspaceClient) GetMockRfaAPI() *catalog.MockRfaInterface {
 	api, ok := m.WorkspaceClient.Rfa.(*catalog.MockRfaInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Rfa to be *catalog.MockRfaInterface, actual was %T", m.WorkspaceClient.Rfa))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockSandboxAPI() *sandbox.MockSandboxInterface {
+	api, ok := m.WorkspaceClient.Sandbox.(*sandbox.MockSandboxInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Sandbox to be *sandbox.MockSandboxInterface, actual was %T", m.WorkspaceClient.Sandbox))
 	}
 	return api
 }

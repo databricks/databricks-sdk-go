@@ -23,6 +23,65 @@ func (_m *MockFeatureEngineeringInterface) EXPECT() *MockFeatureEngineeringInter
 	return &MockFeatureEngineeringInterface_Expecter{mock: &_m.Mock}
 }
 
+// BackfillFeatures provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) BackfillFeatures(ctx context.Context, request ml.BackfillFeaturesRequest) (ml.BackfillFeaturesOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for BackfillFeatures")
+	}
+
+	var r0 ml.BackfillFeaturesOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.BackfillFeaturesRequest) (ml.BackfillFeaturesOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.BackfillFeaturesRequest) ml.BackfillFeaturesOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(ml.BackfillFeaturesOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.BackfillFeaturesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_BackfillFeatures_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BackfillFeatures'
+type MockFeatureEngineeringInterface_BackfillFeatures_Call struct {
+	*mock.Call
+}
+
+// BackfillFeatures is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.BackfillFeaturesRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) BackfillFeatures(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_BackfillFeatures_Call {
+	return &MockFeatureEngineeringInterface_BackfillFeatures_Call{Call: _e.mock.On("BackfillFeatures", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_BackfillFeatures_Call) Run(run func(ctx context.Context, request ml.BackfillFeaturesRequest)) *MockFeatureEngineeringInterface_BackfillFeatures_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.BackfillFeaturesRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_BackfillFeatures_Call) Return(_a0 ml.BackfillFeaturesOperationInterface, _a1 error) *MockFeatureEngineeringInterface_BackfillFeatures_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_BackfillFeatures_Call) RunAndReturn(run func(context.Context, ml.BackfillFeaturesRequest) (ml.BackfillFeaturesOperationInterface, error)) *MockFeatureEngineeringInterface_BackfillFeatures_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // BatchCreateMaterializedFeatures provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) BatchCreateMaterializedFeatures(ctx context.Context, request ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -78,6 +137,53 @@ func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) 
 }
 
 func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) RunAndReturn(run func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error)) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CancelOperation provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) CancelOperation(ctx context.Context, request ml.CancelOperationRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CancelOperation")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CancelOperationRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockFeatureEngineeringInterface_CancelOperation_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CancelOperation'
+type MockFeatureEngineeringInterface_CancelOperation_Call struct {
+	*mock.Call
+}
+
+// CancelOperation is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.CancelOperationRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) CancelOperation(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_CancelOperation_Call {
+	return &MockFeatureEngineeringInterface_CancelOperation_Call{Call: _e.mock.On("CancelOperation", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_CancelOperation_Call) Run(run func(ctx context.Context, request ml.CancelOperationRequest)) *MockFeatureEngineeringInterface_CancelOperation_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.CancelOperationRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CancelOperation_Call) Return(_a0 error) *MockFeatureEngineeringInterface_CancelOperation_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CancelOperation_Call) RunAndReturn(run func(context.Context, ml.CancelOperationRequest) error) *MockFeatureEngineeringInterface_CancelOperation_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -679,6 +785,65 @@ func (_c *MockFeatureEngineeringInterface_GetMaterializedFeature_Call) Return(_a
 }
 
 func (_c *MockFeatureEngineeringInterface_GetMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.GetMaterializedFeatureRequest) (*ml.MaterializedFeature, error)) *MockFeatureEngineeringInterface_GetMaterializedFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetOperation provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) GetOperation(ctx context.Context, request ml.GetOperationRequest) (*ml.Operation, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetOperation")
+	}
+
+	var r0 *ml.Operation
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetOperationRequest) (*ml.Operation, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetOperationRequest) *ml.Operation); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.Operation)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetOperationRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_GetOperation_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOperation'
+type MockFeatureEngineeringInterface_GetOperation_Call struct {
+	*mock.Call
+}
+
+// GetOperation is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetOperationRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) GetOperation(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_GetOperation_Call {
+	return &MockFeatureEngineeringInterface_GetOperation_Call{Call: _e.mock.On("GetOperation", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_GetOperation_Call) Run(run func(ctx context.Context, request ml.GetOperationRequest)) *MockFeatureEngineeringInterface_GetOperation_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetOperationRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetOperation_Call) Return(_a0 *ml.Operation, _a1 error) *MockFeatureEngineeringInterface_GetOperation_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetOperation_Call) RunAndReturn(run func(context.Context, ml.GetOperationRequest) (*ml.Operation, error)) *MockFeatureEngineeringInterface_GetOperation_Call {
 	_c.Call.Return(run)
 	return _c
 }
