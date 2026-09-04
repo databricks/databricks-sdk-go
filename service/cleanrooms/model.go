@@ -131,10 +131,10 @@ type CleanRoomAsset struct {
 	// Status of the asset
 	Status CleanRoomAssetStatusEnum `json:"status,omitempty"`
 	// Table details available to all collaborators of the clean room. Present
-	// if and only if **asset_type** is **TABLE**
+	// if and only if **asset_type** is **TABLE** or **STREAMING_TABLE**
 	Table *CleanRoomAssetTable `json:"table,omitempty"`
 	// Local details for a table that are only available to its owner. Present
-	// if and only if **asset_type** is **TABLE**
+	// if and only if **asset_type** is **TABLE** or **STREAMING_TABLE**
 	TableLocalDetails *CleanRoomAssetTableLocalDetails `json:"table_local_details,omitempty"`
 	// View details available to all collaborators of the clean room. Present if
 	// and only if **asset_type** is **VIEW**
