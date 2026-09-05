@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/bundledeployments"
@@ -18,6 +19,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
+	"github.com/databricks/databricks-sdk-go/service/domains"
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -30,6 +32,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/postgres"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
+	"github.com/databricks/databricks-sdk-go/service/sandbox"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/settingsv2"
@@ -58,11 +61,14 @@ type WorkspaceClient struct {
 	// LLM product.
 	AgentBricks agentbricks.AgentBricksInterface
 
+	// Transform and enrich data with AI on Databricks.
+	AiFunctions aifunctions.AiFunctionsInterface
+
 	// Govern AI workloads in Unity Catalog. This API manages the Unity Catalog
 	// securables that bring centralized access control, lineage, and auditing
 	// to AI-serving entities: model services (governed access to foundation
-	// models and external LLMs), model provider services (governed connections
-	// to external model providers), and MCP services (governed Model Context
+	// models and external LLMs), model provider services (governed resources
+	// for external model providers), and MCP services (governed Model Context
 	// Protocol servers).
 	AiGateway catalog.AiGatewayInterface
 
@@ -327,6 +333,9 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DbsqlPermissions sql.DbsqlPermissionsInterface
+
+	// Manage domains for organizing and discovering data assets.
+	Domains domains.DomainsInterface
 
 	// Tags are attributes that include keys and optional values that you can
 	// use to organize and categorize entities in Unity Catalog. Entity tagging
@@ -970,6 +979,11 @@ type WorkspaceClient struct {
 	// MANAGE privileges) to manage access request destinations.
 	Rfa catalog.RfaInterface
 
+	// Create, manage, and control the lifecycle of sandboxes -- isolated,
+	// pre-configured, low-latency Serverless compute environments for running
+	// code.
+	Sandbox sandbox.SandboxInterface
+
 	// A schema (also called a database) is the second layer of Unity
 	// Catalog’s three-level namespace. A schema organizes tables, views, and
 	// functions. To access (or list) a table or view in a schema, users must
@@ -1471,6 +1485,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		AgentBricks:                         agentbricks.NewAgentBricks(databricksClient),
+		AiFunctions:                         aifunctions.NewAiFunctions(databricksClient),
 		AiGateway:                           catalog.NewAiGateway(databricksClient),
 		AiSearch:                            aisearch.NewAiSearch(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
@@ -1506,6 +1521,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Database:                            database.NewDatabase(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
+		Domains:                             domains.NewDomains(databricksClient),
 		EntityTagAssignments:                catalog.NewEntityTagAssignments(databricksClient),
 		Environments:                        environments.NewEnvironments(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
@@ -1567,6 +1583,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Repos:                               workspace.NewRepos(databricksClient),
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
 		Rfa:                                 catalog.NewRfa(databricksClient),
+		Sandbox:                             sandbox.NewSandbox(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		SecretsUc:                           catalog.NewSecretsUc(databricksClient),
