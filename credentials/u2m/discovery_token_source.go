@@ -19,6 +19,8 @@ const defaultLoginDatabricksHost = "https://login.databricks.com"
 //
 //	"https://adb-xxx.azuredatabricks.net/oidc"           -> "https://adb-xxx.azuredatabricks.net"
 //	"https://nike.databricks.com/oidc/accounts/xxx"      -> "https://nike.databricks.com"
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func DeriveHostFromIssuer(issuer string) (string, error) {
 	if issuer == "" {
 		return "", fmt.Errorf("issuer must not be empty")
@@ -44,6 +46,8 @@ func DeriveHostFromIssuer(issuer string) (string, error) {
 // Example:
 //
 //	"https://adb-xxx.net/oidc" -> "https://adb-xxx.net/oidc/v1/token"
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func DeriveTokenEndpoint(issuer string) string {
 	return strings.TrimRight(issuer, "/") + "/v1/token"
 }
@@ -57,6 +61,8 @@ const discoveryTargetAccount = "ACCOUNT"
 // BuildDiscoveryAuthorizeURL builds the login.databricks.com URL that initiates
 // the discovery OAuth flow. The OIDC authorize path with all OAuth query params
 // is URL-encoded as the destination_url parameter.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func BuildDiscoveryAuthorizeURL(redirectAddr, state string, pkce PKCEParams, scopes []string) string {
 	return buildDiscoveryAuthorizeURL(defaultLoginDatabricksHost, redirectAddr, state, pkce, scopes, "")
 }
@@ -92,6 +98,8 @@ func buildDiscoveryAuthorizeURL(host, redirectAddr, state string, pkce PKCEParam
 // PKCEParams holds the PKCE challenge parameters used to build the discovery
 // authorize URL. This mirrors authhandler.PKCEParams but is used directly so
 // the caller does not need to import authhandler.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type PKCEParams struct {
 	Challenge       string
 	ChallengeMethod string

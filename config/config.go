@@ -828,20 +828,3 @@ func (c *Config) DefaultHostMetadataResolver() HostMetadataResolver {
 		return getHostMetadata(ctx, host, c.refreshClient)
 	}
 }
-
-func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
-	err := c.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-	host := c.CanonicalHostName()
-	profile := c.Profile
-	switch c.HostType() {
-	case AccountHost:
-		return u2m.NewProfileAccountOAuthArgument(host, c.AccountID, profile)
-	case WorkspaceHost:
-		return u2m.NewProfileWorkspaceOAuthArgument(host, profile)
-	default:
-		return nil, fmt.Errorf("unknown host type: %v", c.HostType())
-	}
-}

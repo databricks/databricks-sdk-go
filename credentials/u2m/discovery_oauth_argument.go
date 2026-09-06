@@ -12,6 +12,8 @@ import "fmt"
 // during [PersistentAuth.Challenge]. Once the host has been discovered,
 // callers should construct the usual host-based OAuthArgument
 // (for example [WorkspaceOAuthArgument]) for future PersistentAuth instances.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type DiscoveryOAuthArgument interface {
 	OAuthArgument
 
@@ -27,6 +29,8 @@ type DiscoveryOAuthArgument interface {
 // BasicDiscoveryOAuthArgument is a basic implementation of
 // [DiscoveryOAuthArgument] that uses the profile name as the cache key during
 // discovery login bootstrap.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type BasicDiscoveryOAuthArgument struct {
 	profile        string
 	discoveredHost string
@@ -36,6 +40,8 @@ type BasicDiscoveryOAuthArgument struct {
 // The profile name is required and used as the cache key during discovery
 // login. Use it with [WithDiscoveryLogin]. After discovery, construct the
 // usual host-based OAuthArgument with the discovered host.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func NewBasicDiscoveryOAuthArgument(profile string) (*BasicDiscoveryOAuthArgument, error) {
 	if profile == "" {
 		return nil, fmt.Errorf("profile name must not be empty for discovery login")

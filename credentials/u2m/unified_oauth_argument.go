@@ -6,6 +6,8 @@ import (
 
 // UnifiedOAuthArgument is an interface that provides the necessary information
 // to authenticate using OAuth to a host that supports both account and workspace APIs.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type UnifiedOAuthArgument interface {
 	OAuthArgument
 
@@ -18,6 +20,8 @@ type UnifiedOAuthArgument interface {
 
 // BasicUnifiedOAuthArgument is a basic implementation of the UnifiedOAuthArgument
 // interface that links each account with exactly one OAuth token.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type BasicUnifiedOAuthArgument struct {
 	host      string
 	accountID string
@@ -31,6 +35,8 @@ var _ UnifiedOAuthArgument = BasicUnifiedOAuthArgument{}
 var _ HostCacheKeyProvider = BasicUnifiedOAuthArgument{}
 
 // NewBasicUnifiedOAuthArgument creates a new BasicUnifiedOAuthArgument.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func NewBasicUnifiedOAuthArgument(accountsHost, accountID string) (BasicUnifiedOAuthArgument, error) {
 	return NewProfileUnifiedOAuthArgument(accountsHost, accountID, "")
 }
@@ -38,6 +44,8 @@ func NewBasicUnifiedOAuthArgument(accountsHost, accountID string) (BasicUnifiedO
 // NewProfileUnifiedOAuthArgument creates a new BasicUnifiedOAuthArgument with a
 // profile name. When a profile is set, GetCacheKey() returns the profile name
 // instead of the host-based key.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func NewProfileUnifiedOAuthArgument(accountsHost, accountID, profile string) (BasicUnifiedOAuthArgument, error) {
 	if err := validateHost(accountsHost); err != nil {
 		return BasicUnifiedOAuthArgument{}, err

@@ -68,6 +68,8 @@ var (
 //
 // The PersistentAuth is safe for concurrent use. The token cache is locked
 // during token retrieval, refresh and storage.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type PersistentAuth struct {
 	// cache is the token cache to store and lookup tokens.
 	cache cache.TokenCache
@@ -131,9 +133,14 @@ type PersistentAuth struct {
 	discoveryAccountTarget bool
 }
 
+// PersistentAuthOption configures a PersistentAuth instance.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type PersistentAuthOption func(*PersistentAuth)
 
 // WithTokenCache sets the token cache for the PersistentAuth.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithTokenCache(c cache.TokenCache) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.cache = c
@@ -141,6 +148,8 @@ func WithTokenCache(c cache.TokenCache) PersistentAuthOption {
 }
 
 // WithHttpClient sets the HTTP client for the PersistentAuth.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithHttpClient(c *http.Client) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.client = c
@@ -149,6 +158,8 @@ func WithHttpClient(c *http.Client) PersistentAuthOption {
 
 // WithOAuthEndpointSupplier sets the OAuth endpoint supplier for the
 // PersistentAuth.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithOAuthEndpointSupplier(c OAuthEndpointSupplier) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.endpointSupplier = c
@@ -156,6 +167,8 @@ func WithOAuthEndpointSupplier(c OAuthEndpointSupplier) PersistentAuthOption {
 }
 
 // WithOAuthArgument sets the OAuthArgument for the PersistentAuth.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithOAuthArgument(arg OAuthArgument) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.oAuthArgument = arg
@@ -163,6 +176,8 @@ func WithOAuthArgument(arg OAuthArgument) PersistentAuthOption {
 }
 
 // WithBrowser sets the browser function for the PersistentAuth.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithBrowser(b func(url string) error) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.browser = b
@@ -170,6 +185,8 @@ func WithBrowser(b func(url string) error) PersistentAuthOption {
 }
 
 // WithPort sets the port for the PersistentAuth.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithPort(port int) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.port = port
@@ -177,6 +194,8 @@ func WithPort(port int) PersistentAuthOption {
 }
 
 // WithScopes sets the OAuth scopes for the PersistentAuth.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithScopes(scopes []string) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.scopes = scopes
@@ -184,6 +203,8 @@ func WithScopes(scopes []string) PersistentAuthOption {
 }
 
 // WithDisableOfflineAccess controls whether offline_access scope is requested.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.disableOfflineAccess = disable
@@ -198,6 +219,8 @@ func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
 // bootstrap-only argument type for discovery login. Once the workspace host
 // has been discovered, callers should construct the usual host-based
 // OAuthArgument for future PersistentAuth instances.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithDiscoveryLogin() PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.discoveryMode = true
@@ -209,6 +232,8 @@ func WithDiscoveryLogin() PersistentAuthOption {
 // against non-production environments; has no effect unless WithDiscoveryLogin
 // is also set. If host has no scheme, https:// is prepended. Trailing slashes
 // are trimmed.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithDiscoveryHost(host string) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		if host != "" && !strings.Contains(host, "://") {
@@ -224,6 +249,8 @@ func WithDiscoveryHost(host string) PersistentAuthOption {
 // account-only logins where workspace selection would be a wasted step.
 //
 // Has no effect unless WithDiscoveryLogin is also set.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func WithDiscoveryAccountTarget() PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.discoveryAccountTarget = true
@@ -231,6 +258,8 @@ func WithDiscoveryAccountTarget() PersistentAuthOption {
 }
 
 // NewPersistentAuth creates a new PersistentAuth with the provided options.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*PersistentAuth, error) {
 	p := &PersistentAuth{}
 	for _, opt := range opts {

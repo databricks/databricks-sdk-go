@@ -7,6 +7,8 @@ import (
 
 // WorkspaceOAuthArgument is an interface that provides the necessary information
 // to authenticate using OAuth to a specific workspace.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type WorkspaceOAuthArgument interface {
 	OAuthArgument
 
@@ -16,6 +18,8 @@ type WorkspaceOAuthArgument interface {
 
 // BasicWorkspaceOAuthArgument is a basic implementation of the WorkspaceOAuthArgument
 // interface that links each host with exactly one OAuth token.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 type BasicWorkspaceOAuthArgument struct {
 	// host is the host of the workspace to authenticate to. This must start
 	// with "https://" and must not have a trailing slash.
@@ -42,6 +46,8 @@ func validateHost(host string) error {
 }
 
 // NewBasicWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, error) {
 	return NewProfileWorkspaceOAuthArgument(host, "")
 }
@@ -49,6 +55,8 @@ func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, e
 // NewProfileWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument
 // with a profile name. When a profile is set, GetCacheKey() returns the profile
 // name instead of the host-based key.
+//
+// Deprecated: Interactive U2M authentication is implemented by the Databricks CLI.
 func NewProfileWorkspaceOAuthArgument(host, profile string) (BasicWorkspaceOAuthArgument, error) {
 	if err := validateHost(host); err != nil {
 		return BasicWorkspaceOAuthArgument{}, err

@@ -12,6 +12,8 @@ import (
 // provided. Most production consumers should supply a persistent cache
 // implementation (for example, the file-based cache in
 // github.com/databricks/cli/libs/auth/storage).
+//
+// Deprecated: Token persistence for U2M authentication is implemented by the Databricks CLI.
 func NewInMemoryTokenCache() TokenCache {
 	return &inMemoryTokenCache{tokens: map[string]*oauth2.Token{}}
 }

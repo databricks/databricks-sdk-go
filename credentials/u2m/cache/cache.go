@@ -9,6 +9,9 @@ user to follow the OAuth flow again.
 In machine-to-machine (M2M) OAuth flows, the application is configured with a
 secret and can fetch a new token on demand without user interaction, so the
 token cache is not necessary.
+
+Deprecated: This package supports the deprecated SDK U2M flow. Use the
+Databricks CLI for interactive user authentication and token persistence.
 */
 package cache
 
@@ -18,9 +21,14 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// ErrNotFound indicates that a token is absent from the cache.
+//
+// Deprecated: Token persistence for U2M authentication is implemented by the Databricks CLI.
 var ErrNotFound = errors.New("token not found")
 
 // TokenCache is an interface for storing and looking up OAuth tokens.
+//
+// Deprecated: Token persistence for U2M authentication is implemented by the Databricks CLI.
 type TokenCache interface {
 	// Store stores the token with the given key, replacing any existing token.
 	// If t is nil, it deletes the token.
