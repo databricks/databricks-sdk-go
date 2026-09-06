@@ -258,8 +258,14 @@ type ExperimentsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FeatureEngineeringService interface {
 
+	// Backfill features.
+	BackfillFeatures(ctx context.Context, request BackfillFeaturesRequest) (*Operation, error)
+
 	// Batch create materialized features.
 	BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error)
+
+	// Cancel an operation.
+	CancelOperation(ctx context.Context, request CancelOperationRequest) error
 
 	// Create a Feature.
 	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)
@@ -300,6 +306,9 @@ type FeatureEngineeringService interface {
 
 	// Get a materialized feature.
 	GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error)
+
+	// Get an operation.
+	GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
 
 	// Get a Stream by its full three-part name (catalog.schema.stream).
 	GetStream(ctx context.Context, request GetStreamRequest) (*Stream, error)

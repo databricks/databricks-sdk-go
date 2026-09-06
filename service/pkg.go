@@ -8,6 +8,8 @@
 //
 // - [agentbricks.AgentBricksAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
+// - [aifunctions.AiFunctionsAPI]: Transform and enrich data with AI on Databricks.
+//
 // - [catalog.AiGatewayAPI]: Govern AI workloads in Unity Catalog.
 //
 // - [aisearch.AiSearchAPI]: **AI Search Endpoint**: Represents the compute resources to host AI Search indexes.
@@ -111,6 +113,8 @@
 // - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
 //
 // - [disasterrecovery.DisasterRecoveryAPI]: Manage disaster recovery configurations and execute failover operations.
+//
+// - [domains.DomainsAPI]: Manage domains for organizing and discovering data assets.
 //
 // - [settings.EnableExportNotebookAPI]: Controls whether users can export notebooks and files from the Workspace UI.
 //
@@ -286,6 +290,8 @@
 //
 // - [catalog.RfaAPI]: Request for Access enables users to request access for Unity Catalog securables.
 //
+// - [sandbox.SandboxAPI]: Create, manage, and control the lifecycle of sandboxes -- isolated, pre-configured, low-latency Serverless compute environments for running code.
+//
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
@@ -381,6 +387,7 @@ package service
 
 import (
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
@@ -393,6 +400,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
 	"github.com/databricks/databricks-sdk-go/service/dataquality"
 	"github.com/databricks/databricks-sdk-go/service/disasterrecovery"
+	"github.com/databricks/databricks-sdk-go/service/domains"
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -407,6 +415,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/postgres"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
+	"github.com/databricks/databricks-sdk-go/service/sandbox"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/settingsv2"
@@ -427,6 +436,7 @@ var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *agentbricks.AgentBricksAPI                         = nil
+	_ *aifunctions.AiFunctionsAPI                         = nil
 	_ *catalog.AiGatewayAPI                               = nil
 	_ *aisearch.AiSearchAPI                               = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
@@ -479,6 +489,7 @@ var (
 	_ *settings.DisableLegacyDbfsAPI                      = nil
 	_ *settings.DisableLegacyFeaturesAPI                  = nil
 	_ *disasterrecovery.DisasterRecoveryAPI               = nil
+	_ *domains.DomainsAPI                                 = nil
 	_ *settings.EnableExportNotebookAPI                   = nil
 	_ *settings.EnableIpAccessListsAPI                    = nil
 	_ *settings.EnableNotebookTableClipboardAPI           = nil
@@ -566,6 +577,7 @@ var (
 	_ *catalog.ResourceQuotasAPI                          = nil
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
 	_ *catalog.RfaAPI                                     = nil
+	_ *sandbox.SandboxAPI                                 = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
 	_ *catalog.SecretsUcAPI                               = nil
