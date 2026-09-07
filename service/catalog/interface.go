@@ -91,7 +91,7 @@ type AccountStorageCredentialsService interface {
 // Govern AI workloads in Unity Catalog. This API manages the Unity Catalog
 // securables that bring centralized access control, lineage, and auditing to
 // AI-serving entities: model services (governed access to foundation models and
-// external LLMs), model provider services (governed connections to external
+// external LLMs), model provider services (governed resources for external
 // model providers), and MCP services (governed Model Context Protocol servers).
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
@@ -99,8 +99,8 @@ type AiGatewayService interface {
 
 	// Creates an MCP service in a Unity Catalog schema. An MCP (Model Context
 	// Protocol) service is a governed securable that registers an MCP server
-	// and exposes its tools for discovery, access control, and invocation. The
-	// caller supplies the leaf name in `mcp_service_id`.
+	// and exposes its tools for discovery, access control, and invocation.
+	// Specify its name in `mcp_service_id`.
 	//
 	// You must be the owner of the parent schema or have the `CREATE_SERVICE`
 	// and `USE_SCHEMA` privileges on the parent schema and `USE_CATALOG` on the
@@ -109,24 +109,29 @@ type AiGatewayService interface {
 	CreateMcpService(ctx context.Context, request CreateMcpServiceRequest) (*McpService, error)
 
 	// Creates a model provider service in a Unity Catalog schema. A model
-	// provider service is a governed connection to an external model provider
-	// (for example OpenAI, Azure OpenAI, or Amazon Bedrock) that model services
-	// reference to invoke that provider. The caller supplies the leaf name in
+	// provider service stores authentication and request configuration for an
+	// external model provider, such as OpenAI, Azure OpenAI, or Amazon Bedrock.
+	// Model services reference it to invoke the provider. Specify its name in
 	// `model_provider_service_id`.
 	//
 	// You must be the owner of the parent schema or have the `CREATE_SERVICE`
 	// and `USE_SCHEMA` privileges on the parent schema and `USE_CATALOG` on the
-	// parent catalog.
+	// parent catalog. Inline credentials additionally require
+	// `CREATE_CONNECTION` on the parent schema. When using a Unity Catalog
+	// service credential, you must have `ACCESS` on that credential.
 	CreateModelProviderService(ctx context.Context, request CreateModelProviderServiceRequest) (*ModelProviderService, error)
 
 	// Creates a model service in a Unity Catalog schema. A model service is a
 	// governed AI Gateway endpoint that routes inference requests to one or
-	// more model destinations. The caller supplies the leaf name in
-	// `model_service_id`.
+	// more model destinations. Specify its name in `model_service_id`.
 	//
 	// You must be the owner of the parent schema or have the `CREATE_SERVICE`
 	// and `USE_SCHEMA` privileges on the parent schema and `USE_CATALOG` on the
-	// parent catalog.
+	// parent catalog. For every destination, you also need `USE_CATALOG` and
+	// `USE_SCHEMA` on its parent and `EXECUTE` on the referenced Unity Catalog
+	// model or model provider service. A provisioned-throughput destination
+	// additionally requires `CAN_MANAGE` on its Model Serving endpoint.
+	// Configuring an inference table additionally requires `CREATE_TABLE`.
 	CreateModelService(ctx context.Context, request CreateModelServiceRequest) (*ModelService, error)
 
 	// Deletes the MCP service identified by its resource name. Optionally
@@ -211,7 +216,8 @@ type AiGatewayService interface {
 	//
 	// You must be the owner of the MCP service or have `MANAGE` on it, plus
 	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
-	// schema.
+	// schema. When changing `config.source_connection.name`, the MCP service
+	// owner must also have `USE_CONNECTION` on the new connection.
 	UpdateMcpService(ctx context.Context, request UpdateMcpServiceRequest) (*McpService, error)
 
 	// Updates a model provider service. Only the fields named in `update_mask`
@@ -222,6 +228,10 @@ type AiGatewayService interface {
 	// You must be the owner of the model provider service or have `MANAGE` on
 	// it, plus `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the
 	// parent schema.
+	//
+	// Updating `config.provider` cannot change the provider type or switch
+	// between Unity Catalog service-credential authentication and inline
+	// authentication.
 	UpdateModelProviderService(ctx context.Context, request UpdateModelProviderServiceRequest) (*ModelProviderService, error)
 
 	// Updates a model service. Only the fields named in `update_mask` are
@@ -231,7 +241,12 @@ type AiGatewayService interface {
 	//
 	// You must be the owner of the model service or have `MANAGE` on it, plus
 	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
-	// schema.
+	// schema. When changing destinations, both you and the model service owner
+	// need `USE_CATALOG` and `USE_SCHEMA` on each destination's parent and
+	// `EXECUTE` on the referenced Unity Catalog model or model provider
+	// service. A provisioned-throughput destination additionally requires
+	// `CAN_MANAGE` for you and `CAN_QUERY` for the model service owner. Adding
+	// an inference table additionally requires `CREATE_TABLE`.
 	UpdateModelService(ctx context.Context, request UpdateModelServiceRequest) (*ModelService, error)
 }
 
@@ -1233,9 +1248,9 @@ type RfaService interface {
 	// caller must be a metastore admin, the owner of the securable, or a user
 	// that has the **MANAGE** privilege on the securable in order to assign
 	// destinations. A maximum of 5 emails and 5 external notification
-	// destinations (Slack, Microsoft Teams, and Generic Webhook destinations)
-	// can be assigned to a securable. If a URL destination is assigned, no
-	// other destinations can be set.
+	// destinations (Slack, Microsoft Teams, Generic Webhook, and Databricks App
+	// Slack/Teams destinations) can be assigned to a securable. If a URL
+	// destination is assigned, no other destinations can be set.
 	//
 	// The supported securable types are: "metastore", "catalog", "schema",
 	// "table", "external_location", "connection", "credential", "function",
