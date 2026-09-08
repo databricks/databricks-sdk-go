@@ -8,6 +8,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/common/environment"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/google/go-cmp/cmp"
@@ -262,8 +263,14 @@ func TestMwsAccWorkspaces(t *testing.T) {
 		},
 	}
 
-	httpFixtures.ApplyClient(t, func(ctx context.Context, apiClient *client.DatabricksClient) {
-		apiClient.Config.AccountID = accountID
+	httpFixtures.Apply(t, func(ctx context.Context, cfg *config.Config) {
+		cfg.AccountID = accountID
+		// Integration runners expose live credentials; fixtures use their own PAT.
+		cfg.AuthType = "pat"
+		apiClient, err := client.New(cfg)
+		if err != nil {
+			t.Fatalf("create fixture client: %v", err)
+		}
 		workspaces := provisioning.NewWorkspaces(apiClient)
 		workspaceComparison := cmpopts.IgnoreFields(provisioning.Workspace{}, "ForceSendFields")
 
