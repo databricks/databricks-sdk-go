@@ -5,7 +5,6 @@ package catalog
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/common/types/duration"
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
@@ -1086,6 +1085,10 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 
 type ConnectionType string
 
+const ConnectionTypeAwsSecretsManager ConnectionType = `AWS_SECRETS_MANAGER`
+
+const ConnectionTypeAzureKeyVault ConnectionType = `AZURE_KEY_VAULT`
+
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
 
 const ConnectionTypeConfluence ConnectionType = `CONFLUENCE`
@@ -1154,11 +1157,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `AWS_SECRETS_MANAGER`, `AZURE_KEY_VAULT`, `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AWS_SECRETS_MANAGER", "AZURE_KEY_VAULT", "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1167,6 +1170,8 @@ func (f *ConnectionType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *ConnectionType) Values() []ConnectionType {
 	return []ConnectionType{
+		ConnectionTypeAwsSecretsManager,
+		ConnectionTypeAzureKeyVault,
 		ConnectionTypeBigquery,
 		ConnectionTypeConfluence,
 		ConnectionTypeDatabricks,
@@ -1531,7 +1536,8 @@ type CreateFunction struct {
 	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
 	// Function body.
 	RoutineDefinition string `json:"routine_definition"`
-	// function dependencies.
+	// Function dependencies. For external UDFs, dependencies may contain only
+	// credential, secret, or volume objects.
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent Schema relative to its parent Catalog.
 	SchemaName string `json:"schema_name"`
@@ -1710,8 +1716,8 @@ func (f *CreateFunctionSqlDataAccess) Type() string {
 }
 
 type CreateMcpServiceRequest struct {
-	// The MCP service to create. The server populates `name` from `parent` +
-	// `mcp_service_id`; clients should leave it unset.
+	// The MCP service to create. Do not set `name`; the server derives it from
+	// `parent` and `mcp_service_id`. `source_connection` is required.
 	McpService McpService `json:"mcp_service"`
 	// Name for the MCP service, e.g. "my_mcp_service".
 	McpServiceId string `json:"-" url:"mcp_service_id"`
@@ -1762,8 +1768,8 @@ func (s *CreateMetastoreAssignment) UnmarshalJSON(b []byte) error {
 }
 
 type CreateModelProviderServiceRequest struct {
-	// The model provider service to create. The server populates `name` from
-	// `parent` + `model_provider_service_id`; clients should leave it unset.
+	// The model provider service to create. Do not set `name`; the server
+	// derives it from `parent` and `model_provider_service_id`.
 	ModelProviderService ModelProviderService `json:"model_provider_service"`
 	// Name for the model provider service, e.g. "openai_prod".
 	ModelProviderServiceId string `json:"-" url:"model_provider_service_id"`
@@ -1777,8 +1783,8 @@ func (s *CreateModelProviderServiceRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateModelServiceRequest struct {
-	// The model service to create. The server populates `name` from `parent` +
-	// `model_service_id`; clients should leave it unset.
+	// The model service to create. Do not set `name`; the server derives it
+	// from `parent` and `model_service_id`.
 	ModelService ModelService `json:"model_service"`
 	// Name for the model service, e.g. "my_model_service".
 	ModelServiceId string `json:"-" url:"model_service_id"`
@@ -2610,8 +2616,10 @@ func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteMcpServiceRequest struct {
-	// If-match precondition: when set, the delete proceeds only if the current
-	// server-side etag matches. Empty means unconditional delete.
+	// Optimistic concurrency token from the most recent read. When set, the
+	// delete succeeds only if the resource has not changed. Leave unset for an
+	// unconditional delete. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
 	Etag string `json:"-" url:"etag,omitempty"`
 	// Resource name of the MCP service. Format:
 	// `mcp-services/{catalog}.{schema}.{mcp_service}`. Each `{...}` component
@@ -2647,8 +2655,10 @@ func (s DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteModelProviderServiceRequest struct {
-	// If-match precondition: when set, the delete proceeds only if the current
-	// server-side etag matches. Empty means unconditional delete.
+	// Optimistic concurrency token from the most recent read. When set, the
+	// delete succeeds only if the resource has not changed. Leave unset for an
+	// unconditional delete. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
 	Etag string `json:"-" url:"etag,omitempty"`
 	// Resource name of the model provider service. Format:
 	// `model-provider-services/{catalog}.{schema}.{model_provider_service}`.
@@ -2667,8 +2677,10 @@ func (s DeleteModelProviderServiceRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteModelServiceRequest struct {
-	// If-match precondition: when set, the delete proceeds only if the current
-	// server-side etag matches. Empty means unconditional delete.
+	// Optimistic concurrency token from the most recent read. When set, the
+	// delete succeeds only if the resource has not changed. Leave unset for an
+	// unconditional delete. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
 	Etag string `json:"-" url:"etag,omitempty"`
 	// Resource name of the model service. Format:
 	// `model-services/{catalog}.{schema}.{model_service}`. Each `{...}`
@@ -3740,7 +3752,8 @@ type FunctionInfo struct {
 	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
 	// Function body.
 	RoutineDefinition string `json:"routine_definition,omitempty"`
-	// function dependencies.
+	// Function dependencies. For external UDFs, dependencies may contain only
+	// credential, secret, or volume objects.
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent Schema relative to its parent Catalog.
 	SchemaName string `json:"schema_name,omitempty"`
@@ -4847,40 +4860,28 @@ func (s *GrantOptions) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// Inference table configuration for payload logging on a model service.
-//
-// `parent` is always REQUIRED when the sub-message is set; the destination UC
-// schema is needed to construct or rebind the payload TABLE regardless of
-// whether payload logging is currently active. Payload logging is active by
-// default; set `disabled = true` to pause runtime logging without dropping the
-// table or the binding.
+// Configuration for logging request and response payloads to a Unity Catalog
+// inference table. When this configuration is present, payload logging is
+// enabled by default.
 type InferenceTableConfig struct {
-	// Indicates whether payload logging is disabled (opt-out). Unset means that
-	// payload logging is active (the on-by-default state coincides with the
-	// proto zero-value, so the server never fills this field for a client that
-	// leaves it unset). Set `disabled = true` to pause runtime logging while
-	// keeping the sub-message attached (preserving `parent` and
-	// `table_name_prefix` for a later flip back to active). `parent` remains
-	// required either way.
-	Disabled bool `json:"disabled,omitempty"`
-	// True when the bound inference TABLE has been deleted but the parent
-	// service still references it. The dangling reference is surfaced (not
-	// silently dropped) so callers can see the broken dependency. AI Gateway
-	// payload logging fails closed in this state.
+	// Whether the referenced inference table has been deleted. The
+	// configuration remains visible so you can identify the broken dependency.
+	// Payload logging cannot continue until the table is restored or the
+	// configuration is updated.
 	IsDeleted bool `json:"is_deleted,omitempty"`
-	// Parent UC schema where the inference table is created. Format:
-	// `schemas/{catalog}.{schema}`. Set at create time and immutable
-	// thereafter; changing it on an existing service is rejected.
+	// Parent Unity Catalog schema where the inference table is created, in the
+	// form `schemas/{catalog}.{schema}`. Required when configuring an inference
+	// table. After the inference table is created, this field cannot be
+	// changed.
 	Parent string `json:"parent"`
 	// Resolved UC table for payload logs. Format:
 	// `tables/{catalog}.{schema}.{table}`.
 	Table string `json:"table,omitempty"`
-	// Prefix for the inference-table's UC-registered name. The actual leaf name
-	// UC stores is `<table_name_prefix>_payload`; the `_payload` suffix is
-	// appended automatically. To find the actual UC table after Create, read
-	// the `table` field on the response. Defaults to
-	// `<model_service_name>_payload` when unset. Set at create time and
-	// immutable thereafter; changing it on an existing service is rejected.
+	// Prefix used to form the inference table's registered name. AI Gateway
+	// appends `_payload`; for example, `table_name_prefix = "orders"` creates
+	// `orders_payload`. If unset, the prefix defaults to the service name. Read
+	// `table` from the response for the resulting resource name. After the
+	// inference table is created, this field cannot be changed.
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5411,15 +5412,16 @@ type ListMcpServicesRequest struct {
 	// Maximum number of MCP services to return. Defaults to 100 when unset or
 	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Opaque pagination token from a previous request.
+	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Name of the parent schema to list within, as
-	// `schemas/{catalog}.{schema}`. Each `{...}` component is capped at 255
-	// characters individually.
+	// Parent schema to list within, in the form `schemas/{catalog}.{schema}`.
+	// Required. Each `{...}` component is capped at 255 characters
+	// individually.
 	Parent string `json:"-" url:"parent,omitempty"`
-	// View selector controlling which fields are populated per row. `FULL`
-	// returns the full representation of the service; `BASIC` returns a more
-	// compact version. Defaults to `BASIC` when unset.
+	// Fields to return for each service. `FULL` includes source-connection
+	// details and rate-limit principal names. `BASIC` omits the source
+	// connection and omits principal names from rate limits. Defaults to
+	// `BASIC` when unset.
 	View ListMcpServicesRequestView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5434,7 +5436,7 @@ func (s ListMcpServicesRequest) MarshalJSON() ([]byte, error) {
 }
 
 // Controls which fields are populated on each McpService in the response. The
-// server treats unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full
+// server uses `BASIC` when `view` is unset. Callers needing the full
 // configuration must request it explicitly with `view = FULL`.
 type ListMcpServicesRequestView string
 
@@ -5477,7 +5479,8 @@ func (f *ListMcpServicesRequestView) Type() string {
 type ListMcpServicesResponse struct {
 	// The list of MCP services.
 	McpServices []McpService `json:"mcp_services,omitempty"`
-	// Pagination token for retrieving the next page of results.
+	// Pagination token for retrieving the next page. Empty when there are no
+	// more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5539,15 +5542,16 @@ type ListModelProviderServicesRequest struct {
 	// Maximum number of provider services to return. Defaults to 100 when unset
 	// or 0; the maximum is 100. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Opaque pagination token from a previous request.
+	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Name of the parent schema to list within, as
-	// `schemas/{catalog}.{schema}`. Each `{...}` component is capped at 255
-	// characters individually.
+	// Parent schema to list within, in the form `schemas/{catalog}.{schema}`.
+	// Required. Each `{...}` component is capped at 255 characters
+	// individually.
 	Parent string `json:"-" url:"parent,omitempty"`
-	// View selector controlling which fields are populated per row. `FULL`
-	// returns the full representation of the service; `BASIC` returns a more
-	// compact version. Defaults to `BASIC` when unset.
+	// Fields to return for each service. `FULL` includes resolved
+	// service-credential and inference-table details and rate-limit principal
+	// names. `BASIC` omits those details and principal names from rate limits.
+	// Defaults to `BASIC` when unset.
 	View ListModelProviderServicesRequestView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5562,8 +5566,8 @@ func (s ListModelProviderServicesRequest) MarshalJSON() ([]byte, error) {
 }
 
 // Controls which fields are populated on each ModelProviderService in the
-// response. The server treats unset / VIEW_UNSPECIFIED as BASIC. Callers
-// needing the full configuration must request it explicitly with `view = FULL`.
+// response. The server uses `BASIC` when `view` is unset. Callers needing the
+// full configuration must request it explicitly with `view = FULL`.
 type ListModelProviderServicesRequestView string
 
 const ListModelProviderServicesRequestViewBasic ListModelProviderServicesRequestView = `BASIC`
@@ -5605,7 +5609,8 @@ func (f *ListModelProviderServicesRequestView) Type() string {
 type ListModelProviderServicesResponse struct {
 	// The list of model provider services.
 	ModelProviderServices []ModelProviderService `json:"model_provider_services,omitempty"`
-	// Pagination token for retrieving the next page of results.
+	// Pagination token for retrieving the next page. Empty when there are no
+	// more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5623,15 +5628,16 @@ type ListModelServicesRequest struct {
 	// Maximum number of model services to return. Defaults to 100 when unset or
 	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Opaque pagination token from a previous request.
+	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Name of the parent schema to list within, as
-	// `schemas/{catalog}.{schema}`. Each `{...}` component is capped at 255
-	// characters individually.
+	// Parent schema to list within, in the form `schemas/{catalog}.{schema}`.
+	// Required. Each `{...}` component is capped at 255 characters
+	// individually.
 	Parent string `json:"-" url:"parent,omitempty"`
-	// View selector controlling which fields are populated per row. `FULL`
-	// returns the full representation of the service; `BASIC` returns a more
-	// compact version. Defaults to `BASIC` when unset.
+	// Fields to return for each service. `FULL` includes destinations,
+	// inference-table details, and rate-limit principal names. `BASIC` omits
+	// destinations and inference-table details and omits principal names from
+	// rate limits. Defaults to `BASIC` when unset.
 	View ListModelServicesRequestView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5646,7 +5652,7 @@ func (s ListModelServicesRequest) MarshalJSON() ([]byte, error) {
 }
 
 // Controls which fields are populated on each ModelService in the response. The
-// server treats unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full
+// server uses `BASIC` when `view` is unset. Callers needing the full
 // configuration must request it explicitly with `view = FULL`.
 type ListModelServicesRequestView string
 
@@ -5689,7 +5695,8 @@ func (f *ListModelServicesRequestView) Type() string {
 type ListModelServicesResponse struct {
 	// The list of model services.
 	ModelServices []ModelService `json:"model_services,omitempty"`
-	// Pagination token for retrieving the next page of results.
+	// Pagination token for retrieving the next page. Empty when there are no
+	// more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6357,29 +6364,26 @@ func (f *MatchType) Type() string {
 	return "MatchType"
 }
 
-// A governed MCP server registration in Unity Catalog. Acts as a container
-// securable that references an MCP server -- customer-external via a UC
-// Connection, or Databricks-hosted via an internal server -- and exposes its
-// tools for discovery, authorization, and invocation.
+// A Unity Catalog securable that registers an MCP server through a Unity
+// Catalog connection and exposes its tools for discovery, authorization, and
+// invocation.
 type McpService struct {
 	// User-provided description.
 	Comment string `json:"comment,omitempty"`
-	// Operational configuration: connection, tool selectors, rate limit.
-	// Required on CreateMcpService; on UpdateMcpService it is required only
-	// when `config` (or a `config.*` subpath) appears in `update_mask`.
+	// Connection, tool selectors, and rate limits. Required on Create. On
+	// Update, provide this field when `update_mask` contains `config` or one of
+	// its subpaths.
 	Config *McpServiceConfig `json:"config,omitempty"`
-	// When the MCP service was created.
+	// Time the MCP service was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Creator identity.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The resolved owner of the MCP service. Falls back to the caller's
-	// identity when `owner` is not explicitly set on creation.
+	// Owner of the MCP service.
 	EffectiveOwner string `json:"effective_owner,omitempty"`
-	// Optimistic concurrency control token. Server-generated from the entity's
-	// state and returned on every read. To use it as an if-match precondition
-	// on a mutation, echo the last-read value back via the dedicated `etag`
-	// field on the Update / Delete request; the server rejects the mutation if
-	// the stored etag differs.
+	// Optimistic concurrency token returned on every read. To make an Update or
+	// Delete conditional, pass the last-read value in that request's `etag`
+	// field. In REST responses, this value is a base64 string; URL-encode it
+	// when setting the `etag` query parameter.
 	Etag string `json:"etag,omitempty"`
 	// Metastore hosting the MCP service.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -6388,9 +6392,7 @@ type McpService struct {
 	// is capped at 255 characters individually. Server-derived on Create from
 	// `parent` + `mcp_service_id`; required and immutable on Update/Get/Delete.
 	Name string `json:"name,omitempty"`
-	// The owner of the MCP service. Write-only; read owner via effective_owner.
-	Owner string `json:"owner,omitempty"`
-	// When the MCP service was last modified.
+	// Time the MCP service was last modified.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Identity of the last updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -6407,20 +6409,20 @@ func (s McpService) MarshalJSON() ([]byte, error) {
 }
 
 // Operational configuration for an MCP service. Groups the source reference,
-// tool selectors, and rate limit -- the fields that configure how the MCP
+// tool selectors, and rate limits -- the fields that configure how the MCP
 // service behaves at invocation time.
 type McpServiceConfig struct {
-	// Glob or exact-match patterns selecting which tools from the MCP server to
-	// expose. Prefix match for patterns with `*`, exact match otherwise. An
-	// empty list means all tools are included. Per-element max 256 chars.
+	// Tool names or prefix patterns to expose from the MCP server. Use exact
+	// tool names or prefix patterns such as `read_*`. An empty list exposes all
+	// tools. At most 1,024 selectors are allowed, and each selector can contain
+	// at most 256 characters.
 	IncludeToolSelectors []string `json:"include_tool_selectors,omitempty"`
-	// Per-principal rate limits applied to tool invocations routed through this
-	// MCP service. Repeated to support per-USER / USER_GROUP /
-	// SERVICE_PRINCIPAL / SERVICE / USER_DEFAULT scopes simultaneously,
-	// mirroring the `ModelServiceConfig.rate_limits` shape. Empty when no rate
-	// limit is configured.
+	// Rate limits for tool invocations. Supported scopes are user, group,
+	// service principal, the service as a whole, and each user by default.
+	// Request and token limits are supported. Empty when no rate limit is
+	// configured.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
-	// UC Connection referencing the MCP server.
+	// Unity Catalog connection referencing the MCP server. Required on Create.
 	SourceConnection *McpServiceConfigSourceConnection `json:"source_connection,omitempty"`
 }
 
@@ -6428,14 +6430,18 @@ func (s *McpServiceConfig) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// UC Connection that hosts the MCP server. On create, provide `name` in the
-// schema-scoped form `connections/{catalog}.{schema}.{connection}`. On read,
-// the service populates the resolved connection metadata and preserves a
-// dangling source so callers can diagnose a deleted backing connection.
+// Unity Catalog connection that points to the MCP server. On Create, provide
+// `name` in the schema-scoped form
+// `connections/{catalog}.{schema}.{connection}`. On read, the service populates
+// the resolved connection metadata. If the connection is deleted, its reference
+// remains visible so you can identify the broken dependency.
 type McpServiceConfigSourceConnection struct {
+	// Whether the referenced connection has been deleted. The MCP service keeps
+	// the reference so callers can identify the broken dependency; tool
+	// invocation fails until the source connection is updated.
 	IsDeleted bool `json:"is_deleted,omitempty"`
-	// Name of the UC connection that hosts the MCP server, as
-	// `connections/{catalog}.{schema}.{connection}`.
+	// Resource name of the Unity Catalog connection used to access the MCP
+	// server, in the form `connections/{catalog}.{schema}.{connection}`.
 	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6525,36 +6531,32 @@ func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// A governed external model-provider connection stored in Unity Catalog (e.g.
-// an OpenAI API account, an Azure OpenAI deployment, an Amazon Bedrock
-// account). Owns the provider type and the auth/configuration the platform
-// needs to invoke that provider, and is referenced from
-// `ExternalModelConfig.model_provider_service` on a ModelService.
+// A Unity Catalog securable that stores authentication and request
+// configuration for an external model provider, such as OpenAI, Azure OpenAI,
+// or Amazon Bedrock. Model service destinations reference it to send requests
+// to that provider.
 //
-// One ModelProviderService can back many ModelServices (e.g. an `openai_prod`
-// provider serving multiple models); a single ModelService can fan out across
-// multiple ModelProviderServices for traffic split or failover.
+// A model provider service can be referenced by multiple model services. A
+// model service can route across multiple model provider services for traffic
+// splitting or failover.
 type ModelProviderService struct {
 	// User-provided description.
 	Comment string `json:"comment,omitempty"`
-	// Behavioral configuration: provider connection, model catalog, and
-	// passthrough policy. See `ModelProviderServiceConfig` for the per-field
-	// contract. Required on CreateModelProviderService; on Update it is
-	// required only when `config` (or a `config.*` subpath) appears in
+	// Provider authentication, exposed models, request-forwarding controls,
+	// rate limits, and payload logging. Required on Create. On Update, it is
+	// required only when `config` or one of its subpaths appears in
 	// `update_mask`.
 	Config *ModelProviderServiceConfig `json:"config,omitempty"`
-	// When the provider service was created.
+	// Time the provider service was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Creator identity.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The resolved owner of the model provider service. Falls back to the
-	// caller's identity when `owner` is not explicitly set on creation.
+	// Owner of the model provider service.
 	EffectiveOwner string `json:"effective_owner,omitempty"`
-	// Optimistic concurrency control token. Server-generated from the entity's
-	// state and returned on every read. To use it as an if-match precondition
-	// on a mutation, echo the last-read value back via the dedicated `etag`
-	// field on the Update / Delete request; the server rejects the mutation if
-	// the stored etag differs.
+	// Optimistic concurrency token returned on every read. To make an Update or
+	// Delete conditional, pass the last-read value in that request's `etag`
+	// field. In REST responses, this value is a base64 string; URL-encode it
+	// when setting the `etag` query parameter.
 	Etag string `json:"etag,omitempty"`
 	// Metastore hosting the provider service.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -6564,10 +6566,7 @@ type ModelProviderService struct {
 	// Server-derived on Create from `parent` + `model_provider_service_id`;
 	// required and immutable on Update/Get/Delete.
 	Name string `json:"name,omitempty"`
-	// The owner of the model provider service. Write-only; read owner via
-	// effective_owner.
-	Owner string `json:"owner,omitempty"`
-	// When the provider service was last modified.
+	// Time the provider service was last modified.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Identity of the last updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -6583,15 +6582,15 @@ func (s ModelProviderService) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Behavioral configuration for a ModelProviderService: provider connection
-// (auth + provider-specific fields), the catalog of models this provider
-// service can route to, and the passthrough policy that governs how request
-// headers, query parameters, and unmanaged subpaths cross the trust boundary to
-// the upstream provider.
+// Behavioral configuration for a ModelProviderService: provider authentication
+// and provider-specific fields, the catalog of models this provider service can
+// route to, and the passthrough policy that governs how request headers, query
+// parameters, and unmanaged subpaths cross the trust boundary to the upstream
+// provider.
 type ModelProviderServiceConfig struct {
 	// When true, accepts any model exposed by the upstream provider; `targets`
 	// is not required and does not restrict routability. When false, only
-	// models listed in `targets` are routable.
+	// models listed in `targets` are routable. Defaults to false.
 	AllowAllTargets bool `json:"allow_all_targets,omitempty"`
 
 	AmazonBedrock *ModelProviderServiceConfigAmazonBedrockProviderConfig `json:"amazon_bedrock,omitempty"`
@@ -6601,51 +6600,45 @@ type ModelProviderServiceConfig struct {
 	AzureOpenai *ModelProviderServiceConfigAzureOpenAiProviderConfig `json:"azure_openai,omitempty"`
 
 	Custom *ModelProviderServiceConfigCustomProviderConfig `json:"custom,omitempty"`
-	// Whether to forward incoming request headers to the upstream provider.
-	// Applies to managed (multi-model) requests as well as passthrough requests
-	// served by this provider service. Governance-level decision by the
-	// provider service owner; not selectable per inference call.
+	// Whether to forward incoming HTTP headers to the upstream provider.
+	// Defaults to false and is configured for the entire provider service, not
+	// per request. Upstream authentication is configured separately in the
+	// provider-specific configuration.
 	ForwardHeaders bool `json:"forward_headers,omitempty"`
-	// Whether to forward incoming request query parameters to the upstream
-	// provider. Same trust-boundary semantics as `forward_headers`.
+	// Whether to forward incoming query parameters to the upstream provider.
+	// Defaults to false and is configured for the entire provider service, not
+	// per request.
 	ForwardQueryParameters bool `json:"forward_query_parameters,omitempty"`
-	// Whether to forward request paths that fall outside this service's managed
-	// API set to the upstream provider as opaque passthrough. When true,
-	// requests addressed to subpaths not recognized by the managed API surface
-	// are proxied to the upstream provider over the same provider connection.
-	// When false, only managed-API paths are served. Governance-level decision
-	// by the provider service owner; expanding this expands the trust boundary
-	// that the ModelProviderService exposes.
+	// Whether to proxy paths that AI Gateway does not recognize as configured
+	// provider-native API types. Defaults to false. When true, these paths are
+	// forwarded unchanged to the upstream provider. When false, only recognized
+	// API paths are served. Enabling this broadens the upstream API surface
+	// exposed through the provider service.
 	ForwardUnmanagedPaths bool `json:"forward_unmanaged_paths,omitempty"`
 
 	GeminiEnterprise *ModelProviderServiceConfigGeminiEnterpriseProviderConfig `json:"gemini_enterprise,omitempty"`
-	// Inference table configuration for payload logging when this provider
-	// service is invoked directly. When it is invoked through a model service,
-	// the model service's own inference table captures the invocation instead.
-	// Mirrors `ModelServiceConfig.inference_table` /
-	// `AgentServiceConfig.inference_table`.
+	// Payload logging configuration for requests sent directly to this provider
+	// service. Requests routed through a model service are captured by that
+	// model service's inference table instead.
 	InferenceTable *InferenceTableConfig `json:"inference_table,omitempty"`
 
 	MicrosoftFoundry *ModelProviderServiceConfigMicrosoftFoundryProviderConfig `json:"microsoft_foundry,omitempty"`
 
 	Openai *ModelProviderServiceConfigOpenAiProviderConfig `json:"openai,omitempty"`
-	// Provider type discriminator. Required at create time; immutable after.
-	// Determines which variant of the `provider` oneof must be set. May not be
-	// changed via Update; attempts to include `config.provider_type` in
-	// `UpdateModelProviderServiceRequest.update_mask` are rejected.
-	//
-	// Required on CreateModelProviderService and immutable thereafter.
+	// External model provider. Required on Create and immutable thereafter. Set
+	// the matching provider-specific configuration, such as `openai`,
+	// `azure_openai`, or `amazon_bedrock`.
 	ProviderType ModelProviderServiceConfigExternalModelProviderType `json:"provider_type,omitempty"`
-	// Rate limits applied when this provider service is invoked directly. When
-	// it is invoked through a model service, the model service's own
-	// `rate_limits` apply instead. Mirrors `ModelServiceConfig.rate_limits` /
-	// `McpServiceConfig.rate_limits`.
+	// Rate limits for requests sent directly to this provider service. Requests
+	// routed through a model service use that model service's rate limits
+	// instead.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
-	// Routing targets this provider service exposes (provider-side model
-	// identifier + unified API types per entry). Required (>=1) when
-	// `allow_all_targets = false`; optional and additive when
-	// `allow_all_targets = true`. References from `ExternalModelConfig.target`
-	// must match an entry here unless `allow_all_targets = true`.
+	// Models and provider-native API types exposed by this provider service.
+	// Each entry must include at least one `native_api_types` value. When
+	// `allow_all_targets` is false, at least one entry is required and model
+	// service destinations can reference only listed models. When
+	// `allow_all_targets` is true, any upstream model is routable; entries in
+	// this list provide API-type metadata without restricting other models.
 	Targets []ModelProviderServiceConfigModelTargetConfig `json:"targets,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6661,6 +6654,7 @@ func (s ModelProviderServiceConfig) MarshalJSON() ([]byte, error) {
 
 // Amazon Bedrock provider configuration.
 type ModelProviderServiceConfigAmazonBedrockProviderConfig struct {
+	// Amazon Bedrock region and authentication configuration.
 	Direct *ModelProviderServiceConfigAmazonBedrockProviderDirectConfig `json:"direct,omitempty"`
 }
 
@@ -6672,25 +6666,25 @@ func (s *ModelProviderServiceConfigAmazonBedrockProviderConfig) UnmarshalJSON(b 
 //
 // Authentication is one of two mutually exclusive modes, exactly one of which
 // must be supplied on Create: - Access keys: set `aws_access_key`, leave
-// `service_credential` unset. - UC service credential: set
-// `service_credential.name` to the AIP-122 resource-name form
-// `credentials/{name}`, leave `aws_access_key` unset. The credential value
-// lives in UC and is referenced by name, not held on this message. Setting more
-// than one mode is rejected.
+// `service_credential` unset. - Unity Catalog service credential: set
+// `service_credential.name` to the resource name `credentials/{name}`, leave
+// `aws_access_key` unset. The credential value lives in Unity Catalog and is
+// referenced by name, not held on this message. Setting more than one mode is
+// rejected.
 type ModelProviderServiceConfigAmazonBedrockProviderDirectConfig struct {
-	// AWS access-key-pair auth. Mutually exclusive with `service_credential`.
+	// AWS access-key-pair authentication. Set `access_key_id` and
+	// `secret_access_key.plaintext`. Mutually exclusive with
+	// `service_credential`.
 	AwsAccessKey *ModelProviderServiceConfigAwsAccessKey `json:"aws_access_key,omitempty"`
 	// AWS region where the Bedrock endpoint is hosted (e.g., `us-east-1`).
 	// Required on Create.
 	Region string `json:"region,omitempty"`
-	// Reference to a UC service credential authorizing Bedrock requests. On
-	// Create the caller supplies `service_credential.name` in the AIP-122
-	// resource-name form `credentials/{name}`. Required on Create when using
-	// UC-service-credential auth; mutually exclusive with `aws_access_key`. The
-	// credential is referenced by name; its value is not carried here. On read
-	// the resolved `id` and `is_deleted` are also populated. Only supported on
-	// AWS-hosted workspaces; Create requests from other clouds are rejected
-	// with INVALID_PARAMETER_VALUE.
+	// Reference to a Unity Catalog service credential authorizing Bedrock
+	// requests. On Create, supply `service_credential.name` in the form
+	// `credentials/{name}`. Required on Create when using service-credential
+	// authentication; mutually exclusive with `aws_access_key`. The credential
+	// is referenced by name; its value is not carried here. Only supported on
+	// AWS-hosted workspaces.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6707,13 +6701,12 @@ func (s ModelProviderServiceConfigAmazonBedrockProviderDirectConfig) MarshalJSON
 // Anthropic provider configuration. Exactly one of `direct` or `relayed` must
 // be set on Create; the two are mutually exclusive.
 type ModelProviderServiceConfigAnthropicProviderConfig struct {
-	// Direct (inline-credentials) form: caller supplies the API key in the
-	// request body. Required on Create unless `relayed` is set.
+	// Direct authentication with an API key supplied in
+	// `direct.api_key.plaintext`. Required unless `relayed` is set.
 	Direct *ModelProviderServiceConfigAnthropicProviderDirectConfig `json:"direct,omitempty"`
-	// Relayed (credential-less) form: no Anthropic credential is stored. Each
-	// inference request instead carries the caller's own OAuth token, which the
-	// platform forwards to Anthropic on outbound requests. Mutually exclusive
-	// with `direct`; no `api_key` is required or persisted.
+	// Relayed authentication. Each inference request supplies the caller's
+	// OAuth token, which is forwarded to Anthropic. No Anthropic credential is
+	// stored. Mutually exclusive with `direct`.
 	Relayed *ModelProviderServiceConfigAnthropicProviderRelayedConfig `json:"relayed,omitempty"`
 }
 
@@ -6723,9 +6716,8 @@ func (s *ModelProviderServiceConfigAnthropicProviderConfig) UnmarshalJSON(b []by
 
 // Direct form of Anthropic provider config.
 type ModelProviderServiceConfigAnthropicProviderDirectConfig struct {
-	// Anthropic API key. Required on Create. Sent as the `x-api-key` header on
-	// outbound requests. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// Anthropic API key. Required when creating the service. Supply the value
+	// in `api_key.plaintext`.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 }
 
@@ -6733,62 +6725,14 @@ func (s *ModelProviderServiceConfigAnthropicProviderDirectConfig) UnmarshalJSON(
 	return marshal.Unmarshal(b, s)
 }
 
-// Relayed form of Anthropic provider config: no credential is stored.
-// Authentication is the caller's own OAuth token, forwarded to Anthropic on
-// outbound requests, so there is no persisted secret. Presence of this variant
-// is the signal that the provider service uses relayed auth; `plan_type`
-// further distinguishes which Anthropic subscription tier the token belongs to.
+// Relayed Anthropic provider configuration. Each inference request supplies the
+// caller's OAuth token, which is forwarded to Anthropic. No Anthropic
+// credential is stored.
 type ModelProviderServiceConfigAnthropicProviderRelayedConfig struct {
-	// Which Anthropic subscription tier the relayed token belongs to. Optional;
-	// when unset the MPS gets the full governance surface (see
-	// TEAM_ENTERPRISE). Immutable after Create, so the tier cannot be flipped
-	// in place.
-	PlanType ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType `json:"plan_type,omitempty"`
 }
 
 func (s *ModelProviderServiceConfigAnthropicProviderRelayedConfig) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
-}
-
-// Which Anthropic subscription tier the relayed OAuth token belongs to.
-// Immutable after Create (switching tiers changes which governance controls the
-// platform enforces). Only MAX and TEAM_ENTERPRISE differ in the governance
-// surface the gateway can enforce, not in how the token is relayed.
-type ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType string
-
-const ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeMax ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType = `ANTHROPIC_RELAYED_PLAN_TYPE_MAX`
-
-const ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeTeamEnterprise ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType = `ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE`
-
-// String representation for [fmt.Print]
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) Set(v string) error {
-	switch v {
-	case `ANTHROPIC_RELAYED_PLAN_TYPE_MAX`, `ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE`:
-		*f = ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ANTHROPIC_RELAYED_PLAN_TYPE_MAX", "ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE"`, v)
-	}
-}
-
-// Values returns all possible values for ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) Values() []ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType {
-	return []ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType{
-		ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeMax,
-		ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanTypeAnthropicRelayedPlanTypeTeamEnterprise,
-	}
-}
-
-// Type always returns ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType to satisfy [pflag.Value] interface
-func (f *ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType) Type() string {
-	return "ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType"
 }
 
 // AWS access-key-pair auth for Amazon Bedrock: a SigV4-signing key pair.
@@ -6797,9 +6741,9 @@ type ModelProviderServiceConfigAwsAccessKey struct {
 	// as username-equivalent (not a secret value): round-trips on reads and is
 	// scrubbed from audit logs.
 	AccessKeyId string `json:"access_key_id,omitempty"`
-	// AWS secret access key paired with `access_key_id`. Required on Create
-	// when using access-key auth. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// AWS secret access key paired with `access_key_id`. Required when creating
+	// a service with access-key authentication. Supply the value in
+	// `secret_access_key.plaintext`.
 	SecretAccessKey *ModelProviderServiceConfigProviderSecret `json:"secret_access_key,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6815,6 +6759,7 @@ func (s ModelProviderServiceConfigAwsAccessKey) MarshalJSON() ([]byte, error) {
 
 // Azure OpenAI provider configuration.
 type ModelProviderServiceConfigAzureOpenAiProviderConfig struct {
+	// Azure OpenAI endpoint and authentication configuration.
 	Direct *ModelProviderServiceConfigAzureOpenAiProviderDirectConfig `json:"direct,omitempty"`
 }
 
@@ -6826,31 +6771,29 @@ func (s *ModelProviderServiceConfigAzureOpenAiProviderConfig) UnmarshalJSON(b []
 // mutually-exclusive auth modes must be supplied on Create: - API key: set
 // `api_key`, leave `entra_service_principal` and `service_credential` unset. -
 // Entra ID (service principal): set `entra_service_principal`, leave `api_key`
-// and `service_credential` unset. - UC service credential: set
-// `service_credential.name` to the AIP-122 resource-name form
-// `credentials/{name}`, leave `api_key` and `entra_service_principal` unset.
-// The credential value lives in UC and is referenced by name, not held on this
-// message. Only supported on Azure-hosted workspaces. Setting more than one
-// mode is rejected.
+// and `service_credential` unset. - Unity Catalog service credential: set
+// `service_credential.name` to the resource name `credentials/{name}`, leave
+// `api_key` and `entra_service_principal` unset. The credential value lives in
+// Unity Catalog and is referenced by name, not held on this message. Only
+// supported on Azure-hosted workspaces. Setting more than one mode is rejected.
 type ModelProviderServiceConfigAzureOpenAiProviderDirectConfig struct {
-	// Azure OpenAI API key. Mutually exclusive with the Entra and
-	// service-credential modes. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// Azure OpenAI API key. Supply the value in `api_key.plaintext`. Mutually
+	// exclusive with Entra ID and Unity Catalog service credential
+	// authentication.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// Full Azure OpenAI endpoint base URL, e.g.
 	// `https://myresource.openai.azure.com`. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
-	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
+	// Entra ID service-principal authentication. Set `tenant_id`, `client_id`,
+	// and `client_secret.plaintext`. Mutually exclusive with `api_key` and
 	// `service_credential`.
 	EntraServicePrincipal *ModelProviderServiceConfigEntraServicePrincipal `json:"entra_service_principal,omitempty"`
-	// Reference to a UC service credential authorizing Azure OpenAI requests.
-	// On Create the caller supplies `service_credential.name` in the AIP-122
-	// resource-name form `credentials/{name}`. Required on Create when using
-	// UC-service-credential auth; mutually exclusive with `api_key` and
+	// Reference to a Unity Catalog service credential authorizing Azure OpenAI
+	// requests. On Create, supply `service_credential.name` in the form
+	// `credentials/{name}`. Required on Create when using service-credential
+	// authentication; mutually exclusive with `api_key` and
 	// `entra_service_principal`. The credential is referenced by name; its
-	// value is not carried here. On read the resolved `id` and `is_deleted` are
-	// also populated. Only supported on Azure-hosted workspaces; Create
-	// requests from other clouds are rejected with INVALID_PARAMETER_VALUE.
+	// value is not carried here. Only supported on Azure-hosted workspaces.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6864,9 +6807,10 @@ func (s ModelProviderServiceConfigAzureOpenAiProviderDirectConfig) MarshalJSON()
 	return marshal.Marshal(s)
 }
 
-// Custom provider configuration: arbitrary HTTP endpoint with bearer-token
-// auth.
+// Custom OpenAI-compatible provider configuration with bearer-token
+// authentication.
 type ModelProviderServiceConfigCustomProviderConfig struct {
+	// Endpoint and authentication configuration for the custom provider.
 	Direct *ModelProviderServiceConfigCustomProviderDirectConfig `json:"direct,omitempty"`
 }
 
@@ -6874,18 +6818,11 @@ func (s *ModelProviderServiceConfigCustomProviderConfig) UnmarshalJSON(b []byte)
 	return marshal.Unmarshal(b, s)
 }
 
-// Direct form of custom provider config.
-//
-// Authentication is one of two mutually exclusive modes, exactly one of which
-// must be supplied on Create: - Bearer: set `api_key`, leave `header_auth`
-// unset. The secret is forwarded as `Authorization: Bearer <secret>`. - Header:
-// set `header_auth`, leave `api_key` unset. The secret is forwarded as
-// `<api_key_name>: <api_key_value>`. Setting both modes or neither mode is
-// rejected.
+// Direct form of a custom provider configuration. Set `api_key` to the bearer
+// token sent in the `Authorization` header.
 type ModelProviderServiceConfigCustomProviderDirectConfig struct {
-	// Bearer token forwarded as the `Authorization: Bearer ...` header on
-	// outbound requests. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`. Set this for bearer-token auth.
+	// Bearer token forwarded in the `Authorization` header. Supply the value in
+	// `api_key.plaintext`.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// Endpoint URL of the OpenAI-compatible service (e.g.,
 	// `https://api.example.com/v1`). Required on Create.
@@ -6902,16 +6839,14 @@ func (s ModelProviderServiceConfigCustomProviderDirectConfig) MarshalJSON() ([]b
 	return marshal.Marshal(s)
 }
 
-// Entra ID (Azure AD) service-principal auth: AI Gateway exchanges the
-// `tenant_id` + `client_id` identify the service principal, and the
-// `credential` oneof proves that identity, exchanged for an Entra bearer token
-// on outbound requests via the OAuth2 client-credentials grant. Shared by the
-// Azure OpenAI and Microsoft Foundry provider configs.
+// Entra ID (Azure AD) service-principal authentication. The `tenant_id` and
+// `client_id` identify the service principal, and `client_secret` authenticates
+// it. AI Gateway exchanges these credentials for an Entra bearer token for
+// requests to Azure OpenAI or Microsoft Foundry.
 type ModelProviderServiceConfigEntraServicePrincipal struct {
 	// Entra ID client (application) ID. Required on Create.
 	ClientId string `json:"client_id,omitempty"`
-	// Entra ID client secret. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// Entra ID client secret. Supply the value in `client_secret.plaintext`.
 	ClientSecret *ModelProviderServiceConfigProviderSecret `json:"client_secret,omitempty"`
 	// Entra ID (Azure AD) tenant ID. Required on Create.
 	TenantId string `json:"tenant_id,omitempty"`
@@ -6982,6 +6917,7 @@ func (f *ModelProviderServiceConfigExternalModelProviderType) Type() string {
 
 // Gemini Enterprise provider configuration.
 type ModelProviderServiceConfigGeminiEnterpriseProviderConfig struct {
+	// Gemini Enterprise project, region, and authentication configuration.
 	Direct *ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig `json:"direct,omitempty"`
 }
 
@@ -6989,16 +6925,11 @@ func (s *ModelProviderServiceConfigGeminiEnterpriseProviderConfig) UnmarshalJSON
 	return marshal.Unmarshal(b, s)
 }
 
-// Direct form of Gemini Enterprise provider config.
-//
-// Authentication is one of two mutually exclusive modes; exactly one must be
-// supplied on Create: - API key: set `api_key`, leave `service_credential`
-// unset. - UC service credential: set `service_credential`, leave `api_key`
-// unset.
+// Direct Gemini Enterprise provider configuration. An API key is required when
+// creating the service.
 type ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig struct {
-	// Google Gemini Enterprise API key. Required on Create when using API-key
-	// auth; mutually exclusive with `service_credential`. Supplied as inline
-	// plaintext via `ProviderSecret.plaintext`.
+	// Google Gemini Enterprise API key. Required when creating the service.
+	// Supply the value in `api_key.plaintext`.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// GCP project ID hosting the Gemini Enterprise endpoint. Required on
 	// Create.
@@ -7020,6 +6951,7 @@ func (s ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig) MarshalJ
 
 // Microsoft Foundry provider configuration.
 type ModelProviderServiceConfigMicrosoftFoundryProviderConfig struct {
+	// Microsoft Foundry endpoint and authentication configuration.
 	Direct *ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig `json:"direct,omitempty"`
 }
 
@@ -7034,30 +6966,29 @@ func (s *ModelProviderServiceConfigMicrosoftFoundryProviderConfig) UnmarshalJSON
 // `entra_service_principal` and `service_credential` unset. - Entra ID (service
 // principal): set `entra_service_principal`, leave `api_key` and
 // `service_credential` unset. AI Gateway exchanges these for an Entra bearer
-// token on outbound requests via the OAuth2 client-credentials grant. - UC
-// service credential: set `service_credential.name` to the AIP-122
-// resource-name form `credentials/{name}`, leave `api_key` and
-// `entra_service_principal` unset. The credential value lives in UC and is
-// referenced by name, not held on this message. Only supported on Azure-hosted
-// workspaces. Setting more than one mode is rejected.
+// token on outbound requests via the OAuth2 client-credentials grant. - Unity
+// Catalog service credential: set `service_credential.name` to the resource
+// name `credentials/{name}`, leave `api_key` and `entra_service_principal`
+// unset. The credential value lives in Unity Catalog and is referenced by name,
+// not held on this message. Only supported on Azure-hosted workspaces. Setting
+// more than one mode is rejected.
 type ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig struct {
-	// Microsoft AI Foundry API key. Mutually exclusive with the Entra and
-	// service-credential modes. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// Microsoft Foundry API key. Supply the value in `api_key.plaintext`.
+	// Mutually exclusive with Entra ID and Unity Catalog service credential
+	// authentication.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
-	// Microsoft AI Foundry endpoint URL. Required on Create.
+	// Microsoft Foundry endpoint URL. Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
-	// Entra ID (service principal) auth. Mutually exclusive with `api_key` and
+	// Entra ID service-principal authentication. Set `tenant_id`, `client_id`,
+	// and `client_secret.plaintext`. Mutually exclusive with `api_key` and
 	// `service_credential`.
 	EntraServicePrincipal *ModelProviderServiceConfigEntraServicePrincipal `json:"entra_service_principal,omitempty"`
-	// Reference to a UC service credential authorizing Microsoft Foundry
-	// requests. On Create the caller supplies `service_credential.name` in the
-	// AIP-122 resource-name form `credentials/{name}`. Required on Create when
-	// using UC-service-credential auth; mutually exclusive with `api_key` and
+	// Reference to a Unity Catalog service credential authorizing Microsoft
+	// Foundry requests. On Create, supply `service_credential.name` in the form
+	// `credentials/{name}`. Required on Create when using service-credential
+	// authentication; mutually exclusive with `api_key` and
 	// `entra_service_principal`. The credential is referenced by name; its
-	// value is not carried here. On read the resolved `id` and `is_deleted` are
-	// also populated. Only supported on Azure-hosted workspaces; Create
-	// requests from other clouds are rejected with INVALID_PARAMETER_VALUE.
+	// value is not carried here. Only supported on Azure-hosted workspaces.
 	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7073,16 +7004,14 @@ func (s ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig) MarshalJ
 
 // Model target configuration for an external model destination.
 type ModelProviderServiceConfigModelTargetConfig struct {
-	// Provider-side model identifier (e.g. "gpt-5", "claude-opus-4-7"). This is
-	// a string on the LLM provider's side, not a UC entity. The UC governance
-	// hook for external destinations is the ModelProviderService referenced by
-	// `ExternalModelConfig.model_provider_service`, not the model itself.
+	// Provider-side model identifier, such as `gpt-5` or `claude-opus-4-7`.
+	// This identifies a model at the upstream provider; it is not a Unity
+	// Catalog model resource.
 	Model string `json:"model"`
-	// Provider-native API types the model supports (e.g.
-	// "openai/v1/chat/completions"). Used by the platform for request/response
-	// translation from the unified API type. At most 64 entries of at most 256
-	// characters each; the list is persisted into the destination binding's
-	// bounded storage envelope.
+	// Provider-native API types supported by this model, such as
+	// `openai/v1/chat/completions`. At least one value is required. AI Gateway
+	// uses these values to translate requests and responses. At most 64 entries
+	// of 256 characters each are allowed.
 	NativeApiTypes []string `json:"native_api_types,omitempty"`
 }
 
@@ -7092,6 +7021,7 @@ func (s *ModelProviderServiceConfigModelTargetConfig) UnmarshalJSON(b []byte) er
 
 // OpenAI provider configuration.
 type ModelProviderServiceConfigOpenAiProviderConfig struct {
+	// OpenAI configuration with an API key supplied in the request.
 	Direct *ModelProviderServiceConfigOpenAiProviderDirectConfig `json:"direct,omitempty"`
 }
 
@@ -7101,8 +7031,8 @@ func (s *ModelProviderServiceConfigOpenAiProviderConfig) UnmarshalJSON(b []byte)
 
 // Direct (inline-credentials) form of the OpenAI provider config.
 type ModelProviderServiceConfigOpenAiProviderDirectConfig struct {
-	// OpenAI API key. Required on Create. Supplied as inline plaintext via
-	// `ProviderSecret.plaintext`.
+	// OpenAI API key. Required when creating the service. Supply the value in
+	// `api_key.plaintext`.
 	ApiKey *ModelProviderServiceConfigProviderSecret `json:"api_key,omitempty"`
 	// Optional custom base URL. Defaults to `https://api.openai.com/v1`. Use
 	// for OpenAI-API-compatible third-party endpoints or in-network proxies.
@@ -7128,8 +7058,8 @@ func (s ModelProviderServiceConfigOpenAiProviderDirectConfig) MarshalJSON() ([]b
 // reads.
 type ModelProviderServiceConfigProviderSecret struct {
 	// Inline plaintext credential. INPUT_ONLY: the value never round-trips on
-	// reads. Get and List responses omit `plaintext`; the field's presence in
-	// the read shape only indicates that a secret is configured.
+	// reads. Get and List responses omit `plaintext`; the enclosing secret
+	// object remains present to indicate that a secret is configured.
 	Plaintext string `json:"plaintext,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7143,14 +7073,13 @@ func (s ModelProviderServiceConfigProviderSecret) MarshalJSON() ([]byte, error) 
 	return marshal.Marshal(s)
 }
 
-// ---- Provider configuration (nested; see the `provider` oneof below) ---- The
-// customer-owned UC service credential a ModelProviderService uses to
-// authenticate to its provider, referenced by name.
+// The customer-owned Unity Catalog service credential a model provider service
+// uses to authenticate to its provider, referenced by name.
 type ModelProviderServiceConfigServiceCredential struct {
-	// Resource name of the bound UC service credential, in the AIP-122 form
-	// `credentials/{name}` (a metastore-level single-part credential name). On
-	// create the caller supplies the name here. On read it reflects the
-	// credential's current name at read time.
+	// Resource name of the bound Unity Catalog service credential, in the form
+	// `credentials/{name}`. Supply this field when creating the service or
+	// rebinding its credential. On read, it reflects the credential's current
+	// name.
 	Name string `json:"name"`
 }
 
@@ -7159,30 +7088,26 @@ func (s *ModelProviderServiceConfigServiceCredential) UnmarshalJSON(b []byte) er
 }
 
 // A governed AI Gateway endpoint in Unity Catalog that routes inference
-// requests to one or more model destinations (for example a foundation model or
-// an external LLM reached through a ModelProviderService). Applies centralized
-// access control, rate limits, guardrails, and auditing to the traffic it
-// serves.
+// requests to one or more destinations, such as a Databricks foundation model
+// or an external model reached through a model provider service. Applies
+// centralized access control, rate limits, and auditing to its traffic.
 type ModelService struct {
 	// User-provided description.
 	Comment string `json:"comment,omitempty"`
-	// Operational configuration: destinations, routing, rate limits, inference
-	// table. Required on CreateModelService; on UpdateModelService it is
-	// required only when `config` (or a `config.*` subpath) appears in
-	// `update_mask`.
+	// Destinations, routing, rate limits, and payload logging configuration.
+	// Required on Create. On Update, provide this field when `update_mask`
+	// contains `config` or one of its subpaths.
 	Config *ModelServiceConfig `json:"config,omitempty"`
-	// When the model service was created.
+	// Time the model service was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Creator identity.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The resolved owner of the ModelService. Falls back to the caller's
-	// identity when `owner` is not explicitly set on creation.
+	// Owner of the model service.
 	EffectiveOwner string `json:"effective_owner,omitempty"`
-	// Optimistic concurrency control token. Server-generated from the entity's
-	// state and returned on every read. To use it as an if-match precondition
-	// on a mutation, echo the last-read value back via the dedicated `etag`
-	// field on the Update / Delete request; the server rejects the mutation if
-	// the stored etag differs.
+	// Optimistic concurrency token returned on every read. To make an Update or
+	// Delete conditional, pass the last-read value in that request's `etag`
+	// field. In REST responses, this value is a base64 string; URL-encode it
+	// when setting the `etag` query parameter.
 	Etag string `json:"etag,omitempty"`
 	// Metastore hosting the model service.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -7192,14 +7117,12 @@ type ModelService struct {
 	// Create from `parent` + `model_service_id`; required and immutable on
 	// Update/Get/Delete.
 	Name string `json:"name,omitempty"`
-	// The owner of the model service. Write-only; read owner via
-	// effective_owner.
-	Owner string `json:"owner,omitempty"`
-	// Unified API types this endpoint supports (e.g. "chat", "embeddings",
-	// "completions"). Derived from the destinations' backing models / providers
-	// at read time.
+	// API types supported across this service's destinations, such as
+	// `openai/v1/chat/completions`, `openai/v1/embeddings`, and
+	// `mlflow/v1/chat/completions`. Derived from the backing models and
+	// providers at read time.
 	SupportedApiTypes []string `json:"supported_api_types,omitempty"`
-	// When the model service was last modified.
+	// Time the model service was last modified.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Identity of the last updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -7217,11 +7140,11 @@ func (s ModelService) MarshalJSON() ([]byte, error) {
 
 // Operational configuration wrapped around the ModelService resource.
 type ModelServiceConfig struct {
-	// Inference table config for payload logging.
+	// Inference table configuration for payload logging.
 	InferenceTable *InferenceTableConfig `json:"inference_table,omitempty"`
 	// Rate limits applied to requests routed through this model service.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
-	// Routing configuration: destinations, routing strategy, and fallback.
+	// Routing configuration: destinations and fallback.
 	Routing *ModelServiceConfigRoutingConfig `json:"routing,omitempty"`
 }
 
@@ -7233,25 +7156,28 @@ func (s *ModelServiceConfig) UnmarshalJSON(b []byte) error {
 // per-type configs inside `type_config` must be set, and it must match
 // `destination_type`.
 type ModelServiceConfigDestinationConfig struct {
-	// Backing-model category. Determines which oneof variant is populated.
+	// Backing-model category. Provide the matching type-specific configuration
+	// and leave the other type-specific configurations unset.
 	DestinationType ModelServiceConfigDestinationConfigDestinationType `json:"destination_type"`
-
+	// Configuration for an external model reached through a model provider
+	// service.
 	ExternalModelConfig *ModelServiceConfigExternalModelConfig `json:"external_model_config,omitempty"`
-	// True when the destination's backing UC entity (MODEL for foundation-model
-	// destinations, MODEL_PROVIDER_SERVICE for external destinations) has been
-	// deleted but the destination row still references it. The dangling
-	// destination is surfaced (not silently dropped) so callers can see the
-	// broken routing. Inference traffic through this destination fails closed
-	// (BAD_REQUEST / FAILED_PRECONDITION).
+	// Whether the destination's backing model or model provider service has
+	// been deleted. The destination remains visible so you can identify the
+	// broken dependency. Requests cannot use this destination until the backing
+	// resource is restored or the destination is replaced.
 	IsDeleted bool `json:"is_deleted,omitempty"`
 	// User-facing label for this destination, used in routing references.
 	Name string `json:"name"`
-
+	// Configuration for a pay-per-token Databricks foundation model.
 	PayPerTokenConfig *ModelServiceConfigPayPerTokenConfig `json:"pay_per_token_config,omitempty"`
-
+	// Configuration for a provisioned-throughput Databricks foundation model.
 	ProvisionedThroughputConfig *ModelServiceConfigProvisionedThroughputConfig `json:"provisioned_throughput_config,omitempty"`
-	// Share of traffic sent to this destination, 0-100. Optional on fallback
-	// destinations; see FallbackConfig.
+	// Percentage of primary traffic sent to this destination, from 0 to 100.
+	// Required when there is more than one primary destination, in which case
+	// the primary percentages must sum to 100; a single primary destination
+	// receives all traffic. Fallback destinations are ordered and do not use
+	// this field.
 	TrafficPercentage int `json:"traffic_percentage,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7328,12 +7254,10 @@ func (s *ModelServiceConfigExternalModelConfig) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// Fallback routing, applied after the primary destination returns a retryable
-// error. Traversal is in list order; the attempt count is the length of the
-// list.
+// Fallback routing applied after a primary destination fails. Fallback
+// destinations are tried in the listed order.
 type ModelServiceConfigFallbackConfig struct {
-	// Ordered list of fallback destinations. Traversal is in list order; the
-	// attempt count is the length of the list. At most 5 are allowed.
+	// Fallback destinations, tried in the listed order. At most 5 are allowed.
 	Destinations []ModelServiceConfigDestinationConfig `json:"destinations,omitempty"`
 }
 
@@ -7345,7 +7269,7 @@ func (s *ModelServiceConfigFallbackConfig) UnmarshalJSON(b []byte) error {
 // the foundation model by its UC resource name; the platform resolves it to a
 // Model Serving endpoint at request time.
 type ModelServiceConfigPayPerTokenConfig struct {
-	// Resource name of the UC model. Format:
+	// Resource name of the Unity Catalog model. Format:
 	// `models/{catalog}.{schema}.{model}`.
 	Model string `json:"model"`
 }
@@ -7364,11 +7288,11 @@ type ModelServiceConfigProvisionedThroughputConfig struct {
 	// Create/Update time.
 	Model string `json:"model,omitempty"`
 	// Name of the backing Model Serving endpoint serving the provisioned-
-	// throughput foundation model, as the AIP-122 typed resource name
-	// `serving-endpoints/{name}`. The same UC model can be served on multiple
-	// Model Serving endpoints (different throughput / region / config); the
-	// caller picks which one this destination routes to. The endpoint must
-	// exist at create time.
+	// throughput foundation model, in the form `serving-endpoints/{name}`. The
+	// same Unity Catalog model can be served on multiple Model Serving
+	// endpoints with different throughput, regions, or configurations. The
+	// caller selects the endpoint to which this destination routes. The
+	// endpoint must exist at create time.
 	ModelServingEndpoint string `json:"model_serving_endpoint"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7382,44 +7306,21 @@ func (s ModelServiceConfigProvisionedThroughputConfig) MarshalJSON() ([]byte, er
 	return marshal.Marshal(s)
 }
 
-// Routing configuration for a model service, nesting destinations, routing
-// strategy, and fallback under a single sub-message.
+// Routing configuration for a model service, nesting destinations and fallback
+// under a single sub-message.
 type ModelServiceConfigRoutingConfig struct {
 	// Primary routing destinations. At most 10 are allowed. At least one is
-	// required on CreateModelService; on UpdateModelService it is required only
-	// when `config.routing` (or a `config.routing.*` subpath) appears in
-	// `update_mask`.
+	// required on Create. On Update, provide this list when replacing the full
+	// `config` or updating `config.routing.destinations`; other granular
+	// routing updates do not require resending destinations. The intermediate
+	// `config.routing` mask path is not supported.
 	Destinations []ModelServiceConfigDestinationConfig `json:"destinations,omitempty"`
-	// Fallback routing config, applied after primary destinations fail.
+	// Fallback routing applied after a primary destination fails. Fallback
+	// destinations are tried in the listed order.
 	Fallback *ModelServiceConfigFallbackConfig `json:"fallback,omitempty"`
-	// Timeout for the first token of a streaming response. If a destination
-	// does not return its first token within this duration, AI Gateway aborts
-	// the attempt and fails over to the next destination. Applies to streaming
-	// requests only. Leave unset for no first-token timeout.
-	FirstTokenTimeout *duration.Duration `json:"first_token_timeout,omitempty"`
-	// Marker message selecting request-based traffic splitting. Traffic is
-	// distributed according to each destination's traffic_percentage value; no
-	// configuration lives on this message itself.
-	TrafficSplitting *ModelServiceConfigRoutingConfigTrafficSplitting `json:"traffic_splitting,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelServiceConfigRoutingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ModelServiceConfigRoutingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Marker message selecting request-based traffic splitting across primary
-// destinations. Split weights are read from each
-// DestinationConfig.traffic_percentage.
-type ModelServiceConfigRoutingConfigTrafficSplitting struct {
-}
-
-func (s *ModelServiceConfigRoutingConfigTrafficSplitting) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -8736,6 +8637,8 @@ const PrivilegeExecute Privilege = `EXECUTE`
 
 const PrivilegeExecuteCleanRoomTask Privilege = `EXECUTE_CLEAN_ROOM_TASK`
 
+const PrivilegeExternalUseLocation Privilege = `EXTERNAL_USE_LOCATION`
+
 const PrivilegeExternalUseSchema Privilege = `EXTERNAL_USE_SCHEMA`
 
 const PrivilegeManage Privilege = `MANAGE`
@@ -8790,11 +8693,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FILES`, `READ_METADATA`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_LOCATION`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FILES`, `READ_METADATA`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FILES", "READ_METADATA", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_LOCATION", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FILES", "READ_METADATA", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -8831,6 +8734,7 @@ func (f *Privilege) Values() []Privilege {
 		PrivilegeCreateVolume,
 		PrivilegeExecute,
 		PrivilegeExecuteCleanRoomTask,
+		PrivilegeExternalUseLocation,
 		PrivilegeExternalUseSchema,
 		PrivilegeManage,
 		PrivilegeManageAllowlist,
@@ -9002,28 +8906,20 @@ func (s R2Credentials) MarshalJSON() ([]byte, error) {
 // to impose no limit on that dimension; set a value to cap that dimension
 // within the renewal period.
 type RateLimit struct {
-	// Scope key. Determines whether `principal` is required.
+	// Scope of the rate limit. Depending on this value, the limit applies to a
+	// principal, the service as a whole, or each user by default.
 	Key RateLimitRateLimitKey `json:"key"`
 	// Principal this limit applies to: user email, group name, or service
-	// principal application ID. Required unless `key` is
-	// `RATE_LIMIT_KEY_SERVICE`, `RATE_LIMIT_KEY_USER_DEFAULT`, or
-	// `RATE_LIMIT_KEY_REQUEST_TAG` (which must not set a principal).
+	// principal application ID. Required when `key` applies to a user, group,
+	// or service principal; otherwise it must be unset.
 	Principal string `json:"principal,omitempty"`
 	// Renewal period.
 	RenewalPeriod RateLimitRateLimitRenewalPeriod `json:"renewal_period"`
-	// Request tag key this limit applies to. Required when `key` is
-	// `RATE_LIMIT_KEY_REQUEST_TAG`, forbidden otherwise.
-	RequestTagKey string `json:"request_tag_key,omitempty"`
-	// Request tag value this limit applies to. Only valid when `key` is
-	// `RATE_LIMIT_KEY_REQUEST_TAG`. Leave unset to apply the limit to every
-	// value of `request_tag_key` (an any-value default); a set value is a
-	// specific override for that value.
-	RequestTagValue string `json:"request_tag_value,omitempty"`
-	// Max requests allowed within a renewal period. Leave unset for no request
-	// limit.
+	// Maximum requests allowed in one renewal period. Leave unset for no
+	// request limit. Set to `0` to deny all requests.
 	Requests int64 `json:"requests,omitempty"`
-	// Max tokens allowed within a renewal period. Leave unset for no token
-	// limit.
+	// Maximum tokens allowed in one renewal period. Leave unset for no token
+	// limit. Set to `0` to deny all requests.
 	Tokens int64 `json:"tokens,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -9039,8 +8935,6 @@ func (s RateLimit) MarshalJSON() ([]byte, error) {
 
 // Scope key for a rate limit.
 type RateLimitRateLimitKey string
-
-const RateLimitRateLimitKeyRateLimitKeyRequestTag RateLimitRateLimitKey = `RATE_LIMIT_KEY_REQUEST_TAG`
 
 const RateLimitRateLimitKeyRateLimitKeyService RateLimitRateLimitKey = `RATE_LIMIT_KEY_SERVICE`
 
@@ -9060,11 +8954,11 @@ func (f *RateLimitRateLimitKey) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RateLimitRateLimitKey) Set(v string) error {
 	switch v {
-	case `RATE_LIMIT_KEY_REQUEST_TAG`, `RATE_LIMIT_KEY_SERVICE`, `RATE_LIMIT_KEY_SERVICE_PRINCIPAL`, `RATE_LIMIT_KEY_USER`, `RATE_LIMIT_KEY_USER_DEFAULT`, `RATE_LIMIT_KEY_USER_GROUP`:
+	case `RATE_LIMIT_KEY_SERVICE`, `RATE_LIMIT_KEY_SERVICE_PRINCIPAL`, `RATE_LIMIT_KEY_USER`, `RATE_LIMIT_KEY_USER_DEFAULT`, `RATE_LIMIT_KEY_USER_GROUP`:
 		*f = RateLimitRateLimitKey(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "RATE_LIMIT_KEY_REQUEST_TAG", "RATE_LIMIT_KEY_SERVICE", "RATE_LIMIT_KEY_SERVICE_PRINCIPAL", "RATE_LIMIT_KEY_USER", "RATE_LIMIT_KEY_USER_DEFAULT", "RATE_LIMIT_KEY_USER_GROUP"`, v)
+		return fmt.Errorf(`value "%s" is not one of "RATE_LIMIT_KEY_SERVICE", "RATE_LIMIT_KEY_SERVICE_PRINCIPAL", "RATE_LIMIT_KEY_USER", "RATE_LIMIT_KEY_USER_DEFAULT", "RATE_LIMIT_KEY_USER_GROUP"`, v)
 	}
 }
 
@@ -9073,7 +8967,6 @@ func (f *RateLimitRateLimitKey) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *RateLimitRateLimitKey) Values() []RateLimitRateLimitKey {
 	return []RateLimitRateLimitKey{
-		RateLimitRateLimitKeyRateLimitKeyRequestTag,
 		RateLimitRateLimitKeyRateLimitKeyService,
 		RateLimitRateLimitKeyRateLimitKeyServicePrincipal,
 		RateLimitRateLimitKeyRateLimitKeyUser,
@@ -10821,8 +10714,10 @@ func (s UpdateFunction) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateMcpServiceRequest struct {
-	// If-match precondition: when set, the update proceeds only if the current
-	// server-side etag matches. Empty means an unconditional update.
+	// Optimistic concurrency token from the most recent read. When set, the
+	// update succeeds only if the resource has not changed. Leave unset for an
+	// unconditional update. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
 	Etag string `json:"-" url:"etag,omitempty"`
 	// The MCP service with the updated field values. `name` identifies the
 	// resource (`mcp-services/{catalog}.{schema}.{mcp_service}`); only fields
@@ -10833,9 +10728,12 @@ type UpdateMcpServiceRequest struct {
 	// is capped at 255 characters individually. Server-derived on Create from
 	// `parent` + `mcp_service_id`; required and immutable on Update/Get/Delete.
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. The framework validates each path against
-	// the `mcp_service` field above. Wildcard paths (`paths: ["*"]`) are not
-	// supported; list each field path explicitly.
+	// Fields to update. Use `config` to replace the entire configuration. The
+	// replacement must include every required field; any optional field you
+	// omit is cleared. To preserve sibling fields, use one or more granular
+	// paths: `comment`, `config.source_connection.name`,
+	// `config.include_tool_selectors`, or `config.rate_limits`. Wildcard paths
+	// such as `*` are not supported.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10905,8 +10803,10 @@ func (s UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateModelProviderServiceRequest struct {
-	// If-match precondition: when set, the update proceeds only if the current
-	// server-side etag matches. Empty means an unconditional update.
+	// Optimistic concurrency token from the most recent read. When set, the
+	// update succeeds only if the resource has not changed. Leave unset for an
+	// unconditional update. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
 	Etag string `json:"-" url:"etag,omitempty"`
 	// The model provider service with the updated field values. `name`
 	// identifies the resource
@@ -10919,9 +10819,16 @@ type UpdateModelProviderServiceRequest struct {
 	// Server-derived on Create from `parent` + `model_provider_service_id`;
 	// required and immutable on Update/Get/Delete.
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. The framework validates each path against
-	// the `model_provider_service` field above. Wildcard paths (`paths: ["*"]`)
-	// are not supported; list each field path explicitly.
+	// Fields to update. Use `config` to replace the entire configuration. The
+	// replacement must include every required field; any optional field you
+	// omit is cleared. To preserve sibling fields, use one or more granular
+	// paths: `comment`; `config.provider` to replace the active
+	// provider-specific value (for example, `config.openai`; the mask path
+	// remains `config.provider`); `config.allow_all_targets`, `config.targets`,
+	// `config.forward_headers`, `config.forward_query_parameters`,
+	// `config.forward_unmanaged_paths`, `config.rate_limits`, or
+	// `config.inference_table`. The provider type is immutable, and wildcard
+	// paths such as `*` are not supported.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10936,8 +10843,10 @@ func (s UpdateModelProviderServiceRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateModelServiceRequest struct {
-	// If-match precondition: when set, the update proceeds only if the current
-	// server-side etag matches. Empty means an unconditional update.
+	// Optimistic concurrency token from the most recent read. When set, the
+	// update succeeds only if the resource has not changed. Leave unset for an
+	// unconditional update. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
 	Etag string `json:"-" url:"etag,omitempty"`
 	// The model service with the updated field values. `name` identifies the
 	// resource (`model-services/{catalog}.{schema}.{model_service}`); only
@@ -10949,9 +10858,14 @@ type UpdateModelServiceRequest struct {
 	// Create from `parent` + `model_service_id`; required and immutable on
 	// Update/Get/Delete.
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. The framework validates each path against
-	// the `model_service` field above. Wildcard paths (`paths: ["*"]`) are not
-	// supported; list each field path explicitly.
+	// Fields to update. Use `config` to replace the entire configuration. The
+	// replacement must include every required field; any optional field you
+	// omit is cleared. To preserve sibling fields, use one or more granular
+	// paths: `comment`, `config.routing.destinations`,
+	// `config.routing.fallback.destinations`, `config.rate_limits`, or
+	// `config.inference_table`. Intermediate paths such as `config.routing` and
+	// `config.routing.fallback`, and wildcard paths such as `*`, are not
+	// supported.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`

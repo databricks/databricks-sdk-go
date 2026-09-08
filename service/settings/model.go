@@ -1028,10 +1028,15 @@ func (f *CustomerFacingIngressNetworkPolicyAuthenticationIdentityType) Type() st
 }
 
 type CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess struct {
+	// Allow rules are evaluated after deny rules. A request matching any allow
+	// rule is allowed; a request matching no rule is denied by default. Only
+	// applies when restriction_mode is RESTRICTED_ACCESS.
 	AllowRules []CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule `json:"allow_rules,omitempty"`
-
+	// Deny rules are evaluated first. A request matching any deny rule is
+	// denied, regardless of allow rules. Only applies when restriction_mode is
+	// RESTRICTED_ACCESS.
 	DenyRules []CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule `json:"deny_rules,omitempty"`
-
+	// The restriction mode for cross-workspace access.
 	RestrictionMode CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode `json:"restriction_mode"`
 }
 
@@ -1039,6 +1044,12 @@ func (s *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess) UnmarshalJSON(b
 	return marshal.Unmarshal(b, s)
 }
 
+// The restriction mode for cross-workspace access. In FULL_ACCESS mode,
+// requests from any source workspace (in any account) are allowed, and deny
+// rules and allow rules cannot be set. In RESTRICTED_ACCESS mode, access is
+// restricted based on deny rules and allow rules; requests that do not match
+// any allow rule are denied. In LEGACY_MODE, cross-workspace ingress is not
+// governed by this policy.
 type CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode string
 
 const CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionModeFullAccess CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode = `FULL_ACCESS`
@@ -1079,13 +1090,20 @@ func (f *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode) 
 	return "CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode"
 }
 
+// An ingress rule is enforced when a request satisfies all specified attributes
+// — including request origin, destination, and authentication.
 type CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule struct {
+	// The authenticated identity the request must match. When unset, the rule
+	// matches all users and service principals.
 	Authentication *CustomerFacingIngressNetworkPolicyAuthentication `json:"authentication,omitempty"`
-
+	// The destination the request must match — the resource being accessed,
+	// for example the workspace UI or workspace APIs. See RequestDestination.
 	Destination *CustomerFacingIngressNetworkPolicyRequestDestination `json:"destination,omitempty"`
 	// The label for this ingress rule.
 	Label string `json:"label,omitempty"`
-
+	// The origin the request must match — the source workspace the request
+	// comes from, either specific source workspaces or any source workspace in
+	// any account. See CrossWorkspaceRequestOrigin.
 	Origin *CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin `json:"origin,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
