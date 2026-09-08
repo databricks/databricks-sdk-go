@@ -12,4 +12,6 @@
 
 ### Internal Changes
 
+- Cover account workspace create, credential reassignment, delete, and waiter behavior with deterministic HTTP fixtures.
+
 ### API Changes

@@ -2,12 +2,16 @@ package internal
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/common/environment"
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -202,95 +206,104 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 }
 
 func TestMwsAccWorkspaces(t *testing.T) {
-	ctx, a := accountTest(t)
-	if !IsCloud(environment.CloudAWS) {
-		t.SkipNow()
+	const accountID = "test-account"
+	createRequest := provisioning.CreateWorkspaceRequest{
+		WorkspaceName:          "test-workspace",
+		AwsRegion:              "us-east-1",
+		CredentialsId:          "test-credential-original",
+		StorageConfigurationId: "test-storage",
+	}
+	wantCreated := provisioning.Workspace{
+		WorkspaceId:            123,
+		WorkspaceName:          createRequest.WorkspaceName,
+		CredentialsId:          createRequest.CredentialsId,
+		StorageConfigurationId: createRequest.StorageConfigurationId,
+		WorkspaceStatus:        provisioning.WorkspaceStatusRunning,
+	}
+	wantUpdated := wantCreated
+	wantUpdated.CredentialsId = "test-credential-updated"
+
+	accountPath := "/api/2.0/accounts/" + accountID
+	workspacePath := fmt.Sprintf("%s/workspaces/%d", accountPath, wantCreated.WorkspaceId)
+
+	httpFixtures := qa.HTTPFixtures{
+		{
+			Method:          http.MethodPost,
+			Resource:        accountPath + "/workspaces",
+			ExpectedRequest: createRequest,
+			Response: provisioning.Workspace{
+				WorkspaceId: wantCreated.WorkspaceId,
+			},
+		},
+		{
+			Method:   http.MethodGet,
+			Resource: workspacePath + "?",
+			Response: wantCreated,
+		},
+		{
+			Method:   http.MethodPatch,
+			Resource: workspacePath,
+			ExpectedRequest: provisioning.Workspace{
+				CredentialsId: wantUpdated.CredentialsId,
+			},
+			Response: provisioning.Workspace{
+				WorkspaceId: wantUpdated.WorkspaceId,
+			},
+		},
+		{
+			Method:   http.MethodGet,
+			Resource: workspacePath + "?",
+			Response: wantUpdated,
+		},
+		{
+			Method:   http.MethodDelete,
+			Resource: workspacePath + "?",
+			Response: wantUpdated,
+		},
 	}
 
-	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
-		StorageConfigurationName: RandomName("go-sdk-"),
-		RootBucketInfo: provisioning.RootBucketInfo{
-			BucketName: GetEnvOrSkipTest(t, "TEST_ROOT_BUCKET"),
-		},
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		_, err := a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
-		require.NoError(t, err)
-	})
+	httpFixtures.ApplyClient(t, func(ctx context.Context, apiClient *client.DatabricksClient) {
+		apiClient.Config.AccountID = accountID
+		workspaces := provisioning.NewWorkspaces(apiClient)
+		workspaceComparison := cmpopts.IgnoreFields(provisioning.Workspace{}, "ForceSendFields")
 
-	// TODO: OpenAPI: Document retry protocol on AWS IAM registration errors
-	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
-	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
-			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+		waiter, err := workspaces.Create(ctx, createRequest)
+		if err != nil {
+			t.Fatalf("create workspace: %v", err)
+		}
+
+		gotCreated, err := waiter.Get()
+		if err != nil {
+			t.Fatalf("wait for created workspace: %v", err)
+		}
+		if diff := cmp.Diff(&wantCreated, gotCreated, workspaceComparison); diff != "" {
+			t.Errorf("created workspace mismatch (-want +got):\n%s", diff)
+		}
+
+		updateWaiter, err := workspaces.Update(ctx, provisioning.UpdateWorkspaceRequest{
+			WorkspaceId: wantUpdated.WorkspaceId,
+			CustomerFacingWorkspace: provisioning.Workspace{
+				CredentialsId: wantUpdated.CredentialsId,
 			},
-		},
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		_, err := retries.New[provisioning.Credential](retries.OnErrors(apierr.ErrResourceConflict)).Run(ctx, func(ctx context.Context) (*provisioning.Credential, error) {
-			return a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 		})
-		require.NoError(t, err)
+		if err != nil {
+			t.Fatalf("update workspace: %v", err)
+		}
+
+		gotUpdated, err := updateWaiter.Get()
+		if err != nil {
+			t.Fatalf("wait for updated workspace: %v", err)
+		}
+		if diff := cmp.Diff(&wantUpdated, gotUpdated, workspaceComparison); diff != "" {
+			t.Errorf("updated workspace mismatch (-want +got):\n%s", diff)
+		}
+
+		gotDeleted, err := workspaces.DeleteByWorkspaceId(ctx, wantUpdated.WorkspaceId)
+		if err != nil {
+			t.Fatalf("delete workspace: %v", err)
+		}
+		if diff := cmp.Diff(&wantUpdated, gotDeleted, workspaceComparison); diff != "" {
+			t.Errorf("deleted workspace mismatch (-want +got):\n%s", diff)
+		}
 	})
-
-	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
-			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
-			},
-		},
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		_, err := retries.New[provisioning.Credential](retries.OnErrors(apierr.ErrResourceConflict)).Run(ctx, func(ctx context.Context) (*provisioning.Credential, error) {
-			return a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
-		})
-		require.NoError(t, err)
-	})
-
-	// TODO: Add DNS reachability utility
-	// Do not use CreateAndWait. If the workspaces is created but does not reach running state,
-	// the cleanup step won't be executed since the test will fail at the `require.NoError(t, err)` line.
-	waiter, err := a.Workspaces.Create(ctx, provisioning.CreateWorkspaceRequest{
-		WorkspaceName:          RandomName("go-sdk-"),
-		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
-		CredentialsId:          role.CredentialsId,
-		StorageConfigurationId: storage.StorageConfigurationId,
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		_, err := a.Workspaces.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
-		require.NoError(t, err)
-	})
-	created, err := waiter.Get()
-	require.NoError(t, err)
-
-	// this also takes a while
-	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
-		WorkspaceId: created.WorkspaceId,
-		CustomerFacingWorkspace: provisioning.Workspace{
-			CredentialsId: updateRole.CredentialsId,
-		},
-	})
-	require.NoError(t, err)
-
-	byId, err := a.Workspaces.GetByWorkspaceId(ctx, created.WorkspaceId)
-	require.NoError(t, err)
-
-	byName, err := a.Workspaces.GetByWorkspaceName(ctx, byId.WorkspaceName)
-	require.NoError(t, err)
-	assert.Equal(t, byId.WorkspaceId, byName.WorkspaceId)
-
-	all, err := a.Workspaces.List(ctx)
-	require.NoError(t, err)
-
-	names, err := a.Workspaces.WorkspaceWorkspaceNameToWorkspaceIdMap(ctx)
-	require.NoError(t, err)
-	assert.Equal(t, len(names), len(all))
-	assert.Equal(t, byId.WorkspaceId, names[byId.WorkspaceName])
 }
