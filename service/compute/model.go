@@ -4138,6 +4138,8 @@ const HardwareAcceleratorTypeGpu1xA10 HardwareAcceleratorType = `GPU_1xA10`
 
 const HardwareAcceleratorTypeGpu1xH100 HardwareAcceleratorType = `GPU_1xH100`
 
+const HardwareAcceleratorTypeGpu8xB300 HardwareAcceleratorType = `GPU_8xB300`
+
 const HardwareAcceleratorTypeGpu8xH100 HardwareAcceleratorType = `GPU_8xH100`
 
 // String representation for [fmt.Print]
@@ -4148,11 +4150,11 @@ func (f *HardwareAcceleratorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *HardwareAcceleratorType) Set(v string) error {
 	switch v {
-	case `GPU_1xA10`, `GPU_1xH100`, `GPU_8xH100`:
+	case `GPU_1xA10`, `GPU_1xH100`, `GPU_8xB300`, `GPU_8xH100`:
 		*f = HardwareAcceleratorType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_1xH100", "GPU_8xH100"`, v)
+		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_1xH100", "GPU_8xB300", "GPU_8xH100"`, v)
 	}
 }
 
@@ -4163,6 +4165,7 @@ func (f *HardwareAcceleratorType) Values() []HardwareAcceleratorType {
 	return []HardwareAcceleratorType{
 		HardwareAcceleratorTypeGpu1xA10,
 		HardwareAcceleratorTypeGpu1xH100,
+		HardwareAcceleratorTypeGpu8xB300,
 		HardwareAcceleratorTypeGpu8xH100,
 	}
 }

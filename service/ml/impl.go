@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
 )
 
@@ -750,6 +751,24 @@ type featureEngineeringImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *featureEngineeringImpl) BackfillFeatures(ctx context.Context, request BackfillFeaturesRequest) (*Operation, error) {
+	var operation Operation
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
+	path := "/api/2.0/feature-engineering/features:backfill"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *featureEngineeringImpl) BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error) {
 	var batchCreateMaterializedFeaturesResponse BatchCreateMaterializedFeaturesResponse
 	path := "/api/2.0/feature-engineering/materialized-features:batchCreate"
@@ -763,6 +782,20 @@ func (a *featureEngineeringImpl) BatchCreateMaterializedFeatures(ctx context.Con
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &batchCreateMaterializedFeaturesResponse)
 	return &batchCreateMaterializedFeaturesResponse, err
+}
+
+func (a *featureEngineeringImpl) CancelOperation(ctx context.Context, request CancelOperationRequest) error {
+	path := fmt.Sprintf("/api/2.0/feature-engineering/%v:cancel", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	return err
 }
 
 func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error) {
@@ -917,6 +950,20 @@ func (a *featureEngineeringImpl) GetMaterializedFeature(ctx context.Context, req
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &materializedFeature)
 	return &materializedFeature, err
+}
+
+func (a *featureEngineeringImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/feature-engineering/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
 func (a *featureEngineeringImpl) GetStream(ctx context.Context, request GetStreamRequest) (*Stream, error) {
@@ -1115,6 +1162,24 @@ func (a *featureEngineeringImpl) internalListStreams(ctx context.Context, reques
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listStreamsResponse)
 	return &listStreamsResponse, err
+}
+
+func (a *featureEngineeringImpl) PurgeFeatureEntities(ctx context.Context, request PurgeFeatureEntitiesRequest) (*Operation, error) {
+	var operation Operation
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
+	path := "/api/2.0/feature-engineering/features:purgeFeatureEntities"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
 func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error) {

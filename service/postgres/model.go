@@ -56,8 +56,7 @@ func (s *BranchOperationMetadata) UnmarshalJSON(b []byte) error {
 
 type BranchSpec struct {
 	// Absolute expiration timestamp. When set, the branch will expire at this
-	// time. Mutually exclusive with `ttl` and `no_expiry`. When updating, use
-	// `spec.expiration` in the update_mask.
+	// time. Mutually exclusive with `ttl` and `no_expiry`.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
 	// When set to true, protects the branch from deletion and reset. Associated
 	// compute endpoints and the project cannot be deleted while the branch is
@@ -66,7 +65,6 @@ type BranchSpec struct {
 	// Explicitly disable expiration. When set to true, the branch will not
 	// expire. If set to false, the request is invalid; provide either ttl or
 	// expire_time instead. Mutually exclusive with `expire_time` and `ttl`.
-	// When updating, use `spec.expiration` in the update_mask.
 	NoExpiry bool `json:"no_expiry,omitempty"`
 	// The name of the source branch from which this branch was created (data
 	// lineage for point-in-time recovery). If not specified, defaults to the
@@ -87,7 +85,7 @@ type BranchSpec struct {
 	SourceSnapshot string `json:"source_snapshot,omitempty"`
 	// Relative time-to-live duration. When set, the branch will expire at
 	// creation_time + ttl. Mutually exclusive with `expire_time` and
-	// `no_expiry`. When updating, use `spec.expiration` in the update_mask.
+	// `no_expiry`.
 	Ttl *duration.Duration `json:"ttl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1259,15 +1257,13 @@ type EndpointSpec struct {
 	Group *EndpointGroupSpec `json:"group,omitempty"`
 	// When set to true, explicitly disables automatic suspension (never
 	// suspend). Should be set to true when provided. Mutually exclusive with
-	// `suspend_timeout_duration`. When updating, use `spec.suspension` in the
-	// update_mask.
+	// `suspend_timeout_duration`.
 	NoSuspension bool `json:"no_suspension,omitempty"`
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
 	// suspended. If specified should be between 60s and 604800s (1 minute to 1
-	// week). Mutually exclusive with `no_suspension`. When updating, use
-	// `spec.suspension` in the update_mask.
+	// week). Mutually exclusive with `no_suspension`.
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2431,15 +2427,13 @@ type ProjectDefaultEndpointSettings struct {
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
 	// When set to true, explicitly disables automatic suspension (never
 	// suspend). Should be set to true when provided. Mutually exclusive with
-	// `suspend_timeout_duration`. When updating, use
-	// `spec.project_default_settings.suspension` in the update_mask.
+	// `suspend_timeout_duration`.
 	NoSuspension bool `json:"no_suspension,omitempty"`
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
 	// suspended. If specified should be between 60s and 604800s (1 minute to 1
-	// week). Mutually exclusive with `no_suspension`. When updating, use
-	// `spec.project_default_settings.suspension` in the update_mask.
+	// week). Mutually exclusive with `no_suspension`.
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
