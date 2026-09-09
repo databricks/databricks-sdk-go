@@ -2912,6 +2912,17 @@ func (f *DeltaSharingScopeEnum) Type() string {
 	return "DeltaSharingScopeEnum"
 }
 
+type DenyOptions struct {
+	// List of privileges to deny. When any of these privileges are requested,
+	// the policy will deny access if the principal and condition match.
+	// Required on create and update.
+	Privileges []string `json:"privileges"`
+}
+
+func (s *DenyOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A dependency of a SQL object. One of the following fields must be defined:
 // __table__, __function__, __connection__, __credential__, __volume__, or
 // __secret__.
@@ -8405,6 +8416,11 @@ type PolicyInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of the user who created the policy. Output only.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Options for deny policies. Valid only if `policy_type` is
+	// `POLICY_TYPE_DENY`. Required on create and optional on update. When
+	// specified on update, the new options will replace the existing options as
+	// a whole.
+	Deny *DenyOptions `json:"deny,omitempty"`
 	// Optional list of user or group names that should be excluded from the
 	// policy.
 	ExceptPrincipals []string `json:"except_principals,omitempty"`
@@ -8465,6 +8481,8 @@ type PolicyType string
 
 const PolicyTypePolicyTypeColumnMask PolicyType = `POLICY_TYPE_COLUMN_MASK`
 
+const PolicyTypePolicyTypeDeny PolicyType = `POLICY_TYPE_DENY`
+
 const PolicyTypePolicyTypeGrant PolicyType = `POLICY_TYPE_GRANT`
 
 const PolicyTypePolicyTypeRowFilter PolicyType = `POLICY_TYPE_ROW_FILTER`
@@ -8477,11 +8495,11 @@ func (f *PolicyType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PolicyType) Set(v string) error {
 	switch v {
-	case `POLICY_TYPE_COLUMN_MASK`, `POLICY_TYPE_GRANT`, `POLICY_TYPE_ROW_FILTER`:
+	case `POLICY_TYPE_COLUMN_MASK`, `POLICY_TYPE_DENY`, `POLICY_TYPE_GRANT`, `POLICY_TYPE_ROW_FILTER`:
 		*f = PolicyType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "POLICY_TYPE_COLUMN_MASK", "POLICY_TYPE_GRANT", "POLICY_TYPE_ROW_FILTER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "POLICY_TYPE_COLUMN_MASK", "POLICY_TYPE_DENY", "POLICY_TYPE_GRANT", "POLICY_TYPE_ROW_FILTER"`, v)
 	}
 }
 
@@ -8491,6 +8509,7 @@ func (f *PolicyType) Set(v string) error {
 func (f *PolicyType) Values() []PolicyType {
 	return []PolicyType{
 		PolicyTypePolicyTypeColumnMask,
+		PolicyTypePolicyTypeDeny,
 		PolicyTypePolicyTypeGrant,
 		PolicyTypePolicyTypeRowFilter,
 	}

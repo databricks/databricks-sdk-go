@@ -34,7 +34,7 @@ type PipelinesInterface interface {
 	WaitGetPipelineIdle(ctx context.Context, pipelineId string,
 		timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error)
 
-	// * Applies the current pipeline environment onto the pipeline compute. The
+	// Applies the current pipeline environment onto the pipeline compute. The
 	// environment applied can be used by subsequent dev-mode updates.
 	ApplyEnvironment(ctx context.Context, request ApplyEnvironmentRequest) (*ApplyEnvironmentRequestResponse, error)
 
