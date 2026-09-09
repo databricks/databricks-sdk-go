@@ -43,3 +43,5 @@
 * [Breaking] Remove `FirstTokenTimeout` and `TrafficSplitting` fields for [catalog.ModelServiceConfigRoutingConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelServiceConfigRoutingConfig).
 * [Breaking] Remove `RequestTagKey` and `RequestTagValue` fields for [catalog.RateLimit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RateLimit).
 * [Breaking] Remove `RateLimitKeyRequestTag` enum value for [catalog.RateLimitRateLimitKey](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RateLimitRateLimitKey).
+* Add `Deny` field for [catalog.PolicyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#PolicyInfo).
+* Add `PolicyTypeDeny` enum value for [catalog.PolicyType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#PolicyType).

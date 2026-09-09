@@ -30,8 +30,7 @@ func (s CreateDomainRequest) MarshalJSON() ([]byte, error) {
 type DeleteDomainRequest struct {
 	// When false (default), DeleteDomain is rejected with FAILED_PRECONDITION
 	// if the domain still has Glossary pages. When true, those pages are
-	// deleted first and then the domain is removed. Forwarded to the central
-	// service.
+	// deleted first and then the domain is removed.
 	Force bool `json:"-" url:"force,omitempty"`
 	// Full resource name of the domain to delete. Format: `domains/{domain_id}`
 	Name string `json:"-" url:"-"`
