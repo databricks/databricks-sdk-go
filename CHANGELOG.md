@@ -1,5 +1,44 @@
 # Version changelog
 
+## Release v0.178.0 (2026-09-09)
+
+### Internal Changes
+
+- Test changes.
+
+### API Changes
+* Add [aifunctions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aifunctions), [domains](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/domains) and [sandbox](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox) packages.
+* Add [w.AiFunctions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aifunctions#AiFunctionsAPI) workspace-level service.
+* Add [w.Domains](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/domains#DomainsAPI) workspace-level service.
+* Add [w.Sandbox](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#SandboxAPI) workspace-level service.
+* Add `BackfillFeatures`, `CancelOperation`, `GetOperation` and `PurgeFeatureEntities` methods for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service.
+* Add `ProvisionedCapacityId` field for [jobs.ComputeSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ComputeSpec).
+* Add `Mode` field for [ml.CronSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#CronSchedule).
+* Add `EntityColumns` and `TimeseriesColumn` fields for [ml.DeltaTableSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DeltaTableSource).
+* Add `FilterCondition`, `Inputs` and `TimeWindow` fields for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature).
+* Add `ExtraParameters` and `FunctionType` fields for [ml.Function](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Function).
+* Add `BudgetPolicyId` and `Tags` fields for [ml.IngestionConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#IngestionConfig).
+* Add `EntityColumnIdentifiers` and `TimeseriesColumnIdentifier` fields for [ml.KafkaSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#KafkaSource).
+* Add `BudgetPolicyId`, `CronSchedule`, `LatestBackfillOperation` and `Tags` fields for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `FullFeatureName` field for [ml.PublishSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#PublishSpec).
+* Add `ExcludedColumns` and `RecordTypeFilter` fields for [ml.Stream](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Stream).
+* Add `Continuous` field for [ml.TimeWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#TimeWindow).
+* Add `DeploymentResourceTypeSecret` and `DeploymentResourceTypeClusterPolicy` enum values for [bundledeployments.DeploymentResourceType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#DeploymentResourceType).
+* Add `AwsSecretsManager` and `AzureKeyVault` enum values for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
+* Add `ExternalUseLocation` enum value for [catalog.Privilege](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#Privilege).
+* Add `Gpu8xB300` enum value for [compute.HardwareAcceleratorType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#HardwareAcceleratorType).
+* [Breaking] Remove `Disabled` field for [catalog.InferenceTableConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#InferenceTableConfig).
+* [Breaking] Remove `Owner` field for [catalog.McpService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#McpService).
+* [Breaking] Remove `Owner` field for [catalog.ModelProviderService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderService).
+* [Breaking] Remove `PlanType` field for [catalog.ModelProviderServiceConfigAnthropicProviderRelayedConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigAnthropicProviderRelayedConfig).
+* [Breaking] Remove `Owner` field for [catalog.ModelService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelService).
+* [Breaking] Remove `FirstTokenTimeout` and `TrafficSplitting` fields for [catalog.ModelServiceConfigRoutingConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelServiceConfigRoutingConfig).
+* [Breaking] Remove `RequestTagKey` and `RequestTagValue` fields for [catalog.RateLimit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RateLimit).
+* [Breaking] Remove `RateLimitKeyRequestTag` enum value for [catalog.RateLimitRateLimitKey](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RateLimitRateLimitKey).
+* Add `Deny` field for [catalog.PolicyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#PolicyInfo).
+* Add `PolicyTypeDeny` enum value for [catalog.PolicyType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#PolicyType).
+
+
 ## Release v0.177.0 (2026-08-31)
 
 ### API Changes
