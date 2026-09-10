@@ -1198,6 +1198,8 @@ func (s *CustomUdf) UnmarshalJSON(b []byte) error {
 type DataSource struct {
 	// A Delta table data source.
 	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
+	// A data source composed from registered upstream Features.
+	FeatureViewSource *FeatureViewSource `json:"feature_view_source,omitempty"`
 	// A Kafka stream data source.
 	KafkaSource *KafkaSource `json:"kafka_source,omitempty"`
 	// Completeness timing for this Feature's use of the source. This
@@ -2232,6 +2234,18 @@ func (s *FeatureList) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A reference to one registered upstream Feature. A message rather than a bare
+// name so an upstream can later be pinned more precisely (e.g. by version)
+// without a breaking type change.
+type FeatureReference struct {
+	// The three-part full name of the upstream Feature.
+	Feature string `json:"feature"`
+}
+
+func (s *FeatureReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Represents a tag on a feature in a feature table.
 type FeatureTag struct {
 	Key string `json:"key"`
@@ -2247,6 +2261,17 @@ func (s *FeatureTag) UnmarshalJSON(b []byte) error {
 
 func (s FeatureTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A data source composed from registered upstream Features.
+type FeatureViewSource struct {
+	// The upstream Features this source reads. Must include at least one
+	// feature.
+	FeatureReferences []FeatureReference `json:"feature_references,omitempty"`
+}
+
+func (s *FeatureViewSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A single field definition within a FlatSchema, specifying the field name and
@@ -4716,6 +4741,11 @@ func (s *ProtoSchemaSpec) UnmarshalJSON(b []byte) error {
 }
 
 type PublishSpec struct {
+	// Budget policy id used to attribute the serverless compute cost of the
+	// synced online-table sync pipeline. Applied only when the sync pipeline is
+	// first created (the initial publish of a new online table); republishing
+	// to an existing online table does not update it.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Full Unity Catalog name of one of the features materialized in the source
 	// table, used to derive the synced online table's entity and timeseries
 	// columns. Required for view sources without a UC PrimaryKeyConstraint;
@@ -4728,6 +4758,13 @@ type PublishSpec struct {
 	// The publish mode of the pipeline that syncs the online table with the
 	// source table.
 	PublishMode PublishSpecPublishMode `json:"publish_mode"`
+	// Custom tags to apply to the synced online-table sync pipeline created for
+	// this publish. They are forwarded to the pipeline's compute as cluster
+	// tags so its cost can be attributed in the billing system tables. Applied
+	// only when the sync pipeline is first created (the initial publish of a
+	// new online table); republishing to an existing online table does not
+	// update them.
+	Tags map[string]string `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4912,6 +4949,9 @@ func (s PurgeFeatureEntitiesRequest) MarshalJSON() ([]byte, error) {
 
 // Result of a completed feature entity purge.
 type PurgeFeatureEntitiesResponse struct {
+	// Operation-level error, if the purge failed outside an individual feature
+	// target.
+	Error *DatabricksServiceExceptionWithDetailsProto `json:"error,omitempty"`
 	// Metadata about the purge operation.
 	Metadata *PurgeFeatureEntitiesMetadata `json:"metadata,omitempty"`
 	// Per-feature purge results.

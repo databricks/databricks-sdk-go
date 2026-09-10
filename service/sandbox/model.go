@@ -196,7 +196,7 @@ func (s ListSandboxesResponse) MarshalJSON() ([]byte, error) {
 type Sandbox struct {
 	// Output only. The creation time of the sandbox.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Human-readable display label for the sandbox. At most 256 bytes.
+	// Human-readable display label for the sandbox. At most 256 characters.
 	DisplayName string `json:"display_name,omitempty"`
 	// The AIP-compliant resource name, such as "sandboxes/my-sandbox".
 	Name string `json:"name,omitempty"`

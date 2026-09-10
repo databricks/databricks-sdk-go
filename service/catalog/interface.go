@@ -844,8 +844,8 @@ type ModelVersionsService interface {
 	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error)
 
-	// List model versions. You can list model versions under a particular
-	// schema, or list all model versions in the current metastore.
+	// List the model versions of the specified registered model, identified by
+	// its full three-level name (catalog.schema.model).
 	//
 	// The returned models are filtered based on the privileges of the calling
 	// user. For example, the metastore admin is able to list all the model

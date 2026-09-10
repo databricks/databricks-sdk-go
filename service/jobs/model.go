@@ -52,6 +52,10 @@ type AiRuntimeTask struct {
 	// Optional display name for the MLflow run created under `experiment`. If
 	// omitted, MLflow generates a default name.
 	MlflowRun string `json:"mlflow_run,omitempty"`
+	// Optional Unity Catalog path for a custom container image. When set, the
+	// task runs on the specified container image instead of the default
+	// Databricks client image. Format: `{catalog}.{schema}.{image_name}:{tag}`
+	UnityCatalogImagePath string `json:"unity_catalog_image_path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
