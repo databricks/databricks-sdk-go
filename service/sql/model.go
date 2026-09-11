@@ -5508,7 +5508,7 @@ func (s *TerminationReason) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// The status code indicating why the cluster was terminated
+// The status code indicating why the cluster was terminated.
 type TerminationReasonCode string
 
 const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
