@@ -10751,8 +10751,7 @@ type UpdateMcpServiceRequest struct {
 	// replacement must include every required field; any optional field you
 	// omit is cleared. To preserve sibling fields, use one or more granular
 	// paths: `comment`, `config.source_connection.name`,
-	// `config.include_tool_selectors`, or `config.rate_limits`. Wildcard paths
-	// such as `*` are not supported.
+	// `config.include_tool_selectors`, or `config.rate_limits`.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10846,8 +10845,7 @@ type UpdateModelProviderServiceRequest struct {
 	// remains `config.provider`); `config.allow_all_targets`, `config.targets`,
 	// `config.forward_headers`, `config.forward_query_parameters`,
 	// `config.forward_unmanaged_paths`, `config.rate_limits`, or
-	// `config.inference_table`. The provider type is immutable, and wildcard
-	// paths such as `*` are not supported.
+	// `config.inference_table`. The provider type is immutable.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10883,8 +10881,7 @@ type UpdateModelServiceRequest struct {
 	// paths: `comment`, `config.routing.destinations`,
 	// `config.routing.fallback.destinations`, `config.rate_limits`, or
 	// `config.inference_table`. Intermediate paths such as `config.routing` and
-	// `config.routing.fallback`, and wildcard paths such as `*`, are not
-	// supported.
+	// `config.routing.fallback` are not supported.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`

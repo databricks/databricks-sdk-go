@@ -2127,8 +2127,8 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 	return &modelVersionInfo, err
 }
 
-// List model versions. You can list model versions under a particular schema,
-// or list all model versions in the current metastore.
+// List the model versions of the specified registered model, identified by its
+// full three-level name (catalog.schema.model).
 //
 // The returned models are filtered based on the privileges of the calling user.
 // For example, the metastore admin is able to list all the model versions. A
@@ -2169,8 +2169,8 @@ func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsR
 	return iterator
 }
 
-// List model versions. You can list model versions under a particular schema,
-// or list all model versions in the current metastore.
+// List the model versions of the specified registered model, identified by its
+// full three-level name (catalog.schema.model).
 //
 // The returned models are filtered based on the privileges of the calling user.
 // For example, the metastore admin is able to list all the model versions. A

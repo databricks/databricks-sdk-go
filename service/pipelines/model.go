@@ -3551,6 +3551,11 @@ func (s StackFrame) MarshalJSON() ([]byte, error) {
 
 type StartUpdate struct {
 	Cause StartUpdateCause `json:"cause,omitempty"`
+	// Whether the update is started in the development mode. This is
+	// recommended for interactive development and testing. Reuses compute for
+	// faster iteration and disables automatic retries. Not recommended for
+	// production.
+	Development bool `json:"development,omitempty"`
 	// If true, this update will reset all tables before running.
 	FullRefresh bool `json:"full_refresh,omitempty"`
 	// A list of tables to update with fullRefresh. If both refresh_selection

@@ -347,6 +347,9 @@ func (s *GenieCancelResponseRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A Genie conversation. Use chat-mode message endpoints for classic chats and
+// agent-mode response and item endpoints for agent conversations. Conversation
+// management, feedback, comments, and attachment operations support both modes.
 type GenieConversation struct {
 	// Conversation ID
 	ConversationId string `json:"conversation_id"`
@@ -746,6 +749,8 @@ func (s GenieEvalResultDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A benchmark evaluation run. The public benchmark API currently evaluates
+// chat-mode responses.
 type GenieEvalRunResponse struct {
 	// Timestamp when the evaluation run was created (milliseconds since epoch).
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`

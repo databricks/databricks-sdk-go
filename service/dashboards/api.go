@@ -20,9 +20,9 @@ type GenieInterface interface {
 	WaitGetMessageGenieCompleted(ctx context.Context, conversationId string, messageId string, spaceId string,
 		timeout time.Duration, callback func(*GenieMessage)) (*GenieMessage, error)
 
-	// Create new message in a [conversation](:method:genie/startconversation). The
-	// AI response uses all previously created messages in the conversation to
-	// respond.
+	// Sends a new message in a chat-mode
+	// [conversation](:method:genie/startconversation). The AI response uses all
+	// previously created messages in the conversation to respond.
 	CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error)
 
 	// Calls [GenieAPIInterface.CreateMessage] and waits to reach COMPLETED state
@@ -92,7 +92,8 @@ type GenieInterface interface {
 	// response stops at the next agent boundary and its terminal state is returned.
 	GenieCancelResponse(ctx context.Context, request GenieCancelResponseRequest) (*GenieMessage, error)
 
-	// Create and run evaluations for multiple benchmark questions in a Genie space.
+	// Creates and runs chat-mode evaluations for multiple benchmark questions in a
+	// Genie space.
 	GenieCreateEvalRun(ctx context.Context, request GenieCreateEvalRunRequest) (*GenieEvalRunResponse, error)
 
 	// Get details for evaluation results.
@@ -159,10 +160,12 @@ type GenieInterface interface {
 	// ----
 	GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error)
 
-	// Get message from conversation.
+	// Gets a message from a chat-mode or agent-mode conversation. For a complete
+	// agent-mode transcript, use the List conversation items endpoint.
 	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
 
-	// Get message from conversation.
+	// Gets a message from a chat-mode or agent-mode conversation. For a complete
+	// agent-mode transcript, use the List conversation items endpoint.
 	GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error)
 
 	// Get the result of SQL query if the message has a query attachment. This is
@@ -200,7 +203,9 @@ type GenieInterface interface {
 	// List all comments across all messages in a conversation.
 	ListConversationComments(ctx context.Context, request GenieListConversationCommentsRequest) (*GenieListConversationCommentsResponse, error)
 
-	// List messages in a conversation
+	// Lists messages in a chat-mode or agent-mode conversation. Agent-mode messages
+	// are returned as GenieMessage projections. Use the List conversation items
+	// endpoint for the complete reasoning and tool-call history.
 	ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error)
 
 	// Get a list of conversations in a Genie Space.
@@ -215,10 +220,10 @@ type GenieInterface interface {
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
 
-	// Send feedback for a message.
+	// Sends feedback for a message in a chat-mode or agent-mode conversation.
 	SendMessageFeedback(ctx context.Context, request GenieSendMessageFeedbackRequest) error
 
-	// Start a new conversation.
+	// Starts a new chat-mode conversation and sends its first message.
 	StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error)
 
 	// Calls [GenieAPIInterface.StartConversation] and waits to reach COMPLETED state
@@ -314,9 +319,9 @@ func (w *WaitGetMessageGenieCompleted[R]) GetWithTimeout(timeout time.Duration) 
 	return w.Poll(timeout, w.callback)
 }
 
-// Create new message in a [conversation](:method:genie/startconversation). The
-// AI response uses all previously created messages in the conversation to
-// respond.
+// Sends a new message in a chat-mode
+// [conversation](:method:genie/startconversation). The AI response uses all
+// previously created messages in the conversation to respond.
 func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error) {
 	genieMessage, err := a.genieImpl.CreateMessage(ctx, genieCreateConversationMessageRequest)
 	if err != nil {
@@ -404,7 +409,8 @@ func (a *GenieAPI) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessag
 	})
 }
 
-// Get message from conversation.
+// Gets a message from a chat-mode or agent-mode conversation. For a complete
+// agent-mode transcript, use the List conversation items endpoint.
 func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
 	return a.genieImpl.GetMessage(ctx, GenieGetConversationMessageRequest{
 		SpaceId:        spaceId,
@@ -460,7 +466,7 @@ func (a *GenieAPI) ListConversationsBySpaceId(ctx context.Context, spaceId strin
 	})
 }
 
-// Start a new conversation.
+// Starts a new chat-mode conversation and sends its first message.
 func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error) {
 	genieStartConversationResponse, err := a.genieImpl.StartConversation(ctx, genieStartConversationMessageRequest)
 	if err != nil {
