@@ -768,6 +768,9 @@ type Setting struct {
 	// Effective setting value for string type setting. This is the final
 	// effective value of setting. To set a value use string_val.
 	EffectiveStringVal *StringMessage `json:"effective_string_val,omitempty"`
+	// Effective setting value for workspace_label setting. This is the final
+	// effective value of setting. To set a value use workspace_label.
+	EffectiveWorkspaceLabel *WorkspaceLabelMessage `json:"effective_workspace_label,omitempty"`
 	// Setting value for integer type setting. This is the setting value set by
 	// consumers, check effective_integer_val for final setting value.
 	IntegerVal *IntegerMessage `json:"integer_val,omitempty"`
@@ -787,6 +790,9 @@ type Setting struct {
 	// Setting value for string type setting. This is the setting value set by
 	// consumers, check effective_string_val for final setting value.
 	StringVal *StringMessage `json:"string_val,omitempty"`
+	// Setting value for workspace_label setting. This is the setting value set
+	// by consumers, check effective_workspace_label for final setting value.
+	WorkspaceLabel *WorkspaceLabelMessage `json:"workspace_label,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -867,5 +873,22 @@ func (s *UserPreference) UnmarshalJSON(b []byte) error {
 }
 
 func (s UserPreference) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Workspace label and color for display (e.g. in account console).
+type WorkspaceLabelMessage struct {
+	Color string `json:"color,omitempty"`
+
+	Label string `json:"label,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *WorkspaceLabelMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceLabelMessage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }

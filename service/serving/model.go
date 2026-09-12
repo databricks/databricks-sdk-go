@@ -326,6 +326,9 @@ type AmazonBedrockConfig struct {
 	// `aws_access_key_id`, `aws_access_key_id_plaintext`,
 	// `aws_secret_access_key` and `aws_secret_access_key_plaintext`.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The name of the Unity Catalog service credential that the external model
+	// uses to access AWS resources.
+	UcServiceCredentialName string `json:"uc_service_credential_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
