@@ -59,8 +59,8 @@ type ExperimentsInterface interface {
 	DeleteRun(ctx context.Context, request DeleteRun) error
 
 	// Bulk delete runs in an experiment that were created prior to or at the
-	// specified timestamp. Deletes at most max_runs per request. To call this API
-	// from a Databricks Notebook in Python, you can use the client code snippet on
+	// specified timestamp. Deletes at most max_runs per request. See the
+	// cloud-specific MLflow runs documentation for a Python client example.
 	DeleteRuns(ctx context.Context, request DeleteRuns) (*DeleteRunsResponse, error)
 
 	// Deletes a tag on a run. Tags are run metadata that can be updated during a
@@ -243,8 +243,8 @@ type ExperimentsInterface interface {
 	RestoreRun(ctx context.Context, request RestoreRun) error
 
 	// Bulk restore runs in an experiment that were deleted no earlier than the
-	// specified timestamp. Restores at most max_runs per request. To call this API
-	// from a Databricks Notebook in Python, you can use the client code snippet on
+	// specified timestamp. Restores at most max_runs per request. See the
+	// cloud-specific MLflow runs documentation for a Python client example.
 	RestoreRuns(ctx context.Context, request RestoreRuns) (*RestoreRunsResponse, error)
 
 	// Searches for experiments that satisfy specified search criteria.

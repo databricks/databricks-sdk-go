@@ -1418,6 +1418,10 @@ func (s CustomerFacingIngressNetworkPolicyRequestDestination) MarshalJSON() ([]b
 // Matches workspace-level Databricks API endpoints for an ingress network
 // policy rule.
 type CustomerFacingIngressNetworkPolicyWorkspaceApiDestination struct {
+	// Inverse of `scopes`: matches every API scope EXCEPT those listed here
+	// ("allow all except"). Mutually exclusive with `scopes` — a single
+	// destination may set at most one of the two.
+	ExcludedScopes []string `json:"excluded_scopes,omitempty"`
 	// Qualifies the breadth of API access for the listed scopes. See
 	// ApiScopeQualifier.
 	ScopeQualifier CustomerFacingIngressNetworkPolicyApiScopeQualifier `json:"scope_qualifier,omitempty"`

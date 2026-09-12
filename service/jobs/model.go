@@ -1015,12 +1015,16 @@ type CreateJob struct {
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
-	// referenced by serverless tasks of this job. For serverless notebook
-	// tasks, if the environment_key is not specified, the notebook environment
-	// will be used if present. If a jobs environment is specified, it will
-	// override the notebook environment. For other serverless tasks, the task
-	// environment is required to be specified using environment_key in the task
-	// settings.
+	// referenced by tasks that use serverless compute or a compute resource
+	// that uses Environments mode.
+	//
+	// For notebook tasks that use serverless compute or a compute resource that
+	// uses Environments mode, if the environment_key is not specified, the
+	// notebook environment will be used if present. If a jobs environment is
+	// specified, it will override the notebook environment. For other tasks
+	// that use serverless compute or a compute resource that uses Environments
+	// mode, the task environment is required to be specified using
+	// environment_key in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -2671,12 +2675,16 @@ type JobSettings struct {
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
-	// referenced by serverless tasks of this job. For serverless notebook
-	// tasks, if the environment_key is not specified, the notebook environment
-	// will be used if present. If a jobs environment is specified, it will
-	// override the notebook environment. For other serverless tasks, the task
-	// environment is required to be specified using environment_key in the task
-	// settings.
+	// referenced by tasks that use serverless compute or a compute resource
+	// that uses Environments mode.
+	//
+	// For notebook tasks that use serverless compute or a compute resource that
+	// uses Environments mode, if the environment_key is not specified, the
+	// notebook environment will be used if present. If a jobs environment is
+	// specified, it will override the notebook environment. For other tasks
+	// that use serverless compute or a compute resource that uses Environments
+	// mode, the task environment is required to be specified using
+	// environment_key in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -5227,7 +5235,7 @@ type RunTask struct {
 	EndTime int64 `json:"end_time,omitempty"`
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
-	// serverless compute.
+	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
@@ -6199,7 +6207,7 @@ type SubmitTask struct {
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
-	// serverless compute.
+	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
@@ -6441,7 +6449,7 @@ type Task struct {
 	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
-	// serverless compute.
+	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
