@@ -52,6 +52,11 @@ type AiRuntimeTask struct {
 	// Optional display name for the MLflow run created under `experiment`. If
 	// omitted, MLflow generates a default name.
 	MlflowRun string `json:"mlflow_run,omitempty"`
+	// Scheduling priority class for the workload. May only be set together with
+	// a pre-provisioned capacity reservation (a deployment's
+	// `compute.provisioned_capacity_id`); it is rejected on a workload that
+	// runs on on-demand capacity.
+	PriorityClass AiRuntimeTaskPriorityClass `json:"priority_class,omitempty"`
 	// Optional Unity Catalog path for a custom container image. When set, the
 	// task runs on the specified container image instead of the default
 	// Databricks client image. Format: `{catalog}.{schema}.{image_name}:{tag}`
@@ -94,6 +99,48 @@ func (s *AiRuntimeTaskOutput) UnmarshalJSON(b []byte) error {
 
 func (s AiRuntimeTaskOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Scheduling priority class for a workload — its priority and preemptability
+// when the scheduler ranks pending work.
+type AiRuntimeTaskPriorityClass string
+
+const AiRuntimeTaskPriorityClassBestEffort AiRuntimeTaskPriorityClass = `BEST_EFFORT`
+
+const AiRuntimeTaskPriorityClassCritical AiRuntimeTaskPriorityClass = `CRITICAL`
+
+const AiRuntimeTaskPriorityClassNormal AiRuntimeTaskPriorityClass = `NORMAL`
+
+// String representation for [fmt.Print]
+func (f *AiRuntimeTaskPriorityClass) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AiRuntimeTaskPriorityClass) Set(v string) error {
+	switch v {
+	case `BEST_EFFORT`, `CRITICAL`, `NORMAL`:
+		*f = AiRuntimeTaskPriorityClass(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BEST_EFFORT", "CRITICAL", "NORMAL"`, v)
+	}
+}
+
+// Values returns all possible values for AiRuntimeTaskPriorityClass.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AiRuntimeTaskPriorityClass) Values() []AiRuntimeTaskPriorityClass {
+	return []AiRuntimeTaskPriorityClass{
+		AiRuntimeTaskPriorityClassBestEffort,
+		AiRuntimeTaskPriorityClassCritical,
+		AiRuntimeTaskPriorityClassNormal,
+	}
+}
+
+// Type always returns AiRuntimeTaskPriorityClass to satisfy [pflag.Value] interface
+func (f *AiRuntimeTaskPriorityClass) Type() string {
+	return "AiRuntimeTaskPriorityClass"
 }
 
 // Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto
@@ -783,6 +830,8 @@ const ComputeSpecAcceleratorTypeGpu1xA10 ComputeSpecAcceleratorType = `GPU_1xA10
 
 const ComputeSpecAcceleratorTypeGpu1xH100 ComputeSpecAcceleratorType = `GPU_1xH100`
 
+const ComputeSpecAcceleratorTypeGpu8xB300 ComputeSpecAcceleratorType = `GPU_8xB300`
+
 const ComputeSpecAcceleratorTypeGpu8xH100 ComputeSpecAcceleratorType = `GPU_8xH100`
 
 // String representation for [fmt.Print]
@@ -793,11 +842,11 @@ func (f *ComputeSpecAcceleratorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComputeSpecAcceleratorType) Set(v string) error {
 	switch v {
-	case `GPU_1xA10`, `GPU_1xH100`, `GPU_8xH100`:
+	case `GPU_1xA10`, `GPU_1xH100`, `GPU_8xB300`, `GPU_8xH100`:
 		*f = ComputeSpecAcceleratorType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_1xH100", "GPU_8xH100"`, v)
+		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_1xH100", "GPU_8xB300", "GPU_8xH100"`, v)
 	}
 }
 
@@ -808,6 +857,7 @@ func (f *ComputeSpecAcceleratorType) Values() []ComputeSpecAcceleratorType {
 	return []ComputeSpecAcceleratorType{
 		ComputeSpecAcceleratorTypeGpu1xA10,
 		ComputeSpecAcceleratorTypeGpu1xH100,
+		ComputeSpecAcceleratorTypeGpu8xB300,
 		ComputeSpecAcceleratorTypeGpu8xH100,
 	}
 }
