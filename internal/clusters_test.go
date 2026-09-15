@@ -2,60 +2,94 @@ package internal
 
 import (
 	"context"
-	"strings"
+	"net/http"
 	"testing"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/common/environment"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func sharedRunningCluster(t *testing.T, ctx context.Context,
-	w *databricks.WorkspaceClient,
-) string {
-	clusterId := GetEnvOrSkipTest(t, "TEST_GO_SDK_CLUSTER_ID")
-	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
-	require.NoError(t, err)
-	return clusterId
-}
-
-func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
-	ctx, w := workspaceTest(t)
-
-	// Fetch list of spark runtime versions
-	sparkVersions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
-
-	// Select the latest LTS version without Photon
-	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
-		Latest:          true,
-		LongTermSupport: true,
-	})
-	require.NoError(t, err)
-
-	var clusterId string
-
-	// Create a cluster with unreasonably low timeout
-	_, err = w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
-		ClusterName:            RandomName(t.Name()),
-		SparkVersion:           latest,
-		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+func TestClustersCreateTimesOutAndCleansUp(t *testing.T) {
+	const clusterID = "test-cluster"
+	createRequest := compute.CreateCluster{
+		ClusterName:            "test-cluster",
+		SparkVersion:           "15.4.x-scala2.12",
+		InstancePoolId:         "test-pool",
 		AutoterminationMinutes: 10,
 		NumWorkers:             1,
-	}, retries.Timeout[compute.ClusterDetails](15*time.Second),
-		func(i *retries.Info[compute.ClusterDetails]) {
-			if i.Info == nil {
-				return
-			}
-			clusterId = i.Info.ClusterId
-		})
-	assert.True(t, strings.HasPrefix(err.Error(), "timed out: "))
-	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clusterId)
-	require.NoError(t, err)
+	}
+	pending := compute.ClusterDetails{
+		ClusterId:    clusterID,
+		State:        compute.StatePending,
+		StateMessage: "still provisioning",
+	}
+
+	qa.HTTPFixtures{
+		{
+			Method:          http.MethodPost,
+			Resource:        "/api/2.1/clusters/create",
+			ExpectedRequest: createRequest,
+			Response: compute.CreateClusterResponse{
+				ClusterId: clusterID,
+			},
+		},
+		{
+			Method:   http.MethodGet,
+			Resource: "/api/2.1/clusters/get?cluster_id=" + clusterID,
+			Response: pending,
+		},
+		{
+			Method:   http.MethodGet,
+			Resource: "/api/2.1/clusters/get?cluster_id=" + clusterID,
+			Response: pending,
+		},
+		{
+			Method:   http.MethodPost,
+			Resource: "/api/2.1/clusters/delete",
+			ExpectedRequest: compute.DeleteCluster{
+				ClusterId: clusterID,
+			},
+		},
+		{
+			Method:   http.MethodGet,
+			Resource: "/api/2.1/clusters/get?cluster_id=" + clusterID,
+			Response: compute.ClusterDetails{
+				ClusterId: clusterID,
+				State:     compute.StateTerminated,
+			},
+		},
+	}.ApplyClient(t, func(ctx context.Context, apiClient *client.DatabricksClient) {
+		clusters := compute.NewClusters(apiClient)
+		createCtx, cancelCreate := context.WithCancel(ctx)
+		defer cancelCreate()
+
+		var gotStates []compute.State
+		_, err := clusters.CreateAndWait(
+			createCtx,
+			createRequest,
+			retries.Timeout[compute.ClusterDetails](time.Minute),
+			retries.OnPoll(func(details *compute.ClusterDetails) {
+				gotStates = append(gotStates, details.State)
+				if len(gotStates) == 2 {
+					cancelCreate()
+				}
+			}),
+		)
+		assert.EqualError(t, err, "timed out: still provisioning")
+		assert.Equal(t, []compute.State{compute.StatePending, compute.StatePending}, gotStates)
+
+		deleted, err := clusters.DeleteByClusterIdAndWait(ctx, clusterID)
+		require.NoError(t, err)
+		assert.Equal(t, clusterID, deleted.ClusterId)
+		assert.Equal(t, compute.StateTerminated, deleted.State)
+	})
 }
 
 func TestAccClustersGetCorrectErrorMessageNoTranspile(t *testing.T) {
