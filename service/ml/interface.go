@@ -373,6 +373,11 @@ type FeatureStoreService interface {
 	PublishTable(ctx context.Context, request PublishTableRequest) (*PublishTableResponse, error)
 
 	// Update an Online Feature Store.
+	//
+	// This update is not guaranteed to be atomic: when a request changes
+	// multiple fields, some may be applied while others fail. On a failed
+	// response, treat the update as partially applied and retry until it
+	// succeeds.
 	UpdateOnlineStore(ctx context.Context, request UpdateOnlineStoreRequest) (*OnlineStore, error)
 }
 
