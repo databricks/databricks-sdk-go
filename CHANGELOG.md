@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.180.0 (2026-09-16)
+
+### API Changes
+* Add `GroupName` field for [pipelines.RunAs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#RunAs).
+
+
 ## Release v0.179.0 (2026-09-14)
 
 ### API Changes
