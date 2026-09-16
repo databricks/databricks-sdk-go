@@ -12,4 +12,6 @@
 
 ### Internal Changes
 
+- Reduce integration test cluster usage by replacing waiter coverage with HTTP fixtures and removing redundant live tests.
+
 ### API Changes
