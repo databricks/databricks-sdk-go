@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.181.0
+## Release v0.182.0
 
 ### Breaking Changes
 
@@ -11,7 +11,5 @@
 ### Documentation
 
 ### Internal Changes
-
-- Reduce integration test cluster usage by replacing waiter coverage with HTTP fixtures and removing redundant live tests.
 
 ### API Changes

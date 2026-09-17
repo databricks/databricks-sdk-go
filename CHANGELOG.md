@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.181.0 (2026-09-17)
+
+### Internal Changes
+
+- Reduce integration test cluster usage by replacing waiter coverage with HTTP fixtures and removing redundant live tests.
+
+
 ## Release v0.180.0 (2026-09-16)
 
 ### API Changes
