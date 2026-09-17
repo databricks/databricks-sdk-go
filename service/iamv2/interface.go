@@ -7,7 +7,7 @@ import (
 )
 
 // These APIs are used to manage identities and the workspace access of these
-// identities in <Databricks>.
+// identities in Databricks.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountIamV2Service interface {
@@ -220,7 +220,7 @@ type AccountIamV2Service interface {
 }
 
 // These APIs are used to manage identities and the workspace access of these
-// identities in <Databricks>.
+// identities in Databricks.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceIamV2Service interface {

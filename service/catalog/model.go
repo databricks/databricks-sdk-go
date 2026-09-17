@@ -1730,6 +1730,17 @@ func (s *CreateMcpServiceRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type CreateMcpServiceUserMappedCredentialRequest struct {
+	Login McpServiceUserMappedCredentialLogin `json:"login"`
+	// Resource name of the MCP service. Format:
+	// `mcp-services/{catalog}.{schema}.{mcp_service}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *CreateMcpServiceUserMappedCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateMetastore struct {
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
@@ -2635,6 +2646,25 @@ func (s *DeleteMcpServiceRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteMcpServiceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DeleteMcpServiceUserMappedCredentialRequest struct {
+	// Resource name of the MCP service. Format:
+	// `mcp-services/{catalog}.{schema}.{mcp_service}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteMcpServiceUserMappedCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Delete returns no resource; a dedicated (empty) response keeps the revoke
+// RPC's shape owned here rather than google.protobuf.Empty.
+type DeleteMcpServiceUserMappedCredentialResponse struct {
+}
+
+func (s *DeleteMcpServiceUserMappedCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteMetastoreRequest struct {
@@ -4545,6 +4575,16 @@ type GetMcpServiceRequest struct {
 }
 
 func (s *GetMcpServiceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetMcpServiceUserMappedCredentialRequest struct {
+	// Resource name of the MCP service. Format:
+	// `mcp-services/{catalog}.{schema}.{mcp_service}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetMcpServiceUserMappedCredentialRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -6464,6 +6504,35 @@ func (s *McpServiceConfigSourceConnection) UnmarshalJSON(b []byte) error {
 
 func (s McpServiceConfigSourceConnection) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A caller's per-user OAuth credential for an MCP service.
+type McpServiceUserMappedCredential struct {
+	// Token-expiry info for the credential, returned as a flat map:
+	// `access_token_expiration` (always set) and `refresh_token_expiration`
+	// (set when the credential has a refresh token). Both values are
+	// timestamps.
+	Options map[string]string `json:"options,omitempty"`
+	// Provisioning state of the credential. `ACTIVE` means the caller is logged
+	// in and the credential is usable; any other state means the login has not
+	// completed.
+	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
+}
+
+func (s *McpServiceUserMappedCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Login input for an MCP service user credential. Carries the OAuth exchange
+// fields as a flat map.
+type McpServiceUserMappedCredentialLogin struct {
+	// OAuth exchange fields: `pkce_verifier`, `authorization_code`, and
+	// `oauth_redirect_uri`.
+	Options map[string]string `json:"options,omitempty"`
+}
+
+func (s *McpServiceUserMappedCredentialLogin) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type MetastoreAssignment struct {
