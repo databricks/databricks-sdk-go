@@ -32,7 +32,7 @@ func (s *CreateDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateGroupProxyRequest struct {
-	// Required. Group to be created in <Databricks>
+	// Required. Group to be created in Databricks
 	Group Group `json:"group"`
 }
 
@@ -41,7 +41,7 @@ func (s *CreateGroupProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateGroupRequest struct {
-	// Required. Group to be created in <Databricks>
+	// Required. Group to be created in Databricks
 	Group Group `json:"group"`
 }
 
@@ -50,7 +50,7 @@ func (s *CreateGroupRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateServicePrincipalProxyRequest struct {
-	// Required. Service principal to be created in <Databricks>
+	// Required. Service principal to be created in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 }
 
@@ -59,7 +59,7 @@ func (s *CreateServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateServicePrincipalRequest struct {
-	// Required. Service principal to be created in <Databricks>
+	// Required. Service principal to be created in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 }
 
@@ -68,7 +68,7 @@ func (s *CreateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateUserProxyRequest struct {
-	// Required. User to be created in <Databricks>
+	// Required. User to be created in Databricks
 	User User `json:"user"`
 }
 
@@ -77,7 +77,7 @@ func (s *CreateUserProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateUserRequest struct {
-	// Required. User to be created in <Databricks>
+	// Required. User to be created in Databricks
 	User User `json:"user"`
 }
 
@@ -86,7 +86,7 @@ func (s *CreateUserRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateWorkspaceAssignmentDetailProxyRequest struct {
-	// Required. Workspace assignment detail to be created in <Databricks>.
+	// Required. Workspace assignment detail to be created in Databricks.
 	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
 }
 
@@ -95,7 +95,7 @@ func (s *CreateWorkspaceAssignmentDetailProxyRequest) UnmarshalJSON(b []byte) er
 }
 
 type CreateWorkspaceAssignmentDetailRequest struct {
-	// Required. Workspace assignment detail to be created in <Databricks>.
+	// Required. Workspace assignment detail to be created in Databricks.
 	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
 	// Required. The workspace ID for which the workspace assignment detail is
 	// being created.
@@ -107,7 +107,7 @@ func (s *CreateWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateWorkspaceAssignmentProxyRequest struct {
-	// Required. Workspace assignment to be created in <Databricks>.
+	// Required. Workspace assignment to be created in Databricks.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
 }
 
@@ -116,7 +116,7 @@ func (s *CreateWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateWorkspaceAssignmentRequest struct {
-	// Required. Workspace assignment to be created in <Databricks>.
+	// Required. Workspace assignment to be created in Databricks.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
 	// Required. The workspace ID for which the workspace assignment is being
 	// created.
@@ -1401,7 +1401,7 @@ func (s TransitiveParentGroup) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateGroupProxyRequest struct {
-	// Required. Group to be updated in <Databricks>
+	// Required. Group to be updated in Databricks
 	Group Group `json:"group"`
 	// Required. Internal ID of the group in Databricks.
 	GroupId string `json:"-" url:"-"`
@@ -1414,7 +1414,7 @@ func (s *UpdateGroupProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateGroupRequest struct {
-	// Required. Group to be updated in <Databricks>
+	// Required. Group to be updated in Databricks
 	Group Group `json:"group"`
 	// Required. Internal ID of the group in Databricks.
 	GroupId string `json:"-" url:"-"`
@@ -1427,7 +1427,7 @@ func (s *UpdateGroupRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateServicePrincipalProxyRequest struct {
-	// Required. Service principal to be updated in <Databricks>
+	// Required. Service principal to be updated in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 	// Required. Internal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"-" url:"-"`
@@ -1440,7 +1440,7 @@ func (s *UpdateServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateServicePrincipalRequest struct {
-	// Required. Service Principal to be updated in <Databricks>
+	// Required. Service Principal to be updated in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 	// Required. Internal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"-" url:"-"`
@@ -1455,7 +1455,7 @@ func (s *UpdateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
 type UpdateUserProxyRequest struct {
 	// Optional. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
-	// Required. User to be updated in <Databricks>
+	// Required. User to be updated in Databricks
 	User User `json:"user"`
 	// Required. Internal ID of the user in Databricks.
 	UserId string `json:"-" url:"-"`
@@ -1468,7 +1468,7 @@ func (s *UpdateUserProxyRequest) UnmarshalJSON(b []byte) error {
 type UpdateUserRequest struct {
 	// Optional. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
-	// Required. User to be updated in <Databricks>
+	// Required. User to be updated in Databricks
 	User User `json:"user"`
 	// Required. Internal ID of the user in Databricks.
 	UserId string `json:"-" url:"-"`
@@ -1483,7 +1483,7 @@ type UpdateWorkspaceAssignmentDetailProxyRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
-	// Required. Workspace assignment detail to be updated in <Databricks>.
+	// Required. Workspace assignment detail to be updated in Databricks.
 	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
 }
 
@@ -1496,7 +1496,7 @@ type UpdateWorkspaceAssignmentDetailRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
-	// Required. Workspace assignment detail to be updated in <Databricks>.
+	// Required. Workspace assignment detail to be updated in Databricks.
 	WorkspaceAssignmentDetail WorkspaceAssignmentDetail `json:"workspace_assignment_detail"`
 	// Required. The workspace ID for which the workspace assignment detail is
 	// being updated.
@@ -1512,7 +1512,7 @@ type UpdateWorkspaceAssignmentProxyRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
-	// Required. Workspace assignment to be updated in <Databricks>.
+	// Required. Workspace assignment to be updated in Databricks.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
 }
 
@@ -1525,7 +1525,7 @@ type UpdateWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
-	// Required. Workspace assignment to be updated in <Databricks>.
+	// Required. Workspace assignment to be updated in Databricks.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
 	// Required. The workspace ID for which the workspace assignment is being
 	// updated.
@@ -1541,7 +1541,7 @@ type UpdateWorkspaceIdentityDetailRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
-	// Required. Workspace identity detail to be updated in <Databricks>.
+	// Required. Workspace identity detail to be updated in Databricks.
 	WorkspaceIdentityDetail WorkspaceIdentityDetail `json:"workspace_identity_detail"`
 }
 

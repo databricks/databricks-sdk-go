@@ -144,7 +144,7 @@ type AccountClient struct {
 	GroupsV2 iam.AccountGroupsV2Interface
 
 	// These APIs are used to manage identities and the workspace access of
-	// these identities in <Databricks>.
+	// these identities in Databricks.
 	IamV2 iamv2.AccountIamV2Interface
 
 	// The Accounts IP Access List API enables account admins to configure IP

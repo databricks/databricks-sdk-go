@@ -309,6 +309,21 @@ func (a *aiGatewayImpl) CreateMcpService(ctx context.Context, request CreateMcpS
 	return &mcpService, err
 }
 
+func (a *aiGatewayImpl) CreateMcpServiceUserMappedCredential(ctx context.Context, request CreateMcpServiceUserMappedCredentialRequest) (*McpServiceUserMappedCredential, error) {
+	var mcpServiceUserMappedCredential McpServiceUserMappedCredential
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v/user-credentials", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Login, &mcpServiceUserMappedCredential)
+	return &mcpServiceUserMappedCredential, err
+}
+
 func (a *aiGatewayImpl) CreateModelProviderService(ctx context.Context, request CreateModelProviderServiceRequest) (*ModelProviderService, error) {
 	var modelProviderService ModelProviderService
 	path := "/api/2.1/unity-catalog/model-provider-services"
@@ -368,6 +383,20 @@ func (a *aiGatewayImpl) DeleteMcpService(ctx context.Context, request DeleteMcpS
 	return err
 }
 
+func (a *aiGatewayImpl) DeleteMcpServiceUserMappedCredential(ctx context.Context, request DeleteMcpServiceUserMappedCredentialRequest) (*DeleteMcpServiceUserMappedCredentialResponse, error) {
+	var deleteMcpServiceUserMappedCredentialResponse DeleteMcpServiceUserMappedCredentialResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v/user-credentials", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteMcpServiceUserMappedCredentialResponse)
+	return &deleteMcpServiceUserMappedCredentialResponse, err
+}
+
 func (a *aiGatewayImpl) DeleteModelProviderService(ctx context.Context, request DeleteModelProviderServiceRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -406,6 +435,20 @@ func (a *aiGatewayImpl) GetMcpService(ctx context.Context, request GetMcpService
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &mcpService)
 	return &mcpService, err
+}
+
+func (a *aiGatewayImpl) GetMcpServiceUserMappedCredential(ctx context.Context, request GetMcpServiceUserMappedCredentialRequest) (*McpServiceUserMappedCredential, error) {
+	var mcpServiceUserMappedCredential McpServiceUserMappedCredential
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v/user-credentials", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &mcpServiceUserMappedCredential)
+	return &mcpServiceUserMappedCredential, err
 }
 
 func (a *aiGatewayImpl) GetModelProviderService(ctx context.Context, request GetModelProviderServiceRequest) (*ModelProviderService, error) {

@@ -177,24 +177,58 @@ type LakeviewService interface {
 
 	// Create a draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
 
 	// Create dashboard schedule.
+	//
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error)
 
 	// Create schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following
+	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error)
 
 	// Delete dashboard schedule.
+	//
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error
 
 	// Delete schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following
+	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error
 
 	// Get a draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Get the current published dashboard.
@@ -208,20 +242,59 @@ type LakeviewService interface {
 	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
 
 	// Get dashboard schedule.
+	//
+	// The caller must be a workspace user with one of the following
+	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	GetSchedule(ctx context.Context, request GetScheduleRequest) (*Schedule, error)
 
 	// Get schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following
+	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error)
 
 	// List dashboards.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	List(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error)
 
 	// List dashboard schedules.
+	//
+	// The caller must be a workspace user with one of the following
+	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	ListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error)
 
 	// List schedule subscriptions.
+	//
+	// The caller must be a workspace user with one of the following
+	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
+	// access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error)
 
 	// Deprecated: Legacy dashboard migration is no longer supported. Use
@@ -230,31 +303,51 @@ type LakeviewService interface {
 
 	// Publish the current draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
 
 	// Revert a dashboard's definition in draft mode to the last published
 	// version.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error)
 
 	// Trash a dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Trash(ctx context.Context, request TrashDashboardRequest) error
 
 	// Unpublish the dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
 
 	// Update a draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
 
 	// Update dashboard schedule.
+	//
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
+	// access in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error)
 }
 
