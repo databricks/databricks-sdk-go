@@ -369,9 +369,11 @@ type BaseRun struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The id of the usage policy used by this run for cost attribution
 	// purposes.
@@ -1125,9 +1127,11 @@ type CreateJob struct {
 	// of compute performance or cost-efficiency for the run. The performance
 	// target does not apply to tasks that run on Serverless GPU compute.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -2787,9 +2791,11 @@ type JobSettings struct {
 	// of compute performance or cost-efficiency for the run. The performance
 	// target does not apply to tasks that run on Serverless GPU compute.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -3849,9 +3855,11 @@ type RepairHistoryItem struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The end time of the (repaired) run.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -3976,9 +3984,11 @@ type RepairRun struct {
 	// run. This field overrides the performance target defined on the job
 	// level.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -4242,9 +4252,11 @@ type Run struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The id of the usage policy used by this run for cost attribution
 	// purposes.
@@ -4823,9 +4835,11 @@ type RunNow struct {
 	// run. This field overrides the performance target defined on the job
 	// level.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -5271,9 +5285,11 @@ type RunTask struct {
 	// request depending on whether the performance mode is supported by the job
 	// type.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The id of the serverless compute this task ran on, either explicitly
 	// configured on the task or the workspace default. Only set once the
@@ -6160,9 +6176,11 @@ type SubmitRun struct {
 	// performance target does not apply to tasks that run on Serverless GPU
 	// compute.
 	//
-	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
-	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
-	// through rapid scaling and optimized cluster performance.
+	// * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance. * `STANDARD`:
+	// Enables cost-efficient execution of serverless workloads. *
+	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
+	// selected target duration time. Must provide a duration target.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the one-time run.
 	Queue *QueueSettings `json:"queue,omitempty"`

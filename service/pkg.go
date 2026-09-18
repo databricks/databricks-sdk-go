@@ -168,7 +168,7 @@
 //
 // - [iam.AccountGroupsV2API]: Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects.
 //
-// - [iamv2.AccountIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
+// - [iamv2.AccountIamV2API]: These APIs are used to manage identities and the workspace access of these identities in Databricks.
 //
 // - [compute.InstancePoolsAPI]: Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud instances which reduces a cluster start and auto-scaling times.
 //
@@ -376,7 +376,7 @@
 //
 // - [tags.WorkspaceEntityTagAssignmentsAPI]: Manage tag assignments on workspace-scoped objects.
 //
-// - [iamv2.WorkspaceIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
+// - [iamv2.WorkspaceIamV2API]: These APIs are used to manage identities and the workspace access of these identities in Databricks.
 //
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
 //

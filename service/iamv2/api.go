@@ -274,7 +274,7 @@ func NewAccountIamV2(client *client.DatabricksClient) *AccountIamV2API {
 }
 
 // These APIs are used to manage identities and the workspace access of these
-// identities in <Databricks>.
+// identities in Databricks.
 type AccountIamV2API struct {
 	accountIamV2Impl
 }
@@ -566,7 +566,7 @@ func NewWorkspaceIamV2(client *client.DatabricksClient) *WorkspaceIamV2API {
 }
 
 // These APIs are used to manage identities and the workspace access of these
-// identities in <Databricks>.
+// identities in Databricks.
 type WorkspaceIamV2API struct {
 	workspaceIamV2Impl
 }

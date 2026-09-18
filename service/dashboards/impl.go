@@ -587,7 +587,10 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 
 // List dashboards.
 //
-// Requires the Databricks SQL access entitlement.
+// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+// in addition to Workspace access.
+//
+// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
 
 	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListDashboardsResponse, error) {
@@ -614,7 +617,10 @@ func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) 
 
 // List dashboards.
 //
-// Requires the Databricks SQL access entitlement.
+// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+// in addition to Workspace access.
+//
+// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *lakeviewImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Dashboard](ctx, iterator)
@@ -635,6 +641,14 @@ func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsR
 }
 
 // List dashboard schedules.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) listing.Iterator[Schedule] {
 
 	getNextPage := func(ctx context.Context, req ListSchedulesRequest) (*ListSchedulesResponse, error) {
@@ -660,6 +674,14 @@ func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesR
 }
 
 // List dashboard schedules.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *lakeviewImpl) ListSchedulesAll(ctx context.Context, request ListSchedulesRequest) ([]Schedule, error) {
 	iterator := a.ListSchedules(ctx, request)
 	return listing.ToSlice[Schedule](ctx, iterator)
@@ -680,6 +702,14 @@ func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSc
 }
 
 // List schedule subscriptions.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *lakeviewImpl) ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) listing.Iterator[Subscription] {
 
 	getNextPage := func(ctx context.Context, req ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
@@ -705,6 +735,14 @@ func (a *lakeviewImpl) ListSubscriptions(ctx context.Context, request ListSubscr
 }
 
 // List schedule subscriptions.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *lakeviewImpl) ListSubscriptionsAll(ctx context.Context, request ListSubscriptionsRequest) ([]Subscription, error) {
 	iterator := a.ListSubscriptions(ctx, request)
 	return listing.ToSlice[Subscription](ctx, iterator)

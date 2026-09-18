@@ -66,6 +66,29 @@ func (s AutoFullRefreshPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AvroTransformerOptions struct {
+	// (Optional) Parse mode for Avro data. Valid values: FAILFAST, PERMISSIVE.
+	// Defaults to FAILFAST.
+	ParseMode ParseMode `json:"parse_mode,omitempty"`
+	// Inline Avro JSON schema string.
+	Schema string `json:"schema,omitempty"`
+	// Path to a schema file (.avsc).
+	SchemaFilePath string `json:"schema_file_path,omitempty"`
+	// (Optional) Schema registry to resolve the Avro schema at runtime instead
+	// of providing it inline or via a file path.
+	SchemaRegistry *SchemaRegistryConfig `json:"schema_registry,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AvroTransformerOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AvroTransformerOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Enum to specify which mode of clone to execute
 type CloneMode string
 
@@ -223,6 +246,21 @@ type ConfluenceConnectorOptions struct {
 
 func (s *ConfluenceConnectorOptions) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type ConfluentSchemaRegistryOptions struct {
+	// Required: subject name to resolve in the registry.
+	Subject string `json:"subject,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ConfluentSchemaRegistryOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConfluentSchemaRegistryOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ConnectionParameters struct {
@@ -1532,9 +1570,13 @@ const IngestionSourceTypeServicenow IngestionSourceType = `SERVICENOW`
 
 const IngestionSourceTypeSharepoint IngestionSourceType = `SHAREPOINT`
 
+const IngestionSourceTypeSmartsheet IngestionSourceType = `SMARTSHEET`
+
 const IngestionSourceTypeSqlserver IngestionSourceType = `SQLSERVER`
 
 const IngestionSourceTypeTeradata IngestionSourceType = `TERADATA`
+
+const IngestionSourceTypeTiktokAds IngestionSourceType = `TIKTOK_ADS`
 
 const IngestionSourceTypeWorkdayRaas IngestionSourceType = `WORKDAY_RAAS`
 
@@ -1548,11 +1590,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `RABBITMQ`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `RABBITMQ`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SMARTSHEET`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "RABBITMQ", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "RABBITMQ", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SMARTSHEET", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1578,8 +1620,10 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeSalesforce,
 		IngestionSourceTypeServicenow,
 		IngestionSourceTypeSharepoint,
+		IngestionSourceTypeSmartsheet,
 		IngestionSourceTypeSqlserver,
 		IngestionSourceTypeTeradata,
+		IngestionSourceTypeTiktokAds,
 		IngestionSourceTypeWorkdayRaas,
 		IngestionSourceTypeZendesk,
 	}
@@ -2389,6 +2433,44 @@ func (s OutlookOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Determines how errors encountered while deserializing records are handled.
+type ParseMode string
+
+const ParseModeFailfast ParseMode = `FAILFAST`
+
+const ParseModePermissive ParseMode = `PERMISSIVE`
+
+// String representation for [fmt.Print]
+func (f *ParseMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ParseMode) Set(v string) error {
+	switch v {
+	case `FAILFAST`, `PERMISSIVE`:
+		*f = ParseMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILFAST", "PERMISSIVE"`, v)
+	}
+}
+
+// Values returns all possible values for ParseMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ParseMode) Values() []ParseMode {
+	return []ParseMode{
+		ParseModeFailfast,
+		ParseModePermissive,
+	}
+}
+
+// Type always returns ParseMode to satisfy [pflag.Value] interface
+func (f *ParseMode) Type() string {
+	return "ParseMode"
+}
+
 type PathPattern struct {
 	// The source code to include for pipelines
 	Include string `json:"include,omitempty"`
@@ -3106,6 +3188,34 @@ func (s PostgresSlotConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ProtobufTransformerOptions struct {
+	// Required: path to the .desc file (dbfs:/... or /Volumes/...).
+	DescFilePath string `json:"desc_file_path,omitempty"`
+	// Required: fully-qualified message type name.
+	MessageName string `json:"message_name,omitempty"`
+	// (Optional) Parse mode for Protobuf data. Valid values: FAILFAST,
+	// PERMISSIVE. Defaults to FAILFAST.
+	ParseMode ParseMode `json:"parse_mode,omitempty"`
+	// (Optional) Maximum expansion depth for recursive protobuf fields. Spark
+	// SQL does not natively support recursive types, so recursive fields are
+	// expanded up to this depth and truncated beyond it. Valid values: -1
+	// (disallow recursive fields), 0 (drop), 1-10.
+	RecursiveFieldsMaxDepth int `json:"recursive_fields_max_depth,omitempty"`
+	// (Optional) Schema registry to resolve the Protobuf schema at runtime
+	// instead of providing it via desc_file_path.
+	SchemaRegistry *SchemaRegistryConfig `json:"schema_registry,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ProtobufTransformerOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProtobufTransformerOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Enum representing the publishing mode of a pipeline.
 type PublishingMode string
 
@@ -3341,6 +3451,29 @@ func (s *RunAs) UnmarshalJSON(b []byte) error {
 }
 
 func (s RunAs) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SchemaRegistryConfig struct {
+	// Required: Confluent-compatible schema registry options.
+	ConfluentOptions *ConfluentSchemaRegistryOptions `json:"confluent_options,omitempty"`
+	// (Optional) UC connection for registry authentication. Specify if
+	// different from the top-level source connection.
+	ConnectionName string `json:"connection_name,omitempty"`
+	// (Optional, Protobuf only) Selects a specific message from a schema that
+	// defines multiple Protobuf messages. Simple ("Location") or
+	// fully-qualified ("com.example.protos.Location"). Defaults to the first
+	// message.
+	ProtobufMessageName string `json:"protobuf_message_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SchemaRegistryConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SchemaRegistryConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3998,6 +4131,7 @@ func (f *TikTokAdsOptionsTikTokReportType) Type() string {
 
 // Specifies how to transform binary data into structured data.
 type Transformer struct {
+	AvroOptions *AvroTransformerOptions `json:"avro_options,omitempty"`
 	// Required: the wire format of the data.
 	Format TransformerFormat `json:"format,omitempty"`
 	// Optional input column to transform. When set, the transformer reads from
@@ -4008,6 +4142,8 @@ type Transformer struct {
 	// Optional output column name. When set, the transformed result is written
 	// to this column instead of replacing the input column.
 	OutputColumn string `json:"output_column,omitempty"`
+
+	ProtobufOptions *ProtobufTransformerOptions `json:"protobuf_options,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4022,7 +4158,11 @@ func (s Transformer) MarshalJSON() ([]byte, error) {
 
 type TransformerFormat string
 
+const TransformerFormatAvro TransformerFormat = `AVRO`
+
 const TransformerFormatJson TransformerFormat = `JSON`
+
+const TransformerFormatProtobuf TransformerFormat = `PROTOBUF`
 
 const TransformerFormatString TransformerFormat = `STRING`
 
@@ -4034,11 +4174,11 @@ func (f *TransformerFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TransformerFormat) Set(v string) error {
 	switch v {
-	case `JSON`, `STRING`:
+	case `AVRO`, `JSON`, `PROTOBUF`, `STRING`:
 		*f = TransformerFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "JSON", "STRING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AVRO", "JSON", "PROTOBUF", "STRING"`, v)
 	}
 }
 
@@ -4047,7 +4187,9 @@ func (f *TransformerFormat) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *TransformerFormat) Values() []TransformerFormat {
 	return []TransformerFormat{
+		TransformerFormatAvro,
 		TransformerFormatJson,
+		TransformerFormatProtobuf,
 		TransformerFormatString,
 	}
 }
