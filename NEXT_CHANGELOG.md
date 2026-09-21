@@ -6,8 +6,7 @@
 
 ### New Features and Improvements
 
-- Add `Config.Headers` to set custom HTTP headers on every request made by the client, on top of normal authentication. Set programmatically; not loaded from an environment variable or a `.databrickscfg` profile.
-
+- Add `Config.Headers` to set custom HTTP headers on every request made by the client, on top of normal authentication. 
 ### Bug Fixes
 
 ### Documentation

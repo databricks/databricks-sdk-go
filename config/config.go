@@ -241,12 +241,7 @@ type Config struct {
 	DebugHeaders bool `name:"debug_headers" env:"DATABRICKS_DEBUG_HEADERS" auth:"-"`
 
 	// Headers are additional HTTP headers set on every request made by the
-	// client, on top of normal authentication. They are applied by a request
-	// visitor that runs after authentication, so this must not be used to
-	// override authentication headers such as Authorization.
-	//
-	// Headers is set programmatically; it is not loaded from an environment
-	// variable or a .databrickscfg profile.
+	// client, on top of normal authentication.
 	Headers map[string]string
 
 	// Maximum number of requests per second made to Databricks REST API. Default is 15 RPS.
