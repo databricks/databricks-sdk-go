@@ -6,7 +6,8 @@
 
 ### New Features and Improvements
 
-- Add `Config.Headers` to set custom HTTP headers on every request made by the client, on top of normal authentication. 
+- Add `Config.Headers` to set custom HTTP headers on every request made by the client, on top of normal authentication.
+
 ### Bug Fixes
 
 ### Documentation
