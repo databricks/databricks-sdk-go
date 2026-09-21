@@ -240,10 +240,14 @@ type Config struct {
 	// Debug HTTP headers of requests made by the provider. Default is false.
 	DebugHeaders bool `name:"debug_headers" env:"DATABRICKS_DEBUG_HEADERS" auth:"-"`
 
-	// LiteswapTarget routes API requests to a liteswap test instance of a
-	// service (in shared pre-production) via a routing header, on top of normal
-	// auth. Dev/test only; empty (the default) is a no-op.
-	LiteswapTarget string `name:"liteswap_target" env:"DATABRICKS_LITESWAP_TARGET" auth:"-"`
+	// Headers are additional HTTP headers set on every request made by the
+	// client, on top of normal authentication. They are applied by a request
+	// visitor that runs after authentication, so this must not be used to
+	// override authentication headers such as Authorization.
+	//
+	// Headers is set programmatically; it is not loaded from an environment
+	// variable or a .databrickscfg profile.
+	Headers map[string]string
 
 	// Maximum number of requests per second made to Databricks REST API. Default is 15 RPS.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`

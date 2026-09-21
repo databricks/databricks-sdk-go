@@ -14,15 +14,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-const (
-	// liteswapTrafficHeader is the API proxy routing header.
-	liteswapTrafficHeader = "x-databricks-traffic-id"
-
-	// liteswapTrafficIDPrefix is prepended to the target, forming the header
-	// value "testenv://liteswap/<target>".
-	liteswapTrafficIDPrefix = "testenv://liteswap/"
-)
-
 func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 	if skippable, ok := cfg.HTTPTransport.(interface {
 		SkipRetryOnIO() bool
@@ -96,11 +87,13 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 		},
 	}
 
-	// Route to a liteswap test instance when configured. Runs after
-	// AuthVisitor, so the header is added on top of normal auth.
-	if cfg.LiteswapTarget != "" {
+	// Apply any additional configured headers on every request. This runs after
+	// AuthVisitor, so headers are added on top of normal authentication.
+	if len(cfg.Headers) > 0 {
 		visitors = append(visitors, func(r *http.Request) error {
-			r.Header.Set(liteswapTrafficHeader, liteswapTrafficIDPrefix+cfg.LiteswapTarget)
+			for k, v := range cfg.Headers {
+				r.Header.Set(k, v)
+			}
 			return nil
 		})
 	}

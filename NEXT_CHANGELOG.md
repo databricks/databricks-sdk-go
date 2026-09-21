@@ -6,7 +6,7 @@
 
 ### New Features and Improvements
 
-- Add `Config.LiteswapTarget` (env `DATABRICKS_LITESWAP_TARGET`, profile field `liteswap_target`) to route API requests to a liteswap test instance of a service in shared pre-production. Dev/test only; empty (the default) is a no-op.
+- Add `Config.Headers` to set custom HTTP headers on every request made by the client, on top of normal authentication. Set programmatically; not loaded from an environment variable or a `.databrickscfg` profile.
 
 ### Bug Fixes
 
