@@ -117,6 +117,7 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		AzureClientSecretCredentials{},
 		AzureCliCredentials{},
 		// Google strategies.
+		GcpM2mCredentials{},
 		GoogleCredentials{},
 		GoogleDefaultCredentials{},
 	)
