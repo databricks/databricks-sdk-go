@@ -68,7 +68,7 @@ func (s AutoFullRefreshPolicy) MarshalJSON() ([]byte, error) {
 
 type AvroTransformerOptions struct {
 	// (Optional) Parse mode for Avro data. Valid values: FAILFAST, PERMISSIVE.
-	// Defaults to FAILFAST.
+	// Defaults to PERMISSIVE.
 	ParseMode ParseMode `json:"parse_mode,omitempty"`
 	// Inline Avro JSON schema string.
 	Schema string `json:"schema,omitempty"`
@@ -3194,7 +3194,7 @@ type ProtobufTransformerOptions struct {
 	// Required: fully-qualified message type name.
 	MessageName string `json:"message_name,omitempty"`
 	// (Optional) Parse mode for Protobuf data. Valid values: FAILFAST,
-	// PERMISSIVE. Defaults to FAILFAST.
+	// PERMISSIVE. Defaults to PERMISSIVE.
 	ParseMode ParseMode `json:"parse_mode,omitempty"`
 	// (Optional) Maximum expansion depth for recursive protobuf fields. Spark
 	// SQL does not natively support recursive types, so recursive fields are
