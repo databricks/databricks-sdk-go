@@ -87,15 +87,10 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 		},
 	}
 
-	// Apply any additional configured headers on every request. This runs after
+	// Apply the caller-provided header hook on every request. This runs after
 	// AuthVisitor, so headers are added on top of normal authentication.
-	if len(cfg.Headers) > 0 {
-		visitors = append(visitors, func(r *http.Request) error {
-			for k, v := range cfg.Headers {
-				r.Header.Set(k, v)
-			}
-			return nil
-		})
+	if cfg.Headers != nil {
+		visitors = append(visitors, cfg.Headers)
 	}
 
 	return httpclient.ClientConfig{
