@@ -2478,6 +2478,12 @@ type JobEmailNotifications struct {
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// completes for a continuous job.
+	OnMaintenanceComplete []string `json:"on_maintenance_complete,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// starts for a continuous job.
+	OnMaintenanceStart []string `json:"on_maintenance_start,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
@@ -6653,6 +6659,12 @@ type TaskEmailNotifications struct {
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// completes for a continuous job.
+	OnMaintenanceComplete []string `json:"on_maintenance_complete,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// starts for a continuous job.
+	OnMaintenanceStart []string `json:"on_maintenance_start,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
@@ -7400,6 +7412,15 @@ type WebhookNotifications struct {
 	// An optional list of system notification IDs to call when the run fails. A
 	// maximum of 3 destinations can be specified for the `on_failure` property.
 	OnFailure []Webhook `json:"on_failure,omitempty"`
+	// An optional list of system notification IDs to call when
+	// platform-initiated maintenance completes for a continuous job. A maximum
+	// of 3 destinations can be specified for the `on_maintenance_complete`
+	// property.
+	OnMaintenanceComplete []Webhook `json:"on_maintenance_complete,omitempty"`
+	// An optional list of system notification IDs to call when
+	// platform-initiated maintenance starts for a continuous job. A maximum of
+	// 3 destinations can be specified for the `on_maintenance_start` property.
+	OnMaintenanceStart []Webhook `json:"on_maintenance_start,omitempty"`
 	// An optional list of system notification IDs to call when the run starts.
 	// A maximum of 3 destinations can be specified for the `on_start` property.
 	OnStart []Webhook `json:"on_start,omitempty"`

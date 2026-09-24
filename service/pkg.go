@@ -196,6 +196,8 @@
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
 //
+// - [mason.MasonAPI]: APIs for managing agent memory and durable session state.
+//
 // - [ml.MaterializedFeaturesAPI]: Materialized Features are columns in tables and views that can be directly used as features to train and serve ML models.
 //
 // - [catalog.AccountMetastoreAssignmentsAPI]: These APIs manage metastore assignments to a workspace.
@@ -408,6 +410,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
+	"github.com/databricks/databricks-sdk-go/service/mason"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/networking"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
@@ -530,6 +533,7 @@ var (
 	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
 	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
+	_ *mason.MasonAPI                                     = nil
 	_ *ml.MaterializedFeaturesAPI                         = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil

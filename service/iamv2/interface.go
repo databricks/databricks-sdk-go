@@ -13,6 +13,9 @@ import (
 type AccountIamV2Service interface {
 
 	// Creates a group membership (assigns a principal to a group).
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	CreateDirectGroupMember(ctx context.Context, request CreateDirectGroupMemberRequest) (*DirectGroupMember, error)
 
 	// Creates a local group in the Databricks account and returns the created
@@ -59,9 +62,15 @@ type AccountIamV2Service interface {
 	CreateWorkspaceAssignmentDetail(ctx context.Context, request CreateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error)
 
 	// Deletes a group membership (unassigns a principal from a group).
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	DeleteDirectGroupMember(ctx context.Context, request DeleteDirectGroupMemberRequest) error
 
 	// Deletes a group from the Databricks account by its internal ID.
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	DeleteGroup(ctx context.Context, request DeleteGroupRequest) error
 
 	// Deletes a service principal from the Databricks account by its internal
@@ -185,6 +194,9 @@ type AccountIamV2Service interface {
 	// When AIM is enabled and the group is an external identity (its
 	// external_id is set), only external_id can be updated; its other fields
 	// are sourced from your identity provider.
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	UpdateGroup(ctx context.Context, request UpdateGroupRequest) (*Group, error)
 
 	// Updates an existing service principal in the Databricks account. Only the
