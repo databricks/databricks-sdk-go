@@ -7054,6 +7054,14 @@ type ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig struct {
 	// GCP region of the Gemini Enterprise endpoint (e.g., `us-central1`).
 	// Required on Create.
 	Region string `json:"region,omitempty"`
+	// Reference to a Unity Catalog service credential authorizing Gemini
+	// Enterprise requests. On Create, supply `service_credential.name` as
+	// `credentials/{name}`; required when using service-credential
+	// authentication and mutually exclusive with `api_key`. The credential is
+	// referenced by name; its value is not carried here. On read, the resolved
+	// `id` and `is_deleted` are also populated. Supported only on GCP-hosted
+	// workspaces.
+	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7178,6 +7186,13 @@ type ModelProviderServiceConfigProviderSecret struct {
 	// reads. Get and List responses omit `plaintext`; the enclosing secret
 	// object remains present to indicate that a secret is configured.
 	Plaintext string `json:"plaintext,omitempty"`
+	// Reference to a customer-owned UC Secret that carries this secret value.
+	// The value is read at invoke time under the model provider service owner's
+	// access and is never copied onto the model provider service, so rotating
+	// the UC Secret takes effect with no change to the model provider service.
+	// On Create, supply `secret_reference.name` as
+	// `secrets/{catalog}.{schema}.{secret}`.
+	SecretReference *ModelProviderServiceConfigSecretReference `json:"secret_reference,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7188,6 +7203,19 @@ func (s *ModelProviderServiceConfigProviderSecret) UnmarshalJSON(b []byte) error
 
 func (s ModelProviderServiceConfigProviderSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Reference to a customer-owned UC Secret backing a secret-bearing provider
+// field, in the `ProviderSecret.secret_reference` arm.
+type ModelProviderServiceConfigSecretReference struct {
+	// Resource name of the bound UC Secret, in the form
+	// `secrets/{catalog}.{schema}.{secret}`. On Create the caller supplies the
+	// name here. On read it reflects the secret's current name at read time.
+	Name string `json:"name"`
+}
+
+func (s *ModelProviderServiceConfigSecretReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The customer-owned Unity Catalog service credential a model provider service

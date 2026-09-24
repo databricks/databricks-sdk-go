@@ -27,6 +27,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/mason"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
@@ -123,6 +124,7 @@ func NewMockWorkspaceClient(t interface {
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
 			LakeviewEmbedded:                    dashboards.NewMockLakeviewEmbeddedInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
+			Mason:                               mason.NewMockMasonInterface(t),
 			MaterializedFeatures:                ml.NewMockMaterializedFeaturesInterface(t),
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:                       ml.NewMockModelRegistryInterface(t),
@@ -888,6 +890,14 @@ func (m *MockWorkspaceClient) GetMockLibrariesAPI() *compute.MockLibrariesInterf
 	api, ok := m.WorkspaceClient.Libraries.(*compute.MockLibrariesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Libraries to be *compute.MockLibrariesInterface, actual was %T", m.WorkspaceClient.Libraries))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockMasonAPI() *mason.MockMasonInterface {
+	api, ok := m.WorkspaceClient.Mason.(*mason.MockMasonInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Mason to be *mason.MockMasonInterface, actual was %T", m.WorkspaceClient.Mason))
 	}
 	return api
 }

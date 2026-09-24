@@ -27,7 +27,7 @@ type DeleteTagAssignmentRequest struct {
 	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
-	// dashboards, designerfiles, geniespaces, notebooks
+	// dashboards, designer-files, geniespaces, notebooks
 	EntityType string `json:"-" url:"-"`
 	// The key of the tag. The characters , . : / - = and leading/trailing
 	// spaces are not allowed
@@ -51,7 +51,7 @@ type GetTagAssignmentRequest struct {
 	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
-	// dashboards, designerfiles, geniespaces, notebooks
+	// dashboards, designer-files, geniespaces, notebooks
 	EntityType string `json:"-" url:"-"`
 	// The key of the tag. The characters , . : / - = and leading/trailing
 	// spaces are not allowed
@@ -75,7 +75,7 @@ type ListTagAssignmentsRequest struct {
 	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
-	// dashboards, designerfiles, geniespaces, notebooks
+	// dashboards, designer-files, geniespaces, notebooks
 	EntityType string `json:"-" url:"-"`
 	// Optional. Maximum number of tag assignments to return in a single page
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -152,7 +152,7 @@ type TagAssignment struct {
 	// entity_id is the app name
 	EntityId string `json:"entity_id"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
-	// dashboards, designerfiles, geniespaces, notebooks
+	// dashboards, designer-files, geniespaces, notebooks
 	EntityType string `json:"entity_type"`
 	// The key of the tag. The characters , . : / - = and leading/trailing
 	// spaces are not allowed
@@ -201,7 +201,7 @@ type UpdateTagAssignmentRequest struct {
 	// entity_id is the app name
 	EntityId string `json:"-" url:"-"`
 	// The type of entity to which the tag is assigned. Allowed values are apps,
-	// dashboards, designerfiles, geniespaces, notebooks
+	// dashboards, designer-files, geniespaces, notebooks
 	EntityType string `json:"-" url:"-"`
 
 	TagAssignment TagAssignment `json:"tag_assignment"`

@@ -27,6 +27,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
+	"github.com/databricks/databricks-sdk-go/service/mason"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
@@ -592,6 +593,10 @@ type WorkspaceClient struct {
 	// when you restart the cluster. Until you restart the cluster, the status
 	// of the uninstalled library appears as Uninstall pending restart.
 	Libraries compute.LibrariesInterface
+
+	// APIs for managing agent memory and durable session state. This interface
+	// is under active development and may change.
+	Mason mason.MasonInterface
 
 	// Materialized Features are columns in tables and views that can be
 	// directly used as features to train and serve ML models.
@@ -1546,6 +1551,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
+		Mason:                               mason.NewMason(databricksClient),
 		MaterializedFeatures:                ml.NewMaterializedFeatures(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),

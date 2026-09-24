@@ -364,10 +364,23 @@ func (s *AvgFunction) UnmarshalJSON(b []byte) error {
 type BackfillFeaturesRequest struct {
 	// Output ranges to backfill.
 	BackfillRanges []BackfillRange `json:"backfill_ranges"`
+	// The budget policy ID, in UUID format, used to attribute the serverless
+	// compute cost of this backfill. If not specified, a default budget policy
+	// may be applied.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Full names of the features to backfill.
 	FeatureFullNames []string `json:"feature_full_names"`
 	// Idempotency token for the request.
 	RequestId string `json:"request_id,omitempty"`
+	// Custom tags to associate with this backfill. They are applied to the
+	// backfill job and forwarded to the underlying compute as Databricks
+	// resource tags, so backfill cost can be attributed in the billing system
+	// tables. These tags apply only to the backfill compute; they are not
+	// applied to the Unity Catalog Feature resources themselves, whose tags are
+	// managed separately through the Unity Catalog tagging API. A maximum of 25
+	// tags is supported; keys and values are subject to the same limitations as
+	// Databricks resource tags.
+	Tags map[string]string `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4928,6 +4941,10 @@ func (f *PurgeFeatureEntitiesMetadataState) Type() string {
 // Request to purge materialized feature values for entities listed in a Unity
 // Catalog Delta table.
 type PurgeFeatureEntitiesRequest struct {
+	// The budget policy ID, in UUID format, used to attribute the serverless
+	// compute cost of this purge. If not specified, a default budget policy may
+	// be applied.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Fully qualified name of the Unity Catalog Delta table containing the
 	// entity keys to purge. The table may contain a subset of each feature's
 	// entity-key columns. A partial key match deletes all feature rows matching
@@ -4941,6 +4958,15 @@ type PurgeFeatureEntitiesRequest struct {
 	Features []string `json:"features"`
 	// Optional UUID4 idempotency token for the request.
 	RequestId string `json:"request_id,omitempty"`
+	// Custom tags to associate with this purge. They are applied to the purge
+	// job and forwarded to the underlying compute as Databricks resource tags,
+	// so purge cost can be attributed in the billing system tables. These tags
+	// apply only to the purge compute; they are not applied to the Unity
+	// Catalog Feature resources themselves, whose tags are managed separately
+	// through the Unity Catalog tagging API. A maximum of 25 tags is supported;
+	// keys and values are subject to the same limitations as Databricks
+	// resource tags.
+	Tags map[string]string `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
