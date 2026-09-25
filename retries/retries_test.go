@@ -127,6 +127,23 @@ func TestRetriesNegativeTimeout(t *testing.T) {
 	assert.Equal(t, r.config.Timeout(), time.Duration(-1))
 }
 
+func TestShouldRetryWithNonErrType(t *testing.T) {
+	// Test that shouldRetry handles non-*Err types gracefully without panicking
+	regularError := errors.New("a regular error")
+	assert.False(t, shouldRetry(regularError))
+
+	// Test with nil
+	assert.False(t, shouldRetry(nil))
+
+	// Test with *Err that should not retry
+	haltErr := Halt(errors.New("halt error"))
+	assert.False(t, shouldRetry(haltErr))
+
+	// Test with *Err that should retry
+	continueErr := Continue(errors.New("continue error"))
+	assert.True(t, shouldRetry(continueErr))
+}
+
 func ExampleNew() {
 	// Default retries for 20 minutes on any error
 	New[int]()
