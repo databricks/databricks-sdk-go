@@ -240,6 +240,11 @@ type Config struct {
 	// Debug HTTP headers of requests made by the provider. Default is false.
 	DebugHeaders bool `name:"debug_headers" env:"DATABRICKS_DEBUG_HEADERS" auth:"-"`
 
+	// Headers, if set, is called on every request made by the client to set
+	// additional HTTP headers, on top of normal authentication. It runs after
+	// authentication, so it must not overwrite headers such as Authorization.
+	Headers func(*http.Request) error
+
 	// Maximum number of requests per second made to Databricks REST API. Default is 15 RPS.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`
 
