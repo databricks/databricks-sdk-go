@@ -26,7 +26,7 @@ func ExampleWarehousesAPI_Create_sqlWarehouses() {
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
 		Tags: &sql.EndpointTags{
-			CustomTags: []sql.EndpointTagPair{sql.EndpointTagPair{
+			CustomTags: []sql.EndpointTagPair{{
 				Key:   "Owner",
 				Value: "eng-dev-ecosystem-team_at_databricks.com",
 			}},
@@ -59,7 +59,7 @@ func ExampleWarehousesAPI_Edit_sqlWarehouses() {
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
 		Tags: &sql.EndpointTags{
-			CustomTags: []sql.EndpointTagPair{sql.EndpointTagPair{
+			CustomTags: []sql.EndpointTagPair{{
 				Key:   "Owner",
 				Value: "eng-dev-ecosystem-team_at_databricks.com",
 			}},
@@ -103,7 +103,7 @@ func ExampleWarehousesAPI_Get_sqlWarehouses() {
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
 		Tags: &sql.EndpointTags{
-			CustomTags: []sql.EndpointTagPair{sql.EndpointTagPair{
+			CustomTags: []sql.EndpointTagPair{{
 				Key:   "Owner",
 				Value: "eng-dev-ecosystem-team_at_databricks.com",
 			}},

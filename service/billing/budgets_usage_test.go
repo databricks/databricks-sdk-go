@@ -24,7 +24,7 @@ func ExampleBudgetsAPI_Create_budgets() {
 		Budget: billing.CreateBudgetConfigurationBudget{
 			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 			Filter: &billing.BudgetConfigurationFilter{
-				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+				Tags: []billing.BudgetConfigurationFilterTagClause{{
 					Key: "tagName",
 					Value: &billing.BudgetConfigurationFilterClause{
 						Operator: billing.BudgetConfigurationFilterOperatorIn,
@@ -32,12 +32,12 @@ func ExampleBudgetsAPI_Create_budgets() {
 					},
 				}},
 			},
-			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{billing.CreateBudgetConfigurationBudgetAlertConfigurations{
+			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{{
 				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
 				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
 				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
 				QuantityThreshold: "100",
-				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{billing.CreateBudgetConfigurationBudgetActionConfigurations{
+				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{{
 					ActionType: billing.ActionConfigurationTypeEmailNotification,
 					Target:     "admin@example.com",
 				}},
@@ -69,7 +69,7 @@ func ExampleBudgetsAPI_Get_budgets() {
 		Budget: billing.CreateBudgetConfigurationBudget{
 			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 			Filter: &billing.BudgetConfigurationFilter{
-				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+				Tags: []billing.BudgetConfigurationFilterTagClause{{
 					Key: "tagName",
 					Value: &billing.BudgetConfigurationFilterClause{
 						Operator: billing.BudgetConfigurationFilterOperatorIn,
@@ -77,12 +77,12 @@ func ExampleBudgetsAPI_Get_budgets() {
 					},
 				}},
 			},
-			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{billing.CreateBudgetConfigurationBudgetAlertConfigurations{
+			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{{
 				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
 				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
 				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
 				QuantityThreshold: "100",
-				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{billing.CreateBudgetConfigurationBudgetActionConfigurations{
+				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{{
 					ActionType: billing.ActionConfigurationTypeEmailNotification,
 					Target:     "admin@example.com",
 				}},
@@ -135,7 +135,7 @@ func ExampleBudgetsAPI_Update_budgets() {
 		Budget: billing.CreateBudgetConfigurationBudget{
 			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 			Filter: &billing.BudgetConfigurationFilter{
-				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+				Tags: []billing.BudgetConfigurationFilterTagClause{{
 					Key: "tagName",
 					Value: &billing.BudgetConfigurationFilterClause{
 						Operator: billing.BudgetConfigurationFilterOperatorIn,
@@ -143,12 +143,12 @@ func ExampleBudgetsAPI_Update_budgets() {
 					},
 				}},
 			},
-			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{billing.CreateBudgetConfigurationBudgetAlertConfigurations{
+			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{{
 				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
 				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
 				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
 				QuantityThreshold: "100",
-				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{billing.CreateBudgetConfigurationBudgetActionConfigurations{
+				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{{
 					ActionType: billing.ActionConfigurationTypeEmailNotification,
 					Target:     "admin@example.com",
 				}},
@@ -166,7 +166,7 @@ func ExampleBudgetsAPI_Update_budgets() {
 			BudgetConfigurationId: created.Budget.BudgetConfigurationId,
 			DisplayName:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 			Filter: &billing.BudgetConfigurationFilter{
-				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+				Tags: []billing.BudgetConfigurationFilterTagClause{{
 					Key: "tagName",
 					Value: &billing.BudgetConfigurationFilterClause{
 						Operator: billing.BudgetConfigurationFilterOperatorIn,
@@ -174,7 +174,7 @@ func ExampleBudgetsAPI_Update_budgets() {
 					},
 				}},
 			},
-			AlertConfigurations: []billing.AlertConfiguration{billing.AlertConfiguration{
+			AlertConfigurations: []billing.AlertConfiguration{{
 				AlertConfigurationId: created.Budget.AlertConfigurations[0].AlertConfigurationId,
 				TimePeriod:           billing.AlertConfigurationTimePeriodMonth,
 				QuantityType:         billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,

@@ -134,7 +134,7 @@ func ExampleGrantsAPI_Update_tables() {
 	x, err := w.Grants.Update(ctx, catalog.UpdatePermissions{
 		FullName:      createdTable.FullName,
 		SecurableType: string(catalog.SecurableTypeTable),
-		Changes: []catalog.PermissionsChange{catalog.PermissionsChange{
+		Changes: []catalog.PermissionsChange{{
 			Add:       []catalog.Privilege{catalog.PrivilegeModify, catalog.PrivilegeSelect},
 			Principal: accountLevelGroupName,
 		}},

@@ -4,6 +4,39 @@
   "version": {
     "version/version.go": "const Version = \"$VERSION\""
   },
+  "sync": {
+    "allow_from_packages": [
+      "**/*.{go,md,tmpl}",
+      "**/go.{mod,sum}",
+      "**/testdata/**",
+      ".package.json",
+      ".codegen.json",
+      ".codegen/{_last_sha,_openapi_sha,changelog.json,releases.jsonl}",
+      ".cursor/rules/*.mdc",
+      ".gitattributes",
+      ".gitignore",
+      ".goreleaser.yml",
+      ".mockery.yaml",
+      ".github/**/*.yml",
+      ".github/conftest/rules/*.rego",
+      "DCO",
+      "LICENSE",
+      "NOTICE",
+      "Makefile",
+      "SECURITY.md",
+      "staticcheck.conf",
+      "test-config.yaml",
+      "tagging.py",
+      "tagging.py.lock",
+      ".release_metadata.json"
+    ],
+    "skip_from_source": [
+      "BUILD",
+      "BUILD.bazel",
+      "OWNERS",
+      "vendor"
+    ]
+  },
   "toolchain": {
     "required": [
       "go"
