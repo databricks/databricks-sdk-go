@@ -82,6 +82,65 @@ func (_c *MockAiGatewayInterface_CreateMcpService_Call) RunAndReturn(run func(co
 	return _c
 }
 
+// CreateMcpServiceUserMappedCredential provides a mock function with given fields: ctx, request
+func (_m *MockAiGatewayInterface) CreateMcpServiceUserMappedCredential(ctx context.Context, request catalog.CreateMcpServiceUserMappedCredentialRequest) (*catalog.McpServiceUserMappedCredential, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateMcpServiceUserMappedCredential")
+	}
+
+	var r0 *catalog.McpServiceUserMappedCredential
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateMcpServiceUserMappedCredentialRequest) (*catalog.McpServiceUserMappedCredential, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateMcpServiceUserMappedCredentialRequest) *catalog.McpServiceUserMappedCredential); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.McpServiceUserMappedCredential)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.CreateMcpServiceUserMappedCredentialRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMcpServiceUserMappedCredential'
+type MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call struct {
+	*mock.Call
+}
+
+// CreateMcpServiceUserMappedCredential is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.CreateMcpServiceUserMappedCredentialRequest
+func (_e *MockAiGatewayInterface_Expecter) CreateMcpServiceUserMappedCredential(ctx interface{}, request interface{}) *MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call {
+	return &MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call{Call: _e.mock.On("CreateMcpServiceUserMappedCredential", ctx, request)}
+}
+
+func (_c *MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call) Run(run func(ctx context.Context, request catalog.CreateMcpServiceUserMappedCredentialRequest)) *MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.CreateMcpServiceUserMappedCredentialRequest))
+	})
+	return _c
+}
+
+func (_c *MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call) Return(_a0 *catalog.McpServiceUserMappedCredential, _a1 error) *MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call) RunAndReturn(run func(context.Context, catalog.CreateMcpServiceUserMappedCredentialRequest) (*catalog.McpServiceUserMappedCredential, error)) *MockAiGatewayInterface_CreateMcpServiceUserMappedCredential_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateModelProviderService provides a mock function with given fields: ctx, request
 func (_m *MockAiGatewayInterface) CreateModelProviderService(ctx context.Context, request catalog.CreateModelProviderServiceRequest) (*catalog.ModelProviderService, error) {
 	ret := _m.Called(ctx, request)
@@ -247,6 +306,65 @@ func (_c *MockAiGatewayInterface_DeleteMcpService_Call) RunAndReturn(run func(co
 	return _c
 }
 
+// DeleteMcpServiceUserMappedCredential provides a mock function with given fields: ctx, request
+func (_m *MockAiGatewayInterface) DeleteMcpServiceUserMappedCredential(ctx context.Context, request catalog.DeleteMcpServiceUserMappedCredentialRequest) (*catalog.DeleteMcpServiceUserMappedCredentialResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMcpServiceUserMappedCredential")
+	}
+
+	var r0 *catalog.DeleteMcpServiceUserMappedCredentialResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteMcpServiceUserMappedCredentialRequest) (*catalog.DeleteMcpServiceUserMappedCredentialResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteMcpServiceUserMappedCredentialRequest) *catalog.DeleteMcpServiceUserMappedCredentialResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.DeleteMcpServiceUserMappedCredentialResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.DeleteMcpServiceUserMappedCredentialRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMcpServiceUserMappedCredential'
+type MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call struct {
+	*mock.Call
+}
+
+// DeleteMcpServiceUserMappedCredential is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.DeleteMcpServiceUserMappedCredentialRequest
+func (_e *MockAiGatewayInterface_Expecter) DeleteMcpServiceUserMappedCredential(ctx interface{}, request interface{}) *MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call {
+	return &MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call{Call: _e.mock.On("DeleteMcpServiceUserMappedCredential", ctx, request)}
+}
+
+func (_c *MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call) Run(run func(ctx context.Context, request catalog.DeleteMcpServiceUserMappedCredentialRequest)) *MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.DeleteMcpServiceUserMappedCredentialRequest))
+	})
+	return _c
+}
+
+func (_c *MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call) Return(_a0 *catalog.DeleteMcpServiceUserMappedCredentialResponse, _a1 error) *MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call) RunAndReturn(run func(context.Context, catalog.DeleteMcpServiceUserMappedCredentialRequest) (*catalog.DeleteMcpServiceUserMappedCredentialResponse, error)) *MockAiGatewayInterface_DeleteMcpServiceUserMappedCredential_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteModelProviderService provides a mock function with given fields: ctx, request
 func (_m *MockAiGatewayInterface) DeleteModelProviderService(ctx context.Context, request catalog.DeleteModelProviderServiceRequest) error {
 	ret := _m.Called(ctx, request)
@@ -396,6 +514,65 @@ func (_c *MockAiGatewayInterface_GetMcpService_Call) Return(_a0 *catalog.McpServ
 }
 
 func (_c *MockAiGatewayInterface_GetMcpService_Call) RunAndReturn(run func(context.Context, catalog.GetMcpServiceRequest) (*catalog.McpService, error)) *MockAiGatewayInterface_GetMcpService_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetMcpServiceUserMappedCredential provides a mock function with given fields: ctx, request
+func (_m *MockAiGatewayInterface) GetMcpServiceUserMappedCredential(ctx context.Context, request catalog.GetMcpServiceUserMappedCredentialRequest) (*catalog.McpServiceUserMappedCredential, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMcpServiceUserMappedCredential")
+	}
+
+	var r0 *catalog.McpServiceUserMappedCredential
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetMcpServiceUserMappedCredentialRequest) (*catalog.McpServiceUserMappedCredential, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetMcpServiceUserMappedCredentialRequest) *catalog.McpServiceUserMappedCredential); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.McpServiceUserMappedCredential)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.GetMcpServiceUserMappedCredentialRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMcpServiceUserMappedCredential'
+type MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call struct {
+	*mock.Call
+}
+
+// GetMcpServiceUserMappedCredential is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.GetMcpServiceUserMappedCredentialRequest
+func (_e *MockAiGatewayInterface_Expecter) GetMcpServiceUserMappedCredential(ctx interface{}, request interface{}) *MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call {
+	return &MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call{Call: _e.mock.On("GetMcpServiceUserMappedCredential", ctx, request)}
+}
+
+func (_c *MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call) Run(run func(ctx context.Context, request catalog.GetMcpServiceUserMappedCredentialRequest)) *MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.GetMcpServiceUserMappedCredentialRequest))
+	})
+	return _c
+}
+
+func (_c *MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call) Return(_a0 *catalog.McpServiceUserMappedCredential, _a1 error) *MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call) RunAndReturn(run func(context.Context, catalog.GetMcpServiceUserMappedCredentialRequest) (*catalog.McpServiceUserMappedCredential, error)) *MockAiGatewayInterface_GetMcpServiceUserMappedCredential_Call {
 	_c.Call.Return(run)
 	return _c
 }

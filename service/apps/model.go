@@ -1474,6 +1474,8 @@ type AppUpdate struct {
 
 	Status *AppUpdateUpdateStatus `json:"status,omitempty"`
 
+	TelemetryExportDestinations []TelemetryExportDestination `json:"telemetry_export_destinations,omitempty"`
+
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	UserApiScopes []string `json:"user_api_scopes,omitempty"`

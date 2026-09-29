@@ -1408,7 +1408,7 @@ type WorkspaceClient struct {
 	WorkspaceEntityTagAssignments tags.WorkspaceEntityTagAssignmentsInterface
 
 	// These APIs are used to manage identities and the workspace access of
-	// these identities in <Databricks>.
+	// these identities in Databricks.
 	WorkspaceIamV2 iamv2.WorkspaceIamV2Interface
 
 	// APIs to manage workspace level settings

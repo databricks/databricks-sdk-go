@@ -1143,6 +1143,8 @@ const ConnectionTypeSqlserver ConnectionType = `SQLSERVER`
 
 const ConnectionTypeTeradata ConnectionType = `TERADATA`
 
+const ConnectionTypeTiktokAds ConnectionType = `TIKTOK_ADS`
+
 const ConnectionTypeUnknownConnectionType ConnectionType = `UNKNOWN_CONNECTION_TYPE`
 
 const ConnectionTypeWorkdayRaas ConnectionType = `WORKDAY_RAAS`
@@ -1157,11 +1159,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `AWS_SECRETS_MANAGER`, `AZURE_KEY_VAULT`, `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `AWS_SECRETS_MANAGER`, `AZURE_KEY_VAULT`, `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AWS_SECRETS_MANAGER", "AZURE_KEY_VAULT", "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AWS_SECRETS_MANAGER", "AZURE_KEY_VAULT", "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1199,6 +1201,7 @@ func (f *ConnectionType) Values() []ConnectionType {
 		ConnectionTypeSqldw,
 		ConnectionTypeSqlserver,
 		ConnectionTypeTeradata,
+		ConnectionTypeTiktokAds,
 		ConnectionTypeUnknownConnectionType,
 		ConnectionTypeWorkdayRaas,
 		ConnectionTypeZendesk,
@@ -1727,6 +1730,17 @@ type CreateMcpServiceRequest struct {
 }
 
 func (s *CreateMcpServiceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type CreateMcpServiceUserMappedCredentialRequest struct {
+	Login McpServiceUserMappedCredentialLogin `json:"login"`
+	// Resource name of the MCP service. Format:
+	// `mcp-services/{catalog}.{schema}.{mcp_service}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *CreateMcpServiceUserMappedCredentialRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2635,6 +2649,25 @@ func (s *DeleteMcpServiceRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteMcpServiceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DeleteMcpServiceUserMappedCredentialRequest struct {
+	// Resource name of the MCP service. Format:
+	// `mcp-services/{catalog}.{schema}.{mcp_service}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteMcpServiceUserMappedCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Delete returns no resource; a dedicated (empty) response keeps the revoke
+// RPC's shape owned here rather than google.protobuf.Empty.
+type DeleteMcpServiceUserMappedCredentialResponse struct {
+}
+
+func (s *DeleteMcpServiceUserMappedCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type DeleteMetastoreRequest struct {
@@ -4548,6 +4581,16 @@ func (s *GetMcpServiceRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetMcpServiceUserMappedCredentialRequest struct {
+	// Resource name of the MCP service. Format:
+	// `mcp-services/{catalog}.{schema}.{mcp_service}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetMcpServiceUserMappedCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
@@ -6454,6 +6497,12 @@ type McpServiceConfigSourceConnection struct {
 	// Resource name of the Unity Catalog connection used to access the MCP
 	// server, in the form `connections/{catalog}.{schema}.{connection}`.
 	Name string `json:"name"`
+	// Options needed to build the U2M authorize request, returned as a flat
+	// map. When set, it includes: `authorization_endpoint` (OAuth authorize
+	// URL), `token_endpoint` (token-exchange URL), `oauth_scope`
+	// (space-separated scopes to request), `client_id` (OAuth client id), and
+	// `oauth_provider` (the OAuth provider).
+	Options map[string]string `json:"options,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6464,6 +6513,35 @@ func (s *McpServiceConfigSourceConnection) UnmarshalJSON(b []byte) error {
 
 func (s McpServiceConfigSourceConnection) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A caller's per-user OAuth credential for an MCP service.
+type McpServiceUserMappedCredential struct {
+	// Token-expiry info for the credential, returned as a flat map:
+	// `access_token_expiration` (always set) and `refresh_token_expiration`
+	// (set when the credential has a refresh token). Both values are
+	// timestamps.
+	Options map[string]string `json:"options,omitempty"`
+	// Provisioning state of the credential. `ACTIVE` means the caller is logged
+	// in and the credential is usable; any other state means the login has not
+	// completed.
+	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
+}
+
+func (s *McpServiceUserMappedCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Login input for an MCP service user credential. Carries the OAuth exchange
+// fields as a flat map.
+type McpServiceUserMappedCredentialLogin struct {
+	// OAuth exchange fields: `pkce_verifier`, `authorization_code`, and
+	// `oauth_redirect_uri`.
+	Options map[string]string `json:"options,omitempty"`
+}
+
+func (s *McpServiceUserMappedCredentialLogin) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type MetastoreAssignment struct {
@@ -6818,6 +6896,29 @@ func (s ModelProviderServiceConfigAzureOpenAiProviderDirectConfig) MarshalJSON()
 	return marshal.Marshal(s)
 }
 
+// Header-based API-key authentication for a custom provider: the secret is
+// forwarded on outbound requests under a caller-chosen HTTP header, as
+// `<api_key_name>: <api_key_value>`.
+type ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth struct {
+	// HTTP header name that carries the API key on outbound requests (e.g.,
+	// `Ocp-Apim-Subscription-Key`). The value forwarded under this header is
+	// supplied via `api_key_value`.
+	ApiKeyName string `json:"api_key_name,omitempty"`
+	// Secret value forwarded under the `api_key_name` header on outbound
+	// requests. Supplied as inline plaintext via `ProviderSecret.plaintext`.
+	ApiKeyValue *ModelProviderServiceConfigProviderSecret `json:"api_key_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Custom OpenAI-compatible provider configuration with bearer-token
 // authentication.
 type ModelProviderServiceConfigCustomProviderConfig struct {
@@ -6829,8 +6930,9 @@ func (s *ModelProviderServiceConfigCustomProviderConfig) UnmarshalJSON(b []byte)
 	return marshal.Unmarshal(b, s)
 }
 
-// Direct form of a custom provider configuration. Set `api_key` to the bearer
-// token sent in the `Authorization` header.
+// Direct form of a custom provider configuration. Set `api_key` to send the
+// secret as an `Authorization` bearer token, or `header_auth` to forward it
+// under a caller-chosen HTTP header.
 type ModelProviderServiceConfigCustomProviderDirectConfig struct {
 	// Bearer token forwarded in the `Authorization` header. Supply the value in
 	// `api_key.plaintext`.
@@ -6838,6 +6940,10 @@ type ModelProviderServiceConfigCustomProviderDirectConfig struct {
 	// Endpoint URL of the OpenAI-compatible service (e.g.,
 	// `https://api.example.com/v1`). Required on Create.
 	BaseUrl string `json:"base_url,omitempty"`
+	// Header-based API-key auth: the secret is forwarded on outbound requests
+	// under a caller-chosen HTTP header rather than as an `Authorization`
+	// bearer token. Set this instead of `api_key` for header auth.
+	HeaderAuth *ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth `json:"header_auth,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9581,6 +9687,8 @@ func (s *SecurablePermissions) UnmarshalJSON(b []byte) error {
 // The type of Unity Catalog securable.
 type SecurableType string
 
+const SecurableTypeAgentService SecurableType = `AGENT_SERVICE`
+
 const SecurableTypeCatalog SecurableType = `CATALOG`
 
 const SecurableTypeCleanRoom SecurableType = `CLEAN_ROOM`
@@ -9615,6 +9723,8 @@ const SecurableTypeSchema SecurableType = `SCHEMA`
 
 const SecurableTypeShare SecurableType = `SHARE`
 
+const SecurableTypeSkill SecurableType = `SKILL`
+
 const SecurableTypeStagingTable SecurableType = `STAGING_TABLE`
 
 const SecurableTypeStorageCredential SecurableType = `STORAGE_CREDENTIAL`
@@ -9631,11 +9741,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `MCP_SERVICE`, `METASTORE`, `MODEL`, `MODEL_PROVIDER_SERVICE`, `MODEL_SERVICE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
+	case `AGENT_SERVICE`, `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `MCP_SERVICE`, `METASTORE`, `MODEL`, `MODEL_PROVIDER_SERVICE`, `MODEL_SERVICE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `SKILL`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "MCP_SERVICE", "METASTORE", "MODEL", "MODEL_PROVIDER_SERVICE", "MODEL_SERVICE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AGENT_SERVICE", "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "MCP_SERVICE", "METASTORE", "MODEL", "MODEL_PROVIDER_SERVICE", "MODEL_SERVICE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "SKILL", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -9644,6 +9754,7 @@ func (f *SecurableType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *SecurableType) Values() []SecurableType {
 	return []SecurableType{
+		SecurableTypeAgentService,
 		SecurableTypeCatalog,
 		SecurableTypeCleanRoom,
 		SecurableTypeConnection,
@@ -9661,6 +9772,7 @@ func (f *SecurableType) Values() []SecurableType {
 		SecurableTypeRecipient,
 		SecurableTypeSchema,
 		SecurableTypeShare,
+		SecurableTypeSkill,
 		SecurableTypeStagingTable,
 		SecurableTypeStorageCredential,
 		SecurableTypeTable,

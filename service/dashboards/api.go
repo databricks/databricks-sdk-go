@@ -515,35 +515,83 @@ type LakeviewInterface interface {
 
 	// Create a draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
 
 	// Create dashboard schedule.
+	//
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error)
 
 	// Create schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error)
 
 	// Delete dashboard schedule.
+	//
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error
 
 	// Delete dashboard schedule.
+	//
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error
 
 	// Delete schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error
 
 	// Delete schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error
 
 	// Get a draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Get a draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error)
 
 	// Get the current published dashboard.
@@ -565,55 +613,141 @@ type LakeviewInterface interface {
 	GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error)
 
 	// Get dashboard schedule.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	GetSchedule(ctx context.Context, request GetScheduleRequest) (*Schedule, error)
 
 	// Get dashboard schedule.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error)
 
 	// Get schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error)
 
 	// Get schedule subscription.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error)
 
 	// List dashboards.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard]
 
 	// List dashboards.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error)
 
 	// List dashboard schedules.
 	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
+	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListSchedules(ctx context.Context, request ListSchedulesRequest) listing.Iterator[Schedule]
 
 	// List dashboard schedules.
 	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
+	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListSchedulesAll(ctx context.Context, request ListSchedulesRequest) ([]Schedule, error)
 
 	// List dashboard schedules.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error)
 
 	// List schedule subscriptions.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) listing.Iterator[Subscription]
 
 	// List schedule subscriptions.
 	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
+	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListSubscriptionsAll(ctx context.Context, request ListSubscriptionsRequest) ([]Subscription, error)
 
 	// List schedule subscriptions.
+	//
+	// The caller must be a workspace user with one of the following [entitlements]:
+	// Workspace access, Databricks SQL access, or Consumer access.
+	//
+	// Account-level users who are not members of the workspace cannot call this
+	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error)
 
 	// Deprecated: Legacy dashboard migration is no longer supported. Use Lakeview
@@ -622,40 +756,66 @@ type LakeviewInterface interface {
 
 	// Publish the current draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
 
 	// Revert a dashboard's definition in draft mode to the last published version.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error)
 
 	// Trash a dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Trash(ctx context.Context, request TrashDashboardRequest) error
 
 	// Trash a dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	TrashByDashboardId(ctx context.Context, dashboardId string) error
 
 	// Unpublish the dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
 
 	// Unpublish the dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	UnpublishByDashboardId(ctx context.Context, dashboardId string) error
 
 	// Update a draft dashboard.
 	//
-	// Requires the Databricks SQL access entitlement.
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
 
 	// Update dashboard schedule.
+	//
+	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+	// in addition to Workspace access.
+	//
+	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error)
 }
 
@@ -675,6 +835,11 @@ type LakeviewAPI struct {
 }
 
 // Delete dashboard schedule.
+//
+// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+// in addition to Workspace access.
+//
+// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error {
 	return a.lakeviewImpl.DeleteSchedule(ctx, DeleteScheduleRequest{
 		DashboardId: dashboardId,
@@ -683,6 +848,14 @@ func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Conte
 }
 
 // Delete schedule subscription.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error {
 	return a.lakeviewImpl.DeleteSubscription(ctx, DeleteSubscriptionRequest{
 		DashboardId:    dashboardId,
@@ -693,7 +866,10 @@ func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptio
 
 // Get a draft dashboard.
 //
-// Requires the Databricks SQL access entitlement.
+// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+// in addition to Workspace access.
+//
+// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
 	return a.lakeviewImpl.Get(ctx, GetDashboardRequest{
 		DashboardId: dashboardId,
@@ -714,6 +890,14 @@ func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId
 }
 
 // Get dashboard schedule.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error) {
 	return a.lakeviewImpl.GetSchedule(ctx, GetScheduleRequest{
 		DashboardId: dashboardId,
@@ -722,6 +906,14 @@ func (a *LakeviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context,
 }
 
 // Get schedule subscription.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error) {
 	return a.lakeviewImpl.GetSubscription(ctx, GetSubscriptionRequest{
 		DashboardId:    dashboardId,
@@ -731,6 +923,14 @@ func (a *LakeviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId
 }
 
 // List dashboard schedules.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error) {
 	return a.lakeviewImpl.internalListSchedules(ctx, ListSchedulesRequest{
 		DashboardId: dashboardId,
@@ -738,6 +938,14 @@ func (a *LakeviewAPI) ListSchedulesByDashboardId(ctx context.Context, dashboardI
 }
 
 // List schedule subscriptions.
+//
+// The caller must be a workspace user with one of the following [entitlements]:
+// Workspace access, Databricks SQL access, or Consumer access.
+//
+// Account-level users who are not members of the workspace cannot call this
+// endpoint, even if the dashboard has been shared with them.
+//
+// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error) {
 	return a.lakeviewImpl.internalListSubscriptions(ctx, ListSubscriptionsRequest{
 		DashboardId: dashboardId,
@@ -747,7 +955,10 @@ func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Co
 
 // Trash a dashboard.
 //
-// Requires the Databricks SQL access entitlement.
+// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+// in addition to Workspace access.
+//
+// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.lakeviewImpl.Trash(ctx, TrashDashboardRequest{
 		DashboardId: dashboardId,
@@ -756,7 +967,10 @@ func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string
 
 // Unpublish the dashboard.
 //
-// Requires the Databricks SQL access entitlement.
+// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
+// in addition to Workspace access.
+//
+// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,
