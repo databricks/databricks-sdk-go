@@ -381,6 +381,11 @@ type BaseRun struct {
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
+	// Snapshot of `JobSettings.environment_variables` as it was at run launch
+	// — the full list of named environment-variable entries the job defined.
+	// To find which entry a given task ran with, look at
+	// `RunTaskSettings.environment_variables_key`.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -1066,6 +1071,11 @@ type CreateJob struct {
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Named environment-variable entries that tasks can reference by key from
+	// `TaskSettings.environment_variables_key`. Each entry's `spec` holds
+	// inline `variables` and optional `.env` `files`. Maximum 10 entries per
+	// job. A task can reference at most one entry from this list.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by tasks that use serverless compute or a compute resource
 	// that uses Environments mode.
@@ -1641,13 +1651,13 @@ type DeploymentSpec struct {
 	//
 	// Example script contents:
 	//
-	// # Plain Python: python train.py --epochs 10
+	// ```bash # Plain Python: python train.py --epochs 10
 	//
 	// # Multi-GPU via accelerate: accelerate launch train.py --config
 	// config.yaml
 	//
-	// # Distributed via torchrun: torchrun --nproc_per_node=8 train.py
-	CommandPath string `json:"command_path"`
+	// # Distributed via torchrun: torchrun --nproc_per_node=8 train.py ```
+	CommandPath string `json:"command_path,omitempty"`
 	// Compute resources allocated to each node in this deployment.
 	Compute ComputeSpec `json:"compute"`
 	// Optional human-readable name for this deployment (for example, `driver`,
@@ -2478,6 +2488,12 @@ type JobEmailNotifications struct {
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// completes for a continuous job.
+	OnMaintenanceComplete []string `json:"on_maintenance_complete,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// starts for a continuous job.
+	OnMaintenanceStart []string `json:"on_maintenance_start,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
@@ -2516,6 +2532,67 @@ type JobEnvironment struct {
 }
 
 func (s *JobEnvironment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A named environment-variable entry, defined once at the job level and
+// referenced by key from one or more tasks. Entries live on
+// `JobSettings.environment_variables`, and tasks select one via
+// `TaskSettings.environment_variables_key`.
+type JobEnvironmentVariables struct {
+	// Identifier for this entry. Must be unique within
+	// `JobSettings.environment_variables`. Tasks reference it from
+	// `TaskSettings.environment_variables_key`.
+	EnvironmentVariablesKey string `json:"environment_variables_key,omitempty"`
+	// The environment variable specification.
+	Spec *JobEnvironmentVariablesSpec `json:"spec,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JobEnvironmentVariables) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobEnvironmentVariables) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The environment variables and files associated with a job environment
+// variable entry. Runtime environment variables override inline `variables`,
+// which override values from `files`, on duplicate keys.
+type JobEnvironmentVariablesSpec struct {
+	// Workspace (`/Workspace/...`) or UC Volumes (`/Volumes/...`) paths to
+	// `.env` files. Maximum 5 files. Files are read, parsed, and merged at task
+	// execution time, not at job creation or update API call time.
+	//
+	// File format: each line containing a variable must be exactly `KEY=VALUE`.
+	// Empty and whitespace-only lines, and lines beginning with `#`, are
+	// ignored. Keys must match the same regex as inlined variable names
+	// (`^[A-Za-z_][A-Za-z0-9_]*$`); the value continues to the end of the line.
+	// No other syntax is supported — no inline comments, no quoted values, no
+	// escape sequences, no variable interpolation. Any other line that does not
+	// match the `KEY=VALUE` shape fails the run.
+	//
+	// Size limits: maximum 32,768 bytes (32 KiB) per file on disk; maximum
+	// 1,024 bytes (1 KiB) per `KEY=VALUE` line combined. Files or lines
+	// exceeding these limits fail the run.
+	//
+	// On a duplicate key, the later file wins; `variables` override values from
+	// any file.
+	Files []string `json:"files,omitempty"`
+	// Environment variables specified directly as key/value pairs. Maximum 20
+	// entries.
+	//
+	// Each key must be 1 to 256 characters and match
+	// `^[A-Za-z_][A-Za-z0-9_]*$`: it must start with an ASCII letter or
+	// underscore and contain only ASCII letters, digits, and underscores. Each
+	// value can be any Unicode string of up to 512 characters, including an
+	// empty string.
+	Variables map[string]string `json:"variables,omitempty"`
+}
+
+func (s *JobEnvironmentVariablesSpec) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2730,6 +2807,11 @@ type JobSettings struct {
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Named environment-variable entries that tasks can reference by key from
+	// `TaskSettings.environment_variables_key`. Each entry's `spec` holds
+	// inline `variables` and optional `.env` `files`. Maximum 10 entries per
+	// job. A task can reference at most one entry from this list.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by tasks that use serverless compute or a compute resource
 	// that uses Environments mode.
@@ -4264,6 +4346,11 @@ type Run struct {
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
+	// Snapshot of `JobSettings.environment_variables` as it was at run launch
+	// — the full list of named environment-variable entries the job defined.
+	// To find which entry a given task ran with, look at
+	// `RunTaskSettings.environment_variables_key`.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -5305,6 +5392,12 @@ type RunTask struct {
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Reference to a `JobEnvironmentVariables` entry defined in
+	// `RunSettings.environment_variables` for one-time runs or preserved in
+	// `Run.environment_variables` for run snapshots. The selected entry's
+	// variables are applied to this task at execution time. This field supports
+	// serverless tasks using environment version 5 or later.
+	EnvironmentVariablesKey string `json:"environment_variables_key,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -6139,6 +6232,13 @@ type SubmitRun struct {
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Named environment-variable entries that tasks of this one-time run can
+	// reference by key from `RunTaskSettings.environment_variables_key`. Each
+	// entry's `spec` holds inline `variables` and optional `.env` `files`.
+	// Handled identically to `JobSettings.environment_variables`. Maximum 10
+	// entries. Entries are independent of one another — there is no
+	// cross-entry merging.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by tasks of this run.
 	Environments []JobEnvironment `json:"environments,omitempty"`
@@ -6279,6 +6379,12 @@ type SubmitTask struct {
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Reference to a `JobEnvironmentVariables` entry defined in
+	// `RunSettings.environment_variables` for one-time runs or preserved in
+	// `Run.environment_variables` for run snapshots. The selected entry's
+	// variables are applied to this task at execution time. This field supports
+	// serverless tasks using environment version 5 or later.
+	EnvironmentVariablesKey string `json:"environment_variables_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
@@ -6521,6 +6627,11 @@ type Task struct {
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Reference to a `JobEnvironmentVariables` entry defined in
+	// `JobSettings.environment_variables`. The selected entry's variables are
+	// applied to this task at execution time. This field supports serverless
+	// tasks using environment version 5 or later.
+	EnvironmentVariablesKey string `json:"environment_variables_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
@@ -6653,6 +6764,12 @@ type TaskEmailNotifications struct {
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// completes for a continuous job.
+	OnMaintenanceComplete []string `json:"on_maintenance_complete,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// starts for a continuous job.
+	OnMaintenanceStart []string `json:"on_maintenance_start,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
@@ -7400,6 +7517,15 @@ type WebhookNotifications struct {
 	// An optional list of system notification IDs to call when the run fails. A
 	// maximum of 3 destinations can be specified for the `on_failure` property.
 	OnFailure []Webhook `json:"on_failure,omitempty"`
+	// An optional list of system notification IDs to call when
+	// platform-initiated maintenance completes for a continuous job. A maximum
+	// of 3 destinations can be specified for the `on_maintenance_complete`
+	// property.
+	OnMaintenanceComplete []Webhook `json:"on_maintenance_complete,omitempty"`
+	// An optional list of system notification IDs to call when
+	// platform-initiated maintenance starts for a continuous job. A maximum of
+	// 3 destinations can be specified for the `on_maintenance_start` property.
+	OnMaintenanceStart []Webhook `json:"on_maintenance_start,omitempty"`
 	// An optional list of system notification IDs to call when the run starts.
 	// A maximum of 3 destinations can be specified for the `on_start` property.
 	OnStart []Webhook `json:"on_start,omitempty"`

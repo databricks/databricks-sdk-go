@@ -370,6 +370,29 @@ func (a *aiGatewayImpl) CreateModelService(ctx context.Context, request CreateMo
 	return &modelService, err
 }
 
+func (a *aiGatewayImpl) CreateSkill(ctx context.Context, request CreateSkillRequest) (*Skill, error) {
+	var skill Skill
+	path := "/api/2.1/unity-catalog/skills"
+	queryParams := make(map[string]any)
+
+	if request.Parent != "" {
+		queryParams["parent"] = request.Parent
+	}
+
+	if request.SkillId != "" {
+		queryParams["skill_id"] = request.SkillId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Skill, &skill)
+	return &skill, err
+}
+
 func (a *aiGatewayImpl) DeleteMcpService(ctx context.Context, request DeleteMcpServiceRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -421,6 +444,33 @@ func (a *aiGatewayImpl) DeleteModelService(ctx context.Context, request DeleteMo
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
+}
+
+func (a *aiGatewayImpl) DeleteSkill(ctx context.Context, request DeleteSkillRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *aiGatewayImpl) FinalizeSkill(ctx context.Context, request FinalizeSkillRequest) (*Skill, error) {
+	var skill Skill
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v/finalize", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &skill)
+	return &skill, err
 }
 
 func (a *aiGatewayImpl) GetMcpService(ctx context.Context, request GetMcpServiceRequest) (*McpService, error) {
@@ -477,6 +527,20 @@ func (a *aiGatewayImpl) GetModelService(ctx context.Context, request GetModelSer
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &modelService)
 	return &modelService, err
+}
+
+func (a *aiGatewayImpl) GetSkill(ctx context.Context, request GetSkillRequest) (*Skill, error) {
+	var skill Skill
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &skill)
+	return &skill, err
 }
 
 // Lists the MCP services in a Unity Catalog schema. Provide `parent` as
@@ -650,6 +714,63 @@ func (a *aiGatewayImpl) internalListModelServices(ctx context.Context, request L
 	return &listModelServicesResponse, err
 }
 
+// Lists skills in a Unity Catalog schema. Provide `parent` as
+// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only skills the caller can access as owner or through `READ_VOLUME`,
+// `READ_METADATA`, or `MANAGE` are returned.
+func (a *aiGatewayImpl) ListSkills(ctx context.Context, request ListSkillsRequest) listing.Iterator[Skill] {
+
+	getNextPage := func(ctx context.Context, req ListSkillsRequest) (*ListSkillsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSkills(ctx, req)
+	}
+	getItems := func(resp *ListSkillsResponse) []Skill {
+		return resp.Skills
+	}
+	getNextReq := func(resp *ListSkillsResponse) *ListSkillsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists skills in a Unity Catalog schema. Provide `parent` as
+// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+// `next_page_token` to fetch subsequent pages.
+//
+// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+// schema. Only skills the caller can access as owner or through `READ_VOLUME`,
+// `READ_METADATA`, or `MANAGE` are returned.
+func (a *aiGatewayImpl) ListSkillsAll(ctx context.Context, request ListSkillsRequest) ([]Skill, error) {
+	iterator := a.ListSkills(ctx, request)
+	return listing.ToSlice[Skill](ctx, iterator)
+}
+
+func (a *aiGatewayImpl) internalListSkills(ctx context.Context, request ListSkillsRequest) (*ListSkillsResponse, error) {
+	var listSkillsResponse ListSkillsResponse
+	path := "/api/2.1/unity-catalog/skills"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSkillsResponse)
+	return &listSkillsResponse, err
+}
+
 func (a *aiGatewayImpl) UpdateMcpService(ctx context.Context, request UpdateMcpServiceRequest) (*McpService, error) {
 	var mcpService McpService
 	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
@@ -726,6 +847,32 @@ func (a *aiGatewayImpl) UpdateModelService(ctx context.Context, request UpdateMo
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ModelService, &modelService)
 	return &modelService, err
+}
+
+func (a *aiGatewayImpl) UpdateSkill(ctx context.Context, request UpdateSkillRequest) (*Skill, error) {
+	var skill Skill
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	if request.Etag != "" || slices.Contains(request.ForceSendFields, "Etag") {
+		queryParams["etag"] = request.Etag
+	}
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Skill, &skill)
+	return &skill, err
 }
 
 // unexported type that holds implementations of just ArtifactAllowlists API methods

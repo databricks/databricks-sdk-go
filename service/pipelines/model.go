@@ -68,7 +68,7 @@ func (s AutoFullRefreshPolicy) MarshalJSON() ([]byte, error) {
 
 type AvroTransformerOptions struct {
 	// (Optional) Parse mode for Avro data. Valid values: FAILFAST, PERMISSIVE.
-	// Defaults to FAILFAST.
+	// Defaults to PERMISSIVE.
 	ParseMode ParseMode `json:"parse_mode,omitempty"`
 	// Inline Avro JSON schema string.
 	Schema string `json:"schema,omitempty"`
@@ -154,6 +154,8 @@ type ClonePipelineRequest struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
@@ -391,6 +393,8 @@ type CreatePipeline struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 
 	DryRun bool `json:"dry_run,omitempty"`
@@ -679,6 +683,8 @@ type EditPipeline struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
@@ -2922,6 +2928,8 @@ type PipelineSpec struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
@@ -3194,7 +3202,7 @@ type ProtobufTransformerOptions struct {
 	// Required: fully-qualified message type name.
 	MessageName string `json:"message_name,omitempty"`
 	// (Optional) Parse mode for Protobuf data. Valid values: FAILFAST,
-	// PERMISSIVE. Defaults to FAILFAST.
+	// PERMISSIVE. Defaults to PERMISSIVE.
 	ParseMode ParseMode `json:"parse_mode,omitempty"`
 	// (Optional) Maximum expansion depth for recursive protobuf fields. Spark
 	// SQL does not natively support recursive types, so recursive fields are

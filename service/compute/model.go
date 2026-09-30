@@ -4488,7 +4488,13 @@ func (s InstancePoolAndStats) MarshalJSON() ([]byte, error) {
 // Attributes set during instance pool creation which are related to Amazon Web
 // Services.
 type InstancePoolAwsAttributes struct {
-	// Availability type used for the spot nodes.
+	// Availability type used for the instances in the pool. Supports on-demand,
+	// spot, and spot-with-fallback (the pool acquires spot instances first, and
+	// falls back to on-demand instances when spot capacity is unavailable).
+	//
+	// You can change this value on an existing pool. New clusters use the
+	// updated availability, and existing clusters keep the availability they
+	// launched with.
 	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
 	// All AWS instances belonging to the instance pool will have this instance
 	// profile. If omitted, instances will initially be launched with the
@@ -4511,6 +4517,10 @@ type InstancePoolAwsAttributes struct {
 	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
+	//
+	// You can change this value on an existing pool. New clusters use the
+	// updated bid price, and existing clusters keep the bid price they launched
+	// with.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -4520,6 +4530,16 @@ type InstancePoolAwsAttributes struct {
 	// optional field at cluster creation, and if not specified, a default zone
 	// will be used. The list of available zones as well as the default value
 	// can be found by using the `List Zones` method.
+	//
+	// Set this field to "auto" to enable Auto-AZ, in which case Databricks
+	// selects the availability zone for each cluster independently when the
+	// cluster launches, and retries another zone if the cluster can't be
+	// fulfilled because of insufficient capacity or quota. All nodes in a
+	// cluster land in the same zone, and different clusters backed by the pool
+	// can run in different zones.
+	//
+	// You can change the zone on an existing pool. New clusters use the updated
+	// zone, and existing clusters keep the zone they launched with.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4574,7 +4594,13 @@ func (f *InstancePoolAwsAttributesAvailability) Type() string {
 
 // Attributes set during instance pool creation which are related to Azure.
 type InstancePoolAzureAttributes struct {
-	// Availability type used for the spot nodes.
+	// Availability type used for the instances in the pool. Supports on-demand,
+	// spot, and spot-with-fallback (the pool acquires spot instances first, and
+	// falls back to on-demand instances when spot capacity is unavailable).
+	//
+	// You can change this value on an existing pool. New clusters use the
+	// updated availability, and existing clusters keep the availability they
+	// launched with.
 	Availability InstancePoolAzureAttributesAvailability `json:"availability,omitempty"`
 	// The Azure capacity reservation group resource ID to use for launching VMs
 	// in this pool. When specified, VMs will be launched using the provided
@@ -4601,6 +4627,10 @@ type InstancePoolAzureAttributes struct {
 	// price. The price for the VM will be the current price for spot or the
 	// price for a standard VM, which ever is less, as long as there is capacity
 	// and quota available.
+	//
+	// You can change this value on an existing pool. New clusters use the
+	// updated max price, and existing clusters keep the max price they launched
+	// with.
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4655,6 +4685,13 @@ func (f *InstancePoolAzureAttributesAvailability) Type() string {
 
 // Attributes set during instance pool creation which are related to GCP.
 type InstancePoolGcpAttributes struct {
+	// Availability type for the instances in the pool. One of:
+	//
+	// - `ON_DEMAND_GCP`: the pool uses on-demand instances only. -
+	// `PREEMPTIBLE_GCP`: the pool uses preemptible instances only. -
+	// `PREEMPTIBLE_WITH_FALLBACK_GCP`: the pool acquires preemptible instances
+	// first, and falls back to on-demand instances when preemptible capacity is
+	// unavailable.
 	GcpAvailability GcpAvailability `json:"gcp_availability,omitempty"`
 	// If provided, each node in the instance pool will have this number of
 	// local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP
@@ -4673,12 +4710,20 @@ type InstancePoolGcpAttributes struct {
 	//
 	// This field can be one of the following: - "HA" => High availability,
 	// spread nodes across availability zones for a Databricks deployment region
-	// - A GCP availability zone => Pick One of the available zones for (machine
-	// type + region) from https://cloud.google.com/compute/docs/regions-zones
-	// (e.g. "us-west1-a").
+	// - "auto" => Auto-AZ. Databricks selects the availability zone for each
+	// cluster independently when the cluster launches, and retries another zone
+	// if the cluster can't be fulfilled because of insufficient capacity or
+	// quota. All nodes in a cluster land in the same zone, and different
+	// clusters backed by the pool can run in different zones. - A GCP
+	// availability zone => Pick One of the available zones for (machine type +
+	// region) from https://cloud.google.com/compute/docs/regions-zones (e.g.
+	// "us-west1-a").
 	//
 	// If empty, Databricks picks an availability zone to schedule the cluster
 	// on.
+	//
+	// You can change the zone on an existing pool. New clusters use the updated
+	// zone, and existing clusters keep the zone they launched with.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
