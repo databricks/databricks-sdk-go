@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.183.0 (2026-09-30)
+
+### New Features and Improvements
+
+- Add `Config.Headers`, a hook called on every request made by the client to set custom HTTP headers, on top of normal authentication. Use the `StaticHeaders` helper to set a fixed set of headers.
+
+
 ## Release v0.182.0 (2026-09-21)
 
 ### API Changes
