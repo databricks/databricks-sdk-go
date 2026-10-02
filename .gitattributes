@@ -116,6 +116,7 @@ experimental/mocks/service/marketplace/mock_provider_listings_interface.go lingu
 experimental/mocks/service/marketplace/mock_provider_personalization_requests_interface.go linguist-generated=true
 experimental/mocks/service/marketplace/mock_provider_provider_analytics_dashboards_interface.go linguist-generated=true
 experimental/mocks/service/marketplace/mock_provider_providers_interface.go linguist-generated=true
+experimental/mocks/service/mason/mock_mason_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_backfill_features_operation_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_experiments_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_feature_engineering_interface.go linguist-generated=true
