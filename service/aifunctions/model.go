@@ -82,6 +82,144 @@ func (s AiClassifyResponseMetadata) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// ai_decide
+type AiDecideOptions struct {
+	// The function API version to invoke. Defaults to "1.0". Supported
+	// versions: ["1.0"].
+	Version string `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiDecideOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiDecideOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AiDecideRequest struct {
+	// Function options. Omitted fields fall back to their documented defaults.
+	Options *AiDecideOptions `json:"options,omitempty"`
+	// A JSON object mapping question IDs to their definitions. Choose a
+	// nonempty string for each ID; its answer is returned with the same ID in
+	// `response.answers`.
+	//
+	// Each definition is an object with the required fields `type` and
+	// `instructions`. The `criteria` field is optional for the type `noul` but
+	// is required for the types `choice` and `score`.
+	//
+	// The `instructions` field describes the judgment to make and can be a
+	// string, object, or array. Use an object or array to include supporting
+	// context alongside the instructions.
+	//
+	// The `type` can be one of:
+	//
+	// - `choice`: Selects one option from a defined set. Requires `criteria` to
+	// be an object mapping 1 to 255 nonempty option names to descriptions. The
+	// criteria description can be a string, object, array, or null when the
+	// name needs no additional detail. For example:
+	//
+	// ```json { "team": { "type": "choice", "instructions": "Which team should
+	// handle this ticket?", "criteria": { "billing": "Payments, charges, and
+	// refunds", "technical_support": null } } } ```
+	//
+	// - `noul`: Estimates the probability that the answer to a true-or-false
+	// question is true. `criteria` can take the fields `true` or `false`, or
+	// both, with descriptions that are strings, objects, or arrays. Omit
+	// `criteria` to use the question alone. For example, both of the following
+	// are valid:
+	//
+	// ```json { "escalate": { "type": "noul", "instructions": "Does this ticket
+	// need escalation?", "criteria": { "true": "Suspected fraud or an exception
+	// to standard policy", "false": "A routine issue frontline support can
+	// resolve" } } } ```
+	//
+	// or
+	//
+	// ```json { "escalate": { "type": "noul", "instructions": "Does this ticket
+	// need escalation?" } } ```
+	//
+	// - `score`: Rates the state on an ordered scale. Requires `criteria` to be
+	// an array of 2 to 10 level descriptions, ordered from low to high.
+	// Descriptions can be strings, objects, or arrays. Array positions define
+	// levels starting at 0. For example:
+	//
+	// ```json { "urgency": { "type": "score", "instructions": "How urgent is
+	// this ticket?", "criteria": [ "Routine: can wait a few days",
+	// "Time-sensitive: needs attention today", "Critical: needs immediate
+	// action" ] } } ```
+	Questions json.RawMessage `json:"questions"`
+	// A string, JSON object, or array containing the content, related context,
+	// and examples needed to answer the provided questions. For example,
+	// provide a support message, a conversation, or records describing the
+	// current state of an application. All questions receive this same state.
+	State json.RawMessage `json:"state"`
+}
+
+func (s *AiDecideRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type AiDecideResponse struct {
+	// Metadata identifying the function API version used for this request.
+	Metadata *AiDecideResponseMetadata `json:"metadata,omitempty"`
+	// A JSON object containing an `answers` map with one answer for each
+	// question, keyed by the same IDs as `questions`.
+	//
+	// Each answer has a `type` matching its question and the following fields:
+	//
+	// - `choice`: choice is the highest-probability option from `criteria`.
+	// `probabilities` maps every option name to its probability. `confidence`
+	// is a number from 0 to 1 indicating how well the state supports the
+	// assessment. The `probabilities` values sum to 1. For example:
+	//
+	// ```json { "answers": { "team": { "type": "choice", "choice": "billing",
+	// "probabilities": { "billing": 0.85, "technical_support": 0.15 },
+	// "confidence": 0.9 } } } ```
+	//
+	// - `noul`: `probability` is a number from 0 to 1 estimating the
+	// probability that the answer is true. For example:
+	//
+	// ```json { "answers": { "escalate": { "type": "noul", "probability": 0.8 }
+	// } } ```
+	//
+	// - `score`: score is the probability-weighted mean of the zero-based level
+	// indices. It can fall between levels, from 0 to the number of levels minus
+	// 1. `probabilities` maps each level index to its probability, and `legend`
+	// maps each index to its original description. Both maps use string keys
+	// such as "0", "1", and "2". `confidence` is a number from 0 to 1
+	// indicating how well the state supports the assessment. The
+	// `probabilities` values sum to 1. For example:
+	//
+	// ```json { "answers": { "urgency": { "type": "score", "score": 1.6,
+	// "probabilities": { "0": 0.1, "1": 0.2, "2": 0.7 }, "legend": { "0":
+	// "Routine: can wait a few days", "1": "Time-sensitive: needs attention
+	// today", "2": "Critical: needs immediate action" }, "confidence": 0.85 } }
+	// } ```
+	Response *json.RawMessage `json:"response,omitempty"`
+}
+
+func (s *AiDecideResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type AiDecideResponseMetadata struct {
+	// The function API version used to evaluate the request.
+	Version string `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiDecideResponseMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiDecideResponseMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A bounding box on a source page; used by bbox-input citations.
 type AiExtractBbox struct {
 	// Pixel coordinates on the page image as [x0, y0, x1, y1].
