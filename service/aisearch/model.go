@@ -853,7 +853,8 @@ type QueryIndexRequest struct {
 	// JSON string describing query filters (e.g. `{"id >": 5}`).
 	FiltersJson string `json:"filters_json,omitempty"`
 	// Maximum number of results to return (the legacy `num_results`). Defaults
-	// to 10.
+	// to 10. Prefer `page_size`; when both are set, `page_size` takes
+	// precedence.
 	MaxResults int `json:"max_results,omitempty"`
 	// Full resource name of the index to query. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`

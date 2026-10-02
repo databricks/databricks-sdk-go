@@ -104,8 +104,7 @@ type PostgresService interface {
 	GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error)
 
 	// Get a single Lakebase CDF configuration, including the source Postgres
-	// schema, target Unity Catalog schema, and the identity under which writes
-	// are authorized.
+	// schema and target Unity Catalog schema.
 	GetCdfConfig(ctx context.Context, request GetCdfConfigRequest) (*CdfConfig, error)
 
 	// Get the CDF status of a single table within a Lakebase CDF configuration,

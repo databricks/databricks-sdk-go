@@ -25,6 +25,10 @@ type SandboxService interface {
 	// Retrieves a Sandbox by name.
 	GetSandbox(ctx context.Context, request GetSandboxRequest) (*Sandbox, error)
 
+	// Lists the tracked command executions (running and completed) in a
+	// sandbox.
+	ListCommands(ctx context.Context, request ListCommandsRequest) (*ListCommandsResponse, error)
+
 	// Lists all Sandboxes.
 	ListSandboxes(ctx context.Context, request ListSandboxesRequest) (*ListSandboxesResponse, error)
 

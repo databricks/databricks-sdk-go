@@ -11,6 +11,33 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// A single command execution.
+type Command struct {
+	// Arguments passed to the program.
+	Args []string `json:"args,omitempty"`
+	// The program that was executed.
+	Cmd string `json:"cmd,omitempty"`
+	// Stable identifier for this command.
+	CommandId string `json:"command_id,omitempty"`
+	// Process exit code. Only present when finished is true and the process
+	// exited normally (not killed by signal or failed to start).
+	ExitCode int `json:"exit_code,omitempty"`
+	// Whether the command has finished executing.
+	Finished bool `json:"finished,omitempty"`
+	// PID of the spawned process. Absent if the process failed to start.
+	Pid int64 `json:"pid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Command) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Command) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ComputeSpec struct {
 	// Idle duration after which the sandbox is automatically terminated.
 	InactivityTimeout *duration.Duration `json:"inactivity_timeout,omitempty"`
@@ -44,6 +71,24 @@ type DeleteSandboxRequest struct {
 
 func (s *DeleteSandboxRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type EnvironmentSpec struct {
+	// A Unity Catalog container artifact (e.g.
+	// `catalog.schema.folder.image:tag`) to run as the sandbox environment.
+	// When set, this image is used as the environment instead of resolving a
+	// managed image from `environment_version`.
+	ImageUri string `json:"image_uri,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Terminal status of a unary command execution.
@@ -159,6 +204,45 @@ func (s *GetSandboxRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type ListCommandsRequest struct {
+	// Maximum number of commands to return. The server may return fewer. If
+	// unspecified, the server returns all commands.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token returned by a previous ListCommands call. Use this to retrieve
+	// the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The sandbox whose commands to list, in the form `sandboxes/{sandbox_id}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCommandsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCommandsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response listing tracked command executions.
+type ListCommandsResponse struct {
+	// Commands in this page of results.
+	Commands []Command `json:"commands,omitempty"`
+	// Token to retrieve the next page. Empty when there are no more results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCommandsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCommandsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListSandboxesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -225,6 +309,8 @@ type SandboxSpec struct {
 	// Compute configuration (size, inactivity timeout) requested for the
 	// sandbox.
 	Compute *ComputeSpec `json:"compute,omitempty"`
+	// The execution environment to use for the sandbox.
+	Environment *EnvironmentSpec `json:"environment,omitempty"`
 }
 
 func (s *SandboxSpec) UnmarshalJSON(b []byte) error {

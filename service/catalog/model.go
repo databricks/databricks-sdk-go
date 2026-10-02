@@ -1990,6 +1990,24 @@ func (s *CreateSecretRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type CreateSkillRequest struct {
+	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
+	// `{...}` component is capped at 255 characters individually.
+	Parent string `json:"-" url:"parent"`
+	// The skill to create. `comment` is the only accepted client input and may
+	// be omitted. Do not set `name`; the server derives it from `parent` and
+	// `skill_id`.
+	Skill Skill `json:"skill"`
+	// Name for the skill, e.g. "basic-math". The server normalizes this
+	// identifier to lowercase. It is independent of the bundle name read from
+	// SKILL.md.
+	SkillId string `json:"-" url:"skill_id"`
+}
+
+func (s *CreateSkillRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
@@ -2844,6 +2862,28 @@ func (s *DeleteSecretRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type DeleteSkillRequest struct {
+	// Optimistic concurrency token from the most recent read. When set, the
+	// delete succeeds only if the resource has not changed. Leave unset for an
+	// unconditional delete. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
+	Etag string `json:"-" url:"etag,omitempty"`
+	// Full resource name of the skill. Format:
+	// `skills/{catalog}.{schema}.{skill}`. Each `{...}` component is capped at
+	// 255 characters individually.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteSkillRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSkillRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteStorageCredentialRequest struct {
 	// Force an update even if there are dependent external locations or
 	// external tables (when purpose is **STORAGE**) or dependent services (when
@@ -3675,6 +3715,17 @@ type FileEventQueue struct {
 }
 
 func (s *FileEventQueue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type FinalizeSkillRequest struct {
+	// Full resource name of the skill. Format:
+	// `skills/{catalog}.{schema}.{skill}`. Each `{...}` component is capped at
+	// 255 characters individually.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *FinalizeSkillRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -4841,6 +4892,17 @@ func (s *GetSecretRequest) UnmarshalJSON(b []byte) error {
 
 func (s GetSecretRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type GetSkillRequest struct {
+	// Full resource name of the skill. Format:
+	// `skills/{catalog}.{schema}.{skill}`. Each `{...}` component is capped at
+	// 255 characters individually.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetSkillRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type GetStorageCredentialRequest struct {
@@ -6113,6 +6175,48 @@ func (s ListSecretsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListSkillsRequest struct {
+	// Maximum number of skills to return. Defaults to 100 when unset or 0; the
+	// maximum is 100. Use `page_token` to retrieve additional pages.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token from a previous request.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
+	// `{...}` component is capped at 255 characters individually.
+	//
+	// Required: skill listing is schema-scoped, so `parent` must be set; an
+	// unset or empty `parent` is rejected with INVALID_PARAMETER_VALUE.
+	Parent string `json:"-" url:"parent"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSkillsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSkillsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response for listing skills.
+type ListSkillsResponse struct {
+	// Pagination token for retrieving the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The list of skills.
+	Skills []Skill `json:"skills,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSkillsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSkillsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListStorageCredentialsRequest struct {
 	// Whether to include credentials not bound to the workspace. Effective only
 	// if the user has permission to update the credential–workspace binding.
@@ -7054,6 +7158,14 @@ type ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig struct {
 	// GCP region of the Gemini Enterprise endpoint (e.g., `us-central1`).
 	// Required on Create.
 	Region string `json:"region,omitempty"`
+	// Reference to a Unity Catalog service credential authorizing Gemini
+	// Enterprise requests. On Create, supply `service_credential.name` as
+	// `credentials/{name}`; required when using service-credential
+	// authentication and mutually exclusive with `api_key`. The credential is
+	// referenced by name; its value is not carried here. On read, the resolved
+	// `id` and `is_deleted` are also populated. Supported only on GCP-hosted
+	// workspaces.
+	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7178,6 +7290,13 @@ type ModelProviderServiceConfigProviderSecret struct {
 	// reads. Get and List responses omit `plaintext`; the enclosing secret
 	// object remains present to indicate that a secret is configured.
 	Plaintext string `json:"plaintext,omitempty"`
+	// Reference to a customer-owned UC Secret that carries this secret value.
+	// The value is read at invoke time under the model provider service owner's
+	// access and is never copied onto the model provider service, so rotating
+	// the UC Secret takes effect with no change to the model provider service.
+	// On Create, supply `secret_reference.name` as
+	// `secrets/{catalog}.{schema}.{secret}`.
+	SecretReference *ModelProviderServiceConfigSecretReference `json:"secret_reference,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7188,6 +7307,19 @@ func (s *ModelProviderServiceConfigProviderSecret) UnmarshalJSON(b []byte) error
 
 func (s ModelProviderServiceConfigProviderSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Reference to a customer-owned UC Secret backing a secret-bearing provider
+// field, in the `ProviderSecret.secret_reference` arm.
+type ModelProviderServiceConfigSecretReference struct {
+	// Resource name of the bound UC Secret, in the form
+	// `secrets/{catalog}.{schema}.{secret}`. On Create the caller supplies the
+	// name here. On read it reflects the secret's current name at read time.
+	Name string `json:"name"`
+}
+
+func (s *ModelProviderServiceConfigSecretReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The customer-owned Unity Catalog service credential a model provider service
@@ -9475,6 +9607,8 @@ const SecurableKindTableForeignDatabricks SecurableKind = `TABLE_FOREIGN_DATABRI
 
 const SecurableKindTableForeignDeltasharing SecurableKind = `TABLE_FOREIGN_DELTASHARING`
 
+const SecurableKindTableForeignDeltaDeltasharing SecurableKind = `TABLE_FOREIGN_DELTA_DELTASHARING`
+
 const SecurableKindTableForeignHiveMetastore SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE`
 
 const SecurableKindTableForeignHiveMetastoreDbfsExternal SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`
@@ -9569,11 +9703,11 @@ func (f *SecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableKind) Set(v string) error {
 	switch v {
-	case `TABLE_DB_STORAGE`, `TABLE_DELTA`, `TABLE_DELTASHARING`, `TABLE_DELTASHARING_MUTABLE`, `TABLE_DELTASHARING_OPEN_DIR_BASED`, `TABLE_DELTA_EXTERNAL`, `TABLE_DELTA_ICEBERG_DELTASHARING`, `TABLE_DELTA_ICEBERG_MANAGED`, `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`, `TABLE_EXTERNAL`, `TABLE_FEATURE_STORE`, `TABLE_FEATURE_STORE_EXTERNAL`, `TABLE_FOREIGN_BIGQUERY`, `TABLE_FOREIGN_DATABRICKS`, `TABLE_FOREIGN_DELTASHARING`, `TABLE_FOREIGN_HIVE_METASTORE`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`, `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_VIEW`, `TABLE_FOREIGN_MONGODB`, `TABLE_FOREIGN_MYSQL`, `TABLE_FOREIGN_NETSUITE`, `TABLE_FOREIGN_ORACLE`, `TABLE_FOREIGN_POSTGRESQL`, `TABLE_FOREIGN_REDSHIFT`, `TABLE_FOREIGN_SALESFORCE`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`, `TABLE_FOREIGN_SNOWFLAKE`, `TABLE_FOREIGN_SQLDW`, `TABLE_FOREIGN_SQLSERVER`, `TABLE_FOREIGN_TERADATA`, `TABLE_FOREIGN_WORKDAY_RAAS`, `TABLE_ICEBERG_UNIFORM_MANAGED`, `TABLE_INTERNAL`, `TABLE_MANAGED_POSTGRESQL`, `TABLE_MATERIALIZED_VIEW`, `TABLE_MATERIALIZED_VIEW_DELTASHARING`, `TABLE_METRIC_VIEW`, `TABLE_METRIC_VIEW_DELTASHARING`, `TABLE_ONLINE_VECTOR_INDEX_DIRECT`, `TABLE_ONLINE_VECTOR_INDEX_REPLICA`, `TABLE_ONLINE_VIEW`, `TABLE_STANDARD`, `TABLE_STREAMING_LIVE_TABLE`, `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`, `TABLE_SYSTEM`, `TABLE_SYSTEM_DELTASHARING`, `TABLE_VIEW`, `TABLE_VIEW_DELTASHARING`:
+	case `TABLE_DB_STORAGE`, `TABLE_DELTA`, `TABLE_DELTASHARING`, `TABLE_DELTASHARING_MUTABLE`, `TABLE_DELTASHARING_OPEN_DIR_BASED`, `TABLE_DELTA_EXTERNAL`, `TABLE_DELTA_ICEBERG_DELTASHARING`, `TABLE_DELTA_ICEBERG_MANAGED`, `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`, `TABLE_EXTERNAL`, `TABLE_FEATURE_STORE`, `TABLE_FEATURE_STORE_EXTERNAL`, `TABLE_FOREIGN_BIGQUERY`, `TABLE_FOREIGN_DATABRICKS`, `TABLE_FOREIGN_DELTASHARING`, `TABLE_FOREIGN_DELTA_DELTASHARING`, `TABLE_FOREIGN_HIVE_METASTORE`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`, `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_VIEW`, `TABLE_FOREIGN_MONGODB`, `TABLE_FOREIGN_MYSQL`, `TABLE_FOREIGN_NETSUITE`, `TABLE_FOREIGN_ORACLE`, `TABLE_FOREIGN_POSTGRESQL`, `TABLE_FOREIGN_REDSHIFT`, `TABLE_FOREIGN_SALESFORCE`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`, `TABLE_FOREIGN_SNOWFLAKE`, `TABLE_FOREIGN_SQLDW`, `TABLE_FOREIGN_SQLSERVER`, `TABLE_FOREIGN_TERADATA`, `TABLE_FOREIGN_WORKDAY_RAAS`, `TABLE_ICEBERG_UNIFORM_MANAGED`, `TABLE_INTERNAL`, `TABLE_MANAGED_POSTGRESQL`, `TABLE_MATERIALIZED_VIEW`, `TABLE_MATERIALIZED_VIEW_DELTASHARING`, `TABLE_METRIC_VIEW`, `TABLE_METRIC_VIEW_DELTASHARING`, `TABLE_ONLINE_VECTOR_INDEX_DIRECT`, `TABLE_ONLINE_VECTOR_INDEX_REPLICA`, `TABLE_ONLINE_VIEW`, `TABLE_STANDARD`, `TABLE_STREAMING_LIVE_TABLE`, `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`, `TABLE_SYSTEM`, `TABLE_SYSTEM_DELTASHARING`, `TABLE_VIEW`, `TABLE_VIEW_DELTASHARING`:
 		*f = SecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "TABLE_DB_STORAGE", "TABLE_DELTA", "TABLE_DELTASHARING", "TABLE_DELTASHARING_MUTABLE", "TABLE_DELTASHARING_OPEN_DIR_BASED", "TABLE_DELTA_EXTERNAL", "TABLE_DELTA_ICEBERG_DELTASHARING", "TABLE_DELTA_ICEBERG_MANAGED", "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE", "TABLE_EXTERNAL", "TABLE_FEATURE_STORE", "TABLE_FEATURE_STORE_EXTERNAL", "TABLE_FOREIGN_BIGQUERY", "TABLE_FOREIGN_DATABRICKS", "TABLE_FOREIGN_DELTASHARING", "TABLE_FOREIGN_HIVE_METASTORE", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW", "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_VIEW", "TABLE_FOREIGN_MONGODB", "TABLE_FOREIGN_MYSQL", "TABLE_FOREIGN_NETSUITE", "TABLE_FOREIGN_ORACLE", "TABLE_FOREIGN_POSTGRESQL", "TABLE_FOREIGN_REDSHIFT", "TABLE_FOREIGN_SALESFORCE", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW", "TABLE_FOREIGN_SNOWFLAKE", "TABLE_FOREIGN_SQLDW", "TABLE_FOREIGN_SQLSERVER", "TABLE_FOREIGN_TERADATA", "TABLE_FOREIGN_WORKDAY_RAAS", "TABLE_ICEBERG_UNIFORM_MANAGED", "TABLE_INTERNAL", "TABLE_MANAGED_POSTGRESQL", "TABLE_MATERIALIZED_VIEW", "TABLE_MATERIALIZED_VIEW_DELTASHARING", "TABLE_METRIC_VIEW", "TABLE_METRIC_VIEW_DELTASHARING", "TABLE_ONLINE_VECTOR_INDEX_DIRECT", "TABLE_ONLINE_VECTOR_INDEX_REPLICA", "TABLE_ONLINE_VIEW", "TABLE_STANDARD", "TABLE_STREAMING_LIVE_TABLE", "TABLE_STREAMING_LIVE_TABLE_DELTASHARING", "TABLE_SYSTEM", "TABLE_SYSTEM_DELTASHARING", "TABLE_VIEW", "TABLE_VIEW_DELTASHARING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "TABLE_DB_STORAGE", "TABLE_DELTA", "TABLE_DELTASHARING", "TABLE_DELTASHARING_MUTABLE", "TABLE_DELTASHARING_OPEN_DIR_BASED", "TABLE_DELTA_EXTERNAL", "TABLE_DELTA_ICEBERG_DELTASHARING", "TABLE_DELTA_ICEBERG_MANAGED", "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE", "TABLE_EXTERNAL", "TABLE_FEATURE_STORE", "TABLE_FEATURE_STORE_EXTERNAL", "TABLE_FOREIGN_BIGQUERY", "TABLE_FOREIGN_DATABRICKS", "TABLE_FOREIGN_DELTASHARING", "TABLE_FOREIGN_DELTA_DELTASHARING", "TABLE_FOREIGN_HIVE_METASTORE", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW", "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_VIEW", "TABLE_FOREIGN_MONGODB", "TABLE_FOREIGN_MYSQL", "TABLE_FOREIGN_NETSUITE", "TABLE_FOREIGN_ORACLE", "TABLE_FOREIGN_POSTGRESQL", "TABLE_FOREIGN_REDSHIFT", "TABLE_FOREIGN_SALESFORCE", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW", "TABLE_FOREIGN_SNOWFLAKE", "TABLE_FOREIGN_SQLDW", "TABLE_FOREIGN_SQLSERVER", "TABLE_FOREIGN_TERADATA", "TABLE_FOREIGN_WORKDAY_RAAS", "TABLE_ICEBERG_UNIFORM_MANAGED", "TABLE_INTERNAL", "TABLE_MANAGED_POSTGRESQL", "TABLE_MATERIALIZED_VIEW", "TABLE_MATERIALIZED_VIEW_DELTASHARING", "TABLE_METRIC_VIEW", "TABLE_METRIC_VIEW_DELTASHARING", "TABLE_ONLINE_VECTOR_INDEX_DIRECT", "TABLE_ONLINE_VECTOR_INDEX_REPLICA", "TABLE_ONLINE_VIEW", "TABLE_STANDARD", "TABLE_STREAMING_LIVE_TABLE", "TABLE_STREAMING_LIVE_TABLE_DELTASHARING", "TABLE_SYSTEM", "TABLE_SYSTEM_DELTASHARING", "TABLE_VIEW", "TABLE_VIEW_DELTASHARING"`, v)
 	}
 }
 
@@ -9603,6 +9737,7 @@ func (f *SecurableKind) Values() []SecurableKind {
 		SecurableKindTableForeignBigquery,
 		SecurableKindTableForeignDatabricks,
 		SecurableKindTableForeignDeltasharing,
+		SecurableKindTableForeignDeltaDeltasharing,
 		SecurableKindTableForeignHiveMetastore,
 		SecurableKindTableForeignHiveMetastoreDbfsExternal,
 		SecurableKindTableForeignHiveMetastoreDbfsManaged,
@@ -9819,6 +9954,62 @@ type SetRegisteredModelAliasRequest struct {
 
 func (s *SetRegisteredModelAliasRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// A Skill is an agentskills.io bundle registered in Unity Catalog. Clients
+// transfer bundle bytes through the Files API. FinalizeSkill reads the uploaded
+// SKILL.md and projects its frontmatter onto the Skill metadata.
+type Skill struct {
+	// Name from the most recently successfully finalized SKILL.md. It may
+	// differ from the final component of the Skill resource name. Unset until
+	// FinalizeSkill succeeds.
+	BundleName string `json:"bundle_name,omitempty"`
+	// User-provided comment for the skill. Free-text, user-editable via
+	// UpdateSkill (listed in its `update_mask`). DISTINCT from `description`,
+	// which is the server-parsed, OUTPUT_ONLY SKILL.md frontmatter value:
+	// `comment` is the customer's own annotation and is preserved across bundle
+	// re-uploads. When `comment` is in the update mask, omitting it clears the
+	// field, while an explicitly empty string is retained.
+	Comment string `json:"comment,omitempty"`
+	// Time the skill was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Creator identity.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Description from the most recently successfully finalized SKILL.md. Unset
+	// until FinalizeSkill succeeds.
+	Description string `json:"description,omitempty"`
+	// Owner of the skill.
+	EffectiveOwner string `json:"effective_owner,omitempty"`
+	// Optimistic concurrency token returned on every read. To make an Update or
+	// Delete conditional, pass the last-read value in that request's `etag`
+	// field. In REST responses, this value is a base64 string; URL-encode it
+	// when setting the `etag` query parameter.
+	Etag string `json:"etag,omitempty"`
+	// Time of the most recent successful FinalizeSkill. Unset until one
+	// succeeds.
+	FinalizeTime *time.Time `json:"finalize_time,omitempty"`
+	// Metastore hosting the skill.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// Resource name of the skill. Format: `skills/{catalog}.{schema}.{skill}`.
+	// Each `{...}` component is capped at 255 characters individually.
+	// Server-derived on Create from `parent` + `skill_id`; required and
+	// immutable on Update/Get/Delete.
+	Name string `json:"name,omitempty"`
+	// Time of the most recent Skill metadata mutation. Uploading bundle files
+	// alone does not change this value.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// Identity of the last updater.
+	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Skill) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Skill) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SpecialDestination string
@@ -11297,6 +11488,36 @@ type UpdateSecretRequest struct {
 
 func (s *UpdateSecretRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type UpdateSkillRequest struct {
+	// Optimistic concurrency token from the most recent read. When set, the
+	// update succeeds only if the resource has not changed. Leave unset for an
+	// unconditional update. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
+	Etag string `json:"-" url:"etag,omitempty"`
+	// Resource name of the skill. Format: `skills/{catalog}.{schema}.{skill}`.
+	// Each `{...}` component is capped at 255 characters individually.
+	// Server-derived on Create from `parent` + `skill_id`; required and
+	// immutable on Update/Get/Delete.
+	Name string `json:"-" url:"-"`
+	// The skill with the updated field values. `name` identifies the resource
+	// (`skills/{catalog}.{schema}.{skill}`); only fields listed in
+	// `update_mask` are applied.
+	Skill Skill `json:"skill"`
+	// Fields to update; validated against `skill`. REQUIRED, matching the
+	// sibling Update RPCs. `comment` is the only mutable field.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateSkillRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateSkillRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateStorageCredential struct {

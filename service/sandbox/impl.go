@@ -80,6 +80,20 @@ func (a *sandboxImpl) GetSandbox(ctx context.Context, request GetSandboxRequest)
 	return &sandbox, err
 }
 
+func (a *sandboxImpl) ListCommands(ctx context.Context, request ListCommandsRequest) (*ListCommandsResponse, error) {
+	var listCommandsResponse ListCommandsResponse
+	path := fmt.Sprintf("/api/2.0/sandbox-exec/%v/commands", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCommandsResponse)
+	return &listCommandsResponse, err
+}
+
 // Lists all Sandboxes.
 func (a *sandboxImpl) ListSandboxes(ctx context.Context, request ListSandboxesRequest) listing.Iterator[Sandbox] {
 
