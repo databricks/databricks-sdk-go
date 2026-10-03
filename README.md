@@ -348,6 +348,26 @@ w, err := databricks.NewWorkspaceClient(&databricks.Config{
 })
 ```
 
+### GCP service account access token passthrough with Databricks OAuth
+
+When single sign-on (SSO) is enabled on a GCP account, Google ID token authentication (`google-id`) is disabled. To call GCP account-level APIs that provision Google Cloud resources (for example workspace or VPC-endpoint creation) in that case, you can authenticate the request identity with a Databricks OAuth service principal while still passing a Google Cloud access token through for provisioning.
+
+Set `AuthType: "oauth-m2m-gcp"`. This must be set explicitly, because the mode combines the OAuth (`ClientID`/`ClientSecret`) and Google (`GoogleCredentials`/`GoogleServiceAccount`) credential groups, which are otherwise rejected together. Provide:
+
+- `Host`, `ClientID` and `ClientSecret` for the Databricks OAuth service principal — used for the `Authorization` header; and
+- `GoogleCredentials` or `GoogleServiceAccount` for the Google Cloud access token — sent in the `X-Databricks-GCP-SA-Access-Token` header.
+
+```go
+w, err := databricks.NewAccountClient(&databricks.Config{
+  Host:                 askFor("Host:"),
+  AccountID:            askFor("Account ID:"),
+  ClientID:             askFor("Databricks OAuth Client ID:"),
+  ClientSecret:         askFor("Databricks OAuth Client Secret:"),
+  GoogleServiceAccount: askFor("Google Service Account:"),
+  AuthType:             "oauth-m2m-gcp",
+})
+```
+
 ### Overriding `.databrickscfg`
 
 For [Databricks native authentication](#databricks-native-authentication), you can override the default behavior in `*databricks.Config` for using `.databrickscfg` as follows:
