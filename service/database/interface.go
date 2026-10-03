@@ -77,7 +77,7 @@ type DatabaseService interface {
 	// List Database Instances.
 	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error)
 
-	// This API is currently unimplemented, but exposed for Terraform support.
+	// List synced database tables in a Database Instance.
 	ListSyncedDatabaseTables(ctx context.Context, request ListSyncedDatabaseTablesRequest) (*ListSyncedDatabaseTablesResponse, error)
 
 	// This API is currently unimplemented, but exposed for Terraform support.

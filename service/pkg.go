@@ -242,6 +242,8 @@
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //
+// - [networking.PrivateNetworkGatewaysAPI]: These APIs manage private network gateways under network connectivity configurations.
+//
 // - [marketplace.ProviderExchangeFiltersAPI]: Marketplace exchanges filters curate which groups can access an exchange.
 //
 // - [marketplace.ProviderExchangesAPI]: Marketplace exchanges allow providers to share their listings with a curated set of customers.
@@ -556,6 +558,7 @@ var (
 	_ *compute.PolicyFamiliesAPI                          = nil
 	_ *postgres.PostgresAPI                               = nil
 	_ *provisioning.PrivateAccessAPI                      = nil
+	_ *networking.PrivateNetworkGatewaysAPI               = nil
 	_ *marketplace.ProviderExchangeFiltersAPI             = nil
 	_ *marketplace.ProviderExchangesAPI                   = nil
 	_ *marketplace.ProviderFilesAPI                       = nil
