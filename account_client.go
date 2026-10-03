@@ -283,6 +283,10 @@ type AccountClient struct {
 	// These APIs manage private access settings for this account.
 	PrivateAccess provisioning.PrivateAccessInterface
 
+	// These APIs manage private network gateways under network connectivity
+	// configurations.
+	PrivateNetworkGateways networking.PrivateNetworkGatewaysInterface
+
 	// These APIs enable administrators to manage published OAuth app
 	// integrations, which is required for adding/using Published OAuth App
 	// Integration like Tableau Desktop for Databricks in AWS cloud.
@@ -521,6 +525,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Networks:                         provisioning.NewNetworks(apiClient),
 		OAuthPublishedApps:               oauth2.NewOAuthPublishedApps(apiClient),
 		PrivateAccess:                    provisioning.NewPrivateAccess(apiClient),
+		PrivateNetworkGateways:           networking.NewPrivateNetworkGateways(apiClient),
 		PublishedAppIntegration:          oauth2.NewPublishedAppIntegration(apiClient),
 		ServicePrincipalFederationPolicy: oauth2.NewServicePrincipalFederationPolicy(apiClient),
 		ServicePrincipalSecrets:          oauth2.NewServicePrincipalSecrets(apiClient),

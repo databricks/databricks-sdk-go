@@ -55,6 +55,7 @@ func NewMockAccountClient(t interface {
 			Networks:                         provisioning.NewMockNetworksInterface(t),
 			OAuthPublishedApps:               oauth2.NewMockOAuthPublishedAppsInterface(t),
 			PrivateAccess:                    provisioning.NewMockPrivateAccessInterface(t),
+			PrivateNetworkGateways:           networking.NewMockPrivateNetworkGatewaysInterface(t),
 			PublishedAppIntegration:          oauth2.NewMockPublishedAppIntegrationInterface(t),
 			ServicePrincipalFederationPolicy: oauth2.NewMockServicePrincipalFederationPolicyInterface(t),
 			ServicePrincipalSecrets:          oauth2.NewMockServicePrincipalSecretsInterface(t),
@@ -321,6 +322,14 @@ func (m *MockAccountClient) GetMockPrivateAccessAPI() *provisioning.MockPrivateA
 	api, ok := m.AccountClient.PrivateAccess.(*provisioning.MockPrivateAccessInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected PrivateAccess to be *provisioning.MockPrivateAccessInterface, actual was %T", m.AccountClient.PrivateAccess))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockPrivateNetworkGatewaysAPI() *networking.MockPrivateNetworkGatewaysInterface {
+	api, ok := m.AccountClient.PrivateNetworkGateways.(*networking.MockPrivateNetworkGatewaysInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PrivateNetworkGateways to be *networking.MockPrivateNetworkGatewaysInterface, actual was %T", m.AccountClient.PrivateNetworkGateways))
 	}
 	return api
 }

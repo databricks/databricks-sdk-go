@@ -5520,12 +5520,22 @@ func (s *RenameModelResponse) UnmarshalJSON(b []byte) error {
 // A request-time data source whose value is provided at inference time: offline
 // batch scoring or online serving endpoint
 type RequestSource struct {
+	// A schema containing scalar or nested fields, in Spark StructType JSON
+	// format (from df.schema.json()). This preserves field, array-element, and
+	// map-value nullability.
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
 	// A flat schema with scalar-typed fields only.
 	FlatSchema *FlatSchema `json:"flat_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RequestSource) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s RequestSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RestoreExperiment struct {
