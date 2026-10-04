@@ -505,8 +505,9 @@ type AiGatewayInterface interface {
 	// plus `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
 	// schema.
 	//
-	// Updating `config.provider` cannot change the provider type or switch between
-	// Unity Catalog service-credential authentication and inline authentication.
+	// Updating `config.provider` cannot change the provider type. Authentication
+	// mode changes require feature availability and support for both modes on the
+	// selected provider.
 	UpdateModelProviderService(ctx context.Context, request UpdateModelProviderServiceRequest) (*ModelProviderService, error)
 
 	// Updates a model service. Only the fields named in `update_mask` are changed;
