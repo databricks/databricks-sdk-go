@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+* Avoid fetching another page after `listing.ToSliceN` reaches its item limit.
+
 ### Documentation
 
 ### Internal Changes

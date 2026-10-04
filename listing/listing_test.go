@@ -158,6 +158,110 @@ func TestIterator(t *testing.T) {
 	})
 }
 
+func TestToSliceN_fetchesOnlyRequiredPages(t *testing.T) {
+	testCases := []struct {
+		name          string
+		pages         [][]int
+		limit         int64
+		want          []int
+		wantRequests  int
+		wantRemaining []int
+	}{
+		{
+			name: "within page", pages: [][]int{{1, 2}, {3}}, limit: 1,
+			want: []int{1}, wantRequests: 1, wantRemaining: []int{2, 3},
+		},
+		{
+			name: "first page boundary", pages: [][]int{{1, 2}, {3}}, limit: 2,
+			want: []int{1, 2}, wantRequests: 1, wantRemaining: []int{3},
+		},
+		{
+			name: "later page boundary", pages: [][]int{{1}, {2}, {3}}, limit: 2,
+			want: []int{1, 2}, wantRequests: 2, wantRemaining: []int{3},
+		},
+		{
+			name: "empty page after limit", pages: [][]int{{1}, {}, {2}}, limit: 1,
+			want: []int{1}, wantRequests: 1, wantRemaining: []int{2},
+		},
+		{
+			name: "empty page before limit", pages: [][]int{{}, {1}, {2}}, limit: 1,
+			want: []int{1}, wantRequests: 2, wantRemaining: []int{2},
+		},
+		{
+			name: "zero limit", pages: [][]int{{1}, {2}}, limit: 0,
+			want: []int{1, 2}, wantRequests: 2,
+		},
+		{
+			name: "limit exceeds total", pages: [][]int{{1}, {2}}, limit: 3,
+			want: []int{1, 2}, wantRequests: 2,
+		},
+		{
+			name: "negative limit", pages: [][]int{{1}, {2}}, limit: -1,
+			wantRemaining: []int{1, 2},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			requestCount := 0
+			firstPage := 0
+			iterator := listing.NewIterator(&firstPage,
+				func(ctx context.Context, page int) (int, error) {
+					requestCount++
+					return page, nil
+				},
+				func(page int) []int { return tc.pages[page] },
+				func(page int) *int {
+					nextPage := page + 1
+					if nextPage == len(tc.pages) {
+						return nil
+					}
+					return &nextPage
+				},
+			)
+
+			got, err := listing.ToSliceN(context.Background(), iterator, tc.limit)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.want, got)
+			assert.Equal(t, tc.wantRequests, requestCount)
+
+			remaining, err := listing.ToSlice(context.Background(), iterator)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.wantRemaining, remaining)
+		})
+	}
+}
+
+func TestToSliceN_doesNotCacheErrorBeyondLimit(t *testing.T) {
+	pageErr := errors.New("next page failed")
+	allowNextPage := false
+	firstPage := 0
+	nextPage := 1
+	iterator := listing.NewIterator(&firstPage,
+		func(ctx context.Context, page int) (int, error) {
+			if page == nextPage && !allowNextPage {
+				return 0, pageErr
+			}
+			return page, nil
+		},
+		func(page int) []int { return []int{page + 1} },
+		func(page int) *int {
+			if page == firstPage {
+				return &nextPage
+			}
+			return nil
+		},
+	)
+
+	got, err := listing.ToSliceN(context.Background(), iterator, 1)
+	assert.NoError(t, err)
+	assert.Equal(t, []int{1}, got)
+
+	allowNextPage = true
+	remaining, err := listing.ToSlice(context.Background(), iterator)
+	assert.NoError(t, err)
+	assert.Equal(t, []int{2}, remaining)
+}
+
 func TestDedupeIterator(t *testing.T) {
 	t.Run("basic iteration", func(t *testing.T) {
 		rrs := []requestResponse{
