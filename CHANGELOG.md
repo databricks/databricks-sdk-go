@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.185.0 (2026-10-05)
+
+### API Changes
+* Add [a.PrivateNetworkGateways](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/networking#PrivateNetworkGatewaysAPI) account-level service.
+* Add `DataframeSchema` field for [ml.RequestSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RequestSource).
+
+
 ## Release v0.184.0 (2026-10-02)
 
 ### API Changes
