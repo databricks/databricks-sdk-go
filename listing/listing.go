@@ -45,7 +45,7 @@ func ToSliceN[T any, Limit ~int | ~int64](ctx context.Context, it Iterator[T], n
 		return ToSlice(ctx, it)
 	}
 	var items []T
-	for it.HasNext(ctx) && Limit(len(items)) < n {
+	for Limit(len(items)) < n && it.HasNext(ctx) {
 		item, err := it.Next(ctx)
 		if err != nil {
 			return nil, err
