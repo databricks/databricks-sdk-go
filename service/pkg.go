@@ -8,6 +8,8 @@
 //
 // - [agentbricks.AgentBricksAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
+// - [agentkit.AgentKitAPI]: APIs for managing agent memory and durable session state.
+//
 // - [aifunctions.AiFunctionsAPI]: Transform and enrich data with AI on Databricks.
 //
 // - [catalog.AiGatewayAPI]: Govern AI workloads in Unity Catalog.
@@ -144,7 +146,7 @@
 //
 // - [catalog.ExternalMetadataAPI]: External Metadata objects enable customers to register and manage metadata about external systems within Unity Catalog.
 //
-// - [ml.FeatureEngineeringAPI]: [description].
+// - [ml.FeatureEngineeringAPI]: Feature Engineering provides APIs for managing features and materialized features.
 //
 // - [ml.FeatureStoreAPI]: A feature store is a centralized repository that enables data scientists to find and share features.
 //
@@ -195,8 +197,6 @@
 // - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
-//
-// - [mason.MasonAPI]: APIs for managing agent memory and durable session state.
 //
 // - [ml.MaterializedFeaturesAPI]: Materialized Features are columns in tables and views that can be directly used as features to train and serve ML models.
 //
@@ -391,6 +391,7 @@ package service
 
 import (
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/agentkit"
 	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
@@ -412,7 +413,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
-	"github.com/databricks/databricks-sdk-go/service/mason"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/networking"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
@@ -441,6 +441,7 @@ var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *agentbricks.AgentBricksAPI                         = nil
+	_ *agentkit.AgentKitAPI                               = nil
 	_ *aifunctions.AiFunctionsAPI                         = nil
 	_ *catalog.AiGatewayAPI                               = nil
 	_ *aisearch.AiSearchAPI                               = nil
@@ -535,7 +536,6 @@ var (
 	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
 	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
-	_ *mason.MasonAPI                                     = nil
 	_ *ml.MaterializedFeaturesAPI                         = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil

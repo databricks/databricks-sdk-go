@@ -483,7 +483,8 @@ func NewFeatureEngineering(client *client.DatabricksClient) *FeatureEngineeringA
 	}
 }
 
-// [description]
+// Feature Engineering provides APIs for managing features and materialized
+// features.
 type FeatureEngineeringAPI struct {
 	featureEngineeringImpl
 }

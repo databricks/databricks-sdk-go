@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/duration"
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
@@ -172,6 +173,9 @@ type AppDeployment struct {
 	EnvVars []EnvVar `json:"env_vars,omitempty"`
 	// Git repository to use as the source for the app deployment.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// Deploy-time health check for the app. Verifies the app is responding to
+	// HTTP requests before considering the deployment successful.
+	HealthCheck *AppHealthCheck `json:"health_check,omitempty"`
 	// The mode of which the deployment will manage the source code.
 	Mode AppDeploymentMode `json:"mode,omitempty"`
 	// The workspace file system path of the source code used to create the app
@@ -308,6 +312,25 @@ func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
 }
 
 func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Deploy-time HTTP health check configuration for an app deployment.
+type AppHealthCheck struct {
+	// HTTP path to probe, e.g. "/health" or "/api/status".
+	Path string `json:"path,omitempty"`
+	// Timeout to wait for the health check to pass before failing the
+	// deployment. If not set, a default timeout is used.
+	Timeout *duration.Duration `json:"timeout,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppHealthCheck) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppHealthCheck) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
