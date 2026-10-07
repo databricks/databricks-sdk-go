@@ -2136,7 +2136,8 @@ type Feature struct {
 	// The description of the feature.
 	Description string `json:"description,omitempty"`
 	// The entity columns for the feature, used as aggregation keys and for
-	// query-time lookup.
+	// query-time lookup. Optional since entities are not set for RequestSource
+	// features or on-demand calculated features.
 	Entities []EntityColumn `json:"entities,omitempty"`
 
 	FilterCondition string `json:"filter_condition,omitempty"`
@@ -2166,7 +2167,8 @@ type Feature struct {
 
 	TimeWindow *TimeWindow `json:"time_window,omitempty"`
 	// Column recording time, used for point-in-time joins, backfills, and
-	// aggregations.
+	// aggregations. Optional since a timeseries column is not set for
+	// RequestSource features or on-demand calculated features.
 	TimeseriesColumn *TimeseriesColumn `json:"timeseries_column,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4072,9 +4074,11 @@ type MaterializedFeature struct {
 	LatestBackfillOperation string `json:"latest_backfill_operation,omitempty"`
 	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
-	// Destination for writing feature values to an offline Delta table.
+	// Destination for writing feature values to an offline Delta table. The
+	// resulting table is returned as `table_name`.
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
-	// Destination for writing feature values to an online Lakebase table.
+	// Destination for writing feature values to an online Lakebase table. The
+	// resulting table is returned as `table_name`.
 	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
 	// The ID of the pipeline that materializes this feature. This is only
 	// present for streaming features.

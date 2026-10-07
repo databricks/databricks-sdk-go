@@ -251,7 +251,8 @@ type ExperimentsService interface {
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
 }
 
-// [description]
+// Feature Engineering provides APIs for managing features and materialized
+// features.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FeatureEngineeringService interface {
