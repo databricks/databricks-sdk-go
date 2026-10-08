@@ -11,6 +11,7 @@ import (
 )
 
 func TestDefaultCredentialStrategy(t *testing.T) {
+	t.Setenv("PATH", "")
 	original := DefaultCredentialStrategyProvider
 	t.Cleanup(func() { DefaultCredentialStrategyProvider = original })
 
@@ -20,7 +21,9 @@ func TestDefaultCredentialStrategy(t *testing.T) {
 	}
 
 	cfg := &Config{
-		Host: "https://example.databricks.com",
+		Host:          "https://example.databricks.com",
+		ConfigFile:    "/dev/null",
+		HTTPTransport: metadataNotFoundTransport,
 	}
 	cfg.Authenticate(&http.Request{Header: http.Header{}})
 

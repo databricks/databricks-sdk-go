@@ -315,10 +315,10 @@ func TestJsonMarshall(t *testing.T) {
 			name: "RepeatedNestedMessage",
 			value: jsonmarshallv2.RepeatedFields{
 				RepeatedMessage: []jsonmarshallv2.NestedMessage{
-					jsonmarshallv2.NestedMessage{
+					{
 						OptionalString: "nested1",
 					},
-					jsonmarshallv2.NestedMessage{
+					{
 						OptionalString: "nested2",
 					},
 				},
@@ -351,8 +351,8 @@ func TestJsonMarshall(t *testing.T) {
 			name: "RepeatedFieldMask",
 			value: jsonmarshallv2.RepeatedFields{
 				RepeatedFieldMask: []fieldmask.FieldMask{
-					fieldmask.FieldMask{Paths: []string{"field1"}},
-					fieldmask.FieldMask{Paths: []string{"field2", "field3"}},
+					{Paths: []string{"field1"}},
+					{Paths: []string{"field2", "field3"}},
 				},
 			},
 			want: `{

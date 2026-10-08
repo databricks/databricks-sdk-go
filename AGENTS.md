@@ -99,9 +99,8 @@ Run `make fmt test lint` before submitting.
 
 ### Changelog
 
-Every PR must update `NEXT_CHANGELOG.md` under the appropriate section
-(Breaking Changes, New Features and Improvements, Bug Fixes, Documentation,
-Internal Changes, or API Changes). CI will fail if the file is not modified.
-
-For PRs that don't need a changelog entry (e.g., documentation-only, CI config,
-agentic coding infrastructure), add `NO_CHANGELOG=true` to the PR description body.
+For changes that need a release note, add a uniquely named
+`.nextchanges/<timestamp>.md` fragment using the format in
+[.nextchanges/README.md](.nextchanges/README.md). Genkit consumes these fragments
+during release preparation. Changes that do not need a release note do not
+require a fragment.

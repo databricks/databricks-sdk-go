@@ -1,3 +1,23 @@
+# Contributing Guide
+
+## This repository is a mirror
+
+This repository is a read-only mirror. The SDK's source of truth lives in
+Databricks' internal repository, and changes are published here as part of each
+release.
+
+- **Issues:** report bugs and feature requests in
+  [GitHub Issues](https://github.com/databricks/databricks-sdk-go/issues).
+- **External contributors:** propose improvements in a pull request here.
+  Maintainers review these PRs publicly and re-apply approved changes in the
+  internal repository for a subsequent release, rather than merging them here.
+- **Databricks employees:** make SDK changes in the internal repository.
+
+Only maintainer-approved synchronization PRs carrying the `sync` label are
+merged into this mirror.
+
+## Development
+
 Required development tools:
 
 * `go install golang.org/x/tools/cmd/goimports@latest`
