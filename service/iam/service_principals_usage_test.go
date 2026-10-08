@@ -96,7 +96,7 @@ func ExampleServicePrincipalsAPI_Create_createOboTokenOnAws() {
 
 	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Groups: []iam.ComplexValue{iam.ComplexValue{
+		Groups: []iam.ComplexValue{{
 			Value: groups["admins"],
 		}},
 	})
@@ -257,7 +257,7 @@ func ExampleServicePrincipalsAPI_Patch_accountServicePrincipal() {
 
 	err = a.ServicePrincipals.Patch(ctx, iam.PartialUpdate{
 		Id: sp.Id,
-		Operations: []iam.Patch{iam.Patch{
+		Operations: []iam.Patch{{
 			Op:    iam.PatchOpReplace,
 			Path:  "active",
 			Value: "false",
@@ -302,7 +302,7 @@ func ExampleServicePrincipalsAPI_Patch_servicePrincipalsOnAws() {
 
 	err = w.ServicePrincipals.Patch(ctx, iam.PartialUpdate{
 		Id: byId.Id,
-		Operations: []iam.Patch{iam.Patch{
+		Operations: []iam.Patch{{
 			Op:    iam.PatchOpReplace,
 			Path:  "active",
 			Value: "false",
@@ -382,7 +382,7 @@ func ExampleServicePrincipalsAPI_Update_servicePrincipalsOnAws() {
 	err = w.ServicePrincipals.Update(ctx, iam.ServicePrincipal{
 		Id:          created.Id,
 		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Roles: []iam.ComplexValue{iam.ComplexValue{
+		Roles: []iam.ComplexValue{{
 			Value: "xyz",
 		}},
 	})

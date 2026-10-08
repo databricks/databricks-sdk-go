@@ -249,14 +249,14 @@ func TestHttpCall_UpdateResourceWithDoubleRepeatedNestedQueryParam(t *testing.T)
 		NestedPathParamInt:    789,
 		NestedPathParamBool:   true,
 		RepeatedComplexQueryParam: []httpcallv2.ComplexQueryParam{
-			httpcallv2.ComplexQueryParam{
+			{
 				NestedRepeatedQueryParam: []string{
 					"item1",
 					"item2",
 					"item3",
 				},
 			},
-			httpcallv2.ComplexQueryParam{
+			{
 				NestedRepeatedQueryParam: []string{
 					"item4",
 					"item5",
@@ -391,14 +391,14 @@ func TestHttpCall_GetResourceWithDoubleRepeatedNestedQueryParam(t *testing.T) {
 		PathParamInt:    303,
 		PathParamBool:   false,
 		RepeatedComplexQueryParam: []httpcallv2.ComplexQueryParam{
-			httpcallv2.ComplexQueryParam{
+			{
 				NestedRepeatedQueryParam: []string{
 					"item1",
 					"item2",
 					"item3",
 				},
 			},
-			httpcallv2.ComplexQueryParam{
+			{
 				NestedRepeatedQueryParam: []string{
 					"item4",
 					"item5",

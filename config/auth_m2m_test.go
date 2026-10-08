@@ -217,12 +217,13 @@ func TestM2mCredentials_CachesAreIsolatedByClient(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			cfg := &Config{
-				Host:         server.URL,
-				ClientID:     "client-id",
-				ClientSecret: "client-secret",
-				GroupID:      testCase.groupID,
-				AuthType:     "oauth-m2m",
-				ConfigFile:   "/dev/null",
+				Host:          server.URL,
+				ClientID:      "client-id",
+				ClientSecret:  "client-secret",
+				GroupID:       testCase.groupID,
+				AuthType:      "oauth-m2m",
+				ConfigFile:    "/dev/null",
+				HTTPTransport: server.Client().Transport,
 			}
 
 			for range 2 {

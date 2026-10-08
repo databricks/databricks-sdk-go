@@ -1,5 +1,8 @@
 # Databricks SDK for Go
 
+This repository is a read-only mirror maintained from Databricks' internal
+monorepo. See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
+
 [![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-go)](<[https://codecov.io/github/databricks/databricks-sdk-go](https://github.com/databricks/databricks-sdk-go)>)
 
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases,

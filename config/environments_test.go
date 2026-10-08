@@ -73,7 +73,6 @@ func TestCloudField_PrefersCloudOverEnvironment(t *testing.T) {
 
 func TestCloudField_EmptyStringIsCloudUnknown(t *testing.T) {
 	c := &Config{
-		Host:  "https://localhost:8080",
 		Cloud: "",
 	}
 	assert.Equal(t, environment.CloudUnknown, c.Cloud)

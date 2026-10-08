@@ -29,7 +29,7 @@ func ExampleTokenManagementAPI_CreateOboToken_createOboTokenOnAws() {
 
 	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Groups: []iam.ComplexValue{iam.ComplexValue{
+		Groups: []iam.ComplexValue{{
 			Value: groups["admins"],
 		}},
 	})
@@ -75,7 +75,7 @@ func ExampleTokenManagementAPI_Get_createOboTokenOnAws() {
 
 	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Groups: []iam.ComplexValue{iam.ComplexValue{
+		Groups: []iam.ComplexValue{{
 			Value: groups["admins"],
 		}},
 	})

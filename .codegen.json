@@ -1,8 +1,49 @@
 {
   "mode": "go_v0",
-  "api_changelog": true,
   "version": {
     "version/version.go": "const Version = \"$VERSION\""
+  },
+  "sync": {
+    "allow_from_packages": [
+      "**/*.{go,md,tmpl}",
+      "**/go.{mod,sum}",
+      "**/testdata/**",
+      ".package.json",
+      ".claude/settings.local.json",
+      ".codegen.json",
+      ".codegen/{_last_sha,_openapi_sha,changelog.json,releases.jsonl}",
+      ".cursor/rules/*.mdc",
+      ".cursorrules",
+      ".gitattributes",
+      ".gitignore",
+      ".goreleaser.yml",
+      ".mockery.yaml",
+      ".github/**/*.yml",
+      ".github/conftest/rules/*.rego",
+      ".vscode/{extensions.json,settings.json,testing.code-snippets}",
+      "DCO",
+      "LICENSE",
+      "NOTICE",
+      "Makefile",
+      "SECURITY.md",
+      "staticcheck.conf",
+      "test-config.yaml"
+    ],
+    "skip_from_genkit": [
+      "tagging.py",
+      "tagging.py.lock",
+      ".github/workflows/tagging.yml",
+      ".github/workflows/next-changelog.yml"
+    ],
+    "skip_from_source": [
+      "BUILD",
+      "BUILD.bazel",
+      "OWNERS",
+      "vendor",
+      "NEXT_CHANGELOG.md",
+      "tagging.yml",
+      "next-changelog.yml"
+    ]
   },
   "toolchain": {
     "required": [
