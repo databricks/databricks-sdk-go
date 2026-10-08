@@ -109,7 +109,7 @@ func ExamplePermissionsAPI_Set_genericPermissions() {
 	_, err = w.Permissions.Set(ctx, iam.SetObjectPermissions{
 		RequestObjectType: "notebooks",
 		RequestObjectId:   fmt.Sprintf("%d", obj.ObjectId),
-		AccessControlList: []iam.AccessControlRequest{iam.AccessControlRequest{
+		AccessControlList: []iam.AccessControlRequest{{
 			GroupName:       group.DisplayName,
 			PermissionLevel: iam.PermissionLevelCanRun,
 		}},
