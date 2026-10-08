@@ -543,6 +543,18 @@ type AlertV2 struct {
 	CustomDescription string `json:"custom_description,omitempty"`
 	// Custom summary for the alert. support mustache template.
 	CustomSummary string `json:"custom_summary,omitempty"`
+	// The format used to interpret the `custom_summary` and
+	// `custom_description` templates.
+	//
+	// `HTML` treats both templates as HTML with Mustache `{{VARIABLE_NAME}}`
+	// placeholders. `MARKDOWN` treats them as Markdown with allowlisted
+	// `@VARIABLE_NAME` placeholders and converts them to the format each
+	// notification destination expects, so a single template renders correctly
+	// in email, Slack, and Microsoft Teams.
+	//
+	// When unset, the API applies no default. Responses omit the field unless a
+	// format is stored, and a template with no format is rendered as HTML.
+	CustomTemplateFormat CustomTemplateFormat `json:"custom_template_format,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name"`
 	// The actual identity that will be used to execute the alert. This is an
@@ -1338,6 +1350,8 @@ type CreateWarehouseRequest struct {
 	Name string `json:"name,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
@@ -1456,6 +1470,44 @@ type CronSchedule struct {
 
 func (s *CronSchedule) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Rendering format for the `custom_summary` and `custom_description` templates.
+type CustomTemplateFormat string
+
+const CustomTemplateFormatHtml CustomTemplateFormat = `HTML`
+
+const CustomTemplateFormatMarkdown CustomTemplateFormat = `MARKDOWN`
+
+// String representation for [fmt.Print]
+func (f *CustomTemplateFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomTemplateFormat) Set(v string) error {
+	switch v {
+	case `HTML`, `MARKDOWN`:
+		*f = CustomTemplateFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "HTML", "MARKDOWN"`, v)
+	}
+}
+
+// Values returns all possible values for CustomTemplateFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomTemplateFormat) Values() []CustomTemplateFormat {
+	return []CustomTemplateFormat{
+		CustomTemplateFormatHtml,
+		CustomTemplateFormatMarkdown,
+	}
+}
+
+// Type always returns CustomTemplateFormat to satisfy [pflag.Value] interface
+func (f *CustomTemplateFormat) Type() string {
+	return "CustomTemplateFormat"
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -2060,6 +2112,8 @@ type EditWarehouseRequest struct {
 	Name string `json:"name,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
@@ -2228,6 +2282,8 @@ type EndpointInfo struct {
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// state of the endpoint
 	State State `json:"state,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
@@ -2895,6 +2951,8 @@ type GetWarehouseResponse struct {
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// state of the endpoint
 	State State `json:"state,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//

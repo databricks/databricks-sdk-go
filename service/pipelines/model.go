@@ -182,6 +182,10 @@ type ClonePipelineRequest struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Source pipeline to clone from
@@ -422,6 +426,10 @@ type CreatePipeline struct {
 	// Key/value map of default parameters to use for pipeline execution.
 	// Maximum total size: 10k characters (JSON format)
 	Parameters map[string]string `json:"parameters,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
@@ -714,6 +722,10 @@ type EditPipeline struct {
 	// Key/value map of default parameters to use for pipeline execution.
 	// Maximum total size: 10k characters (JSON format)
 	Parameters map[string]string `json:"parameters,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
@@ -2952,6 +2964,10 @@ type PipelineSpec struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.

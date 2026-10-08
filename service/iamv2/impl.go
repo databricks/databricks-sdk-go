@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just AccountIamV2 API methods
@@ -41,6 +42,22 @@ func (a *accountIamV2Impl) CreateGroup(ctx context.Context, request CreateGroupR
 
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Group, &group)
 	return &group, err
+}
+
+func (a *accountIamV2Impl) CreateIdentityVisibilityFilter(ctx context.Context, request CreateIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error) {
+	var identityVisibilityFilter IdentityVisibilityFilter
+	path := fmt.Sprintf("/api/2.0/identity/%v/identity-visibility-filters", request.Parent)
+	queryParams := make(map[string]any)
+
+	if request.IdentityVisibilityFilterId != "" || slices.Contains(request.ForceSendFields, "IdentityVisibilityFilterId") {
+		queryParams["identity_visibility_filter_id"] = request.IdentityVisibilityFilterId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.IdentityVisibilityFilter, &identityVisibilityFilter)
+	return &identityVisibilityFilter, err
 }
 
 func (a *accountIamV2Impl) CreateServicePrincipal(ctx context.Context, request CreateServicePrincipalRequest) (*ServicePrincipal, error) {
@@ -103,6 +120,16 @@ func (a *accountIamV2Impl) DeleteDirectGroupMember(ctx context.Context, request 
 
 func (a *accountIamV2Impl) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *accountIamV2Impl) DeleteIdentityVisibilityFilter(ctx context.Context, request DeleteIdentityVisibilityFilterRequest) error {
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -204,6 +231,17 @@ func (a *accountIamV2Impl) GetGroup(ctx context.Context, request GetGroupRequest
 
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &group)
 	return &group, err
+}
+
+func (a *accountIamV2Impl) GetIdentityVisibilityFilter(ctx context.Context, request GetIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error) {
+	var identityVisibilityFilter IdentityVisibilityFilter
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &identityVisibilityFilter)
+	return &identityVisibilityFilter, err
 }
 
 func (a *accountIamV2Impl) GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
@@ -347,6 +385,50 @@ func (a *accountIamV2Impl) internalListGroups(ctx context.Context, request ListG
 
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listGroupsResponse)
 	return &listGroupsResponse, err
+}
+
+// Lists the identity-visibility filters in the account, returning one page per
+// call.
+func (a *accountIamV2Impl) ListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) listing.Iterator[IdentityVisibilityFilter] {
+
+	getNextPage := func(ctx context.Context, req ListIdentityVisibilityFiltersRequest) (*ListIdentityVisibilityFiltersResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListIdentityVisibilityFilters(ctx, req)
+	}
+	getItems := func(resp *ListIdentityVisibilityFiltersResponse) []IdentityVisibilityFilter {
+		return resp.IdentityVisibilityFilters
+	}
+	getNextReq := func(resp *ListIdentityVisibilityFiltersResponse) *ListIdentityVisibilityFiltersRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the identity-visibility filters in the account, returning one page per
+// call.
+func (a *accountIamV2Impl) ListIdentityVisibilityFiltersAll(ctx context.Context, request ListIdentityVisibilityFiltersRequest) ([]IdentityVisibilityFilter, error) {
+	iterator := a.ListIdentityVisibilityFilters(ctx, request)
+	return listing.ToSlice[IdentityVisibilityFilter](ctx, iterator)
+}
+
+func (a *accountIamV2Impl) internalListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) (*ListIdentityVisibilityFiltersResponse, error) {
+	var listIdentityVisibilityFiltersResponse ListIdentityVisibilityFiltersResponse
+	path := fmt.Sprintf("/api/2.0/identity/%v/identity-visibility-filters", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listIdentityVisibilityFiltersResponse)
+	return &listIdentityVisibilityFiltersResponse, err
 }
 
 // Lists the service principals in the Databricks account, returning one page
