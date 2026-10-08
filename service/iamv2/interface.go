@@ -29,6 +29,9 @@ type AccountIamV2Service interface {
 	// the ExternalGroup resource.
 	CreateGroup(ctx context.Context, request CreateGroupRequest) (*Group, error)
 
+	// Creates an identity-visibility filter in the account.
+	CreateIdentityVisibilityFilter(ctx context.Context, request CreateIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
+
 	// Creates a local service principal in the Databricks account and returns
 	// the created service principal. A local service principal is one that is
 	// not synced from the customer's identity provider, and can be created
@@ -73,6 +76,9 @@ type AccountIamV2Service interface {
 	// group (holds the `roles/group.manager` role on it).
 	DeleteGroup(ctx context.Context, request DeleteGroupRequest) error
 
+	// Deletes an identity-visibility filter by resource name.
+	DeleteIdentityVisibilityFilter(ctx context.Context, request DeleteIdentityVisibilityFilterRequest) error
+
 	// Deletes a service principal from the Databricks account by its internal
 	// ID.
 	DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error
@@ -116,6 +122,9 @@ type AccountIamV2Service interface {
 	// Fetches a group from the Databricks account by its internal ID.
 	GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error)
 
+	// Fetches an identity-visibility filter by resource name.
+	GetIdentityVisibilityFilter(ctx context.Context, request GetIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
+
 	// Fetches a service principal from the Databricks account by its internal
 	// ID.
 	GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error)
@@ -145,6 +154,10 @@ type AccountIamV2Service interface {
 	// Lists the groups in the Databricks account, returning one page per call.
 	// Supports filtering by group name or external ID.
 	ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
+
+	// Lists the identity-visibility filters in the account, returning one page
+	// per call.
+	ListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) (*ListIdentityVisibilityFiltersResponse, error)
 
 	// Lists the service principals in the Databricks account, returning one
 	// page per call. Supports filtering by application ID or external ID.

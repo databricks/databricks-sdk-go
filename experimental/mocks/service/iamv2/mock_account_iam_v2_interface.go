@@ -142,6 +142,65 @@ func (_c *MockAccountIamV2Interface_CreateGroup_Call) RunAndReturn(run func(cont
 	return _c
 }
 
+// CreateIdentityVisibilityFilter provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) CreateIdentityVisibilityFilter(ctx context.Context, request iamv2.CreateIdentityVisibilityFilterRequest) (*iamv2.IdentityVisibilityFilter, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateIdentityVisibilityFilter")
+	}
+
+	var r0 *iamv2.IdentityVisibilityFilter
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateIdentityVisibilityFilterRequest) (*iamv2.IdentityVisibilityFilter, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.CreateIdentityVisibilityFilterRequest) *iamv2.IdentityVisibilityFilter); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.IdentityVisibilityFilter)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.CreateIdentityVisibilityFilterRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateIdentityVisibilityFilter'
+type MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call struct {
+	*mock.Call
+}
+
+// CreateIdentityVisibilityFilter is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.CreateIdentityVisibilityFilterRequest
+func (_e *MockAccountIamV2Interface_Expecter) CreateIdentityVisibilityFilter(ctx interface{}, request interface{}) *MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call {
+	return &MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call{Call: _e.mock.On("CreateIdentityVisibilityFilter", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call) Run(run func(ctx context.Context, request iamv2.CreateIdentityVisibilityFilterRequest)) *MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.CreateIdentityVisibilityFilterRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call) Return(_a0 *iamv2.IdentityVisibilityFilter, _a1 error) *MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call) RunAndReturn(run func(context.Context, iamv2.CreateIdentityVisibilityFilterRequest) (*iamv2.IdentityVisibilityFilter, error)) *MockAccountIamV2Interface_CreateIdentityVisibilityFilter_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateServicePrincipal provides a mock function with given fields: ctx, request
 func (_m *MockAccountIamV2Interface) CreateServicePrincipal(ctx context.Context, request iamv2.CreateServicePrincipalRequest) (*iamv2.ServicePrincipal, error) {
 	ret := _m.Called(ctx, request)
@@ -468,6 +527,53 @@ func (_c *MockAccountIamV2Interface_DeleteGroup_Call) Return(_a0 error) *MockAcc
 }
 
 func (_c *MockAccountIamV2Interface_DeleteGroup_Call) RunAndReturn(run func(context.Context, iamv2.DeleteGroupRequest) error) *MockAccountIamV2Interface_DeleteGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteIdentityVisibilityFilter provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) DeleteIdentityVisibilityFilter(ctx context.Context, request iamv2.DeleteIdentityVisibilityFilterRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteIdentityVisibilityFilter")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.DeleteIdentityVisibilityFilterRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteIdentityVisibilityFilter'
+type MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call struct {
+	*mock.Call
+}
+
+// DeleteIdentityVisibilityFilter is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.DeleteIdentityVisibilityFilterRequest
+func (_e *MockAccountIamV2Interface_Expecter) DeleteIdentityVisibilityFilter(ctx interface{}, request interface{}) *MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call {
+	return &MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call{Call: _e.mock.On("DeleteIdentityVisibilityFilter", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call) Run(run func(ctx context.Context, request iamv2.DeleteIdentityVisibilityFilterRequest)) *MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.DeleteIdentityVisibilityFilterRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call) Return(_a0 error) *MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call) RunAndReturn(run func(context.Context, iamv2.DeleteIdentityVisibilityFilterRequest) error) *MockAccountIamV2Interface_DeleteIdentityVisibilityFilter_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -951,6 +1057,65 @@ func (_c *MockAccountIamV2Interface_GetGroup_Call) Return(_a0 *iamv2.Group, _a1 
 }
 
 func (_c *MockAccountIamV2Interface_GetGroup_Call) RunAndReturn(run func(context.Context, iamv2.GetGroupRequest) (*iamv2.Group, error)) *MockAccountIamV2Interface_GetGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetIdentityVisibilityFilter provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) GetIdentityVisibilityFilter(ctx context.Context, request iamv2.GetIdentityVisibilityFilterRequest) (*iamv2.IdentityVisibilityFilter, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetIdentityVisibilityFilter")
+	}
+
+	var r0 *iamv2.IdentityVisibilityFilter
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetIdentityVisibilityFilterRequest) (*iamv2.IdentityVisibilityFilter, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.GetIdentityVisibilityFilterRequest) *iamv2.IdentityVisibilityFilter); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iamv2.IdentityVisibilityFilter)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.GetIdentityVisibilityFilterRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetIdentityVisibilityFilter'
+type MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call struct {
+	*mock.Call
+}
+
+// GetIdentityVisibilityFilter is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.GetIdentityVisibilityFilterRequest
+func (_e *MockAccountIamV2Interface_Expecter) GetIdentityVisibilityFilter(ctx interface{}, request interface{}) *MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call {
+	return &MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call{Call: _e.mock.On("GetIdentityVisibilityFilter", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call) Run(run func(ctx context.Context, request iamv2.GetIdentityVisibilityFilterRequest)) *MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.GetIdentityVisibilityFilterRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call) Return(_a0 *iamv2.IdentityVisibilityFilter, _a1 error) *MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call) RunAndReturn(run func(context.Context, iamv2.GetIdentityVisibilityFilterRequest) (*iamv2.IdentityVisibilityFilter, error)) *MockAccountIamV2Interface_GetIdentityVisibilityFilter_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1462,6 +1627,114 @@ func (_c *MockAccountIamV2Interface_ListGroupsAll_Call) Return(_a0 []iamv2.Group
 }
 
 func (_c *MockAccountIamV2Interface_ListGroupsAll_Call) RunAndReturn(run func(context.Context, iamv2.ListGroupsRequest) ([]iamv2.Group, error)) *MockAccountIamV2Interface_ListGroupsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListIdentityVisibilityFilters provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListIdentityVisibilityFilters(ctx context.Context, request iamv2.ListIdentityVisibilityFiltersRequest) listing.Iterator[iamv2.IdentityVisibilityFilter] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListIdentityVisibilityFilters")
+	}
+
+	var r0 listing.Iterator[iamv2.IdentityVisibilityFilter]
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListIdentityVisibilityFiltersRequest) listing.Iterator[iamv2.IdentityVisibilityFilter]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[iamv2.IdentityVisibilityFilter])
+		}
+	}
+
+	return r0
+}
+
+// MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListIdentityVisibilityFilters'
+type MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call struct {
+	*mock.Call
+}
+
+// ListIdentityVisibilityFilters is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListIdentityVisibilityFiltersRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListIdentityVisibilityFilters(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call {
+	return &MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call{Call: _e.mock.On("ListIdentityVisibilityFilters", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call) Run(run func(ctx context.Context, request iamv2.ListIdentityVisibilityFiltersRequest)) *MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListIdentityVisibilityFiltersRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call) Return(_a0 listing.Iterator[iamv2.IdentityVisibilityFilter]) *MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call) RunAndReturn(run func(context.Context, iamv2.ListIdentityVisibilityFiltersRequest) listing.Iterator[iamv2.IdentityVisibilityFilter]) *MockAccountIamV2Interface_ListIdentityVisibilityFilters_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListIdentityVisibilityFiltersAll provides a mock function with given fields: ctx, request
+func (_m *MockAccountIamV2Interface) ListIdentityVisibilityFiltersAll(ctx context.Context, request iamv2.ListIdentityVisibilityFiltersRequest) ([]iamv2.IdentityVisibilityFilter, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListIdentityVisibilityFiltersAll")
+	}
+
+	var r0 []iamv2.IdentityVisibilityFilter
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListIdentityVisibilityFiltersRequest) ([]iamv2.IdentityVisibilityFilter, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iamv2.ListIdentityVisibilityFiltersRequest) []iamv2.IdentityVisibilityFilter); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]iamv2.IdentityVisibilityFilter)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, iamv2.ListIdentityVisibilityFiltersRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListIdentityVisibilityFiltersAll'
+type MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call struct {
+	*mock.Call
+}
+
+// ListIdentityVisibilityFiltersAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request iamv2.ListIdentityVisibilityFiltersRequest
+func (_e *MockAccountIamV2Interface_Expecter) ListIdentityVisibilityFiltersAll(ctx interface{}, request interface{}) *MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call {
+	return &MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call{Call: _e.mock.On("ListIdentityVisibilityFiltersAll", ctx, request)}
+}
+
+func (_c *MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call) Run(run func(ctx context.Context, request iamv2.ListIdentityVisibilityFiltersRequest)) *MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(iamv2.ListIdentityVisibilityFiltersRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call) Return(_a0 []iamv2.IdentityVisibilityFilter, _a1 error) *MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call) RunAndReturn(run func(context.Context, iamv2.ListIdentityVisibilityFiltersRequest) ([]iamv2.IdentityVisibilityFilter, error)) *MockAccountIamV2Interface_ListIdentityVisibilityFiltersAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

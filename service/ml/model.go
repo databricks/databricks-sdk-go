@@ -4047,6 +4047,66 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Recipients to notify when a materialization run fails.
+type MaterializationFailureNotification struct {
+	// IDs of the notification destinations (for example Slack, Microsoft Teams,
+	// PagerDuty, or a generic webhook) to notify. Not supported for streaming
+	// materialized features.
+	DestinationIds []string `json:"destination_ids,omitempty"`
+	// Email addresses to notify.
+	EmailAddresses []string `json:"email_addresses,omitempty"`
+	// If true, notify only when the final attempt of a run fails. If false or
+	// unset, notify on every failed attempt, including attempts that will be
+	// retried.
+	//
+	// Batch materialization does not retry failures that need a fix on your
+	// side, such as missing permissions or invalid configuration, so the first
+	// attempt is the final one. Other batch failures are retried up to twice.
+	//
+	// Streaming materialization restarts a failed update indefinitely unless
+	// the error cannot be retried. With this set, a streaming materialized
+	// feature notifies only on errors that cannot be retried, and never on
+	// failures that are restarted.
+	FinalAttemptOnly bool `json:"final_attempt_only,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MaterializationFailureNotification) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MaterializationFailureNotification) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Notifications for the jobs and pipelines that materialize a feature, one
+// field per trigger.
+type MaterializationNotifications struct {
+	// Who to notify when a run fails, and on which attempts.
+	OnFailure *MaterializationFailureNotification `json:"on_failure,omitempty"`
+	// Who to notify when a run succeeds.
+	OnSuccess *MaterializationSuccessNotification `json:"on_success,omitempty"`
+}
+
+func (s *MaterializationNotifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Recipients to notify when a materialization run succeeds.
+type MaterializationSuccessNotification struct {
+	// IDs of the notification destinations (for example Slack, Microsoft Teams,
+	// PagerDuty, or a generic webhook) to notify. Not supported for streaming
+	// materialized features.
+	DestinationIds []string `json:"destination_ids,omitempty"`
+	// Email addresses to notify.
+	EmailAddresses []string `json:"email_addresses,omitempty"`
+}
+
+func (s *MaterializationSuccessNotification) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A materialized feature represents a feature that is continuously computed and
 // stored.
 type MaterializedFeature struct {
@@ -4074,6 +4134,11 @@ type MaterializedFeature struct {
 	LatestBackfillOperation string `json:"latest_backfill_operation,omitempty"`
 	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
+	// Notification configuration around the materialization job or pipeline
+	// lifecycle. They are applied to every job and pipeline that materializes
+	// this feature. Features which are materialized in the same pipeline will
+	// share the same notification.
+	Notifications *MaterializationNotifications `json:"notifications,omitempty"`
 	// Destination for writing feature values to an offline Delta table. The
 	// resulting table is returned as `table_name`.
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
@@ -6646,6 +6711,11 @@ type StreamingMode struct {
 	FreshnessTarget string `json:"freshness_target,omitempty"`
 	// The type of streaming mode used by the materialization pipeline.
 	Mode StreamingModeStreamingModeType `json:"mode,omitempty"`
+	// Number of shuffle partitions for streaming materialization of this
+	// feature. Higher values process high-throughput features with more
+	// parallelism at higher compute cost. Materialized features which are
+	// computed together will use the largest value set among them.
+	ShufflePartitions int `json:"shuffle_partitions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
