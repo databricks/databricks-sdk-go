@@ -13,9 +13,7 @@ import (
 type BillableUsageService interface {
 
 	// Returns billable usage logs in CSV format for the specified account and
-	// date range. For the data schema, see:
-	//
-	// - AWS: [CSV file schema]. - GCP: [CSV file schema].
+	// date range.
 	//
 	// Note that this method might take multiple minutes to complete.
 	//
@@ -24,8 +22,6 @@ type BillableUsageService interface {
 	// speed of the caller, this API may hit a timeout after a few minutes. If
 	// you experience this, try to mitigate by calling the API with narrower
 	// date ranges.
-	//
-	// [CSV file schema]: https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 

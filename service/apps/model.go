@@ -705,6 +705,8 @@ const AppManifestAppResourceUcSecurableSpecUcSecurableTypeConnection AppManifest
 
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeFunction AppManifestAppResourceUcSecurableSpecUcSecurableType = `FUNCTION`
 
+const AppManifestAppResourceUcSecurableSpecUcSecurableTypeModelService AppManifestAppResourceUcSecurableSpecUcSecurableType = `MODEL_SERVICE`
+
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable AppManifestAppResourceUcSecurableSpecUcSecurableType = `TABLE`
 
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume AppManifestAppResourceUcSecurableSpecUcSecurableType = `VOLUME`
@@ -717,11 +719,11 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Set(v string) error {
 	switch v {
-	case `CONNECTION`, `FUNCTION`, `TABLE`, `VOLUME`:
+	case `CONNECTION`, `FUNCTION`, `MODEL_SERVICE`, `TABLE`, `VOLUME`:
 		*f = AppManifestAppResourceUcSecurableSpecUcSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "MODEL_SERVICE", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -732,6 +734,7 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Values() []AppMan
 	return []AppManifestAppResourceUcSecurableSpecUcSecurableType{
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeConnection,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeFunction,
+		AppManifestAppResourceUcSecurableSpecUcSecurableTypeModelService,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume,
 	}
@@ -1422,6 +1425,8 @@ const AppResourceUcSecurableUcSecurableTypeConnection AppResourceUcSecurableUcSe
 
 const AppResourceUcSecurableUcSecurableTypeFunction AppResourceUcSecurableUcSecurableType = `FUNCTION`
 
+const AppResourceUcSecurableUcSecurableTypeModelService AppResourceUcSecurableUcSecurableType = `MODEL_SERVICE`
+
 const AppResourceUcSecurableUcSecurableTypeTable AppResourceUcSecurableUcSecurableType = `TABLE`
 
 const AppResourceUcSecurableUcSecurableTypeVolume AppResourceUcSecurableUcSecurableType = `VOLUME`
@@ -1434,11 +1439,11 @@ func (f *AppResourceUcSecurableUcSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppResourceUcSecurableUcSecurableType) Set(v string) error {
 	switch v {
-	case `CONNECTION`, `FUNCTION`, `TABLE`, `VOLUME`:
+	case `CONNECTION`, `FUNCTION`, `MODEL_SERVICE`, `TABLE`, `VOLUME`:
 		*f = AppResourceUcSecurableUcSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "MODEL_SERVICE", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -1449,6 +1454,7 @@ func (f *AppResourceUcSecurableUcSecurableType) Values() []AppResourceUcSecurabl
 	return []AppResourceUcSecurableUcSecurableType{
 		AppResourceUcSecurableUcSecurableTypeConnection,
 		AppResourceUcSecurableUcSecurableTypeFunction,
+		AppResourceUcSecurableUcSecurableTypeModelService,
 		AppResourceUcSecurableUcSecurableTypeTable,
 		AppResourceUcSecurableUcSecurableTypeVolume,
 	}

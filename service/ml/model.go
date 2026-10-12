@@ -1596,7 +1596,7 @@ func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
 }
 
 // Direct connection configs for mTLS, as Kafka Connections do not support mTLS
-// yet . Temporarily used until UC Kafka Connections gain mTLS support.
+// yet.
 type DirectMtlsConfig struct {
 	// A comma-separated list of host:port pairs for the Kafka bootstrap
 	// servers.
@@ -2141,9 +2141,7 @@ type Feature struct {
 	Entities []EntityColumn `json:"entities,omitempty"`
 
 	FilterCondition string `json:"filter_condition,omitempty"`
-	// The full three-part name (catalog, schema, name) of the feature. This is
-	// the feature's resource identifier; the catalog_name, schema_name, and
-	// name fields below are OUTPUT_ONLY decomposed views of this value.
+	// The full three-part name (catalog, schema, name) of the feature.
 	FullName string `json:"full_name"`
 	// The function by which the feature is computed.
 	Function Function `json:"function"`
@@ -4547,14 +4545,6 @@ func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
 // live as JKS files on Unity Catalog volumes, with their passwords stored in
 // Databricks secret scopes. This matches the SSL setup pattern documented at
 // https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
-//
-// At materialization time, the generated PySpark code passes the JKS file paths
-// and resolved passwords through to the Kafka SSL options
-// (kafka.ssl.keystore.location, kafka.ssl.keystore.password,
-// kafka.ssl.key.password, kafka.ssl.truststore.location,
-// kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster
-// via dbutils.secrets.get; this message stores only references, never password
-// values.
 type MtlsConfig struct {
 	// Set to true only when the broker certificate's SAN intentionally does not
 	// match the connection endpoint — for example when reaching the cluster
@@ -6327,9 +6317,7 @@ func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Reference to an entry in a Databricks secret scope. The referenced value is
-// fetched on the Spark cluster at materialization time via
-// dbutils.secrets.get(scope, key).
+// Reference to an entry in a Databricks secret scope.
 type SecretScopeReference struct {
 	// The key within the scope.
 	Key string `json:"key"`
@@ -6555,8 +6543,8 @@ func (s *StddevSampFunction) UnmarshalJSON(b []byte) error {
 }
 
 // A Stream is a governed UC entity representing an external streaming data
-// source. The source_config oneof determines the streaming platform source
-// (e.g. Kafka, Kinesis, etc.).
+// source. The source_config field determines the streaming platform source
+// (e.g. Kafka, Kinesis).
 type Stream struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -6624,9 +6612,7 @@ func (s *StreamArnList) UnmarshalJSON(b []byte) error {
 
 // Specifies how to connect and authenticate to the stream platform.
 type StreamConnectionConfig struct {
-	// Direct mTLS configuration for stream platform access. This is only used
-	// in the short term until UC Kafka Connections support mTLS . Once UC Kafka
-	// Connections support mTLS, this will be deprecated.
+	// Direct mTLS configuration for stream platform access.
 	DirectMtlsConfig *DirectMtlsConfig `json:"direct_mtls_config,omitempty"`
 	// Name of an existing UC Connection for stream platform access. Must be the
 	// correct type for the streaming platform (e.g. a Kafka Connection for a
@@ -7067,9 +7053,7 @@ type UpdateFeatureRequest struct {
 	// Feature whose full_name identifies the target. Only description is
 	// mutable.
 	Feature Feature `json:"feature"`
-	// The full three-part name (catalog, schema, name) of the feature. This is
-	// the feature's resource identifier; the catalog_name, schema_name, and
-	// name fields below are OUTPUT_ONLY decomposed views of this value.
+	// The full three-part name (catalog, schema, name) of the feature.
 	FullName string `json:"-" url:"-"`
 	// Fields to update. The only supported path is description.
 	UpdateMask string `json:"-" url:"update_mask"`

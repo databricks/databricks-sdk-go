@@ -60,9 +60,9 @@ type AgentKitService interface {
 	// Forks a session into an independent top-level copy.
 	ForkSession(ctx context.Context, request ForkSessionRequest) (*ForkSessionResponse, error)
 
-	// Retrieves a managed memory entry, including its content, by resource
-	// name. Returns `NOT_FOUND` when the entry does not exist in the caller's
-	// workspace.
+	// Retrieves a managed memory entry by resource name. `view` controls
+	// whether the response includes memory content. Returns `NOT_FOUND` when
+	// the entry does not exist in the caller's workspace.
 	GetMemory(ctx context.Context, request GetManagedMemoryEntryRequest) (*ManagedMemoryEntry, error)
 
 	// Retrieves a managed memory store by resource name. Returns `NOT_FOUND`
@@ -77,8 +77,8 @@ type AgentKitService interface {
 
 	// Lists managed memory entries for one actor. An exact `path` filters
 	// entries across sessions, ignoring session metadata. Otherwise,
-	// `session_id` and `path_prefix` restrict the actor partition. `read_mask`
-	// selects fields in each returned entry.
+	// `session_id` and `path_prefix` restrict the actor partition. `view`
+	// controls whether each returned entry includes memory content.
 	ListMemories(ctx context.Context, request ListManagedMemoryEntriesRequest) (*ListManagedMemoryEntriesResponse, error)
 
 	// Lists managed memory stores in the caller's workspace.
@@ -97,15 +97,15 @@ type AgentKitService interface {
 	PopSessionItem(ctx context.Context, request PopSessionItemRequest) (*PopSessionItemResponse, error)
 
 	// Searches managed memory entries by text query for one actor. Returns
-	// matching entries and scores ranked by relevance; `read_mask` selects
-	// fields in each returned entry.
+	// matching entries and scores ranked by relevance; `view` controls whether
+	// each returned entry includes content.
 	SearchMemories(ctx context.Context, request SearchManagedMemoryEntriesRequest) (*SearchManagedMemoryEntriesResponse, error)
 
 	// Updates selected mutable fields on a managed memory entry. Identity
 	// fields are immutable.
 	UpdateMemory(ctx context.Context, request UpdateManagedMemoryEntryRequest) (*ManagedMemoryEntry, error)
 
-	// Updates a managed memory store's description.
+	// Updates a managed memory store's description and metadata.
 	UpdateMemoryStore(ctx context.Context, request UpdateManagedMemoryStoreRequest) (*ManagedMemoryStore, error)
 
 	// Updates a session's mutable fields.

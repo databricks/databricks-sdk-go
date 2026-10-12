@@ -1,5 +1,15 @@
 # Version changelog
 
+## Release v0.188.0 (2026-10-12)
+
+### API Changes
+* Add `BedrockMantle` and `Pricing` fields for [catalog.ModelProviderServiceConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfig).
+* Add `DatabricksAppSlack` and `DatabricksAppTeams` fields for [settings.Config](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#Config).
+* Add `ModelService` enum value for [apps.AppManifestAppResourceUcSecurableSpecUcSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppManifestAppResourceUcSecurableSpecUcSecurableType).
+* Add `ModelService` enum value for [apps.AppResourceUcSecurableUcSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResourceUcSecurableUcSecurableType).
+* Add `ExternalModelProviderTypeBedrockMantle` enum value for [catalog.ModelProviderServiceConfigExternalModelProviderType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigExternalModelProviderType).
+* Add `DatabricksAppSlack` and `DatabricksAppTeams` enum values for [settings.DestinationType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DestinationType).
+
 ## Release v0.187.0 (2026-10-08)
 
 ### API Changes

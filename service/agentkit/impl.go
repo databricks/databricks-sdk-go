@@ -266,8 +266,8 @@ func (a *agentKitImpl) GetSessionStore(ctx context.Context, request GetSessionSt
 
 // Lists managed memory entries for one actor. An exact `path` filters entries
 // across sessions, ignoring session metadata. Otherwise, `session_id` and
-// `path_prefix` restrict the actor partition. `read_mask` selects fields in
-// each returned entry.
+// `path_prefix` restrict the actor partition. `view` controls whether each
+// returned entry includes memory content.
 func (a *agentKitImpl) ListMemories(ctx context.Context, request ListManagedMemoryEntriesRequest) listing.Iterator[ManagedMemoryEntry] {
 
 	getNextPage := func(ctx context.Context, req ListManagedMemoryEntriesRequest) (*ListManagedMemoryEntriesResponse, error) {
@@ -294,8 +294,8 @@ func (a *agentKitImpl) ListMemories(ctx context.Context, request ListManagedMemo
 
 // Lists managed memory entries for one actor. An exact `path` filters entries
 // across sessions, ignoring session metadata. Otherwise, `session_id` and
-// `path_prefix` restrict the actor partition. `read_mask` selects fields in
-// each returned entry.
+// `path_prefix` restrict the actor partition. `view` controls whether each
+// returned entry includes memory content.
 func (a *agentKitImpl) ListMemoriesAll(ctx context.Context, request ListManagedMemoryEntriesRequest) ([]ManagedMemoryEntry, error) {
 	iterator := a.ListMemories(ctx, request)
 	return listing.ToSlice[ManagedMemoryEntry](ctx, iterator)
@@ -511,8 +511,8 @@ func (a *agentKitImpl) PopSessionItem(ctx context.Context, request PopSessionIte
 }
 
 // Searches managed memory entries by text query for one actor. Returns matching
-// entries and scores ranked by relevance; `read_mask` selects fields in each
-// returned entry.
+// entries and scores ranked by relevance; `view` controls whether each returned
+// entry includes content.
 func (a *agentKitImpl) SearchMemories(ctx context.Context, request SearchManagedMemoryEntriesRequest) listing.Iterator[ManagedMemoryEntrySearchResult] {
 
 	getNextPage := func(ctx context.Context, req SearchManagedMemoryEntriesRequest) (*SearchManagedMemoryEntriesResponse, error) {
@@ -538,8 +538,8 @@ func (a *agentKitImpl) SearchMemories(ctx context.Context, request SearchManaged
 }
 
 // Searches managed memory entries by text query for one actor. Returns matching
-// entries and scores ranked by relevance; `read_mask` selects fields in each
-// returned entry.
+// entries and scores ranked by relevance; `view` controls whether each returned
+// entry includes content.
 func (a *agentKitImpl) SearchMemoriesAll(ctx context.Context, request SearchManagedMemoryEntriesRequest) ([]ManagedMemoryEntrySearchResult, error) {
 	iterator := a.SearchMemories(ctx, request)
 	return listing.ToSlice[ManagedMemoryEntrySearchResult](ctx, iterator)
