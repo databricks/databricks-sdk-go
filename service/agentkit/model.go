@@ -256,9 +256,9 @@ type GetManagedMemoryEntryRequest struct {
 	// Resource name in the form
 	// `memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}`.
 	Name string `json:"-" url:"-"`
-	// Fields to return, using proto field names such as `content` (not
-	// `contents`). An omitted or empty mask returns the full entry, including
-	// `content`; a non-empty mask returns only the requested fields.
+	// Deprecated. Use `view` for new clients. Fields to return, using proto
+	// field names such as `content` (not `contents`). An omitted or empty mask
+	// returns the full entry.
 	ReadMask *fieldmask.FieldMask `json:"-" url:"read_mask,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -314,9 +314,9 @@ type ListManagedMemoryEntriesRequest struct {
 	Parent string `json:"-" url:"-"`
 	// Optional path prefix used to restrict entries within the actor partition.
 	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
-	// Fields to return in each entry, using proto field names such as `content`
-	// (not `contents`). An omitted or empty mask returns each full entry,
-	// including `content`; a non-empty mask returns only the requested fields.
+	// Deprecated. Use `view` for new clients. Fields to return in each entry,
+	// using proto field names such as `content` (not `contents`). An omitted or
+	// empty mask returns full entries.
 	ReadMask *fieldmask.FieldMask `json:"-" url:"read_mask,omitempty"`
 	// Optional session identifier. When set, only entries with this exact
 	// `session_id` are returned. Omitted-session (cross-session) entries are
@@ -336,7 +336,7 @@ func (s ListManagedMemoryEntriesRequest) MarshalJSON() ([]byte, error) {
 
 // Response containing managed memory entries.
 type ListManagedMemoryEntriesResponse struct {
-	// Managed memory entries matching the request and its read mask.
+	// Managed memory entries matching the request and selected response view.
 	ManagedMemoryEntries []ManagedMemoryEntry `json:"managed_memory_entries,omitempty"`
 	// Opaque pagination token. This field is omitted when there are no more
 	// results.
@@ -696,10 +696,9 @@ type SearchManagedMemoryEntriesRequest struct {
 	PathPrefix string `json:"path_prefix,omitempty"`
 	// Free-form search query.
 	Query string `json:"query"`
-	// Fields to return in each matching entry, using proto field names such as
-	// `content` (not `contents`). An omitted or empty mask returns each full
-	// entry, including `content`; a non-empty mask returns only the requested
-	// fields. Search scores are always returned.
+	// Deprecated. Use `view` for new clients. Fields to return in each entry,
+	// using proto field names such as `content` (not `contents`). Search scores
+	// are always returned.
 	//
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -916,7 +915,8 @@ type UpdateManagedMemoryStoreRequest struct {
 	ManagedMemoryStore ManagedMemoryStore `json:"managed_memory_store"`
 	// Resource name in the form `memory-stores/{managed_memory_store_id}`.
 	Name string `json:"-" url:"-"`
-	// Only `description` may be updated.
+	// Only `description` and `metadata` may be updated. Selecting `metadata`
+	// replaces the entire map.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

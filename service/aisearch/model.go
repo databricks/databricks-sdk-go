@@ -338,8 +338,8 @@ func (s Endpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Scaling information for a Storage Optimized endpoint — current scaling
-// state and the requested QPS target the system is scaling toward.
+// Scaling information for a Standard endpoint: the current scaling state, the
+// requested QPS target, and the progress of an in-progress scaling change.
 type EndpointScalingInfo struct {
 	// The requested QPS target for the endpoint. Best-effort; the system does
 	// not guarantee this QPS will be achieved.
@@ -1042,8 +1042,7 @@ func (s ResultManifest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// State of the most recent scaling change request for a Storage Optimized
-// endpoint.
+// State of the most recent scaling change request for a Standard endpoint.
 type ScalingChangeState string
 
 const ScalingChangeStateScalingChangeApplied ScalingChangeState = `SCALING_CHANGE_APPLIED`

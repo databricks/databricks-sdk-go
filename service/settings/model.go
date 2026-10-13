@@ -535,6 +535,10 @@ func (f *ComplianceStandard) Type() string {
 }
 
 type Config struct {
+	DatabricksAppSlack *DatabricksAppSlackConfig `json:"databricks_app_slack,omitempty"`
+
+	DatabricksAppTeams *DatabricksAppTeamsConfig `json:"databricks_app_teams,omitempty"`
+
 	Email *EmailConfig `json:"email,omitempty"`
 
 	GenericWebhook *GenericWebhookConfig `json:"generic_webhook,omitempty"`
@@ -1607,6 +1611,59 @@ func (s DashboardEmailSubscriptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Slack channel reached through the Databricks app. The app must already be
+// installed in the Slack workspace and connected to this Databricks workspace.
+type DatabricksAppSlackConfig struct {
+	// [Input-Only] Slack channel ID notifications are posted to.
+	ChannelId string `json:"channel_id,omitempty"`
+	// [Output-Only] Whether channel ID is set.
+	ChannelIdSet bool `json:"channel_id_set,omitempty"`
+	// [Input-Only] Slack workspace (team) ID the Databricks app is installed
+	// in.
+	TeamId string `json:"team_id,omitempty"`
+	// [Output-Only] Whether team ID is set.
+	TeamIdSet bool `json:"team_id_set,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabricksAppSlackConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabricksAppSlackConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Microsoft Teams channel reached through the Databricks app. The app must
+// already be installed in the Microsoft 365 tenant and connected to this
+// Databricks workspace.
+type DatabricksAppTeamsConfig struct {
+	// [Input-Only] Teams channel ID notifications are posted to.
+	ChannelId string `json:"channel_id,omitempty"`
+	// [Output-Only] Whether channel ID is set.
+	ChannelIdSet bool `json:"channel_id_set,omitempty"`
+	// [Input-Only] Microsoft Entra group ID of the team that owns the channel.
+	TeamId string `json:"team_id,omitempty"`
+	// [Output-Only] Whether team ID is set.
+	TeamIdSet bool `json:"team_id_set,omitempty"`
+	// [Input-Only] Microsoft Entra tenant ID of the Microsoft 365 tenant the
+	// app is installed in.
+	TenantId string `json:"tenant_id,omitempty"`
+	// [Output-Only] Whether tenant ID is set.
+	TenantIdSet bool `json:"tenant_id_set,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabricksAppTeamsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabricksAppTeamsConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // This represents the setting configuration for the default namespace in the
 // Databricks workspace. Setting the default catalog for the workspace
 // determines the catalog that is used when queries do not reference a fully
@@ -2221,6 +2278,10 @@ func (s *DeleteTokenManagementRequest) UnmarshalJSON(b []byte) error {
 
 type DestinationType string
 
+const DestinationTypeDatabricksAppSlack DestinationType = `DATABRICKS_APP_SLACK`
+
+const DestinationTypeDatabricksAppTeams DestinationType = `DATABRICKS_APP_TEAMS`
+
 const DestinationTypeEmail DestinationType = `EMAIL`
 
 const DestinationTypeMicrosoftTeams DestinationType = `MICROSOFT_TEAMS`
@@ -2239,11 +2300,11 @@ func (f *DestinationType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DestinationType) Set(v string) error {
 	switch v {
-	case `EMAIL`, `MICROSOFT_TEAMS`, `PAGERDUTY`, `SLACK`, `WEBHOOK`:
+	case `DATABRICKS_APP_SLACK`, `DATABRICKS_APP_TEAMS`, `EMAIL`, `MICROSOFT_TEAMS`, `PAGERDUTY`, `SLACK`, `WEBHOOK`:
 		*f = DestinationType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EMAIL", "MICROSOFT_TEAMS", "PAGERDUTY", "SLACK", "WEBHOOK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DATABRICKS_APP_SLACK", "DATABRICKS_APP_TEAMS", "EMAIL", "MICROSOFT_TEAMS", "PAGERDUTY", "SLACK", "WEBHOOK"`, v)
 	}
 }
 
@@ -2252,6 +2313,8 @@ func (f *DestinationType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *DestinationType) Values() []DestinationType {
 	return []DestinationType{
+		DestinationTypeDatabricksAppSlack,
+		DestinationTypeDatabricksAppTeams,
 		DestinationTypeEmail,
 		DestinationTypeMicrosoftTeams,
 		DestinationTypePagerduty,

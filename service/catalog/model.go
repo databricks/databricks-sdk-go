@@ -5526,7 +5526,7 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 
 type ListMcpServicesRequest struct {
 	// Maximum number of MCP services to return. Defaults to 100 when unset or
-	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
+	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5656,7 +5656,7 @@ func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
 
 type ListModelProviderServicesRequest struct {
 	// Maximum number of provider services to return. Defaults to 100 when unset
-	// or 0; the maximum is 100. Use `page_token` to retrieve additional pages.
+	// or 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5742,7 +5742,7 @@ func (s ListModelProviderServicesResponse) MarshalJSON() ([]byte, error) {
 
 type ListModelServicesRequest struct {
 	// Maximum number of model services to return. Defaults to 100 when unset or
-	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
+	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -6177,7 +6177,7 @@ func (s ListSecretsResponse) MarshalJSON() ([]byte, error) {
 
 type ListSkillsRequest struct {
 	// Maximum number of skills to return. Defaults to 100 when unset or 0; the
-	// maximum is 100. Use `page_token` to retrieve additional pages.
+	// maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -6792,6 +6792,8 @@ type ModelProviderServiceConfig struct {
 
 	AzureOpenai *ModelProviderServiceConfigAzureOpenAiProviderConfig `json:"azure_openai,omitempty"`
 
+	BedrockMantle *ModelProviderServiceConfigAmazonBedrockProviderConfig `json:"bedrock_mantle,omitempty"`
+
 	Custom *ModelProviderServiceConfigCustomProviderConfig `json:"custom,omitempty"`
 	// Whether to forward incoming HTTP headers to the upstream provider.
 	// Defaults to false and is configured for the entire provider service, not
@@ -6818,6 +6820,9 @@ type ModelProviderServiceConfig struct {
 	MicrosoftFoundry *ModelProviderServiceConfigMicrosoftFoundryProviderConfig `json:"microsoft_foundry,omitempty"`
 
 	Openai *ModelProviderServiceConfigOpenAiProviderConfig `json:"openai,omitempty"`
+	// Pricing configuration for this provider service. An explicitly empty
+	// configuration is retained on Create and Update and applies no adjustment.
+	Pricing *ModelProviderServiceConfigProviderPricingConfig `json:"pricing,omitempty"`
 	// External model provider. Required on Create and immutable thereafter. Set
 	// the matching provider-specific configuration, such as `openai`,
 	// `azure_openai`, or `amazon_bedrock`.
@@ -7092,6 +7097,8 @@ const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTy
 
 const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAzureOpenai ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI`
 
+const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeBedrockMantle ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE`
+
 const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeCustom ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM`
 
 const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeGeminiEnterprise ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE`
@@ -7108,11 +7115,11 @@ func (f *ModelProviderServiceConfigExternalModelProviderType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ModelProviderServiceConfigExternalModelProviderType) Set(v string) error {
 	switch v {
-	case `EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK`, `EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC`, `EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI`, `EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM`, `EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE`, `EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY`, `EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI`:
+	case `EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK`, `EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC`, `EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI`, `EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE`, `EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM`, `EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE`, `EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY`, `EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI`:
 		*f = ModelProviderServiceConfigExternalModelProviderType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK", "EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC", "EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI", "EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM", "EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE", "EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY", "EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK", "EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC", "EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI", "EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE", "EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM", "EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE", "EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY", "EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI"`, v)
 	}
 }
 
@@ -7124,6 +7131,7 @@ func (f *ModelProviderServiceConfigExternalModelProviderType) Values() []ModelPr
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAmazonBedrock,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAnthropic,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAzureOpenai,
+		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeBedrockMantle,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeCustom,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeGeminiEnterprise,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeMicrosoftFoundry,
@@ -7293,6 +7301,26 @@ func (s *ModelProviderServiceConfigOpenAiProviderDirectConfig) UnmarshalJSON(b [
 }
 
 func (s ModelProviderServiceConfigOpenAiProviderDirectConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Pricing adjustments applied to this provider service's external-model spend
+// estimates.
+type ModelProviderServiceConfigProviderPricingConfig struct {
+	// Provider-wide adjustment to external-model spend estimates in basis
+	// points: 2000 = 20% off; -2000 = a 20% markup. Negative values have no
+	// lower bound beyond the int32 range. Values cannot exceed 10000 (100%
+	// off). An omitted value or zero leaves the estimate unchanged.
+	DefaultDiscountBasisPoints int `json:"default_discount_basis_points,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelProviderServiceConfigProviderPricingConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelProviderServiceConfigProviderPricingConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -11162,11 +11190,15 @@ type UpdateModelProviderServiceRequest struct {
 	// provider-specific value (for example, `config.openai`; the mask path
 	// remains `config.provider`); `config.allow_all_targets`, `config.targets`,
 	// `config.forward_headers`, `config.forward_query_parameters`,
-	// `config.forward_unmanaged_paths`, `config.rate_limits`, or
-	// `config.inference_table`. The provider type is immutable. A `config` or
-	// `config.provider` replacement that carries no authentication material
-	// preserves the existing authentication binding; input-only plaintext does
-	// not need to be read back and re-sent.
+	// `config.forward_unmanaged_paths`, `config.rate_limits`,
+	// `config.pricing.default_discount_basis_points`, or
+	// `config.inference_table`. For a pricing update, an explicitly empty
+	// `pricing` object clears the discount but retains the object; omitting
+	// `pricing` clears it. `config.pricing` is not a supported mask path. The
+	// provider type is immutable. A `config` or `config.provider` replacement
+	// that carries no authentication material preserves the existing
+	// authentication binding; input-only plaintext does not need to be read
+	// back and re-sent.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`

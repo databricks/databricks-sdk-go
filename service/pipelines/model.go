@@ -140,7 +140,8 @@ type ClonePipelineRequest struct {
 	Channel string `json:"channel,omitempty"`
 	// The type of clone to perform. Currently, only deep copies are supported
 	CloneMode CloneMode `json:"clone_mode,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -198,7 +199,11 @@ type ClonePipelineRequest struct {
 	RootPath string `json:"root_path,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
@@ -383,7 +388,8 @@ type CreatePipeline struct {
 	Catalog string `json:"catalog,omitempty"`
 	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -442,7 +448,11 @@ type CreatePipeline struct {
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
@@ -677,7 +687,8 @@ type EditPipeline struct {
 	Catalog string `json:"catalog,omitempty"`
 	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -740,7 +751,11 @@ type EditPipeline struct {
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
@@ -2926,7 +2941,8 @@ type PipelineSpec struct {
 	Catalog string `json:"catalog,omitempty"`
 	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -2978,7 +2994,11 @@ type PipelineSpec struct {
 	RootPath string `json:"root_path,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
