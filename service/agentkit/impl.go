@@ -264,8 +264,8 @@ func (a *agentKitImpl) GetSessionStore(ctx context.Context, request GetSessionSt
 	return &sessionStore, err
 }
 
-// Lists managed memory entries for one actor. An exact `path` filters entries
-// across sessions, ignoring session metadata. Otherwise, `session_id` and
+// Lists memory entries for one actor. An exact `path` filters entries across
+// sessions, ignoring session metadata. Otherwise, `session_id` and
 // `path_prefix` restrict the actor partition. `view` controls whether each
 // returned entry includes memory content.
 func (a *agentKitImpl) ListMemories(ctx context.Context, request ListManagedMemoryEntriesRequest) listing.Iterator[ManagedMemoryEntry] {
@@ -292,8 +292,8 @@ func (a *agentKitImpl) ListMemories(ctx context.Context, request ListManagedMemo
 	return iterator
 }
 
-// Lists managed memory entries for one actor. An exact `path` filters entries
-// across sessions, ignoring session metadata. Otherwise, `session_id` and
+// Lists memory entries for one actor. An exact `path` filters entries across
+// sessions, ignoring session metadata. Otherwise, `session_id` and
 // `path_prefix` restrict the actor partition. `view` controls whether each
 // returned entry includes memory content.
 func (a *agentKitImpl) ListMemoriesAll(ctx context.Context, request ListManagedMemoryEntriesRequest) ([]ManagedMemoryEntry, error) {
@@ -315,7 +315,7 @@ func (a *agentKitImpl) internalListMemories(ctx context.Context, request ListMan
 	return &listManagedMemoryEntriesResponse, err
 }
 
-// Lists managed memory stores in the caller's workspace.
+// Lists memory stores in the caller's workspace.
 func (a *agentKitImpl) ListMemoryStores(ctx context.Context, request ListManagedMemoryStoresRequest) listing.Iterator[ManagedMemoryStore] {
 
 	getNextPage := func(ctx context.Context, req ListManagedMemoryStoresRequest) (*ListManagedMemoryStoresResponse, error) {
@@ -340,7 +340,7 @@ func (a *agentKitImpl) ListMemoryStores(ctx context.Context, request ListManaged
 	return iterator
 }
 
-// Lists managed memory stores in the caller's workspace.
+// Lists memory stores in the caller's workspace.
 func (a *agentKitImpl) ListMemoryStoresAll(ctx context.Context, request ListManagedMemoryStoresRequest) ([]ManagedMemoryStore, error) {
 	iterator := a.ListMemoryStores(ctx, request)
 	return listing.ToSlice[ManagedMemoryStore](ctx, iterator)
@@ -510,9 +510,9 @@ func (a *agentKitImpl) PopSessionItem(ctx context.Context, request PopSessionIte
 	return &popSessionItemResponse, err
 }
 
-// Searches managed memory entries by text query for one actor. Returns matching
-// entries and scores ranked by relevance; `view` controls whether each returned
-// entry includes content.
+// Searches memory entries by text query for one actor. Returns matching entries
+// and scores ranked by relevance; `view` controls whether each returned entry
+// includes content.
 func (a *agentKitImpl) SearchMemories(ctx context.Context, request SearchManagedMemoryEntriesRequest) listing.Iterator[ManagedMemoryEntrySearchResult] {
 
 	getNextPage := func(ctx context.Context, req SearchManagedMemoryEntriesRequest) (*SearchManagedMemoryEntriesResponse, error) {
@@ -537,9 +537,9 @@ func (a *agentKitImpl) SearchMemories(ctx context.Context, request SearchManaged
 	return iterator
 }
 
-// Searches managed memory entries by text query for one actor. Returns matching
-// entries and scores ranked by relevance; `view` controls whether each returned
-// entry includes content.
+// Searches memory entries by text query for one actor. Returns matching entries
+// and scores ranked by relevance; `view` controls whether each returned entry
+// includes content.
 func (a *agentKitImpl) SearchMemoriesAll(ctx context.Context, request SearchManagedMemoryEntriesRequest) ([]ManagedMemoryEntrySearchResult, error) {
 	iterator := a.SearchMemories(ctx, request)
 	return listing.ToSlice[ManagedMemoryEntrySearchResult](ctx, iterator)

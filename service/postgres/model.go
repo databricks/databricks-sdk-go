@@ -2687,6 +2687,34 @@ func (s RequestedResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Request to reveal the current password for a password-authenticated Postgres
+// role.
+type RevealRolePasswordRequest struct {
+	// The full resource path of the role whose password should be revealed.
+	// Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *RevealRolePasswordRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response containing the password for a password-authenticated Postgres role.
+type RevealRolePasswordResponse struct {
+	// The current password for the Postgres role.
+	Password string `json:"password,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RevealRolePasswordResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RevealRolePasswordResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Role represents a Postgres role within a Branch.
 type Role struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`

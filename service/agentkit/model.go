@@ -56,12 +56,12 @@ func (s *ClearSessionItemsResponse) UnmarshalJSON(b []byte) error {
 }
 
 type CreateManagedMemoryEntryRequest struct {
-	// The managed memory entry to create.
+	// The memory entry to create.
 	ManagedMemoryEntry ManagedMemoryEntry `json:"managed_memory_entry"`
-	// Optional caller-selected managed memory entry ID. The service generates
-	// an ID when omitted.
+	// Optional caller-selected memory entry ID. The service generates an ID
+	// when omitted.
 	ManagedMemoryEntryId string `json:"-" url:"managed_memory_entry_id,omitempty"`
-	// Managed memory store that will contain the entry, in the form
+	// Memory store that will contain the entry, in the form
 	// `memory-stores/{managed_memory_store_id}`.
 	Parent string `json:"-" url:"-"`
 
@@ -77,10 +77,10 @@ func (s CreateManagedMemoryEntryRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateManagedMemoryStoreRequest struct {
-	// The managed memory store to create.
+	// The memory store to create.
 	ManagedMemoryStore ManagedMemoryStore `json:"managed_memory_store"`
-	// Caller-provided, workspace-unique managed memory store ID. It must be
-	// 3-56 characters, begin with a lowercase letter, contain only lowercase
+	// Caller-provided, workspace-unique memory store ID. It must be 3-56
+	// characters, begin with a lowercase letter, contain only lowercase
 	// letters, digits, and hyphens, and end with a letter or digit.
 	ManagedMemoryStoreId string `json:"-" url:"managed_memory_store_id"`
 }
@@ -172,7 +172,7 @@ type ExtractMemoriesRequest struct {
 	DryRun bool `json:"dry_run,omitempty"`
 	// Instructions steering what is extracted from the session.
 	Instructions string `json:"instructions,omitempty"`
-	// Managed memory store the extracted entries are written to, in the form
+	// Memory store the extracted entries are written to, in the form
 	// `memory-stores/{managed_memory_store_id}`.
 	MemoryStore string `json:"memory_store"`
 	// Identifier of the session whose transcript is distilled into memories.
@@ -256,20 +256,13 @@ type GetManagedMemoryEntryRequest struct {
 	// Resource name in the form
 	// `memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}`.
 	Name string `json:"-" url:"-"`
-	// Deprecated. Use `view` for new clients. Fields to return, using proto
-	// field names such as `content` (not `contents`). An omitted or empty mask
-	// returns the full entry.
-	ReadMask *fieldmask.FieldMask `json:"-" url:"read_mask,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Controls whether the response includes memory content. Defaults to
+	// `FULL`.
+	View ManagedMemoryEntryView `json:"-" url:"view,omitempty"`
 }
 
 func (s *GetManagedMemoryEntryRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
-}
-
-func (s GetManagedMemoryEntryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetManagedMemoryStoreRequest struct {
@@ -309,19 +302,18 @@ type ListManagedMemoryEntriesRequest struct {
 	// Opaque pagination token from a previous ListManagedMemoryEntries
 	// response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Managed memory store whose entries are listed, in the form
+	// Memory store whose entries are listed, in the form
 	// `memory-stores/{managed_memory_store_id}`.
 	Parent string `json:"-" url:"-"`
 	// Optional path prefix used to restrict entries within the actor partition.
 	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
-	// Deprecated. Use `view` for new clients. Fields to return in each entry,
-	// using proto field names such as `content` (not `contents`). An omitted or
-	// empty mask returns full entries.
-	ReadMask *fieldmask.FieldMask `json:"-" url:"read_mask,omitempty"`
 	// Optional session identifier. When set, only entries with this exact
 	// `session_id` are returned. Omitted-session (cross-session) entries are
 	// not included. Ignored when path is set.
 	SessionId string `json:"-" url:"session_id,omitempty"`
+	// Controls whether each returned entry includes memory content. Defaults to
+	// `FULL`.
+	View ManagedMemoryEntryView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -334,9 +326,9 @@ func (s ListManagedMemoryEntriesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Response containing managed memory entries.
+// Response containing memory entries.
 type ListManagedMemoryEntriesResponse struct {
-	// Managed memory entries matching the request and selected response view.
+	// Memory entries matching the request and selected response view.
 	ManagedMemoryEntries []ManagedMemoryEntry `json:"managed_memory_entries,omitempty"`
 	// Opaque pagination token. This field is omitted when there are no more
 	// results.
@@ -371,9 +363,9 @@ func (s ListManagedMemoryStoresRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Response containing managed memory stores in the caller's workspace.
+// Response containing memory stores in the caller's workspace.
 type ListManagedMemoryStoresResponse struct {
-	// Managed memory stores in the caller's workspace.
+	// Memory stores in the caller's workspace.
 	ManagedMemoryStores []ManagedMemoryStore `json:"managed_memory_stores,omitempty"`
 	// Opaque pagination token. This field is omitted when there are no more
 	// results.
@@ -519,7 +511,7 @@ func (s ListSessionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// A workspace-scoped entry in a managed memory store.
+// A workspace-scoped entry in a memory store.
 type ManagedMemoryEntry struct {
 	// Customer-provided identifier for the actor whose memory this entry
 	// represents.
@@ -557,9 +549,9 @@ func (s ManagedMemoryEntry) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// One relevance-ranked managed memory search result.
+// One relevance-ranked memory search result.
 type ManagedMemoryEntrySearchResult struct {
-	// Managed memory entry matching the query.
+	// Memory entry matching the query.
 	ManagedMemoryEntry *ManagedMemoryEntry `json:"managed_memory_entry,omitempty"`
 	// Relevance score for the result. Higher scores are more relevant.
 	Score float64 `json:"score,omitempty"`
@@ -575,7 +567,7 @@ func (s ManagedMemoryEntrySearchResult) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Identifies the source that created a managed memory entry.
+// Identifies the source that created a memory entry.
 type ManagedMemoryEntrySourceType string
 
 const ManagedMemoryEntrySourceTypeManagedMemoryEntrySourceTypeAgent ManagedMemoryEntrySourceType = `MANAGED_MEMORY_ENTRY_SOURCE_TYPE_AGENT`
@@ -613,7 +605,45 @@ func (f *ManagedMemoryEntrySourceType) Type() string {
 	return "ManagedMemoryEntrySourceType"
 }
 
-// A workspace-scoped managed memory store backed by service-managed storage.
+// Controls how much memory entry data is returned.
+type ManagedMemoryEntryView string
+
+const ManagedMemoryEntryViewManagedMemoryEntryViewBasic ManagedMemoryEntryView = `MANAGED_MEMORY_ENTRY_VIEW_BASIC`
+
+const ManagedMemoryEntryViewManagedMemoryEntryViewFull ManagedMemoryEntryView = `MANAGED_MEMORY_ENTRY_VIEW_FULL`
+
+// String representation for [fmt.Print]
+func (f *ManagedMemoryEntryView) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ManagedMemoryEntryView) Set(v string) error {
+	switch v {
+	case `MANAGED_MEMORY_ENTRY_VIEW_BASIC`, `MANAGED_MEMORY_ENTRY_VIEW_FULL`:
+		*f = ManagedMemoryEntryView(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANAGED_MEMORY_ENTRY_VIEW_BASIC", "MANAGED_MEMORY_ENTRY_VIEW_FULL"`, v)
+	}
+}
+
+// Values returns all possible values for ManagedMemoryEntryView.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ManagedMemoryEntryView) Values() []ManagedMemoryEntryView {
+	return []ManagedMemoryEntryView{
+		ManagedMemoryEntryViewManagedMemoryEntryViewBasic,
+		ManagedMemoryEntryViewManagedMemoryEntryViewFull,
+	}
+}
+
+// Type always returns ManagedMemoryEntryView to satisfy [pflag.Value] interface
+func (f *ManagedMemoryEntryView) Type() string {
+	return "ManagedMemoryEntryView"
+}
+
+// A workspace-scoped memory store backed by service-managed storage.
 type ManagedMemoryStore struct {
 	// Time when the store was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -624,8 +654,8 @@ type ManagedMemoryStore struct {
 	CreatorUserId string `json:"creator_user_id,omitempty"`
 	// Human-readable description of the memory store.
 	Description string `json:"description,omitempty"`
-	// Deprecated compatibility alias for the caller-provided managed memory
-	// store ID. Canonical clients provide the ID through
+	// Deprecated compatibility alias for the caller-provided memory store ID.
+	// Canonical clients provide the ID through
 	// `CreateMemoryStoreRequest.managed_memory_store_id` and use `name` as the
 	// resource identifier.
 	DisplayName string `json:"display_name,omitempty"`
@@ -673,8 +703,8 @@ func (s *PopSessionItemResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// Request to search managed memory entries by text query for one actor. Search
-// returns a relevance-ranked top-N result set and does not currently paginate.
+// Request to search memory entries by text query for one actor. Search returns
+// a relevance-ranked top-N result set and does not currently paginate.
 type SearchManagedMemoryEntriesRequest struct {
 	// Customer-provided identifier for the actor whose entries are searched.
 	ActorId string `json:"actor_id"`
@@ -687,7 +717,7 @@ type SearchManagedMemoryEntriesRequest struct {
 	// Reserved for pagination compatibility. The server currently ignores this
 	// field because Search returns a ranked top-N result set.
 	PageToken string `json:"page_token,omitempty"`
-	// Managed memory store whose entries are searched, in the form
+	// Memory store whose entries are searched, in the form
 	// `memory-stores/{managed_memory_store_id}`.
 	Parent string `json:"-" url:"-"`
 	// Optional absolute, case-sensitive path prefix used to restrict searched
@@ -696,21 +726,13 @@ type SearchManagedMemoryEntriesRequest struct {
 	PathPrefix string `json:"path_prefix,omitempty"`
 	// Free-form search query.
 	Query string `json:"query"`
-	// Deprecated. Use `view` for new clients. Fields to return in each entry,
-	// using proto field names such as `content` (not `contents`). Search scores
-	// are always returned.
-	//
-	// The field mask must be a single string, with multiple fields separated by
-	// commas (no spaces). The field path is relative to the resource object,
-	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
-	// Specification of elements in sequence or map fields is not allowed, as
-	// only the entire collection field can be specified. Field names must
-	// exactly match the resource field names.
-	ReadMask *fieldmask.FieldMask `json:"read_mask,omitempty"`
 	// Optional session identifier. When set, only entries with this exact
 	// `session_id` are searched. Omitted-session (cross-session) entries are
 	// not included.
 	SessionId string `json:"session_id,omitempty"`
+	// Controls whether each returned entry includes memory content. Search
+	// scores are always returned. Defaults to `FULL`.
+	View ManagedMemoryEntryView `json:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -723,7 +745,7 @@ func (s SearchManagedMemoryEntriesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Response containing managed memory entries ranked by relevance.
+// Response containing memory entries ranked by relevance.
 type SearchManagedMemoryEntriesResponse struct {
 	// Deprecated compatibility alias for clients migrating to `results`. This
 	// contains the same entries in the same order, but omits their relevance
@@ -843,7 +865,7 @@ func (s SessionStore) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Service-managed storage backing a managed memory store.
+// Service-managed storage backing a memory store.
 type StorageBackend struct {
 	// Backend-specific identifier. For Lakebase, this is the project ID.
 	BackendId string `json:"backend_id,omitempty"`
@@ -861,7 +883,7 @@ func (s StorageBackend) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Type of service-managed storage backing a managed memory store.
+// Type of service-managed storage backing a memory store.
 type StorageBackendType string
 
 const StorageBackendTypeStorageBackendTypeLakebase StorageBackendType = `STORAGE_BACKEND_TYPE_LAKEBASE`
@@ -897,7 +919,7 @@ func (f *StorageBackendType) Type() string {
 }
 
 type UpdateManagedMemoryEntryRequest struct {
-	// The managed memory entry to update.
+	// The memory entry to update.
 	ManagedMemoryEntry ManagedMemoryEntry `json:"managed_memory_entry"`
 	// Resource name in the form
 	// `memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}`.
@@ -911,7 +933,7 @@ func (s *UpdateManagedMemoryEntryRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateManagedMemoryStoreRequest struct {
-	// The managed memory store to update. `name` is taken from the URL.
+	// The memory store to update. `name` is taken from the URL.
 	ManagedMemoryStore ManagedMemoryStore `json:"managed_memory_store"`
 	// Resource name in the form `memory-stores/{managed_memory_store_id}`.
 	Name string `json:"-" url:"-"`
