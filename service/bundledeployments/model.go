@@ -480,6 +480,11 @@ type ListDeploymentsRequest struct {
 	// A page token, received from a previous `ListDeployments` call. Provide
 	// this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Whether to include soft-deleted deployments in the response. Defaults to
+	// false. When true, returns both live and soft-deleted deployments visible
+	// to the caller, subject to the filter. Soft-deleted deployments have
+	// status `DEPLOYMENT_STATUS_DELETED`.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

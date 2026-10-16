@@ -170,6 +170,9 @@ type PostgresService interface {
 	// Returns a paginated list of snapshots in the project.
 	ListSnapshots(ctx context.Context, request ListSnapshotsRequest) (*ListSnapshotsResponse, error)
 
+	// Reveals the current password for a password-authenticated Postgres role.
+	RevealRolePassword(ctx context.Context, request RevealRolePasswordRequest) (*RevealRolePasswordResponse, error)
+
 	// Undeletes the specified database branch.
 	UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error)
 

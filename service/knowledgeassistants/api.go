@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// Manage Knowledge Assistants and related resources.
+// Manage legacy Knowledge Assistants and related resources.
 package knowledgeassistants
 
 import (
@@ -114,7 +114,7 @@ func NewKnowledgeAssistants(client *client.DatabricksClient) *KnowledgeAssistant
 	}
 }
 
-// Manage Knowledge Assistants and related resources.
+// Manage legacy Knowledge Assistants and related resources.
 type KnowledgeAssistantsAPI struct {
 	knowledgeAssistantsImpl
 }

@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Manage Knowledge Assistants and related resources.
+// Manage legacy Knowledge Assistants and related resources.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type KnowledgeAssistantsService interface {

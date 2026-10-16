@@ -568,7 +568,7 @@ type WorkspaceClient struct {
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
 
-	// Manage Knowledge Assistants and related resources.
+	// Manage legacy Knowledge Assistants and related resources.
 	KnowledgeAssistants knowledgeassistants.KnowledgeAssistantsInterface
 
 	// These APIs provide specific management operations for Lakeview
@@ -1209,7 +1209,7 @@ type WorkspaceClient struct {
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials catalog.StorageCredentialsInterface
 
-	// Manage Supervisor Agents and related resources.
+	// Manage legacy Supervisor Agents and related resources.
 	SupervisorAgents supervisoragents.SupervisorAgentsInterface
 
 	// A system schema is a schema that lives within the system catalog. A

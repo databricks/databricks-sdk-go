@@ -11,7 +11,7 @@
       ".package.json",
       ".claude/settings.local.json",
       ".codegen.json",
-      ".codegen/{_last_sha,_openapi_sha,changelog.json,releases.jsonl}",
+      ".codegen/{_last_sha,_openapi_sha,changelog.json}",
       ".cursor/rules/*.mdc",
       ".cursorrules",
       ".gitattributes",
@@ -51,7 +51,7 @@
     ],
     "post_generate": [
       "make fmt",
-      "go run github.com/vektra/mockery/v2@c760db67a9568657545db0182148e0c6ea5ff8a8"
+      "go run github.com/vektra/mockery/v3@3d6befc6338dad94751c7b2657d42d74b2ff5693"
     ]
   }
 }

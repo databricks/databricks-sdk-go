@@ -1,5 +1,43 @@
 # Version changelog
 
+## Release v0.189.0 (2026-10-16)
+
+### API Changes
+* Add `CreateIssue`, `GetIssue`, `SearchIssues` and `UpdateIssue` methods for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+* Add `RevealRolePassword` method for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `CreateDirectory`, `DeletePath`, `GetMetadata`, `ListDirectoryContents` and `RenamePath` methods for [w.Sandbox](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#SandboxAPI) workspace-level service.
+* Add `View` field for [agentkit.GetManagedMemoryEntryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#GetManagedMemoryEntryRequest).
+* Add `View` field for [agentkit.ListManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#ListManagedMemoryEntriesRequest).
+* Add `View` field for [agentkit.SearchManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#SearchManagedMemoryEntriesRequest).
+* Add `ShowDeleted` field for [bundledeployments.ListDeploymentsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#ListDeploymentsRequest).
+* Add `Secrets` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+* Add `Secrets` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
+* Add `GovernedTags` field for [catalog.PolicyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#PolicyInfo).
+* Add `Secrets` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+* Add `HasReplicationPointBlockingErrors` and `InitialReplicationProgress` fields for [disasterrecovery.FailoverGroup](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#FailoverGroup).
+* Add `DurationTarget` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+* Add `DurationTarget` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+* Add `DurationTarget` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+* Add `DurationTarget` field for [jobs.RepairRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RepairRun).
+* Add `DurationTarget` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+* Add `DurationTarget` field for [jobs.RunNow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunNow).
+* Add `DurationTarget` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+* Add `Attachment` field for [jobs.Subscription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Subscription).
+* Add `Scopes` field for [oauth2.CreateServicePrincipalSecretRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#CreateServicePrincipalSecretRequest).
+* Add `Scopes` field for [oauth2.CreateServicePrincipalSecretResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#CreateServicePrincipalSecretResponse).
+* Add `Scopes` field for [oauth2.SecretInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#SecretInfo).
+* Add `ReplicationConfig` field for [sharing.CreateShare](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CreateShare).
+* Add `ReplicationConfig` field for [sharing.ShareInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ShareInfo).
+* Add `Realtime` enum value for [sql.CreateWarehouseRequestWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateWarehouseRequestWarehouseType).
+* Add `Realtime` enum value for [sql.EditWarehouseRequestWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EditWarehouseRequestWarehouseType).
+* Add `Realtime` enum value for [sql.EndpointInfoWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EndpointInfoWarehouseType).
+* Add `Realtime` enum value for [sql.GetWarehouseResponseWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehouseResponseWarehouseType).
+* Add `Realtime` enum value for [sql.WarehouseTypePairWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehouseTypePairWarehouseType).
+* [Breaking] Remove `ReadMask` field for [agentkit.GetManagedMemoryEntryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#GetManagedMemoryEntryRequest).
+* [Breaking] Remove `ReadMask` field for [agentkit.ListManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#ListManagedMemoryEntriesRequest).
+* [Breaking] Remove `ReadMask` field for [agentkit.SearchManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#SearchManagedMemoryEntriesRequest).
+* [Breaking] Remove `EffectiveServerlessComputeId` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+
 ## Release v0.188.0 (2026-10-12)
 
 ### API Changes
