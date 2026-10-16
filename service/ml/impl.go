@@ -36,6 +36,25 @@ func (a *experimentsImpl) CreateExperiment(ctx context.Context, request CreateEx
 	return &createExperimentResponse, err
 }
 
+func (a *experimentsImpl) CreateIssue(ctx context.Context, request CreateIssueRequest) (*Issue, error) {
+	var issue Issue
+	path := fmt.Sprintf("/api/2.0/mlflow/%v/issues", request.Parent)
+	queryParams := make(map[string]any)
+
+	if request.IssueId != "" || slices.Contains(request.ForceSendFields, "IssueId") {
+		queryParams["issue_id"] = request.IssueId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Issue, &issue)
+	return &issue, err
+}
+
 func (a *experimentsImpl) CreateLoggedModel(ctx context.Context, request CreateLoggedModelRequest) (*CreateLoggedModelResponse, error) {
 	var createLoggedModelResponse CreateLoggedModelResponse
 	path := "/api/2.0/mlflow/logged-models"
@@ -235,6 +254,20 @@ func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHis
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getMetricHistoryResponse)
 	return &getMetricHistoryResponse, err
+}
+
+func (a *experimentsImpl) GetIssue(ctx context.Context, request GetIssueRequest) (*Issue, error) {
+	var issue Issue
+	path := fmt.Sprintf("/api/2.0/mlflow/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &issue)
+	return &issue, err
 }
 
 func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error) {
@@ -580,6 +613,52 @@ func (a *experimentsImpl) internalSearchExperiments(ctx context.Context, request
 	return &searchExperimentsResponse, err
 }
 
+// Searches the issues in an experiment, filtered and sorted.
+func (a *experimentsImpl) SearchIssues(ctx context.Context, request SearchIssuesRequest) listing.Iterator[Issue] {
+
+	getNextPage := func(ctx context.Context, req SearchIssuesRequest) (*SearchIssuesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalSearchIssues(ctx, req)
+	}
+	getItems := func(resp *SearchIssuesResponse) []Issue {
+		return resp.Issues
+	}
+	getNextReq := func(resp *SearchIssuesResponse) *SearchIssuesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Searches the issues in an experiment, filtered and sorted.
+func (a *experimentsImpl) SearchIssuesAll(ctx context.Context, request SearchIssuesRequest) ([]Issue, error) {
+	iterator := a.SearchIssues(ctx, request)
+	return listing.ToSlice[Issue](ctx, iterator)
+}
+
+func (a *experimentsImpl) internalSearchIssues(ctx context.Context, request SearchIssuesRequest) (*SearchIssuesResponse, error) {
+	var searchIssuesResponse SearchIssuesResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/%v/issues:search", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &searchIssuesResponse)
+	return &searchIssuesResponse, err
+}
+
 func (a *experimentsImpl) SearchLoggedModels(ctx context.Context, request SearchLoggedModelsRequest) (*SearchLoggedModelsResponse, error) {
 	var searchLoggedModelsResponse SearchLoggedModelsResponse
 	path := "/api/2.0/mlflow/logged-models/search"
@@ -714,6 +793,28 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
+}
+
+func (a *experimentsImpl) UpdateIssue(ctx context.Context, request UpdateIssueRequest) (*Issue, error) {
+	var issue Issue
+	path := fmt.Sprintf("/api/2.0/mlflow/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Issue, &issue)
+	return &issue, err
 }
 
 func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {

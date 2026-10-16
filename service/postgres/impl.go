@@ -929,6 +929,21 @@ func (a *postgresImpl) internalListSnapshots(ctx context.Context, request ListSn
 	return &listSnapshotsResponse, err
 }
 
+func (a *postgresImpl) RevealRolePassword(ctx context.Context, request RevealRolePasswordRequest) (*RevealRolePasswordResponse, error) {
+	var revealRolePasswordResponse RevealRolePasswordResponse
+	path := fmt.Sprintf("/api/2.0/postgres/%v/password", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &revealRolePasswordResponse)
+	return &revealRolePasswordResponse, err
+}
+
 func (a *postgresImpl) UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", request.Name)

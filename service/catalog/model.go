@@ -1063,6 +1063,10 @@ type ConnectionInfo struct {
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
+	// A map of option names to UC Secret references. Keys are connection option
+	// names (same as in OptionsKVPairs) and values are UC Secret fully
+	// qualified names.
+	Secrets map[string]string `json:"secrets,omitempty"`
 
 	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
@@ -1386,6 +1390,10 @@ type CreateConnection struct {
 	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
+	// A map of option names to UC Secret references. Keys are connection option
+	// names (same as in OptionsKVPairs) and values are UC Secret fully
+	// qualified names.
+	Secrets map[string]string `json:"secrets,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4965,6 +4973,24 @@ func (s GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A governed tag referenced by a policy condition.
+type GovernedTagReference struct {
+	// The governed tag key.
+	TagKey string `json:"tag_key"`
+	// The governed tag value, when the policy references a specific value.
+	TagValue string `json:"tag_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GovernedTagReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GovernedTagReference) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GrantOptions struct {
 	// List of privileges to grant. When any of these privileges are requested,
 	// the policy will grant access if the principal and condition match.
@@ -6808,7 +6834,9 @@ type ModelProviderServiceConfig struct {
 	// provider-native API types. Defaults to false. When true, these paths are
 	// forwarded unchanged to the upstream provider. When false, only recognized
 	// API paths are served. Enabling this broadens the upstream API surface
-	// exposed through the provider service.
+	// exposed through the provider service. AI Gateway cannot evaluate Service
+	// Policies on opaque unmanaged requests, so unmanaged requests are rejected
+	// whenever Service Policies are attached to this securable.
 	ForwardUnmanagedPaths bool `json:"forward_unmanaged_paths,omitempty"`
 
 	GeminiEnterprise *ModelProviderServiceConfigGeminiEnterpriseProviderConfig `json:"gemini_enterprise,omitempty"`
@@ -7243,10 +7271,11 @@ func (s ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig) MarshalJ
 // external model destinations on model services.
 type ModelProviderServiceConfigModelTargetConfig struct {
 	// Relative path appended to a custom provider's `base_url` for this model,
-	// such as `serve/openai/chat`. Only custom model provider service targets
-	// use this field; other provider types ignore it, and model service
-	// destinations reject it. Do not include URI templates, queries, or
-	// fragments. When empty, `base_url` is used unchanged.
+	// such as `serve/openai/chat`. Nonempty values are only supported for
+	// custom model provider service targets; other provider types reject them.
+	// Model service destinations do not support this field. Do not include URI
+	// templates, queries, or fragments. When empty, `base_url` is used
+	// unchanged.
 	EndpointRoute string `json:"endpoint_route,omitempty"`
 	// Provider-side model identifier, such as `gpt-5` or `claude-opus-4-7`.
 	// This identifies a model at the upstream provider; it is not a Unity
@@ -8708,6 +8737,9 @@ type PolicyInfo struct {
 	// Type of securables that the policy should take effect on. Required on
 	// create and optional on update.
 	ForSecurableType SecurableType `json:"for_securable_type"`
+	// Governed tag keys and values referenced by this policy's conditions and
+	// function arguments. Output only.
+	GovernedTags []GovernedTagReference `json:"governed_tags,omitempty"`
 	// Options for grant policies. Valid only if `policy_type` is
 	// `POLICY_TYPE_GRANT`. Required on create and optional on update. When
 	// specified on update, the new options will replace the existing options as
@@ -10880,6 +10912,10 @@ type UpdateConnection struct {
 	Options map[string]string `json:"options"`
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
+	// A map of option names to UC Secret references. Keys are connection option
+	// names (same as in OptionsKVPairs) and values are UC Secret fully
+	// qualified names.
+	Secrets map[string]string `json:"secrets,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
