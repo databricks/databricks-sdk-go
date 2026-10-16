@@ -156,9 +156,14 @@ type FailoverGroup struct {
 	// Opaque version string for optimistic locking. Server-generated and
 	// returned in responses.
 	Etag string `json:"etag,omitempty"`
+	// True if errors currently block the replication point.
+	HasReplicationPointBlockingErrors bool `json:"has_replication_point_blocking_errors,omitempty"`
 	// Initial primary region. Used only in Create requests to set the starting
 	// primary region. Not returned in responses.
 	InitialPrimaryRegion string `json:"initial_primary_region"`
+	// Initial replication progress of all in-scope assets. Set only when the
+	// FailoverGroup is in INITIAL_REPLICATION state.
+	InitialReplicationProgress *InitialReplicationProgress `json:"initial_replication_progress,omitempty"`
 	// Fully qualified resource name in the format
 	// accounts/{account_id}/failover-groups/{failover_group_id}.
 	Name string `json:"name,omitempty"`
@@ -260,6 +265,24 @@ type GetStableUrlRequest struct {
 
 func (s *GetStableUrlRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Progress of the initial replication of all in-scope assets (Unity Catalog and
+// workspace assets) of a FailoverGroup. Populated only while the FailoverGroup
+// is in INITIAL_REPLICATION.
+type InitialReplicationProgress struct {
+	// Percent complete, 0-100.
+	Completed int `json:"completed,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *InitialReplicationProgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s InitialReplicationProgress) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListFailoverGroupsRequest struct {

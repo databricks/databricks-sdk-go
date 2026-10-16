@@ -2,7 +2,7 @@ name: Sync label
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, labeled, unlabeled]
+    types: [reopened, synchronize, labeled, unlabeled]
   merge_group:
     types: [checks_requested]
 

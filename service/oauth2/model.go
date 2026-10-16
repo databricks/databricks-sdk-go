@@ -130,6 +130,10 @@ type CreateServicePrincipalSecretRequest struct {
 	// The lifetime of the secret in seconds. If this parameter is not provided,
 	// the secret will have a default lifetime of 730 days (63072000s).
 	Lifetime string `json:"lifetime,omitempty"`
+	// OAuth API scopes to bind to the secret; a minted token cannot exceed
+	// them. Empty = unrestricted (all-apis). E.g. all-apis, sql,
+	// iam.groups:read.
+	Scopes []string `json:"scopes,omitempty"`
 	// The service principal ID.
 	ServicePrincipalId string `json:"-" url:"-"`
 
@@ -152,6 +156,8 @@ type CreateServicePrincipalSecretResponse struct {
 	ExpireTime string `json:"expire_time,omitempty"`
 	// ID of the secret
 	Id string `json:"id,omitempty"`
+	// OAuth API scopes bound to this secret. Empty = unrestricted (all-apis).
+	Scopes []string `json:"scopes,omitempty"`
 	// Secret Value
 	Secret string `json:"secret,omitempty"`
 	// Secret Hash
@@ -636,6 +642,8 @@ type SecretInfo struct {
 	ExpireTime string `json:"expire_time,omitempty"`
 	// ID of the secret
 	Id string `json:"id,omitempty"`
+	// OAuth API scopes bound to this secret. Empty = unrestricted (all-apis).
+	Scopes []string `json:"scopes,omitempty"`
 	// Secret Hash
 	SecretHash string `json:"secret_hash,omitempty"`
 	// Status of the secret
