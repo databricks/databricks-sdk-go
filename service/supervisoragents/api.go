@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// Manage Supervisor Agents and related resources.
+// Manage legacy Supervisor Agents and related resources.
 package supervisoragents
 
 import (
@@ -120,7 +120,7 @@ func NewSupervisorAgents(client *client.DatabricksClient) *SupervisorAgentsAPI {
 	}
 }
 
-// Manage Supervisor Agents and related resources.
+// Manage legacy Supervisor Agents and related resources.
 type SupervisorAgentsAPI struct {
 	supervisorAgentsImpl
 }

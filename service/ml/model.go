@@ -852,6 +852,27 @@ func (s CreateForecastingExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateIssueRequest struct {
+	// Output-only fields are ignored.
+	Issue Issue `json:"issue"`
+	// Optional client-chosen ID: iss- followed by 32 lowercase hex digits. A
+	// retry with the same ID fails with ALREADY_EXISTS rather than making a
+	// duplicate. The server generates one if unset.
+	IssueId string `json:"-" url:"issue_id,omitempty"`
+	// experiments/{experiment}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateIssueRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateIssueRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateKafkaConfigRequest struct {
 	KafkaConfig KafkaConfig `json:"kafka_config"`
 }
@@ -2691,6 +2712,15 @@ func (s GetHistoryRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetIssueRequest struct {
+	// experiments/{experiment}/issues/{issue}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetIssueRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetKafkaConfigRequest struct {
 	// Name of the Kafka config to get.
 	Name string `json:"-" url:"-"`
@@ -3065,6 +3095,294 @@ type InputTag struct {
 
 func (s *InputTag) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// A quality or operational problem found in an experiment's traces.
+type Issue struct {
+	// At most 10 values of at most 64 UTF-8 bytes each, unique
+	// case-insensitively. Leading and trailing whitespace is trimmed.
+	Categories []string `json:"categories,omitempty"`
+	// When the Issue was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The email of the user whose request created the Issue. source_type tells
+	// whether issue detection created it.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Markdown, at most 32 KiB.
+	Description string `json:"description,omitempty"`
+	// The last segment of `name`. Issue assessments on traces reference the
+	// Issue by this ID.
+	IssueId string `json:"issue_id,omitempty"`
+	// The request time of the latest trace the Issue affects. Required, and
+	// can't be cleared, unless source_type is MANUAL. A MANUAL Issue without
+	// one returns its create_time.
+	LastSeenTime *time.Time `json:"last_seen_time,omitempty"`
+	// The email of the user whose request last updated the Issue.
+	LastUpdatedBy string `json:"last_updated_by,omitempty"`
+	// Additional details about the Issue, such as how issue detection observed
+	// it. Not a stable contract: keys and values can change without notice, so
+	// clients must tolerate unknown and missing keys. At most 20 entries, with
+	// keys of at most 64 UTF-8 bytes.
+	Metadata map[string]string `json:"metadata,omitempty"`
+	// experiments/{experiment}/issues/{issue}
+	Name string `json:"name,omitempty"`
+	// Cannot be cleared: an Issue without a severity would match no severity
+	// filter.
+	Severity IssueSeverity `json:"severity"`
+	// Set once at create. For ADHOC_RUN and SCHEDULED_RUN, the ID of the issue
+	// detection run in the same experiment that created the Issue. Absent for
+	// MANUAL.
+	SourceId string `json:"source_id,omitempty"`
+	// Set once at create. Defaults to MANUAL.
+	SourceType IssueSourceType `json:"source_type,omitempty"`
+	// Defaults to PENDING on create, and can't be cleared.
+	Status IssueStatus `json:"status,omitempty"`
+	// Caller-owned; the server never writes system values here. At most 10
+	// entries. Keys match ^[A-Za-z0-9_.:/-]+$ and are at most 128 UTF-8 bytes;
+	// values are at most 256 UTF-8 bytes.
+	Tags map[string]string `json:"tags,omitempty"`
+	// Non-empty, at most 250 UTF-8 bytes.
+	Title string `json:"title"`
+	// When the Issue was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Issue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Issue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// How serious an Issue is, ordered LOW < MEDIUM < HIGH.
+type IssueSeverity string
+
+const IssueSeverityHigh IssueSeverity = `HIGH`
+
+const IssueSeverityLow IssueSeverity = `LOW`
+
+const IssueSeverityMedium IssueSeverity = `MEDIUM`
+
+// String representation for [fmt.Print]
+func (f *IssueSeverity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueSeverity) Set(v string) error {
+	switch v {
+	case `HIGH`, `LOW`, `MEDIUM`:
+		*f = IssueSeverity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "HIGH", "LOW", "MEDIUM"`, v)
+	}
+}
+
+// Values returns all possible values for IssueSeverity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueSeverity) Values() []IssueSeverity {
+	return []IssueSeverity{
+		IssueSeverityHigh,
+		IssueSeverityLow,
+		IssueSeverityMedium,
+	}
+}
+
+// Type always returns IssueSeverity to satisfy [pflag.Value] interface
+func (f *IssueSeverity) Type() string {
+	return "IssueSeverity"
+}
+
+// The field that search results are ordered by. SEVERITY breaks ties by
+// last_seen_time, in the same direction. Results are grouped by status first
+// (PENDING, RESOLVED, then REJECTED, whatever the sort_order), and remaining
+// ties are broken by issue ID, so paging is stable.
+type IssueSortKey string
+
+const IssueSortKeyCreateTime IssueSortKey = `CREATE_TIME`
+
+const IssueSortKeyLastSeenTime IssueSortKey = `LAST_SEEN_TIME`
+
+const IssueSortKeySeverity IssueSortKey = `SEVERITY`
+
+const IssueSortKeyUpdateTime IssueSortKey = `UPDATE_TIME`
+
+// String representation for [fmt.Print]
+func (f *IssueSortKey) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueSortKey) Set(v string) error {
+	switch v {
+	case `CREATE_TIME`, `LAST_SEEN_TIME`, `SEVERITY`, `UPDATE_TIME`:
+		*f = IssueSortKey(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CREATE_TIME", "LAST_SEEN_TIME", "SEVERITY", "UPDATE_TIME"`, v)
+	}
+}
+
+// Values returns all possible values for IssueSortKey.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueSortKey) Values() []IssueSortKey {
+	return []IssueSortKey{
+		IssueSortKeyCreateTime,
+		IssueSortKeyLastSeenTime,
+		IssueSortKeySeverity,
+		IssueSortKeyUpdateTime,
+	}
+}
+
+// Type always returns IssueSortKey to satisfy [pflag.Value] interface
+func (f *IssueSortKey) Type() string {
+	return "IssueSortKey"
+}
+
+// What created an Issue: ADHOC_RUN, an issue detection run started on demand;
+// SCHEDULED_RUN, one started by a schedule; SINGLE_TRACE_ANALYSIS, an analysis
+// of a single trace; or MANUAL, a person.
+type IssueSourceType string
+
+const IssueSourceTypeAdhocRun IssueSourceType = `ADHOC_RUN`
+
+const IssueSourceTypeManual IssueSourceType = `MANUAL`
+
+const IssueSourceTypeScheduledRun IssueSourceType = `SCHEDULED_RUN`
+
+const IssueSourceTypeSingleTraceAnalysis IssueSourceType = `SINGLE_TRACE_ANALYSIS`
+
+// String representation for [fmt.Print]
+func (f *IssueSourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueSourceType) Set(v string) error {
+	switch v {
+	case `ADHOC_RUN`, `MANUAL`, `SCHEDULED_RUN`, `SINGLE_TRACE_ANALYSIS`:
+		*f = IssueSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ADHOC_RUN", "MANUAL", "SCHEDULED_RUN", "SINGLE_TRACE_ANALYSIS"`, v)
+	}
+}
+
+// Values returns all possible values for IssueSourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueSourceType) Values() []IssueSourceType {
+	return []IssueSourceType{
+		IssueSourceTypeAdhocRun,
+		IssueSourceTypeManual,
+		IssueSourceTypeScheduledRun,
+		IssueSourceTypeSingleTraceAnalysis,
+	}
+}
+
+// Type always returns IssueSourceType to satisfy [pflag.Value] interface
+func (f *IssueSourceType) Type() string {
+	return "IssueSourceType"
+}
+
+// The triage status of an Issue: PENDING means open and awaiting triage,
+// RESOLVED means judged real and addressed, and REJECTED means judged not to be
+// an issue.
+type IssueStatus string
+
+const IssueStatusPending IssueStatus = `PENDING`
+
+const IssueStatusRejected IssueStatus = `REJECTED`
+
+const IssueStatusResolved IssueStatus = `RESOLVED`
+
+// String representation for [fmt.Print]
+func (f *IssueStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueStatus) Set(v string) error {
+	switch v {
+	case `PENDING`, `REJECTED`, `RESOLVED`:
+		*f = IssueStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PENDING", "REJECTED", "RESOLVED"`, v)
+	}
+}
+
+// Values returns all possible values for IssueStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueStatus) Values() []IssueStatus {
+	return []IssueStatus{
+		IssueStatusPending,
+		IssueStatusRejected,
+		IssueStatusResolved,
+	}
+}
+
+// Type always returns IssueStatus to satisfy [pflag.Value] interface
+func (f *IssueStatus) Type() string {
+	return "IssueStatus"
+}
+
+// One predicate over Issue.tags.
+type IssueTagFilter struct {
+	// Matched exactly.
+	Key string `json:"key"`
+	// Matched exactly, and ORed together. Empty matches any Issue carrying the
+	// key.
+	Values []string `json:"values,omitempty"`
+}
+
+func (s *IssueTagFilter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Which fields each search result includes: BASIC has every field except
+// `description`, and may omit large `metadata` entries; FULL has every field.
+type IssueView string
+
+const IssueViewBasic IssueView = `BASIC`
+
+const IssueViewFull IssueView = `FULL`
+
+// String representation for [fmt.Print]
+func (f *IssueView) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueView) Set(v string) error {
+	switch v {
+	case `BASIC`, `FULL`:
+		*f = IssueView(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BASIC", "FULL"`, v)
+	}
+}
+
+// Values returns all possible values for IssueView.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueView) Values() []IssueView {
+	return []IssueView{
+		IssueViewBasic,
+		IssueViewFull,
+	}
+}
+
+// Type always returns IssueView to satisfy [pflag.Value] interface
+func (f *IssueView) Type() string {
+	return "IssueView"
 }
 
 type JobContext struct {
@@ -6077,6 +6395,65 @@ func (s SearchExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Request for SearchIssues.
+type SearchIssuesRequest struct {
+	// Matches Issues with any of these categories, case-insensitively.
+	Categories []string `json:"categories,omitempty"`
+	// Defaults to 20; values above 100 are clamped.
+	PageSize int `json:"page_size,omitempty"`
+	// Expires after 15 minutes. Every other argument except `view` must match
+	// the request that returned the token.
+	PageToken string `json:"page_token,omitempty"`
+	// experiments/{experiment}
+	Parent string `json:"-" url:"-"`
+	// Case-insensitive substring match on title.
+	Query string `json:"query,omitempty"`
+	// Matches Issues with any of these severities.
+	Severities []IssueSeverity `json:"severities,omitempty"`
+	// Defaults to SEVERITY.
+	SortKey IssueSortKey `json:"sort_key,omitempty"`
+	// Defaults to DESCENDING.
+	SortOrder SortOrder `json:"sort_order,omitempty"`
+	// Matches Issues with any of these statuses. Different filters AND
+	// together, and an empty filter matches every Issue.
+	Statuses []IssueStatus `json:"statuses,omitempty"`
+	// Matches Issues that satisfy every filter. At most 10 filters of 20 values
+	// each.
+	TagFilters []IssueTagFilter `json:"tag_filters,omitempty"`
+	// Defaults to BASIC.
+	View IssueView `json:"view,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchIssuesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchIssuesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// One page of SearchIssues results.
+type SearchIssuesResponse struct {
+	// The page's Issues, in the requested order.
+	Issues []Issue `json:"issues,omitempty"`
+	// Absent on the last page.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Exact number of matching Issues.
+	TotalSize int `json:"total_size,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchIssuesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchIssuesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SearchLoggedModelsDataset struct {
 	// The digest of the dataset.
 	DatasetDigest string `json:"dataset_digest,omitempty"`
@@ -6443,6 +6820,44 @@ func (s *SlidingWindow) UnmarshalJSON(b []byte) error {
 
 func (s SlidingWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The direction of the ordering.
+type SortOrder string
+
+const SortOrderAscending SortOrder = `ASCENDING`
+
+const SortOrderDescending SortOrder = `DESCENDING`
+
+// String representation for [fmt.Print]
+func (f *SortOrder) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SortOrder) Set(v string) error {
+	switch v {
+	case `ASCENDING`, `DESCENDING`:
+		*f = SortOrder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ASCENDING", "DESCENDING"`, v)
+	}
+}
+
+// Values returns all possible values for SortOrder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SortOrder) Values() []SortOrder {
+	return []SortOrder{
+		SortOrderAscending,
+		SortOrderDescending,
+	}
+}
+
+// Type always returns SortOrder to satisfy [pflag.Value] interface
+func (f *SortOrder) Type() string {
+	return "SortOrder"
 }
 
 // Configures when event-time data from this source is considered complete for a
@@ -7083,6 +7498,26 @@ func (s *UpdateFeatureTagRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateIssueRequest struct {
+	// `issue.name` identifies the target.
+	Issue Issue `json:"issue"`
+	// experiments/{experiment}/issues/{issue}
+	Name string `json:"-" url:"-"`
+	// Accepts title, description, status, severity, categories, tags,
+	// last_seen_time, and metadata.<key>. A path with an empty value clears the
+	// field, except that title, status, and severity can't be cleared, and
+	// last_seen_time can be cleared only when source_type is MANUAL. categories
+	// and tags are replaced whole. metadata is updated per key: a
+	// metadata.<key> path sets that key from issue.metadata, or removes it when
+	// issue.metadata lacks it, and leaves the other keys alone. A bare metadata
+	// path is rejected.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateIssueRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateKafkaConfigRequest struct {

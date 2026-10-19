@@ -1379,6 +1379,8 @@ const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouse
 
 const CreateWarehouseRequestWarehouseTypePro CreateWarehouseRequestWarehouseType = `PRO`
 
+const CreateWarehouseRequestWarehouseTypeRealtime CreateWarehouseRequestWarehouseType = `REALTIME`
+
 const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -1389,11 +1391,11 @@ func (f *CreateWarehouseRequestWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = CreateWarehouseRequestWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -1404,6 +1406,7 @@ func (f *CreateWarehouseRequestWarehouseType) Values() []CreateWarehouseRequestW
 	return []CreateWarehouseRequestWarehouseType{
 		CreateWarehouseRequestWarehouseTypeClassic,
 		CreateWarehouseRequestWarehouseTypePro,
+		CreateWarehouseRequestWarehouseTypeRealtime,
 		CreateWarehouseRequestWarehouseTypeTypeUnspecified,
 	}
 }
@@ -2141,6 +2144,8 @@ const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType
 
 const EditWarehouseRequestWarehouseTypePro EditWarehouseRequestWarehouseType = `PRO`
 
+const EditWarehouseRequestWarehouseTypeRealtime EditWarehouseRequestWarehouseType = `REALTIME`
+
 const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -2151,11 +2156,11 @@ func (f *EditWarehouseRequestWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = EditWarehouseRequestWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -2166,6 +2171,7 @@ func (f *EditWarehouseRequestWarehouseType) Values() []EditWarehouseRequestWareh
 	return []EditWarehouseRequestWarehouseType{
 		EditWarehouseRequestWarehouseTypeClassic,
 		EditWarehouseRequestWarehouseTypePro,
+		EditWarehouseRequestWarehouseTypeRealtime,
 		EditWarehouseRequestWarehouseTypeTypeUnspecified,
 	}
 }
@@ -2311,6 +2317,8 @@ const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
 
 const EndpointInfoWarehouseTypePro EndpointInfoWarehouseType = `PRO`
 
+const EndpointInfoWarehouseTypeRealtime EndpointInfoWarehouseType = `REALTIME`
+
 const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -2321,11 +2329,11 @@ func (f *EndpointInfoWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointInfoWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = EndpointInfoWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -2336,6 +2344,7 @@ func (f *EndpointInfoWarehouseType) Values() []EndpointInfoWarehouseType {
 	return []EndpointInfoWarehouseType{
 		EndpointInfoWarehouseTypeClassic,
 		EndpointInfoWarehouseTypePro,
+		EndpointInfoWarehouseTypeRealtime,
 		EndpointInfoWarehouseTypeTypeUnspecified,
 	}
 }
@@ -2980,6 +2989,8 @@ const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType
 
 const GetWarehouseResponseWarehouseTypePro GetWarehouseResponseWarehouseType = `PRO`
 
+const GetWarehouseResponseWarehouseTypeRealtime GetWarehouseResponseWarehouseType = `REALTIME`
+
 const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -2990,11 +3001,11 @@ func (f *GetWarehouseResponseWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetWarehouseResponseWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = GetWarehouseResponseWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -3005,6 +3016,7 @@ func (f *GetWarehouseResponseWarehouseType) Values() []GetWarehouseResponseWareh
 	return []GetWarehouseResponseWarehouseType{
 		GetWarehouseResponseWarehouseTypeClassic,
 		GetWarehouseResponseWarehouseTypePro,
+		GetWarehouseResponseWarehouseTypeRealtime,
 		GetWarehouseResponseWarehouseTypeTypeUnspecified,
 	}
 }
@@ -6797,6 +6809,8 @@ const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CL
 
 const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
 
+const WarehouseTypePairWarehouseTypeRealtime WarehouseTypePairWarehouseType = `REALTIME`
+
 const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -6807,11 +6821,11 @@ func (f *WarehouseTypePairWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarehouseTypePairWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = WarehouseTypePairWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -6822,6 +6836,7 @@ func (f *WarehouseTypePairWarehouseType) Values() []WarehouseTypePairWarehouseTy
 	return []WarehouseTypePairWarehouseType{
 		WarehouseTypePairWarehouseTypeClassic,
 		WarehouseTypePairWarehouseTypePro,
+		WarehouseTypePairWarehouseTypeRealtime,
 		WarehouseTypePairWarehouseTypeTypeUnspecified,
 	}
 }

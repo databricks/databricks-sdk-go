@@ -387,8 +387,11 @@ func (a *accountIamV2Impl) internalListGroups(ctx context.Context, request ListG
 	return &listGroupsResponse, err
 }
 
-// Lists the identity-visibility filters in the account, returning one page per
-// call.
+// Lists group visibility filters in the account, returning one page per call.
+// Requires account admin privileges. Returns filter rules, not the groups
+// matched by those rules. To retrieve the next page, pass the response's
+// `next_page_token` as `page_token` in the next request. If `next_page_token`
+// is omitted, there are no more pages.
 func (a *accountIamV2Impl) ListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) listing.Iterator[IdentityVisibilityFilter] {
 
 	getNextPage := func(ctx context.Context, req ListIdentityVisibilityFiltersRequest) (*ListIdentityVisibilityFiltersResponse, error) {
@@ -413,8 +416,11 @@ func (a *accountIamV2Impl) ListIdentityVisibilityFilters(ctx context.Context, re
 	return iterator
 }
 
-// Lists the identity-visibility filters in the account, returning one page per
-// call.
+// Lists group visibility filters in the account, returning one page per call.
+// Requires account admin privileges. Returns filter rules, not the groups
+// matched by those rules. To retrieve the next page, pass the response's
+// `next_page_token` as `page_token` in the next request. If `next_page_token`
+// is omitted, there are no more pages.
 func (a *accountIamV2Impl) ListIdentityVisibilityFiltersAll(ctx context.Context, request ListIdentityVisibilityFiltersRequest) ([]IdentityVisibilityFilter, error) {
 	iterator := a.ListIdentityVisibilityFilters(ctx, request)
 	return listing.ToSlice[IdentityVisibilityFilter](ctx, iterator)
