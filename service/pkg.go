@@ -182,7 +182,7 @@
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
-// - [knowledgeassistants.KnowledgeAssistantsAPI]: Manage Knowledge Assistants and related resources.
+// - [knowledgeassistants.KnowledgeAssistantsAPI]: Manage legacy Knowledge Assistants and related resources.
 //
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
 //
@@ -334,7 +334,7 @@
 //
 // - [catalog.AccountStorageCredentialsAPI]: These APIs manage storage credentials for a particular metastore.
 //
-// - [supervisoragents.SupervisorAgentsAPI]: Manage Supervisor Agents and related resources.
+// - [supervisoragents.SupervisorAgentsAPI]: Manage legacy Supervisor Agents and related resources.
 //
 // - [catalog.SystemSchemasAPI]: A system schema is a schema that lives within the system catalog.
 //

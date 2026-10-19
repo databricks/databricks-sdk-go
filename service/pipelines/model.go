@@ -1567,6 +1567,7 @@ func (s IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue) Marshal
 	return marshal.Marshal(s)
 }
 
+// Type of source system that a managed ingestion pipeline reads from.
 type IngestionSourceType string
 
 const IngestionSourceTypeBigquery IngestionSourceType = `BIGQUERY`

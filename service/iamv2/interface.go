@@ -29,7 +29,13 @@ type AccountIamV2Service interface {
 	// the ExternalGroup resource.
 	CreateGroup(ctx context.Context, request CreateGroupRequest) (*Group, error)
 
-	// Creates an identity-visibility filter in the account.
+	// Creates a group visibility filter in the account. Requires account admin
+	// privileges. Set `principal_type` to `GROUP` and specify exactly one of
+	// `exact` (external ID) or `prefix` (display-name starts with). The filter
+	// applies across all workspaces in the account. A duplicate filter ID or an
+	// existing rule with the same type and match value returns
+	// `ALREADY_EXISTS`. Filters are immutable; to change a rule, delete it and
+	// create a new one.
 	CreateIdentityVisibilityFilter(ctx context.Context, request CreateIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
 
 	// Creates a local service principal in the Databricks account and returns
@@ -76,7 +82,12 @@ type AccountIamV2Service interface {
 	// group (holds the `roles/group.manager` role on it).
 	DeleteGroup(ctx context.Context, request DeleteGroupRequest) error
 
-	// Deletes an identity-visibility filter by resource name.
+	// Deletes a group visibility filter by its resource name. Requires account
+	// admin privileges. Deleting a filter does not delete groups or revoke
+	// access. Groups covered only by this rule stop being discoverable unless
+	// they or a transitive parent are already provisioned in the account. If no
+	// group filters remain, all groups become visible again. Deleting a filter
+	// that does not exist succeeds without making any changes.
 	DeleteIdentityVisibilityFilter(ctx context.Context, request DeleteIdentityVisibilityFilterRequest) error
 
 	// Deletes a service principal from the Databricks account by its internal
@@ -122,7 +133,9 @@ type AccountIamV2Service interface {
 	// Fetches a group from the Databricks account by its internal ID.
 	GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error)
 
-	// Fetches an identity-visibility filter by resource name.
+	// Gets a group visibility filter by its resource name. Requires account
+	// admin privileges. Returns the filter rule, not the groups matched by the
+	// rule.
 	GetIdentityVisibilityFilter(ctx context.Context, request GetIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
 
 	// Fetches a service principal from the Databricks account by its internal
@@ -155,8 +168,11 @@ type AccountIamV2Service interface {
 	// Supports filtering by group name or external ID.
 	ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
-	// Lists the identity-visibility filters in the account, returning one page
-	// per call.
+	// Lists group visibility filters in the account, returning one page per
+	// call. Requires account admin privileges. Returns filter rules, not the
+	// groups matched by those rules. To retrieve the next page, pass the
+	// response's `next_page_token` as `page_token` in the next request. If
+	// `next_page_token` is omitted, there are no more pages.
 	ListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) (*ListIdentityVisibilityFiltersResponse, error)
 
 	// Lists the service principals in the Databricks account, returning one
