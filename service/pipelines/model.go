@@ -1993,8 +1993,8 @@ type ListPipelinesRequest struct {
 	// 25. The maximum value is 100. An error is returned if the value of
 	// max_results is greater than 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// A list of strings specifying the order of results. Supported order_by
-	// fields are id and name. The default is id asc. This field is optional.
+	// A list of strings specifying the order of results. The supported order_by
+	// field is id. The default is id asc. This field is optional.
 	OrderBy []string `json:"-" url:"order_by,omitempty"`
 	// Page token returned by previous call
 	PageToken string `json:"-" url:"page_token,omitempty"`

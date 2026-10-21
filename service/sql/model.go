@@ -1318,6 +1318,9 @@ type CreateWarehouseRequest struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -1326,6 +1329,10 @@ type CreateWarehouseRequest struct {
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -1348,6 +1355,15 @@ type CreateWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// Warehouse statement timeout in seconds.
@@ -2081,6 +2097,9 @@ type EditWarehouseRequest struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -2091,6 +2110,10 @@ type EditWarehouseRequest struct {
 	Id string `json:"-" url:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -2113,6 +2136,15 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// Warehouse statement timeout in seconds.
@@ -2241,6 +2273,9 @@ type EndpointInfo struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -2256,6 +2291,10 @@ type EndpointInfo struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// the jdbc connection string for this warehouse
 	JdbcUrl string `json:"jdbc_url,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -2284,6 +2323,15 @@ type EndpointInfo struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// state of the endpoint
@@ -2913,6 +2961,9 @@ type GetWarehouseResponse struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -2928,6 +2979,10 @@ type GetWarehouseResponse struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// the jdbc connection string for this warehouse
 	JdbcUrl string `json:"jdbc_url,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -2956,6 +3011,15 @@ type GetWarehouseResponse struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// state of the endpoint

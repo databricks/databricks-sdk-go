@@ -5551,7 +5551,7 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListMcpServicesRequest struct {
-	// Maximum number of MCP services to return. Defaults to 100 when unset or
+	// Maximum number of MCP services to return. Defaults to 200 when unset or
 	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
@@ -5681,7 +5681,7 @@ func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListModelProviderServicesRequest struct {
-	// Maximum number of provider services to return. Defaults to 100 when unset
+	// Maximum number of provider services to return. Defaults to 200 when unset
 	// or 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
@@ -5767,7 +5767,7 @@ func (s ListModelProviderServicesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListModelServicesRequest struct {
-	// Maximum number of model services to return. Defaults to 100 when unset or
+	// Maximum number of model services to return. Defaults to 200 when unset or
 	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
@@ -6202,7 +6202,7 @@ func (s ListSecretsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListSkillsRequest struct {
-	// Maximum number of skills to return. Defaults to 100 when unset or 0; the
+	// Maximum number of skills to return. Defaults to 200 when unset or 0; the
 	// maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from a previous request.
@@ -7056,8 +7056,7 @@ func (s ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth) MarshalJSON() 
 	return marshal.Marshal(s)
 }
 
-// Custom OpenAI-compatible provider configuration with bearer-token
-// authentication.
+// Custom OpenAI-compatible provider configuration.
 type ModelProviderServiceConfigCustomProviderConfig struct {
 	// Endpoint and authentication configuration for the custom provider.
 	Direct *ModelProviderServiceConfigCustomProviderDirectConfig `json:"direct,omitempty"`

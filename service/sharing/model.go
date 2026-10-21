@@ -229,8 +229,6 @@ type CreateShare struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the share.
 	Name string `json:"name"`
-	// Configuration for share replication.
-	ReplicationConfig *ReplicationConfig `json:"replication_config,omitempty"`
 	// Storage root URL for the share.
 	StorageRoot string `json:"storage_root,omitempty"`
 
@@ -1407,24 +1405,6 @@ func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Configuration for Delta Sharing replication on a share. When enabled, the
-// share's data is copied into each recipient's region so recipients can query
-// the share locally.
-type ReplicationConfig struct {
-	// Whether replication is enabled for the share.
-	Enabled bool `json:"enabled,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ReplicationConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ReplicationConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type RetrieveTokenRequest struct {
 	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
@@ -1509,8 +1489,6 @@ type ShareInfo struct {
 	Objects []SharedDataObject `json:"objects,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
-	// Configuration for share replication.
-	ReplicationConfig *ReplicationConfig `json:"replication_config,omitempty"`
 	// Storage Location URL (full path) for the share.
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for the share.
