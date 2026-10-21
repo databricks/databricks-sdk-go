@@ -1246,6 +1246,8 @@ type DataSource struct {
 	Lateness *SourceLateness `json:"lateness,omitempty"`
 	// A request-time data source.
 	RequestSource *RequestSource `json:"request_source,omitempty"`
+	// A Spark Declarative Pipeline data source.
+	SdpSource *SdpSource `json:"sdp_source,omitempty"`
 	// A Stream data source.
 	StreamSource *StreamSource `json:"stream_source,omitempty"`
 }
@@ -6347,6 +6349,98 @@ func (s *SchemaRegistryConfig) UnmarshalJSON(b []byte) error {
 
 func (s SchemaRegistryConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A Spark Declarative Pipeline (SDP) data source.
+type SdpSource struct {
+	// Schema of the resulting dataframe after transformations, in Spark
+	// StructType JSON format (from df.schema.json()). Required if
+	// transformation_sql is specified. Example:
+	// {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
+	// Single WHERE clause to filter the pipeline's output table before applying
+	// transformations. Will be row-wise evaluated, so should only include
+	// conditionals and projections.
+	FilterCondition string `json:"filter_condition,omitempty"`
+	// The full three-part names of the tables the pipeline reads from. Required
+	// to materialize this feature with a TableTrigger, which starts a run when
+	// these tables update. Each table must exist when the feature is created.
+	// After the pipeline runs, Feature Store checks that it reads from these
+	// tables, and the run fails if it doesn't. At most 100 tables.
+	InputTables []string `json:"input_tables,omitempty"`
+	// The full three-part (catalog, schema, table) name of the pipeline's
+	// output table to read from. The table doesn't need to exist until the
+	// pipeline first runs. Required.
+	OutputTable string `json:"output_table,omitempty"`
+	// The ID of the Spark Declarative Pipeline that Feature Store runs to
+	// produce this source, before each materialization or backfill. The
+	// pipeline must already exist when the feature is created, and you need
+	// CAN_RUN, CAN_MANAGE, or owner permission on it. It doesn't need to have
+	// run yet. Deleting the feature doesn't delete the pipeline. If the
+	// pipeline is deleted, this field reads back empty. Required.
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// State tracking pipeline execution and output table validation. PENDING
+	// until the pipeline has run at least once and created the output table;
+	// then RESOLVED on success, or ERROR on failure.
+	PipelineState SdpSourceState `json:"pipeline_state,omitempty"`
+	// A single SQL SELECT expression applied after filter_condition. Should
+	// contain all the columns needed (eg. "SELECT *, col_a + col_b AS col_c
+	// FROM x.y.z WHERE col_a > 0" would have `transformation_sql` "*, col_a +
+	// col_b AS col_c") If transformation_sql is not provided, all columns of
+	// the pipeline's output table are present in the DataSource dataframe.
+	TransformationSql string `json:"transformation_sql,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SdpSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SdpSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// State of the SDP source relative to pipeline execution and output table
+// validation.
+type SdpSourceState string
+
+const SdpSourceStateError SdpSourceState = `ERROR`
+
+const SdpSourceStatePending SdpSourceState = `PENDING`
+
+const SdpSourceStateResolved SdpSourceState = `RESOLVED`
+
+// String representation for [fmt.Print]
+func (f *SdpSourceState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SdpSourceState) Set(v string) error {
+	switch v {
+	case `ERROR`, `PENDING`, `RESOLVED`:
+		*f = SdpSourceState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ERROR", "PENDING", "RESOLVED"`, v)
+	}
+}
+
+// Values returns all possible values for SdpSourceState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SdpSourceState) Values() []SdpSourceState {
+	return []SdpSourceState{
+		SdpSourceStateError,
+		SdpSourceStatePending,
+		SdpSourceStateResolved,
+	}
+}
+
+// Type always returns SdpSourceState to satisfy [pflag.Value] interface
+func (f *SdpSourceState) Type() string {
+	return "SdpSourceState"
 }
 
 type SearchExperiments struct {

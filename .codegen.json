@@ -40,6 +40,7 @@
       "BUILD.bazel",
       "OWNERS",
       "vendor",
+      ".nextchanges",
       "NEXT_CHANGELOG.md",
       "tagging.yml",
       "next-changelog.yml"

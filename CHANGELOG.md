@@ -1,5 +1,16 @@
 # Version changelog
 
+## Release v0.190.0 (2026-10-21)
+
+### API Changes
+* Add `SdpSource` field for [ml.DataSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DataSource).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.CreateWarehouseRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateWarehouseRequest).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.EditWarehouseRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EditWarehouseRequest).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.EndpointInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EndpointInfo).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.GetWarehouseResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehouseResponse).
+* [Breaking] Remove `ReplicationConfig` field for [sharing.CreateShare](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CreateShare).
+* [Breaking] Remove `ReplicationConfig` field for [sharing.ShareInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ShareInfo).
+
 ## Release v0.189.0 (2026-10-19)
 
 ### API Changes

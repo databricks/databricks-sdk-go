@@ -100,7 +100,8 @@ Run `make fmt test lint` before submitting.
 ### Changelog
 
 For changes that need a release note, add a uniquely named
-`.nextchanges/<timestamp>.md` fragment using the format in
-[.nextchanges/README.md](.nextchanges/README.md). Genkit consumes these fragments
-during release preparation. Changes that do not need a release note do not
-require a fragment.
+`.nextchanges/<timestamp>.md` fragment in the Universe source checkout, using the
+format in `.nextchanges/README.md`. Genkit consumes these fragments into
+`CHANGELOG.md` during release preparation. Pending fragments are not published
+to the public mirror. Changes that do not need a release note do not require a
+fragment.
