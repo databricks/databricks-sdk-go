@@ -41,6 +41,15 @@ type VectorSearchEndpointsService interface {
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request VectorSearchEndpointPermissionsRequest) (*VectorSearchEndpointPermissions, error)
 
+	// Start a stopped endpoint. The endpoint serves the same indexes it had
+	// when it stopped.
+	StartEndpoint(ctx context.Context, request StartEndpointRequest) (*EndpointInfo, error)
+
+	// Stop an endpoint. Stopping removes the endpoint's serving compute and
+	// retains its indexes. A stopped endpoint can't serve queries or sync
+	// indexes until it is started.
+	StopEndpoint(ctx context.Context, request StopEndpointRequest) (*EndpointInfo, error)
+
 	// Update the budget policy of an endpoint
 	UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error)
 
