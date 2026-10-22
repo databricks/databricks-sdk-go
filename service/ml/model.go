@@ -294,8 +294,18 @@ type ApproxCountDistinctFunction struct {
 	// The input column from which the approximate count of distinct values is
 	// computed.
 	Input string `json:"input"`
+	// The error the user accepts, as a fraction of the count, between 0.02 (by
+	// default) and 0.3. This is one standard error of the estimate, the same
+	// meaning as Spark's relativeSD: 0.02 means the result is within ±2% of
+	// the true count about 68% of the time (one standard deviation covers 68%
+	// of the region). Feature Store picks the sketch size that gives this
+	// relative error. If neither relative_error nor relative_sd is set, 0.02 is
+	// default chosen at feature creation.
+	RelativeError float64 `json:"relative_error,omitempty"`
 	// The maximum relative standard deviation allowed (default defined by
-	// Spark).
+	// Spark). Deprecated: use relative_error. When relative_error is set, reads
+	// return the same value here for clients that don't have relative_error,
+	// and a request may only send that value.
 	RelativeSd float64 `json:"relative_sd,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -311,12 +321,22 @@ func (s ApproxCountDistinctFunction) MarshalJSON() ([]byte, error) {
 
 // Computes the approximate percentile of values.
 type ApproxPercentileFunction struct {
-	// The accuracy parameter (higher is more accurate but slower).
+	// The accuracy parameter (higher is more accurate but slower). Deprecated:
+	// use relative_error. When relative_error is set, reads return ceil(1 /
+	// relative_error) here for clients that don't have relative_error, and a
+	// request may only send that value.
 	Accuracy int64 `json:"accuracy,omitempty"`
 	// The input column from which the approximate percentile is computed.
 	Input string `json:"input"`
 	// The percentile value to compute (between 0 and 1).
 	Percentile float64 `json:"percentile"`
+	// The error the user accepts, as a fraction of rank, between 0.01 (by
+	// default) and 0.3. The result is within this rank error with 99%
+	// confidence: at 0.01, the value returned for p95 is between the true p94
+	// and p96 at least 99% of the time. Feature Store picks the sketch size
+	// that gives this error. If neither relative_error nor accuracy is set,
+	// 0.01 is default chosen at feature creation.
+	RelativeError float64 `json:"relative_error,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7298,12 +7318,70 @@ func (s *SumFunction) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A trigger that fires when the upstream source table changes.
+// A trigger that fires when the feature's source table changes: a
+// DeltaTableSource's table, or an SdpSource's input_tables.
 type TableTrigger struct {
+	// Which source table updates trigger a materialization run. If not set, any
+	// source table update triggers a run.
+	Condition TableTriggerTableTriggerCondition `json:"condition,omitempty"`
+	// The minimum time between two triggered runs, so a frequently updated
+	// source table does not trigger runs too often. If not set, a feature with
+	// a sliding window uses half its slide_duration and a feature with a
+	// tumbling window uses half its window_duration, clamped to between 5
+	// minutes and 1 hour. Other features have no minimum.
+	MinTimeBetweenTriggers *duration.Duration `json:"min_time_between_triggers,omitempty"`
+	// How long the source table must go without updates before a run starts, so
+	// a series of updates settles before the run. If not set, a run starts as
+	// soon as the source table updates.
+	WaitAfterLastChange *duration.Duration `json:"wait_after_last_change,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableTrigger) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s TableTrigger) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Which source table updates trigger a materialization run.
+type TableTriggerTableTriggerCondition string
+
+const TableTriggerTableTriggerConditionTableTriggerConditionAllUpdated TableTriggerTableTriggerCondition = `TABLE_TRIGGER_CONDITION_ALL_UPDATED`
+
+const TableTriggerTableTriggerConditionTableTriggerConditionAnyUpdated TableTriggerTableTriggerCondition = `TABLE_TRIGGER_CONDITION_ANY_UPDATED`
+
+// String representation for [fmt.Print]
+func (f *TableTriggerTableTriggerCondition) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TableTriggerTableTriggerCondition) Set(v string) error {
+	switch v {
+	case `TABLE_TRIGGER_CONDITION_ALL_UPDATED`, `TABLE_TRIGGER_CONDITION_ANY_UPDATED`:
+		*f = TableTriggerTableTriggerCondition(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TABLE_TRIGGER_CONDITION_ALL_UPDATED", "TABLE_TRIGGER_CONDITION_ANY_UPDATED"`, v)
+	}
+}
+
+// Values returns all possible values for TableTriggerTableTriggerCondition.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TableTriggerTableTriggerCondition) Values() []TableTriggerTableTriggerCondition {
+	return []TableTriggerTableTriggerCondition{
+		TableTriggerTableTriggerConditionTableTriggerConditionAllUpdated,
+		TableTriggerTableTriggerConditionTableTriggerConditionAnyUpdated,
+	}
+}
+
+// Type always returns TableTriggerTableTriggerCondition to satisfy [pflag.Value] interface
+func (f *TableTriggerTableTriggerCondition) Type() string {
+	return "TableTriggerTableTriggerCondition"
 }
 
 // Details required to test a registry webhook.

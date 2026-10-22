@@ -31,11 +31,11 @@ type AccountIamV2Service interface {
 
 	// Creates a group visibility filter in the account. Requires account admin
 	// privileges. Set `principal_type` to `GROUP` and specify exactly one of
-	// `exact` (external ID) or `prefix` (display-name starts with). The filter
-	// applies across all workspaces in the account. A duplicate filter ID or an
-	// existing rule with the same type and match value returns
-	// `ALREADY_EXISTS`. Filters are immutable; to change a rule, delete it and
-	// create a new one.
+	// `exact` (external ID), `prefix` (display-name starts with), or `regex`
+	// (full RE2 display-name match). The filter applies across all workspaces
+	// in the account. A duplicate filter ID or an existing rule with the same
+	// type and match value returns `ALREADY_EXISTS`. Filters are immutable; to
+	// change a rule, delete it and create a new one.
 	CreateIdentityVisibilityFilter(ctx context.Context, request CreateIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
 
 	// Creates a local service principal in the Databricks account and returns

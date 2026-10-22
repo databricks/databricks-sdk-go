@@ -314,6 +314,8 @@ type ConnectorOptions struct {
 
 	MetaAdsOptions *MetaMarketingOptions `json:"meta_ads_options,omitempty"`
 
+	OnedriveOptions *OneDriveOptions `json:"onedrive_options,omitempty"`
+
 	OutlookOptions *OutlookOptions `json:"outlook_options,omitempty"`
 
 	RabbitmqOptions *RabbitmqOptions `json:"rabbitmq_options,omitempty"`
@@ -1592,6 +1594,8 @@ const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
 
 const IngestionSourceTypeNetsuite IngestionSourceType = `NETSUITE`
 
+const IngestionSourceTypeOnedrive IngestionSourceType = `ONEDRIVE`
+
 const IngestionSourceTypeOracle IngestionSourceType = `ORACLE`
 
 const IngestionSourceTypePostgresql IngestionSourceType = `POSTGRESQL`
@@ -1624,11 +1628,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `RABBITMQ`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SMARTSHEET`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ONEDRIVE`, `ORACLE`, `POSTGRESQL`, `RABBITMQ`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SMARTSHEET`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "RABBITMQ", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SMARTSHEET", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ONEDRIVE", "ORACLE", "POSTGRESQL", "RABBITMQ", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SMARTSHEET", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1648,6 +1652,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
 		IngestionSourceTypeNetsuite,
+		IngestionSourceTypeOnedrive,
 		IngestionSourceTypeOracle,
 		IngestionSourceTypePostgresql,
 		IngestionSourceTypeRabbitmq,
@@ -2243,6 +2248,64 @@ type Notifications struct {
 
 func (s *Notifications) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type OneDriveOptions struct {
+	// (Optional) The type of OneDrive entity to ingest. If not specified,
+	// defaults to FILE.
+	EntityType OneDriveOptionsOneDriveEntityType `json:"entity_type,omitempty"`
+	// (Optional) File ingestion options for processing files.
+	FileIngestionOptions *FileIngestionOptions `json:"file_ingestion_options,omitempty"`
+	// Required. The OneDrive URL.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *OneDriveOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OneDriveOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The type of OneDrive entity to ingest.
+type OneDriveOptionsOneDriveEntityType string
+
+const OneDriveOptionsOneDriveEntityTypeFile OneDriveOptionsOneDriveEntityType = `FILE`
+
+const OneDriveOptionsOneDriveEntityTypeFileMetadata OneDriveOptionsOneDriveEntityType = `FILE_METADATA`
+
+// String representation for [fmt.Print]
+func (f *OneDriveOptionsOneDriveEntityType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OneDriveOptionsOneDriveEntityType) Set(v string) error {
+	switch v {
+	case `FILE`, `FILE_METADATA`:
+		*f = OneDriveOptionsOneDriveEntityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FILE", "FILE_METADATA"`, v)
+	}
+}
+
+// Values returns all possible values for OneDriveOptionsOneDriveEntityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OneDriveOptionsOneDriveEntityType) Values() []OneDriveOptionsOneDriveEntityType {
+	return []OneDriveOptionsOneDriveEntityType{
+		OneDriveOptionsOneDriveEntityTypeFile,
+		OneDriveOptionsOneDriveEntityTypeFileMetadata,
+	}
+}
+
+// Type always returns OneDriveOptionsOneDriveEntityType to satisfy [pflag.Value] interface
+func (f *OneDriveOptionsOneDriveEntityType) Type() string {
+	return "OneDriveOptionsOneDriveEntityType"
 }
 
 // Proto representing a window
