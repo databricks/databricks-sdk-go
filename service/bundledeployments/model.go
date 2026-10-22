@@ -758,6 +758,8 @@ const OperationActionTypeOperationActionTypeRecreate OperationActionType = `OPER
 
 const OperationActionTypeOperationActionTypeResize OperationActionType = `OPERATION_ACTION_TYPE_RESIZE`
 
+const OperationActionTypeOperationActionTypeUnbind OperationActionType = `OPERATION_ACTION_TYPE_UNBIND`
+
 const OperationActionTypeOperationActionTypeUpdate OperationActionType = `OPERATION_ACTION_TYPE_UPDATE`
 
 const OperationActionTypeOperationActionTypeUpdateWithId OperationActionType = `OPERATION_ACTION_TYPE_UPDATE_WITH_ID`
@@ -770,11 +772,11 @@ func (f *OperationActionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *OperationActionType) Set(v string) error {
 	switch v {
-	case `OPERATION_ACTION_TYPE_BIND`, `OPERATION_ACTION_TYPE_BIND_AND_UPDATE`, `OPERATION_ACTION_TYPE_CREATE`, `OPERATION_ACTION_TYPE_DELETE`, `OPERATION_ACTION_TYPE_INITIAL_REGISTER`, `OPERATION_ACTION_TYPE_RECREATE`, `OPERATION_ACTION_TYPE_RESIZE`, `OPERATION_ACTION_TYPE_UPDATE`, `OPERATION_ACTION_TYPE_UPDATE_WITH_ID`:
+	case `OPERATION_ACTION_TYPE_BIND`, `OPERATION_ACTION_TYPE_BIND_AND_UPDATE`, `OPERATION_ACTION_TYPE_CREATE`, `OPERATION_ACTION_TYPE_DELETE`, `OPERATION_ACTION_TYPE_INITIAL_REGISTER`, `OPERATION_ACTION_TYPE_RECREATE`, `OPERATION_ACTION_TYPE_RESIZE`, `OPERATION_ACTION_TYPE_UNBIND`, `OPERATION_ACTION_TYPE_UPDATE`, `OPERATION_ACTION_TYPE_UPDATE_WITH_ID`:
 		*f = OperationActionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "OPERATION_ACTION_TYPE_BIND", "OPERATION_ACTION_TYPE_BIND_AND_UPDATE", "OPERATION_ACTION_TYPE_CREATE", "OPERATION_ACTION_TYPE_DELETE", "OPERATION_ACTION_TYPE_INITIAL_REGISTER", "OPERATION_ACTION_TYPE_RECREATE", "OPERATION_ACTION_TYPE_RESIZE", "OPERATION_ACTION_TYPE_UPDATE", "OPERATION_ACTION_TYPE_UPDATE_WITH_ID"`, v)
+		return fmt.Errorf(`value "%s" is not one of "OPERATION_ACTION_TYPE_BIND", "OPERATION_ACTION_TYPE_BIND_AND_UPDATE", "OPERATION_ACTION_TYPE_CREATE", "OPERATION_ACTION_TYPE_DELETE", "OPERATION_ACTION_TYPE_INITIAL_REGISTER", "OPERATION_ACTION_TYPE_RECREATE", "OPERATION_ACTION_TYPE_RESIZE", "OPERATION_ACTION_TYPE_UNBIND", "OPERATION_ACTION_TYPE_UPDATE", "OPERATION_ACTION_TYPE_UPDATE_WITH_ID"`, v)
 	}
 }
 
@@ -790,6 +792,7 @@ func (f *OperationActionType) Values() []OperationActionType {
 		OperationActionTypeOperationActionTypeInitialRegister,
 		OperationActionTypeOperationActionTypeRecreate,
 		OperationActionTypeOperationActionTypeResize,
+		OperationActionTypeOperationActionTypeUnbind,
 		OperationActionTypeOperationActionTypeUpdate,
 		OperationActionTypeOperationActionTypeUpdateWithId,
 	}
