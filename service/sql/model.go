@@ -543,6 +543,18 @@ type AlertV2 struct {
 	CustomDescription string `json:"custom_description,omitempty"`
 	// Custom summary for the alert. support mustache template.
 	CustomSummary string `json:"custom_summary,omitempty"`
+	// The format used to interpret the `custom_summary` and
+	// `custom_description` templates.
+	//
+	// `HTML` treats both templates as HTML with Mustache `{{VARIABLE_NAME}}`
+	// placeholders. `MARKDOWN` treats them as Markdown with allowlisted
+	// `@VARIABLE_NAME` placeholders and converts them to the format each
+	// notification destination expects, so a single template renders correctly
+	// in email, Slack, and Microsoft Teams.
+	//
+	// When unset, the API applies no default. Responses omit the field unless a
+	// format is stored, and a template with no format is rendered as HTML.
+	CustomTemplateFormat CustomTemplateFormat `json:"custom_template_format,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name"`
 	// The actual identity that will be used to execute the alert. This is an
@@ -1306,6 +1318,9 @@ type CreateWarehouseRequest struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -1314,6 +1329,10 @@ type CreateWarehouseRequest struct {
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -1336,8 +1355,19 @@ type CreateWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
@@ -1365,6 +1395,8 @@ const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouse
 
 const CreateWarehouseRequestWarehouseTypePro CreateWarehouseRequestWarehouseType = `PRO`
 
+const CreateWarehouseRequestWarehouseTypeRealtime CreateWarehouseRequestWarehouseType = `REALTIME`
+
 const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -1375,11 +1407,11 @@ func (f *CreateWarehouseRequestWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = CreateWarehouseRequestWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -1390,6 +1422,7 @@ func (f *CreateWarehouseRequestWarehouseType) Values() []CreateWarehouseRequestW
 	return []CreateWarehouseRequestWarehouseType{
 		CreateWarehouseRequestWarehouseTypeClassic,
 		CreateWarehouseRequestWarehouseTypePro,
+		CreateWarehouseRequestWarehouseTypeRealtime,
 		CreateWarehouseRequestWarehouseTypeTypeUnspecified,
 	}
 }
@@ -1456,6 +1489,44 @@ type CronSchedule struct {
 
 func (s *CronSchedule) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Rendering format for the `custom_summary` and `custom_description` templates.
+type CustomTemplateFormat string
+
+const CustomTemplateFormatHtml CustomTemplateFormat = `HTML`
+
+const CustomTemplateFormatMarkdown CustomTemplateFormat = `MARKDOWN`
+
+// String representation for [fmt.Print]
+func (f *CustomTemplateFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomTemplateFormat) Set(v string) error {
+	switch v {
+	case `HTML`, `MARKDOWN`:
+		*f = CustomTemplateFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "HTML", "MARKDOWN"`, v)
+	}
+}
+
+// Values returns all possible values for CustomTemplateFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomTemplateFormat) Values() []CustomTemplateFormat {
+	return []CustomTemplateFormat{
+		CustomTemplateFormatHtml,
+		CustomTemplateFormatMarkdown,
+	}
+}
+
+// Type always returns CustomTemplateFormat to satisfy [pflag.Value] interface
+func (f *CustomTemplateFormat) Type() string {
+	return "CustomTemplateFormat"
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -2026,6 +2097,9 @@ type EditWarehouseRequest struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -2036,6 +2110,10 @@ type EditWarehouseRequest struct {
 	Id string `json:"-" url:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -2058,8 +2136,19 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
@@ -2087,6 +2176,8 @@ const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType
 
 const EditWarehouseRequestWarehouseTypePro EditWarehouseRequestWarehouseType = `PRO`
 
+const EditWarehouseRequestWarehouseTypeRealtime EditWarehouseRequestWarehouseType = `REALTIME`
+
 const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -2097,11 +2188,11 @@ func (f *EditWarehouseRequestWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = EditWarehouseRequestWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -2112,6 +2203,7 @@ func (f *EditWarehouseRequestWarehouseType) Values() []EditWarehouseRequestWareh
 	return []EditWarehouseRequestWarehouseType{
 		EditWarehouseRequestWarehouseTypeClassic,
 		EditWarehouseRequestWarehouseTypePro,
+		EditWarehouseRequestWarehouseTypeRealtime,
 		EditWarehouseRequestWarehouseTypeTypeUnspecified,
 	}
 }
@@ -2181,6 +2273,9 @@ type EndpointInfo struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -2196,6 +2291,10 @@ type EndpointInfo struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// the jdbc connection string for this warehouse
 	JdbcUrl string `json:"jdbc_url,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -2224,10 +2323,21 @@ type EndpointInfo struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// state of the endpoint
 	State State `json:"state,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
@@ -2255,6 +2365,8 @@ const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
 
 const EndpointInfoWarehouseTypePro EndpointInfoWarehouseType = `PRO`
 
+const EndpointInfoWarehouseTypeRealtime EndpointInfoWarehouseType = `REALTIME`
+
 const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -2265,11 +2377,11 @@ func (f *EndpointInfoWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointInfoWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = EndpointInfoWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -2280,6 +2392,7 @@ func (f *EndpointInfoWarehouseType) Values() []EndpointInfoWarehouseType {
 	return []EndpointInfoWarehouseType{
 		EndpointInfoWarehouseTypeClassic,
 		EndpointInfoWarehouseTypePro,
+		EndpointInfoWarehouseTypeRealtime,
 		EndpointInfoWarehouseTypeTypeUnspecified,
 	}
 }
@@ -2848,6 +2961,9 @@ type GetWarehouseResponse struct {
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
+	// Compute version label for a REALTIME warehouse. This field is output
+	// only.
+	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to true.
@@ -2863,6 +2979,10 @@ type GetWarehouseResponse struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// the jdbc connection string for this warehouse
 	JdbcUrl string `json:"jdbc_url,omitempty"`
+	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
+	// Must be a multiple of 3 between 3 and 960. The effective maximum cannot
+	// be lower than the warehouse's minimum capacity.
+	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -2891,10 +3011,21 @@ type GetWarehouseResponse struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
+	// Cluster size multiplier for Reyden warehouses. Scales the effective
+	// compute capacity relative to the nominal virtual cluster size. Only
+	// meaningful when the warehouse is of Reyden type.
+	//
+	// Accepted range: 1.0 to the workspace-configured maximum (decimals
+	// allowed). The default maximum is 100.0. - Values below 1.0 are normalized
+	// to 1.0. - Values above the configured maximum are capped at that maximum.
+	// - When absent, the warehouse is treated as having a multiplier of 1.0.
+	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
 	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// state of the endpoint
 	State State `json:"state,omitempty"`
+	// Warehouse statement timeout in seconds.
+	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
@@ -2922,6 +3053,8 @@ const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType
 
 const GetWarehouseResponseWarehouseTypePro GetWarehouseResponseWarehouseType = `PRO`
 
+const GetWarehouseResponseWarehouseTypeRealtime GetWarehouseResponseWarehouseType = `REALTIME`
+
 const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -2932,11 +3065,11 @@ func (f *GetWarehouseResponseWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetWarehouseResponseWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = GetWarehouseResponseWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -2947,6 +3080,7 @@ func (f *GetWarehouseResponseWarehouseType) Values() []GetWarehouseResponseWareh
 	return []GetWarehouseResponseWarehouseType{
 		GetWarehouseResponseWarehouseTypeClassic,
 		GetWarehouseResponseWarehouseTypePro,
+		GetWarehouseResponseWarehouseTypeRealtime,
 		GetWarehouseResponseWarehouseTypeTypeUnspecified,
 	}
 }
@@ -5140,12 +5274,10 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 // The breakdown of how the EndpointSpotInstancePolicy converts to per cloud
 // configurations is:
 //
-// +-------+--------------------------------------+--------------------------------+
-// | Cloud | COST_OPTIMIZED | RELIABILITY_OPTIMIZED |
-// +-------+--------------------------------------+--------------------------------+
-// | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors
-// | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors |
-// +-------+--------------------------------------+--------------------------------+
+// - AWS, COST_OPTIMIZED: On Demand Driver with Spot Executors. - AWS,
+// RELIABILITY_OPTIMIZED: On Demand Driver and Executors. - AZURE,
+// COST_OPTIMIZED: On Demand Driver and Executors. - AZURE,
+// RELIABILITY_OPTIMIZED: On Demand Driver and Executors.
 type SpotInstancePolicy string
 
 const SpotInstancePolicyCostOptimized SpotInstancePolicy = `COST_OPTIMIZED`
@@ -6741,6 +6873,8 @@ const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CL
 
 const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
 
+const WarehouseTypePairWarehouseTypeRealtime WarehouseTypePairWarehouseType = `REALTIME`
+
 const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -6751,11 +6885,11 @@ func (f *WarehouseTypePairWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarehouseTypePairWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case `CLASSIC`, `PRO`, `REALTIME`, `TYPE_UNSPECIFIED`:
 		*f = WarehouseTypePairWarehouseType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "REALTIME", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -6766,6 +6900,7 @@ func (f *WarehouseTypePairWarehouseType) Values() []WarehouseTypePairWarehouseTy
 	return []WarehouseTypePairWarehouseType{
 		WarehouseTypePairWarehouseTypeClassic,
 		WarehouseTypePairWarehouseTypePro,
+		WarehouseTypePairWarehouseTypeRealtime,
 		WarehouseTypePairWarehouseTypeTypeUnspecified,
 	}
 }

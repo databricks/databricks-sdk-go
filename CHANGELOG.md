@@ -1,5 +1,139 @@
 # Version changelog
 
+## Release v0.190.0 (2026-10-21)
+
+### API Changes
+* Add `SdpSource` field for [ml.DataSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DataSource).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.CreateWarehouseRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateWarehouseRequest).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.EditWarehouseRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EditWarehouseRequest).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.EndpointInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EndpointInfo).
+* Add `CustomerVersionLabel`, `MaxDbu` and `ReydenClusterSizeMultiplier` fields for [sql.GetWarehouseResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehouseResponse).
+* [Breaking] Remove `ReplicationConfig` field for [sharing.CreateShare](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CreateShare).
+* [Breaking] Remove `ReplicationConfig` field for [sharing.ShareInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ShareInfo).
+
+## Release v0.189.0 (2026-10-19)
+
+### API Changes
+* Add `CreateIssue`, `GetIssue`, `SearchIssues` and `UpdateIssue` methods for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+* Add `RevealRolePassword` method for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `CreateDirectory`, `DeletePath`, `GetMetadata`, `ListDirectoryContents` and `RenamePath` methods for [w.Sandbox](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#SandboxAPI) workspace-level service.
+* Add `View` field for [agentkit.GetManagedMemoryEntryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#GetManagedMemoryEntryRequest).
+* Add `View` field for [agentkit.ListManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#ListManagedMemoryEntriesRequest).
+* Add `View` field for [agentkit.SearchManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#SearchManagedMemoryEntriesRequest).
+* Add `ShowDeleted` field for [bundledeployments.ListDeploymentsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#ListDeploymentsRequest).
+* Add `Secrets` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+* Add `Secrets` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
+* Add `GovernedTags` field for [catalog.PolicyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#PolicyInfo).
+* Add `Secrets` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+* Add `HasReplicationPointBlockingErrors` and `InitialReplicationProgress` fields for [disasterrecovery.FailoverGroup](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/disasterrecovery#FailoverGroup).
+* Add `DurationTarget` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+* Add `DurationTarget` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+* Add `DurationTarget` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+* Add `DurationTarget` field for [jobs.RepairRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RepairRun).
+* Add `DurationTarget` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+* Add `DurationTarget` field for [jobs.RunNow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunNow).
+* Add `DurationTarget` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+* Add `Attachment` field for [jobs.Subscription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Subscription).
+* Add `Scopes` field for [oauth2.CreateServicePrincipalSecretRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#CreateServicePrincipalSecretRequest).
+* Add `Scopes` field for [oauth2.CreateServicePrincipalSecretResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#CreateServicePrincipalSecretResponse).
+* Add `Scopes` field for [oauth2.SecretInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#SecretInfo).
+* Add `ReplicationConfig` field for [sharing.CreateShare](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CreateShare).
+* Add `ReplicationConfig` field for [sharing.ShareInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ShareInfo).
+* Add `Realtime` enum value for [sql.CreateWarehouseRequestWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateWarehouseRequestWarehouseType).
+* Add `Realtime` enum value for [sql.EditWarehouseRequestWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EditWarehouseRequestWarehouseType).
+* Add `Realtime` enum value for [sql.EndpointInfoWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EndpointInfoWarehouseType).
+* Add `Realtime` enum value for [sql.GetWarehouseResponseWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehouseResponseWarehouseType).
+* Add `Realtime` enum value for [sql.WarehouseTypePairWarehouseType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehouseTypePairWarehouseType).
+* [Breaking] Remove `ReadMask` field for [agentkit.GetManagedMemoryEntryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#GetManagedMemoryEntryRequest).
+* [Breaking] Remove `ReadMask` field for [agentkit.ListManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#ListManagedMemoryEntriesRequest).
+* [Breaking] Remove `ReadMask` field for [agentkit.SearchManagedMemoryEntriesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#SearchManagedMemoryEntriesRequest).
+* [Breaking] Remove `EffectiveServerlessComputeId` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+
+## Release v0.188.0 (2026-10-12)
+
+### API Changes
+* Add `BedrockMantle` and `Pricing` fields for [catalog.ModelProviderServiceConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfig).
+* Add `DatabricksAppSlack` and `DatabricksAppTeams` fields for [settings.Config](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#Config).
+* Add `ModelService` enum value for [apps.AppManifestAppResourceUcSecurableSpecUcSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppManifestAppResourceUcSecurableSpecUcSecurableType).
+* Add `ModelService` enum value for [apps.AppResourceUcSecurableUcSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResourceUcSecurableUcSecurableType).
+* Add `ExternalModelProviderTypeBedrockMantle` enum value for [catalog.ModelProviderServiceConfigExternalModelProviderType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigExternalModelProviderType).
+* Add `DatabricksAppSlack` and `DatabricksAppTeams` enum values for [settings.DestinationType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DestinationType).
+
+## Release v0.187.0 (2026-10-08)
+
+### API Changes
+* Add `CreateIdentityVisibilityFilter`, `DeleteIdentityVisibilityFilter`, `GetIdentityVisibilityFilter` and `ListIdentityVisibilityFilters` methods for [a.AccountIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API) account-level service.
+* Add `EndpointRoute` field for [catalog.ModelProviderServiceConfigModelTargetConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigModelTargetConfig).
+* Add `Notifications` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `ShufflePartitions` field for [ml.StreamingMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#StreamingMode).
+* Add `ParentPath` field for [pipelines.ClonePipelineRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ClonePipelineRequest).
+* Add `ParentPath` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+* Add `ParentPath` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+* Add `ParentPath` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+* Add `CustomTemplateFormat` field for [sql.AlertV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2).
+* Add `StatementTimeout` field for [sql.CreateWarehouseRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateWarehouseRequest).
+* Add `StatementTimeout` field for [sql.EditWarehouseRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EditWarehouseRequest).
+* Add `StatementTimeout` field for [sql.EndpointInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#EndpointInfo).
+* Add `StatementTimeout` field for [sql.GetWarehouseResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehouseResponse).
+
+
+## Release v0.186.0 (2026-10-07)
+
+### API Changes
+* Add [agentkit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit) package.
+* Add [w.AgentKit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#AgentKitAPI) workspace-level service.
+* Add `HealthCheck` field for [apps.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppDeployment).
+* [Breaking] Remove [mason](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/mason) package.
+* [Breaking] Remove [w.Mason](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/mason#MasonAPI) workspace-level service.
+
+
+## Release v0.185.0 (2026-10-05)
+
+### API Changes
+* Add [a.PrivateNetworkGateways](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/networking#PrivateNetworkGatewaysAPI) account-level service.
+* Add `DataframeSchema` field for [ml.RequestSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RequestSource).
+
+
+## Release v0.184.0 (2026-10-02)
+
+### API Changes
+* Add [mason](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/mason) package.
+* Add [w.Mason](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/mason#MasonAPI) workspace-level service.
+* Add `AiDecide` method for [w.AiFunctions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aifunctions#AiFunctionsAPI) workspace-level service.
+* Add `CreateSkill`, `DeleteSkill`, `FinalizeSkill`, `GetSkill`, `ListSkills` and `UpdateSkill` methods for [w.AiGateway](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AiGatewayAPI) workspace-level service.
+* Add `ListCommands` method for [w.Sandbox](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#SandboxAPI) workspace-level service.
+* Add `ServiceCredential` field for [catalog.ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig).
+* Add `SecretReference` field for [catalog.ModelProviderServiceConfigProviderSecret](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelProviderServiceConfigProviderSecret).
+* Add `ProjectEnvironment` field for [compute.Environment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Environment).
+* Add `EnvironmentVariables` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+* Add `EnvironmentVariables` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+* Add `OnMaintenanceComplete` and `OnMaintenanceStart` fields for [jobs.JobEmailNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEmailNotifications).
+* Add `EnvironmentVariables` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+* Add `EnvironmentVariables` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+* Add `EnvironmentVariablesKey` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `EnvironmentVariables` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+* Add `EnvironmentVariablesKey` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `EnvironmentVariablesKey` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+* Add `OnMaintenanceComplete` and `OnMaintenanceStart` fields for [jobs.TaskEmailNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TaskEmailNotifications).
+* Add `OnMaintenanceComplete` and `OnMaintenanceStart` fields for [jobs.WebhookNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#WebhookNotifications).
+* Add `BudgetPolicyId` and `Tags` fields for [ml.BackfillFeaturesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#BackfillFeaturesRequest).
+* Add `JobId` and `PipelineId` fields for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `BudgetPolicyId` and `Tags` fields for [ml.PurgeFeatureEntitiesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#PurgeFeatureEntitiesRequest).
+* Add `Environment` field for [sandbox.SandboxSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#SandboxSpec).
+* Add `TableForeignDeltaDeltasharing` enum value for [catalog.SecurableKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableKind).
+* [Breaking] Change `CommandPath` field for [jobs.DeploymentSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#DeploymentSpec) to no longer be required.
+* Change `CommandPath` field for [jobs.DeploymentSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#DeploymentSpec) to no longer be required.
+* [Breaking] Change `ApiSecretRef` field for [ml.SchemaRegistryConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#SchemaRegistryConfig) to no longer be required.
+* Change `ApiSecretRef` field for [ml.SchemaRegistryConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#SchemaRegistryConfig) to no longer be required.
+
+
+## Release v0.183.0 (2026-09-30)
+
+### New Features and Improvements
+
+- Add `Config.Headers`, a hook called on every request made by the client to set custom HTTP headers, on top of normal authentication. Use the `StaticHeaders` helper to set a fixed set of headers.
+
+
 ## Release v0.182.0 (2026-09-21)
 
 ### API Changes

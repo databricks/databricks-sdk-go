@@ -29,7 +29,7 @@ func ExampleLibrariesAPI_UpdateAndWait_libraries() {
 
 	err = w.Libraries.UpdateAndWait(ctx, compute.Update{
 		ClusterId: clusterId,
-		Install: []compute.Library{compute.Library{
+		Install: []compute.Library{{
 			Pypi: &compute.PythonPyPiLibrary{
 				Package: "dbl-tempo",
 			},

@@ -213,8 +213,7 @@ func (a *jobsImpl) internalList(ctx context.Context, request ListJobsRequest) (*
 	return &listJobsResponse, err
 }
 
-// List runs in descending order by end time. If a run has not finished, it
-// falls back to start time.
+// List runs in descending order by start time.
 func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) listing.Iterator[BaseRun] {
 
 	getNextPage := func(ctx context.Context, req ListRunsRequest) (*ListRunsResponse, error) {
@@ -239,8 +238,7 @@ func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) listin
 	return iterator
 }
 
-// List runs in descending order by end time. If a run has not finished, it
-// falls back to start time.
+// List runs in descending order by start time.
 func (a *jobsImpl) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]BaseRun, error) {
 	iterator := a.ListRuns(ctx, request)
 	return listing.ToSlice[BaseRun](ctx, iterator)

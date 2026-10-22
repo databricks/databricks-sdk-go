@@ -20,14 +20,14 @@ type DomainsService interface {
 
 	// Get a domain by resource name.
 	//
-	// Authorization: external callers must have the `MANAGE DISCOVERY`
+	// Authorization: external callers must have the `MANAGE DISCOVER`
 	// permission.
 	GetDomain(ctx context.Context, request GetDomainRequest) (*Domain, error)
 
 	// List domains in the account. Set `parent_domain_id` to return only the
 	// direct subdomains of a given domain.
 	//
-	// Authorization: external callers must have the `MANAGE DISCOVERY`
+	// Authorization: external callers must have the `MANAGE DISCOVER`
 	// permission; only domains the caller is authorized to read are returned.
 	ListDomains(ctx context.Context, request ListDomainsRequest) (*ListDomainsResponse, error)
 

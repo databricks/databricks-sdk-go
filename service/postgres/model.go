@@ -465,7 +465,8 @@ func (s *CreateCatalogRequest) UnmarshalJSON(b []byte) error {
 
 type CreateCdfConfigRequest struct {
 	// The CdfConfig to create. The catalog, schema, and postgres_schema fields
-	// are required; all other fields are output only and ignored on input.
+	// are required; service_principal is optional. All other fields are output
+	// only and ignored on input.
 	CdfConfig CdfConfig `json:"cdf_config"`
 	// The user-specified id for the CdfConfig, forming the final segment of its
 	// resource name. Must match the pattern `[a-z][a-z0-9_]{0,62}`. Defaults to
@@ -2683,6 +2684,34 @@ func (s *RequestedResource) UnmarshalJSON(b []byte) error {
 }
 
 func (s RequestedResource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Request to reveal the current password for a password-authenticated Postgres
+// role.
+type RevealRolePasswordRequest struct {
+	// The full resource path of the role whose password should be revealed.
+	// Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *RevealRolePasswordRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response containing the password for a password-authenticated Postgres role.
+type RevealRolePasswordResponse struct {
+	// The current password for the Postgres role.
+	Password string `json:"password,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RevealRolePasswordResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RevealRolePasswordResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

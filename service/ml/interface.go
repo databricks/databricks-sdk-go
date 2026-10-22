@@ -29,6 +29,9 @@ type ExperimentsService interface {
 	// `ALREADY_EXISTS`. To be safe, clients should check for both error codes.
 	CreateExperiment(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error)
 
+	// Creates an issue in an experiment.
+	CreateIssue(ctx context.Context, request CreateIssueRequest) (*Issue, error)
+
 	// Create a logged model.
 	CreateLoggedModel(ctx context.Context, request CreateLoggedModelRequest) (*CreateLoggedModelResponse, error)
 
@@ -81,6 +84,9 @@ type ExperimentsService interface {
 
 	// Gets a list of all values for the specified metric for a given run.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)
+
+	// Gets an issue.
+	GetIssue(ctx context.Context, request GetIssueRequest) (*Issue, error)
 
 	// Get a logged model.
 	GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error)
@@ -216,6 +222,9 @@ type ExperimentsService interface {
 	// Searches for experiments that satisfy specified search criteria.
 	SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error)
 
+	// Searches the issues in an experiment, filtered and sorted.
+	SearchIssues(ctx context.Context, request SearchIssuesRequest) (*SearchIssuesResponse, error)
+
 	// Search for Logged Models that satisfy specified search criteria.
 	SearchLoggedModels(ctx context.Context, request SearchLoggedModelsRequest) (*SearchLoggedModelsResponse, error)
 
@@ -243,6 +252,9 @@ type ExperimentsService interface {
 	// Updates experiment metadata.
 	UpdateExperiment(ctx context.Context, request UpdateExperiment) error
 
+	// Updates the fields of an issue named in `update_mask`.
+	UpdateIssue(ctx context.Context, request UpdateIssueRequest) (*Issue, error)
+
 	// Updates the permissions on an experiment. Experiments can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
@@ -251,7 +263,8 @@ type ExperimentsService interface {
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
 }
 
-// [description]
+// Feature Engineering provides APIs for managing features and materialized
+// features.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FeatureEngineeringService interface {

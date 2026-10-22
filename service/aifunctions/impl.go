@@ -29,6 +29,21 @@ func (a *aiFunctionsImpl) AiClassify(ctx context.Context, request AiClassifyRequ
 	return &aiClassifyResponse, err
 }
 
+func (a *aiFunctionsImpl) AiDecide(ctx context.Context, request AiDecideRequest) (*AiDecideResponse, error) {
+	var aiDecideResponse AiDecideResponse
+	path := "/api/2.0/ai-functions/ai-decide"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &aiDecideResponse)
+	return &aiDecideResponse, err
+}
+
 func (a *aiFunctionsImpl) AiExtract(ctx context.Context, request AiExtractRequest) (*AiExtractResponse, error) {
 	var aiExtractResponse AiExtractResponse
 	path := "/api/2.0/ai-functions/ai-extract"

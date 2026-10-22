@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentkit"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
@@ -62,6 +63,7 @@ func NewMockWorkspaceClient(t interface {
 			AccessControl:                       iam.NewMockAccessControlInterface(t),
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			AgentBricks:                         agentbricks.NewMockAgentBricksInterface(t),
+			AgentKit:                            agentkit.NewMockAgentKitInterface(t),
 			AiFunctions:                         aifunctions.NewMockAiFunctionsInterface(t),
 			AiGateway:                           catalog.NewMockAiGatewayInterface(t),
 			AiSearch:                            aisearch.NewMockAiSearchInterface(t),
@@ -400,6 +402,14 @@ func (m *MockWorkspaceClient) GetMockAgentBricksAPI() *agentbricks.MockAgentBric
 	api, ok := m.WorkspaceClient.AgentBricks.(*agentbricks.MockAgentBricksInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected AgentBricks to be *agentbricks.MockAgentBricksInterface, actual was %T", m.WorkspaceClient.AgentBricks))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAgentKitAPI() *agentkit.MockAgentKitInterface {
+	api, ok := m.WorkspaceClient.AgentKit.(*agentkit.MockAgentKitInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AgentKit to be *agentkit.MockAgentKitInterface, actual was %T", m.WorkspaceClient.AgentKit))
 	}
 	return api
 }

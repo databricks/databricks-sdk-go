@@ -143,6 +143,24 @@ type AiGatewayService interface {
 	// Configuring an inference table additionally requires `CREATE_TABLE`.
 	CreateModelService(ctx context.Context, request CreateModelServiceRequest) (*ModelService, error)
 
+	// Creates a skill in a Unity Catalog schema and provisions its managed
+	// bundle storage. Specify its name in `skill_id`. The request contains an
+	// optional comment but no bundle bytes.
+	//
+	// To publish a skill:
+	//
+	// 1. Call CreateSkill to create the skill in Unity Catalog. 2. Upload every
+	// bundle file, including `SKILL.md` at the bundle root, with the Files API:
+	// `PUT /api/2.0/fs/files/Skills/{catalog}/{schema}/{skill}/{file_path}`.
+	// The CreateSkill caller owns the skill and can upload. Other callers need
+	// `READ_VOLUME` and `WRITE_VOLUME` on the skill. 3. Call FinalizeSkill to
+	// validate `SKILL.md` and set the skill's `bundle_name` and `description`
+	// from its frontmatter `name` and `description`.
+	//
+	// You must be the owner of the parent schema or have `CREATE_VOLUME` and
+	// `USE_SCHEMA` on it, plus `USE_CATALOG` on the parent catalog.
+	CreateSkill(ctx context.Context, request CreateSkillRequest) (*Skill, error)
+
 	// Deletes the MCP service identified by its resource name. Optionally
 	// supply an `etag` to make the delete conditional on the MCP service not
 	// having changed since it was read.
@@ -178,6 +196,32 @@ type AiGatewayService interface {
 	// schema.
 	DeleteModelService(ctx context.Context, request DeleteModelServiceRequest) error
 
+	// Deletes the skill identified by its resource name and makes its managed
+	// bundle path unavailable. Managed bundle data is deleted asynchronously.
+	// Optionally supply an `etag` to make the delete conditional on the skill
+	// not having changed since it was read.
+	//
+	// You must be the owner of the skill or have `MANAGE` on it, plus
+	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema.
+	DeleteSkill(ctx context.Context, request DeleteSkillRequest) error
+
+	// Finalizes a skill after its bundle files are uploaded or changed through
+	// the Files API. Call it again after every bundle change. This method reads
+	// SKILL.md through the Files API using the caller's authorization. Its YAML
+	// frontmatter must contain an agentskills.io-compliant `name` and a
+	// nonblank `description` within the configured UTF-8 byte limit. On
+	// success, it replaces `bundle_name` and `description`; refreshes
+	// `finalize_time`, `update_time`, and `updated_by`; and returns the updated
+	// skill. `comment` is preserved. Re-finalization uses the latest SKILL.md
+	// and is last-write-wins without an etag precondition. Validation failures
+	// do not change metadata.
+	//
+	// You must be the owner of the skill or have `READ_VOLUME` on it, plus
+	// `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
+	// schema.
+	FinalizeSkill(ctx context.Context, request FinalizeSkillRequest) (*Skill, error)
+
 	// Returns the MCP service identified by its resource name.
 	//
 	// You must be the owner of the MCP service or have `EXECUTE`,
@@ -211,6 +255,13 @@ type AiGatewayService interface {
 	// catalog and `USE_SCHEMA` on the parent schema.
 	GetModelService(ctx context.Context, request GetModelServiceRequest) (*ModelService, error)
 
+	// Returns the skill identified by its resource name.
+	//
+	// You must be the owner of the skill or have `READ_VOLUME`,
+	// `READ_METADATA`, or `MANAGE` on it, plus `USE_CATALOG` on the parent
+	// catalog and `USE_SCHEMA` on the parent schema.
+	GetSkill(ctx context.Context, request GetSkillRequest) (*Skill, error)
+
 	// Lists the MCP services in a Unity Catalog schema. Provide `parent` as
 	// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
 	// `next_page_token` to fetch subsequent pages.
@@ -238,6 +289,15 @@ type AiGatewayService interface {
 	// through `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
 	ListModelServices(ctx context.Context, request ListModelServicesRequest) (*ListModelServicesResponse, error)
 
+	// Lists skills in a Unity Catalog schema. Provide `parent` as
+	// `schemas/{catalog}.{schema}`. Results are paginated; pass the returned
+	// `next_page_token` to fetch subsequent pages.
+	//
+	// Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the
+	// parent schema. Only skills the caller can access as owner or through
+	// `READ_VOLUME`, `READ_METADATA`, or `MANAGE` are returned.
+	ListSkills(ctx context.Context, request ListSkillsRequest) (*ListSkillsResponse, error)
+
 	// Updates an MCP service. Only the fields named in `update_mask` are
 	// changed; the resource name is immutable. Optionally supply an `etag` to
 	// make the update conditional on the MCP service not having changed since
@@ -258,9 +318,9 @@ type AiGatewayService interface {
 	// it, plus `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the
 	// parent schema.
 	//
-	// Updating `config.provider` cannot change the provider type or switch
-	// between Unity Catalog service-credential authentication and inline
-	// authentication.
+	// Updating `config.provider` cannot change the provider type.
+	// Authentication mode changes require feature availability and support for
+	// both modes on the selected provider.
 	UpdateModelProviderService(ctx context.Context, request UpdateModelProviderServiceRequest) (*ModelProviderService, error)
 
 	// Updates a model service. Only the fields named in `update_mask` are
@@ -277,6 +337,23 @@ type AiGatewayService interface {
 	// `CAN_MANAGE` for you and `CAN_QUERY` for the model service owner. Adding
 	// an inference table additionally requires `CREATE_TABLE`.
 	UpdateModelService(ctx context.Context, request UpdateModelServiceRequest) (*ModelService, error)
+
+	// Updates a skill. Only fields named in `update_mask` are changed;
+	// currently only `comment` is supported. The resource name is immutable.
+	// Optionally supply an `etag` to make the update conditional on the skill
+	// not having changed since it was read. Bundle files, grants, tags, and
+	// ownership are unchanged.
+	//
+	// To update the bundle, add, overwrite (`overwrite=true`), or delete files
+	// under `/Skills/{catalog}/{schema}/{skill}/` with the Files API, then call
+	// FinalizeSkill. Changing bundle files requires being the owner of the
+	// skill or having `READ_VOLUME` and `WRITE_VOLUME` on it; `MANAGE` does not
+	// grant access to bundle files.
+	//
+	// To call UpdateSkill, you must be the owner of the skill or have `MANAGE`
+	// on it, plus `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the
+	// parent schema.
+	UpdateSkill(ctx context.Context, request UpdateSkillRequest) (*Skill, error)
 }
 
 // In Databricks Runtime 13.3 and above, you can add libraries and init scripts

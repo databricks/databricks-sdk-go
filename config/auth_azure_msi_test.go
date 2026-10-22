@@ -28,6 +28,10 @@ func someValidToken(bearer string) any {
 func authenticateRequest(cfg *Config) (*http.Request, error) {
 	cfg.ConfigFile = "/dev/null"
 	cfg.DebugHeaders = true
+	if cfg.HTTPTransport == nil {
+		// Credential-selection tests do not contact discovery or token endpoints.
+		cfg.HTTPTransport = fixtures.MappingTransport{}
+	}
 	req, _ := http.NewRequest("GET", "http://localhost", nil)
 	err := cfg.Authenticate(req)
 	return req, err

@@ -12,8 +12,15 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SandboxService interface {
 
+	// Creates a directory in a sandbox, including missing parents by default.
+	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) (*CreateDirectoryResponse, error)
+
 	// Creates a new Sandbox.
 	CreateSandbox(ctx context.Context, request CreateSandboxRequest) (*Sandbox, error)
+
+	// Deletes a file, symlink, or empty directory, with an option for recursive
+	// deletion. Succeeds if the path is already absent.
+	DeletePath(ctx context.Context, request DeletePathRequest) (*DeletePathResponse, error)
 
 	// Deletes a Sandbox.
 	DeleteSandbox(ctx context.Context, request DeleteSandboxRequest) error
@@ -22,11 +29,26 @@ type SandboxService interface {
 	// captured stdout, stderr and exit code in a single response.
 	ExecuteCommandSync(ctx context.Context, request ExecuteCommandSyncRequest) (*ExecuteCommandSyncResponse, error)
 
+	// Returns metadata for a path without following its final symlink.
+	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
+
 	// Retrieves a Sandbox by name.
 	GetSandbox(ctx context.Context, request GetSandboxRequest) (*Sandbox, error)
 
+	// Lists the tracked command executions (running and completed) in a
+	// sandbox.
+	ListCommands(ctx context.Context, request ListCommandsRequest) (*ListCommandsResponse, error)
+
+	// Lists a directory's immediate children in UTF-8 name order. Later pages
+	// may reflect concurrent changes.
+	ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryContentsResponse, error)
+
 	// Lists all Sandboxes.
 	ListSandboxes(ctx context.Context, request ListSandboxesRequest) (*ListSandboxesResponse, error)
+
+	// Renames a path within a sandbox. The destination must be absent and on
+	// the same filesystem.
+	RenamePath(ctx context.Context, request RenamePathRequest) (*RenamePathResponse, error)
 
 	// Starts a previously stopped Sandbox under the same sandbox name. Returns
 	// NOT_FOUND if there is no stopped sandbox to start for the given name.

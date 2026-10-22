@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/duration"
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
@@ -19,11 +20,11 @@ type App struct {
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
 
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// Maximum number of app instances. Must be set together with
-	// `compute_min_instances`.
+	// Maximum number of app instances the app is configured to run. Must be set
+	// together with `compute_min_instances`.
 	ComputeMaxInstances int `json:"compute_max_instances,omitempty"`
-	// Minimum number of app instances. Must be set together with
-	// `compute_max_instances`.
+	// Minimum number of app instances the app is configured to run. Must be set
+	// together with `compute_max_instances`.
 	ComputeMinInstances int `json:"compute_min_instances,omitempty"`
 
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
@@ -172,6 +173,9 @@ type AppDeployment struct {
 	EnvVars []EnvVar `json:"env_vars,omitempty"`
 	// Git repository to use as the source for the app deployment.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// Deploy-time health check for the app. Verifies the app is responding to
+	// HTTP requests before considering the deployment successful.
+	HealthCheck *AppHealthCheck `json:"health_check,omitempty"`
 	// The mode of which the deployment will manage the source code.
 	Mode AppDeploymentMode `json:"mode,omitempty"`
 	// The workspace file system path of the source code used to create the app
@@ -308,6 +312,25 @@ func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
 }
 
 func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Deploy-time HTTP health check configuration for an app deployment.
+type AppHealthCheck struct {
+	// HTTP path to probe, e.g. "/health" or "/api/status".
+	Path string `json:"path,omitempty"`
+	// Timeout to wait for the health check to pass before failing the
+	// deployment. If not set, a default timeout is used.
+	Timeout *duration.Duration `json:"timeout,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppHealthCheck) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppHealthCheck) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -682,6 +705,8 @@ const AppManifestAppResourceUcSecurableSpecUcSecurableTypeConnection AppManifest
 
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeFunction AppManifestAppResourceUcSecurableSpecUcSecurableType = `FUNCTION`
 
+const AppManifestAppResourceUcSecurableSpecUcSecurableTypeModelService AppManifestAppResourceUcSecurableSpecUcSecurableType = `MODEL_SERVICE`
+
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable AppManifestAppResourceUcSecurableSpecUcSecurableType = `TABLE`
 
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume AppManifestAppResourceUcSecurableSpecUcSecurableType = `VOLUME`
@@ -694,11 +719,11 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Set(v string) error {
 	switch v {
-	case `CONNECTION`, `FUNCTION`, `TABLE`, `VOLUME`:
+	case `CONNECTION`, `FUNCTION`, `MODEL_SERVICE`, `TABLE`, `VOLUME`:
 		*f = AppManifestAppResourceUcSecurableSpecUcSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "MODEL_SERVICE", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -709,6 +734,7 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Values() []AppMan
 	return []AppManifestAppResourceUcSecurableSpecUcSecurableType{
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeConnection,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeFunction,
+		AppManifestAppResourceUcSecurableSpecUcSecurableTypeModelService,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume,
 	}
@@ -1399,6 +1425,8 @@ const AppResourceUcSecurableUcSecurableTypeConnection AppResourceUcSecurableUcSe
 
 const AppResourceUcSecurableUcSecurableTypeFunction AppResourceUcSecurableUcSecurableType = `FUNCTION`
 
+const AppResourceUcSecurableUcSecurableTypeModelService AppResourceUcSecurableUcSecurableType = `MODEL_SERVICE`
+
 const AppResourceUcSecurableUcSecurableTypeTable AppResourceUcSecurableUcSecurableType = `TABLE`
 
 const AppResourceUcSecurableUcSecurableTypeVolume AppResourceUcSecurableUcSecurableType = `VOLUME`
@@ -1411,11 +1439,11 @@ func (f *AppResourceUcSecurableUcSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppResourceUcSecurableUcSecurableType) Set(v string) error {
 	switch v {
-	case `CONNECTION`, `FUNCTION`, `TABLE`, `VOLUME`:
+	case `CONNECTION`, `FUNCTION`, `MODEL_SERVICE`, `TABLE`, `VOLUME`:
 		*f = AppResourceUcSecurableUcSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "MODEL_SERVICE", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -1426,6 +1454,7 @@ func (f *AppResourceUcSecurableUcSecurableType) Values() []AppResourceUcSecurabl
 	return []AppResourceUcSecurableUcSecurableType{
 		AppResourceUcSecurableUcSecurableTypeConnection,
 		AppResourceUcSecurableUcSecurableTypeFunction,
+		AppResourceUcSecurableUcSecurableTypeModelService,
 		AppResourceUcSecurableUcSecurableTypeTable,
 		AppResourceUcSecurableUcSecurableTypeVolume,
 	}
@@ -1454,11 +1483,11 @@ func (s AppThumbnail) MarshalJSON() ([]byte, error) {
 
 type AppUpdate struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// Maximum number of app instances. Must be set together with
-	// `compute_min_instances`.
+	// Maximum number of app instances the app is configured to run. Must be set
+	// together with `compute_min_instances`.
 	ComputeMaxInstances int `json:"compute_max_instances,omitempty"`
-	// Minimum number of app instances. Must be set together with
-	// `compute_max_instances`.
+	// Minimum number of app instances the app is configured to run. Must be set
+	// together with `compute_max_instances`.
 	ComputeMinInstances int `json:"compute_min_instances,omitempty"`
 
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
@@ -1596,7 +1625,7 @@ func (f *ApplicationState) Type() string {
 type ApplicationStatus struct {
 	// Application status message
 	Message string `json:"message,omitempty"`
-	// The number of running instances of this application.
+	// The number of app instances whose application process is running.
 	RunningInstances int `json:"running_instances,omitempty"`
 	// State of the application.
 	State ApplicationState `json:"state,omitempty"`
@@ -1727,7 +1756,8 @@ func (f *ComputeState) Type() string {
 }
 
 type ComputeStatus struct {
-	// The number of compute instances used and billed for this application.
+	// The number of active compute instances currently used and billed for this
+	// application.
 	ActiveInstances int `json:"active_instances,omitempty"`
 	// Compute status message
 	Message string `json:"message,omitempty"`

@@ -1063,6 +1063,10 @@ type ConnectionInfo struct {
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
+	// A map of option names to UC Secret references. Keys are connection option
+	// names (same as in OptionsKVPairs) and values are UC Secret fully
+	// qualified names.
+	Secrets map[string]string `json:"secrets,omitempty"`
 
 	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
@@ -1386,6 +1390,10 @@ type CreateConnection struct {
 	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
+	// A map of option names to UC Secret references. Keys are connection option
+	// names (same as in OptionsKVPairs) and values are UC Secret fully
+	// qualified names.
+	Secrets map[string]string `json:"secrets,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1987,6 +1995,24 @@ type CreateSecretRequest struct {
 }
 
 func (s *CreateSecretRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type CreateSkillRequest struct {
+	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
+	// `{...}` component is capped at 255 characters individually.
+	Parent string `json:"-" url:"parent"`
+	// The skill to create. `comment` is the only accepted client input and may
+	// be omitted. Do not set `name`; the server derives it from `parent` and
+	// `skill_id`.
+	Skill Skill `json:"skill"`
+	// Name for the skill, e.g. "basic-math". The server normalizes this
+	// identifier to lowercase. It is independent of the bundle name read from
+	// SKILL.md.
+	SkillId string `json:"-" url:"skill_id"`
+}
+
+func (s *CreateSkillRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2844,6 +2870,28 @@ func (s *DeleteSecretRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type DeleteSkillRequest struct {
+	// Optimistic concurrency token from the most recent read. When set, the
+	// delete succeeds only if the resource has not changed. Leave unset for an
+	// unconditional delete. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
+	Etag string `json:"-" url:"etag,omitempty"`
+	// Full resource name of the skill. Format:
+	// `skills/{catalog}.{schema}.{skill}`. Each `{...}` component is capped at
+	// 255 characters individually.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteSkillRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSkillRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteStorageCredentialRequest struct {
 	// Force an update even if there are dependent external locations or
 	// external tables (when purpose is **STORAGE**) or dependent services (when
@@ -3675,6 +3723,17 @@ type FileEventQueue struct {
 }
 
 func (s *FileEventQueue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type FinalizeSkillRequest struct {
+	// Full resource name of the skill. Format:
+	// `skills/{catalog}.{schema}.{skill}`. Each `{...}` component is capped at
+	// 255 characters individually.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *FinalizeSkillRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -4843,6 +4902,17 @@ func (s GetSecretRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetSkillRequest struct {
+	// Full resource name of the skill. Format:
+	// `skills/{catalog}.{schema}.{skill}`. Each `{...}` component is capped at
+	// 255 characters individually.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetSkillRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetStorageCredentialRequest struct {
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
@@ -4900,6 +4970,24 @@ func (s *GetWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A governed tag referenced by a policy condition.
+type GovernedTagReference struct {
+	// The governed tag key.
+	TagKey string `json:"tag_key"`
+	// The governed tag value, when the policy references a specific value.
+	TagValue string `json:"tag_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GovernedTagReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GovernedTagReference) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5463,8 +5551,8 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListMcpServicesRequest struct {
-	// Maximum number of MCP services to return. Defaults to 100 when unset or
-	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
+	// Maximum number of MCP services to return. Defaults to 200 when unset or
+	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5593,8 +5681,8 @@ func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListModelProviderServicesRequest struct {
-	// Maximum number of provider services to return. Defaults to 100 when unset
-	// or 0; the maximum is 100. Use `page_token` to retrieve additional pages.
+	// Maximum number of provider services to return. Defaults to 200 when unset
+	// or 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5679,8 +5767,8 @@ func (s ListModelProviderServicesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListModelServicesRequest struct {
-	// Maximum number of model services to return. Defaults to 100 when unset or
-	// 0; the maximum is 100. Use `page_token` to retrieve additional pages.
+	// Maximum number of model services to return. Defaults to 200 when unset or
+	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -6110,6 +6198,48 @@ func (s *ListSecretsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListSecretsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSkillsRequest struct {
+	// Maximum number of skills to return. Defaults to 200 when unset or 0; the
+	// maximum is 200. Use `page_token` to retrieve additional pages.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token from a previous request.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
+	// `{...}` component is capped at 255 characters individually.
+	//
+	// Required: skill listing is schema-scoped, so `parent` must be set; an
+	// unset or empty `parent` is rejected with INVALID_PARAMETER_VALUE.
+	Parent string `json:"-" url:"parent"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSkillsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSkillsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response for listing skills.
+type ListSkillsResponse struct {
+	// Pagination token for retrieving the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The list of skills.
+	Skills []Skill `json:"skills,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSkillsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSkillsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -6688,6 +6818,8 @@ type ModelProviderServiceConfig struct {
 
 	AzureOpenai *ModelProviderServiceConfigAzureOpenAiProviderConfig `json:"azure_openai,omitempty"`
 
+	BedrockMantle *ModelProviderServiceConfigAmazonBedrockProviderConfig `json:"bedrock_mantle,omitempty"`
+
 	Custom *ModelProviderServiceConfigCustomProviderConfig `json:"custom,omitempty"`
 	// Whether to forward incoming HTTP headers to the upstream provider.
 	// Defaults to false and is configured for the entire provider service, not
@@ -6702,7 +6834,9 @@ type ModelProviderServiceConfig struct {
 	// provider-native API types. Defaults to false. When true, these paths are
 	// forwarded unchanged to the upstream provider. When false, only recognized
 	// API paths are served. Enabling this broadens the upstream API surface
-	// exposed through the provider service.
+	// exposed through the provider service. AI Gateway cannot evaluate Service
+	// Policies on opaque unmanaged requests, so unmanaged requests are rejected
+	// whenever Service Policies are attached to this securable.
 	ForwardUnmanagedPaths bool `json:"forward_unmanaged_paths,omitempty"`
 
 	GeminiEnterprise *ModelProviderServiceConfigGeminiEnterpriseProviderConfig `json:"gemini_enterprise,omitempty"`
@@ -6714,6 +6848,9 @@ type ModelProviderServiceConfig struct {
 	MicrosoftFoundry *ModelProviderServiceConfigMicrosoftFoundryProviderConfig `json:"microsoft_foundry,omitempty"`
 
 	Openai *ModelProviderServiceConfigOpenAiProviderConfig `json:"openai,omitempty"`
+	// Pricing configuration for this provider service. An explicitly empty
+	// configuration is retained on Create and Update and applies no adjustment.
+	Pricing *ModelProviderServiceConfigProviderPricingConfig `json:"pricing,omitempty"`
 	// External model provider. Required on Create and immutable thereafter. Set
 	// the matching provider-specific configuration, such as `openai`,
 	// `azure_openai`, or `amazon_bedrock`.
@@ -6919,8 +7056,7 @@ func (s ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth) MarshalJSON() 
 	return marshal.Marshal(s)
 }
 
-// Custom OpenAI-compatible provider configuration with bearer-token
-// authentication.
+// Custom OpenAI-compatible provider configuration.
 type ModelProviderServiceConfigCustomProviderConfig struct {
 	// Endpoint and authentication configuration for the custom provider.
 	Direct *ModelProviderServiceConfigCustomProviderDirectConfig `json:"direct,omitempty"`
@@ -6988,6 +7124,8 @@ const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTy
 
 const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAzureOpenai ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI`
 
+const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeBedrockMantle ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE`
+
 const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeCustom ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM`
 
 const ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeGeminiEnterprise ModelProviderServiceConfigExternalModelProviderType = `EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE`
@@ -7004,11 +7142,11 @@ func (f *ModelProviderServiceConfigExternalModelProviderType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ModelProviderServiceConfigExternalModelProviderType) Set(v string) error {
 	switch v {
-	case `EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK`, `EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC`, `EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI`, `EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM`, `EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE`, `EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY`, `EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI`:
+	case `EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK`, `EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC`, `EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI`, `EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE`, `EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM`, `EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE`, `EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY`, `EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI`:
 		*f = ModelProviderServiceConfigExternalModelProviderType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK", "EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC", "EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI", "EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM", "EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE", "EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY", "EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK", "EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC", "EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI", "EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE", "EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM", "EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE", "EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY", "EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI"`, v)
 	}
 }
 
@@ -7020,6 +7158,7 @@ func (f *ModelProviderServiceConfigExternalModelProviderType) Values() []ModelPr
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAmazonBedrock,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAnthropic,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeAzureOpenai,
+		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeBedrockMantle,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeCustom,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeGeminiEnterprise,
 		ModelProviderServiceConfigExternalModelProviderTypeExternalModelProviderTypeMicrosoftFoundry,
@@ -7054,6 +7193,14 @@ type ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig struct {
 	// GCP region of the Gemini Enterprise endpoint (e.g., `us-central1`).
 	// Required on Create.
 	Region string `json:"region,omitempty"`
+	// Reference to a Unity Catalog service credential authorizing Gemini
+	// Enterprise requests. On Create, supply `service_credential.name` as
+	// `credentials/{name}`; required when using service-credential
+	// authentication and mutually exclusive with `api_key`. The credential is
+	// referenced by name; its value is not carried here. On read, the resolved
+	// `id` and `is_deleted` are also populated. Supported only on GCP-hosted
+	// workspaces.
+	ServiceCredential *ModelProviderServiceConfigServiceCredential `json:"service_credential,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7119,21 +7266,37 @@ func (s ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig) MarshalJ
 	return marshal.Marshal(s)
 }
 
-// Model target configuration for an external model destination.
+// Model target configuration shared by model provider service targets and
+// external model destinations on model services.
 type ModelProviderServiceConfigModelTargetConfig struct {
+	// Relative path appended to a custom provider's `base_url` for this model,
+	// such as `serve/openai/chat`. Nonempty values are only supported for
+	// custom model provider service targets; other provider types reject them.
+	// Model service destinations do not support this field. Do not include URI
+	// templates, queries, or fragments. When empty, `base_url` is used
+	// unchanged.
+	EndpointRoute string `json:"endpoint_route,omitempty"`
 	// Provider-side model identifier, such as `gpt-5` or `claude-opus-4-7`.
 	// This identifies a model at the upstream provider; it is not a Unity
 	// Catalog model resource.
 	Model string `json:"model"`
 	// Provider-native API types supported by this model, such as
-	// `openai/v1/chat/completions`. At least one value is required. AI Gateway
-	// uses these values to translate requests and responses. At most 64 entries
-	// of 256 characters each are allowed.
+	// `openai/v1/chat/completions`. A model provider service target requires at
+	// least one value. A model service destination may omit the list to use the
+	// matching provider service target's types when available. AI Gateway uses
+	// the selected types for translation. At most 64 entries of 256 characters
+	// each are allowed.
 	NativeApiTypes []string `json:"native_api_types,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelProviderServiceConfigModelTargetConfig) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelProviderServiceConfigModelTargetConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // OpenAI provider configuration.
@@ -7169,6 +7332,26 @@ func (s ModelProviderServiceConfigOpenAiProviderDirectConfig) MarshalJSON() ([]b
 	return marshal.Marshal(s)
 }
 
+// Pricing adjustments applied to this provider service's external-model spend
+// estimates.
+type ModelProviderServiceConfigProviderPricingConfig struct {
+	// Provider-wide adjustment to external-model spend estimates in basis
+	// points: 2000 = 20% off; -2000 = a 20% markup. Negative values have no
+	// lower bound beyond the int32 range. Values cannot exceed 10000 (100%
+	// off). An omitted value or zero leaves the estimate unchanged.
+	DefaultDiscountBasisPoints int `json:"default_discount_basis_points,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelProviderServiceConfigProviderPricingConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelProviderServiceConfigProviderPricingConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A secret value supplied as part of an inline provider config. The caller
 // supplies the value as inline `plaintext` on writes; the platform stores it
 // encrypted. The `plaintext` field is `INPUT_ONLY` and never round-trips on
@@ -7178,6 +7361,13 @@ type ModelProviderServiceConfigProviderSecret struct {
 	// reads. Get and List responses omit `plaintext`; the enclosing secret
 	// object remains present to indicate that a secret is configured.
 	Plaintext string `json:"plaintext,omitempty"`
+	// Reference to a customer-owned UC Secret that carries this secret value.
+	// The value is read at invoke time under the model provider service owner's
+	// access and is never copied onto the model provider service, so rotating
+	// the UC Secret takes effect with no change to the model provider service.
+	// On Create, supply `secret_reference.name` as
+	// `secrets/{catalog}.{schema}.{secret}`.
+	SecretReference *ModelProviderServiceConfigSecretReference `json:"secret_reference,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7188,6 +7378,19 @@ func (s *ModelProviderServiceConfigProviderSecret) UnmarshalJSON(b []byte) error
 
 func (s ModelProviderServiceConfigProviderSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Reference to a customer-owned UC Secret backing a secret-bearing provider
+// field, in the `ProviderSecret.secret_reference` arm.
+type ModelProviderServiceConfigSecretReference struct {
+	// Resource name of the bound UC Secret, in the form
+	// `secrets/{catalog}.{schema}.{secret}`. On Create the caller supplies the
+	// name here. On read it reflects the secret's current name at read time.
+	Name string `json:"name"`
+}
+
+func (s *ModelProviderServiceConfigSecretReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The customer-owned Unity Catalog service credential a model provider service
@@ -8533,6 +8736,9 @@ type PolicyInfo struct {
 	// Type of securables that the policy should take effect on. Required on
 	// create and optional on update.
 	ForSecurableType SecurableType `json:"for_securable_type"`
+	// Governed tag keys and values referenced by this policy's conditions and
+	// function arguments. Output only.
+	GovernedTags []GovernedTagReference `json:"governed_tags,omitempty"`
 	// Options for grant policies. Valid only if `policy_type` is
 	// `POLICY_TYPE_GRANT`. Required on create and optional on update. When
 	// specified on update, the new options will replace the existing options as
@@ -9475,6 +9681,8 @@ const SecurableKindTableForeignDatabricks SecurableKind = `TABLE_FOREIGN_DATABRI
 
 const SecurableKindTableForeignDeltasharing SecurableKind = `TABLE_FOREIGN_DELTASHARING`
 
+const SecurableKindTableForeignDeltaDeltasharing SecurableKind = `TABLE_FOREIGN_DELTA_DELTASHARING`
+
 const SecurableKindTableForeignHiveMetastore SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE`
 
 const SecurableKindTableForeignHiveMetastoreDbfsExternal SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`
@@ -9569,11 +9777,11 @@ func (f *SecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableKind) Set(v string) error {
 	switch v {
-	case `TABLE_DB_STORAGE`, `TABLE_DELTA`, `TABLE_DELTASHARING`, `TABLE_DELTASHARING_MUTABLE`, `TABLE_DELTASHARING_OPEN_DIR_BASED`, `TABLE_DELTA_EXTERNAL`, `TABLE_DELTA_ICEBERG_DELTASHARING`, `TABLE_DELTA_ICEBERG_MANAGED`, `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`, `TABLE_EXTERNAL`, `TABLE_FEATURE_STORE`, `TABLE_FEATURE_STORE_EXTERNAL`, `TABLE_FOREIGN_BIGQUERY`, `TABLE_FOREIGN_DATABRICKS`, `TABLE_FOREIGN_DELTASHARING`, `TABLE_FOREIGN_HIVE_METASTORE`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`, `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_VIEW`, `TABLE_FOREIGN_MONGODB`, `TABLE_FOREIGN_MYSQL`, `TABLE_FOREIGN_NETSUITE`, `TABLE_FOREIGN_ORACLE`, `TABLE_FOREIGN_POSTGRESQL`, `TABLE_FOREIGN_REDSHIFT`, `TABLE_FOREIGN_SALESFORCE`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`, `TABLE_FOREIGN_SNOWFLAKE`, `TABLE_FOREIGN_SQLDW`, `TABLE_FOREIGN_SQLSERVER`, `TABLE_FOREIGN_TERADATA`, `TABLE_FOREIGN_WORKDAY_RAAS`, `TABLE_ICEBERG_UNIFORM_MANAGED`, `TABLE_INTERNAL`, `TABLE_MANAGED_POSTGRESQL`, `TABLE_MATERIALIZED_VIEW`, `TABLE_MATERIALIZED_VIEW_DELTASHARING`, `TABLE_METRIC_VIEW`, `TABLE_METRIC_VIEW_DELTASHARING`, `TABLE_ONLINE_VECTOR_INDEX_DIRECT`, `TABLE_ONLINE_VECTOR_INDEX_REPLICA`, `TABLE_ONLINE_VIEW`, `TABLE_STANDARD`, `TABLE_STREAMING_LIVE_TABLE`, `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`, `TABLE_SYSTEM`, `TABLE_SYSTEM_DELTASHARING`, `TABLE_VIEW`, `TABLE_VIEW_DELTASHARING`:
+	case `TABLE_DB_STORAGE`, `TABLE_DELTA`, `TABLE_DELTASHARING`, `TABLE_DELTASHARING_MUTABLE`, `TABLE_DELTASHARING_OPEN_DIR_BASED`, `TABLE_DELTA_EXTERNAL`, `TABLE_DELTA_ICEBERG_DELTASHARING`, `TABLE_DELTA_ICEBERG_MANAGED`, `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`, `TABLE_EXTERNAL`, `TABLE_FEATURE_STORE`, `TABLE_FEATURE_STORE_EXTERNAL`, `TABLE_FOREIGN_BIGQUERY`, `TABLE_FOREIGN_DATABRICKS`, `TABLE_FOREIGN_DELTASHARING`, `TABLE_FOREIGN_DELTA_DELTASHARING`, `TABLE_FOREIGN_HIVE_METASTORE`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`, `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_VIEW`, `TABLE_FOREIGN_MONGODB`, `TABLE_FOREIGN_MYSQL`, `TABLE_FOREIGN_NETSUITE`, `TABLE_FOREIGN_ORACLE`, `TABLE_FOREIGN_POSTGRESQL`, `TABLE_FOREIGN_REDSHIFT`, `TABLE_FOREIGN_SALESFORCE`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`, `TABLE_FOREIGN_SNOWFLAKE`, `TABLE_FOREIGN_SQLDW`, `TABLE_FOREIGN_SQLSERVER`, `TABLE_FOREIGN_TERADATA`, `TABLE_FOREIGN_WORKDAY_RAAS`, `TABLE_ICEBERG_UNIFORM_MANAGED`, `TABLE_INTERNAL`, `TABLE_MANAGED_POSTGRESQL`, `TABLE_MATERIALIZED_VIEW`, `TABLE_MATERIALIZED_VIEW_DELTASHARING`, `TABLE_METRIC_VIEW`, `TABLE_METRIC_VIEW_DELTASHARING`, `TABLE_ONLINE_VECTOR_INDEX_DIRECT`, `TABLE_ONLINE_VECTOR_INDEX_REPLICA`, `TABLE_ONLINE_VIEW`, `TABLE_STANDARD`, `TABLE_STREAMING_LIVE_TABLE`, `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`, `TABLE_SYSTEM`, `TABLE_SYSTEM_DELTASHARING`, `TABLE_VIEW`, `TABLE_VIEW_DELTASHARING`:
 		*f = SecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "TABLE_DB_STORAGE", "TABLE_DELTA", "TABLE_DELTASHARING", "TABLE_DELTASHARING_MUTABLE", "TABLE_DELTASHARING_OPEN_DIR_BASED", "TABLE_DELTA_EXTERNAL", "TABLE_DELTA_ICEBERG_DELTASHARING", "TABLE_DELTA_ICEBERG_MANAGED", "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE", "TABLE_EXTERNAL", "TABLE_FEATURE_STORE", "TABLE_FEATURE_STORE_EXTERNAL", "TABLE_FOREIGN_BIGQUERY", "TABLE_FOREIGN_DATABRICKS", "TABLE_FOREIGN_DELTASHARING", "TABLE_FOREIGN_HIVE_METASTORE", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW", "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_VIEW", "TABLE_FOREIGN_MONGODB", "TABLE_FOREIGN_MYSQL", "TABLE_FOREIGN_NETSUITE", "TABLE_FOREIGN_ORACLE", "TABLE_FOREIGN_POSTGRESQL", "TABLE_FOREIGN_REDSHIFT", "TABLE_FOREIGN_SALESFORCE", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW", "TABLE_FOREIGN_SNOWFLAKE", "TABLE_FOREIGN_SQLDW", "TABLE_FOREIGN_SQLSERVER", "TABLE_FOREIGN_TERADATA", "TABLE_FOREIGN_WORKDAY_RAAS", "TABLE_ICEBERG_UNIFORM_MANAGED", "TABLE_INTERNAL", "TABLE_MANAGED_POSTGRESQL", "TABLE_MATERIALIZED_VIEW", "TABLE_MATERIALIZED_VIEW_DELTASHARING", "TABLE_METRIC_VIEW", "TABLE_METRIC_VIEW_DELTASHARING", "TABLE_ONLINE_VECTOR_INDEX_DIRECT", "TABLE_ONLINE_VECTOR_INDEX_REPLICA", "TABLE_ONLINE_VIEW", "TABLE_STANDARD", "TABLE_STREAMING_LIVE_TABLE", "TABLE_STREAMING_LIVE_TABLE_DELTASHARING", "TABLE_SYSTEM", "TABLE_SYSTEM_DELTASHARING", "TABLE_VIEW", "TABLE_VIEW_DELTASHARING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "TABLE_DB_STORAGE", "TABLE_DELTA", "TABLE_DELTASHARING", "TABLE_DELTASHARING_MUTABLE", "TABLE_DELTASHARING_OPEN_DIR_BASED", "TABLE_DELTA_EXTERNAL", "TABLE_DELTA_ICEBERG_DELTASHARING", "TABLE_DELTA_ICEBERG_MANAGED", "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE", "TABLE_EXTERNAL", "TABLE_FEATURE_STORE", "TABLE_FEATURE_STORE_EXTERNAL", "TABLE_FOREIGN_BIGQUERY", "TABLE_FOREIGN_DATABRICKS", "TABLE_FOREIGN_DELTASHARING", "TABLE_FOREIGN_DELTA_DELTASHARING", "TABLE_FOREIGN_HIVE_METASTORE", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW", "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_VIEW", "TABLE_FOREIGN_MONGODB", "TABLE_FOREIGN_MYSQL", "TABLE_FOREIGN_NETSUITE", "TABLE_FOREIGN_ORACLE", "TABLE_FOREIGN_POSTGRESQL", "TABLE_FOREIGN_REDSHIFT", "TABLE_FOREIGN_SALESFORCE", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW", "TABLE_FOREIGN_SNOWFLAKE", "TABLE_FOREIGN_SQLDW", "TABLE_FOREIGN_SQLSERVER", "TABLE_FOREIGN_TERADATA", "TABLE_FOREIGN_WORKDAY_RAAS", "TABLE_ICEBERG_UNIFORM_MANAGED", "TABLE_INTERNAL", "TABLE_MANAGED_POSTGRESQL", "TABLE_MATERIALIZED_VIEW", "TABLE_MATERIALIZED_VIEW_DELTASHARING", "TABLE_METRIC_VIEW", "TABLE_METRIC_VIEW_DELTASHARING", "TABLE_ONLINE_VECTOR_INDEX_DIRECT", "TABLE_ONLINE_VECTOR_INDEX_REPLICA", "TABLE_ONLINE_VIEW", "TABLE_STANDARD", "TABLE_STREAMING_LIVE_TABLE", "TABLE_STREAMING_LIVE_TABLE_DELTASHARING", "TABLE_SYSTEM", "TABLE_SYSTEM_DELTASHARING", "TABLE_VIEW", "TABLE_VIEW_DELTASHARING"`, v)
 	}
 }
 
@@ -9603,6 +9811,7 @@ func (f *SecurableKind) Values() []SecurableKind {
 		SecurableKindTableForeignBigquery,
 		SecurableKindTableForeignDatabricks,
 		SecurableKindTableForeignDeltasharing,
+		SecurableKindTableForeignDeltaDeltasharing,
 		SecurableKindTableForeignHiveMetastore,
 		SecurableKindTableForeignHiveMetastoreDbfsExternal,
 		SecurableKindTableForeignHiveMetastoreDbfsManaged,
@@ -9819,6 +10028,62 @@ type SetRegisteredModelAliasRequest struct {
 
 func (s *SetRegisteredModelAliasRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// A Skill is an agentskills.io bundle registered in Unity Catalog. Clients
+// transfer bundle bytes through the Files API. FinalizeSkill reads the uploaded
+// SKILL.md and projects its frontmatter onto the Skill metadata.
+type Skill struct {
+	// Name from the most recently successfully finalized SKILL.md. It may
+	// differ from the final component of the Skill resource name. Unset until
+	// FinalizeSkill succeeds.
+	BundleName string `json:"bundle_name,omitempty"`
+	// User-provided comment for the skill. Free-text, user-editable via
+	// UpdateSkill (listed in its `update_mask`). DISTINCT from `description`,
+	// which is the server-parsed, OUTPUT_ONLY SKILL.md frontmatter value:
+	// `comment` is the customer's own annotation and is preserved across bundle
+	// re-uploads. When `comment` is in the update mask, omitting it clears the
+	// field, while an explicitly empty string is retained.
+	Comment string `json:"comment,omitempty"`
+	// Time the skill was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Creator identity.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Description from the most recently successfully finalized SKILL.md. Unset
+	// until FinalizeSkill succeeds.
+	Description string `json:"description,omitempty"`
+	// Owner of the skill.
+	EffectiveOwner string `json:"effective_owner,omitempty"`
+	// Optimistic concurrency token returned on every read. To make an Update or
+	// Delete conditional, pass the last-read value in that request's `etag`
+	// field. In REST responses, this value is a base64 string; URL-encode it
+	// when setting the `etag` query parameter.
+	Etag string `json:"etag,omitempty"`
+	// Time of the most recent successful FinalizeSkill. Unset until one
+	// succeeds.
+	FinalizeTime *time.Time `json:"finalize_time,omitempty"`
+	// Metastore hosting the skill.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// Resource name of the skill. Format: `skills/{catalog}.{schema}.{skill}`.
+	// Each `{...}` component is capped at 255 characters individually.
+	// Server-derived on Create from `parent` + `skill_id`; required and
+	// immutable on Update/Get/Delete.
+	Name string `json:"name,omitempty"`
+	// Time of the most recent Skill metadata mutation. Uploading bundle files
+	// alone does not change this value.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// Identity of the last updater.
+	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Skill) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Skill) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SpecialDestination string
@@ -10646,6 +10911,10 @@ type UpdateConnection struct {
 	Options map[string]string `json:"options"`
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
+	// A map of option names to UC Secret references. Keys are connection option
+	// names (same as in OptionsKVPairs) and values are UC Secret fully
+	// qualified names.
+	Secrets map[string]string `json:"secrets,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10956,8 +11225,15 @@ type UpdateModelProviderServiceRequest struct {
 	// provider-specific value (for example, `config.openai`; the mask path
 	// remains `config.provider`); `config.allow_all_targets`, `config.targets`,
 	// `config.forward_headers`, `config.forward_query_parameters`,
-	// `config.forward_unmanaged_paths`, `config.rate_limits`, or
-	// `config.inference_table`. The provider type is immutable.
+	// `config.forward_unmanaged_paths`, `config.rate_limits`,
+	// `config.pricing.default_discount_basis_points`, or
+	// `config.inference_table`. For a pricing update, an explicitly empty
+	// `pricing` object clears the discount but retains the object; omitting
+	// `pricing` clears it. `config.pricing` is not a supported mask path. The
+	// provider type is immutable. A `config` or `config.provider` replacement
+	// that carries no authentication material preserves the existing
+	// authentication binding; input-only plaintext does not need to be read
+	// back and re-sent.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -11297,6 +11573,36 @@ type UpdateSecretRequest struct {
 
 func (s *UpdateSecretRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type UpdateSkillRequest struct {
+	// Optimistic concurrency token from the most recent read. When set, the
+	// update succeeds only if the resource has not changed. Leave unset for an
+	// unconditional update. For REST requests, URL-encode the base64 string
+	// returned by the API when setting the `etag` query parameter.
+	Etag string `json:"-" url:"etag,omitempty"`
+	// Resource name of the skill. Format: `skills/{catalog}.{schema}.{skill}`.
+	// Each `{...}` component is capped at 255 characters individually.
+	// Server-derived on Create from `parent` + `skill_id`; required and
+	// immutable on Update/Get/Delete.
+	Name string `json:"-" url:"-"`
+	// The skill with the updated field values. `name` identifies the resource
+	// (`skills/{catalog}.{schema}.{skill}`); only fields listed in
+	// `update_mask` are applied.
+	Skill Skill `json:"skill"`
+	// Fields to update; validated against `skill`. REQUIRED, matching the
+	// sibling Update RPCs. `comment` is the only mutable field.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateSkillRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateSkillRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateStorageCredential struct {

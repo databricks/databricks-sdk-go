@@ -130,6 +130,10 @@ type CreateServicePrincipalSecretRequest struct {
 	// The lifetime of the secret in seconds. If this parameter is not provided,
 	// the secret will have a default lifetime of 730 days (63072000s).
 	Lifetime string `json:"lifetime,omitempty"`
+	// OAuth API scopes to bind to the secret; a minted token cannot exceed
+	// them. Empty = unrestricted (all-apis). E.g. all-apis, sql,
+	// iam.groups:read.
+	Scopes []string `json:"scopes,omitempty"`
 	// The service principal ID.
 	ServicePrincipalId string `json:"-" url:"-"`
 
@@ -152,6 +156,8 @@ type CreateServicePrincipalSecretResponse struct {
 	ExpireTime string `json:"expire_time,omitempty"`
 	// ID of the secret
 	Id string `json:"id,omitempty"`
+	// OAuth API scopes bound to this secret. Empty = unrestricted (all-apis).
+	Scopes []string `json:"scopes,omitempty"`
 	// Secret Value
 	Secret string `json:"secret,omitempty"`
 	// Secret Hash
@@ -232,7 +238,9 @@ type FederationPolicy struct {
 	// which does not need to be specified in create or update requests. If
 	// specified in a request, must match the value in the request URL.
 	Name string `json:"name,omitempty"`
-
+	// audit_mode INCLUDE is required on both this message field and its leaf
+	// fields so the OIDC policy configuration is captured in create/update
+	// audit logs (see go/auditlogs).
 	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
 	// The ID of the federation policy. Output only.
 	PolicyId string `json:"policy_id,omitempty"`
@@ -634,6 +642,8 @@ type SecretInfo struct {
 	ExpireTime string `json:"expire_time,omitempty"`
 	// ID of the secret
 	Id string `json:"id,omitempty"`
+	// OAuth API scopes bound to this secret. Empty = unrestricted (all-apis).
+	Scopes []string `json:"scopes,omitempty"`
 	// Secret Hash
 	SecretHash string `json:"secret_hash,omitempty"`
 	// Status of the secret

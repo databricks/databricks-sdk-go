@@ -408,7 +408,7 @@ func (a *databaseImpl) internalListDatabaseInstances(ctx context.Context, reques
 	return &listDatabaseInstancesResponse, err
 }
 
-// This API is currently unimplemented, but exposed for Terraform support.
+// List synced database tables in a Database Instance.
 func (a *databaseImpl) ListSyncedDatabaseTables(ctx context.Context, request ListSyncedDatabaseTablesRequest) listing.Iterator[SyncedDatabaseTable] {
 
 	getNextPage := func(ctx context.Context, req ListSyncedDatabaseTablesRequest) (*ListSyncedDatabaseTablesResponse, error) {
@@ -433,7 +433,7 @@ func (a *databaseImpl) ListSyncedDatabaseTables(ctx context.Context, request Lis
 	return iterator
 }
 
-// This API is currently unimplemented, but exposed for Terraform support.
+// List synced database tables in a Database Instance.
 func (a *databaseImpl) ListSyncedDatabaseTablesAll(ctx context.Context, request ListSyncedDatabaseTablesRequest) ([]SyncedDatabaseTable, error) {
 	iterator := a.ListSyncedDatabaseTables(ctx, request)
 	return listing.ToSlice[SyncedDatabaseTable](ctx, iterator)

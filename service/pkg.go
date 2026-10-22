@@ -8,6 +8,8 @@
 //
 // - [agentbricks.AgentBricksAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
+// - [agentkit.AgentKitAPI]: APIs for managing agent memory and durable session state.
+//
 // - [aifunctions.AiFunctionsAPI]: Transform and enrich data with AI on Databricks.
 //
 // - [catalog.AiGatewayAPI]: Govern AI workloads in Unity Catalog.
@@ -144,7 +146,7 @@
 //
 // - [catalog.ExternalMetadataAPI]: External Metadata objects enable customers to register and manage metadata about external systems within Unity Catalog.
 //
-// - [ml.FeatureEngineeringAPI]: [description].
+// - [ml.FeatureEngineeringAPI]: Feature Engineering provides APIs for managing features and materialized features.
 //
 // - [ml.FeatureStoreAPI]: A feature store is a centralized repository that enables data scientists to find and share features.
 //
@@ -180,7 +182,7 @@
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
-// - [knowledgeassistants.KnowledgeAssistantsAPI]: Manage Knowledge Assistants and related resources.
+// - [knowledgeassistants.KnowledgeAssistantsAPI]: Manage legacy Knowledge Assistants and related resources.
 //
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
 //
@@ -239,6 +241,8 @@
 // - [postgres.PostgresAPI]: Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including projects, branches, compute endpoints, and roles.
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
+//
+// - [networking.PrivateNetworkGatewaysAPI]: These APIs manage private network gateways under network connectivity configurations.
 //
 // - [marketplace.ProviderExchangeFiltersAPI]: Marketplace exchanges filters curate which groups can access an exchange.
 //
@@ -330,7 +334,7 @@
 //
 // - [catalog.AccountStorageCredentialsAPI]: These APIs manage storage credentials for a particular metastore.
 //
-// - [supervisoragents.SupervisorAgentsAPI]: Manage Supervisor Agents and related resources.
+// - [supervisoragents.SupervisorAgentsAPI]: Manage legacy Supervisor Agents and related resources.
 //
 // - [catalog.SystemSchemasAPI]: A system schema is a schema that lives within the system catalog.
 //
@@ -387,6 +391,7 @@ package service
 
 import (
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/agentkit"
 	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
@@ -436,6 +441,7 @@ var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *agentbricks.AgentBricksAPI                         = nil
+	_ *agentkit.AgentKitAPI                               = nil
 	_ *aifunctions.AiFunctionsAPI                         = nil
 	_ *catalog.AiGatewayAPI                               = nil
 	_ *aisearch.AiSearchAPI                               = nil
@@ -552,6 +558,7 @@ var (
 	_ *compute.PolicyFamiliesAPI                          = nil
 	_ *postgres.PostgresAPI                               = nil
 	_ *provisioning.PrivateAccessAPI                      = nil
+	_ *networking.PrivateNetworkGatewaysAPI               = nil
 	_ *marketplace.ProviderExchangeFiltersAPI             = nil
 	_ *marketplace.ProviderExchangesAPI                   = nil
 	_ *marketplace.ProviderFilesAPI                       = nil

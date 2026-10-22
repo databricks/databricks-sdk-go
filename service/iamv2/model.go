@@ -49,6 +49,29 @@ func (s *CreateGroupRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type CreateIdentityVisibilityFilterRequest struct {
+	// Required. The filter to create. Set `principal_type` to `GROUP` and
+	// specify exactly one of `exact` or `prefix`. The server assigns the
+	// resource name; any supplied `name` is ignored.
+	IdentityVisibilityFilter IdentityVisibilityFilter `json:"identity_visibility_filter"`
+	// Optional. The ID to use for the filter, which becomes the final component
+	// of its resource name. If not specified or empty, the server generates
+	// one. Must not contain `/`.
+	IdentityVisibilityFilterId string `json:"-" url:"identity_visibility_filter_id,omitempty"`
+	// Required. The parent account. Format: accounts/{account_id}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateIdentityVisibilityFilterRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateIdentityVisibilityFilterRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateServicePrincipalProxyRequest struct {
 	// Required. Service principal to be created in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
@@ -164,6 +187,16 @@ type DeleteGroupRequest struct {
 }
 
 func (s *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type DeleteIdentityVisibilityFilterRequest struct {
+	// Required. The resource name of the filter. Format:
+	// accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteIdentityVisibilityFilterRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -321,6 +354,19 @@ func (f *Entitlement) Values() []Entitlement {
 // Type always returns Entitlement to satisfy [pflag.Value] interface
 func (f *Entitlement) Type() string {
 	return "Entitlement"
+}
+
+// An exact-match rule that matches a group's external ID from the identity
+// provider.
+type ExactMatchRule struct {
+	// The identity provider's external ID for the group to match. This is not
+	// the Databricks group ID. The value must be non-empty and is matched
+	// exactly, including case.
+	ExternalId string `json:"external_id"`
+}
+
+func (s *ExactMatchRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // An external group from the customer's Identity Provider, resolved into
@@ -546,6 +592,16 @@ func (s *GetGroupRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetIdentityVisibilityFilterRequest struct {
+	// Required. The resource name of the filter. Format:
+	// accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetIdentityVisibilityFilterRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetServicePrincipalProxyRequest struct {
 	// Required. Internal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"-" url:"-"`
@@ -724,6 +780,42 @@ func (f *GroupMembershipSource) Type() string {
 	return "GroupMembershipSource"
 }
 
+// An account-level rule that controls which identity provider groups are
+// discoverable in directory search and group pickers when automatic identity
+// management is enabled. Filters apply across all workspaces in the account.
+//
+// If no group filters are configured, all groups are visible. Otherwise, a
+// group is visible if it or any of its transitive parent groups matches at
+// least one rule. A group is also visible if it or any transitive parent group
+// is already provisioned in the account. Local Databricks groups remain visible
+// regardless of the filters.
+//
+// Only group filters can be created. Filters do not change provisioning or
+// sign-in for users and service principals. Filters are immutable: to change a
+// rule, delete it and create a new one.
+type IdentityVisibilityFilter struct {
+	// Exact match on the group's external ID from the identity provider.
+	Exact *ExactMatchRule `json:"exact,omitempty"`
+	// The resource name of the identity-visibility filter. Format:
+	// accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+	Name string `json:"name,omitempty"`
+	// Case-sensitive starts-with match on the group's display name.
+	Prefix *PrefixMatchRule `json:"prefix,omitempty"`
+	// The type of principal this rule applies to. Set to `GROUP` when creating
+	// a filter. Other principal types are not supported for creation.
+	PrincipalType PrincipalType `json:"principal_type"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IdentityVisibilityFilter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IdentityVisibilityFilter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListDirectGroupMembersProxyRequest struct {
 	// Required. Internal ID of the group in Databricks whose direct members are
 	// being listed.
@@ -848,6 +940,49 @@ func (s *ListGroupsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListGroupsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListIdentityVisibilityFiltersRequest struct {
+	// The maximum number of filters to return. The service may return fewer
+	// than this value. If omitted or non-positive, defaults to 100. Values
+	// above 1000 are reduced to 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListIdentityVisibilityFilters
+	// call. Provide this to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Required. The parent account. Format: accounts/{account_id}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListIdentityVisibilityFiltersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListIdentityVisibilityFiltersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response message containing a page of identity-visibility filters in the
+// account.
+type ListIdentityVisibilityFiltersResponse struct {
+	// The filters in this page. These are filter rules, not the groups matched
+	// by the rules.
+	IdentityVisibilityFilters []IdentityVisibilityFilter `json:"identity_visibility_filters,omitempty"`
+	// A token, which can be sent as page_token to retrieve the next page. If
+	// omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListIdentityVisibilityFiltersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListIdentityVisibilityFiltersResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1172,6 +1307,20 @@ func (s *ListWorkspaceAssignmentsResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListWorkspaceAssignmentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A starts-with rule that matches groups whose display name begins with a
+// specified prefix. Matching is case-sensitive. For example, the prefix `data-`
+// matches `data-platform`.
+type PrefixMatchRule struct {
+	// The display-name prefix to match. Must contain at least one
+	// non-whitespace character. Leading and trailing whitespace are preserved,
+	// and matching is case-sensitive.
+	DisplayNamePrefix string `json:"display_name_prefix"`
+}
+
+func (s *PrefixMatchRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // The type of the principal (user/sp/group).

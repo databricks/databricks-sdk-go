@@ -34,3 +34,29 @@ type EndpointsService interface {
 	// Lists all network connectivity endpoints for the account.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointsResponse, error)
 }
+
+// These APIs manage private network gateways under network connectivity
+// configurations.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type PrivateNetworkGatewaysService interface {
+
+	// Creates a private network gateway.
+	CreatePrivateNetworkGateway(ctx context.Context, request CreatePrivateNetworkGatewayRequest) (*Operation, error)
+
+	// Permanently deletes a private network gateway.
+	DeletePrivateNetworkGateway(ctx context.Context, request DeletePrivateNetworkGatewayRequest) error
+
+	// Gets a private network gateway.
+	GetPrivateNetworkGateway(ctx context.Context, request GetPrivateNetworkGatewayRequest) (*PrivateNetworkGateway, error)
+
+	// Gets the status of a private network gateway create operation.
+	GetPrivateNetworkGatewayOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
+
+	// Lists private network gateways under a network connectivity
+	// configuration.
+	ListPrivateNetworkGateways(ctx context.Context, request ListPrivateNetworkGatewaysRequest) (*ListPrivateNetworkGatewaysResponse, error)
+
+	// Updates a private network gateway.
+	UpdatePrivateNetworkGateway(ctx context.Context, request UpdatePrivateNetworkGatewayRequest) (*PrivateNetworkGateway, error)
+}

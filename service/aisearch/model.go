@@ -338,8 +338,8 @@ func (s Endpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Scaling information for a Storage Optimized endpoint — current scaling
-// state and the requested QPS target the system is scaling toward.
+// Scaling information for a Standard endpoint: the current scaling state, the
+// requested QPS target, and the progress of an in-progress scaling change.
 type EndpointScalingInfo struct {
 	// The requested QPS target for the endpoint. Best-effort; the system does
 	// not guarantee this QPS will be achieved.
@@ -853,7 +853,8 @@ type QueryIndexRequest struct {
 	// JSON string describing query filters (e.g. `{"id >": 5}`).
 	FiltersJson string `json:"filters_json,omitempty"`
 	// Maximum number of results to return (the legacy `num_results`). Defaults
-	// to 10.
+	// to 10. Prefer `page_size`; when both are set, `page_size` takes
+	// precedence.
 	MaxResults int `json:"max_results,omitempty"`
 	// Full resource name of the index to query. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
@@ -1041,8 +1042,7 @@ func (s ResultManifest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// State of the most recent scaling change request for a Storage Optimized
-// endpoint.
+// State of the most recent scaling change request for a Standard endpoint.
 type ScalingChangeState string
 
 const ScalingChangeStateScalingChangeApplied ScalingChangeState = `SCALING_CHANGE_APPLIED`

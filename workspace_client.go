@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/agentbricks"
+	"github.com/databricks/databricks-sdk-go/service/agentkit"
 	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	"github.com/databricks/databricks-sdk-go/service/aisearch"
 	"github.com/databricks/databricks-sdk-go/service/apps"
@@ -60,6 +61,10 @@ type WorkspaceClient struct {
 	// The Custom LLMs service manages state and powers the UI for the Custom
 	// LLM product.
 	AgentBricks agentbricks.AgentBricksInterface
+
+	// APIs for managing agent memory and durable session state. This interface
+	// is under active development and may change.
+	AgentKit agentkit.AgentKitInterface
 
 	// Transform and enrich data with AI on Databricks.
 	AiFunctions aifunctions.AiFunctionsInterface
@@ -397,7 +402,8 @@ type WorkspaceClient struct {
 	// metadata objects.
 	ExternalMetadata catalog.ExternalMetadataInterface
 
-	// [description]
+	// Feature Engineering provides APIs for managing features and materialized
+	// features.
 	FeatureEngineering ml.FeatureEngineeringInterface
 
 	// A feature store is a centralized repository that enables data scientists
@@ -562,7 +568,7 @@ type WorkspaceClient struct {
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
 
-	// Manage Knowledge Assistants and related resources.
+	// Manage legacy Knowledge Assistants and related resources.
 	KnowledgeAssistants knowledgeassistants.KnowledgeAssistantsInterface
 
 	// These APIs provide specific management operations for Lakeview
@@ -1203,7 +1209,7 @@ type WorkspaceClient struct {
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials catalog.StorageCredentialsInterface
 
-	// Manage Supervisor Agents and related resources.
+	// Manage legacy Supervisor Agents and related resources.
 	SupervisorAgents supervisoragents.SupervisorAgentsInterface
 
 	// A system schema is a schema that lives within the system catalog. A
@@ -1485,6 +1491,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		AgentBricks:                         agentbricks.NewAgentBricks(databricksClient),
+		AgentKit:                            agentkit.NewAgentKit(databricksClient),
 		AiFunctions:                         aifunctions.NewAiFunctions(databricksClient),
 		AiGateway:                           catalog.NewAiGateway(databricksClient),
 		AiSearch:                            aisearch.NewAiSearch(databricksClient),

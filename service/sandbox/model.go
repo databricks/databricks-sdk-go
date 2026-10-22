@@ -11,6 +11,33 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// A single command execution.
+type Command struct {
+	// Arguments passed to the program.
+	Args []string `json:"args,omitempty"`
+	// The program that was executed.
+	Cmd string `json:"cmd,omitempty"`
+	// Stable identifier for this command.
+	CommandId string `json:"command_id,omitempty"`
+	// Process exit code. Only present when finished is true and the process
+	// exited normally (not killed by signal or failed to start).
+	ExitCode int `json:"exit_code,omitempty"`
+	// Whether the command has finished executing.
+	Finished bool `json:"finished,omitempty"`
+	// PID of the spawned process. Absent if the process failed to start.
+	Pid int64 `json:"pid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Command) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Command) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ComputeSpec struct {
 	// Idle duration after which the sandbox is automatically terminated.
 	InactivityTimeout *duration.Duration `json:"inactivity_timeout,omitempty"`
@@ -26,6 +53,33 @@ func (s ComputeSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Selects a sandbox directory to create and whether to create its parents.
+type CreateDirectoryRequest struct {
+	Parent string `json:"-" url:"-"`
+	// Defaults to true, which also succeeds when the directory already exists.
+	Parents bool `json:"parents,omitempty"`
+	// Absolute UTF-8 path of the directory.
+	Path string `json:"path"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateDirectoryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateDirectoryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Confirms that the requested directory exists.
+type CreateDirectoryResponse struct {
+}
+
+func (s *CreateDirectoryResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateSandboxRequest struct {
 	// The sandbox to create.
 	Sandbox Sandbox `json:"sandbox"`
@@ -38,12 +92,57 @@ func (s *CreateSandboxRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Selects a sandbox path to delete and whether to delete its contents.
+type DeletePathRequest struct {
+	Parent string `json:"-" url:"-"`
+	// Absolute UTF-8 path of the entry to delete.
+	Path string `json:"path"`
+	// Required for a non-empty directory.
+	Recursive bool `json:"recursive,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeletePathRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeletePathRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Confirms that the requested path is absent.
+type DeletePathResponse struct {
+}
+
+func (s *DeletePathResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteSandboxRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteSandboxRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type EnvironmentSpec struct {
+	// A Unity Catalog container artifact (e.g.
+	// `catalog.schema.folder.image:tag`) to run as the sandbox environment.
+	// When set, this image is used as the environment instead of resolving a
+	// managed image from `environment_version`.
+	ImageUri string `json:"image_uri,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Terminal status of a unary command execution.
@@ -151,12 +250,111 @@ func (s ExecuteCommandSyncResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetMetadataRequest struct {
+	Parent string `json:"-" url:"-"`
+	// Absolute UTF-8 path of the entry to inspect.
+	Path string `json:"-" url:"path"`
+}
+
+func (s *GetMetadataRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Contains metadata for the requested path without following its final symlink.
+type GetMetadataResponse struct {
+	File *SandboxFileInfo `json:"file,omitempty"`
+}
+
+func (s *GetMetadataResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSandboxRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
 func (s *GetSandboxRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type ListCommandsRequest struct {
+	// Maximum number of commands to return. The server may return fewer. If
+	// unspecified, the server returns all commands.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token returned by a previous ListCommands call. Use this to retrieve
+	// the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The sandbox whose commands to list, in the form `sandboxes/{sandbox_id}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCommandsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCommandsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response listing tracked command executions.
+type ListCommandsResponse struct {
+	// Commands in this page of results.
+	Commands []Command `json:"commands,omitempty"`
+	// Token to retrieve the next page. Empty when there are no more results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCommandsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCommandsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDirectoryContentsRequest struct {
+	// Zero uses the default of 1000; values above 1000 are clamped to 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// The token from a prior response. Keep parent and path unchanged between
+	// pages.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	Parent string `json:"-" url:"-"`
+	// Absolute UTF-8 path of the directory.
+	Path string `json:"-" url:"path"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDirectoryContentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDirectoryContentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Contains a page of immediate directory entries and an optional continuation
+// token. An empty token marks the final page. Pages reflect concurrent
+// directory changes.
+type ListDirectoryContentsResponse struct {
+	Contents []SandboxFileInfo `json:"contents,omitempty"`
+
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDirectoryContentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDirectoryContentsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListSandboxesRequest struct {
@@ -192,6 +390,28 @@ func (s ListSandboxesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Identifies the source and exact destination for a sandbox path rename.
+type RenamePathRequest struct {
+	// Exact absolute UTF-8 destination; it must not already exist.
+	Destination string `json:"destination"`
+	// Sandbox resource name, for example `sandboxes/my-sandbox`.
+	Parent string `json:"-" url:"-"`
+	// Absolute UTF-8 path to move.
+	Source string `json:"source"`
+}
+
+func (s *RenamePathRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Confirms that the sandbox path was renamed.
+type RenamePathResponse struct {
+}
+
+func (s *RenamePathResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A Sandbox resource representing an execution environment.
 type Sandbox struct {
 	// Output only. The creation time of the sandbox.
@@ -221,10 +441,89 @@ func (s Sandbox) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Metadata for a sandbox filesystem entry, describing a final symlink itself.
+type SandboxFileInfo struct {
+	FileType SandboxFileType `json:"file_type,omitempty"`
+
+	Group string `json:"group,omitempty"`
+
+	Mode int `json:"mode,omitempty"`
+	// Nanosecond precision is preserved on the wire.
+	ModifyTime *time.Time `json:"modify_time,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	Owner string `json:"owner,omitempty"`
+
+	Path string `json:"path,omitempty"`
+
+	Permissions string `json:"permissions,omitempty"`
+
+	Size int64 `json:"size,omitempty"`
+
+	SymlinkTarget string `json:"symlink_target,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SandboxFileInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SandboxFileInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Type of a sandbox filesystem entry without following its final symlink.
+type SandboxFileType string
+
+const SandboxFileTypeSandboxFileTypeDirectory SandboxFileType = `SANDBOX_FILE_TYPE_DIRECTORY`
+
+const SandboxFileTypeSandboxFileTypeFile SandboxFileType = `SANDBOX_FILE_TYPE_FILE`
+
+const SandboxFileTypeSandboxFileTypeOther SandboxFileType = `SANDBOX_FILE_TYPE_OTHER`
+
+const SandboxFileTypeSandboxFileTypeSymlink SandboxFileType = `SANDBOX_FILE_TYPE_SYMLINK`
+
+// String representation for [fmt.Print]
+func (f *SandboxFileType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SandboxFileType) Set(v string) error {
+	switch v {
+	case `SANDBOX_FILE_TYPE_DIRECTORY`, `SANDBOX_FILE_TYPE_FILE`, `SANDBOX_FILE_TYPE_OTHER`, `SANDBOX_FILE_TYPE_SYMLINK`:
+		*f = SandboxFileType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SANDBOX_FILE_TYPE_DIRECTORY", "SANDBOX_FILE_TYPE_FILE", "SANDBOX_FILE_TYPE_OTHER", "SANDBOX_FILE_TYPE_SYMLINK"`, v)
+	}
+}
+
+// Values returns all possible values for SandboxFileType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SandboxFileType) Values() []SandboxFileType {
+	return []SandboxFileType{
+		SandboxFileTypeSandboxFileTypeDirectory,
+		SandboxFileTypeSandboxFileTypeFile,
+		SandboxFileTypeSandboxFileTypeOther,
+		SandboxFileTypeSandboxFileTypeSymlink,
+	}
+}
+
+// Type always returns SandboxFileType to satisfy [pflag.Value] interface
+func (f *SandboxFileType) Type() string {
+	return "SandboxFileType"
+}
+
 type SandboxSpec struct {
 	// Compute configuration (size, inactivity timeout) requested for the
 	// sandbox.
 	Compute *ComputeSpec `json:"compute,omitempty"`
+	// The execution environment to use for the sandbox.
+	Environment *EnvironmentSpec `json:"environment,omitempty"`
 }
 
 func (s *SandboxSpec) UnmarshalJSON(b []byte) error {

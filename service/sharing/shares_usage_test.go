@@ -132,7 +132,7 @@ func ExampleSharesAPI_Update_shares() {
 
 	_, err = w.Shares.Update(ctx, sharing.UpdateShare{
 		Name: createdShare.Name,
-		Updates: []sharing.SharedDataObjectUpdate{sharing.SharedDataObjectUpdate{
+		Updates: []sharing.SharedDataObjectUpdate{{
 			Action: sharing.SharedDataObjectUpdateActionAdd,
 			DataObject: &sharing.SharedDataObject{
 				Name:           tableFullName,

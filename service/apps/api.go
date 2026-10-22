@@ -180,7 +180,8 @@ type AppsInterface interface {
 	// Deprecated: use [AppsAPIInterface.Stop].Get() or [AppsAPIInterface.WaitGetAppStopped]
 	StopAndWait(ctx context.Context, stopAppRequest StopAppRequest, options ...retries.Option[App]) (*App, error)
 
-	// Updates the app with the supplied name.
+	// Updates the app with the supplied name. This is a full replacement: fields
+	// omitted from the request are cleared, so send the complete app.
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
 
 	// Updates the thumbnail for an app.

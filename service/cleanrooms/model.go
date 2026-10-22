@@ -138,10 +138,10 @@ type CleanRoomAsset struct {
 	// if and only if **asset_type** is **TABLE** or **STREAMING_TABLE**
 	TableLocalDetails *CleanRoomAssetTableLocalDetails `json:"table_local_details,omitempty"`
 	// View details available to all collaborators of the clean room. Present if
-	// and only if **asset_type** is **VIEW**
+	// and only if **asset_type** is **VIEW** or **METRIC_VIEW**
 	View *CleanRoomAssetView `json:"view,omitempty"`
 	// Local details for a view that are only available to its owner. Present if
-	// and only if **asset_type** is **VIEW**
+	// and only if **asset_type** is **VIEW** or **METRIC_VIEW**
 	ViewLocalDetails *CleanRoomAssetViewLocalDetails `json:"view_local_details,omitempty"`
 	// Local details for a volume that are only available to its owner. Present
 	// if and only if **asset_type** is **VOLUME**
@@ -235,7 +235,7 @@ type CleanRoomAssetJarAnalysis struct {
 	// Optional description of the jar analysis shown to all collaborators.
 	Description string `json:"description,omitempty"`
 	// The serverless environment version used to execute the JAR analysis (e.g.
-	// "4"). Defaults to "4-scala-preview" if not specified.
+	// "4"). If not specified, uses the service-configured JAR analysis default.
 	EnvironmentVersion string `json:"environment_version,omitempty"`
 	// Server generated etag that represents the jar analysis version.
 	Etag string `json:"etag,omitempty"`

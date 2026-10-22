@@ -104,8 +104,7 @@ type PostgresService interface {
 	GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error)
 
 	// Get a single Lakebase CDF configuration, including the source Postgres
-	// schema, target Unity Catalog schema, and the identity under which writes
-	// are authorized.
+	// schema and target Unity Catalog schema.
 	GetCdfConfig(ctx context.Context, request GetCdfConfigRequest) (*CdfConfig, error)
 
 	// Get the CDF status of a single table within a Lakebase CDF configuration,
@@ -170,6 +169,9 @@ type PostgresService interface {
 
 	// Returns a paginated list of snapshots in the project.
 	ListSnapshots(ctx context.Context, request ListSnapshotsRequest) (*ListSnapshotsResponse, error)
+
+	// Reveals the current password for a password-authenticated Postgres role.
+	RevealRolePassword(ctx context.Context, request RevealRolePasswordRequest) (*RevealRolePasswordResponse, error)
 
 	// Undeletes the specified database branch.
 	UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error)

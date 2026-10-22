@@ -82,7 +82,7 @@ func ExampleExperimentsAPI_CreateRun_mLflowRuns() {
 
 	created, err := w.Experiments.CreateRun(ctx, ml.CreateRun{
 		ExperimentId: experiment.ExperimentId,
-		Tags: []ml.RunTag{ml.RunTag{
+		Tags: []ml.RunTag{{
 			Key:   "foo",
 			Value: "bar",
 		}},
@@ -208,7 +208,7 @@ func ExampleExperimentsAPI_UpdateRun_mLflowRuns() {
 
 	created, err := w.Experiments.CreateRun(ctx, ml.CreateRun{
 		ExperimentId: experiment.ExperimentId,
-		Tags: []ml.RunTag{ml.RunTag{
+		Tags: []ml.RunTag{{
 			Key:   "foo",
 			Value: "bar",
 		}},

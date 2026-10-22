@@ -240,7 +240,7 @@ func ExampleUsersAPI_Patch_workspaceUsers() {
 
 	err = w.Users.Patch(ctx, iam.PartialUpdate{
 		Id: user.Id,
-		Operations: []iam.Patch{iam.Patch{
+		Operations: []iam.Patch{{
 			Op:    iam.PatchOpReplace,
 			Path:  "active",
 			Value: "false",
@@ -272,10 +272,10 @@ func ExampleUsersAPI_Patch_accountUsers() {
 	err = a.Users.Patch(ctx, iam.PartialUpdate{
 		Id:      user.Id,
 		Schemas: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
-		Operations: []iam.Patch{iam.Patch{
+		Operations: []iam.Patch{{
 			Op: iam.PatchOpAdd,
 			Value: iam.User{
-				Roles: []iam.ComplexValue{iam.ComplexValue{
+				Roles: []iam.ComplexValue{{
 					Value: "account_admin",
 				}},
 			},

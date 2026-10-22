@@ -8,6 +8,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -97,6 +98,8 @@ func (cf configFixture) apply(t *testing.T) {
 }
 
 func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config, error) {
+	// Only tests with an explicit CLI fixture should discover external credentials.
+	t.Setenv("PATH", "")
 	for k, v := range cf.Env {
 		os.Setenv(k, v)
 	}
@@ -112,6 +115,7 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 		AzureTenantID:     cf.AzureTenantID,
 		AzureResourceID:   cf.AzureResourceID,
 		AuthType:          cf.AuthType,
+		HTTPTransport:     fixtures.MappingTransport{},
 		azureTenantIdFetchClient: makeClient(&http.Response{
 			StatusCode: http.StatusTemporaryRedirect,
 			Header:     http.Header{"Location": []string{"https://login.microsoftonline.com/tenant_id/abc"}},

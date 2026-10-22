@@ -12,13 +12,11 @@ import (
 
 // A request to complete a Version.
 type CompleteVersionRequest struct {
-	// The reason for completing the version. Must be a terminal reason:
-	// VERSION_COMPLETE_SUCCESS, VERSION_COMPLETE_FAILURE, or
-	// VERSION_COMPLETE_FORCE_ABORT.
+	// The reason for completing the version. Must be VERSION_COMPLETE_SUCCESS
+	// or VERSION_COMPLETE_FAILURE.
 	CompletionReason VersionComplete `json:"completion_reason"`
 	// If true, force-completes the version even if the caller is not the
-	// original creator. The completion_reason must be
-	// VERSION_COMPLETE_FORCE_ABORT when force is true.
+	// original creator.
 	Force bool `json:"force,omitempty"`
 	// The name of the version to complete. Format:
 	// deployments/{deployment_id}/versions/{version_id}
@@ -482,6 +480,11 @@ type ListDeploymentsRequest struct {
 	// A page token, received from a previous `ListDeployments` call. Provide
 	// this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Whether to include soft-deleted deployments in the response. Defaults to
+	// false. When true, returns both live and soft-deleted deployments visible
+	// to the caller, subject to the filter. Soft-deleted deployments have
+	// status `DEPLOYMENT_STATUS_DELETED`.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -694,22 +697,22 @@ type Operation struct {
 	// re-read and retry.
 	SequenceId int64 `json:"sequence_id,omitempty"`
 	// Serialized local config state after the operation. Its presence records
-	// whether the resource still exists, so an operation that records no state
-	// removes its resource from the deployment. It may be unset only for an
-	// operation that left no resource behind: a `DELETE` that succeeded, or a
-	// `CREATE` or `RECREATE` that failed. It is required otherwise, including
-	// for a failed `DELETE`, whose resource survives.
+	// whether the resource is still tracked by the deployment. Explicitly
+	// clearing state removes the resource from the deployment; omitting it from
+	// the update mask leaves resource state unchanged. State is stored only on
+	// Resources. UpdateOperation accepts state but omits it from its response,
+	// as do subsequent GetOperation and ListOperations.
 	//
 	// Mutable: may be updated after creation via UpdateOperation. When
 	// updating, the caller must echo the last-observed `sequence_id` as a
 	// concurrency precondition.
 	//
-	// Opaque to this service: the string is stored and returned unchanged. This
-	// is deliberately not google.protobuf.Value, whose only numeric case is
-	// `double number_value`, so parsing the client's JSON into it rewrites
-	// every integer as a double - `1` reads back as `1.0`, which no longer
-	// deserializes into an integer field - and silently loses precision above
-	// 2^53, which is within range for IDs the client records.
+	// The string is not parsed; it is projected onto the corresponding
+	// Resource's state. It is deliberately not google.protobuf.Value, whose
+	// only numeric case is `double number_value`, so parsing the client's JSON
+	// into it rewrites every integer as a double - `1` reads back as `1.0`,
+	// which no longer deserializes into an integer field - and silently loses
+	// precision above 2^53, which is within range for IDs the client records.
 	//
 	// A string rather than bytes: the payload is always UTF-8 JSON, and proto3
 	// JSON maps bytes to base64, which inflates every request and response by a
@@ -720,8 +723,7 @@ type Operation struct {
 	// Status of the operation. Starts as OPERATION_STATUS_PENDING when the
 	// version is created and moves to a terminal status once the resource is
 	// applied. Mutable: updated via UpdateOperation, e.g. when an operation
-	// recorded as failed is retried and eventually succeeds. A succeeded
-	// operation cannot carry an `error_message`.
+	// recorded as failed is retried and eventually succeeds.
 	Status OperationStatus `json:"status,omitempty"`
 	// When the operation was last updated. Set to `create_time` when the
 	// operation is created and to the server timestamp on each successful

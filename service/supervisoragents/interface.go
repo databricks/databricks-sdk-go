@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Manage Supervisor Agents and related resources.
+// Manage legacy Supervisor Agents and related resources.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SupervisorAgentsService interface {

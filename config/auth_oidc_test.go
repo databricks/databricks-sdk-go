@@ -147,6 +147,7 @@ func TestOIDCCredentials_CachesAreIsolatedByClient(t *testing.T) {
 				GroupID:       testCase.groupID,
 				TokenAudience: "audience",
 				ConfigFile:    "/dev/null",
+				HTTPTransport: server.Client().Transport,
 			}
 			cfg.Credentials = oidcStrategy(cfg, "test-oidc", oidc.IDTokenSourceFn(func(context.Context, string) (*oidc.IDToken, error) {
 				return &oidc.IDToken{Value: "id-token"}, nil

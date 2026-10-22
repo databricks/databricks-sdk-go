@@ -86,7 +86,7 @@ func TestConfigFile_Scopes(t *testing.T) {
 				"HOME": "testdata/scopes",
 			})
 
-			cfg := &Config{Profile: tt.profile}
+			cfg := &Config{Profile: tt.profile, HTTPTransport: metadataNotFoundTransport}
 			err := cfg.EnsureResolved()
 			if err != nil {
 				t.Fatalf("EnsureResolved failed: %v", err)

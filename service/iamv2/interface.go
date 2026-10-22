@@ -13,6 +13,9 @@ import (
 type AccountIamV2Service interface {
 
 	// Creates a group membership (assigns a principal to a group).
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	CreateDirectGroupMember(ctx context.Context, request CreateDirectGroupMemberRequest) (*DirectGroupMember, error)
 
 	// Creates a local group in the Databricks account and returns the created
@@ -25,6 +28,15 @@ type AccountIamV2Service interface {
 	// external ID with ResolveGroup; to read an existing external identity, use
 	// the ExternalGroup resource.
 	CreateGroup(ctx context.Context, request CreateGroupRequest) (*Group, error)
+
+	// Creates a group visibility filter in the account. Requires account admin
+	// privileges. Set `principal_type` to `GROUP` and specify exactly one of
+	// `exact` (external ID) or `prefix` (display-name starts with). The filter
+	// applies across all workspaces in the account. A duplicate filter ID or an
+	// existing rule with the same type and match value returns
+	// `ALREADY_EXISTS`. Filters are immutable; to change a rule, delete it and
+	// create a new one.
+	CreateIdentityVisibilityFilter(ctx context.Context, request CreateIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
 
 	// Creates a local service principal in the Databricks account and returns
 	// the created service principal. A local service principal is one that is
@@ -59,10 +71,24 @@ type AccountIamV2Service interface {
 	CreateWorkspaceAssignmentDetail(ctx context.Context, request CreateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error)
 
 	// Deletes a group membership (unassigns a principal from a group).
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	DeleteDirectGroupMember(ctx context.Context, request DeleteDirectGroupMemberRequest) error
 
 	// Deletes a group from the Databricks account by its internal ID.
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	DeleteGroup(ctx context.Context, request DeleteGroupRequest) error
+
+	// Deletes a group visibility filter by its resource name. Requires account
+	// admin privileges. Deleting a filter does not delete groups or revoke
+	// access. Groups covered only by this rule stop being discoverable unless
+	// they or a transitive parent are already provisioned in the account. If no
+	// group filters remain, all groups become visible again. Deleting a filter
+	// that does not exist succeeds without making any changes.
+	DeleteIdentityVisibilityFilter(ctx context.Context, request DeleteIdentityVisibilityFilterRequest) error
 
 	// Deletes a service principal from the Databricks account by its internal
 	// ID.
@@ -107,6 +133,11 @@ type AccountIamV2Service interface {
 	// Fetches a group from the Databricks account by its internal ID.
 	GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error)
 
+	// Gets a group visibility filter by its resource name. Requires account
+	// admin privileges. Returns the filter rule, not the groups matched by the
+	// rule.
+	GetIdentityVisibilityFilter(ctx context.Context, request GetIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
+
 	// Fetches a service principal from the Databricks account by its internal
 	// ID.
 	GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error)
@@ -136,6 +167,13 @@ type AccountIamV2Service interface {
 	// Lists the groups in the Databricks account, returning one page per call.
 	// Supports filtering by group name or external ID.
 	ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
+
+	// Lists group visibility filters in the account, returning one page per
+	// call. Requires account admin privileges. Returns filter rules, not the
+	// groups matched by those rules. To retrieve the next page, pass the
+	// response's `next_page_token` as `page_token` in the next request. If
+	// `next_page_token` is omitted, there are no more pages.
+	ListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) (*ListIdentityVisibilityFiltersResponse, error)
 
 	// Lists the service principals in the Databricks account, returning one
 	// page per call. Supports filtering by application ID or external ID.
@@ -184,7 +222,12 @@ type AccountIamV2Service interface {
 	//
 	// When AIM is enabled and the group is an external identity (its
 	// external_id is set), only external_id can be updated; its other fields
-	// are sourced from your identity provider.
+	// are sourced from your identity provider. With AIM and group visibility
+	// filters, a new nonempty external_id must identify a visible group.
+	// Clearing external_id is allowed.
+	//
+	// Authorization: the caller must be an account admin or a manager of the
+	// group (holds the `roles/group.manager` role on it).
 	UpdateGroup(ctx context.Context, request UpdateGroupRequest) (*Group, error)
 
 	// Updates an existing service principal in the Databricks account. Only the
@@ -413,7 +456,9 @@ type WorkspaceIamV2Service interface {
 	//
 	// When AIM is enabled and the group is an external identity (its
 	// external_id is set), only external_id can be updated; its other fields
-	// are sourced from your identity provider.
+	// are sourced from your identity provider. With AIM and group visibility
+	// filters, a new nonempty external_id must identify a visible group.
+	// Clearing external_id is allowed.
 	UpdateGroupProxy(ctx context.Context, request UpdateGroupProxyRequest) (*Group, error)
 
 	// Updates an existing service principal in the Databricks account that

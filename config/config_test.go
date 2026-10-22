@@ -337,8 +337,9 @@ func TestConfig_getOAuthArgument_account(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Config{
-				Host:      tt.host,
-				AccountID: tt.accountID,
+				Host:          tt.host,
+				AccountID:     tt.accountID,
+				HTTPTransport: metadataNotFoundTransport,
 			}
 			rawGot, err := c.getOAuthArgument()
 			assert.NoError(t, err)
@@ -368,7 +369,8 @@ func TestConfig_getOAuthArgument_workspace(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Config{
-				Host: tt.host,
+				Host:          tt.host,
+				HTTPTransport: metadataNotFoundTransport,
 			}
 			rawGot, err := c.getOAuthArgument()
 			assert.NoError(t, err)
@@ -383,8 +385,9 @@ func TestConfig_getOAuthArgument_NonAccountsHostUsesWorkspaceArgument(t *testing
 	// A non-accounts host uses a BasicWorkspaceOAuthArgument for OAuth
 	// even when AccountID is set.
 	c := &Config{
-		Host:      "https://unified.cloud.databricks.com",
-		AccountID: "account-123",
+		Host:          "https://unified.cloud.databricks.com",
+		AccountID:     "account-123",
+		HTTPTransport: metadataNotFoundTransport,
 	}
 	rawGot, err := c.getOAuthArgument()
 	assert.NoError(t, err)
@@ -466,6 +469,7 @@ func TestConfig_getOAuthArgument_profileCacheKeys(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.config.HTTPTransport = metadataNotFoundTransport
 			rawGot, err := tt.config.getOAuthArgument()
 			assert.NoError(t, err)
 			assert.Equal(t, tt.wantKey, rawGot.GetCacheKey())
@@ -527,6 +531,7 @@ func TestConfig_EnsureResolved_scopeNormalization(t *testing.T) {
 					cfg.Scopes = tc.scopes
 					return nil
 				})},
+				HTTPTransport: metadataNotFoundTransport,
 			}
 
 			err := cfg.EnsureResolved()
@@ -543,7 +548,7 @@ func TestConfig_EnsureResolved_scopeNormalization(t *testing.T) {
 
 func TestConfig_DiscoveryURL_FromEnv(t *testing.T) {
 	t.Setenv("DATABRICKS_DISCOVERY_URL", "https://custom.idp.example.com/oidc")
-	cfg := &Config{Host: testHMHost, Token: "t"}
+	cfg := &Config{Host: testHMHost, Token: "t", HTTPTransport: metadataNotFoundTransport}
 	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}

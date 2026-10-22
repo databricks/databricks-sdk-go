@@ -364,10 +364,23 @@ func (s *AvgFunction) UnmarshalJSON(b []byte) error {
 type BackfillFeaturesRequest struct {
 	// Output ranges to backfill.
 	BackfillRanges []BackfillRange `json:"backfill_ranges"`
+	// The budget policy ID, in UUID format, used to attribute the serverless
+	// compute cost of this backfill. If not specified, a default budget policy
+	// may be applied.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Full names of the features to backfill.
 	FeatureFullNames []string `json:"feature_full_names"`
 	// Idempotency token for the request.
 	RequestId string `json:"request_id,omitempty"`
+	// Custom tags to associate with this backfill. They are applied to the
+	// backfill job and forwarded to the underlying compute as Databricks
+	// resource tags, so backfill cost can be attributed in the billing system
+	// tables. These tags apply only to the backfill compute; they are not
+	// applied to the Unity Catalog Feature resources themselves, whose tags are
+	// managed separately through the Unity Catalog tagging API. A maximum of 25
+	// tags is supported; keys and values are subject to the same limitations as
+	// Databricks resource tags.
+	Tags map[string]string `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -839,6 +852,27 @@ func (s CreateForecastingExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateIssueRequest struct {
+	// Output-only fields are ignored.
+	Issue Issue `json:"issue"`
+	// Optional client-chosen ID: iss- followed by 32 lowercase hex digits. A
+	// retry with the same ID fails with ALREADY_EXISTS rather than making a
+	// duplicate. The server generates one if unset.
+	IssueId string `json:"-" url:"issue_id,omitempty"`
+	// experiments/{experiment}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateIssueRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateIssueRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateKafkaConfigRequest struct {
 	KafkaConfig KafkaConfig `json:"kafka_config"`
 }
@@ -1212,6 +1246,8 @@ type DataSource struct {
 	Lateness *SourceLateness `json:"lateness,omitempty"`
 	// A request-time data source.
 	RequestSource *RequestSource `json:"request_source,omitempty"`
+	// A Spark Declarative Pipeline data source.
+	SdpSource *SdpSource `json:"sdp_source,omitempty"`
 	// A Stream data source.
 	StreamSource *StreamSource `json:"stream_source,omitempty"`
 }
@@ -1583,7 +1619,7 @@ func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
 }
 
 // Direct connection configs for mTLS, as Kafka Connections do not support mTLS
-// yet . Temporarily used until UC Kafka Connections gain mTLS support.
+// yet.
 type DirectMtlsConfig struct {
 	// A comma-separated list of host:port pairs for the Kafka bootstrap
 	// servers.
@@ -2123,13 +2159,12 @@ type Feature struct {
 	// The description of the feature.
 	Description string `json:"description,omitempty"`
 	// The entity columns for the feature, used as aggregation keys and for
-	// query-time lookup.
+	// query-time lookup. Optional since entities are not set for RequestSource
+	// features or on-demand calculated features.
 	Entities []EntityColumn `json:"entities,omitempty"`
 
 	FilterCondition string `json:"filter_condition,omitempty"`
-	// The full three-part name (catalog, schema, name) of the feature. This is
-	// the feature's resource identifier; the catalog_name, schema_name, and
-	// name fields below are OUTPUT_ONLY decomposed views of this value.
+	// The full three-part name (catalog, schema, name) of the feature.
 	FullName string `json:"full_name"`
 	// The function by which the feature is computed.
 	Function Function `json:"function"`
@@ -2153,7 +2188,8 @@ type Feature struct {
 
 	TimeWindow *TimeWindow `json:"time_window,omitempty"`
 	// Column recording time, used for point-in-time joins, backfills, and
-	// aggregations.
+	// aggregations. Optional since a timeseries column is not set for
+	// RequestSource features or on-demand calculated features.
 	TimeseriesColumn *TimeseriesColumn `json:"timeseries_column,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2678,6 +2714,15 @@ func (s GetHistoryRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetIssueRequest struct {
+	// experiments/{experiment}/issues/{issue}
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetIssueRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetKafkaConfigRequest struct {
 	// Name of the Kafka config to get.
 	Name string `json:"-" url:"-"`
@@ -3052,6 +3097,294 @@ type InputTag struct {
 
 func (s *InputTag) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// A quality or operational problem found in an experiment's traces.
+type Issue struct {
+	// At most 10 values of at most 64 UTF-8 bytes each, unique
+	// case-insensitively. Leading and trailing whitespace is trimmed.
+	Categories []string `json:"categories,omitempty"`
+	// When the Issue was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The email of the user whose request created the Issue. source_type tells
+	// whether issue detection created it.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Markdown, at most 32 KiB.
+	Description string `json:"description,omitempty"`
+	// The last segment of `name`. Issue assessments on traces reference the
+	// Issue by this ID.
+	IssueId string `json:"issue_id,omitempty"`
+	// The request time of the latest trace the Issue affects. Required, and
+	// can't be cleared, unless source_type is MANUAL. A MANUAL Issue without
+	// one returns its create_time.
+	LastSeenTime *time.Time `json:"last_seen_time,omitempty"`
+	// The email of the user whose request last updated the Issue.
+	LastUpdatedBy string `json:"last_updated_by,omitempty"`
+	// Additional details about the Issue, such as how issue detection observed
+	// it. Not a stable contract: keys and values can change without notice, so
+	// clients must tolerate unknown and missing keys. At most 20 entries, with
+	// keys of at most 64 UTF-8 bytes.
+	Metadata map[string]string `json:"metadata,omitempty"`
+	// experiments/{experiment}/issues/{issue}
+	Name string `json:"name,omitempty"`
+	// Cannot be cleared: an Issue without a severity would match no severity
+	// filter.
+	Severity IssueSeverity `json:"severity"`
+	// Set once at create. For ADHOC_RUN and SCHEDULED_RUN, the ID of the issue
+	// detection run in the same experiment that created the Issue. Absent for
+	// MANUAL.
+	SourceId string `json:"source_id,omitempty"`
+	// Set once at create. Defaults to MANUAL.
+	SourceType IssueSourceType `json:"source_type,omitempty"`
+	// Defaults to PENDING on create, and can't be cleared.
+	Status IssueStatus `json:"status,omitempty"`
+	// Caller-owned; the server never writes system values here. At most 10
+	// entries. Keys match ^[A-Za-z0-9_.:/-]+$ and are at most 128 UTF-8 bytes;
+	// values are at most 256 UTF-8 bytes.
+	Tags map[string]string `json:"tags,omitempty"`
+	// Non-empty, at most 250 UTF-8 bytes.
+	Title string `json:"title"`
+	// When the Issue was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Issue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Issue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// How serious an Issue is, ordered LOW < MEDIUM < HIGH.
+type IssueSeverity string
+
+const IssueSeverityHigh IssueSeverity = `HIGH`
+
+const IssueSeverityLow IssueSeverity = `LOW`
+
+const IssueSeverityMedium IssueSeverity = `MEDIUM`
+
+// String representation for [fmt.Print]
+func (f *IssueSeverity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueSeverity) Set(v string) error {
+	switch v {
+	case `HIGH`, `LOW`, `MEDIUM`:
+		*f = IssueSeverity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "HIGH", "LOW", "MEDIUM"`, v)
+	}
+}
+
+// Values returns all possible values for IssueSeverity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueSeverity) Values() []IssueSeverity {
+	return []IssueSeverity{
+		IssueSeverityHigh,
+		IssueSeverityLow,
+		IssueSeverityMedium,
+	}
+}
+
+// Type always returns IssueSeverity to satisfy [pflag.Value] interface
+func (f *IssueSeverity) Type() string {
+	return "IssueSeverity"
+}
+
+// The field that search results are ordered by. SEVERITY breaks ties by
+// last_seen_time, in the same direction. Results are grouped by status first
+// (PENDING, RESOLVED, then REJECTED, whatever the sort_order), and remaining
+// ties are broken by issue ID, so paging is stable.
+type IssueSortKey string
+
+const IssueSortKeyCreateTime IssueSortKey = `CREATE_TIME`
+
+const IssueSortKeyLastSeenTime IssueSortKey = `LAST_SEEN_TIME`
+
+const IssueSortKeySeverity IssueSortKey = `SEVERITY`
+
+const IssueSortKeyUpdateTime IssueSortKey = `UPDATE_TIME`
+
+// String representation for [fmt.Print]
+func (f *IssueSortKey) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueSortKey) Set(v string) error {
+	switch v {
+	case `CREATE_TIME`, `LAST_SEEN_TIME`, `SEVERITY`, `UPDATE_TIME`:
+		*f = IssueSortKey(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CREATE_TIME", "LAST_SEEN_TIME", "SEVERITY", "UPDATE_TIME"`, v)
+	}
+}
+
+// Values returns all possible values for IssueSortKey.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueSortKey) Values() []IssueSortKey {
+	return []IssueSortKey{
+		IssueSortKeyCreateTime,
+		IssueSortKeyLastSeenTime,
+		IssueSortKeySeverity,
+		IssueSortKeyUpdateTime,
+	}
+}
+
+// Type always returns IssueSortKey to satisfy [pflag.Value] interface
+func (f *IssueSortKey) Type() string {
+	return "IssueSortKey"
+}
+
+// What created an Issue: ADHOC_RUN, an issue detection run started on demand;
+// SCHEDULED_RUN, one started by a schedule; SINGLE_TRACE_ANALYSIS, an analysis
+// of a single trace; or MANUAL, a person.
+type IssueSourceType string
+
+const IssueSourceTypeAdhocRun IssueSourceType = `ADHOC_RUN`
+
+const IssueSourceTypeManual IssueSourceType = `MANUAL`
+
+const IssueSourceTypeScheduledRun IssueSourceType = `SCHEDULED_RUN`
+
+const IssueSourceTypeSingleTraceAnalysis IssueSourceType = `SINGLE_TRACE_ANALYSIS`
+
+// String representation for [fmt.Print]
+func (f *IssueSourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueSourceType) Set(v string) error {
+	switch v {
+	case `ADHOC_RUN`, `MANUAL`, `SCHEDULED_RUN`, `SINGLE_TRACE_ANALYSIS`:
+		*f = IssueSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ADHOC_RUN", "MANUAL", "SCHEDULED_RUN", "SINGLE_TRACE_ANALYSIS"`, v)
+	}
+}
+
+// Values returns all possible values for IssueSourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueSourceType) Values() []IssueSourceType {
+	return []IssueSourceType{
+		IssueSourceTypeAdhocRun,
+		IssueSourceTypeManual,
+		IssueSourceTypeScheduledRun,
+		IssueSourceTypeSingleTraceAnalysis,
+	}
+}
+
+// Type always returns IssueSourceType to satisfy [pflag.Value] interface
+func (f *IssueSourceType) Type() string {
+	return "IssueSourceType"
+}
+
+// The triage status of an Issue: PENDING means open and awaiting triage,
+// RESOLVED means judged real and addressed, and REJECTED means judged not to be
+// an issue.
+type IssueStatus string
+
+const IssueStatusPending IssueStatus = `PENDING`
+
+const IssueStatusRejected IssueStatus = `REJECTED`
+
+const IssueStatusResolved IssueStatus = `RESOLVED`
+
+// String representation for [fmt.Print]
+func (f *IssueStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueStatus) Set(v string) error {
+	switch v {
+	case `PENDING`, `REJECTED`, `RESOLVED`:
+		*f = IssueStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PENDING", "REJECTED", "RESOLVED"`, v)
+	}
+}
+
+// Values returns all possible values for IssueStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueStatus) Values() []IssueStatus {
+	return []IssueStatus{
+		IssueStatusPending,
+		IssueStatusRejected,
+		IssueStatusResolved,
+	}
+}
+
+// Type always returns IssueStatus to satisfy [pflag.Value] interface
+func (f *IssueStatus) Type() string {
+	return "IssueStatus"
+}
+
+// One predicate over Issue.tags.
+type IssueTagFilter struct {
+	// Matched exactly.
+	Key string `json:"key"`
+	// Matched exactly, and ORed together. Empty matches any Issue carrying the
+	// key.
+	Values []string `json:"values,omitempty"`
+}
+
+func (s *IssueTagFilter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Which fields each search result includes: BASIC has every field except
+// `description`, and may omit large `metadata` entries; FULL has every field.
+type IssueView string
+
+const IssueViewBasic IssueView = `BASIC`
+
+const IssueViewFull IssueView = `FULL`
+
+// String representation for [fmt.Print]
+func (f *IssueView) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IssueView) Set(v string) error {
+	switch v {
+	case `BASIC`, `FULL`:
+		*f = IssueView(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BASIC", "FULL"`, v)
+	}
+}
+
+// Values returns all possible values for IssueView.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IssueView) Values() []IssueView {
+	return []IssueView{
+		IssueViewBasic,
+		IssueViewFull,
+	}
+}
+
+// Type always returns IssueView to satisfy [pflag.Value] interface
+func (f *IssueView) Type() string {
+	return "IssueView"
 }
 
 type JobContext struct {
@@ -4032,6 +4365,66 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Recipients to notify when a materialization run fails.
+type MaterializationFailureNotification struct {
+	// IDs of the notification destinations (for example Slack, Microsoft Teams,
+	// PagerDuty, or a generic webhook) to notify. Not supported for streaming
+	// materialized features.
+	DestinationIds []string `json:"destination_ids,omitempty"`
+	// Email addresses to notify.
+	EmailAddresses []string `json:"email_addresses,omitempty"`
+	// If true, notify only when the final attempt of a run fails. If false or
+	// unset, notify on every failed attempt, including attempts that will be
+	// retried.
+	//
+	// Batch materialization does not retry failures that need a fix on your
+	// side, such as missing permissions or invalid configuration, so the first
+	// attempt is the final one. Other batch failures are retried up to twice.
+	//
+	// Streaming materialization restarts a failed update indefinitely unless
+	// the error cannot be retried. With this set, a streaming materialized
+	// feature notifies only on errors that cannot be retried, and never on
+	// failures that are restarted.
+	FinalAttemptOnly bool `json:"final_attempt_only,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MaterializationFailureNotification) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MaterializationFailureNotification) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Notifications for the jobs and pipelines that materialize a feature, one
+// field per trigger.
+type MaterializationNotifications struct {
+	// Who to notify when a run fails, and on which attempts.
+	OnFailure *MaterializationFailureNotification `json:"on_failure,omitempty"`
+	// Who to notify when a run succeeds.
+	OnSuccess *MaterializationSuccessNotification `json:"on_success,omitempty"`
+}
+
+func (s *MaterializationNotifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Recipients to notify when a materialization run succeeds.
+type MaterializationSuccessNotification struct {
+	// IDs of the notification destinations (for example Slack, Microsoft Teams,
+	// PagerDuty, or a generic webhook) to notify. Not supported for streaming
+	// materialized features.
+	DestinationIds []string `json:"destination_ids,omitempty"`
+	// Email addresses to notify.
+	EmailAddresses []string `json:"email_addresses,omitempty"`
+}
+
+func (s *MaterializationSuccessNotification) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A materialized feature represents a feature that is continuously computed and
 // stored.
 type MaterializedFeature struct {
@@ -4048,6 +4441,9 @@ type MaterializedFeature struct {
 	// True if this is an online materialized feature. False if it is an offline
 	// materialized feature.
 	IsOnline bool `json:"is_online,omitempty"`
+	// The ID of the job that materializes the feature. This is present for both
+	// batch and streaming features.
+	JobId int64 `json:"job_id,omitempty"`
 	// The timestamp when the pipeline last ran and updated the materialized
 	// feature values. If the pipeline has not run yet, this field will be null.
 	LastMaterializationTime string `json:"last_materialization_time,omitempty"`
@@ -4056,10 +4452,20 @@ type MaterializedFeature struct {
 	LatestBackfillOperation string `json:"latest_backfill_operation,omitempty"`
 	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
-	// Destination for writing feature values to an offline Delta table.
+	// Notification configuration around the materialization job or pipeline
+	// lifecycle. They are applied to every job and pipeline that materializes
+	// this feature. Features which are materialized in the same pipeline will
+	// share the same notification.
+	Notifications *MaterializationNotifications `json:"notifications,omitempty"`
+	// Destination for writing feature values to an offline Delta table. The
+	// resulting table is returned as `table_name`.
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
-	// Destination for writing feature values to an online Lakebase table.
+	// Destination for writing feature values to an online Lakebase table. The
+	// resulting table is returned as `table_name`.
 	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
+	// The ID of the pipeline that materializes this feature. This is only
+	// present for streaming features.
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// The schedule state of the materialization pipeline. Hidden from GraphQL:
 	// being deprecated, so not exposed to Catalog Explorer.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
@@ -4459,14 +4865,6 @@ func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
 // live as JKS files on Unity Catalog volumes, with their passwords stored in
 // Databricks secret scopes. This matches the SSL setup pattern documented at
 // https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
-//
-// At materialization time, the generated PySpark code passes the JKS file paths
-// and resolved passwords through to the Kafka SSL options
-// (kafka.ssl.keystore.location, kafka.ssl.keystore.password,
-// kafka.ssl.key.password, kafka.ssl.truststore.location,
-// kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster
-// via dbutils.secrets.get; this message stores only references, never password
-// values.
 type MtlsConfig struct {
 	// Set to true only when the broker certificate's SAN intentionally does not
 	// match the connection endpoint — for example when reaching the cluster
@@ -4928,6 +5326,10 @@ func (f *PurgeFeatureEntitiesMetadataState) Type() string {
 // Request to purge materialized feature values for entities listed in a Unity
 // Catalog Delta table.
 type PurgeFeatureEntitiesRequest struct {
+	// The budget policy ID, in UUID format, used to attribute the serverless
+	// compute cost of this purge. If not specified, a default budget policy may
+	// be applied.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Fully qualified name of the Unity Catalog Delta table containing the
 	// entity keys to purge. The table may contain a subset of each feature's
 	// entity-key columns. A partial key match deletes all feature rows matching
@@ -4941,6 +5343,15 @@ type PurgeFeatureEntitiesRequest struct {
 	Features []string `json:"features"`
 	// Optional UUID4 idempotency token for the request.
 	RequestId string `json:"request_id,omitempty"`
+	// Custom tags to associate with this purge. They are applied to the purge
+	// job and forwarded to the underlying compute as Databricks resource tags,
+	// so purge cost can be attributed in the billing system tables. These tags
+	// apply only to the purge compute; they are not applied to the Unity
+	// Catalog Feature resources themselves, whose tags are managed separately
+	// through the Unity Catalog tagging API. A maximum of 25 tags is supported;
+	// keys and values are subject to the same limitations as Databricks
+	// resource tags.
+	Tags map[string]string `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5488,12 +5899,22 @@ func (s *RenameModelResponse) UnmarshalJSON(b []byte) error {
 // A request-time data source whose value is provided at inference time: offline
 // batch scoring or online serving endpoint
 type RequestSource struct {
+	// A schema containing scalar or nested fields, in Spark StructType JSON
+	// format (from df.schema.json()). This preserves field, array-element, and
+	// map-value nullability.
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
 	// A flat schema with scalar-typed fields only.
 	FlatSchema *FlatSchema `json:"flat_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RequestSource) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s RequestSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RestoreExperiment struct {
@@ -5908,7 +6329,8 @@ func (f *SchemaLocatorFormat) Type() string {
 // registry (e.g. Confluent).
 type SchemaRegistryConfig struct {
 	// Reference to the schema registry API secret in a Databricks secret scope.
-	ApiSecretRef SecretScopeReference `json:"api_secret_ref"`
+	// Set this only if required for authentication for the schema registry.
+	ApiSecretRef *SecretScopeReference `json:"api_secret_ref,omitempty"`
 	// Schema locator for the message key. Only used for Kafka streams. At least
 	// one of payload_schema_locator or key_schema_locator must be set.
 	KeySchemaLocator *SchemaLocator `json:"key_schema_locator,omitempty"`
@@ -5927,6 +6349,98 @@ func (s *SchemaRegistryConfig) UnmarshalJSON(b []byte) error {
 
 func (s SchemaRegistryConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// A Spark Declarative Pipeline (SDP) data source.
+type SdpSource struct {
+	// Schema of the resulting dataframe after transformations, in Spark
+	// StructType JSON format (from df.schema.json()). Required if
+	// transformation_sql is specified. Example:
+	// {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
+	// Single WHERE clause to filter the pipeline's output table before applying
+	// transformations. Will be row-wise evaluated, so should only include
+	// conditionals and projections.
+	FilterCondition string `json:"filter_condition,omitempty"`
+	// The full three-part names of the tables the pipeline reads from. Required
+	// to materialize this feature with a TableTrigger, which starts a run when
+	// these tables update. Each table must exist when the feature is created.
+	// After the pipeline runs, Feature Store checks that it reads from these
+	// tables, and the run fails if it doesn't. At most 100 tables.
+	InputTables []string `json:"input_tables,omitempty"`
+	// The full three-part (catalog, schema, table) name of the pipeline's
+	// output table to read from. The table doesn't need to exist until the
+	// pipeline first runs. Required.
+	OutputTable string `json:"output_table,omitempty"`
+	// The ID of the Spark Declarative Pipeline that Feature Store runs to
+	// produce this source, before each materialization or backfill. The
+	// pipeline must already exist when the feature is created, and you need
+	// CAN_RUN, CAN_MANAGE, or owner permission on it. It doesn't need to have
+	// run yet. Deleting the feature doesn't delete the pipeline. If the
+	// pipeline is deleted, this field reads back empty. Required.
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// State tracking pipeline execution and output table validation. PENDING
+	// until the pipeline has run at least once and created the output table;
+	// then RESOLVED on success, or ERROR on failure.
+	PipelineState SdpSourceState `json:"pipeline_state,omitempty"`
+	// A single SQL SELECT expression applied after filter_condition. Should
+	// contain all the columns needed (eg. "SELECT *, col_a + col_b AS col_c
+	// FROM x.y.z WHERE col_a > 0" would have `transformation_sql` "*, col_a +
+	// col_b AS col_c") If transformation_sql is not provided, all columns of
+	// the pipeline's output table are present in the DataSource dataframe.
+	TransformationSql string `json:"transformation_sql,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SdpSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SdpSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// State of the SDP source relative to pipeline execution and output table
+// validation.
+type SdpSourceState string
+
+const SdpSourceStateError SdpSourceState = `ERROR`
+
+const SdpSourceStatePending SdpSourceState = `PENDING`
+
+const SdpSourceStateResolved SdpSourceState = `RESOLVED`
+
+// String representation for [fmt.Print]
+func (f *SdpSourceState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SdpSourceState) Set(v string) error {
+	switch v {
+	case `ERROR`, `PENDING`, `RESOLVED`:
+		*f = SdpSourceState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ERROR", "PENDING", "RESOLVED"`, v)
+	}
+}
+
+// Values returns all possible values for SdpSourceState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SdpSourceState) Values() []SdpSourceState {
+	return []SdpSourceState{
+		SdpSourceStateError,
+		SdpSourceStatePending,
+		SdpSourceStateResolved,
+	}
+}
+
+// Type always returns SdpSourceState to satisfy [pflag.Value] interface
+func (f *SdpSourceState) Type() string {
+	return "SdpSourceState"
 }
 
 type SearchExperiments struct {
@@ -5972,6 +6486,65 @@ func (s *SearchExperimentsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s SearchExperimentsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Request for SearchIssues.
+type SearchIssuesRequest struct {
+	// Matches Issues with any of these categories, case-insensitively.
+	Categories []string `json:"categories,omitempty"`
+	// Defaults to 20; values above 100 are clamped.
+	PageSize int `json:"page_size,omitempty"`
+	// Expires after 15 minutes. Every other argument except `view` must match
+	// the request that returned the token.
+	PageToken string `json:"page_token,omitempty"`
+	// experiments/{experiment}
+	Parent string `json:"-" url:"-"`
+	// Case-insensitive substring match on title.
+	Query string `json:"query,omitempty"`
+	// Matches Issues with any of these severities.
+	Severities []IssueSeverity `json:"severities,omitempty"`
+	// Defaults to SEVERITY.
+	SortKey IssueSortKey `json:"sort_key,omitempty"`
+	// Defaults to DESCENDING.
+	SortOrder SortOrder `json:"sort_order,omitempty"`
+	// Matches Issues with any of these statuses. Different filters AND
+	// together, and an empty filter matches every Issue.
+	Statuses []IssueStatus `json:"statuses,omitempty"`
+	// Matches Issues that satisfy every filter. At most 10 filters of 20 values
+	// each.
+	TagFilters []IssueTagFilter `json:"tag_filters,omitempty"`
+	// Defaults to BASIC.
+	View IssueView `json:"view,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchIssuesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchIssuesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// One page of SearchIssues results.
+type SearchIssuesResponse struct {
+	// The page's Issues, in the requested order.
+	Issues []Issue `json:"issues,omitempty"`
+	// Absent on the last page.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Exact number of matching Issues.
+	TotalSize int `json:"total_size,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchIssuesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchIssuesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -6215,9 +6788,7 @@ func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Reference to an entry in a Databricks secret scope. The referenced value is
-// fetched on the Spark cluster at materialization time via
-// dbutils.secrets.get(scope, key).
+// Reference to an entry in a Databricks secret scope.
 type SecretScopeReference struct {
 	// The key within the scope.
 	Key string `json:"key"`
@@ -6345,6 +6916,44 @@ func (s SlidingWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The direction of the ordering.
+type SortOrder string
+
+const SortOrderAscending SortOrder = `ASCENDING`
+
+const SortOrderDescending SortOrder = `DESCENDING`
+
+// String representation for [fmt.Print]
+func (f *SortOrder) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SortOrder) Set(v string) error {
+	switch v {
+	case `ASCENDING`, `DESCENDING`:
+		*f = SortOrder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ASCENDING", "DESCENDING"`, v)
+	}
+}
+
+// Values returns all possible values for SortOrder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SortOrder) Values() []SortOrder {
+	return []SortOrder{
+		SortOrderAscending,
+		SortOrderDescending,
+	}
+}
+
+// Type always returns SortOrder to satisfy [pflag.Value] interface
+func (f *SortOrder) Type() string {
+	return "SortOrder"
+}
+
 // Configures when event-time data from this source is considered complete for a
 // Feature.
 type SourceLateness struct {
@@ -6443,8 +7052,8 @@ func (s *StddevSampFunction) UnmarshalJSON(b []byte) error {
 }
 
 // A Stream is a governed UC entity representing an external streaming data
-// source. The source_config oneof determines the streaming platform source
-// (e.g. Kafka, Kinesis, etc.).
+// source. The source_config field determines the streaming platform source
+// (e.g. Kafka, Kinesis).
 type Stream struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -6512,9 +7121,7 @@ func (s *StreamArnList) UnmarshalJSON(b []byte) error {
 
 // Specifies how to connect and authenticate to the stream platform.
 type StreamConnectionConfig struct {
-	// Direct mTLS configuration for stream platform access. This is only used
-	// in the short term until UC Kafka Connections support mTLS . Once UC Kafka
-	// Connections support mTLS, this will be deprecated.
+	// Direct mTLS configuration for stream platform access.
 	DirectMtlsConfig *DirectMtlsConfig `json:"direct_mtls_config,omitempty"`
 	// Name of an existing UC Connection for stream platform access. Must be the
 	// correct type for the streaming platform (e.g. a Kafka Connection for a
@@ -6599,6 +7206,11 @@ type StreamingMode struct {
 	FreshnessTarget string `json:"freshness_target,omitempty"`
 	// The type of streaming mode used by the materialization pipeline.
 	Mode StreamingModeStreamingModeType `json:"mode,omitempty"`
+	// Number of shuffle partitions for streaming materialization of this
+	// feature. Higher values process high-throughput features with more
+	// parallelism at higher compute cost. Materialized features which are
+	// computed together will use the largest value set among them.
+	ShufflePartitions int `json:"shuffle_partitions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6947,13 +7559,12 @@ func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateFeatureRequest struct {
-	// Feature to update.
+	// Feature whose full_name identifies the target. Only description is
+	// mutable.
 	Feature Feature `json:"feature"`
-	// The full three-part name (catalog, schema, name) of the feature. This is
-	// the feature's resource identifier; the catalog_name, schema_name, and
-	// name fields below are OUTPUT_ONLY decomposed views of this value.
+	// The full three-part name (catalog, schema, name) of the feature.
 	FullName string `json:"-" url:"-"`
-	// The list of fields to update.
+	// Fields to update. The only supported path is description.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -6981,6 +7592,26 @@ func (s *UpdateFeatureTagRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateIssueRequest struct {
+	// `issue.name` identifies the target.
+	Issue Issue `json:"issue"`
+	// experiments/{experiment}/issues/{issue}
+	Name string `json:"-" url:"-"`
+	// Accepts title, description, status, severity, categories, tags,
+	// last_seen_time, and metadata.<key>. A path with an empty value clears the
+	// field, except that title, status, and severity can't be cleared, and
+	// last_seen_time can be cleared only when source_type is MANUAL. categories
+	// and tags are replaced whole. metadata is updated per key: a
+	// metadata.<key> path sets that key from issue.metadata, or removes it when
+	// issue.metadata lacks it, and leaves the other keys alone. A bare metadata
+	// path is rejected.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateIssueRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type UpdateKafkaConfigRequest struct {

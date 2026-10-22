@@ -68,7 +68,7 @@ func (s AutoFullRefreshPolicy) MarshalJSON() ([]byte, error) {
 
 type AvroTransformerOptions struct {
 	// (Optional) Parse mode for Avro data. Valid values: FAILFAST, PERMISSIVE.
-	// Defaults to FAILFAST.
+	// Defaults to PERMISSIVE.
 	ParseMode ParseMode `json:"parse_mode,omitempty"`
 	// Inline Avro JSON schema string.
 	Schema string `json:"schema,omitempty"`
@@ -140,7 +140,8 @@ type ClonePipelineRequest struct {
 	Channel string `json:"channel,omitempty"`
 	// The type of clone to perform. Currently, only deep copies are supported
 	CloneMode CloneMode `json:"clone_mode,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -154,6 +155,8 @@ type ClonePipelineRequest struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
@@ -180,6 +183,10 @@ type ClonePipelineRequest struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Source pipeline to clone from
@@ -192,7 +199,11 @@ type ClonePipelineRequest struct {
 	RootPath string `json:"root_path,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
@@ -377,7 +388,8 @@ type CreatePipeline struct {
 	Catalog string `json:"catalog,omitempty"`
 	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -391,6 +403,8 @@ type CreatePipeline struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 
 	DryRun bool `json:"dry_run,omitempty"`
@@ -418,6 +432,10 @@ type CreatePipeline struct {
 	// Key/value map of default parameters to use for pipeline execution.
 	// Maximum total size: 10k characters (JSON format)
 	Parameters map[string]string `json:"parameters,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
@@ -430,7 +448,11 @@ type CreatePipeline struct {
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
@@ -665,7 +687,8 @@ type EditPipeline struct {
 	Catalog string `json:"catalog,omitempty"`
 	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -679,6 +702,8 @@ type EditPipeline struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
@@ -708,6 +733,10 @@ type EditPipeline struct {
 	// Key/value map of default parameters to use for pipeline execution.
 	// Maximum total size: 10k characters (JSON format)
 	Parameters map[string]string `json:"parameters,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
@@ -722,7 +751,11 @@ type EditPipeline struct {
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
@@ -1534,6 +1567,7 @@ func (s IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue) Marshal
 	return marshal.Marshal(s)
 }
 
+// Type of source system that a managed ingestion pipeline reads from.
 type IngestionSourceType string
 
 const IngestionSourceTypeBigquery IngestionSourceType = `BIGQUERY`
@@ -1959,8 +1993,8 @@ type ListPipelinesRequest struct {
 	// 25. The maximum value is 100. An error is returned if the value of
 	// max_results is greater than 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// A list of strings specifying the order of results. Supported order_by
-	// fields are id and name. The default is id asc. This field is optional.
+	// A list of strings specifying the order of results. The supported order_by
+	// field is id. The default is id asc. This field is optional.
 	OrderBy []string `json:"-" url:"order_by,omitempty"`
 	// Page token returned by previous call
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -2908,7 +2942,8 @@ type PipelineSpec struct {
 	Catalog string `json:"catalog,omitempty"`
 	// SDP Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
-	// Cluster settings for this pipeline deployment.
+	// Cluster settings for this pipeline deployment. Applies to classic
+	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	Configuration map[string]string `json:"configuration,omitempty"`
@@ -2922,6 +2957,8 @@ type PipelineSpec struct {
 	// Deployment type of this pipeline.
 	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
+	//
+	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
@@ -2944,6 +2981,10 @@ type PipelineSpec struct {
 	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	Notifications []Notifications `json:"notifications,omitempty"`
+	// Path of the pipeline parent folder in workspace file tree.
+	//
+	// If absent, the pipeline doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
@@ -2954,7 +2995,11 @@ type PipelineSpec struct {
 	RootPath string `json:"root_path,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
-	// Whether serverless compute is enabled for this pipeline.
+	// Whether serverless compute is enabled for this pipeline. Serverless is
+	// the recommended compute for new pipelines; set this to `true` to run the
+	// pipeline on serverless. For notebook/file pipelines, omitting this field
+	// uses classic compute configured through the `clusters` field. When
+	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
 	// Serverless compute ID specified by the user for serverless pipelines.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
@@ -3194,7 +3239,7 @@ type ProtobufTransformerOptions struct {
 	// Required: fully-qualified message type name.
 	MessageName string `json:"message_name,omitempty"`
 	// (Optional) Parse mode for Protobuf data. Valid values: FAILFAST,
-	// PERMISSIVE. Defaults to FAILFAST.
+	// PERMISSIVE. Defaults to PERMISSIVE.
 	ParseMode ParseMode `json:"parse_mode,omitempty"`
 	// (Optional) Maximum expansion depth for recursive protobuf fields. Spark
 	// SQL does not natively support recursive types, so recursive fields are

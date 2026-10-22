@@ -79,7 +79,8 @@ type AppsService interface {
 	// Stops the active deployment of the app in the workspace.
 	Stop(ctx context.Context, request StopAppRequest) (*App, error)
 
-	// Updates the app with the supplied name.
+	// Updates the app with the supplied name. This is a full replacement:
+	// fields omitted from the request are cleared, so send the complete app.
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
 
 	// Updates the thumbnail for an app.

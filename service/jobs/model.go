@@ -364,6 +364,13 @@ type BaseRun struct {
 	DeploymentId string `json:"deployment_id,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
+	// The window the run aims to finish within, in hours, for a Cost-optimized
+	// serverless run. Required only when `performance_target` is
+	// `COST_OPTIMIZED`. Must be one of the supported values: `NO_FLEXIBILITY`,
+	// `4h`, `12h`, `24h`, `72h`. `NO_FLEXIBILITY` means the run uses the
+	// default cost-optimized performance level without additional cost-saving
+	// optimizations.
+	DurationTarget string `json:"duration_target,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -381,6 +388,11 @@ type BaseRun struct {
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
+	// Snapshot of `JobSettings.environment_variables` as it was at run launch
+	// — the full list of named environment-variable entries the job defined.
+	// To find which entry a given task ran with, look at
+	// `RunTaskSettings.environment_variables_key`.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -1058,6 +1070,13 @@ type CreateJob struct {
 	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
 	Description string `json:"description,omitempty"`
+	// The window the run aims to finish within, in hours, for a Cost-optimized
+	// serverless run. Required only when `performance_target` is
+	// `COST_OPTIMIZED`. Must be one of the supported values: `NO_FLEXIBILITY`,
+	// `4h`, `12h`, `24h`, `72h`. `NO_FLEXIBILITY` means the run uses the
+	// default cost-optimized performance level without additional cost-saving
+	// optimizations.
+	DurationTarget string `json:"duration_target,omitempty"`
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
@@ -1066,6 +1085,11 @@ type CreateJob struct {
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Named environment-variable entries that tasks can reference by key from
+	// `TaskSettings.environment_variables_key`. Each entry's `spec` holds
+	// inline `variables` and optional `.env` `files`. Maximum 10 entries per
+	// job. A task can reference at most one entry from this list.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by tasks that use serverless compute or a compute resource
 	// that uses Environments mode.
@@ -1641,13 +1665,13 @@ type DeploymentSpec struct {
 	//
 	// Example script contents:
 	//
-	// # Plain Python: python train.py --epochs 10
+	// ```bash # Plain Python: python train.py --epochs 10
 	//
 	// # Multi-GPU via accelerate: accelerate launch train.py --config
 	// config.yaml
 	//
-	// # Distributed via torchrun: torchrun --nproc_per_node=8 train.py
-	CommandPath string `json:"command_path"`
+	// # Distributed via torchrun: torchrun --nproc_per_node=8 train.py ```
+	CommandPath string `json:"command_path,omitempty"`
 	// Compute resources allocated to each node in this deployment.
 	Compute ComputeSpec `json:"compute"`
 	// Optional human-readable name for this deployment (for example, `driver`,
@@ -2478,6 +2502,12 @@ type JobEmailNotifications struct {
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// completes for a continuous job.
+	OnMaintenanceComplete []string `json:"on_maintenance_complete,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// starts for a continuous job.
+	OnMaintenanceStart []string `json:"on_maintenance_start,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
@@ -2516,6 +2546,61 @@ type JobEnvironment struct {
 }
 
 func (s *JobEnvironment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A named environment-variable entry, defined once at the job level and
+// referenced by key from one or more tasks. Entries live on
+// `JobSettings.environment_variables`, and tasks select one via
+// `TaskSettings.environment_variables_key`.
+type JobEnvironmentVariables struct {
+	// Identifier for this entry. Must be unique within
+	// `JobSettings.environment_variables`. Tasks reference it from
+	// `TaskSettings.environment_variables_key`.
+	EnvironmentVariablesKey string `json:"environment_variables_key"`
+	// The environment variable specification.
+	Spec *JobEnvironmentVariablesSpec `json:"spec,omitempty"`
+}
+
+func (s *JobEnvironmentVariables) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The environment variables and files associated with a job environment
+// variable entry. Runtime environment variables override inline `variables`,
+// which override values from `files`, on duplicate keys.
+type JobEnvironmentVariablesSpec struct {
+	// Workspace (`/Workspace/...`) or UC Volumes (`/Volumes/...`) paths to
+	// `.env` files. Maximum 5 files. Files are read, parsed, and merged at task
+	// execution time, not at job creation or update API call time.
+	//
+	// File format: each line containing a variable must be exactly `KEY=VALUE`.
+	// Empty and whitespace-only lines, and lines beginning with `#`, are
+	// ignored. Keys must match the same regex as inlined variable names
+	// (`^[A-Za-z_][A-Za-z0-9_]*$`); the value continues to the end of the line.
+	// No other syntax is supported — no inline comments, no quoted values, no
+	// escape sequences, no variable interpolation. Any other line that does not
+	// match the `KEY=VALUE` shape fails the run.
+	//
+	// Size limits: maximum 32,768 bytes (32 KiB) per file on disk; maximum
+	// 1,024 bytes (1 KiB) per `KEY=VALUE` line combined. Files or lines
+	// exceeding these limits fail the run.
+	//
+	// On a duplicate key, the later file wins; `variables` override values from
+	// any file.
+	Files []string `json:"files,omitempty"`
+	// Environment variables specified directly as key/value pairs. Maximum 20
+	// entries.
+	//
+	// Each key must be 1 to 256 characters and match
+	// `^[A-Za-z_][A-Za-z0-9_]*$`: it must start with an ASCII letter or
+	// underscore and contain only ASCII letters, digits, and underscores. Each
+	// value can be any Unicode string of up to 512 characters, including an
+	// empty string.
+	Variables map[string]string `json:"variables,omitempty"`
+}
+
+func (s *JobEnvironmentVariablesSpec) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2722,6 +2807,13 @@ type JobSettings struct {
 	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
 	Description string `json:"description,omitempty"`
+	// The window the run aims to finish within, in hours, for a Cost-optimized
+	// serverless run. Required only when `performance_target` is
+	// `COST_OPTIMIZED`. Must be one of the supported values: `NO_FLEXIBILITY`,
+	// `4h`, `12h`, `24h`, `72h`. `NO_FLEXIBILITY` means the run uses the
+	// default cost-optimized performance level without additional cost-saving
+	// optimizations.
+	DurationTarget string `json:"duration_target,omitempty"`
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
@@ -2730,6 +2822,11 @@ type JobSettings struct {
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Named environment-variable entries that tasks can reference by key from
+	// `TaskSettings.environment_variables_key`. Each entry's `spec` holds
+	// inline `variables` and optional `.env` `files`. Maximum 10 entries per
+	// job. A task can reference at most one entry from this list.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by tasks that use serverless compute or a compute resource
 	// that uses Environments mode.
@@ -3939,6 +4036,13 @@ type RepairRun struct {
 	//
 	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	DbtCommands []string `json:"dbt_commands,omitempty"`
+	// The window the run aims to finish within, in hours, for a Cost-optimized
+	// serverless run. Required only when `performance_target` is
+	// `COST_OPTIMIZED`. Must be one of the supported values: `NO_FLEXIBILITY`,
+	// `4h`, `12h`, `24h`, `72h`. `NO_FLEXIBILITY` means the run uses the
+	// default cost-optimized performance level without additional cost-saving
+	// optimizations.
+	DurationTarget string `json:"duration_target,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -4247,6 +4351,13 @@ type Run struct {
 	DeploymentId string `json:"deployment_id,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
+	// The window the run aims to finish within, in hours, for a Cost-optimized
+	// serverless run. Required only when `performance_target` is
+	// `COST_OPTIMIZED`. Must be one of the supported values: `NO_FLEXIBILITY`,
+	// `4h`, `12h`, `24h`, `72h`. `NO_FLEXIBILITY` means the run uses the
+	// default cost-optimized performance level without additional cost-saving
+	// optimizations.
+	DurationTarget string `json:"duration_target,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -4264,6 +4375,11 @@ type Run struct {
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
+	// Snapshot of `JobSettings.environment_variables` as it was at run launch
+	// — the full list of named environment-variable entries the job defined.
+	// To find which entry a given task ran with, look at
+	// `RunTaskSettings.environment_variables_key`.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -4772,6 +4888,13 @@ type RunNow struct {
 	//
 	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	DbtCommands []string `json:"dbt_commands,omitempty"`
+	// The window the run aims to finish within, in hours, for a Cost-optimized
+	// serverless run. Required only when `performance_target` is
+	// `COST_OPTIMIZED`. Must be one of the supported values: `NO_FLEXIBILITY`,
+	// `4h`, `12h`, `24h`, `72h`. `NO_FLEXIBILITY` means the run uses the
+	// default cost-optimized performance level without additional cost-saving
+	// optimizations.
+	DurationTarget string `json:"duration_target,omitempty"`
 	// An optional token to guarantee the idempotency of job run requests. If a
 	// run with the provided token already exists, the request does not create a
 	// new run but returns the ID of the existing run instead. If a run with the
@@ -5291,10 +5414,6 @@ type RunTask struct {
 	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
 	// selected target duration time. Must provide a duration target.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
-	// The id of the serverless compute this task ran on, either explicitly
-	// configured on the task or the workspace default. Only set once the
-	// compute has been resolved at run trigger.
-	EffectiveServerlessComputeId string `json:"effective_serverless_compute_id,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -5305,6 +5424,12 @@ type RunTask struct {
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Reference to a `JobEnvironmentVariables` entry defined in
+	// `RunSettings.environment_variables` for one-time runs or preserved in
+	// `Run.environment_variables` for run snapshots. The selected entry's
+	// variables are applied to this task at execution time. This field supports
+	// serverless tasks using environment version 5 or later.
+	EnvironmentVariablesKey string `json:"environment_variables_key,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -6136,9 +6261,23 @@ type SubmitRun struct {
 	// The user specified id of the budget policy to use for this one-time run.
 	// If not specified, the run will be not be attributed to any budget policy.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// The window the run aims to finish within, in hours, for a Cost-optimized
+	// serverless run. Required only when `performance_target` is
+	// `COST_OPTIMIZED`. Must be one of the supported values: `NO_FLEXIBILITY`,
+	// `4h`, `12h`, `24h`, `72h`. `NO_FLEXIBILITY` means the run uses the
+	// default cost-optimized performance level without additional cost-saving
+	// optimizations.
+	DurationTarget string `json:"duration_target,omitempty"`
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Named environment-variable entries that tasks of this one-time run can
+	// reference by key from `RunTaskSettings.environment_variables_key`. Each
+	// entry's `spec` holds inline `variables` and optional `.env` `files`.
+	// Handled identically to `JobSettings.environment_variables`. Maximum 10
+	// entries. Entries are independent of one another — there is no
+	// cross-entry merging.
+	EnvironmentVariables []JobEnvironmentVariables `json:"environment_variables,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by tasks of this run.
 	Environments []JobEnvironment `json:"environments,omitempty"`
@@ -6279,6 +6418,12 @@ type SubmitTask struct {
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Reference to a `JobEnvironmentVariables` entry defined in
+	// `RunSettings.environment_variables` for one-time runs or preserved in
+	// `Run.environment_variables` for run snapshots. The selected entry's
+	// variables are applied to this task at execution time. This field supports
+	// serverless tasks using environment version 5 or later.
+	EnvironmentVariablesKey string `json:"environment_variables_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
@@ -6370,6 +6515,12 @@ func (s SubmitTask) MarshalJSON() ([]byte, error) {
 }
 
 type Subscription struct {
+	// Optional: The configuration for the files attached to the dashboard
+	// snapshot notification. It controls the underlying data of dashboard
+	// widgets that is attached as data files and which pages are included in
+	// the attached PDF. If not specified, the notification is sent with only
+	// the default snapshot.
+	Attachment *SubscriptionAttachment `json:"attachment,omitempty"`
 	// Optional: Allows users to specify a custom subject line on the email sent
 	// to subscribers.
 	CustomSubject string `json:"custom_subject,omitempty"`
@@ -6387,6 +6538,170 @@ func (s *Subscription) UnmarshalJSON(b []byte) error {
 
 func (s Subscription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The configuration for the files attached to the dashboard snapshot
+// notification sent to subscribers. `data_attachment` describes the underlying
+// data of dashboard widgets attached as data files, and `page_attachment`
+// describes which dashboard pages are included in the attached PDF.
+type SubscriptionAttachment struct {
+	// Optional: The configuration for the underlying data of dashboard widgets
+	// attached as tabular data files. If not specified, no tabular data is
+	// attached.
+	DataAttachment *SubscriptionAttachmentDataAttachment `json:"data_attachment,omitempty"`
+	// Optional: The selection of dashboard pages included in the attached PDF.
+	// If not specified, only the first page is included.
+	PageAttachment *SubscriptionAttachmentPageAttachment `json:"page_attachment,omitempty"`
+}
+
+func (s *SubscriptionAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The configuration for the tabular data files attached to the dashboard
+// snapshot. `widgets` lists the widgets whose data is exported and
+// `file_format` is the output format; each referenced widget's data is exported
+// as a separate file.
+type SubscriptionAttachmentDataAttachment struct {
+	// The file format of the exported tabular data files.
+	FileFormat SubscriptionAttachmentDataAttachmentFileFormat `json:"file_format"`
+	// When true, the dashboard's applied filter values are included alongside
+	// the tabular data as an additional attached file.
+	IncludeAppliedFilters bool `json:"include_applied_filters,omitempty"`
+	// The widgets whose underlying data is exported. At least one widget must
+	// be referenced.
+	Widgets []SubscriptionAttachmentDataAttachmentWidget `json:"widgets"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SubscriptionAttachmentDataAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SubscriptionAttachmentDataAttachment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The output format of an exported tabular data file. Must be set to a value
+// other than `FILE_FORMAT_UNSPECIFIED`.
+type SubscriptionAttachmentDataAttachmentFileFormat string
+
+const SubscriptionAttachmentDataAttachmentFileFormatFileFormatCsv SubscriptionAttachmentDataAttachmentFileFormat = `FILE_FORMAT_CSV`
+
+const SubscriptionAttachmentDataAttachmentFileFormatFileFormatExcel SubscriptionAttachmentDataAttachmentFileFormat = `FILE_FORMAT_EXCEL`
+
+const SubscriptionAttachmentDataAttachmentFileFormatFileFormatTsv SubscriptionAttachmentDataAttachmentFileFormat = `FILE_FORMAT_TSV`
+
+// String representation for [fmt.Print]
+func (f *SubscriptionAttachmentDataAttachmentFileFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SubscriptionAttachmentDataAttachmentFileFormat) Set(v string) error {
+	switch v {
+	case `FILE_FORMAT_CSV`, `FILE_FORMAT_EXCEL`, `FILE_FORMAT_TSV`:
+		*f = SubscriptionAttachmentDataAttachmentFileFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FILE_FORMAT_CSV", "FILE_FORMAT_EXCEL", "FILE_FORMAT_TSV"`, v)
+	}
+}
+
+// Values returns all possible values for SubscriptionAttachmentDataAttachmentFileFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SubscriptionAttachmentDataAttachmentFileFormat) Values() []SubscriptionAttachmentDataAttachmentFileFormat {
+	return []SubscriptionAttachmentDataAttachmentFileFormat{
+		SubscriptionAttachmentDataAttachmentFileFormatFileFormatCsv,
+		SubscriptionAttachmentDataAttachmentFileFormatFileFormatExcel,
+		SubscriptionAttachmentDataAttachmentFileFormatFileFormatTsv,
+	}
+}
+
+// Type always returns SubscriptionAttachmentDataAttachmentFileFormat to satisfy [pflag.Value] interface
+func (f *SubscriptionAttachmentDataAttachmentFileFormat) Type() string {
+	return "SubscriptionAttachmentDataAttachmentFileFormat"
+}
+
+// Identifies a dashboard widget whose data to attach. `page_id` and `widget_id`
+// are the URL identifiers from the dashboard's serialized definition returned
+// by the Get dashboard API (`serialized_dashboard`), and together they uniquely
+// identify the widget.
+type SubscriptionAttachmentDataAttachmentWidget struct {
+	// The URL identifier of the page containing the widget. This is the value
+	// of the `name` field of the corresponding entry under `pages` in the
+	// serialized dashboard definition. Format: alphanumeric, hyphen, and
+	// underscore characters allowed, max length 63.
+	PageId string `json:"page_id"`
+	// The URL identifier of the widget. This is the value of the `name` field
+	// of the corresponding widget under that page's `layout` in the serialized
+	// dashboard definition. Format: alphanumeric, hyphen, and underscore
+	// characters allowed, max length 63.
+	WidgetId string `json:"widget_id"`
+}
+
+func (s *SubscriptionAttachmentDataAttachmentWidget) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The selection of dashboard pages included in the attached PDF.
+// `page_selection` chooses between all pages, the first page only, or an
+// explicit subset listed in `page_ids`.
+type SubscriptionAttachmentPageAttachment struct {
+	// The identifiers of the pages to include in the PDF. Only specified when
+	// `page_selection` is `PAGE_SELECTION_SUBSET`. Each value is the identifier
+	// of a page in the dashboard's serialized definition returned by the Get
+	// dashboard API (`serialized_dashboard`): the value of the `name` field of
+	// an entry under `pages`. Format: alphanumeric, hyphen, and underscore
+	// characters allowed, max length 63.
+	PageIds []string `json:"page_ids,omitempty"`
+	// How the attached pages are selected. When set to `PAGE_SELECTION_SUBSET`,
+	// the pages to include are listed in `page_ids`.
+	PageSelection SubscriptionAttachmentPageAttachmentPageSelection `json:"page_selection,omitempty"`
+}
+
+func (s *SubscriptionAttachmentPageAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Determines which dashboard pages are attached to the notification.
+type SubscriptionAttachmentPageAttachmentPageSelection string
+
+const SubscriptionAttachmentPageAttachmentPageSelectionPageSelectionAll SubscriptionAttachmentPageAttachmentPageSelection = `PAGE_SELECTION_ALL`
+
+const SubscriptionAttachmentPageAttachmentPageSelectionPageSelectionSubset SubscriptionAttachmentPageAttachmentPageSelection = `PAGE_SELECTION_SUBSET`
+
+// String representation for [fmt.Print]
+func (f *SubscriptionAttachmentPageAttachmentPageSelection) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SubscriptionAttachmentPageAttachmentPageSelection) Set(v string) error {
+	switch v {
+	case `PAGE_SELECTION_ALL`, `PAGE_SELECTION_SUBSET`:
+		*f = SubscriptionAttachmentPageAttachmentPageSelection(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PAGE_SELECTION_ALL", "PAGE_SELECTION_SUBSET"`, v)
+	}
+}
+
+// Values returns all possible values for SubscriptionAttachmentPageAttachmentPageSelection.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SubscriptionAttachmentPageAttachmentPageSelection) Values() []SubscriptionAttachmentPageAttachmentPageSelection {
+	return []SubscriptionAttachmentPageAttachmentPageSelection{
+		SubscriptionAttachmentPageAttachmentPageSelectionPageSelectionAll,
+		SubscriptionAttachmentPageAttachmentPageSelectionPageSelectionSubset,
+	}
+}
+
+// Type always returns SubscriptionAttachmentPageAttachmentPageSelection to satisfy [pflag.Value] interface
+func (f *SubscriptionAttachmentPageAttachmentPageSelection) Type() string {
+	return "SubscriptionAttachmentPageAttachmentPageSelection"
 }
 
 type SubscriptionSubscriber struct {
@@ -6521,6 +6836,11 @@ type Task struct {
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute or a compute resource that uses Environments mode.
 	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Reference to a `JobEnvironmentVariables` entry defined in
+	// `JobSettings.environment_variables`. The selected entry's variables are
+	// applied to this task at execution time. This field supports serverless
+	// tasks using environment version 5 or later.
+	EnvironmentVariablesKey string `json:"environment_variables_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
@@ -6653,6 +6973,12 @@ type TaskEmailNotifications struct {
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// completes for a continuous job.
+	OnMaintenanceComplete []string `json:"on_maintenance_complete,omitempty"`
+	// A list of email addresses to notify when platform-initiated maintenance
+	// starts for a continuous job.
+	OnMaintenanceStart []string `json:"on_maintenance_start,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
@@ -7400,6 +7726,15 @@ type WebhookNotifications struct {
 	// An optional list of system notification IDs to call when the run fails. A
 	// maximum of 3 destinations can be specified for the `on_failure` property.
 	OnFailure []Webhook `json:"on_failure,omitempty"`
+	// An optional list of system notification IDs to call when
+	// platform-initiated maintenance completes for a continuous job. A maximum
+	// of 3 destinations can be specified for the `on_maintenance_complete`
+	// property.
+	OnMaintenanceComplete []Webhook `json:"on_maintenance_complete,omitempty"`
+	// An optional list of system notification IDs to call when
+	// platform-initiated maintenance starts for a continuous job. A maximum of
+	// 3 destinations can be specified for the `on_maintenance_start` property.
+	OnMaintenanceStart []Webhook `json:"on_maintenance_start,omitempty"`
 	// An optional list of system notification IDs to call when the run starts.
 	// A maximum of 3 destinations can be specified for the `on_start` property.
 	OnStart []Webhook `json:"on_start,omitempty"`

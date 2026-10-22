@@ -14,6 +14,19 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
+// StaticHeaders returns a value for [Config.Headers] that sets the given HTTP
+// headers on every request. Use it for headers that do not change from request
+// to request; for headers that vary per request, set [Config.Headers] to a
+// function directly.
+func StaticHeaders(headers map[string]string) func(*http.Request) error {
+	return func(r *http.Request) error {
+		for k, v := range headers {
+			r.Header.Set(k, v)
+		}
+		return nil
+	}
+}
+
 func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 	if skippable, ok := cfg.HTTPTransport.(interface {
 		SkipRetryOnIO() bool
@@ -85,6 +98,12 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			*r = *r.WithContext(ctx) // replace request
 			return nil
 		},
+	}
+
+	// Apply the caller-provided header hook on every request. This runs after
+	// AuthVisitor, so headers are added on top of normal authentication.
+	if cfg.Headers != nil {
+		visitors = append(visitors, cfg.Headers)
 	}
 
 	return httpclient.ClientConfig{

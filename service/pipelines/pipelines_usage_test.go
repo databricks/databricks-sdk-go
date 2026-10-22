@@ -34,12 +34,12 @@ func ExamplePipelinesAPI_Create_pipelines() {
 	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Libraries: []pipelines.PipelineLibrary{pipelines.PipelineLibrary{
+		Libraries: []pipelines.PipelineLibrary{{
 			Notebook: &pipelines.NotebookLibrary{
 				Path: notebookPath,
 			},
 		}},
-		Clusters: []pipelines.PipelineCluster{pipelines.PipelineCluster{
+		Clusters: []pipelines.PipelineCluster{{
 			InstancePoolId: os.Getenv("TEST_INSTANCE_POOL_ID"),
 			Label:          "default",
 			NumWorkers:     1,
@@ -78,12 +78,12 @@ func ExamplePipelinesAPI_Get_pipelines() {
 	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Libraries: []pipelines.PipelineLibrary{pipelines.PipelineLibrary{
+		Libraries: []pipelines.PipelineLibrary{{
 			Notebook: &pipelines.NotebookLibrary{
 				Path: notebookPath,
 			},
 		}},
-		Clusters: []pipelines.PipelineCluster{pipelines.PipelineCluster{
+		Clusters: []pipelines.PipelineCluster{{
 			InstancePoolId: os.Getenv("TEST_INSTANCE_POOL_ID"),
 			Label:          "default",
 			NumWorkers:     1,
@@ -128,12 +128,12 @@ func ExamplePipelinesAPI_ListPipelineEvents_pipelines() {
 	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Libraries: []pipelines.PipelineLibrary{pipelines.PipelineLibrary{
+		Libraries: []pipelines.PipelineLibrary{{
 			Notebook: &pipelines.NotebookLibrary{
 				Path: notebookPath,
 			},
 		}},
-		Clusters: []pipelines.PipelineCluster{pipelines.PipelineCluster{
+		Clusters: []pipelines.PipelineCluster{{
 			InstancePoolId: os.Getenv("TEST_INSTANCE_POOL_ID"),
 			Label:          "default",
 			NumWorkers:     1,
@@ -195,12 +195,12 @@ func ExamplePipelinesAPI_Update_pipelines() {
 	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Libraries: []pipelines.PipelineLibrary{pipelines.PipelineLibrary{
+		Libraries: []pipelines.PipelineLibrary{{
 			Notebook: &pipelines.NotebookLibrary{
 				Path: notebookPath,
 			},
 		}},
-		Clusters: []pipelines.PipelineCluster{pipelines.PipelineCluster{
+		Clusters: []pipelines.PipelineCluster{{
 			InstancePoolId: os.Getenv("TEST_INSTANCE_POOL_ID"),
 			Label:          "default",
 			NumWorkers:     1,
@@ -215,12 +215,12 @@ func ExamplePipelinesAPI_Update_pipelines() {
 	err = w.Pipelines.Update(ctx, pipelines.EditPipeline{
 		PipelineId: created.PipelineId,
 		Name:       fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Libraries: []pipelines.PipelineLibrary{pipelines.PipelineLibrary{
+		Libraries: []pipelines.PipelineLibrary{{
 			Notebook: &pipelines.NotebookLibrary{
 				Path: notebookPath,
 			},
 		}},
-		Clusters: []pipelines.PipelineCluster{pipelines.PipelineCluster{
+		Clusters: []pipelines.PipelineCluster{{
 			InstancePoolId: os.Getenv("TEST_INSTANCE_POOL_ID"),
 			Label:          "default",
 			NumWorkers:     1,
