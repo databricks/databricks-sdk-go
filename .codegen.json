@@ -40,6 +40,7 @@
       "BUILD.bazel",
       "OWNERS",
       "vendor",
+      "fixturetests",
       ".nextchanges",
       "NEXT_CHANGELOG.md",
       "tagging.yml",

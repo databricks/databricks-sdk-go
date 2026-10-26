@@ -377,6 +377,74 @@ func (_c *MockFeatureEngineeringInterface_CreateKafkaConfig_Call) RunAndReturn(r
 	return _c
 }
 
+// CreateMaterializationSet provides a mock function for the type MockFeatureEngineeringInterface
+func (_mock *MockFeatureEngineeringInterface) CreateMaterializationSet(ctx context.Context, request ml.CreateMaterializationSetRequest) (ml.CreateMaterializationSetOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateMaterializationSet")
+	}
+
+	var r0 ml.CreateMaterializationSetOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.CreateMaterializationSetRequest) (ml.CreateMaterializationSetOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.CreateMaterializationSetRequest) ml.CreateMaterializationSetOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(ml.CreateMaterializationSetOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, ml.CreateMaterializationSetRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_CreateMaterializationSet_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMaterializationSet'
+type MockFeatureEngineeringInterface_CreateMaterializationSet_Call struct {
+	*mock.Call
+}
+
+// CreateMaterializationSet is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.CreateMaterializationSetRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) CreateMaterializationSet(ctx any, request any) *MockFeatureEngineeringInterface_CreateMaterializationSet_Call {
+	return &MockFeatureEngineeringInterface_CreateMaterializationSet_Call{Call: _e.mock.On("CreateMaterializationSet", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateMaterializationSet_Call) Run(run func(ctx context.Context, request ml.CreateMaterializationSetRequest)) *MockFeatureEngineeringInterface_CreateMaterializationSet_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 ml.CreateMaterializationSetRequest
+		if args[1] != nil {
+			arg1 = args[1].(ml.CreateMaterializationSetRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateMaterializationSet_Call) Return(createMaterializationSetOperationInterface ml.CreateMaterializationSetOperationInterface, err error) *MockFeatureEngineeringInterface_CreateMaterializationSet_Call {
+	_c.Call.Return(createMaterializationSetOperationInterface, err)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateMaterializationSet_Call) RunAndReturn(run func(ctx context.Context, request ml.CreateMaterializationSetRequest) (ml.CreateMaterializationSetOperationInterface, error)) *MockFeatureEngineeringInterface_CreateMaterializationSet_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateMaterializedFeature provides a mock function for the type MockFeatureEngineeringInterface
 func (_mock *MockFeatureEngineeringInterface) CreateMaterializedFeature(ctx context.Context, request ml.CreateMaterializedFeatureRequest) (*ml.MaterializedFeature, error) {
 	ret := _mock.Called(ctx, request)
@@ -627,6 +695,74 @@ func (_c *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call) RunAndReturn(r
 	return _c
 }
 
+// DeleteMaterializationSet provides a mock function for the type MockFeatureEngineeringInterface
+func (_mock *MockFeatureEngineeringInterface) DeleteMaterializationSet(ctx context.Context, request ml.DeleteMaterializationSetRequest) (ml.DeleteMaterializationSetOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMaterializationSet")
+	}
+
+	var r0 ml.DeleteMaterializationSetOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.DeleteMaterializationSetRequest) (ml.DeleteMaterializationSetOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.DeleteMaterializationSetRequest) ml.DeleteMaterializationSetOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(ml.DeleteMaterializationSetOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, ml.DeleteMaterializationSetRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_DeleteMaterializationSet_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMaterializationSet'
+type MockFeatureEngineeringInterface_DeleteMaterializationSet_Call struct {
+	*mock.Call
+}
+
+// DeleteMaterializationSet is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteMaterializationSetRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) DeleteMaterializationSet(ctx any, request any) *MockFeatureEngineeringInterface_DeleteMaterializationSet_Call {
+	return &MockFeatureEngineeringInterface_DeleteMaterializationSet_Call{Call: _e.mock.On("DeleteMaterializationSet", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteMaterializationSet_Call) Run(run func(ctx context.Context, request ml.DeleteMaterializationSetRequest)) *MockFeatureEngineeringInterface_DeleteMaterializationSet_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 ml.DeleteMaterializationSetRequest
+		if args[1] != nil {
+			arg1 = args[1].(ml.DeleteMaterializationSetRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteMaterializationSet_Call) Return(deleteMaterializationSetOperationInterface ml.DeleteMaterializationSetOperationInterface, err error) *MockFeatureEngineeringInterface_DeleteMaterializationSet_Call {
+	_c.Call.Return(deleteMaterializationSetOperationInterface, err)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteMaterializationSet_Call) RunAndReturn(run func(ctx context.Context, request ml.DeleteMaterializationSetRequest) (ml.DeleteMaterializationSetOperationInterface, error)) *MockFeatureEngineeringInterface_DeleteMaterializationSet_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteMaterializedFeature provides a mock function for the type MockFeatureEngineeringInterface
 func (_mock *MockFeatureEngineeringInterface) DeleteMaterializedFeature(ctx context.Context, request ml.DeleteMaterializedFeatureRequest) error {
 	ret := _mock.Called(ctx, request)
@@ -873,6 +1009,74 @@ func (_c *MockFeatureEngineeringInterface_GetKafkaConfig_Call) Return(kafkaConfi
 }
 
 func (_c *MockFeatureEngineeringInterface_GetKafkaConfig_Call) RunAndReturn(run func(ctx context.Context, request ml.GetKafkaConfigRequest) (*ml.KafkaConfig, error)) *MockFeatureEngineeringInterface_GetKafkaConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetMaterializationSet provides a mock function for the type MockFeatureEngineeringInterface
+func (_mock *MockFeatureEngineeringInterface) GetMaterializationSet(ctx context.Context, request ml.GetMaterializationSetRequest) (*ml.MaterializationSet, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMaterializationSet")
+	}
+
+	var r0 *ml.MaterializationSet
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.GetMaterializationSetRequest) (*ml.MaterializationSet, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.GetMaterializationSetRequest) *ml.MaterializationSet); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.MaterializationSet)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, ml.GetMaterializationSetRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_GetMaterializationSet_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMaterializationSet'
+type MockFeatureEngineeringInterface_GetMaterializationSet_Call struct {
+	*mock.Call
+}
+
+// GetMaterializationSet is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetMaterializationSetRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) GetMaterializationSet(ctx any, request any) *MockFeatureEngineeringInterface_GetMaterializationSet_Call {
+	return &MockFeatureEngineeringInterface_GetMaterializationSet_Call{Call: _e.mock.On("GetMaterializationSet", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_GetMaterializationSet_Call) Run(run func(ctx context.Context, request ml.GetMaterializationSetRequest)) *MockFeatureEngineeringInterface_GetMaterializationSet_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 ml.GetMaterializationSetRequest
+		if args[1] != nil {
+			arg1 = args[1].(ml.GetMaterializationSetRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetMaterializationSet_Call) Return(materializationSet *ml.MaterializationSet, err error) *MockFeatureEngineeringInterface_GetMaterializationSet_Call {
+	_c.Call.Return(materializationSet, err)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetMaterializationSet_Call) RunAndReturn(run func(ctx context.Context, request ml.GetMaterializationSetRequest) (*ml.MaterializationSet, error)) *MockFeatureEngineeringInterface_GetMaterializationSet_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1789,6 +1993,74 @@ func (_c *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call) Return(kafkaCo
 }
 
 func (_c *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call) RunAndReturn(run func(ctx context.Context, request ml.UpdateKafkaConfigRequest) (*ml.KafkaConfig, error)) *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateMaterializationSet provides a mock function for the type MockFeatureEngineeringInterface
+func (_mock *MockFeatureEngineeringInterface) UpdateMaterializationSet(ctx context.Context, request ml.UpdateMaterializationSetRequest) (ml.UpdateMaterializationSetOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateMaterializationSet")
+	}
+
+	var r0 ml.UpdateMaterializationSetOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.UpdateMaterializationSetRequest) (ml.UpdateMaterializationSetOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.UpdateMaterializationSetRequest) ml.UpdateMaterializationSetOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(ml.UpdateMaterializationSetOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, ml.UpdateMaterializationSetRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_UpdateMaterializationSet_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateMaterializationSet'
+type MockFeatureEngineeringInterface_UpdateMaterializationSet_Call struct {
+	*mock.Call
+}
+
+// UpdateMaterializationSet is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.UpdateMaterializationSetRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) UpdateMaterializationSet(ctx any, request any) *MockFeatureEngineeringInterface_UpdateMaterializationSet_Call {
+	return &MockFeatureEngineeringInterface_UpdateMaterializationSet_Call{Call: _e.mock.On("UpdateMaterializationSet", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateMaterializationSet_Call) Run(run func(ctx context.Context, request ml.UpdateMaterializationSetRequest)) *MockFeatureEngineeringInterface_UpdateMaterializationSet_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 ml.UpdateMaterializationSetRequest
+		if args[1] != nil {
+			arg1 = args[1].(ml.UpdateMaterializationSetRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateMaterializationSet_Call) Return(updateMaterializationSetOperationInterface ml.UpdateMaterializationSetOperationInterface, err error) *MockFeatureEngineeringInterface_UpdateMaterializationSet_Call {
+	_c.Call.Return(updateMaterializationSetOperationInterface, err)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateMaterializationSet_Call) RunAndReturn(run func(ctx context.Context, request ml.UpdateMaterializationSetRequest) (ml.UpdateMaterializationSetOperationInterface, error)) *MockFeatureEngineeringInterface_UpdateMaterializationSet_Call {
 	_c.Call.Return(run)
 	return _c
 }

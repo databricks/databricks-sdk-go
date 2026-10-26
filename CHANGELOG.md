@@ -1,5 +1,33 @@
 # Version changelog
 
+## Release v0.191.0 (2026-10-26)
+
+### API Changes
+* Add `GetMemoryStorePermission`, `GetSessionStorePermission`, `GrantMemoryStorePermission`, `GrantSessionStorePermission`, `ListMemoryStorePermissions`, `ListSessionStorePermissions`, `RevokeMemoryStorePermission` and `RevokeSessionStorePermission` methods for [w.AgentKit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/agentkit#AgentKitAPI) workspace-level service.
+* Add `CreateMaterializationSet`, `DeleteMaterializationSet`, `GetMaterializationSet` and `UpdateMaterializationSet` methods for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service.
+* Add `StartEndpoint` and `StopEndpoint` methods for [w.VectorSearchEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchEndpointsAPI) workspace-level service.
+* Add `IncludeExternalSpend` field for [billing.BudgetConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#BudgetConfiguration).
+* Add `IncludeExternalSpend` field for [billing.CreateBudgetConfigurationBudget](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#CreateBudgetConfigurationBudget).
+* Add `IncludeExternalSpend` field for [billing.UpdateBudgetConfigurationBudget](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#UpdateBudgetConfigurationBudget).
+* Add `NotificationSettings` field for [dataquality.AnomalyDetectionConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataquality#AnomalyDetectionConfig).
+* Add `DestinationIds` and `DestinationUserIds` fields for [dataquality.NotificationDestination](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataquality#NotificationDestination).
+* Add `OnUnhealthyTable` field for [dataquality.NotificationSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataquality#NotificationSettings).
+* Add `Regex` field for [iamv2.IdentityVisibilityFilter](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#IdentityVisibilityFilter).
+* Add `FileOutput` field for [jobs.SqlOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SqlOutput).
+* Add `RelativeError` field for [ml.ApproxCountDistinctFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ApproxCountDistinctFunction).
+* Add `RelativeError` field for [ml.ApproxPercentileFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ApproxPercentileFunction).
+* Add `MaterializationSetId` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `DeleteRows` field for [ml.PurgeFeatureEntitiesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#PurgeFeatureEntitiesRequest).
+* Add `Condition`, `MinTimeBetweenTriggers` and `WaitAfterLastChange` fields for [ml.TableTrigger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#TableTrigger).
+* Add `OnedriveOptions` field for [pipelines.ConnectorOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ConnectorOptions).
+* Add `FullRefreshSelectionByPath` and `RefreshSelectionByPath` fields for [pipelines.StartUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#StartUpdate).
+* Add `FullRefreshSelectionByPath` and `RefreshSelectionByPath` fields for [pipelines.UpdateInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#UpdateInfo).
+* Add `Metadata` field for [sandbox.Sandbox](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#Sandbox).
+* Add `Stopping`, `Stopped` and `Starting` enum values for [aisearch.EndpointStatusState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aisearch#EndpointStatusState).
+* Add `OperationActionTypeUnbind` enum value for [bundledeployments.OperationActionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/bundledeployments#OperationActionType).
+* Add `Onedrive` enum value for [pipelines.IngestionSourceType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionSourceType).
+* Add `Stopping`, `Stopped` and `Starting` enum values for [vectorsearch.EndpointStatusState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointStatusState).
+
 ## Release v0.190.0 (2026-10-21)
 
 ### API Changes
