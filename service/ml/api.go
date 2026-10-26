@@ -395,6 +395,8 @@ type FeatureEngineeringInterface interface {
 	// config can delete it.
 	CreateKafkaConfig(ctx context.Context, request CreateKafkaConfigRequest) (*KafkaConfig, error)
 
+	CreateMaterializationSet(ctx context.Context, request CreateMaterializationSetRequest) (CreateMaterializationSetOperationInterface, error)
+
 	// Create a materialized feature.
 	CreateMaterializedFeature(ctx context.Context, request CreateMaterializedFeatureRequest) (*MaterializedFeature, error)
 
@@ -410,6 +412,8 @@ type FeatureEngineeringInterface interface {
 	// config can delete it.
 	DeleteKafkaConfig(ctx context.Context, request DeleteKafkaConfigRequest) error
 
+	DeleteMaterializationSet(ctx context.Context, request DeleteMaterializationSetRequest) (DeleteMaterializationSetOperationInterface, error)
+
 	// Delete a materialized feature.
 	DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error
 
@@ -423,6 +427,11 @@ type FeatureEngineeringInterface interface {
 	// creating features under the entire metastore. Only the creator of the Kafka
 	// config can delete it.
 	GetKafkaConfig(ctx context.Context, request GetKafkaConfigRequest) (*KafkaConfig, error)
+
+	// Get a materialization set and the materialized features in it. A set whose
+	// materialized feature members have all been deleted is returned with an empty
+	// member list.
+	GetMaterializationSet(ctx context.Context, request GetMaterializationSetRequest) (*MaterializationSet, error)
 
 	// Get a materialized feature.
 	GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error)
@@ -486,6 +495,8 @@ type FeatureEngineeringInterface interface {
 	// creating features under the entire metastore. Only the creator of the Kafka
 	// config can delete it.
 	UpdateKafkaConfig(ctx context.Context, request UpdateKafkaConfigRequest) (*KafkaConfig, error)
+
+	UpdateMaterializationSet(ctx context.Context, request UpdateMaterializationSetRequest) (UpdateMaterializationSetOperationInterface, error)
 
 	// Update a materialized feature (pause/resume).
 	UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error)
@@ -669,6 +680,293 @@ func (a *backfillFeaturesOperation) Done() (bool, error) {
 	return operation.Done, nil
 }
 
+func (a *FeatureEngineeringAPI) CreateMaterializationSet(ctx context.Context, request CreateMaterializationSetRequest) (CreateMaterializationSetOperationInterface, error) {
+	operation, err := a.featureEngineeringImpl.CreateMaterializationSet(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &createMaterializationSetOperation{
+		impl:      &a.featureEngineeringImpl,
+		operation: operation,
+	}, nil
+}
+
+type CreateMaterializationSetOperationInterface interface {
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) (*MaterializationSet, error)
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*MaterializationSetOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
+}
+
+type createMaterializationSetOperation struct {
+	impl      *featureEngineeringImpl
+	operation *Operation
+}
+
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *createMaterializationSetOperation) Wait(ctx context.Context, opts ...api.Option) (*MaterializationSet, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	errOperationInProgress := errors.New("operation still in progress")
+	var result *MaterializationSet
+	call := func(ctx context.Context) error {
+		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
+			Name: a.operation.Name,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Update local operation state
+		a.operation = operation
+
+		if !operation.Done {
+			return errOperationInProgress
+		}
+
+		if operation.Error != nil {
+			var errorMsg string
+			if operation.Error.Message != "" {
+				errorMsg = operation.Error.Message
+			} else {
+				errorMsg = "unknown error"
+			}
+
+			if operation.Error.ErrorCode != "" {
+				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
+			}
+
+			return fmt.Errorf("operation failed: %s", errorMsg)
+		}
+
+		// Operation completed successfully, unmarshal response
+		if operation.Response == nil {
+			return fmt.Errorf("operation completed but no response available")
+		}
+
+		var materializationSet MaterializationSet
+		err = json.Unmarshal(operation.Response, &materializationSet)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal materializationSet response: %w", err)
+		}
+
+		result = &materializationSet
+
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
+	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
+
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+
+}
+
+// Name returns the name of the long-running operation. The name is assigned
+// by the server and is unique within the service from which the operation is created.
+func (a *createMaterializationSetOperation) Name() string {
+	return a.operation.Name
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (a *createMaterializationSetOperation) Metadata() (*MaterializationSetOperationMetadata, error) {
+	if a.operation.Metadata == nil {
+		return nil, nil
+	}
+
+	var metadata MaterializationSetOperationMetadata
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (a *createMaterializationSetOperation) Done() (bool, error) {
+	// Refresh the operation state first
+	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
+		Name: a.operation.Name,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Update local operation state
+	a.operation = operation
+
+	return operation.Done, nil
+}
+
+func (a *FeatureEngineeringAPI) DeleteMaterializationSet(ctx context.Context, request DeleteMaterializationSetRequest) (DeleteMaterializationSetOperationInterface, error) {
+	operation, err := a.featureEngineeringImpl.DeleteMaterializationSet(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &deleteMaterializationSetOperation{
+		impl:      &a.featureEngineeringImpl,
+		operation: operation,
+	}, nil
+}
+
+type DeleteMaterializationSetOperationInterface interface {
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) error
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*MaterializationSetOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
+}
+
+type deleteMaterializationSetOperation struct {
+	impl      *featureEngineeringImpl
+	operation *Operation
+}
+
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *deleteMaterializationSetOperation) Wait(ctx context.Context, opts ...api.Option) error {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	errOperationInProgress := errors.New("operation still in progress")
+
+	call := func(ctx context.Context) error {
+		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
+			Name: a.operation.Name,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Update local operation state
+		a.operation = operation
+
+		if !operation.Done {
+			return errOperationInProgress
+		}
+
+		if operation.Error != nil {
+			var errorMsg string
+			if operation.Error.Message != "" {
+				errorMsg = operation.Error.Message
+			} else {
+				errorMsg = "unknown error"
+			}
+
+			if operation.Error.ErrorCode != "" {
+				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
+			}
+
+			return fmt.Errorf("operation failed: %s", errorMsg)
+		}
+
+		// Operation completed successfully, unmarshal response
+		if operation.Response == nil {
+			return fmt.Errorf("operation completed but no response available")
+		}
+
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
+	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
+
+	return err
+
+}
+
+// Name returns the name of the long-running operation. The name is assigned
+// by the server and is unique within the service from which the operation is created.
+func (a *deleteMaterializationSetOperation) Name() string {
+	return a.operation.Name
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (a *deleteMaterializationSetOperation) Metadata() (*MaterializationSetOperationMetadata, error) {
+	if a.operation.Metadata == nil {
+		return nil, nil
+	}
+
+	var metadata MaterializationSetOperationMetadata
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (a *deleteMaterializationSetOperation) Done() (bool, error) {
+	// Refresh the operation state first
+	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
+		Name: a.operation.Name,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Update local operation state
+	a.operation = operation
+
+	return operation.Done, nil
+}
+
 func (a *FeatureEngineeringAPI) PurgeFeatureEntities(ctx context.Context, request PurgeFeatureEntitiesRequest) (PurgeFeatureEntitiesOperationInterface, error) {
 	operation, err := a.featureEngineeringImpl.PurgeFeatureEntities(ctx, request)
 	if err != nil {
@@ -804,6 +1102,155 @@ func (a *purgeFeatureEntitiesOperation) Metadata() (*PurgeFeatureEntitiesMetadat
 
 // Done reports whether the long-running operation has completed.
 func (a *purgeFeatureEntitiesOperation) Done() (bool, error) {
+	// Refresh the operation state first
+	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
+		Name: a.operation.Name,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Update local operation state
+	a.operation = operation
+
+	return operation.Done, nil
+}
+
+func (a *FeatureEngineeringAPI) UpdateMaterializationSet(ctx context.Context, request UpdateMaterializationSetRequest) (UpdateMaterializationSetOperationInterface, error) {
+	operation, err := a.featureEngineeringImpl.UpdateMaterializationSet(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &updateMaterializationSetOperation{
+		impl:      &a.featureEngineeringImpl,
+		operation: operation,
+	}, nil
+}
+
+type UpdateMaterializationSetOperationInterface interface {
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) (*MaterializationSet, error)
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*MaterializationSetOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
+}
+
+type updateMaterializationSetOperation struct {
+	impl      *featureEngineeringImpl
+	operation *Operation
+}
+
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *updateMaterializationSetOperation) Wait(ctx context.Context, opts ...api.Option) (*MaterializationSet, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	errOperationInProgress := errors.New("operation still in progress")
+	var result *MaterializationSet
+	call := func(ctx context.Context) error {
+		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
+			Name: a.operation.Name,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Update local operation state
+		a.operation = operation
+
+		if !operation.Done {
+			return errOperationInProgress
+		}
+
+		if operation.Error != nil {
+			var errorMsg string
+			if operation.Error.Message != "" {
+				errorMsg = operation.Error.Message
+			} else {
+				errorMsg = "unknown error"
+			}
+
+			if operation.Error.ErrorCode != "" {
+				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
+			}
+
+			return fmt.Errorf("operation failed: %s", errorMsg)
+		}
+
+		// Operation completed successfully, unmarshal response
+		if operation.Response == nil {
+			return fmt.Errorf("operation completed but no response available")
+		}
+
+		var materializationSet MaterializationSet
+		err = json.Unmarshal(operation.Response, &materializationSet)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal materializationSet response: %w", err)
+		}
+
+		result = &materializationSet
+
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
+	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
+
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+
+}
+
+// Name returns the name of the long-running operation. The name is assigned
+// by the server and is unique within the service from which the operation is created.
+func (a *updateMaterializationSetOperation) Name() string {
+	return a.operation.Name
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (a *updateMaterializationSetOperation) Metadata() (*MaterializationSetOperationMetadata, error) {
+	if a.operation.Metadata == nil {
+		return nil, nil
+	}
+
+	var metadata MaterializationSetOperationMetadata
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (a *updateMaterializationSetOperation) Done() (bool, error) {
 	// Refresh the operation state first
 	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
 		Name: a.operation.Name,

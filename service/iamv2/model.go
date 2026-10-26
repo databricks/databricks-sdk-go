@@ -51,8 +51,8 @@ func (s *CreateGroupRequest) UnmarshalJSON(b []byte) error {
 
 type CreateIdentityVisibilityFilterRequest struct {
 	// Required. The filter to create. Set `principal_type` to `GROUP` and
-	// specify exactly one of `exact` or `prefix`. The server assigns the
-	// resource name; any supplied `name` is ignored.
+	// specify exactly one of `exact`, `prefix`, or `regex`. The server assigns
+	// the resource name; any supplied `name` is ignored.
 	IdentityVisibilityFilter IdentityVisibilityFilter `json:"identity_visibility_filter"`
 	// Optional. The ID to use for the filter, which becomes the final component
 	// of its resource name. If not specified or empty, the server generates
@@ -804,6 +804,8 @@ type IdentityVisibilityFilter struct {
 	// The type of principal this rule applies to. Set to `GROUP` when creating
 	// a filter. Other principal types are not supported for creation.
 	PrincipalType PrincipalType `json:"principal_type"`
+	// Full, case-sensitive RE2 match on the identity's display name.
+	Regex *RegexMatchRule `json:"regex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1362,6 +1364,18 @@ func (f *PrincipalType) Values() []PrincipalType {
 // Type always returns PrincipalType to satisfy [pflag.Value] interface
 func (f *PrincipalType) Type() string {
 	return "PrincipalType"
+}
+
+// A rule that matches an identity whose complete display name matches an RE2
+// regular expression. Matching is case-sensitive. Use .* explicitly when
+// substring matching is desired.
+type RegexMatchRule struct {
+	// The RE2 regular expression matched against the complete display name.
+	DisplayNameRegex string `json:"display_name_regex"`
+}
+
+func (s *RegexMatchRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Request message for resolving a group with the given external ID from the

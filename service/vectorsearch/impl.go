@@ -177,6 +177,36 @@ func (a *vectorSearchEndpointsImpl) SetPermissions(ctx context.Context, request 
 	return &vectorSearchEndpointPermissions, err
 }
 
+func (a *vectorSearchEndpointsImpl) StartEndpoint(ctx context.Context, request StartEndpointRequest) (*EndpointInfo, error) {
+	var endpointInfo EndpointInfo
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/start", request.EndpointName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &endpointInfo)
+	return &endpointInfo, err
+}
+
+func (a *vectorSearchEndpointsImpl) StopEndpoint(ctx context.Context, request StopEndpointRequest) (*EndpointInfo, error) {
+	var endpointInfo EndpointInfo
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/stop", request.EndpointName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &endpointInfo)
+	return &endpointInfo, err
+}
+
 func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error) {
 	var patchEndpointBudgetPolicyResponse PatchEndpointBudgetPolicyResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/budget-policy", request.EndpointName)

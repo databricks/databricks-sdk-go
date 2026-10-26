@@ -236,6 +236,20 @@ func (a *agentKitImpl) GetMemoryStore(ctx context.Context, request GetManagedMem
 	return &managedMemoryStore, err
 }
 
+func (a *agentKitImpl) GetMemoryStorePermission(ctx context.Context, request GetMemoryStorePermissionRequest) (*MemoryStorePermission, error) {
+	var memoryStorePermission MemoryStorePermission
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions/self", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &memoryStorePermission)
+	return &memoryStorePermission, err
+}
+
 func (a *agentKitImpl) GetSession(ctx context.Context, request GetSessionRequest) (*Session, error) {
 	var session Session
 	path := fmt.Sprintf("/api/2.0/agents/%v", request.Name)
@@ -262,6 +276,50 @@ func (a *agentKitImpl) GetSessionStore(ctx context.Context, request GetSessionSt
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &sessionStore)
 	return &sessionStore, err
+}
+
+func (a *agentKitImpl) GetSessionStorePermission(ctx context.Context, request GetSessionStorePermissionRequest) (*SessionStorePermission, error) {
+	var sessionStorePermission SessionStorePermission
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions/self", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &sessionStorePermission)
+	return &sessionStorePermission, err
+}
+
+func (a *agentKitImpl) GrantMemoryStorePermission(ctx context.Context, request GrantMemoryStorePermissionRequest) (*GrantMemoryStorePermissionResponse, error) {
+	var grantMemoryStorePermissionResponse GrantMemoryStorePermissionResponse
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions:grant", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &grantMemoryStorePermissionResponse)
+	return &grantMemoryStorePermissionResponse, err
+}
+
+func (a *agentKitImpl) GrantSessionStorePermission(ctx context.Context, request GrantSessionStorePermissionRequest) (*GrantSessionStorePermissionResponse, error) {
+	var grantSessionStorePermissionResponse GrantSessionStorePermissionResponse
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions:grant", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &grantSessionStorePermissionResponse)
+	return &grantSessionStorePermissionResponse, err
 }
 
 // Lists memory entries for one actor. An exact `path` filters entries across
@@ -313,6 +371,53 @@ func (a *agentKitImpl) internalListMemories(ctx context.Context, request ListMan
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listManagedMemoryEntriesResponse)
 	return &listManagedMemoryEntriesResponse, err
+}
+
+// Lists explicit memory store grants. Only the owner or a workspace admin may
+// list permissions.
+func (a *agentKitImpl) ListMemoryStorePermissions(ctx context.Context, request ListMemoryStorePermissionsRequest) listing.Iterator[MemoryStorePermission] {
+
+	getNextPage := func(ctx context.Context, req ListMemoryStorePermissionsRequest) (*ListMemoryStorePermissionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListMemoryStorePermissions(ctx, req)
+	}
+	getItems := func(resp *ListMemoryStorePermissionsResponse) []MemoryStorePermission {
+		return resp.MemoryStorePermissions
+	}
+	getNextReq := func(resp *ListMemoryStorePermissionsResponse) *ListMemoryStorePermissionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists explicit memory store grants. Only the owner or a workspace admin may
+// list permissions.
+func (a *agentKitImpl) ListMemoryStorePermissionsAll(ctx context.Context, request ListMemoryStorePermissionsRequest) ([]MemoryStorePermission, error) {
+	iterator := a.ListMemoryStorePermissions(ctx, request)
+	return listing.ToSlice[MemoryStorePermission](ctx, iterator)
+}
+
+func (a *agentKitImpl) internalListMemoryStorePermissions(ctx context.Context, request ListMemoryStorePermissionsRequest) (*ListMemoryStorePermissionsResponse, error) {
+	var listMemoryStorePermissionsResponse ListMemoryStorePermissionsResponse
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listMemoryStorePermissionsResponse)
+	return &listMemoryStorePermissionsResponse, err
 }
 
 // Lists memory stores in the caller's workspace.
@@ -403,6 +508,53 @@ func (a *agentKitImpl) internalListSessionItems(ctx context.Context, request Lis
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSessionItemsResponse)
 	return &listSessionItemsResponse, err
+}
+
+// Lists explicit session store grants. Only the owner or a workspace admin may
+// list permissions.
+func (a *agentKitImpl) ListSessionStorePermissions(ctx context.Context, request ListSessionStorePermissionsRequest) listing.Iterator[SessionStorePermission] {
+
+	getNextPage := func(ctx context.Context, req ListSessionStorePermissionsRequest) (*ListSessionStorePermissionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSessionStorePermissions(ctx, req)
+	}
+	getItems := func(resp *ListSessionStorePermissionsResponse) []SessionStorePermission {
+		return resp.SessionStorePermissions
+	}
+	getNextReq := func(resp *ListSessionStorePermissionsResponse) *ListSessionStorePermissionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists explicit session store grants. Only the owner or a workspace admin may
+// list permissions.
+func (a *agentKitImpl) ListSessionStorePermissionsAll(ctx context.Context, request ListSessionStorePermissionsRequest) ([]SessionStorePermission, error) {
+	iterator := a.ListSessionStorePermissions(ctx, request)
+	return listing.ToSlice[SessionStorePermission](ctx, iterator)
+}
+
+func (a *agentKitImpl) internalListSessionStorePermissions(ctx context.Context, request ListSessionStorePermissionsRequest) (*ListSessionStorePermissionsResponse, error) {
+	var listSessionStorePermissionsResponse ListSessionStorePermissionsResponse
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSessionStorePermissionsResponse)
+	return &listSessionStorePermissionsResponse, err
 }
 
 // Lists session stores.
@@ -508,6 +660,36 @@ func (a *agentKitImpl) PopSessionItem(ctx context.Context, request PopSessionIte
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &popSessionItemResponse)
 	return &popSessionItemResponse, err
+}
+
+func (a *agentKitImpl) RevokeMemoryStorePermission(ctx context.Context, request RevokeMemoryStorePermissionRequest) (*RevokeMemoryStorePermissionResponse, error) {
+	var revokeMemoryStorePermissionResponse RevokeMemoryStorePermissionResponse
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions:revoke", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &revokeMemoryStorePermissionResponse)
+	return &revokeMemoryStorePermissionResponse, err
+}
+
+func (a *agentKitImpl) RevokeSessionStorePermission(ctx context.Context, request RevokeSessionStorePermissionRequest) (*RevokeSessionStorePermissionResponse, error) {
+	var revokeSessionStorePermissionResponse RevokeSessionStorePermissionResponse
+	path := fmt.Sprintf("/api/2.0/agents/%v/permissions:revoke", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &revokeSessionStorePermissionResponse)
+	return &revokeSessionStorePermissionResponse, err
 }
 
 // Searches memory entries by text query for one actor. Returns matching entries

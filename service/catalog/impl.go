@@ -663,7 +663,7 @@ func (a *aiGatewayImpl) internalListModelProviderServices(ctx context.Context, r
 //
 // Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
 // schema. Only model services the caller can access (as owner or through
-// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned by default.
 func (a *aiGatewayImpl) ListModelServices(ctx context.Context, request ListModelServicesRequest) listing.Iterator[ModelService] {
 
 	getNextPage := func(ctx context.Context, req ListModelServicesRequest) (*ListModelServicesResponse, error) {
@@ -694,7 +694,7 @@ func (a *aiGatewayImpl) ListModelServices(ctx context.Context, request ListModel
 //
 // Requires `USE_CATALOG` on the parent catalog and `USE_SCHEMA` on the parent
 // schema. Only model services the caller can access (as owner or through
-// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned.
+// `EXECUTE`, `READ_METADATA`, or `MANAGE`) are returned by default.
 func (a *aiGatewayImpl) ListModelServicesAll(ctx context.Context, request ListModelServicesRequest) ([]ModelService, error) {
 	iterator := a.ListModelServices(ctx, request)
 	return listing.ToSlice[ModelService](ctx, iterator)
