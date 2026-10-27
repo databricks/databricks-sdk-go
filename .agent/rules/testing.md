@@ -27,10 +27,16 @@ for _, tc := range testCases {
 ```
 
 - Unit tests: `*_test.go` alongside source files
-- Integration tests: use `//go:build cloud` build tag
-- HTTP fixtures: `httpclient/fixtures/` for mocking HTTP responses
+- Tests must be hermetic: no live workspace, account, or cloud credentials
+- HTTP-boundary tests: write them in `fixturetests/`, which runs the real clients
+  against local servers from the shared HTTP fixture library, rather than with
+  `qa.HTTPFixtures`, which the generated tests and older tests next to the code
+  use. `fixturetests/` exists only in the internal source repository and isn't
+  published; its README describes the helpers
+- Tests that need unexported code stay next to it and stub the transport with
+  `httpclient/fixtures/`, as the `config/` and `credentials/` tests do
 - Generated mocks: `experimental/mocks/` (do not hand-write mocks for generated services)
-- Test helpers: `qa/` package for integration test utilities
+- Test helpers: `qa/` package (polling and locking helpers)
 - Call `t.Helper()` at the start of test helper functions (correct line numbers in failures)
 - For configurable options, always test three cases: (1) explicit values, (2) nil/unset default, (3) empty value
 - When a feature spans multiple implementations, test the same scenarios consistently in each

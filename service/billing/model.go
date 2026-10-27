@@ -243,6 +243,43 @@ func (f *AlertConfigurationTriggerType) Type() string {
 	return "AlertConfigurationTriggerType"
 }
 
+// The calling user's spend against a single blocking threshold. Values may be
+// omitted if live spend or threshold data is temporarily unavailable.
+type AlertSpendStatus struct {
+	// Percentage of the threshold consumed, as a decimal string rounded down to
+	// one decimal place (for example, "68.4" means 68.4%). May exceed 100 when
+	// spend is over the threshold. Returns "0.0" if there's no spend, and is
+	// omitted if the threshold is $0. For shared thresholds, this is the only
+	// value returned; the absolute `spend` and `threshold` dollar amounts are
+	// withheld.
+	PercentConsumed string `json:"percent_consumed,omitempty"`
+	// Whether the threshold is evaluated per individual user
+	// (`ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER`) or on the shared spend across
+	// all users (`ALERT_CONFIGURATION_SCOPE_TYPE_SHARED`).
+	ScopeType AlertConfigurationScopeType `json:"scope_type,omitempty"`
+	// The calling user's live spend against this threshold, in USD at list
+	// price. Returns "0" if the caller has no usage. Omitted for shared
+	// thresholds, where only `percent_consumed` is returned.
+	Spend string `json:"spend,omitempty"`
+	// The calling user's effective threshold, in USD at list price. The
+	// effective threshold is the actual threshold amount that applies to the
+	// user, after adjusting for any user or group overrides. Omitted for shared
+	// thresholds, where only `percent_consumed` is returned.
+	Threshold string `json:"threshold,omitempty"`
+	// The time window the threshold applies to, for example `MONTH`.
+	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertSpendStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertSpendStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type BudgetConfiguration struct {
 	// Databricks account ID.
 	AccountId string `json:"account_id,omitempty"`
@@ -270,6 +307,12 @@ type BudgetConfiguration struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Whether this budget tracks external pass-through spend (third-party costs
+	// billed through a Databricks product) in addition to internal Databricks
+	// spend. Only applicable to Unity Gateway budgets, i.e. when
+	// `resource_type` is `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`. This field is
+	// immutable after create.
+	IncludeExternalSpend bool `json:"include_external_spend,omitempty"`
 	// The resource scope for this budget. Determines whether the budget tracks
 	// all resources or a specific resource.
 	ResourceType BudgetResourceType `json:"resource_type,omitempty"`
@@ -437,6 +480,29 @@ func (f *BudgetResourceType) Type() string {
 	return "BudgetResourceType"
 }
 
+// The calling user's live spend against the blocking thresholds of a single
+// budget.
+type BudgetSpendStatus struct {
+	// The calling user's spend against each blocking threshold on this budget,
+	// one entry per scope type and time period. A blocking threshold is a
+	// threshold that, once reached, blocks further requests through Unity
+	// Gateway.
+	AlertSpendStatuses []AlertSpendStatus `json:"alert_spend_statuses,omitempty"`
+	// The resource name of this budget spend status, of the form
+	// `accounts/{account_id}/budget-spend-statuses/{budget_id}`.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BudgetSpendStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BudgetSpendStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
@@ -498,6 +564,12 @@ type CreateBudgetConfigurationBudget struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Whether this budget tracks external pass-through spend (third-party costs
+	// billed through a Databricks product) in addition to internal Databricks
+	// spend. Only applicable to Unity Gateway budgets, i.e. when
+	// `resource_type` is `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`. This field is
+	// immutable after create.
+	IncludeExternalSpend bool `json:"include_external_spend,omitempty"`
 	// The resource scope for this budget. Determines whether the budget tracks
 	// all resources or a specific resource.
 	ResourceType BudgetResourceType `json:"resource_type,omitempty"`
@@ -877,6 +949,17 @@ func (s *GetBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetBudgetSpendStatusRequest struct {
+	// The resource name of the budget spend status to read, of the form
+	// `accounts/{account_id}/budget-spend-statuses/{budget_id}`. A `budget_id`
+	// that isn't a valid UUID fails with INVALID_PARAMETER_VALUE.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetBudgetSpendStatusRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetLogDeliveryConfigurationResponse struct {
 	// The fetched log delivery configuration
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
@@ -986,6 +1069,63 @@ func (s *ListBudgetPoliciesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListBudgetSpendStatusesRequest struct {
+	// A filter expression that narrows the returned budgets by workspace. Only
+	// `workspace_id` is supported, in lower case with numeric workspace IDs,
+	// for example `workspace_id = 123` or `workspace_id IN (123, 456)`. Matches
+	// budgets that apply to any of the listed workspaces, including budgets
+	// that apply to all workspaces. Any other expression, such as an empty `IN
+	// ()` list, fails with INVALID_PARAMETER_VALUE. If empty, returns every
+	// budget in the account that has a blocking threshold.
+	Filter string `json:"-" url:"filter,omitempty"`
+	// The maximum number of spend statuses to return per page. If unspecified
+	// or 0, at most 100 are returned. The maximum value is 100; values above
+	// 100 are coerced to 100. Negative values fail with
+	// INVALID_PARAMETER_VALUE. The server may return fewer results than
+	// requested, including zero, even when more pages remain; page until
+	// `next_page_token` is absent.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token from a previous `ListBudgetSpendStatuses` response, used to
+	// fetch the next page. Requests the first page if absent. All other request
+	// parameters except `page_size` must match the request that returned the
+	// token; otherwise the request fails with INVALID_PARAMETER_VALUE.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent account whose budget spend statuses to list, of the form
+	// `accounts/{account_id}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBudgetSpendStatusesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBudgetSpendStatusesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response for ListBudgetSpendStatuses.
+type ListBudgetSpendStatusesResponse struct {
+	// The calling user's spend status, one entry per returned budget.
+	BudgetSpendStatuses []BudgetSpendStatus `json:"budget_spend_statuses,omitempty"`
+	// Token to pass as `page_token` to retrieve the next page. Absent when
+	// there are no more results. A page can contain fewer results than
+	// `page_size`, or none, while this token is still set, so keep paging until
+	// it's absent.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBudgetSpendStatusesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBudgetSpendStatusesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1348,6 +1488,12 @@ type UpdateBudgetConfigurationBudget struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Whether this budget tracks external pass-through spend (third-party costs
+	// billed through a Databricks product) in addition to internal Databricks
+	// spend. Only applicable to Unity Gateway budgets, i.e. when
+	// `resource_type` is `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`. This field is
+	// immutable after create.
+	IncludeExternalSpend bool `json:"include_external_spend,omitempty"`
 	// The resource scope for this budget. Determines whether the budget tracks
 	// all resources or a specific resource.
 	ResourceType BudgetResourceType `json:"resource_type,omitempty"`

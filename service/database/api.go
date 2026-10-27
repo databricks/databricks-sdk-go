@@ -1,6 +1,11 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 // Database Instances provide access to a database via REST API or direct SQL.
+//
+// For new workloads, Databricks recommends the [Postgres API], which supports
+// the latest Lakebase features.
+//
+// [Postgres API]: https://docs.databricks.com/api/postgres/v1/postgres
 package database
 
 import (
@@ -21,9 +26,19 @@ type DatabaseInterface interface {
 		timeout time.Duration, callback func(*DatabaseInstance)) (*DatabaseInstance, error)
 
 	// Create a Database Catalog.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Create
+	// a catalog].
+	//
+	// [Create a catalog]: https://docs.databricks.com/api/postgres/v1/create-catalog
 	CreateDatabaseCatalog(ctx context.Context, request CreateDatabaseCatalogRequest) (*DatabaseCatalog, error)
 
 	// Create a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Create
+	// a project].
+	//
+	// [Create a project]: https://docs.databricks.com/api/postgres/v1/create-project
 	CreateDatabaseInstance(ctx context.Context, createDatabaseInstanceRequest CreateDatabaseInstanceRequest) (*WaitGetDatabaseInstanceDatabaseAvailable[DatabaseInstance], error)
 
 	// Calls [DatabaseAPIInterface.CreateDatabaseInstance] and waits to reach AVAILABLE state
@@ -35,6 +50,11 @@ type DatabaseInterface interface {
 	CreateDatabaseInstanceAndWait(ctx context.Context, createDatabaseInstanceRequest CreateDatabaseInstanceRequest, options ...retries.Option[DatabaseInstance]) (*DatabaseInstance, error)
 
 	// Create a role for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Create
+	// a role].
+	//
+	// [Create a role]: https://docs.databricks.com/api/postgres/v1/create-role
 	CreateDatabaseInstanceRole(ctx context.Context, request CreateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
 
 	// Create a Database Table. Useful for registering pre-existing PG tables in UC.
@@ -43,24 +63,59 @@ type DatabaseInterface interface {
 	CreateDatabaseTable(ctx context.Context, request CreateDatabaseTableRequest) (*DatabaseTable, error)
 
 	// Create a Synced Database Table.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Create
+	// a synced table].
+	//
+	// [Create a synced table]: https://docs.databricks.com/api/postgres/v1/create-synced-table
 	CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
 
 	// Delete a Database Catalog.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a catalog].
+	//
+	// [Delete a catalog]: https://docs.databricks.com/api/postgres/v1/delete-catalog
 	DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error
 
 	// Delete a Database Catalog.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a catalog].
+	//
+	// [Delete a catalog]: https://docs.databricks.com/api/postgres/v1/delete-catalog
 	DeleteDatabaseCatalogByName(ctx context.Context, name string) error
 
 	// Delete a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a project].
+	//
+	// [Delete a project]: https://docs.databricks.com/api/postgres/v1/delete-project
 	DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error
 
 	// Delete a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a project].
+	//
+	// [Delete a project]: https://docs.databricks.com/api/postgres/v1/delete-project
 	DeleteDatabaseInstanceByName(ctx context.Context, name string) error
 
 	// Deletes a role for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a role].
+	//
+	// [Delete a role]: https://docs.databricks.com/api/postgres/v1/delete-role
 	DeleteDatabaseInstanceRole(ctx context.Context, request DeleteDatabaseInstanceRoleRequest) error
 
 	// Deletes a role for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a role].
+	//
+	// [Delete a role]: https://docs.databricks.com/api/postgres/v1/delete-role
 	DeleteDatabaseInstanceRoleByInstanceNameAndName(ctx context.Context, instanceName string, name string) error
 
 	// Delete a Database Table.
@@ -70,33 +125,78 @@ type DatabaseInterface interface {
 	DeleteDatabaseTableByName(ctx context.Context, name string) error
 
 	// Delete a Synced Database Table.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a synced table].
+	//
+	// [Delete a synced table]: https://docs.databricks.com/api/postgres/v1/delete-synced-table
 	DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error
 
 	// Delete a Synced Database Table.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+	// a synced table].
+	//
+	// [Delete a synced table]: https://docs.databricks.com/api/postgres/v1/delete-synced-table
 	DeleteSyncedDatabaseTableByName(ctx context.Context, name string) error
 
 	// Find a Database Instance by uid.
 	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
 
 	// Generates a credential that can be used to access database instances.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent:
+	// [Generate a database credential].
+	//
+	// [Generate a database credential]: https://docs.databricks.com/api/postgres/v1/generate-database-credential
 	GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error)
 
 	// Get a Database Catalog.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// catalog].
+	//
+	// [Get a catalog]: https://docs.databricks.com/api/postgres/v1/get-catalog
 	GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error)
 
 	// Get a Database Catalog.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// catalog].
+	//
+	// [Get a catalog]: https://docs.databricks.com/api/postgres/v1/get-catalog
 	GetDatabaseCatalogByName(ctx context.Context, name string) (*DatabaseCatalog, error)
 
 	// Get a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// project].
+	//
+	// [Get a project]: https://docs.databricks.com/api/postgres/v1/get-project
 	GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error)
 
 	// Get a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// project].
+	//
+	// [Get a project]: https://docs.databricks.com/api/postgres/v1/get-project
 	GetDatabaseInstanceByName(ctx context.Context, name string) (*DatabaseInstance, error)
 
 	// Gets a role for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// role].
+	//
+	// [Get a role]: https://docs.databricks.com/api/postgres/v1/get-role
 	GetDatabaseInstanceRole(ctx context.Context, request GetDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
 
 	// Gets a role for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// role].
+	//
+	// [Get a role]: https://docs.databricks.com/api/postgres/v1/get-role
 	GetDatabaseInstanceRoleByInstanceNameAndName(ctx context.Context, instanceName string, name string) (*DatabaseInstanceRole, error)
 
 	// Get a Database Table.
@@ -106,9 +206,19 @@ type DatabaseInterface interface {
 	GetDatabaseTableByName(ctx context.Context, name string) (*DatabaseTable, error)
 
 	// Get a Synced Database Table.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// synced table].
+	//
+	// [Get a synced table]: https://docs.databricks.com/api/postgres/v1/get-synced-table
 	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
 
 	// Get a Synced Database Table.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+	// synced table].
+	//
+	// [Get a synced table]: https://docs.databricks.com/api/postgres/v1/get-synced-table
 	GetSyncedDatabaseTableByName(ctx context.Context, name string) (*SyncedDatabaseTable, error)
 
 	// This API is currently unimplemented, but exposed for Terraform support.
@@ -124,37 +234,50 @@ type DatabaseInterface interface {
 	// This API is currently unimplemented, but exposed for Terraform support.
 	ListDatabaseCatalogsByInstanceName(ctx context.Context, instanceName string) (*ListDatabaseCatalogsResponse, error)
 
-	// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
-	// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
-	// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
-	// undocumented/UI-only and we'll aim for a new public roles API as part of V2
-	// PuPr.
+	// List roles for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [List
+	// roles].
+	//
+	// [List roles]: https://docs.databricks.com/api/postgres/v1/list-roles
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) listing.Iterator[DatabaseInstanceRole]
 
-	// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
-	// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
-	// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
-	// undocumented/UI-only and we'll aim for a new public roles API as part of V2
-	// PuPr.
+	// List roles for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [List
+	// roles].
+	//
+	// [List roles]: https://docs.databricks.com/api/postgres/v1/list-roles
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDatabaseInstanceRolesAll(ctx context.Context, request ListDatabaseInstanceRolesRequest) ([]DatabaseInstanceRole, error)
 
-	// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
-	// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
-	// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
-	// undocumented/UI-only and we'll aim for a new public roles API as part of V2
-	// PuPr.
+	// List roles for a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [List
+	// roles].
+	//
+	// [List roles]: https://docs.databricks.com/api/postgres/v1/list-roles
 	ListDatabaseInstanceRolesByInstanceName(ctx context.Context, instanceName string) (*ListDatabaseInstanceRolesResponse, error)
 
 	// List Database Instances.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [List
+	// projects].
+	//
+	// [List projects]: https://docs.databricks.com/api/postgres/v1/list-projects
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) listing.Iterator[DatabaseInstance]
 
 	// List Database Instances.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalent: [List
+	// projects].
+	//
+	// [List projects]: https://docs.databricks.com/api/postgres/v1/list-projects
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDatabaseInstancesAll(ctx context.Context, request ListDatabaseInstancesRequest) ([]DatabaseInstance, error)
@@ -176,6 +299,12 @@ type DatabaseInterface interface {
 	UpdateDatabaseCatalog(ctx context.Context, request UpdateDatabaseCatalogRequest) (*DatabaseCatalog, error)
 
 	// Update a Database Instance.
+	//
+	// For new workloads, Databricks recommends the Postgres API equivalents:
+	// [Update a project] and [Update an endpoint].
+	//
+	// [Update a project]: https://docs.databricks.com/api/postgres/v1/update-project
+	// [Update an endpoint]: https://docs.databricks.com/api/postgres/v1/update-endpoint
 	UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error)
 
 	// This API is currently unimplemented, but exposed for Terraform support.
@@ -191,6 +320,11 @@ func NewDatabase(client *client.DatabricksClient) *DatabaseAPI {
 }
 
 // Database Instances provide access to a database via REST API or direct SQL.
+//
+// For new workloads, Databricks recommends the [Postgres API], which supports
+// the latest Lakebase features.
+//
+// [Postgres API]: https://docs.databricks.com/api/postgres/v1/postgres
 type DatabaseAPI struct {
 	databaseImpl
 }
@@ -246,6 +380,11 @@ func (w *WaitGetDatabaseInstanceDatabaseAvailable[R]) GetWithTimeout(timeout tim
 }
 
 // Create a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Create
+// a project].
+//
+// [Create a project]: https://docs.databricks.com/api/postgres/v1/create-project
 func (a *DatabaseAPI) CreateDatabaseInstance(ctx context.Context, createDatabaseInstanceRequest CreateDatabaseInstanceRequest) (*WaitGetDatabaseInstanceDatabaseAvailable[DatabaseInstance], error) {
 	databaseInstance, err := a.databaseImpl.CreateDatabaseInstance(ctx, createDatabaseInstanceRequest)
 	if err != nil {
@@ -290,6 +429,11 @@ func (a *DatabaseAPI) CreateDatabaseInstanceAndWait(ctx context.Context, createD
 }
 
 // Delete a Database Catalog.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+// a catalog].
+//
+// [Delete a catalog]: https://docs.databricks.com/api/postgres/v1/delete-catalog
 func (a *DatabaseAPI) DeleteDatabaseCatalogByName(ctx context.Context, name string) error {
 	return a.databaseImpl.DeleteDatabaseCatalog(ctx, DeleteDatabaseCatalogRequest{
 		Name: name,
@@ -297,6 +441,11 @@ func (a *DatabaseAPI) DeleteDatabaseCatalogByName(ctx context.Context, name stri
 }
 
 // Delete a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+// a project].
+//
+// [Delete a project]: https://docs.databricks.com/api/postgres/v1/delete-project
 func (a *DatabaseAPI) DeleteDatabaseInstanceByName(ctx context.Context, name string) error {
 	return a.databaseImpl.DeleteDatabaseInstance(ctx, DeleteDatabaseInstanceRequest{
 		Name: name,
@@ -304,6 +453,11 @@ func (a *DatabaseAPI) DeleteDatabaseInstanceByName(ctx context.Context, name str
 }
 
 // Deletes a role for a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+// a role].
+//
+// [Delete a role]: https://docs.databricks.com/api/postgres/v1/delete-role
 func (a *DatabaseAPI) DeleteDatabaseInstanceRoleByInstanceNameAndName(ctx context.Context, instanceName string, name string) error {
 	return a.databaseImpl.DeleteDatabaseInstanceRole(ctx, DeleteDatabaseInstanceRoleRequest{
 		InstanceName: instanceName,
@@ -319,6 +473,11 @@ func (a *DatabaseAPI) DeleteDatabaseTableByName(ctx context.Context, name string
 }
 
 // Delete a Synced Database Table.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Delete
+// a synced table].
+//
+// [Delete a synced table]: https://docs.databricks.com/api/postgres/v1/delete-synced-table
 func (a *DatabaseAPI) DeleteSyncedDatabaseTableByName(ctx context.Context, name string) error {
 	return a.databaseImpl.DeleteSyncedDatabaseTable(ctx, DeleteSyncedDatabaseTableRequest{
 		Name: name,
@@ -326,6 +485,11 @@ func (a *DatabaseAPI) DeleteSyncedDatabaseTableByName(ctx context.Context, name 
 }
 
 // Get a Database Catalog.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+// catalog].
+//
+// [Get a catalog]: https://docs.databricks.com/api/postgres/v1/get-catalog
 func (a *DatabaseAPI) GetDatabaseCatalogByName(ctx context.Context, name string) (*DatabaseCatalog, error) {
 	return a.databaseImpl.GetDatabaseCatalog(ctx, GetDatabaseCatalogRequest{
 		Name: name,
@@ -333,6 +497,11 @@ func (a *DatabaseAPI) GetDatabaseCatalogByName(ctx context.Context, name string)
 }
 
 // Get a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+// project].
+//
+// [Get a project]: https://docs.databricks.com/api/postgres/v1/get-project
 func (a *DatabaseAPI) GetDatabaseInstanceByName(ctx context.Context, name string) (*DatabaseInstance, error) {
 	return a.databaseImpl.GetDatabaseInstance(ctx, GetDatabaseInstanceRequest{
 		Name: name,
@@ -340,6 +509,11 @@ func (a *DatabaseAPI) GetDatabaseInstanceByName(ctx context.Context, name string
 }
 
 // Gets a role for a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+// role].
+//
+// [Get a role]: https://docs.databricks.com/api/postgres/v1/get-role
 func (a *DatabaseAPI) GetDatabaseInstanceRoleByInstanceNameAndName(ctx context.Context, instanceName string, name string) (*DatabaseInstanceRole, error) {
 	return a.databaseImpl.GetDatabaseInstanceRole(ctx, GetDatabaseInstanceRoleRequest{
 		InstanceName: instanceName,
@@ -355,6 +529,11 @@ func (a *DatabaseAPI) GetDatabaseTableByName(ctx context.Context, name string) (
 }
 
 // Get a Synced Database Table.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [Get a
+// synced table].
+//
+// [Get a synced table]: https://docs.databricks.com/api/postgres/v1/get-synced-table
 func (a *DatabaseAPI) GetSyncedDatabaseTableByName(ctx context.Context, name string) (*SyncedDatabaseTable, error) {
 	return a.databaseImpl.GetSyncedDatabaseTable(ctx, GetSyncedDatabaseTableRequest{
 		Name: name,
@@ -368,11 +547,12 @@ func (a *DatabaseAPI) ListDatabaseCatalogsByInstanceName(ctx context.Context, in
 	})
 }
 
-// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
-// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
-// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
-// undocumented/UI-only and we'll aim for a new public roles API as part of V2
-// PuPr.
+// List roles for a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [List
+// roles].
+//
+// [List roles]: https://docs.databricks.com/api/postgres/v1/list-roles
 func (a *DatabaseAPI) ListDatabaseInstanceRolesByInstanceName(ctx context.Context, instanceName string) (*ListDatabaseInstanceRolesResponse, error) {
 	return a.databaseImpl.internalListDatabaseInstanceRoles(ctx, ListDatabaseInstanceRolesRequest{
 		InstanceName: instanceName,

@@ -26,8 +26,7 @@
       "NOTICE",
       "Makefile",
       "SECURITY.md",
-      "staticcheck.conf",
-      "test-config.yaml"
+      "staticcheck.conf"
     ],
     "skip_from_genkit": [
       "tagging.py",
@@ -40,6 +39,7 @@
       "BUILD.bazel",
       "OWNERS",
       "vendor",
+      "fixturetests",
       ".nextchanges",
       "NEXT_CHANGELOG.md",
       "tagging.yml",

@@ -26,7 +26,6 @@ make build      # go build ./...
 make test       # Unit tests with coverage
 make fmt        # goimports + gofmt
 make lint       # staticcheck ./...
-make integration # Integration tests (requires cloud env)
 make vendor     # Vendor dependencies
 make coverage   # View HTML coverage report
 make codegen    # Regenerate service/ from OpenAPI specs
@@ -54,7 +53,7 @@ Code must compile on all CI versions — do not use stdlib APIs newer than Go 1.
 ├── service/        # Auto-generated API service clients (DO NOT EDIT)
 ├── useragent/      # User-agent string construction
 ├── .codegen/       # Code generation templates (.tmpl files)
-└── qa/             # Integration test helpers (RandomName, RandomEmail, etc.)
+└── qa/             # Test helpers: HTTP fixtures, polling, locking
 ```
 
 ## Generated Code — DO NOT EDIT

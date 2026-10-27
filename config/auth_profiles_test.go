@@ -1065,9 +1065,3 @@ func TestProfileAuth_AzureDevOpsOIDC(t *testing.T) {
 		})
 	}
 }
-
-// Note: google-credentials and google-id are not tested here because
-// GoogleCredentials.Configure and GoogleDefaultCredentials.Configure call
-// Google SDK functions (idtoken.NewTokenSource, impersonate.IDTokenSource)
-// that parse real crypto keys and make HTTP calls internally. There is no
-// seam to inject mocks via HTTPTransport without refactoring production code.

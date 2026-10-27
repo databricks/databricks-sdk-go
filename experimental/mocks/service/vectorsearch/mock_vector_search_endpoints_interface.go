@@ -1058,6 +1058,142 @@ func (_c *MockVectorSearchEndpointsInterface_SetPermissions_Call) RunAndReturn(r
 	return _c
 }
 
+// StartEndpoint provides a mock function for the type MockVectorSearchEndpointsInterface
+func (_mock *MockVectorSearchEndpointsInterface) StartEndpoint(ctx context.Context, request vectorsearch.StartEndpointRequest) (*vectorsearch.EndpointInfo, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StartEndpoint")
+	}
+
+	var r0 *vectorsearch.EndpointInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, vectorsearch.StartEndpointRequest) (*vectorsearch.EndpointInfo, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, vectorsearch.StartEndpointRequest) *vectorsearch.EndpointInfo); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.EndpointInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, vectorsearch.StartEndpointRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_StartEndpoint_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StartEndpoint'
+type MockVectorSearchEndpointsInterface_StartEndpoint_Call struct {
+	*mock.Call
+}
+
+// StartEndpoint is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.StartEndpointRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) StartEndpoint(ctx any, request any) *MockVectorSearchEndpointsInterface_StartEndpoint_Call {
+	return &MockVectorSearchEndpointsInterface_StartEndpoint_Call{Call: _e.mock.On("StartEndpoint", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_StartEndpoint_Call) Run(run func(ctx context.Context, request vectorsearch.StartEndpointRequest)) *MockVectorSearchEndpointsInterface_StartEndpoint_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 vectorsearch.StartEndpointRequest
+		if args[1] != nil {
+			arg1 = args[1].(vectorsearch.StartEndpointRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_StartEndpoint_Call) Return(endpointInfo *vectorsearch.EndpointInfo, err error) *MockVectorSearchEndpointsInterface_StartEndpoint_Call {
+	_c.Call.Return(endpointInfo, err)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_StartEndpoint_Call) RunAndReturn(run func(ctx context.Context, request vectorsearch.StartEndpointRequest) (*vectorsearch.EndpointInfo, error)) *MockVectorSearchEndpointsInterface_StartEndpoint_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// StopEndpoint provides a mock function for the type MockVectorSearchEndpointsInterface
+func (_mock *MockVectorSearchEndpointsInterface) StopEndpoint(ctx context.Context, request vectorsearch.StopEndpointRequest) (*vectorsearch.EndpointInfo, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StopEndpoint")
+	}
+
+	var r0 *vectorsearch.EndpointInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, vectorsearch.StopEndpointRequest) (*vectorsearch.EndpointInfo, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, vectorsearch.StopEndpointRequest) *vectorsearch.EndpointInfo); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.EndpointInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, vectorsearch.StopEndpointRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_StopEndpoint_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StopEndpoint'
+type MockVectorSearchEndpointsInterface_StopEndpoint_Call struct {
+	*mock.Call
+}
+
+// StopEndpoint is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.StopEndpointRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) StopEndpoint(ctx any, request any) *MockVectorSearchEndpointsInterface_StopEndpoint_Call {
+	return &MockVectorSearchEndpointsInterface_StopEndpoint_Call{Call: _e.mock.On("StopEndpoint", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_StopEndpoint_Call) Run(run func(ctx context.Context, request vectorsearch.StopEndpointRequest)) *MockVectorSearchEndpointsInterface_StopEndpoint_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 vectorsearch.StopEndpointRequest
+		if args[1] != nil {
+			arg1 = args[1].(vectorsearch.StopEndpointRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_StopEndpoint_Call) Return(endpointInfo *vectorsearch.EndpointInfo, err error) *MockVectorSearchEndpointsInterface_StopEndpoint_Call {
+	_c.Call.Return(endpointInfo, err)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_StopEndpoint_Call) RunAndReturn(run func(ctx context.Context, request vectorsearch.StopEndpointRequest) (*vectorsearch.EndpointInfo, error)) *MockVectorSearchEndpointsInterface_StopEndpoint_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateEndpointBudgetPolicy provides a mock function for the type MockVectorSearchEndpointsInterface
 func (_mock *MockVectorSearchEndpointsInterface) UpdateEndpointBudgetPolicy(ctx context.Context, request vectorsearch.PatchEndpointBudgetPolicyRequest) (*vectorsearch.PatchEndpointBudgetPolicyResponse, error) {
 	ret := _mock.Called(ctx, request)

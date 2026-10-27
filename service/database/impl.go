@@ -310,11 +310,12 @@ func (a *databaseImpl) internalListDatabaseCatalogs(ctx context.Context, request
 	return &listDatabaseCatalogsResponse, err
 }
 
-// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
-// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
-// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
-// undocumented/UI-only and we'll aim for a new public roles API as part of V2
-// PuPr.
+// List roles for a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [List
+// roles].
+//
+// [List roles]: https://docs.databricks.com/api/postgres/v1/list-roles
 func (a *databaseImpl) ListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) listing.Iterator[DatabaseInstanceRole] {
 
 	getNextPage := func(ctx context.Context, req ListDatabaseInstanceRolesRequest) (*ListDatabaseInstanceRolesResponse, error) {
@@ -339,11 +340,12 @@ func (a *databaseImpl) ListDatabaseInstanceRoles(ctx context.Context, request Li
 	return iterator
 }
 
-// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
-// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
-// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
-// undocumented/UI-only and we'll aim for a new public roles API as part of V2
-// PuPr.
+// List roles for a Database Instance.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [List
+// roles].
+//
+// [List roles]: https://docs.databricks.com/api/postgres/v1/list-roles
 func (a *databaseImpl) ListDatabaseInstanceRolesAll(ctx context.Context, request ListDatabaseInstanceRolesRequest) ([]DatabaseInstanceRole, error) {
 	iterator := a.ListDatabaseInstanceRoles(ctx, request)
 	return listing.ToSlice[DatabaseInstanceRole](ctx, iterator)
@@ -364,6 +366,11 @@ func (a *databaseImpl) internalListDatabaseInstanceRoles(ctx context.Context, re
 }
 
 // List Database Instances.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [List
+// projects].
+//
+// [List projects]: https://docs.databricks.com/api/postgres/v1/list-projects
 func (a *databaseImpl) ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) listing.Iterator[DatabaseInstance] {
 
 	getNextPage := func(ctx context.Context, req ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error) {
@@ -389,6 +396,11 @@ func (a *databaseImpl) ListDatabaseInstances(ctx context.Context, request ListDa
 }
 
 // List Database Instances.
+//
+// For new workloads, Databricks recommends the Postgres API equivalent: [List
+// projects].
+//
+// [List projects]: https://docs.databricks.com/api/postgres/v1/list-projects
 func (a *databaseImpl) ListDatabaseInstancesAll(ctx context.Context, request ListDatabaseInstancesRequest) ([]DatabaseInstance, error) {
 	iterator := a.ListDatabaseInstances(ctx, request)
 	return listing.ToSlice[DatabaseInstance](ctx, iterator)

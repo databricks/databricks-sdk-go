@@ -66,6 +66,16 @@ var testCases = []applyOverridesTestCase{
 		initialError: &APIError{
 			ErrorCode:  "INVALID_PARAMETER_VALUE",
 			StatusCode: 400,
+			Message:    "Job abc does not exist",
+		},
+		path:          "/api/2.2/jobs/get",
+		method:        "GET",
+		expectedError: ErrResourceDoesNotExist,
+	},
+	{
+		initialError: &APIError{
+			ErrorCode:  "INVALID_PARAMETER_VALUE",
+			StatusCode: 400,
 			Message:    "Notebook abc does not exist",
 		},
 		path:          "/api/2.0/notebooks/get",
