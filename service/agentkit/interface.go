@@ -69,11 +69,27 @@ type AgentKitService interface {
 	// store does not exist in the caller's workspace.
 	GetMemoryStore(ctx context.Context, request GetManagedMemoryStoreRequest) (*ManagedMemoryStore, error)
 
+	// Retrieves the current caller's effective memory store permission. Returns
+	// PERMISSION_LEVEL_UNSPECIFIED when the caller has no access.
+	GetMemoryStorePermission(ctx context.Context, request GetMemoryStorePermissionRequest) (*MemoryStorePermission, error)
+
 	// Gets a session by resource name.
 	GetSession(ctx context.Context, request GetSessionRequest) (*Session, error)
 
 	// Gets a session store by resource name.
 	GetSessionStore(ctx context.Context, request GetSessionStoreRequest) (*SessionStore, error)
+
+	// Retrieves the current caller's effective session store permission.
+	// Returns PERMISSION_LEVEL_UNSPECIFIED when the caller has no access.
+	GetSessionStorePermission(ctx context.Context, request GetSessionStorePermissionRequest) (*SessionStorePermission, error)
+
+	// Grants a READ or WRITE permission on a memory store to a principal. Only
+	// the owner or a workspace admin may grant permissions.
+	GrantMemoryStorePermission(ctx context.Context, request GrantMemoryStorePermissionRequest) (*GrantMemoryStorePermissionResponse, error)
+
+	// Grants a READ or WRITE permission on a session store to a principal. Only
+	// the owner or a workspace admin may grant permissions.
+	GrantSessionStorePermission(ctx context.Context, request GrantSessionStorePermissionRequest) (*GrantSessionStorePermissionResponse, error)
 
 	// Lists memory entries for one actor. An exact `path` filters entries
 	// across sessions, ignoring session metadata. Otherwise, `session_id` and
@@ -81,11 +97,19 @@ type AgentKitService interface {
 	// returned entry includes memory content.
 	ListMemories(ctx context.Context, request ListManagedMemoryEntriesRequest) (*ListManagedMemoryEntriesResponse, error)
 
+	// Lists explicit memory store grants. Only the owner or a workspace admin
+	// may list permissions.
+	ListMemoryStorePermissions(ctx context.Context, request ListMemoryStorePermissionsRequest) (*ListMemoryStorePermissionsResponse, error)
+
 	// Lists memory stores in the caller's workspace.
 	ListMemoryStores(ctx context.Context, request ListManagedMemoryStoresRequest) (*ListManagedMemoryStoresResponse, error)
 
 	// Lists items in a session.
 	ListSessionItems(ctx context.Context, request ListSessionItemsRequest) (*ListSessionItemsResponse, error)
+
+	// Lists explicit session store grants. Only the owner or a workspace admin
+	// may list permissions.
+	ListSessionStorePermissions(ctx context.Context, request ListSessionStorePermissionsRequest) (*ListSessionStorePermissionsResponse, error)
 
 	// Lists session stores.
 	ListSessionStores(ctx context.Context, request ListSessionStoresRequest) (*ListSessionStoresResponse, error)
@@ -95,6 +119,16 @@ type AgentKitService interface {
 
 	// Pops the newest item from a session.
 	PopSessionItem(ctx context.Context, request PopSessionItemRequest) (*PopSessionItemResponse, error)
+
+	// Removes a principal's explicit READ and WRITE grants on a memory store.
+	// Only the owner or a workspace admin may revoke permissions. Ownership and
+	// inherited access are unaffected.
+	RevokeMemoryStorePermission(ctx context.Context, request RevokeMemoryStorePermissionRequest) (*RevokeMemoryStorePermissionResponse, error)
+
+	// Removes a principal's explicit READ and WRITE grants on a session store.
+	// Only the owner or a workspace admin may revoke permissions. Ownership and
+	// inherited access are unaffected.
+	RevokeSessionStorePermission(ctx context.Context, request RevokeSessionStorePermissionRequest) (*RevokeSessionStorePermissionResponse, error)
 
 	// Searches memory entries by text query for one actor. Returns matching
 	// entries and scores ranked by relevance; `view` controls whether each

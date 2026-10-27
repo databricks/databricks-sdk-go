@@ -257,3 +257,25 @@ func TestAzureCliCredentials_DoNotSpecifyTenantIdWithMSI(t *testing.T) {
 // 	assert.NoError(t, err)
 // 	assert.Nil(t, auth)
 // }
+
+// Input: an az CLI that prints a warning to stderr and still returns a token.
+//
+// Want: the warning doesn't break authentication.
+func TestAzureCliCredentials_warningOnStderrDoesNotFailAuthentication(t *testing.T) {
+	env.CleanupEnvironment(t)
+	os.Setenv("PATH", testdataPath())
+	os.Setenv("WARN", "WARNING: this command will be deprecated")
+
+	visitor, err := AzureCliCredentials{}.Configure(context.Background(), azDummy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := &http.Request{Header: http.Header{}}
+	if err := visitor.SetHeaders(r); err != nil {
+		t.Fatal(err)
+	}
+
+	if got := r.Header.Get("Authorization"); got != "Bearer ..." {
+		t.Errorf("authorization: want %q, got %q", "Bearer ...", got)
+	}
+}

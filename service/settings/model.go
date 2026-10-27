@@ -813,6 +813,8 @@ func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
 
 // The network policies applying for ingress traffic.
 type CustomerFacingIngressNetworkPolicy struct {
+	// The network policy restrictions for cross-workspace access: which other
+	// workspaces may access this workspace.
 	CrossWorkspaceAccess *CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess `json:"cross_workspace_access,omitempty"`
 	// The network policy restrictions for private access. Configures how
 	// requests arriving over private connectivity are governed.

@@ -67,8 +67,23 @@ type BudgetsService interface {
 	// configuration are specified by ID.
 	Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error)
 
+	// Get the calling user's live spend against the blocking thresholds of a
+	// single Unity Gateway budget. Any account user can call this for their own
+	// spend. Spend is reported in USD at list price and is near-real-time, so
+	// it may differ slightly from billing data. Returns NOT_FOUND if the budget
+	// doesn't exist or has no blocking thresholds.
+	GetBudgetSpendStatus(ctx context.Context, request GetBudgetSpendStatusRequest) (*BudgetSpendStatus, error)
+
 	// Gets all budgets associated with this account.
 	List(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error)
+
+	// List the calling user's live spend against the blocking thresholds across
+	// the account's Unity Gateway budgets. Any account user can call this for
+	// their own spend. Spend is reported in USD at list price and is
+	// near-real-time, so it may differ slightly from billing data. By default,
+	// returns every budget in the account that has a blocking threshold. Use
+	// `filter` to narrow results by workspace.
+	ListBudgetSpendStatuses(ctx context.Context, request ListBudgetSpendStatusesRequest) (*ListBudgetSpendStatusesResponse, error)
 
 	// Updates a budget configuration for an account. Both account and budget
 	// configuration are specified by ID.

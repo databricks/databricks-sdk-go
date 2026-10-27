@@ -298,6 +298,74 @@ func (_c *MockBudgetsInterface_Get_Call) RunAndReturn(run func(ctx context.Conte
 	return _c
 }
 
+// GetBudgetSpendStatus provides a mock function for the type MockBudgetsInterface
+func (_mock *MockBudgetsInterface) GetBudgetSpendStatus(ctx context.Context, request billing.GetBudgetSpendStatusRequest) (*billing.BudgetSpendStatus, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBudgetSpendStatus")
+	}
+
+	var r0 *billing.BudgetSpendStatus
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, billing.GetBudgetSpendStatusRequest) (*billing.BudgetSpendStatus, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, billing.GetBudgetSpendStatusRequest) *billing.BudgetSpendStatus); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*billing.BudgetSpendStatus)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, billing.GetBudgetSpendStatusRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockBudgetsInterface_GetBudgetSpendStatus_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBudgetSpendStatus'
+type MockBudgetsInterface_GetBudgetSpendStatus_Call struct {
+	*mock.Call
+}
+
+// GetBudgetSpendStatus is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request billing.GetBudgetSpendStatusRequest
+func (_e *MockBudgetsInterface_Expecter) GetBudgetSpendStatus(ctx any, request any) *MockBudgetsInterface_GetBudgetSpendStatus_Call {
+	return &MockBudgetsInterface_GetBudgetSpendStatus_Call{Call: _e.mock.On("GetBudgetSpendStatus", ctx, request)}
+}
+
+func (_c *MockBudgetsInterface_GetBudgetSpendStatus_Call) Run(run func(ctx context.Context, request billing.GetBudgetSpendStatusRequest)) *MockBudgetsInterface_GetBudgetSpendStatus_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 billing.GetBudgetSpendStatusRequest
+		if args[1] != nil {
+			arg1 = args[1].(billing.GetBudgetSpendStatusRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockBudgetsInterface_GetBudgetSpendStatus_Call) Return(budgetSpendStatus *billing.BudgetSpendStatus, err error) *MockBudgetsInterface_GetBudgetSpendStatus_Call {
+	_c.Call.Return(budgetSpendStatus, err)
+	return _c
+}
+
+func (_c *MockBudgetsInterface_GetBudgetSpendStatus_Call) RunAndReturn(run func(ctx context.Context, request billing.GetBudgetSpendStatusRequest) (*billing.BudgetSpendStatus, error)) *MockBudgetsInterface_GetBudgetSpendStatus_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByBudgetId provides a mock function for the type MockBudgetsInterface
 func (_mock *MockBudgetsInterface) GetByBudgetId(ctx context.Context, budgetId string) (*billing.GetBudgetConfigurationResponse, error) {
 	ret := _mock.Called(ctx, budgetId)
@@ -489,6 +557,74 @@ func (_c *MockBudgetsInterface_ListAll_Call) Return(budgetConfigurations []billi
 }
 
 func (_c *MockBudgetsInterface_ListAll_Call) RunAndReturn(run func(ctx context.Context, request billing.ListBudgetConfigurationsRequest) ([]billing.BudgetConfiguration, error)) *MockBudgetsInterface_ListAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListBudgetSpendStatuses provides a mock function for the type MockBudgetsInterface
+func (_mock *MockBudgetsInterface) ListBudgetSpendStatuses(ctx context.Context, request billing.ListBudgetSpendStatusesRequest) (*billing.ListBudgetSpendStatusesResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListBudgetSpendStatuses")
+	}
+
+	var r0 *billing.ListBudgetSpendStatusesResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, billing.ListBudgetSpendStatusesRequest) (*billing.ListBudgetSpendStatusesResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, billing.ListBudgetSpendStatusesRequest) *billing.ListBudgetSpendStatusesResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*billing.ListBudgetSpendStatusesResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, billing.ListBudgetSpendStatusesRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockBudgetsInterface_ListBudgetSpendStatuses_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListBudgetSpendStatuses'
+type MockBudgetsInterface_ListBudgetSpendStatuses_Call struct {
+	*mock.Call
+}
+
+// ListBudgetSpendStatuses is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request billing.ListBudgetSpendStatusesRequest
+func (_e *MockBudgetsInterface_Expecter) ListBudgetSpendStatuses(ctx any, request any) *MockBudgetsInterface_ListBudgetSpendStatuses_Call {
+	return &MockBudgetsInterface_ListBudgetSpendStatuses_Call{Call: _e.mock.On("ListBudgetSpendStatuses", ctx, request)}
+}
+
+func (_c *MockBudgetsInterface_ListBudgetSpendStatuses_Call) Run(run func(ctx context.Context, request billing.ListBudgetSpendStatusesRequest)) *MockBudgetsInterface_ListBudgetSpendStatuses_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 billing.ListBudgetSpendStatusesRequest
+		if args[1] != nil {
+			arg1 = args[1].(billing.ListBudgetSpendStatusesRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockBudgetsInterface_ListBudgetSpendStatuses_Call) Return(listBudgetSpendStatusesResponse *billing.ListBudgetSpendStatusesResponse, err error) *MockBudgetsInterface_ListBudgetSpendStatuses_Call {
+	_c.Call.Return(listBudgetSpendStatusesResponse, err)
+	return _c
+}
+
+func (_c *MockBudgetsInterface_ListBudgetSpendStatuses_Call) RunAndReturn(run func(ctx context.Context, request billing.ListBudgetSpendStatusesRequest) (*billing.ListBudgetSpendStatusesResponse, error)) *MockBudgetsInterface_ListBudgetSpendStatuses_Call {
 	_c.Call.Return(run)
 	return _c
 }

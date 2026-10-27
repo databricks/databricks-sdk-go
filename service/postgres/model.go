@@ -3135,8 +3135,7 @@ type SyncedTable struct {
 	// "source_table_full_name" attribute.
 	Name string `json:"name,omitempty"`
 	// Configuration details of the synced table, such as the source table,
-	// scheduling policy, etc. This attribute is specified at creation time and
-	// most fields are returned as is on subsequent queries.
+	// scheduling policy, etc.
 	Spec *SyncedTableSyncedTableSpec `json:"spec,omitempty"`
 	// Synced Table data synchronization status.
 	Status *SyncedTableSyncedTableStatus `json:"status,omitempty"`

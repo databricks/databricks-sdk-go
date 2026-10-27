@@ -539,9 +539,11 @@ func (s AlertStatementParameter) MarshalJSON() ([]byte, error) {
 type AlertV2 struct {
 	// The timestamp indicating when the alert was created.
 	CreateTime string `json:"create_time,omitempty"`
-	// Custom description for the alert. support mustache template.
+	// Custom description for the alert. Interpreted according to
+	// `custom_template_format`.
 	CustomDescription string `json:"custom_description,omitempty"`
-	// Custom summary for the alert. support mustache template.
+	// Custom summary for the alert. Interpreted according to
+	// `custom_template_format`.
 	CustomSummary string `json:"custom_summary,omitempty"`
 	// The format used to interpret the `custom_summary` and
 	// `custom_description` templates.
