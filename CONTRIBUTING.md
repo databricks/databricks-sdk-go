@@ -24,6 +24,13 @@ Required development tools:
 * `go install honnef.co/go/tools/cmd/staticcheck@v0.3.2`
 * `go install gotest.tools/gotestsum@latest`
 
+## Testing
+
+- All changes to the SDK should be covered by unit tests.
+- Tests must be hermetic and must not require a live Databricks workspace or account.
+- API behavior should be tested at the HTTP boundary with local fixtures when request routing, pagination, streaming, headers, or response decoding are relevant.
+- Unit-level mocks remain appropriate for isolated control-flow behavior.
+
 ## Developer Certificate of Origin
 
 To contribute to this repository, you must sign off your commits to certify 

@@ -313,6 +313,11 @@ type WorkspaceClient struct {
 
 	// Database Instances provide access to a database via REST API or direct
 	// SQL.
+	//
+	// For new workloads, Databricks recommends the [Postgres API], which
+	// supports the latest Lakebase features.
+	//
+	// [Postgres API]: https://docs.databricks.com/api/postgres/v1/postgres
 	Database database.DatabaseInterface
 
 	// DBFS API makes it simple to interact with various data sources without

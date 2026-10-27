@@ -956,6 +956,74 @@ func (_c *MockAgentKitInterface_GetMemoryStore_Call) RunAndReturn(run func(ctx c
 	return _c
 }
 
+// GetMemoryStorePermission provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) GetMemoryStorePermission(ctx context.Context, request agentkit.GetMemoryStorePermissionRequest) (*agentkit.MemoryStorePermission, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMemoryStorePermission")
+	}
+
+	var r0 *agentkit.MemoryStorePermission
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GetMemoryStorePermissionRequest) (*agentkit.MemoryStorePermission, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GetMemoryStorePermissionRequest) *agentkit.MemoryStorePermission); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*agentkit.MemoryStorePermission)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.GetMemoryStorePermissionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_GetMemoryStorePermission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMemoryStorePermission'
+type MockAgentKitInterface_GetMemoryStorePermission_Call struct {
+	*mock.Call
+}
+
+// GetMemoryStorePermission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.GetMemoryStorePermissionRequest
+func (_e *MockAgentKitInterface_Expecter) GetMemoryStorePermission(ctx any, request any) *MockAgentKitInterface_GetMemoryStorePermission_Call {
+	return &MockAgentKitInterface_GetMemoryStorePermission_Call{Call: _e.mock.On("GetMemoryStorePermission", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_GetMemoryStorePermission_Call) Run(run func(ctx context.Context, request agentkit.GetMemoryStorePermissionRequest)) *MockAgentKitInterface_GetMemoryStorePermission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.GetMemoryStorePermissionRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.GetMemoryStorePermissionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GetMemoryStorePermission_Call) Return(memoryStorePermission *agentkit.MemoryStorePermission, err error) *MockAgentKitInterface_GetMemoryStorePermission_Call {
+	_c.Call.Return(memoryStorePermission, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GetMemoryStorePermission_Call) RunAndReturn(run func(ctx context.Context, request agentkit.GetMemoryStorePermissionRequest) (*agentkit.MemoryStorePermission, error)) *MockAgentKitInterface_GetMemoryStorePermission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetSession provides a mock function for the type MockAgentKitInterface
 func (_mock *MockAgentKitInterface) GetSession(ctx context.Context, request agentkit.GetSessionRequest) (*agentkit.Session, error) {
 	ret := _mock.Called(ctx, request)
@@ -1092,6 +1160,210 @@ func (_c *MockAgentKitInterface_GetSessionStore_Call) RunAndReturn(run func(ctx 
 	return _c
 }
 
+// GetSessionStorePermission provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) GetSessionStorePermission(ctx context.Context, request agentkit.GetSessionStorePermissionRequest) (*agentkit.SessionStorePermission, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSessionStorePermission")
+	}
+
+	var r0 *agentkit.SessionStorePermission
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GetSessionStorePermissionRequest) (*agentkit.SessionStorePermission, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GetSessionStorePermissionRequest) *agentkit.SessionStorePermission); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*agentkit.SessionStorePermission)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.GetSessionStorePermissionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_GetSessionStorePermission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSessionStorePermission'
+type MockAgentKitInterface_GetSessionStorePermission_Call struct {
+	*mock.Call
+}
+
+// GetSessionStorePermission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.GetSessionStorePermissionRequest
+func (_e *MockAgentKitInterface_Expecter) GetSessionStorePermission(ctx any, request any) *MockAgentKitInterface_GetSessionStorePermission_Call {
+	return &MockAgentKitInterface_GetSessionStorePermission_Call{Call: _e.mock.On("GetSessionStorePermission", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_GetSessionStorePermission_Call) Run(run func(ctx context.Context, request agentkit.GetSessionStorePermissionRequest)) *MockAgentKitInterface_GetSessionStorePermission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.GetSessionStorePermissionRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.GetSessionStorePermissionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GetSessionStorePermission_Call) Return(sessionStorePermission *agentkit.SessionStorePermission, err error) *MockAgentKitInterface_GetSessionStorePermission_Call {
+	_c.Call.Return(sessionStorePermission, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GetSessionStorePermission_Call) RunAndReturn(run func(ctx context.Context, request agentkit.GetSessionStorePermissionRequest) (*agentkit.SessionStorePermission, error)) *MockAgentKitInterface_GetSessionStorePermission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GrantMemoryStorePermission provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) GrantMemoryStorePermission(ctx context.Context, request agentkit.GrantMemoryStorePermissionRequest) (*agentkit.GrantMemoryStorePermissionResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GrantMemoryStorePermission")
+	}
+
+	var r0 *agentkit.GrantMemoryStorePermissionResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GrantMemoryStorePermissionRequest) (*agentkit.GrantMemoryStorePermissionResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GrantMemoryStorePermissionRequest) *agentkit.GrantMemoryStorePermissionResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*agentkit.GrantMemoryStorePermissionResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.GrantMemoryStorePermissionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_GrantMemoryStorePermission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GrantMemoryStorePermission'
+type MockAgentKitInterface_GrantMemoryStorePermission_Call struct {
+	*mock.Call
+}
+
+// GrantMemoryStorePermission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.GrantMemoryStorePermissionRequest
+func (_e *MockAgentKitInterface_Expecter) GrantMemoryStorePermission(ctx any, request any) *MockAgentKitInterface_GrantMemoryStorePermission_Call {
+	return &MockAgentKitInterface_GrantMemoryStorePermission_Call{Call: _e.mock.On("GrantMemoryStorePermission", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_GrantMemoryStorePermission_Call) Run(run func(ctx context.Context, request agentkit.GrantMemoryStorePermissionRequest)) *MockAgentKitInterface_GrantMemoryStorePermission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.GrantMemoryStorePermissionRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.GrantMemoryStorePermissionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GrantMemoryStorePermission_Call) Return(grantMemoryStorePermissionResponse *agentkit.GrantMemoryStorePermissionResponse, err error) *MockAgentKitInterface_GrantMemoryStorePermission_Call {
+	_c.Call.Return(grantMemoryStorePermissionResponse, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GrantMemoryStorePermission_Call) RunAndReturn(run func(ctx context.Context, request agentkit.GrantMemoryStorePermissionRequest) (*agentkit.GrantMemoryStorePermissionResponse, error)) *MockAgentKitInterface_GrantMemoryStorePermission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GrantSessionStorePermission provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) GrantSessionStorePermission(ctx context.Context, request agentkit.GrantSessionStorePermissionRequest) (*agentkit.GrantSessionStorePermissionResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GrantSessionStorePermission")
+	}
+
+	var r0 *agentkit.GrantSessionStorePermissionResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GrantSessionStorePermissionRequest) (*agentkit.GrantSessionStorePermissionResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.GrantSessionStorePermissionRequest) *agentkit.GrantSessionStorePermissionResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*agentkit.GrantSessionStorePermissionResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.GrantSessionStorePermissionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_GrantSessionStorePermission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GrantSessionStorePermission'
+type MockAgentKitInterface_GrantSessionStorePermission_Call struct {
+	*mock.Call
+}
+
+// GrantSessionStorePermission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.GrantSessionStorePermissionRequest
+func (_e *MockAgentKitInterface_Expecter) GrantSessionStorePermission(ctx any, request any) *MockAgentKitInterface_GrantSessionStorePermission_Call {
+	return &MockAgentKitInterface_GrantSessionStorePermission_Call{Call: _e.mock.On("GrantSessionStorePermission", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_GrantSessionStorePermission_Call) Run(run func(ctx context.Context, request agentkit.GrantSessionStorePermissionRequest)) *MockAgentKitInterface_GrantSessionStorePermission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.GrantSessionStorePermissionRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.GrantSessionStorePermissionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GrantSessionStorePermission_Call) Return(grantSessionStorePermissionResponse *agentkit.GrantSessionStorePermissionResponse, err error) *MockAgentKitInterface_GrantSessionStorePermission_Call {
+	_c.Call.Return(grantSessionStorePermissionResponse, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_GrantSessionStorePermission_Call) RunAndReturn(run func(ctx context.Context, request agentkit.GrantSessionStorePermissionRequest) (*agentkit.GrantSessionStorePermissionResponse, error)) *MockAgentKitInterface_GrantSessionStorePermission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListMemories provides a mock function for the type MockAgentKitInterface
 func (_mock *MockAgentKitInterface) ListMemories(ctx context.Context, request agentkit.ListManagedMemoryEntriesRequest) listing.Iterator[agentkit.ManagedMemoryEntry] {
 	ret := _mock.Called(ctx, request)
@@ -1215,6 +1487,133 @@ func (_c *MockAgentKitInterface_ListMemoriesAll_Call) Return(managedMemoryEntrys
 }
 
 func (_c *MockAgentKitInterface_ListMemoriesAll_Call) RunAndReturn(run func(ctx context.Context, request agentkit.ListManagedMemoryEntriesRequest) ([]agentkit.ManagedMemoryEntry, error)) *MockAgentKitInterface_ListMemoriesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListMemoryStorePermissions provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) ListMemoryStorePermissions(ctx context.Context, request agentkit.ListMemoryStorePermissionsRequest) listing.Iterator[agentkit.MemoryStorePermission] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListMemoryStorePermissions")
+	}
+
+	var r0 listing.Iterator[agentkit.MemoryStorePermission]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.ListMemoryStorePermissionsRequest) listing.Iterator[agentkit.MemoryStorePermission]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[agentkit.MemoryStorePermission])
+		}
+	}
+	return r0
+}
+
+// MockAgentKitInterface_ListMemoryStorePermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMemoryStorePermissions'
+type MockAgentKitInterface_ListMemoryStorePermissions_Call struct {
+	*mock.Call
+}
+
+// ListMemoryStorePermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.ListMemoryStorePermissionsRequest
+func (_e *MockAgentKitInterface_Expecter) ListMemoryStorePermissions(ctx any, request any) *MockAgentKitInterface_ListMemoryStorePermissions_Call {
+	return &MockAgentKitInterface_ListMemoryStorePermissions_Call{Call: _e.mock.On("ListMemoryStorePermissions", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_ListMemoryStorePermissions_Call) Run(run func(ctx context.Context, request agentkit.ListMemoryStorePermissionsRequest)) *MockAgentKitInterface_ListMemoryStorePermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.ListMemoryStorePermissionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.ListMemoryStorePermissionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListMemoryStorePermissions_Call) Return(iterator listing.Iterator[agentkit.MemoryStorePermission]) *MockAgentKitInterface_ListMemoryStorePermissions_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListMemoryStorePermissions_Call) RunAndReturn(run func(ctx context.Context, request agentkit.ListMemoryStorePermissionsRequest) listing.Iterator[agentkit.MemoryStorePermission]) *MockAgentKitInterface_ListMemoryStorePermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListMemoryStorePermissionsAll provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) ListMemoryStorePermissionsAll(ctx context.Context, request agentkit.ListMemoryStorePermissionsRequest) ([]agentkit.MemoryStorePermission, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListMemoryStorePermissionsAll")
+	}
+
+	var r0 []agentkit.MemoryStorePermission
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.ListMemoryStorePermissionsRequest) ([]agentkit.MemoryStorePermission, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.ListMemoryStorePermissionsRequest) []agentkit.MemoryStorePermission); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]agentkit.MemoryStorePermission)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.ListMemoryStorePermissionsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_ListMemoryStorePermissionsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMemoryStorePermissionsAll'
+type MockAgentKitInterface_ListMemoryStorePermissionsAll_Call struct {
+	*mock.Call
+}
+
+// ListMemoryStorePermissionsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.ListMemoryStorePermissionsRequest
+func (_e *MockAgentKitInterface_Expecter) ListMemoryStorePermissionsAll(ctx any, request any) *MockAgentKitInterface_ListMemoryStorePermissionsAll_Call {
+	return &MockAgentKitInterface_ListMemoryStorePermissionsAll_Call{Call: _e.mock.On("ListMemoryStorePermissionsAll", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_ListMemoryStorePermissionsAll_Call) Run(run func(ctx context.Context, request agentkit.ListMemoryStorePermissionsRequest)) *MockAgentKitInterface_ListMemoryStorePermissionsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.ListMemoryStorePermissionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.ListMemoryStorePermissionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListMemoryStorePermissionsAll_Call) Return(memoryStorePermissions []agentkit.MemoryStorePermission, err error) *MockAgentKitInterface_ListMemoryStorePermissionsAll_Call {
+	_c.Call.Return(memoryStorePermissions, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListMemoryStorePermissionsAll_Call) RunAndReturn(run func(ctx context.Context, request agentkit.ListMemoryStorePermissionsRequest) ([]agentkit.MemoryStorePermission, error)) *MockAgentKitInterface_ListMemoryStorePermissionsAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1469,6 +1868,133 @@ func (_c *MockAgentKitInterface_ListSessionItemsAll_Call) Return(sessionItems []
 }
 
 func (_c *MockAgentKitInterface_ListSessionItemsAll_Call) RunAndReturn(run func(ctx context.Context, request agentkit.ListSessionItemsRequest) ([]agentkit.SessionItem, error)) *MockAgentKitInterface_ListSessionItemsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSessionStorePermissions provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) ListSessionStorePermissions(ctx context.Context, request agentkit.ListSessionStorePermissionsRequest) listing.Iterator[agentkit.SessionStorePermission] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSessionStorePermissions")
+	}
+
+	var r0 listing.Iterator[agentkit.SessionStorePermission]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.ListSessionStorePermissionsRequest) listing.Iterator[agentkit.SessionStorePermission]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[agentkit.SessionStorePermission])
+		}
+	}
+	return r0
+}
+
+// MockAgentKitInterface_ListSessionStorePermissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSessionStorePermissions'
+type MockAgentKitInterface_ListSessionStorePermissions_Call struct {
+	*mock.Call
+}
+
+// ListSessionStorePermissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.ListSessionStorePermissionsRequest
+func (_e *MockAgentKitInterface_Expecter) ListSessionStorePermissions(ctx any, request any) *MockAgentKitInterface_ListSessionStorePermissions_Call {
+	return &MockAgentKitInterface_ListSessionStorePermissions_Call{Call: _e.mock.On("ListSessionStorePermissions", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_ListSessionStorePermissions_Call) Run(run func(ctx context.Context, request agentkit.ListSessionStorePermissionsRequest)) *MockAgentKitInterface_ListSessionStorePermissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.ListSessionStorePermissionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.ListSessionStorePermissionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListSessionStorePermissions_Call) Return(iterator listing.Iterator[agentkit.SessionStorePermission]) *MockAgentKitInterface_ListSessionStorePermissions_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListSessionStorePermissions_Call) RunAndReturn(run func(ctx context.Context, request agentkit.ListSessionStorePermissionsRequest) listing.Iterator[agentkit.SessionStorePermission]) *MockAgentKitInterface_ListSessionStorePermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSessionStorePermissionsAll provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) ListSessionStorePermissionsAll(ctx context.Context, request agentkit.ListSessionStorePermissionsRequest) ([]agentkit.SessionStorePermission, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSessionStorePermissionsAll")
+	}
+
+	var r0 []agentkit.SessionStorePermission
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.ListSessionStorePermissionsRequest) ([]agentkit.SessionStorePermission, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.ListSessionStorePermissionsRequest) []agentkit.SessionStorePermission); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]agentkit.SessionStorePermission)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.ListSessionStorePermissionsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_ListSessionStorePermissionsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSessionStorePermissionsAll'
+type MockAgentKitInterface_ListSessionStorePermissionsAll_Call struct {
+	*mock.Call
+}
+
+// ListSessionStorePermissionsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.ListSessionStorePermissionsRequest
+func (_e *MockAgentKitInterface_Expecter) ListSessionStorePermissionsAll(ctx any, request any) *MockAgentKitInterface_ListSessionStorePermissionsAll_Call {
+	return &MockAgentKitInterface_ListSessionStorePermissionsAll_Call{Call: _e.mock.On("ListSessionStorePermissionsAll", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_ListSessionStorePermissionsAll_Call) Run(run func(ctx context.Context, request agentkit.ListSessionStorePermissionsRequest)) *MockAgentKitInterface_ListSessionStorePermissionsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.ListSessionStorePermissionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.ListSessionStorePermissionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListSessionStorePermissionsAll_Call) Return(sessionStorePermissions []agentkit.SessionStorePermission, err error) *MockAgentKitInterface_ListSessionStorePermissionsAll_Call {
+	_c.Call.Return(sessionStorePermissions, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_ListSessionStorePermissionsAll_Call) RunAndReturn(run func(ctx context.Context, request agentkit.ListSessionStorePermissionsRequest) ([]agentkit.SessionStorePermission, error)) *MockAgentKitInterface_ListSessionStorePermissionsAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1791,6 +2317,142 @@ func (_c *MockAgentKitInterface_PopSessionItem_Call) Return(popSessionItemRespon
 }
 
 func (_c *MockAgentKitInterface_PopSessionItem_Call) RunAndReturn(run func(ctx context.Context, request agentkit.PopSessionItemRequest) (*agentkit.PopSessionItemResponse, error)) *MockAgentKitInterface_PopSessionItem_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RevokeMemoryStorePermission provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) RevokeMemoryStorePermission(ctx context.Context, request agentkit.RevokeMemoryStorePermissionRequest) (*agentkit.RevokeMemoryStorePermissionResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RevokeMemoryStorePermission")
+	}
+
+	var r0 *agentkit.RevokeMemoryStorePermissionResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.RevokeMemoryStorePermissionRequest) (*agentkit.RevokeMemoryStorePermissionResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.RevokeMemoryStorePermissionRequest) *agentkit.RevokeMemoryStorePermissionResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*agentkit.RevokeMemoryStorePermissionResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.RevokeMemoryStorePermissionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_RevokeMemoryStorePermission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RevokeMemoryStorePermission'
+type MockAgentKitInterface_RevokeMemoryStorePermission_Call struct {
+	*mock.Call
+}
+
+// RevokeMemoryStorePermission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.RevokeMemoryStorePermissionRequest
+func (_e *MockAgentKitInterface_Expecter) RevokeMemoryStorePermission(ctx any, request any) *MockAgentKitInterface_RevokeMemoryStorePermission_Call {
+	return &MockAgentKitInterface_RevokeMemoryStorePermission_Call{Call: _e.mock.On("RevokeMemoryStorePermission", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_RevokeMemoryStorePermission_Call) Run(run func(ctx context.Context, request agentkit.RevokeMemoryStorePermissionRequest)) *MockAgentKitInterface_RevokeMemoryStorePermission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.RevokeMemoryStorePermissionRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.RevokeMemoryStorePermissionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_RevokeMemoryStorePermission_Call) Return(revokeMemoryStorePermissionResponse *agentkit.RevokeMemoryStorePermissionResponse, err error) *MockAgentKitInterface_RevokeMemoryStorePermission_Call {
+	_c.Call.Return(revokeMemoryStorePermissionResponse, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_RevokeMemoryStorePermission_Call) RunAndReturn(run func(ctx context.Context, request agentkit.RevokeMemoryStorePermissionRequest) (*agentkit.RevokeMemoryStorePermissionResponse, error)) *MockAgentKitInterface_RevokeMemoryStorePermission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RevokeSessionStorePermission provides a mock function for the type MockAgentKitInterface
+func (_mock *MockAgentKitInterface) RevokeSessionStorePermission(ctx context.Context, request agentkit.RevokeSessionStorePermissionRequest) (*agentkit.RevokeSessionStorePermissionResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RevokeSessionStorePermission")
+	}
+
+	var r0 *agentkit.RevokeSessionStorePermissionResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.RevokeSessionStorePermissionRequest) (*agentkit.RevokeSessionStorePermissionResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, agentkit.RevokeSessionStorePermissionRequest) *agentkit.RevokeSessionStorePermissionResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*agentkit.RevokeSessionStorePermissionResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, agentkit.RevokeSessionStorePermissionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAgentKitInterface_RevokeSessionStorePermission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RevokeSessionStorePermission'
+type MockAgentKitInterface_RevokeSessionStorePermission_Call struct {
+	*mock.Call
+}
+
+// RevokeSessionStorePermission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request agentkit.RevokeSessionStorePermissionRequest
+func (_e *MockAgentKitInterface_Expecter) RevokeSessionStorePermission(ctx any, request any) *MockAgentKitInterface_RevokeSessionStorePermission_Call {
+	return &MockAgentKitInterface_RevokeSessionStorePermission_Call{Call: _e.mock.On("RevokeSessionStorePermission", ctx, request)}
+}
+
+func (_c *MockAgentKitInterface_RevokeSessionStorePermission_Call) Run(run func(ctx context.Context, request agentkit.RevokeSessionStorePermissionRequest)) *MockAgentKitInterface_RevokeSessionStorePermission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 agentkit.RevokeSessionStorePermissionRequest
+		if args[1] != nil {
+			arg1 = args[1].(agentkit.RevokeSessionStorePermissionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAgentKitInterface_RevokeSessionStorePermission_Call) Return(revokeSessionStorePermissionResponse *agentkit.RevokeSessionStorePermissionResponse, err error) *MockAgentKitInterface_RevokeSessionStorePermission_Call {
+	_c.Call.Return(revokeSessionStorePermissionResponse, err)
+	return _c
+}
+
+func (_c *MockAgentKitInterface_RevokeSessionStorePermission_Call) RunAndReturn(run func(ctx context.Context, request agentkit.RevokeSessionStorePermissionRequest) (*agentkit.RevokeSessionStorePermissionResponse, error)) *MockAgentKitInterface_RevokeSessionStorePermission_Call {
 	_c.Call.Return(run)
 	return _c
 }

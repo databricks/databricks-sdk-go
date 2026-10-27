@@ -6039,6 +6039,8 @@ type SqlOutput struct {
 	AlertOutput *SqlAlertOutput `json:"alert_output,omitempty"`
 	// The output of a SQL dashboard task, if available.
 	DashboardOutput *SqlDashboardOutput `json:"dashboard_output,omitempty"`
+	// The output of a SQL file task, if available.
+	FileOutput *SqlTaskSqlFileOutput `json:"file_output,omitempty"`
 	// The output of a SQL query task, if available.
 	QueryOutput *SqlQueryOutput `json:"query_output,omitempty"`
 }
@@ -6064,7 +6066,8 @@ func (s SqlOutputError) MarshalJSON() ([]byte, error) {
 
 type SqlQueryOutput struct {
 	EndpointId string `json:"endpoint_id,omitempty"`
-	// The link to find the output results.
+	// Deprecated. The link to find the output results, which are only
+	// accessible from the UI.
 	OutputLink string `json:"output_link,omitempty"`
 	// The text of the SQL query. Can Run permission of the SQL query is
 	// required to view this field.
@@ -6097,6 +6100,64 @@ func (s *SqlStatementOutput) UnmarshalJSON(b []byte) error {
 }
 
 func (s SqlStatementOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SqlStatementQueryResult struct {
+	// The metadata for each column in the result set.
+	Columns []SqlStatementQueryResultColumn `json:"columns,omitempty"`
+	// The rows returned by the query.
+	Rows []SqlStatementQueryResultRow `json:"rows,omitempty"`
+	// Whether the result set was truncated.
+	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SqlStatementQueryResult) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlStatementQueryResult) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SqlStatementQueryResultColumn struct {
+	// The name of the column.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SqlStatementQueryResultColumn) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlStatementQueryResultColumn) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SqlStatementQueryResultRow struct {
+	// The values in the row, ordered to match the columns.
+	Values []SqlStatementQueryResultRowRowValue `json:"values,omitempty"`
+}
+
+func (s *SqlStatementQueryResultRow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type SqlStatementQueryResultRowRowValue struct {
+	// The value rendered as a string.
+	StringValue string `json:"string_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SqlStatementQueryResultRowRowValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlStatementQueryResultRowRowValue) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -6191,6 +6252,27 @@ type SqlTaskQuery struct {
 
 func (s *SqlTaskQuery) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type SqlTaskSqlFileOutput struct {
+	// The result of the executed SQL statement, if available.
+	QueryResult *SqlStatementQueryResult `json:"query_result,omitempty"`
+	// The text of the SQL query.
+	QueryText string `json:"query_text,omitempty"`
+	// Information about SQL statements executed in the run.
+	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
+	// The canonical identifier of the SQL warehouse.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SqlTaskSqlFileOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlTaskSqlFileOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SqlTaskSubscription struct {

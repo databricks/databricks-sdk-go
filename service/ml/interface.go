@@ -286,6 +286,9 @@ type FeatureEngineeringService interface {
 	// the Kafka config can delete it.
 	CreateKafkaConfig(ctx context.Context, request CreateKafkaConfigRequest) (*KafkaConfig, error)
 
+	// Create a materialization set.
+	CreateMaterializationSet(ctx context.Context, request CreateMaterializationSetRequest) (*Operation, error)
+
 	// Create a materialized feature.
 	CreateMaterializedFeature(ctx context.Context, request CreateMaterializedFeatureRequest) (*MaterializedFeature, error)
 
@@ -301,6 +304,11 @@ type FeatureEngineeringService interface {
 	// the Kafka config can delete it.
 	DeleteKafkaConfig(ctx context.Context, request DeleteKafkaConfigRequest) error
 
+	// Delete a materialization set and every materialized feature in it. The
+	// set is gone afterwards, so a later read returns NOT_FOUND and the set id
+	// is free to use again.
+	DeleteMaterializationSet(ctx context.Context, request DeleteMaterializationSetRequest) (*Operation, error)
+
 	// Delete a materialized feature.
 	DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error
 
@@ -314,6 +322,11 @@ type FeatureEngineeringService interface {
 	// creating features under the entire metastore. Only the creator of the
 	// Kafka config can delete it.
 	GetKafkaConfig(ctx context.Context, request GetKafkaConfigRequest) (*KafkaConfig, error)
+
+	// Get a materialization set and the materialized features in it. A set
+	// whose materialized feature members have all been deleted is returned with
+	// an empty member list.
+	GetMaterializationSet(ctx context.Context, request GetMaterializationSetRequest) (*MaterializationSet, error)
 
 	// Get a materialized feature.
 	GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error)
@@ -348,6 +361,12 @@ type FeatureEngineeringService interface {
 	// when creating features under the entire metastore. Only the creator of
 	// the Kafka config can delete it.
 	UpdateKafkaConfig(ctx context.Context, request UpdateKafkaConfigRequest) (*KafkaConfig, error)
+
+	// Update the materialization set's state to match the supplied
+	// materialization set. Changes are applied member by member and are not
+	// atomic: when one member fails, the error reports which members were
+	// already changed.
+	UpdateMaterializationSet(ctx context.Context, request UpdateMaterializationSetRequest) (*Operation, error)
 
 	// Update a materialized feature (pause/resume).
 	UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error)

@@ -294,8 +294,18 @@ type ApproxCountDistinctFunction struct {
 	// The input column from which the approximate count of distinct values is
 	// computed.
 	Input string `json:"input"`
+	// The error the user accepts, as a fraction of the count, between 0.02 (by
+	// default) and 0.3. This is one standard error of the estimate, the same
+	// meaning as Spark's relativeSD: 0.02 means the result is within ±2% of
+	// the true count about 68% of the time (one standard deviation covers 68%
+	// of the region). Feature Store picks the sketch size that gives this
+	// relative error. If neither relative_error nor relative_sd is set, 0.02 is
+	// default chosen at feature creation.
+	RelativeError float64 `json:"relative_error,omitempty"`
 	// The maximum relative standard deviation allowed (default defined by
-	// Spark).
+	// Spark). Deprecated: use relative_error. When relative_error is set, reads
+	// return the same value here for clients that don't have relative_error,
+	// and a request may only send that value.
 	RelativeSd float64 `json:"relative_sd,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -311,12 +321,22 @@ func (s ApproxCountDistinctFunction) MarshalJSON() ([]byte, error) {
 
 // Computes the approximate percentile of values.
 type ApproxPercentileFunction struct {
-	// The accuracy parameter (higher is more accurate but slower).
+	// The accuracy parameter (higher is more accurate but slower). Deprecated:
+	// use relative_error. When relative_error is set, reads return ceil(1 /
+	// relative_error) here for clients that don't have relative_error, and a
+	// request may only send that value.
 	Accuracy int64 `json:"accuracy,omitempty"`
 	// The input column from which the approximate percentile is computed.
 	Input string `json:"input"`
 	// The percentile value to compute (between 0 and 1).
 	Percentile float64 `json:"percentile"`
+	// The error the user accepts, as a fraction of rank, between 0.01 (by
+	// default) and 0.3. The result is within this rank error with 99%
+	// confidence: at 0.01, the value returned for p95 is between the true p94
+	// and p96 at least 99% of the time. Feature Store picks the sketch size
+	// that gives this error. If neither relative_error nor accuracy is set,
+	// 0.01 is default chosen at feature creation.
+	RelativeError float64 `json:"relative_error,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -915,6 +935,29 @@ func (s *CreateLoggedModelResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type CreateMaterializationSetRequest struct {
+	// The materialization set to create. Supply materialization_set_id to
+	// choose the identifier; leave it unset to have one assigned.
+	MaterializationSet MaterializationSet `json:"materialization_set"`
+	// Idempotency token for the request. A second request carrying a token that
+	// has already been used returns the operation the first one created,
+	// whatever state it reached, and creates no second set. The token is not
+	// checked against the rest of the request, so reusing one for a different
+	// set returns the original operation rather than an error. Omit it and each
+	// request creates its own set.
+	RequestId string `json:"-" url:"request_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateMaterializationSetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateMaterializationSetRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateMaterializedFeatureRequest struct {
 	// The materialized feature to create.
 	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
@@ -1392,6 +1435,30 @@ type DeleteLoggedModelTagRequest struct {
 
 func (s *DeleteLoggedModelTagRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type DeleteMaterializationSetRequest struct {
+	// Return success instead of NOT_FOUND when the set does not exist, so a
+	// repeated destroy is idempotent.
+	AllowMissing bool `json:"-" url:"allow_missing,omitempty"`
+	// The ID of the materialization set to delete.
+	MaterializationSetId string `json:"-" url:"-"`
+	// Idempotency token for the request. A second request carrying a token that
+	// has already been used returns the operation the first one created,
+	// whatever state it reached, and deletes nothing further. The token is not
+	// checked against the rest of the request. Omit it and each request deletes
+	// independently.
+	RequestId string `json:"-" url:"request_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteMaterializationSetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteMaterializationSetRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteMaterializedFeatureRequest struct {
@@ -2769,6 +2836,15 @@ type GetLoggedModelResponse struct {
 }
 
 func (s *GetLoggedModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetMaterializationSetRequest struct {
+	// The ID of the materialization set.
+	MaterializationSetId string `json:"-" url:"-"`
+}
+
+func (s *GetMaterializationSetRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -4411,6 +4487,134 @@ func (s *MaterializationNotifications) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A group of materialized features created and managed as a single unit.
+type MaterializationSet struct {
+	// Server-assigned unique identifier for the materialization set.
+	MaterializationSetId string `json:"materialization_set_id,omitempty"`
+	// The materialized features in this set. Order is not significant. Updating
+	// the set with a materialized feature removed from this set will cause it
+	// to be deleted.
+	MaterializedFeatures []MaterializedFeature `json:"materialized_features,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MaterializationSet) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MaterializationSet) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// What a partly failed DeleteMaterializationSet got through, attached to the
+// error so a caller can tell which materialized feature members are gone and
+// which ones still need attention. The set itself is left in place whenever any
+// member failed, so a retry can still find the members.
+type MaterializationSetDeletionProgress struct {
+	// Members that are no longer materialized, including any that were already
+	// gone.
+	DeletedMaterializedFeatureIds []string `json:"deleted_materialized_feature_ids,omitempty"`
+	// Members that could not be deleted, one entry each.
+	FailedMaterializedFeatures []MaterializedFeatureChangeFailure `json:"failed_materialized_features,omitempty"`
+}
+
+func (s *MaterializationSetDeletionProgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Progress of a materialization set operation. Shared by create, update and
+// delete, because databricks.longrunning freezes a method's metadata type once
+// it ships.
+type MaterializationSetOperationMetadata struct {
+	// Time at which the operation was requested.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Set by a DeleteMaterializationSet operation.
+	DeletionProgress *MaterializationSetDeletionProgress `json:"deletion_progress,omitempty"`
+	// Full names of the features the set materializes, one entry per feature.
+	FeatureFullNames []string `json:"feature_full_names,omitempty"`
+	// ID of the materialization set the operation targets.
+	MaterializationSetId string `json:"materialization_set_id,omitempty"`
+	// Current state of the operation.
+	State MaterializationSetOperationMetadataState `json:"state,omitempty"`
+	// Set by an UpdateMaterializationSet operation.
+	UpdateProgress *MaterializationSetUpdateProgress `json:"update_progress,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MaterializationSetOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MaterializationSetOperationMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Lifecycle state of a materialization set operation.
+type MaterializationSetOperationMetadataState string
+
+const MaterializationSetOperationMetadataStateCancelled MaterializationSetOperationMetadataState = `CANCELLED`
+
+const MaterializationSetOperationMetadataStateFailed MaterializationSetOperationMetadataState = `FAILED`
+
+const MaterializationSetOperationMetadataStatePending MaterializationSetOperationMetadataState = `PENDING`
+
+const MaterializationSetOperationMetadataStateRunning MaterializationSetOperationMetadataState = `RUNNING`
+
+const MaterializationSetOperationMetadataStateSucceeded MaterializationSetOperationMetadataState = `SUCCEEDED`
+
+// String representation for [fmt.Print]
+func (f *MaterializationSetOperationMetadataState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MaterializationSetOperationMetadataState) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
+		*f = MaterializationSetOperationMetadataState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCEEDED"`, v)
+	}
+}
+
+// Values returns all possible values for MaterializationSetOperationMetadataState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MaterializationSetOperationMetadataState) Values() []MaterializationSetOperationMetadataState {
+	return []MaterializationSetOperationMetadataState{
+		MaterializationSetOperationMetadataStateCancelled,
+		MaterializationSetOperationMetadataStateFailed,
+		MaterializationSetOperationMetadataStatePending,
+		MaterializationSetOperationMetadataStateRunning,
+		MaterializationSetOperationMetadataStateSucceeded,
+	}
+}
+
+// Type always returns MaterializationSetOperationMetadataState to satisfy [pflag.Value] interface
+func (f *MaterializationSetOperationMetadataState) Type() string {
+	return "MaterializationSetOperationMetadataState"
+}
+
+// What a partly failed UpdateMaterializationSet got through, attached to the
+// error so a caller can tell which materialized feature members already changed
+// and which ones did not and why it failed.
+type MaterializationSetUpdateProgress struct {
+	// Materialized feature members that were deleted from the materialization
+	// set.
+	DeletedMaterializedFeatureIds []string `json:"deleted_materialized_feature_ids,omitempty"`
+	// Materialized feature members that could not be updated, one entry each.
+	FailedMaterializedFeatures []MaterializedFeatureChangeFailure `json:"failed_materialized_features,omitempty"`
+	// Materialized feature members whose mutable state was updated.
+	UpdatedMaterializedFeatureIds []string `json:"updated_materialized_feature_ids,omitempty"`
+}
+
+func (s *MaterializationSetUpdateProgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Recipients to notify when a materialization run succeeds.
 type MaterializationSuccessNotification struct {
 	// IDs of the notification destinations (for example Slack, Microsoft Teams,
@@ -4450,6 +4654,10 @@ type MaterializedFeature struct {
 	// Name of the latest backfill operation on this materialized feature.
 	// Format: operations/{operation_id}.
 	LatestBackfillOperation string `json:"latest_backfill_operation,omitempty"`
+	// The materialization set this materialized feature was created for,
+	// through DABs or direct-engine creation. Unset for a materialized feature
+	// that was not created as part of a set.
+	MaterializationSetId string `json:"materialization_set_id,omitempty"`
 	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
 	// Notification configuration around the materialization job or pipeline
@@ -4498,6 +4706,27 @@ func (s *MaterializedFeature) UnmarshalJSON(b []byte) error {
 }
 
 func (s MaterializedFeature) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Why one materialization set member could not be changed.
+type MaterializedFeatureChangeFailure struct {
+	// Databricks error code name of the failure, for example
+	// "RESOURCE_CONFLICT".
+	ErrorCode string `json:"error_code,omitempty"`
+	// The member that could not be changed.
+	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
+	// The failure's message.
+	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MaterializedFeatureChangeFailure) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MaterializedFeatureChangeFailure) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5253,6 +5482,9 @@ func (s PublishTableResponse) MarshalJSON() ([]byte, error) {
 type PurgeFeatureEntitiesMetadata struct {
 	// Time at which the purge operation was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Whether this purge deletes matching rows instead of setting feature
+	// values to null.
+	DeleteRows bool `json:"delete_rows,omitempty"`
 	// Fully qualified name of the Unity Catalog Delta table containing the
 	// entity keys to purge.
 	EntitiesTable string `json:"entities_table,omitempty"`
@@ -5330,6 +5562,13 @@ type PurgeFeatureEntitiesRequest struct {
 	// compute cost of this purge. If not specified, a default budget policy may
 	// be applied.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// If false feature values are set to null on purge but rows are not
+	// deleted. If true then the full rows containing entities are deleted.
+	// Defaults to false. When true, the request must include every feature
+	// which shares the same `table_name` property in their MaterializedFeature.
+	// Features from multiple tables may be included if all features
+	// materialized in each table are included.
+	DeleteRows bool `json:"delete_rows,omitempty"`
 	// Fully qualified name of the Unity Catalog Delta table containing the
 	// entity keys to purge. The table may contain a subset of each feature's
 	// entity-key columns. A partial key match deletes all feature rows matching
@@ -5337,7 +5576,7 @@ type PurgeFeatureEntitiesRequest struct {
 	// are allowed.
 	EntitiesTable string `json:"entities_table"`
 	// Fully qualified names of the features to purge. At least one nonempty
-	// feature name is required. A request may contain at most 10000 features;
+	// feature name is required. A request may contain at most 500 features;
 	// submit additional features in separate requests. Duplicate features are
 	// rejected.
 	Features []string `json:"features"`
@@ -6365,8 +6604,8 @@ type SdpSource struct {
 	// The full three-part names of the tables the pipeline reads from. Required
 	// to materialize this feature with a TableTrigger, which starts a run when
 	// these tables update. Each table must exist when the feature is created.
-	// After the pipeline runs, Feature Store checks that it reads from these
-	// tables, and the run fails if it doesn't. At most 100 tables.
+	// Feature Store doesn't confirm that the pipeline reads from these tables.
+	// At most 100 tables.
 	InputTables []string `json:"input_tables,omitempty"`
 	// The full three-part (catalog, schema, table) name of the pipeline's
 	// output table to read from. The table doesn't need to exist until the
@@ -7298,12 +7537,70 @@ func (s *SumFunction) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A trigger that fires when the upstream source table changes.
+// A trigger that fires when the feature's source table changes: a
+// DeltaTableSource's table, or an SdpSource's input_tables.
 type TableTrigger struct {
+	// Which source table updates trigger a materialization run. If not set, any
+	// source table update triggers a run.
+	Condition TableTriggerTableTriggerCondition `json:"condition,omitempty"`
+	// The minimum time between two triggered runs, so a frequently updated
+	// source table does not trigger runs too often. If not set, a feature with
+	// a sliding window uses half its slide_duration and a feature with a
+	// tumbling window uses half its window_duration, clamped to between 5
+	// minutes and 1 hour. Other features have no minimum.
+	MinTimeBetweenTriggers *duration.Duration `json:"min_time_between_triggers,omitempty"`
+	// How long the source table must go without updates before a run starts, so
+	// a series of updates settles before the run. If not set, a run starts as
+	// soon as the source table updates.
+	WaitAfterLastChange *duration.Duration `json:"wait_after_last_change,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableTrigger) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s TableTrigger) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Which source table updates trigger a materialization run.
+type TableTriggerTableTriggerCondition string
+
+const TableTriggerTableTriggerConditionTableTriggerConditionAllUpdated TableTriggerTableTriggerCondition = `TABLE_TRIGGER_CONDITION_ALL_UPDATED`
+
+const TableTriggerTableTriggerConditionTableTriggerConditionAnyUpdated TableTriggerTableTriggerCondition = `TABLE_TRIGGER_CONDITION_ANY_UPDATED`
+
+// String representation for [fmt.Print]
+func (f *TableTriggerTableTriggerCondition) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TableTriggerTableTriggerCondition) Set(v string) error {
+	switch v {
+	case `TABLE_TRIGGER_CONDITION_ALL_UPDATED`, `TABLE_TRIGGER_CONDITION_ANY_UPDATED`:
+		*f = TableTriggerTableTriggerCondition(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TABLE_TRIGGER_CONDITION_ALL_UPDATED", "TABLE_TRIGGER_CONDITION_ANY_UPDATED"`, v)
+	}
+}
+
+// Values returns all possible values for TableTriggerTableTriggerCondition.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TableTriggerTableTriggerCondition) Values() []TableTriggerTableTriggerCondition {
+	return []TableTriggerTableTriggerCondition{
+		TableTriggerTableTriggerConditionTableTriggerConditionAllUpdated,
+		TableTriggerTableTriggerConditionTableTriggerConditionAnyUpdated,
+	}
+}
+
+// Type always returns TableTriggerTableTriggerCondition to satisfy [pflag.Value] interface
+func (f *TableTriggerTableTriggerCondition) Type() string {
+	return "TableTriggerTableTriggerCondition"
 }
 
 // Details required to test a registry webhook.
@@ -7627,6 +7924,32 @@ type UpdateKafkaConfigRequest struct {
 
 func (s *UpdateKafkaConfigRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type UpdateMaterializationSetRequest struct {
+	// The desired state of the updated materialization set.
+	// materialization_set_id selects the set.
+	MaterializationSet MaterializationSet `json:"materialization_set"`
+	// Server-assigned unique identifier for the materialization set.
+	MaterializationSetId string `json:"-" url:"-"`
+	// Idempotency token for the request. A second request carrying a token that
+	// has already been used returns the operation the first one created,
+	// whatever state it reached, and changes nothing further. The token is not
+	// checked against the rest of the request. Omit it and each request updates
+	// independently.
+	RequestId string `json:"-" url:"request_id,omitempty"`
+	// The fields to update. Only 'materialized_features' is supported.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateMaterializationSetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateMaterializationSetRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateMaterializedFeatureRequest struct {
