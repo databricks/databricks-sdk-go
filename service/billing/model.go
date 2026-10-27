@@ -270,6 +270,12 @@ type BudgetConfiguration struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Whether this budget tracks external pass-through spend (third-party costs
+	// billed through a Databricks product) in addition to internal Databricks
+	// spend. Only applicable to Unity Gateway budgets, i.e. when
+	// `resource_type` is `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`. This field is
+	// immutable after create.
+	IncludeExternalSpend bool `json:"include_external_spend,omitempty"`
 	// The resource scope for this budget. Determines whether the budget tracks
 	// all resources or a specific resource.
 	ResourceType BudgetResourceType `json:"resource_type,omitempty"`
@@ -498,6 +504,12 @@ type CreateBudgetConfigurationBudget struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Whether this budget tracks external pass-through spend (third-party costs
+	// billed through a Databricks product) in addition to internal Databricks
+	// spend. Only applicable to Unity Gateway budgets, i.e. when
+	// `resource_type` is `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`. This field is
+	// immutable after create.
+	IncludeExternalSpend bool `json:"include_external_spend,omitempty"`
 	// The resource scope for this budget. Determines whether the budget tracks
 	// all resources or a specific resource.
 	ResourceType BudgetResourceType `json:"resource_type,omitempty"`
@@ -1348,6 +1360,12 @@ type UpdateBudgetConfigurationBudget struct {
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Whether this budget tracks external pass-through spend (third-party costs
+	// billed through a Databricks product) in addition to internal Databricks
+	// spend. Only applicable to Unity Gateway budgets, i.e. when
+	// `resource_type` is `BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`. This field is
+	// immutable after create.
+	IncludeExternalSpend bool `json:"include_external_spend,omitempty"`
 	// The resource scope for this budget. Determines whether the budget tracks
 	// all resources or a specific resource.
 	ResourceType BudgetResourceType `json:"resource_type,omitempty"`

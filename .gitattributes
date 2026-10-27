@@ -118,6 +118,8 @@ experimental/mocks/service/marketplace/mock_provider_personalization_requests_in
 experimental/mocks/service/marketplace/mock_provider_provider_analytics_dashboards_interface.go linguist-generated=true
 experimental/mocks/service/marketplace/mock_provider_providers_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_backfill_features_operation_interface.go linguist-generated=true
+experimental/mocks/service/ml/mock_create_materialization_set_operation_interface.go linguist-generated=true
+experimental/mocks/service/ml/mock_delete_materialization_set_operation_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_experiments_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_feature_engineering_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_feature_store_interface.go linguist-generated=true
@@ -125,6 +127,7 @@ experimental/mocks/service/ml/mock_forecasting_interface.go linguist-generated=t
 experimental/mocks/service/ml/mock_materialized_features_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_model_registry_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_purge_feature_entities_operation_interface.go linguist-generated=true
+experimental/mocks/service/ml/mock_update_materialization_set_operation_interface.go linguist-generated=true
 experimental/mocks/service/networking/mock_create_private_network_gateway_operation_interface.go linguist-generated=true
 experimental/mocks/service/networking/mock_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/networking/mock_private_network_gateways_interface.go linguist-generated=true
