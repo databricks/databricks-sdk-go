@@ -3204,8 +3204,12 @@ type Environment struct {
 	// List of java dependencies. Each dependency is a string representing a
 	// java library path. For example: `/Volumes/path/to/test.jar`.
 	JavaDependencies []string `json:"java_dependencies,omitempty"`
-	// File path of pyproject.toml file that defines the project-scoped
-	// environment.
+	// Path to the `pyproject.toml` file that defines the project environment.
+	// This field cannot be combined with `environment_version`,
+	// `base_environment`, dependency fields, or any other environment-source
+	// fields. Set the environment version and dependencies in `pyproject.toml`
+	// instead. For more information, see the serverless dependencies
+	// documentation.
 	ProjectEnvironment string `json:"project_environment,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

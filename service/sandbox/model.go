@@ -128,10 +128,10 @@ func (s *DeleteSandboxRequest) UnmarshalJSON(b []byte) error {
 }
 
 type EnvironmentSpec struct {
-	// A Unity Catalog container artifact (e.g.
-	// `catalog.schema.folder.image:tag`) to run as the sandbox environment.
-	// When set, this image is used as the environment instead of resolving a
-	// managed image from `environment_version`.
+	// The Unity Catalog container image to use for the sandbox environment (for
+	// example, `catalog.schema.folder.image:tag`). See [Artifact Registry].
+	//
+	// [Artifact Registry]: https://docs.databricks.com/en/artifact-registry/
 	ImageUri string `json:"image_uri,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -418,6 +418,8 @@ type Sandbox struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Human-readable display label for the sandbox. At most 256 characters.
 	DisplayName string `json:"display_name,omitempty"`
+	// Metadata associated with the sandbox.
+	Metadata *SandboxMetadata `json:"metadata,omitempty"`
 	// The sandbox resource name, in the form `sandboxes/{sandbox_id}`. Derived
 	// from `sandbox_id`; any value supplied in a create or update request body
 	// is ignored.
@@ -516,6 +518,18 @@ func (f *SandboxFileType) Values() []SandboxFileType {
 // Type always returns SandboxFileType to satisfy [pflag.Value] interface
 func (f *SandboxFileType) Type() string {
 	return "SandboxFileType"
+}
+
+// Metadata associated with a sandbox.
+type SandboxMetadata struct {
+	// Key-value tags associated with the sandbox. Supports up to 54 tags. Keys
+	// must be between 1 and 512 characters, and values must not exceed 256
+	// characters.
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+}
+
+func (s *SandboxMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SandboxSpec struct {

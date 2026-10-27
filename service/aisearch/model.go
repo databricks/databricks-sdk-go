@@ -393,6 +393,12 @@ const EndpointStatusStateProvisioning EndpointStatusState = `PROVISIONING`
 
 const EndpointStatusStateRedState EndpointStatusState = `RED_STATE`
 
+const EndpointStatusStateStarting EndpointStatusState = `STARTING`
+
+const EndpointStatusStateStopped EndpointStatusState = `STOPPED`
+
+const EndpointStatusStateStopping EndpointStatusState = `STOPPING`
+
 const EndpointStatusStateYellowState EndpointStatusState = `YELLOW_STATE`
 
 // String representation for [fmt.Print]
@@ -403,11 +409,11 @@ func (f *EndpointStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStatusState) Set(v string) error {
 	switch v {
-	case `DELETED`, `OFFLINE`, `ONLINE`, `PROVISIONING`, `RED_STATE`, `YELLOW_STATE`:
+	case `DELETED`, `OFFLINE`, `ONLINE`, `PROVISIONING`, `RED_STATE`, `STARTING`, `STOPPED`, `STOPPING`, `YELLOW_STATE`:
 		*f = EndpointStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELETED", "OFFLINE", "ONLINE", "PROVISIONING", "RED_STATE", "YELLOW_STATE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELETED", "OFFLINE", "ONLINE", "PROVISIONING", "RED_STATE", "STARTING", "STOPPED", "STOPPING", "YELLOW_STATE"`, v)
 	}
 }
 
@@ -421,6 +427,9 @@ func (f *EndpointStatusState) Values() []EndpointStatusState {
 		EndpointStatusStateOnline,
 		EndpointStatusStateProvisioning,
 		EndpointStatusStateRedState,
+		EndpointStatusStateStarting,
+		EndpointStatusStateStopped,
+		EndpointStatusStateStopping,
 		EndpointStatusStateYellowState,
 	}
 }

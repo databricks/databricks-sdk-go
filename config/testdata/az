@@ -54,6 +54,12 @@ if [ -n "$FAIL_IF_TENANT_ID_SET" ]; then
     done
 fi
 
+# If WARN is set, print it to stderr and still succeed, like az does for
+# deprecation notices.
+if [ -n "$WARN" ]; then
+    >&2 /bin/echo "$WARN"
+fi
+
 # Macos
 EXP="$(/bin/date -v+${EXPIRE:=10S} +'%F %T' 2>/dev/null)"
 if [ -z "${EXP}" ]; then

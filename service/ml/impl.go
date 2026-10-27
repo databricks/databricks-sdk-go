@@ -929,6 +929,28 @@ func (a *featureEngineeringImpl) CreateKafkaConfig(ctx context.Context, request 
 	return &kafkaConfig, err
 }
 
+func (a *featureEngineeringImpl) CreateMaterializationSet(ctx context.Context, request CreateMaterializationSetRequest) (*Operation, error) {
+	var operation Operation
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
+	path := "/api/2.0/feature-engineering/materialization-sets"
+	queryParams := make(map[string]any)
+
+	if request.RequestId != "" || slices.Contains(request.ForceSendFields, "RequestId") {
+		queryParams["request_id"] = request.RequestId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.MaterializationSet, &operation)
+	return &operation, err
+}
+
 func (a *featureEngineeringImpl) CreateMaterializedFeature(ctx context.Context, request CreateMaterializedFeatureRequest) (*MaterializedFeature, error) {
 	var materializedFeature MaterializedFeature
 	path := "/api/2.0/feature-engineering/materialized-features"
@@ -985,6 +1007,23 @@ func (a *featureEngineeringImpl) DeleteKafkaConfig(ctx context.Context, request 
 	return err
 }
 
+func (a *featureEngineeringImpl) DeleteMaterializationSet(ctx context.Context, request DeleteMaterializationSetRequest) (*Operation, error) {
+	var operation Operation
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialization-sets/%v", request.MaterializationSetId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *featureEngineeringImpl) DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error {
 	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
 	queryParams := make(map[string]any)
@@ -1037,6 +1076,20 @@ func (a *featureEngineeringImpl) GetKafkaConfig(ctx context.Context, request Get
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &kafkaConfig)
 	return &kafkaConfig, err
+}
+
+func (a *featureEngineeringImpl) GetMaterializationSet(ctx context.Context, request GetMaterializationSetRequest) (*MaterializationSet, error) {
+	var materializationSet MaterializationSet
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialization-sets/%v", request.MaterializationSetId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &materializationSet)
+	return &materializationSet, err
 }
 
 func (a *featureEngineeringImpl) GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error) {
@@ -1322,6 +1375,35 @@ func (a *featureEngineeringImpl) UpdateKafkaConfig(ctx context.Context, request 
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.KafkaConfig, &kafkaConfig)
 	return &kafkaConfig, err
+}
+
+func (a *featureEngineeringImpl) UpdateMaterializationSet(ctx context.Context, request UpdateMaterializationSetRequest) (*Operation, error) {
+	var operation Operation
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialization-sets/%v", request.MaterializationSetId)
+	queryParams := make(map[string]any)
+
+	if request.RequestId != "" || slices.Contains(request.ForceSendFields, "RequestId") {
+		queryParams["request_id"] = request.RequestId
+	}
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.MaterializationSet, &operation)
+	return &operation, err
 }
 
 func (a *featureEngineeringImpl) UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error) {
