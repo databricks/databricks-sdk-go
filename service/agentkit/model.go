@@ -274,6 +274,15 @@ func (s *GetManagedMemoryStoreRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetMemoryStorePermissionRequest struct {
+	// Resource name in the form `memory-stores/{managed_memory_store_id}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetMemoryStorePermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSessionRequest struct {
 	// Resource name in the form
 	// `session-stores/{session_store_id}/sessions/{session_id}`.
@@ -284,12 +293,67 @@ func (s *GetSessionRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetSessionStorePermissionRequest struct {
+	// Resource name in the form `session-stores/{session_store_id}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetSessionStorePermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSessionStoreRequest struct {
 	// Resource name in the form `session-stores/{session_store_id}`.
 	Name string `json:"-" url:"-"`
 }
 
 func (s *GetSessionStoreRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Request to grant a READ or WRITE permission on a memory store to a principal.
+// Only the store owner or a workspace admin may grant permissions.
+type GrantMemoryStorePermissionRequest struct {
+	// Resource name in the form `memory-stores/{managed_memory_store_id}`.
+	Name string `json:"-" url:"-"`
+	// Permission level to grant.
+	Permission PermissionLevel `json:"permission"`
+	// Principal to grant the permission to.
+	Principal StorePrincipal `json:"principal"`
+}
+
+func (s *GrantMemoryStorePermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response from granting a permission on a memory store.
+type GrantMemoryStorePermissionResponse struct {
+}
+
+func (s *GrantMemoryStorePermissionResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Request to grant a READ or WRITE permission on a session store to a
+// principal. Only the store owner or a workspace admin may grant permissions.
+type GrantSessionStorePermissionRequest struct {
+	// Resource name in the form `session-stores/{session_store_id}`.
+	Name string `json:"-" url:"-"`
+	// Permission level to grant.
+	Permission PermissionLevel `json:"permission"`
+	// Principal to grant the permission to.
+	Principal StorePrincipal `json:"principal"`
+}
+
+func (s *GrantSessionStorePermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response from granting a permission on a session store.
+type GrantSessionStorePermissionResponse struct {
+}
+
+func (s *GrantSessionStorePermissionResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -382,6 +446,46 @@ func (s ListManagedMemoryStoresResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListMemoryStorePermissionsRequest struct {
+	// Maximum number of permissions to return. Defaults to 100; maximum is
+	// 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Continuation token from a previous response.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Resource name of the store, in the form
+	// `memory-stores/{managed_memory_store_id}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMemoryStorePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMemoryStorePermissionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A page of explicit memory store permissions.
+type ListMemoryStorePermissionsResponse struct {
+	// Explicit READ or WRITE grants. Implicit owner/admin access and inherited
+	// grants are excluded.
+	MemoryStorePermissions []MemoryStorePermission `json:"memory_store_permissions,omitempty"`
+	// Token for the next page, omitted when all permissions have been returned.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMemoryStorePermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMemoryStorePermissionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListSessionItemsRequest struct {
 	// Sort order. Supported values are `create_time asc` and `create_time
 	// desc`. The default is `create_time desc`, which returns the most recently
@@ -423,6 +527,46 @@ func (s *ListSessionItemsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListSessionItemsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSessionStorePermissionsRequest struct {
+	// Maximum number of permissions to return. Defaults to 100; maximum is
+	// 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Continuation token from a previous response.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Resource name of the store, in the form
+	// `session-stores/{session_store_id}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSessionStorePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSessionStorePermissionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A page of explicit session store permissions.
+type ListSessionStorePermissionsResponse struct {
+	// Token for the next page, omitted when all permissions have been returned.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Explicit READ or WRITE grants. Implicit owner/admin access and inherited
+	// grants are excluded.
+	SessionStorePermissions []SessionStorePermission `json:"session_store_permissions,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSessionStorePermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSessionStorePermissionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -524,6 +668,7 @@ type ManagedMemoryEntry struct {
 	Description string `json:"description,omitempty"`
 	// Resource name in the form
 	// `memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}`.
+	// Required for updates; assigned by the service on creation.
 	Name string `json:"name,omitempty"`
 	// Absolute, case-sensitive path identifying the entry within its actor and
 	// optional session. Paths must begin with `/` and must not contain empty,
@@ -682,6 +827,57 @@ func (s ManagedMemoryStore) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A principal's permission on a memory store.
+type MemoryStorePermission struct {
+	// The permission level. WRITE includes READ; PERMISSION_LEVEL_UNSPECIFIED
+	// means neither is available.
+	Permission PermissionLevel `json:"permission,omitempty"`
+	// The principal whose permission is reported.
+	Principal *StorePrincipal `json:"principal,omitempty"`
+}
+
+func (s *MemoryStorePermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Permission level granted on a store. WRITE is a superset of READ.
+type PermissionLevel string
+
+const PermissionLevelRead PermissionLevel = `READ`
+
+const PermissionLevelWrite PermissionLevel = `WRITE`
+
+// String representation for [fmt.Print]
+func (f *PermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PermissionLevel) Set(v string) error {
+	switch v {
+	case `READ`, `WRITE`:
+		*f = PermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ", "WRITE"`, v)
+	}
+}
+
+// Values returns all possible values for PermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PermissionLevel) Values() []PermissionLevel {
+	return []PermissionLevel{
+		PermissionLevelRead,
+		PermissionLevelWrite,
+	}
+}
+
+// Type always returns PermissionLevel to satisfy [pflag.Value] interface
+func (f *PermissionLevel) Type() string {
+	return "PermissionLevel"
+}
+
 // Request to pop an item from a session.
 type PopSessionItemRequest struct {
 	// Resource name of the containing session, in the form
@@ -700,6 +896,86 @@ type PopSessionItemResponse struct {
 }
 
 func (s *PopSessionItemResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The kind of Databricks principal a store permission is granted to.
+type PrincipalType string
+
+const PrincipalTypeServicePrincipal PrincipalType = `SERVICE_PRINCIPAL`
+
+const PrincipalTypeUser PrincipalType = `USER`
+
+// String representation for [fmt.Print]
+func (f *PrincipalType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PrincipalType) Set(v string) error {
+	switch v {
+	case `SERVICE_PRINCIPAL`, `USER`:
+		*f = PrincipalType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SERVICE_PRINCIPAL", "USER"`, v)
+	}
+}
+
+// Values returns all possible values for PrincipalType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PrincipalType) Values() []PrincipalType {
+	return []PrincipalType{
+		PrincipalTypeServicePrincipal,
+		PrincipalTypeUser,
+	}
+}
+
+// Type always returns PrincipalType to satisfy [pflag.Value] interface
+func (f *PrincipalType) Type() string {
+	return "PrincipalType"
+}
+
+// Request to revoke all explicit access to a memory store. Only the owner or a
+// workspace admin may revoke permissions.
+type RevokeMemoryStorePermissionRequest struct {
+	// Resource name in the form `memory-stores/{managed_memory_store_id}`.
+	Name string `json:"-" url:"-"`
+	// Principal whose READ and WRITE grants will be removed.
+	Principal StorePrincipal `json:"principal"`
+}
+
+func (s *RevokeMemoryStorePermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response from revoking a memory store permission.
+type RevokeMemoryStorePermissionResponse struct {
+}
+
+func (s *RevokeMemoryStorePermissionResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Request to revoke all explicit access to a session store. Only the owner or a
+// workspace admin may revoke permissions.
+type RevokeSessionStorePermissionRequest struct {
+	// Resource name in the form `session-stores/{session_store_id}`.
+	Name string `json:"-" url:"-"`
+	// Principal whose READ and WRITE grants will be removed.
+	Principal StorePrincipal `json:"principal"`
+}
+
+func (s *RevokeSessionStorePermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response from revoking a session store permission.
+type RevokeSessionStorePermissionResponse struct {
+}
+
+func (s *RevokeSessionStorePermissionResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -865,6 +1141,19 @@ func (s SessionStore) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A principal's permission on a session store.
+type SessionStorePermission struct {
+	// The permission level. WRITE includes READ; PERMISSION_LEVEL_UNSPECIFIED
+	// means neither is available.
+	Permission PermissionLevel `json:"permission,omitempty"`
+	// The principal whose permission is reported.
+	Principal *StorePrincipal `json:"principal,omitempty"`
+}
+
+func (s *SessionStorePermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Service-managed storage backing a memory store.
 type StorageBackend struct {
 	// Backend-specific identifier. For Lakebase, this is the project ID.
@@ -918,11 +1207,26 @@ func (f *StorageBackendType) Type() string {
 	return "StorageBackendType"
 }
 
+// A principal a store permission is granted to. `name` is the principal's
+// Lakebase identifier: a user's email or a service principal's application
+// (client) id.
+type StorePrincipal struct {
+	Name string `json:"name"`
+	// The kind of principal. Required unless the deprecated type alias is
+	// supplied.
+	PrincipalType PrincipalType `json:"principal_type,omitempty"`
+}
+
+func (s *StorePrincipal) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateManagedMemoryEntryRequest struct {
 	// The memory entry to update.
 	ManagedMemoryEntry ManagedMemoryEntry `json:"managed_memory_entry"`
 	// Resource name in the form
 	// `memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}`.
+	// Required for updates; assigned by the service on creation.
 	Name string `json:"-" url:"-"`
 	// Fields to update. Only `content` and `description` may be updated.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`

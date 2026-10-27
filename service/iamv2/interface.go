@@ -31,11 +31,11 @@ type AccountIamV2Service interface {
 
 	// Creates a group visibility filter in the account. Requires account admin
 	// privileges. Set `principal_type` to `GROUP` and specify exactly one of
-	// `exact` (external ID) or `prefix` (display-name starts with). The filter
-	// applies across all workspaces in the account. A duplicate filter ID or an
-	// existing rule with the same type and match value returns
-	// `ALREADY_EXISTS`. Filters are immutable; to change a rule, delete it and
-	// create a new one.
+	// `exact` (external ID), `prefix` (display-name starts with), or `regex`
+	// (full RE2 display-name match). The filter applies across all workspaces
+	// in the account. A duplicate filter ID or an existing rule with the same
+	// type and match value returns `ALREADY_EXISTS`. Filters are immutable; to
+	// change a rule, delete it and create a new one.
 	CreateIdentityVisibilityFilter(ctx context.Context, request CreateIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
 
 	// Creates a local service principal in the Databricks account and returns
@@ -233,6 +233,9 @@ type AccountIamV2Service interface {
 	// Updates an existing service principal in the Databricks account. Only the
 	// fields named in the update mask are modified. Returns the updated
 	// ServicePrincipal resource.
+	//
+	// For locally managed service principals, is_agent must be set to true or
+	// false when updated.
 	//
 	// When AIM is enabled and the service principal is an external identity
 	// (its external_id is set), only external_id can be updated; its other
@@ -464,6 +467,9 @@ type WorkspaceIamV2Service interface {
 	// Updates an existing service principal in the Databricks account that
 	// parents the calling workspace. Only the fields named in the update mask
 	// are modified. Returns the updated ServicePrincipal resource.
+	//
+	// For locally managed service principals, is_agent must be set to true or
+	// false when updated.
 	//
 	// When AIM is enabled and the service principal is an external identity
 	// (its external_id is set), only external_id can be updated; its other

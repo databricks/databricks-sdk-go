@@ -168,6 +168,17 @@ func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationReq
 	return &getBudgetConfigurationResponse, err
 }
 
+func (a *budgetsImpl) GetBudgetSpendStatus(ctx context.Context, request GetBudgetSpendStatusRequest) (*BudgetSpendStatus, error) {
+	var budgetSpendStatus BudgetSpendStatus
+	path := fmt.Sprintf("/api/2.1/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &budgetSpendStatus)
+	return &budgetSpendStatus, err
+}
+
 // Gets all budgets associated with this account.
 func (a *budgetsImpl) List(ctx context.Context, request ListBudgetConfigurationsRequest) listing.Iterator[BudgetConfiguration] {
 
@@ -208,6 +219,17 @@ func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfig
 
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetConfigurationsResponse)
 	return &listBudgetConfigurationsResponse, err
+}
+
+func (a *budgetsImpl) ListBudgetSpendStatuses(ctx context.Context, request ListBudgetSpendStatusesRequest) (*ListBudgetSpendStatusesResponse, error) {
+	var listBudgetSpendStatusesResponse ListBudgetSpendStatusesResponse
+	path := fmt.Sprintf("/api/2.1/%v/budget-spend-statuses", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetSpendStatusesResponse)
+	return &listBudgetSpendStatusesResponse, err
 }
 
 func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
