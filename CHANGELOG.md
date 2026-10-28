@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.191.1 (2026-10-28)
+
+### Bug Fixes
+* Fix Databricks CLI authentication rejecting small wrappers around the CLI (e.g. launcher scripts or version manager shims) as the legacy Python CLI. Small files found in `PATH` are now only rejected if they are the entry point pip installs for the legacy Python CLI, and a path set in `DATABRICKS_CLI_PATH` (or `databricks_cli_path`) is used without this check.
+
 ## Release v0.191.0 (2026-10-27)
 
 ### API Changes

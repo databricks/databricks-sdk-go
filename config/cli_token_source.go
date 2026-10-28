@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -17,9 +18,13 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// databricksCliMinSize distinguishes the new Go CLI (>= 0.100.0) from the
-// legacy Python CLI by file size.
+// databricksCliMinSize is the size at or above which a file is assumed to be
+// the Go CLI without reading it.
 const databricksCliMinSize = 1024 * 1024
+
+// legacyCliMarker identifies the legacy CLI's pip entry point script. The
+// imported name is omitted because it changed from `cli` to `main` in 0.17.8.
+var legacyCliMarker = []byte("from databricks_cli.cli import ")
 
 var (
 	ErrCliNotFound       = errors.New("databricks CLI not found")
@@ -265,7 +270,12 @@ func findDatabricksCli(cliPath string) (string, error) {
 		return path, err
 	}
 	if strings.Contains(cliPath, string(filepath.Separator)) || strings.Contains(cliPath, "/") {
-		return validateCliPath(cliPath)
+		// An explicit path is trusted without the legacy CLI check, so that a
+		// wrapper the check would reject can still be used.
+		if _, err := statCliPath(cliPath); err != nil {
+			return "", err
+		}
+		return cliPath, nil
 	}
 	return findInPath(cliPath)
 }
@@ -288,15 +298,32 @@ func findInPath(name string) (string, error) {
 	return "", lastErr
 }
 
-func validateCliPath(path string) (string, error) {
+// statCliPath returns the file info of path if it is a regular file.
+func statCliPath(path string) (os.FileInfo, error) {
 	info, err := os.Stat(path)
-	if os.IsNotExist(err) || (err == nil && info.IsDir()) {
-		return "", ErrCliNotFound
+	// Only regular files are accepted; reading a FIFO, for example, can block.
+	if os.IsNotExist(err) || (err == nil && !info.Mode().IsRegular()) {
+		return nil, ErrCliNotFound
 	}
 	if err != nil {
-		return "", fmt.Errorf("cannot stat CLI path: %w", err)
+		return nil, fmt.Errorf("cannot stat CLI path: %w", err)
 	}
-	if info.Size() < databricksCliMinSize {
+	return info, nil
+}
+
+func validateCliPath(path string) (string, error) {
+	info, err := statCliPath(path)
+	if err != nil {
+		return "", err
+	}
+	if info.Size() >= databricksCliMinSize {
+		return path, nil
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	if bytes.Contains(b, legacyCliMarker) {
 		return "", ErrLegacyCliDetected
 	}
 	return path, nil

@@ -64,12 +64,40 @@ func TestParseExpiry(t *testing.T) {
 	}
 }
 
+// legacyCliEntryPoint is the script pip writes for the legacy CLI's entry point.
+const legacyCliEntryPoint = `#!/opt/databricks-cli/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from databricks_cli.cli import cli
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(cli())
+`
+
 func TestValidateCliPath(t *testing.T) {
 	tempDir := t.TempDir()
 
-	smallFile := filepath.Join(tempDir, "small_cli")
-	if err := os.WriteFile(smallFile, make([]byte, 100), 0755); err != nil {
-		t.Fatalf("failed to create small file: %v", err)
+	legacyCli := filepath.Join(tempDir, "legacy_cli")
+	if err := os.WriteFile(legacyCli, []byte(legacyCliEntryPoint), 0755); err != nil {
+		t.Fatalf("failed to create legacy CLI: %v", err)
+	}
+
+	legacyCliMain := filepath.Join(tempDir, "legacy_cli_main")
+	if err := os.WriteFile(legacyCliMain, []byte(strings.Replace(legacyCliEntryPoint, "import cli", "import main", 1)), 0755); err != nil {
+		t.Fatalf("failed to create legacy CLI: %v", err)
+	}
+
+	wrapperCli := filepath.Join(tempDir, "wrapper_cli")
+	if err := os.WriteFile(wrapperCli, []byte("#!/bin/sh\nexec /opt/databricks/bin/databricks \"$@\"\n"), 0755); err != nil {
+		t.Fatalf("failed to create wrapper CLI: %v", err)
+	}
+
+	// Mentions the legacy CLI's package name, but is not one of its entry points.
+	wrapperCliWithPackageName := filepath.Join(tempDir, "wrapper_cli_with_package_name")
+	wrapperScript := "#!/bin/sh\n# Replaces databricks_cli (databricks-cli on PyPI).\nexec /opt/databricks/bin/databricks \"$@\"\n"
+	if err := os.WriteFile(wrapperCliWithPackageName, []byte(wrapperScript), 0755); err != nil {
+		t.Fatalf("failed to create wrapper CLI: %v", err)
 	}
 
 	largeFile := filepath.Join(tempDir, "large_cli")
@@ -88,7 +116,10 @@ func TestValidateCliPath(t *testing.T) {
 		wantErr error
 	}{
 		{"valid CLI", largeFile, nil},
-		{"legacy CLI (too small)", smallFile, ErrLegacyCliDetected},
+		{"legacy CLI entry point", legacyCli, ErrLegacyCliDetected},
+		{"legacy CLI entry point (0.17.8 and later)", legacyCliMain, ErrLegacyCliDetected},
+		{"small wrapper around the Go CLI", wrapperCli, nil},
+		{"small wrapper mentioning the legacy package name", wrapperCliWithPackageName, nil},
 		{"non-existent file", filepath.Join(tempDir, "nonexistent"), ErrCliNotFound},
 		{"directory", dirPath, ErrCliNotFound},
 	}
@@ -117,6 +148,15 @@ func TestFindDatabricksCli(t *testing.T) {
 		t.Fatalf("failed to create mock CLI: %v", err)
 	}
 
+	legacyCliDir := filepath.Join(tempDir, "legacy")
+	if err := os.MkdirAll(legacyCliDir, 0755); err != nil {
+		t.Fatalf("failed to create directory: %v", err)
+	}
+	legacyCliPath := filepath.Join(legacyCliDir, cliName)
+	if err := os.WriteFile(legacyCliPath, []byte(legacyCliEntryPoint), 0755); err != nil {
+		t.Fatalf("failed to create legacy CLI: %v", err)
+	}
+
 	testCases := []struct {
 		name    string
 		cliPath string
@@ -125,7 +165,10 @@ func TestFindDatabricksCli(t *testing.T) {
 	}{
 		{"explicit full path", validCliPath, "", nil},
 		{"explicit non-existent path", filepath.Join(tempDir, "nonexistent"), "", ErrCliNotFound},
+		{"explicit directory path", legacyCliDir, "", ErrCliNotFound},
+		{"explicit path to small file is trusted", legacyCliPath, "", nil},
 		{"found in PATH", "", tempDir, nil},
+		{"legacy CLI in PATH", "", legacyCliDir, ErrLegacyCliDetected},
 		{"not found in PATH", "", filepath.Join(tempDir, "empty"), ErrCliNotFound},
 	}
 
@@ -142,6 +185,46 @@ func TestFindDatabricksCli(t *testing.T) {
 				t.Errorf("findDatabricksCli() unexpected error: %v", err)
 			} else if tc.wantErr != nil && !errors.Is(err, tc.wantErr) {
 				t.Errorf("findDatabricksCli() error = %v, want %v", err, tc.wantErr)
+			}
+		})
+	}
+}
+
+// A legacy CLI is skipped, but otherwise the first CLI in PATH wins.
+func TestFindDatabricksCliPathOrder(t *testing.T) {
+	cliName := "databricks"
+	if runtime.GOOS == "windows" {
+		cliName = "databricks.exe"
+	}
+	writeCli := func(content []byte) string {
+		dir := t.TempDir()
+		if err := os.WriteFile(filepath.Join(dir, cliName), content, 0755); err != nil {
+			t.Fatal(err)
+		}
+		return dir
+	}
+	legacy := writeCli([]byte(legacyCliEntryPoint))
+	shim := writeCli([]byte("#!/bin/sh\nexec /opt/databricks/bin/databricks \"$@\"\n"))
+	regular := writeCli(make([]byte, databricksCliMinSize))
+
+	testCases := []struct {
+		name string
+		path []string
+		want string
+	}{
+		{"legacy:shim:regular", []string{legacy, shim, regular}, shim},
+		{"shim:regular", []string{shim, regular}, shim},
+		{"regular:shim", []string{regular, shim}, regular},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Setenv("PATH", strings.Join(tc.path, string(filepath.ListSeparator)))
+			got, err := findDatabricksCli("")
+			if err != nil {
+				t.Fatalf("findDatabricksCli() unexpected error: %v", err)
+			}
+			if want := filepath.Join(tc.want, cliName); got != want {
+				t.Errorf("findDatabricksCli() = %q, want %q", got, want)
 			}
 		})
 	}
