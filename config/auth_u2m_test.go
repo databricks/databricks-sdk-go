@@ -45,9 +45,10 @@ func TestU2MCredentials_Configure(t *testing.T) {
 		{
 			name: "legacy CLI detected returns error",
 			cfg: func(t *testing.T) *Config {
+				// Only a CLI found in PATH is checked; an explicit path is trusted.
+				t.Setenv("PATH", filepath.Dir(createLegacyCli(t)))
 				return &Config{
-					Host:              "https://workspace.cloud.databricks.com",
-					DatabricksCliPath: createLegacyCli(t),
+					Host: "https://workspace.cloud.databricks.com",
 				}
 			},
 			wantErr: "legacy databricks CLI detected",
@@ -204,7 +205,7 @@ func createLegacyCli(t *testing.T) string {
 		name = "databricks.exe"
 	}
 	cli := filepath.Join(t.TempDir(), name)
-	if err := os.WriteFile(cli, []byte("small"), 0755); err != nil {
+	if err := os.WriteFile(cli, []byte(legacyCliEntryPoint), 0755); err != nil {
 		t.Fatal(err)
 	}
 	return cli

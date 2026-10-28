@@ -285,7 +285,7 @@ func (s *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
 type DirectGroupMember struct {
 	// Display name of the principal.
 	DisplayName string `json:"display_name,omitempty"`
-	// The external ID of the principal in Databricks.
+	// The external ID of the principal in the customer's IdP.
 	ExternalId string `json:"external_id,omitempty"`
 	// The internal ID of the group this member belongs to.
 	GroupId int64 `json:"group_id,omitempty"`
@@ -1568,7 +1568,7 @@ type UpdateGroupProxyRequest struct {
 	Group Group `json:"group"`
 	// Required. Internal ID of the group in Databricks.
 	GroupId string `json:"-" url:"-"`
-	// Optional. The list of fields to update.
+	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -1581,7 +1581,7 @@ type UpdateGroupRequest struct {
 	Group Group `json:"group"`
 	// Required. Internal ID of the group in Databricks.
 	GroupId string `json:"-" url:"-"`
-	// Optional. The list of fields to update.
+	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -1594,7 +1594,7 @@ type UpdateServicePrincipalProxyRequest struct {
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 	// Required. Internal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"-" url:"-"`
-	// Optional. The list of fields to update.
+	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -1607,7 +1607,7 @@ type UpdateServicePrincipalRequest struct {
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 	// Required. Internal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"-" url:"-"`
-	// Optional. The list of fields to update.
+	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -1616,7 +1616,7 @@ func (s *UpdateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateUserProxyRequest struct {
-	// Optional. The list of fields to update.
+	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 	// Required. User to be updated in Databricks
 	User User `json:"user"`
@@ -1629,7 +1629,7 @@ func (s *UpdateUserProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateUserRequest struct {
-	// Optional. The list of fields to update.
+	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 	// Required. User to be updated in Databricks
 	User User `json:"user"`
