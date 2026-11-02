@@ -5552,7 +5552,8 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 
 type ListMcpServicesRequest struct {
 	// Maximum number of MCP services to return. Defaults to 200 when unset or
-	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
+	// 0; the maximum is 1000 for `view = BASIC` and 200 for `view = FULL`. Use
+	// `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5682,7 +5683,8 @@ func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
 
 type ListModelProviderServicesRequest struct {
 	// Maximum number of provider services to return. Defaults to 200 when unset
-	// or 0; the maximum is 200. Use `page_token` to retrieve additional pages.
+	// or 0; the maximum is 1000 for `view = BASIC` and 200 for `view = FULL`.
+	// Use `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -5768,7 +5770,8 @@ func (s ListModelProviderServicesResponse) MarshalJSON() ([]byte, error) {
 
 type ListModelServicesRequest struct {
 	// Maximum number of model services to return. Defaults to 200 when unset or
-	// 0; the maximum is 200. Use `page_token` to retrieve additional pages.
+	// 0; the maximum is 1000 for `view = BASIC` and 200 for `view = FULL`. Use
+	// `page_token` to retrieve additional pages.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -8937,6 +8940,8 @@ const PrivilegeCreateExternalTable Privilege = `CREATE_EXTERNAL_TABLE`
 
 const PrivilegeCreateExternalVolume Privilege = `CREATE_EXTERNAL_VOLUME`
 
+const PrivilegeCreateFeature Privilege = `CREATE_FEATURE`
+
 const PrivilegeCreateForeignCatalog Privilege = `CREATE_FOREIGN_CATALOG`
 
 const PrivilegeCreateForeignSecurable Privilege = `CREATE_FOREIGN_SECURABLE`
@@ -8983,6 +8988,8 @@ const PrivilegeModify Privilege = `MODIFY`
 
 const PrivilegeModifyCleanRoom Privilege = `MODIFY_CLEAN_ROOM`
 
+const PrivilegeReadFeature Privilege = `READ_FEATURE`
+
 const PrivilegeReadFiles Privilege = `READ_FILES`
 
 const PrivilegeReadMetadata Privilege = `READ_METADATA`
@@ -9027,11 +9034,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_LOCATION`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FILES`, `READ_METADATA`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `BROWSE`, `CREATE`, `CREATE_CATALOG`, `CREATE_CLEAN_ROOM`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FEATURE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `EXECUTE_CLEAN_ROOM_TASK`, `EXTERNAL_USE_LOCATION`, `EXTERNAL_USE_SCHEMA`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `MODIFY_CLEAN_ROOM`, `READ_FEATURE`, `READ_FILES`, `READ_METADATA`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_LOCATION", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FILES", "READ_METADATA", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "BROWSE", "CREATE", "CREATE_CATALOG", "CREATE_CLEAN_ROOM", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FEATURE", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "EXECUTE_CLEAN_ROOM_TASK", "EXTERNAL_USE_LOCATION", "EXTERNAL_USE_SCHEMA", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "MODIFY_CLEAN_ROOM", "READ_FEATURE", "READ_FILES", "READ_METADATA", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -9051,6 +9058,7 @@ func (f *Privilege) Values() []Privilege {
 		PrivilegeCreateExternalLocation,
 		PrivilegeCreateExternalTable,
 		PrivilegeCreateExternalVolume,
+		PrivilegeCreateFeature,
 		PrivilegeCreateForeignCatalog,
 		PrivilegeCreateForeignSecurable,
 		PrivilegeCreateFunction,
@@ -9074,6 +9082,7 @@ func (f *Privilege) Values() []Privilege {
 		PrivilegeManageAllowlist,
 		PrivilegeModify,
 		PrivilegeModifyCleanRoom,
+		PrivilegeReadFeature,
 		PrivilegeReadFiles,
 		PrivilegeReadMetadata,
 		PrivilegeReadPrivateFiles,
@@ -9356,7 +9365,7 @@ type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-	// The three-level (fully qualified) name of the volume
+	// The fully qualified name of the volume.
 	Name string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -9913,6 +9922,8 @@ const SecurableTypeExternalLocation SecurableType = `EXTERNAL_LOCATION`
 
 const SecurableTypeExternalMetadata SecurableType = `EXTERNAL_METADATA`
 
+const SecurableTypeFeature SecurableType = `FEATURE`
+
 const SecurableTypeFunction SecurableType = `FUNCTION`
 
 const SecurableTypeMcpService SecurableType = `MCP_SERVICE`
@@ -9953,11 +9964,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `AGENT_SERVICE`, `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `MCP_SERVICE`, `METASTORE`, `MODEL`, `MODEL_PROVIDER_SERVICE`, `MODEL_SERVICE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `SKILL`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
+	case `AGENT_SERVICE`, `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FEATURE`, `FUNCTION`, `MCP_SERVICE`, `METASTORE`, `MODEL`, `MODEL_PROVIDER_SERVICE`, `MODEL_SERVICE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `SKILL`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AGENT_SERVICE", "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "MCP_SERVICE", "METASTORE", "MODEL", "MODEL_PROVIDER_SERVICE", "MODEL_SERVICE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "SKILL", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AGENT_SERVICE", "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FEATURE", "FUNCTION", "MCP_SERVICE", "METASTORE", "MODEL", "MODEL_PROVIDER_SERVICE", "MODEL_SERVICE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "SKILL", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -9973,6 +9984,7 @@ func (f *SecurableType) Values() []SecurableType {
 		SecurableTypeCredential,
 		SecurableTypeExternalLocation,
 		SecurableTypeExternalMetadata,
+		SecurableTypeFeature,
 		SecurableTypeFunction,
 		SecurableTypeMcpService,
 		SecurableTypeMetastore,
@@ -11732,13 +11744,14 @@ func (s *UpdateWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
 }
 
 type ValidateCredentialRequest struct {
+	// Deprecated: create a credential and pass its credential_name instead.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
+	// Deprecated: create a credential and pass its credential_name instead.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
 	CredentialName string `json:"credential_name,omitempty"`
-
+	// Deprecated: create a credential and pass its credential_name instead.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate. Only applicable
 	// for storage credentials (purpose is **STORAGE**.)
@@ -11824,15 +11837,23 @@ func (f *ValidateCredentialResult) Type() string {
 }
 
 type ValidateStorageCredential struct {
-	// The AWS IAM role configuration.
+	// Deprecated: create a storage credential and pass its
+	// storage_credential_name instead. The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
-	// The Azure managed identity configuration.
+	// Deprecated: create a storage credential and pass its
+	// storage_credential_name instead. The Azure managed identity
+	// configuration.
 	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
-	// The Azure service principal configuration.
+	// Deprecated: create a storage credential and pass its
+	// storage_credential_name instead. The Azure service principal
+	// configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-	// The Cloudflare API token configuration.
+	// Deprecated: create a storage credential and pass its
+	// storage_credential_name instead. The Cloudflare API token configuration.
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
-	// The Databricks created GCP service account configuration.
+	// Deprecated: create a storage credential and pass its
+	// storage_credential_name instead. The Databricks created GCP service
+	// account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
 	ExternalLocationName string `json:"external_location_name,omitempty"`

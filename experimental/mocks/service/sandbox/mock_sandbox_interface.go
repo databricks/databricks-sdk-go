@@ -309,6 +309,74 @@ func (_c *MockSandboxInterface_DeleteSandbox_Call) RunAndReturn(run func(ctx con
 	return _c
 }
 
+// DownloadFile provides a mock function for the type MockSandboxInterface
+func (_mock *MockSandboxInterface) DownloadFile(ctx context.Context, request sandbox.DownloadFileRequest) (*sandbox.DownloadFileResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DownloadFile")
+	}
+
+	var r0 *sandbox.DownloadFileResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, sandbox.DownloadFileRequest) (*sandbox.DownloadFileResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, sandbox.DownloadFileRequest) *sandbox.DownloadFileResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sandbox.DownloadFileResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, sandbox.DownloadFileRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockSandboxInterface_DownloadFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DownloadFile'
+type MockSandboxInterface_DownloadFile_Call struct {
+	*mock.Call
+}
+
+// DownloadFile is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sandbox.DownloadFileRequest
+func (_e *MockSandboxInterface_Expecter) DownloadFile(ctx any, request any) *MockSandboxInterface_DownloadFile_Call {
+	return &MockSandboxInterface_DownloadFile_Call{Call: _e.mock.On("DownloadFile", ctx, request)}
+}
+
+func (_c *MockSandboxInterface_DownloadFile_Call) Run(run func(ctx context.Context, request sandbox.DownloadFileRequest)) *MockSandboxInterface_DownloadFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 sandbox.DownloadFileRequest
+		if args[1] != nil {
+			arg1 = args[1].(sandbox.DownloadFileRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockSandboxInterface_DownloadFile_Call) Return(downloadFileResponse *sandbox.DownloadFileResponse, err error) *MockSandboxInterface_DownloadFile_Call {
+	_c.Call.Return(downloadFileResponse, err)
+	return _c
+}
+
+func (_c *MockSandboxInterface_DownloadFile_Call) RunAndReturn(run func(ctx context.Context, request sandbox.DownloadFileRequest) (*sandbox.DownloadFileResponse, error)) *MockSandboxInterface_DownloadFile_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ExecuteCommandSync provides a mock function for the type MockSandboxInterface
 func (_mock *MockSandboxInterface) ExecuteCommandSync(ctx context.Context, request sandbox.ExecuteCommandSyncRequest) (*sandbox.ExecuteCommandSyncResponse, error) {
 	ret := _mock.Called(ctx, request)
@@ -1103,6 +1171,63 @@ func (_c *MockSandboxInterface_UpdateSandbox_Call) Return(sandbox1 *sandbox.Sand
 }
 
 func (_c *MockSandboxInterface_UpdateSandbox_Call) RunAndReturn(run func(ctx context.Context, request sandbox.UpdateSandboxRequest) (*sandbox.Sandbox, error)) *MockSandboxInterface_UpdateSandbox_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UploadFile provides a mock function for the type MockSandboxInterface
+func (_mock *MockSandboxInterface) UploadFile(ctx context.Context, request sandbox.UploadFileRequest) error {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UploadFile")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, sandbox.UploadFileRequest) error); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockSandboxInterface_UploadFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UploadFile'
+type MockSandboxInterface_UploadFile_Call struct {
+	*mock.Call
+}
+
+// UploadFile is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sandbox.UploadFileRequest
+func (_e *MockSandboxInterface_Expecter) UploadFile(ctx any, request any) *MockSandboxInterface_UploadFile_Call {
+	return &MockSandboxInterface_UploadFile_Call{Call: _e.mock.On("UploadFile", ctx, request)}
+}
+
+func (_c *MockSandboxInterface_UploadFile_Call) Run(run func(ctx context.Context, request sandbox.UploadFileRequest)) *MockSandboxInterface_UploadFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 sandbox.UploadFileRequest
+		if args[1] != nil {
+			arg1 = args[1].(sandbox.UploadFileRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockSandboxInterface_UploadFile_Call) Return(err error) *MockSandboxInterface_UploadFile_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockSandboxInterface_UploadFile_Call) RunAndReturn(run func(ctx context.Context, request sandbox.UploadFileRequest) error) *MockSandboxInterface_UploadFile_Call {
 	_c.Call.Return(run)
 	return _c
 }

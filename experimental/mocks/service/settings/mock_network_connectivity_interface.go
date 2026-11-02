@@ -1040,6 +1040,74 @@ func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConn
 	return _c
 }
 
+// UpdateNetworkConnectivityConfig provides a mock function for the type MockNetworkConnectivityInterface
+func (_mock *MockNetworkConnectivityInterface) UpdateNetworkConnectivityConfig(ctx context.Context, request settings.UpdateNetworkConnectivityConfigRequest) (*settings.NetworkConnectivityConfiguration, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateNetworkConnectivityConfig")
+	}
+
+	var r0 *settings.NetworkConnectivityConfiguration
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, settings.UpdateNetworkConnectivityConfigRequest) (*settings.NetworkConnectivityConfiguration, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, settings.UpdateNetworkConnectivityConfigRequest) *settings.NetworkConnectivityConfiguration); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.NetworkConnectivityConfiguration)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, settings.UpdateNetworkConnectivityConfigRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateNetworkConnectivityConfig'
+type MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call struct {
+	*mock.Call
+}
+
+// UpdateNetworkConnectivityConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.UpdateNetworkConnectivityConfigRequest
+func (_e *MockNetworkConnectivityInterface_Expecter) UpdateNetworkConnectivityConfig(ctx any, request any) *MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call {
+	return &MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call{Call: _e.mock.On("UpdateNetworkConnectivityConfig", ctx, request)}
+}
+
+func (_c *MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call) Run(run func(ctx context.Context, request settings.UpdateNetworkConnectivityConfigRequest)) *MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 settings.UpdateNetworkConnectivityConfigRequest
+		if args[1] != nil {
+			arg1 = args[1].(settings.UpdateNetworkConnectivityConfigRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call) Return(networkConnectivityConfiguration *settings.NetworkConnectivityConfiguration, err error) *MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call {
+	_c.Call.Return(networkConnectivityConfiguration, err)
+	return _c
+}
+
+func (_c *MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call) RunAndReturn(run func(ctx context.Context, request settings.UpdateNetworkConnectivityConfigRequest) (*settings.NetworkConnectivityConfiguration, error)) *MockNetworkConnectivityInterface_UpdateNetworkConnectivityConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdatePrivateEndpointRule provides a mock function for the type MockNetworkConnectivityInterface
 func (_mock *MockNetworkConnectivityInterface) UpdatePrivateEndpointRule(ctx context.Context, request settings.UpdateNccPrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error) {
 	ret := _mock.Called(ctx, request)

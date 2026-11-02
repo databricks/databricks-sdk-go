@@ -290,8 +290,9 @@ type AccountIamV2Interface interface {
 	// fields named in the update mask are modified. Returns the updated
 	// ServicePrincipal resource.
 	//
-	// For locally managed service principals, is_agent must be set to true or false
-	// when updated.
+	// To change is_agent on a locally managed service principal, set it to true or
+	// false. Naming is_agent in the update mask without a value leaves it
+	// unchanged.
 	//
 	// When AIM is enabled and the service principal is an external identity (its
 	// external_id is set), only external_id can be updated; its other fields are
@@ -582,8 +583,9 @@ type WorkspaceIamV2Interface interface {
 	// the calling workspace. Only the fields named in the update mask are modified.
 	// Returns the updated ServicePrincipal resource.
 	//
-	// For locally managed service principals, is_agent must be set to true or false
-	// when updated.
+	// To change is_agent on a locally managed service principal, set it to true or
+	// false. Naming is_agent in the update mask without a value leaves it
+	// unchanged.
 	//
 	// When AIM is enabled and the service principal is an external identity (its
 	// external_id is set), only external_id can be updated; its other fields are

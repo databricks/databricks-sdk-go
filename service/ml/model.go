@@ -382,13 +382,16 @@ func (s *AvgFunction) UnmarshalJSON(b []byte) error {
 }
 
 type BackfillFeaturesRequest struct {
-	// Output ranges to backfill.
+	// Time ranges of source data to backfill. Ranges must not overlap.
 	BackfillRanges []BackfillRange `json:"backfill_ranges"`
 	// The budget policy ID, in UUID format, used to attribute the serverless
 	// compute cost of this backfill. If not specified, a default budget policy
 	// may be applied.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// Full names of the features to backfill.
+	// Full names of the features to backfill. All features must share the same
+	// interval between values and the same offset. The interval is the
+	// slide_duration of a sliding window or the window_duration of a tumbling
+	// window.
 	FeatureFullNames []string `json:"feature_full_names"`
 	// Idempotency token for the request.
 	RequestId string `json:"request_id,omitempty"`
@@ -423,7 +426,10 @@ func (s *BackfillFeaturesResponse) UnmarshalJSON(b []byte) error {
 
 // Progress and configuration for a backfill.
 type BackfillOperationMetadata struct {
-	// Output ranges targeted by the backfill.
+	// The requested time ranges, each aligned outward to the boundaries at
+	// which the features emit values. Ranges that overlap after alignment are
+	// combined into one. The backfill stops at the most recent materialized
+	// values, so a range may extend past the values that it recomputed.
 	BackfillRanges []BackfillRange `json:"backfill_ranges,omitempty"`
 	// Full names of the features targeted by the backfill.
 	FeatureFullNames []string `json:"feature_full_names,omitempty"`
@@ -482,10 +488,15 @@ func (f *BackfillOperationMetadataState) Type() string {
 	return "BackfillOperationMetadataState"
 }
 
-// A time range for a backfill.
+// A time range of source data for a backfill. The range is aligned outward to
+// the boundaries at which the feature emits values: every slide_duration for a
+// sliding window or every window_duration for a tumbling window, shifted by
+// offset. Feature values up to one window_duration after the aligned end may
+// change. The backfill stops at the most recent materialized values and leaves
+// later values to materialization.
 type BackfillRange struct {
-	// End of the backfill range, exclusive. If unset, defaults to the current
-	// time.
+	// End of the backfill range, exclusive. If unset, defaults to the most
+	// recent materialized values.
 	EndTime *time.Time `json:"end_time,omitempty"`
 	// Start of the backfill range, inclusive. If unset, defaults to the
 	// earliest source timestamp of the feature.
@@ -4474,8 +4485,8 @@ func (s MaterializationFailureNotification) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Notifications for the jobs and pipelines that materialize a feature, one
-// field per trigger.
+// Notifications for the jobs and pipelines that materialize the features in a
+// set, one field per trigger.
 type MaterializationNotifications struct {
 	// Who to notify when a run fails, and on which attempts.
 	OnFailure *MaterializationFailureNotification `json:"on_failure,omitempty"`
@@ -4654,16 +4665,13 @@ type MaterializedFeature struct {
 	// Name of the latest backfill operation on this materialized feature.
 	// Format: operations/{operation_id}.
 	LatestBackfillOperation string `json:"latest_backfill_operation,omitempty"`
-	// The materialization set this materialized feature was created for,
-	// through DABs or direct-engine creation. Unset for a materialized feature
-	// that was not created as part of a set.
+	// The ID of the materialization set containing this materialized feature.
+	// Unset for a materialized feature that is not part of a set.
 	MaterializationSetId string `json:"materialization_set_id,omitempty"`
 	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
-	// Notification configuration around the materialization job or pipeline
-	// lifecycle. They are applied to every job and pipeline that materializes
-	// this feature. Features which are materialized in the same pipeline will
-	// share the same notification.
+	// Notification configuration for the jobs and pipelines that materialize
+	// this feature.
 	Notifications *MaterializationNotifications `json:"notifications,omitempty"`
 	// Destination for writing feature values to an offline Delta table. The
 	// resulting table is returned as `table_name`.
@@ -4674,8 +4682,8 @@ type MaterializedFeature struct {
 	// The ID of the pipeline that materializes this feature. This is only
 	// present for streaming features.
 	PipelineId string `json:"pipeline_id,omitempty"`
-	// The schedule state of the materialization pipeline. Hidden from GraphQL:
-	// being deprecated, so not exposed to Catalog Explorer.
+	// Deprecated: This legacy pipeline setting does not control batch job
+	// scheduling.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
 	// The Structured Streaming trigger mode used for materialization. Real-time
 	// mode (RTM) targets sub-second latency for operational workloads;
@@ -7650,8 +7658,9 @@ type TimeWindow struct {
 	// tumbling and fixed-duration sliding windows first emit at an
 	// offset-aligned boundary after a full window can be formed. If unset,
 	// lifetime sliding windows and rolling windows emit as soon as eligible
-	// source data exists. Not currently supported for sawtooth windows or for
-	// Features with a stream source.
+	// source data exists. For sawtooth windows, start_time must not be later
+	// than the time the Feature is created. Not supported for rolling windows
+	// on Features with a stream source.
 	StartTime *time.Time `json:"start_time,omitempty"`
 
 	Tumbling *TumblingWindow `json:"tumbling,omitempty"`
@@ -7938,7 +7947,7 @@ type UpdateMaterializationSetRequest struct {
 	// checked against the rest of the request. Omit it and each request updates
 	// independently.
 	RequestId string `json:"-" url:"request_id,omitempty"`
-	// The fields to update. Only 'materialized_features' is supported.
+	// The fields to update. Only 'materialized_features' or '*' is supported.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7957,8 +7966,7 @@ type UpdateMaterializedFeatureRequest struct {
 	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
 	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"-" url:"-"`
-	// Provide the materialization feature fields which should be updated.
-	// Currently, only the pipeline_state field can be updated.
+	// The fields to update. Only `pipeline_schedule_state` is supported.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 

@@ -4,6 +4,7 @@ package sandbox
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/databricks/databricks-sdk-go/common/types/duration"
 	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
@@ -125,6 +126,70 @@ type DeleteSandboxRequest struct {
 
 func (s *DeleteSandboxRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type DownloadFileRequest struct {
+	// A single byte range, such as bytes=0-1023 or bytes=-1024. Equivalent to
+	// the Range header.
+	ByteRange string `json:"-" url:"byte_range,omitempty"`
+	// Entity tags or *. A mismatch returns 412 Precondition Failed. Equivalent
+	// to the If-Match header.
+	IfMatch string `json:"-" url:"if_match,omitempty"`
+	// An HTTP-date. Returns 304 if the file has not changed since this time.
+	// Ignored when If-None-Match is present. Equivalent to the
+	// If-Modified-Since header.
+	IfModifiedSince string `json:"-" url:"if_modified_since,omitempty"`
+	// Entity tags or *. A match returns 304 Not Modified. Equivalent to the
+	// If-None-Match header.
+	IfNoneMatch string `json:"-" url:"if_none_match,omitempty"`
+	// A strong entity tag. A mismatch, weak entity tag, or HTTP-date causes a
+	// full download. Equivalent to the If-Range header.
+	IfRange string `json:"-" url:"if_range,omitempty"`
+	// An HTTP-date. Returns 412 if the file has changed since this time.
+	// Ignored when If-Match is present. Equivalent to the If-Unmodified-Since
+	// header.
+	IfUnmodifiedSince string `json:"-" url:"if_unmodified_since,omitempty"`
+	// The sandbox resource name, in the form sandboxes/{sandbox_id}.
+	Parent string `json:"-" url:"-"`
+	// The absolute UTF-8 path of the file inside the sandbox.
+	Path string `json:"-" url:"path"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DownloadFileRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DownloadFileRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DownloadFileResponse struct {
+	// The supported range unit: bytes.
+	AcceptRanges string `json:"-" url:"-" header:"Accept-Ranges,omitempty"`
+	// The length of the response body in bytes.
+	ContentLength int64 `json:"-" url:"-" header:"Content-Length,omitempty"`
+	// The returned byte range and full file length, for a partial response.
+	ContentRange string `json:"-" url:"-" header:"Content-Range,omitempty"`
+	// The media type of the response body: application/octet-stream.
+	ContentType string `json:"-" url:"-" header:"Content-Type,omitempty"`
+
+	Contents io.ReadCloser `json:"-"`
+	// The entity tag used for conditional requests.
+	Etag string `json:"-" url:"-" header:"etag,omitempty"`
+	// The modification time as an HTTP-date, when representable.
+	LastModified string `json:"-" url:"-" header:"Last-Modified,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DownloadFileResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DownloadFileResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EnvironmentSpec struct {
@@ -635,5 +700,18 @@ type UpdateSandboxRequest struct {
 }
 
 func (s *UpdateSandboxRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type UploadFileRequest struct {
+	// The complete file contents. An empty body creates an empty file.
+	Contents io.ReadCloser `json:"-"`
+	// The sandbox resource name, in the form sandboxes/{sandbox_id}.
+	Parent string `json:"-" url:"-"`
+	// The absolute UTF-8 destination path inside the sandbox.
+	Path string `json:"-" url:"path"`
+}
+
+func (s *UploadFileRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }

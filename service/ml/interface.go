@@ -368,7 +368,7 @@ type FeatureEngineeringService interface {
 	// already changed.
 	UpdateMaterializationSet(ctx context.Context, request UpdateMaterializationSetRequest) (*Operation, error)
 
-	// Update a materialized feature (pause/resume).
+	// Updates a materialized feature.
 	UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error)
 
 	// Update a Stream. Only fields listed in `update_mask` are mutated.

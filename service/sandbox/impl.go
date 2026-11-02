@@ -81,6 +81,20 @@ func (a *sandboxImpl) DeleteSandbox(ctx context.Context, request DeleteSandboxRe
 	return err
 }
 
+func (a *sandboxImpl) DownloadFile(ctx context.Context, request DownloadFileRequest) (*DownloadFileResponse, error) {
+	var downloadFileResponse DownloadFileResponse
+	path := fmt.Sprintf("/api/2.0/sandbox-files/%v/content", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/octet-stream"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &downloadFileResponse)
+	return &downloadFileResponse, err
+}
+
 func (a *sandboxImpl) ExecuteCommandSync(ctx context.Context, request ExecuteCommandSyncRequest) (*ExecuteCommandSyncResponse, error) {
 	var executeCommandSyncResponse ExecuteCommandSyncResponse
 	path := fmt.Sprintf("/api/2.0/sandbox-exec/%v/exec-sync", request.Name)
@@ -295,4 +309,21 @@ func (a *sandboxImpl) UpdateSandbox(ctx context.Context, request UpdateSandboxRe
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Sandbox, &sandbox)
 	return &sandbox, err
+}
+
+func (a *sandboxImpl) UploadFile(ctx context.Context, request UploadFileRequest) error {
+	path := fmt.Sprintf("/api/2.0/sandbox-files/%v/content", request.Parent)
+	queryParams := make(map[string]any)
+
+	if request.Path != "" {
+		queryParams["path"] = request.Path
+	}
+	headers := make(map[string]string)
+	headers["Content-Type"] = "application/octet-stream"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Contents, nil)
+	return err
 }

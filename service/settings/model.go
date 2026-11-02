@@ -4596,6 +4596,10 @@ type NetworkConnectivityConfiguration struct {
 	// Your Databricks account ID. You can find your account ID in your
 	// Databricks accounts console.
 	AccountId string `json:"account_id,omitempty"`
+	// The workspace to which charges for this network connectivity
+	// configuration are attributed. The workspace must be active and attached
+	// to this network connectivity configuration when set.
+	BillingWorkspaceId int64 `json:"billing_workspace_id,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// The network connectivity rules that apply to network traffic from your
@@ -5754,6 +5758,19 @@ type UpdateNccPrivateEndpointRuleRequest struct {
 }
 
 func (s *UpdateNccPrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type UpdateNetworkConnectivityConfigRequest struct {
+	// The network connectivity configuration fields to update.
+	NetworkConnectivityConfig NetworkConnectivityConfiguration `json:"network_connectivity_config"`
+	// Your Network Connectivity Configuration ID.
+	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	// Must contain at least one of `name` or `billing_workspace_id`.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateNetworkConnectivityConfigRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 

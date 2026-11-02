@@ -1251,6 +1251,10 @@ type NetworkConnectivityInterface interface {
 	// Gets an array of private endpoint rules.
 	ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*ListPrivateEndpointRulesResponse, error)
 
+	// Updates the name or billing workspace for a network connectivity
+	// configuration.
+	UpdateNetworkConnectivityConfig(ctx context.Context, request UpdateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
+
 	// Updates a private endpoint rule. Currently only a private endpoint rule to
 	// customer-managed resources is allowed to be updated.
 	UpdatePrivateEndpointRule(ctx context.Context, request UpdateNccPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error)

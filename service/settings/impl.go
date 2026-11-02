@@ -4,8 +4,10 @@ package settings
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -1175,6 +1177,25 @@ func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.C
 
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPrivateEndpointRulesResponse)
 	return &listPrivateEndpointRulesResponse, err
+}
+
+func (a *networkConnectivityImpl) UpdateNetworkConnectivityConfig(ctx context.Context, request UpdateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
+	var networkConnectivityConfiguration NetworkConnectivityConfiguration
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.NetworkConnectivityConfig, &networkConnectivityConfiguration)
+	return &networkConnectivityConfiguration, err
 }
 
 func (a *networkConnectivityImpl) UpdatePrivateEndpointRule(ctx context.Context, request UpdateNccPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {

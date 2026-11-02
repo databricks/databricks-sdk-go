@@ -12,8 +12,9 @@ import (
 type CreateDirectGroupMemberProxyRequest struct {
 	// Required. The group membership to create.
 	DirectGroupMember DirectGroupMember `json:"direct_group_member"`
-	// Required. Internal ID of the group in Databricks.
-	GroupId int64 `json:"-" url:"-"`
+	// The parent resource name of the group to add the member to. Format:
+	// groups/{group_id}
+	Parent string `json:"-" url:"-"`
 }
 
 func (s *CreateDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
@@ -23,8 +24,9 @@ func (s *CreateDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
 type CreateDirectGroupMemberRequest struct {
 	// Required. The direct group member to be added to the group.
 	DirectGroupMember DirectGroupMember `json:"direct_group_member"`
-	// Required. Internal ID of the group in Databricks.
-	GroupId int64 `json:"-" url:"-"`
+	// The parent resource name of the group to add the member to. Format:
+	// accounts/{account_id}/groups/{group_id}
+	Parent string `json:"-" url:"-"`
 }
 
 func (s *CreateDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
@@ -34,15 +36,28 @@ func (s *CreateDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
 type CreateGroupProxyRequest struct {
 	// Required. Group to be created in Databricks
 	Group Group `json:"group"`
+	// The resource name of the account to create the group in,
+	// `accounts/{account_id}`. Optional: defaults to the account of the calling
+	// workspace, and any other account is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateGroupProxyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+func (s CreateGroupProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateGroupRequest struct {
 	// Required. Group to be created in Databricks
 	Group Group `json:"group"`
+	// The parent resource name of the account in which to create the group.
+	// Format: accounts/{account_id}
+	Parent string `json:"-" url:"-"`
 }
 
 func (s *CreateGroupRequest) UnmarshalJSON(b []byte) error {
@@ -73,15 +88,28 @@ func (s CreateIdentityVisibilityFilterRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateServicePrincipalProxyRequest struct {
+	// The resource name of the account to create the service principal in,
+	// `accounts/{account_id}`. Optional: defaults to the account of the calling
+	// workspace, and any other account is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
 	// Required. Service principal to be created in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+func (s CreateServicePrincipalProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateServicePrincipalRequest struct {
+	// The parent resource name of the account in which to create the service
+	// principal. Format: accounts/{account_id}
+	Parent string `json:"-" url:"-"`
 	// Required. Service principal to be created in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
 }
@@ -91,15 +119,28 @@ func (s *CreateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateUserProxyRequest struct {
+	// The resource name of the account to create the user in,
+	// `accounts/{account_id}`. Optional: defaults to the account of the calling
+	// workspace, and any other account is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
 	// Required. User to be created in Databricks
 	User User `json:"user"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateUserProxyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+func (s CreateUserProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateUserRequest struct {
+	// The parent resource name of the account in which to create the user.
+	// Format: accounts/{account_id}
+	Parent string `json:"-" url:"-"`
 	// Required. User to be created in Databricks
 	User User `json:"user"`
 }
@@ -130,20 +171,30 @@ func (s *CreateWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateWorkspaceAssignmentProxyRequest struct {
+	// The resource name of the workspace to assign the principal to,
+	// `accounts/{account_id}/workspaces/{workspace_id}`. Optional: defaults to
+	// the calling workspace, and any other workspace is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
 	// Required. Workspace assignment to be created in Databricks.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+func (s CreateWorkspaceAssignmentProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateWorkspaceAssignmentRequest struct {
+	// The parent resource name of the workspace to assign the principal to.
+	// Format: accounts/{account_id}/workspaces/{workspace_id}
+	Parent string `json:"-" url:"-"`
 	// Required. Workspace assignment to be created in Databricks.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
-	// Required. The workspace ID for which the workspace assignment is being
-	// created.
-	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 func (s *CreateWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
@@ -151,10 +202,9 @@ func (s *CreateWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteDirectGroupMemberProxyRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId int64 `json:"-" url:"-"`
-	// Required. Internal ID of the principal to be unassigned from the group.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the group membership. Format:
+	// groups/{group_id}/direct-members/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
@@ -162,10 +212,9 @@ func (s *DeleteDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteDirectGroupMemberRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId int64 `json:"-" url:"-"`
-	// Required. Internal ID of the principal to be unassigned from the group.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the group membership. Format:
+	// accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
@@ -173,8 +222,8 @@ func (s *DeleteDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteGroupProxyRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId string `json:"-" url:"-"`
+	// The resource name of the group. Format: groups/{group_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteGroupProxyRequest) UnmarshalJSON(b []byte) error {
@@ -182,8 +231,9 @@ func (s *DeleteGroupProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteGroupRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId string `json:"-" url:"-"`
+	// The resource name of the group. Format:
+	// accounts/{account_id}/groups/{group_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
@@ -201,8 +251,9 @@ func (s *DeleteIdentityVisibilityFilterRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteServicePrincipalProxyRequest struct {
-	// Required. Internal ID of the service principal in Databricks.
-	ServicePrincipalId string `json:"-" url:"-"`
+	// The resource name of the service principal. Format:
+	// service-principals/{service_principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
@@ -210,8 +261,9 @@ func (s *DeleteServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteServicePrincipalRequest struct {
-	// Required. Internal ID of the service principal in Databricks.
-	ServicePrincipalId string `json:"-" url:"-"`
+	// The resource name of the service principal. Format:
+	// accounts/{account_id}/service-principals/{service_principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteServicePrincipalRequest) UnmarshalJSON(b []byte) error {
@@ -219,8 +271,8 @@ func (s *DeleteServicePrincipalRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteUserProxyRequest struct {
-	// Required. Internal ID of the user in Databricks.
-	UserId string `json:"-" url:"-"`
+	// The resource name of the user. Format: users/{user_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteUserProxyRequest) UnmarshalJSON(b []byte) error {
@@ -228,8 +280,9 @@ func (s *DeleteUserProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteUserRequest struct {
-	// Required. Internal ID of the user in Databricks.
-	UserId string `json:"-" url:"-"`
+	// The resource name of the user. Format:
+	// accounts/{account_id}/users/{user_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteUserRequest) UnmarshalJSON(b []byte) error {
@@ -259,9 +312,9 @@ func (s *DeleteWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteWorkspaceAssignmentProxyRequest struct {
-	// Required. ID of the principal in Databricks to delete workspace
-	// assignment for.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace assignment. Format:
+	// workspace-assignments/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
@@ -269,11 +322,9 @@ func (s *DeleteWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteWorkspaceAssignmentRequest struct {
-	// Required. ID of the principal in Databricks to delete workspace
-	// assignment for.
-	PrincipalId int64 `json:"-" url:"-"`
-	// The workspace ID where the principal has access.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// The resource name of the workspace assignment. Format:
+	// accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
@@ -291,6 +342,16 @@ type DirectGroupMember struct {
 	GroupId int64 `json:"group_id,omitempty"`
 	// The source of group membership (internal or from identity provider).
 	MembershipSource GroupMembershipSource `json:"membership_source,omitempty"`
+	// The resource name of the group membership. The format depends on the API
+	// that returned it: - Account-scoped:
+	// accounts/{account_id}/groups/{group_id}/direct-members/{principal_id} -
+	// Workspace-scoped: groups/{group_id}/direct-members/{principal_id}
+	Name string `json:"name,omitempty"`
+	// The resource name of the group that contains the membership. The format
+	// depends on the API that returned it: - Account-scoped:
+	// accounts/{account_id}/groups/{group_id} - Workspace-scoped:
+	// groups/{group_id}
+	Parent string `json:"parent,omitempty"`
 	// Internal ID of the principal in Databricks.
 	PrincipalId int64 `json:"principal_id"`
 	// The type of the principal (user/service principal/group).
@@ -491,11 +552,9 @@ func (s FullName) MarshalJSON() ([]byte, error) {
 }
 
 type GetDirectGroupMemberProxyRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId int64 `json:"-" url:"-"`
-	// Required. Internal ID of the principal belonging to the group in
-	// Databricks.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the group membership. Format:
+	// groups/{group_id}/direct-members/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
@@ -503,11 +562,9 @@ func (s *GetDirectGroupMemberProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetDirectGroupMemberRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId int64 `json:"-" url:"-"`
-	// Required. Internal ID of the principal belonging to the group in
-	// Databricks.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the group membership. Format:
+	// accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetDirectGroupMemberRequest) UnmarshalJSON(b []byte) error {
@@ -575,8 +632,8 @@ func (s *GetExternalUserRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetGroupProxyRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId string `json:"-" url:"-"`
+	// The resource name of the group. Format: groups/{group_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetGroupProxyRequest) UnmarshalJSON(b []byte) error {
@@ -584,8 +641,9 @@ func (s *GetGroupProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetGroupRequest struct {
-	// Required. Internal ID of the group in Databricks.
-	GroupId string `json:"-" url:"-"`
+	// The resource name of the group. Format:
+	// accounts/{account_id}/groups/{group_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetGroupRequest) UnmarshalJSON(b []byte) error {
@@ -603,8 +661,9 @@ func (s *GetIdentityVisibilityFilterRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetServicePrincipalProxyRequest struct {
-	// Required. Internal ID of the service principal in Databricks.
-	ServicePrincipalId string `json:"-" url:"-"`
+	// The resource name of the service principal. Format:
+	// service-principals/{service_principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
@@ -612,8 +671,9 @@ func (s *GetServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetServicePrincipalRequest struct {
-	// Required. Internal ID of the service principal in Databricks.
-	ServicePrincipalId string `json:"-" url:"-"`
+	// The resource name of the service principal. Format:
+	// accounts/{account_id}/service-principals/{service_principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetServicePrincipalRequest) UnmarshalJSON(b []byte) error {
@@ -621,8 +681,8 @@ func (s *GetServicePrincipalRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetUserProxyRequest struct {
-	// Required. Internal ID of the user in Databricks.
-	UserId string `json:"-" url:"-"`
+	// The resource name of the user. Format: users/{user_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetUserProxyRequest) UnmarshalJSON(b []byte) error {
@@ -630,8 +690,9 @@ func (s *GetUserProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetUserRequest struct {
-	// Required. Internal ID of the user in Databricks.
-	UserId string `json:"-" url:"-"`
+	// The resource name of the user. Format:
+	// accounts/{account_id}/users/{user_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
@@ -639,9 +700,9 @@ func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetWorkspaceAccessDetailLocalRequest struct {
-	// Required. The internal ID of the principal (user/sp/group) for which the
-	// access details are being requested.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace access detail. Format:
+	// workspace-access-details/{principal_id}
+	Name string `json:"-" url:"-"`
 	// Controls what fields are returned.
 	View WorkspaceAccessDetailView `json:"-" url:"view,omitempty"`
 }
@@ -651,14 +712,11 @@ func (s *GetWorkspaceAccessDetailLocalRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetWorkspaceAccessDetailRequest struct {
-	// Required. The internal ID of the principal (user/sp/group) for which the
-	// access details are being requested.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace access detail. Format:
+	// accounts/{account_id}/workspaces/{workspace_id}/workspace-access-details/{principal_id}
+	Name string `json:"-" url:"-"`
 	// Controls what fields are returned.
 	View WorkspaceAccessDetailView `json:"-" url:"view,omitempty"`
-	// Required. The workspace ID for which the access details are being
-	// requested.
-	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 func (s *GetWorkspaceAccessDetailRequest) UnmarshalJSON(b []byte) error {
@@ -689,9 +747,9 @@ func (s *GetWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetWorkspaceAssignmentProxyRequest struct {
-	// Required. The internal ID of the principal (user/sp/group) for which the
-	// assignment is being requested.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace assignment. Format:
+	// workspace-assignments/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
@@ -699,11 +757,9 @@ func (s *GetWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetWorkspaceAssignmentRequest struct {
-	// Required. The internal ID of the principal (user/sp/group) for which the
-	// assignment is being requested.
-	PrincipalId int64 `json:"-" url:"-"`
-	// Required. The workspace ID for which the assignment is being requested.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// The resource name of the workspace assignment. Format:
+	// accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
@@ -711,9 +767,9 @@ func (s *GetWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetWorkspaceIdentityDetailRequest struct {
-	// Required. The internal ID of the principal (user/sp/group) for which the
-	// identity details are being requested.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace identity detail. Format:
+	// principals/{principal_id}/workspace-identity-detail
+	Name string `json:"-" url:"-"`
 }
 
 func (s *GetWorkspaceIdentityDetailRequest) UnmarshalJSON(b []byte) error {
@@ -730,6 +786,14 @@ type Group struct {
 	GroupId string `json:"group_id,omitempty"`
 	// Display name of the group.
 	GroupName string `json:"group_name,omitempty"`
+	// The resource name of the group. The format depends on the API that
+	// returned it: - Account-scoped: accounts/{account_id}/groups/{group_id} -
+	// Workspace-scoped: groups/{group_id}
+	Name string `json:"name,omitempty"`
+	// The resource name of the account that contains the group,
+	// `accounts/{account_id}`. Both the account-scoped and workspace-scoped
+	// APIs return it.
+	Parent string `json:"parent,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -819,9 +883,6 @@ func (s IdentityVisibilityFilter) MarshalJSON() ([]byte, error) {
 }
 
 type ListDirectGroupMembersProxyRequest struct {
-	// Required. Internal ID of the group in Databricks whose direct members are
-	// being listed.
-	GroupId int64 `json:"-" url:"-"`
 	// The maximum number of members to return. The service may return fewer
 	// than this value. If not provided, defaults to 1000, which is also the
 	// maximum allowed. Requests for more than the maximum are clamped to 1000.
@@ -829,6 +890,9 @@ type ListDirectGroupMembersProxyRequest struct {
 	// A page token from a previous list call. Provide this to retrieve the
 	// subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent resource name of the group whose direct members to list.
+	// Format: groups/{group_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -842,9 +906,6 @@ func (s ListDirectGroupMembersProxyRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListDirectGroupMembersRequest struct {
-	// Required. Internal ID of the group in Databricks whose direct members are
-	// being listed.
-	GroupId int64 `json:"-" url:"-"`
 	// The maximum number of members to return. The service may return fewer
 	// than this value. If not provided, defaults to 1000, which is also the
 	// maximum allowed. Requests for more than the maximum are clamped to 1000.
@@ -852,6 +913,9 @@ type ListDirectGroupMembersRequest struct {
 	// A page token, received from a previous ListDirectGroupMembers call.
 	// Provide this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent resource name of the group whose direct members to list.
+	// Format: accounts/{account_id}/groups/{group_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -893,6 +957,10 @@ type ListGroupsProxyRequest struct {
 	// A page token, received from a previous ListGroups call. Provide this to
 	// retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The resource name of the account to list groups in,
+	// `accounts/{account_id}`. Optional: defaults to the account of the calling
+	// workspace, and any other account is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -915,6 +983,9 @@ type ListGroupsRequest struct {
 	// A page token, received from a previous ListGroups call. Provide this to
 	// retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent resource name of the account whose groups to list. Format:
+	// accounts/{account_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -999,6 +1070,10 @@ type ListServicePrincipalsProxyRequest struct {
 	// A page token, received from a previous ListServicePrincipals call.
 	// Provide this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The resource name of the account to list service principals in,
+	// `accounts/{account_id}`. Optional: defaults to the account of the calling
+	// workspace, and any other account is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1023,6 +1098,9 @@ type ListServicePrincipalsRequest struct {
 	// A page token, received from a previous ListServicePrincipals call.
 	// Provide this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent resource name of the account whose service principals to list.
+	// Format: accounts/{account_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1063,9 +1141,9 @@ type ListTransitiveParentGroupsProxyRequest struct {
 	// A page token, received from a previous ListTransitiveParentGroups call.
 	// Provide this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Required. Internal ID of the principal in Databricks whose transitive
-	// parent groups are being listed.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The parent resource name of the principal whose transitive parent groups
+	// to list. Format: principals/{principal_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1087,9 +1165,9 @@ type ListTransitiveParentGroupsRequest struct {
 	// A page token, received from a previous ListTransitiveParentGroups call.
 	// Provide this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Required. Internal ID of the principal in Databricks whose transitive
-	// parent groups are being listed.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The parent resource name of the principal whose transitive parent groups
+	// to list. Format: accounts/{account_id}/principals/{principal_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1131,6 +1209,10 @@ type ListUsersProxyRequest struct {
 	// A page token, received from a previous ListUsers call. Provide this to
 	// retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The resource name of the account to list users in,
+	// `accounts/{account_id}`. Optional: defaults to the account of the calling
+	// workspace, and any other account is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1153,6 +1235,9 @@ type ListUsersRequest struct {
 	// A page token, received from a previous ListUsers call. Provide this to
 	// retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent resource name of the account whose users to list. Format:
+	// accounts/{account_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1256,6 +1341,10 @@ type ListWorkspaceAssignmentsProxyRequest struct {
 	// A page token from a previous list call. Provide this to retrieve the
 	// subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The resource name of the workspace to list assignments of,
+	// `accounts/{account_id}/workspaces/{workspace_id}`. Optional: defaults to
+	// the calling workspace, and any other workspace is rejected.
+	Parent string `json:"-" url:"parent,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1277,9 +1366,9 @@ type ListWorkspaceAssignmentsRequest struct {
 	// A page token, received from a previous ListWorkspaceAssignments call.
 	// Provide this to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Required. The workspace ID for which the workspace assignments are being
-	// fetched.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// The parent resource name of the workspace whose assignments to list.
+	// Format: accounts/{account_id}/workspaces/{workspace_id}
+	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1490,6 +1579,15 @@ type ServicePrincipal struct {
 	DisplayName string `json:"display_name"`
 	// ExternalId of the service principal in the customer's IdP.
 	ExternalId string `json:"external_id,omitempty"`
+	// The resource name of the service principal. The format depends on the API
+	// that returned it: - Account-scoped:
+	// accounts/{account_id}/service-principals/{service_principal_id} -
+	// Workspace-scoped: service-principals/{service_principal_id}
+	Name string `json:"name,omitempty"`
+	// The resource name of the account that contains the service principal,
+	// `accounts/{account_id}`. Both the account-scoped and workspace-scoped
+	// APIs return it.
+	Parent string `json:"parent,omitempty"`
 	// Internal service principal ID of the service principal in Databricks.
 	ServicePrincipalId string `json:"service_principal_id,omitempty"`
 
@@ -1551,6 +1649,12 @@ type TransitiveParentGroup struct {
 	ExternalId string `json:"external_id,omitempty"`
 	// Internal group ID of the group in Databricks.
 	GroupId string `json:"group_id,omitempty"`
+	// The resource name of the transitive parent group. The format depends on
+	// the API that returned it: - Account-scoped:
+	// accounts/{account_id}/principals/{principal_id}/transitive-parent-groups/{group_id}
+	// - Workspace-scoped:
+	// principals/{principal_id}/transitive-parent-groups/{group_id}
+	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1566,8 +1670,10 @@ func (s TransitiveParentGroup) MarshalJSON() ([]byte, error) {
 type UpdateGroupProxyRequest struct {
 	// Required. Group to be updated in Databricks
 	Group Group `json:"group"`
-	// Required. Internal ID of the group in Databricks.
-	GroupId string `json:"-" url:"-"`
+	// The resource name of the group. The format depends on the API that
+	// returned it: - Account-scoped: accounts/{account_id}/groups/{group_id} -
+	// Workspace-scoped: groups/{group_id}
+	Name string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
@@ -1579,8 +1685,10 @@ func (s *UpdateGroupProxyRequest) UnmarshalJSON(b []byte) error {
 type UpdateGroupRequest struct {
 	// Required. Group to be updated in Databricks
 	Group Group `json:"group"`
-	// Required. Internal ID of the group in Databricks.
-	GroupId string `json:"-" url:"-"`
+	// The resource name of the group. The format depends on the API that
+	// returned it: - Account-scoped: accounts/{account_id}/groups/{group_id} -
+	// Workspace-scoped: groups/{group_id}
+	Name string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
@@ -1590,10 +1698,13 @@ func (s *UpdateGroupRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateServicePrincipalProxyRequest struct {
+	// The resource name of the service principal. The format depends on the API
+	// that returned it: - Account-scoped:
+	// accounts/{account_id}/service-principals/{service_principal_id} -
+	// Workspace-scoped: service-principals/{service_principal_id}
+	Name string `json:"-" url:"-"`
 	// Required. Service principal to be updated in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
-	// Required. Internal ID of the service principal in Databricks.
-	ServicePrincipalId string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
@@ -1603,10 +1714,13 @@ func (s *UpdateServicePrincipalProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateServicePrincipalRequest struct {
+	// The resource name of the service principal. The format depends on the API
+	// that returned it: - Account-scoped:
+	// accounts/{account_id}/service-principals/{service_principal_id} -
+	// Workspace-scoped: service-principals/{service_principal_id}
+	Name string `json:"-" url:"-"`
 	// Required. Service Principal to be updated in Databricks
 	ServicePrincipal ServicePrincipal `json:"service_principal"`
-	// Required. Internal ID of the service principal in Databricks.
-	ServicePrincipalId string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
@@ -1616,12 +1730,14 @@ func (s *UpdateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateUserProxyRequest struct {
+	// The resource name of the user. The format depends on the API that
+	// returned it: - Account-scoped: accounts/{account_id}/users/{user_id} -
+	// Workspace-scoped: users/{user_id}
+	Name string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 	// Required. User to be updated in Databricks
 	User User `json:"user"`
-	// Required. Internal ID of the user in Databricks.
-	UserId string `json:"-" url:"-"`
 }
 
 func (s *UpdateUserProxyRequest) UnmarshalJSON(b []byte) error {
@@ -1629,12 +1745,14 @@ func (s *UpdateUserProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateUserRequest struct {
+	// The resource name of the user. The format depends on the API that
+	// returned it: - Account-scoped: accounts/{account_id}/users/{user_id} -
+	// Workspace-scoped: users/{user_id}
+	Name string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 	// Required. User to be updated in Databricks
 	User User `json:"user"`
-	// Required. Internal ID of the user in Databricks.
-	UserId string `json:"-" url:"-"`
 }
 
 func (s *UpdateUserRequest) UnmarshalJSON(b []byte) error {
@@ -1671,8 +1789,11 @@ func (s *UpdateWorkspaceAssignmentDetailRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateWorkspaceAssignmentProxyRequest struct {
-	// Required. ID of the principal in Databricks.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace assignment. The format depends on the
+	// API that returned it: - Account-scoped:
+	// accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+	// - Workspace-scoped: workspace-assignments/{principal_id}
+	Name string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 	// Required. Workspace assignment to be updated in Databricks.
@@ -1684,15 +1805,15 @@ func (s *UpdateWorkspaceAssignmentProxyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateWorkspaceAssignmentRequest struct {
-	// Required. ID of the principal in Databricks.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace assignment. The format depends on the
+	// API that returned it: - Account-scoped:
+	// accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+	// - Workspace-scoped: workspace-assignments/{principal_id}
+	Name string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 	// Required. Workspace assignment to be updated in Databricks.
 	WorkspaceAssignment WorkspaceAssignment `json:"workspace_assignment"`
-	// Required. The workspace ID for which the workspace assignment is being
-	// updated.
-	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 func (s *UpdateWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
@@ -1700,8 +1821,9 @@ func (s *UpdateWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateWorkspaceIdentityDetailRequest struct {
-	// Required. ID of the principal in Databricks.
-	PrincipalId int64 `json:"-" url:"-"`
+	// The resource name of the workspace identity detail. Format:
+	// principals/{principal_id}/workspace-identity-detail
+	Name string `json:"-" url:"-"`
 	// Required. The list of fields to update.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 	// Required. Workspace identity detail to be updated in Databricks.
@@ -1722,6 +1844,14 @@ type User struct {
 	ExternalId string `json:"external_id,omitempty"`
 
 	FullName UserFullName `json:"full_name"`
+	// The resource name of the user. The format depends on the API that
+	// returned it: - Account-scoped: accounts/{account_id}/users/{user_id} -
+	// Workspace-scoped: users/{user_id}
+	Name string `json:"name,omitempty"`
+	// The resource name of the account that contains the user,
+	// `accounts/{account_id}`. Both the account-scoped and workspace-scoped
+	// APIs return it.
+	Parent string `json:"parent,omitempty"`
 	// Internal userId of the user in Databricks.
 	UserId string `json:"user_id,omitempty"`
 	// Username/email of the user.
@@ -1759,6 +1889,11 @@ type WorkspaceAccessDetail struct {
 	AccessType WorkspaceAccessDetailAccessType `json:"access_type,omitempty"`
 	// The account ID parent of the workspace where the principal has access.
 	AccountId string `json:"account_id,omitempty"`
+	// The resource name of the workspace access detail. The format depends on
+	// the API that returned it: - Account-scoped:
+	// accounts/{account_id}/workspaces/{workspace_id}/workspace-access-details/{principal_id}
+	// - Workspace-scoped: workspace-access-details/{principal_id}
+	Name string `json:"name,omitempty"`
 	// The permissions granted to the principal in the workspace.
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The internal ID of the principal (user/sp/group) in Databricks.
@@ -1894,7 +2029,18 @@ type WorkspaceAssignment struct {
 	// List responses leave this field empty. Get a single principal to read its
 	// entitlements.
 	Entitlements []Entitlement `json:"entitlements,omitempty"`
-	// The internal ID of the principal (user/sp/group) in Databricks.
+	// The resource name of the workspace assignment. The format depends on the
+	// API that returned it: - Account-scoped:
+	// accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+	// - Workspace-scoped: workspace-assignments/{principal_id}
+	Name string `json:"name,omitempty"`
+	// The resource name of the workspace that contains the assignment,
+	// `accounts/{account_id}/workspaces/{workspace_id}`. Both the
+	// account-scoped and workspace-scoped APIs return it.
+	Parent string `json:"parent,omitempty"`
+	// The internal ID of the principal (user/sp/group) in Databricks. Set when
+	// the assignment is created and cannot be changed afterwards; to assign a
+	// different principal, create a new assignment.
 	PrincipalId int64 `json:"principal_id"`
 	// The type of the principal (user/service principal/group) that is
 	// assigned.
@@ -1973,6 +2119,9 @@ type WorkspaceIdentityDetail struct {
 	// The type of assignment the principal has to the workspace (direct or
 	// indirect).
 	AssignmentType WorkspaceIdentityDetailAssignmentType `json:"assignment_type,omitempty"`
+	// The resource name of the workspace identity detail. Format:
+	// principals/{principal_id}/workspace-identity-detail
+	Name string `json:"name,omitempty"`
 	// The internal ID of the principal (user/sp/group) in Databricks.
 	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The type of the principal (user/service principal/group).

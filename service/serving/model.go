@@ -1604,7 +1604,8 @@ type PtServedModel struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
-	// The number of model units to be provisioned.
+	// The number of model units to be provisioned. Dedicated inference requires
+	// positive fixed capacity and does not support scale-to-zero.
 	ProvisionedModelUnits int64 `json:"provisioned_model_units"`
 
 	ForceSendFields []string `json:"-" url:"-"`
