@@ -22,7 +22,7 @@ type accountIamV2Impl struct {
 
 func (a *accountIamV2Impl) CreateDirectGroupMember(ctx context.Context, request CreateDirectGroupMemberRequest) (*DirectGroupMember, error) {
 	var directGroupMember DirectGroupMember
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/direct-members", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -34,7 +34,7 @@ func (a *accountIamV2Impl) CreateDirectGroupMember(ctx context.Context, request 
 
 func (a *accountIamV2Impl) CreateGroup(ctx context.Context, request CreateGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/%v/groups", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -62,7 +62,7 @@ func (a *accountIamV2Impl) CreateIdentityVisibilityFilter(ctx context.Context, r
 
 func (a *accountIamV2Impl) CreateServicePrincipal(ctx context.Context, request CreateServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/%v/service-principals", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -74,7 +74,7 @@ func (a *accountIamV2Impl) CreateServicePrincipal(ctx context.Context, request C
 
 func (a *accountIamV2Impl) CreateUser(ctx context.Context, request CreateUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/%v/users", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -86,7 +86,7 @@ func (a *accountIamV2Impl) CreateUser(ctx context.Context, request CreateUserReq
 
 func (a *accountIamV2Impl) CreateWorkspaceAssignment(ctx context.Context, request CreateWorkspaceAssignmentRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/workspace-assignments", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -109,7 +109,7 @@ func (a *accountIamV2Impl) CreateWorkspaceAssignmentDetail(ctx context.Context, 
 }
 
 func (a *accountIamV2Impl) DeleteDirectGroupMember(ctx context.Context, request DeleteDirectGroupMemberRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members/%v", a.client.ConfiguredAccountID(), request.GroupId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -119,7 +119,7 @@ func (a *accountIamV2Impl) DeleteDirectGroupMember(ctx context.Context, request 
 }
 
 func (a *accountIamV2Impl) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -139,7 +139,7 @@ func (a *accountIamV2Impl) DeleteIdentityVisibilityFilter(ctx context.Context, r
 }
 
 func (a *accountIamV2Impl) DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -149,7 +149,7 @@ func (a *accountIamV2Impl) DeleteServicePrincipal(ctx context.Context, request D
 }
 
 func (a *accountIamV2Impl) DeleteUser(ctx context.Context, request DeleteUserRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", a.client.ConfiguredAccountID(), request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -159,7 +159,7 @@ func (a *accountIamV2Impl) DeleteUser(ctx context.Context, request DeleteUserReq
 }
 
 func (a *accountIamV2Impl) DeleteWorkspaceAssignment(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -180,7 +180,7 @@ func (a *accountIamV2Impl) DeleteWorkspaceAssignmentDetail(ctx context.Context, 
 
 func (a *accountIamV2Impl) GetDirectGroupMember(ctx context.Context, request GetDirectGroupMemberRequest) (*DirectGroupMember, error) {
 	var directGroupMember DirectGroupMember
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members/%v", a.client.ConfiguredAccountID(), request.GroupId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -224,7 +224,7 @@ func (a *accountIamV2Impl) GetExternalUser(ctx context.Context, request GetExter
 
 func (a *accountIamV2Impl) GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -246,7 +246,7 @@ func (a *accountIamV2Impl) GetIdentityVisibilityFilter(ctx context.Context, requ
 
 func (a *accountIamV2Impl) GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -257,7 +257,7 @@ func (a *accountIamV2Impl) GetServicePrincipal(ctx context.Context, request GetS
 
 func (a *accountIamV2Impl) GetUser(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", a.client.ConfiguredAccountID(), request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -268,7 +268,7 @@ func (a *accountIamV2Impl) GetUser(ctx context.Context, request GetUserRequest) 
 
 func (a *accountIamV2Impl) GetWorkspaceAccessDetail(ctx context.Context, request GetWorkspaceAccessDetailRequest) (*WorkspaceAccessDetail, error) {
 	var workspaceAccessDetail WorkspaceAccessDetail
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-access-details/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -279,7 +279,7 @@ func (a *accountIamV2Impl) GetWorkspaceAccessDetail(ctx context.Context, request
 
 func (a *accountIamV2Impl) GetWorkspaceAssignment(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -334,7 +334,7 @@ func (a *accountIamV2Impl) ListDirectGroupMembersAll(ctx context.Context, reques
 
 func (a *accountIamV2Impl) internalListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error) {
 	var listDirectGroupMembersResponse ListDirectGroupMembersResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v/direct-members", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/direct-members", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -378,7 +378,7 @@ func (a *accountIamV2Impl) ListGroupsAll(ctx context.Context, request ListGroups
 
 func (a *accountIamV2Impl) internalListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/%v/groups", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -472,7 +472,7 @@ func (a *accountIamV2Impl) ListServicePrincipalsAll(ctx context.Context, request
 
 func (a *accountIamV2Impl) internalListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalsResponse, error) {
 	var listServicePrincipalsResponse ListServicePrincipalsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/%v/service-principals", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -483,7 +483,7 @@ func (a *accountIamV2Impl) internalListServicePrincipals(ctx context.Context, re
 
 func (a *accountIamV2Impl) ListTransitiveParentGroups(ctx context.Context, request ListTransitiveParentGroupsRequest) (*ListTransitiveParentGroupsResponse, error) {
 	var listTransitiveParentGroupsResponse ListTransitiveParentGroupsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/principals/%v/transitive-parent-groups", a.client.ConfiguredAccountID(), request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/transitive-parent-groups", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -527,7 +527,7 @@ func (a *accountIamV2Impl) ListUsersAll(ctx context.Context, request ListUsersRe
 
 func (a *accountIamV2Impl) internalListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/identity/%v/users", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -623,7 +623,7 @@ func (a *accountIamV2Impl) ListWorkspaceAssignmentsAll(ctx context.Context, requ
 
 func (a *accountIamV2Impl) internalListWorkspaceAssignments(ctx context.Context, request ListWorkspaceAssignmentsRequest) (*ListWorkspaceAssignmentsResponse, error) {
 	var listWorkspaceAssignmentsResponse ListWorkspaceAssignmentsResponse
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/workspace-assignments", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -670,7 +670,7 @@ func (a *accountIamV2Impl) ResolveUser(ctx context.Context, request ResolveUserR
 
 func (a *accountIamV2Impl) UpdateGroup(ctx context.Context, request UpdateGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/groups/%v", a.client.ConfiguredAccountID(), request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -686,7 +686,7 @@ func (a *accountIamV2Impl) UpdateGroup(ctx context.Context, request UpdateGroupR
 
 func (a *accountIamV2Impl) UpdateServicePrincipal(ctx context.Context, request UpdateServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/service-principals/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -702,7 +702,7 @@ func (a *accountIamV2Impl) UpdateServicePrincipal(ctx context.Context, request U
 
 func (a *accountIamV2Impl) UpdateUser(ctx context.Context, request UpdateUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/users/%v", a.client.ConfiguredAccountID(), request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -718,7 +718,7 @@ func (a *accountIamV2Impl) UpdateUser(ctx context.Context, request UpdateUserReq
 
 func (a *accountIamV2Impl) UpdateWorkspaceAssignment(ctx context.Context, request UpdateWorkspaceAssignmentRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/accounts/%v/workspaces/%v/workspace-assignments/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -761,7 +761,7 @@ type workspaceIamV2Impl struct {
 
 func (a *workspaceIamV2Impl) CreateDirectGroupMemberProxy(ctx context.Context, request CreateDirectGroupMemberProxyRequest) (*DirectGroupMember, error) {
 	var directGroupMember DirectGroupMember
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v/direct-members", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/direct-members", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -778,6 +778,10 @@ func (a *workspaceIamV2Impl) CreateGroupProxy(ctx context.Context, request Creat
 	var group Group
 	path := "/api/2.0/identity/groups"
 	queryParams := make(map[string]any)
+
+	if request.Parent != "" || slices.Contains(request.ForceSendFields, "Parent") {
+		queryParams["parent"] = request.Parent
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -793,6 +797,10 @@ func (a *workspaceIamV2Impl) CreateServicePrincipalProxy(ctx context.Context, re
 	var servicePrincipal ServicePrincipal
 	path := "/api/2.0/identity/service-principals"
 	queryParams := make(map[string]any)
+
+	if request.Parent != "" || slices.Contains(request.ForceSendFields, "Parent") {
+		queryParams["parent"] = request.Parent
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -808,6 +816,10 @@ func (a *workspaceIamV2Impl) CreateUserProxy(ctx context.Context, request Create
 	var user User
 	path := "/api/2.0/identity/users"
 	queryParams := make(map[string]any)
+
+	if request.Parent != "" || slices.Contains(request.ForceSendFields, "Parent") {
+		queryParams["parent"] = request.Parent
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -838,6 +850,10 @@ func (a *workspaceIamV2Impl) CreateWorkspaceAssignmentProxy(ctx context.Context,
 	var workspaceAssignment WorkspaceAssignment
 	path := "/api/2.0/identity/workspace-assignments"
 	queryParams := make(map[string]any)
+
+	if request.Parent != "" || slices.Contains(request.ForceSendFields, "Parent") {
+		queryParams["parent"] = request.Parent
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -850,7 +866,7 @@ func (a *workspaceIamV2Impl) CreateWorkspaceAssignmentProxy(ctx context.Context,
 }
 
 func (a *workspaceIamV2Impl) DeleteDirectGroupMemberProxy(ctx context.Context, request DeleteDirectGroupMemberProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v/direct-members/%v", request.GroupId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -863,7 +879,7 @@ func (a *workspaceIamV2Impl) DeleteDirectGroupMemberProxy(ctx context.Context, r
 }
 
 func (a *workspaceIamV2Impl) DeleteGroupProxy(ctx context.Context, request DeleteGroupProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -876,7 +892,7 @@ func (a *workspaceIamV2Impl) DeleteGroupProxy(ctx context.Context, request Delet
 }
 
 func (a *workspaceIamV2Impl) DeleteServicePrincipalProxy(ctx context.Context, request DeleteServicePrincipalProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -889,7 +905,7 @@ func (a *workspaceIamV2Impl) DeleteServicePrincipalProxy(ctx context.Context, re
 }
 
 func (a *workspaceIamV2Impl) DeleteUserProxy(ctx context.Context, request DeleteUserProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/users/%v", request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -915,7 +931,7 @@ func (a *workspaceIamV2Impl) DeleteWorkspaceAssignmentDetailProxy(ctx context.Co
 }
 
 func (a *workspaceIamV2Impl) DeleteWorkspaceAssignmentProxy(ctx context.Context, request DeleteWorkspaceAssignmentProxyRequest) error {
-	path := fmt.Sprintf("/api/2.0/identity/workspace-assignments/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -929,7 +945,7 @@ func (a *workspaceIamV2Impl) DeleteWorkspaceAssignmentProxy(ctx context.Context,
 
 func (a *workspaceIamV2Impl) GetDirectGroupMemberProxy(ctx context.Context, request GetDirectGroupMemberProxyRequest) (*DirectGroupMember, error) {
 	var directGroupMember DirectGroupMember
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v/direct-members/%v", request.GroupId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -985,7 +1001,7 @@ func (a *workspaceIamV2Impl) GetExternalUserProxy(ctx context.Context, request G
 
 func (a *workspaceIamV2Impl) GetGroupProxy(ctx context.Context, request GetGroupProxyRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -999,7 +1015,7 @@ func (a *workspaceIamV2Impl) GetGroupProxy(ctx context.Context, request GetGroup
 
 func (a *workspaceIamV2Impl) GetServicePrincipalProxy(ctx context.Context, request GetServicePrincipalProxyRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1013,7 +1029,7 @@ func (a *workspaceIamV2Impl) GetServicePrincipalProxy(ctx context.Context, reque
 
 func (a *workspaceIamV2Impl) GetUserProxy(ctx context.Context, request GetUserProxyRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/users/%v", request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1027,7 +1043,7 @@ func (a *workspaceIamV2Impl) GetUserProxy(ctx context.Context, request GetUserPr
 
 func (a *workspaceIamV2Impl) GetWorkspaceAccessDetailLocal(ctx context.Context, request GetWorkspaceAccessDetailLocalRequest) (*WorkspaceAccessDetail, error) {
 	var workspaceAccessDetail WorkspaceAccessDetail
-	path := fmt.Sprintf("/api/2.0/identity/workspace-access-details/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1055,7 +1071,7 @@ func (a *workspaceIamV2Impl) GetWorkspaceAssignmentDetailProxy(ctx context.Conte
 
 func (a *workspaceIamV2Impl) GetWorkspaceAssignmentProxy(ctx context.Context, request GetWorkspaceAssignmentProxyRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/workspace-assignments/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1069,7 +1085,7 @@ func (a *workspaceIamV2Impl) GetWorkspaceAssignmentProxy(ctx context.Context, re
 
 func (a *workspaceIamV2Impl) GetWorkspaceIdentityDetail(ctx context.Context, request GetWorkspaceIdentityDetailRequest) (*WorkspaceIdentityDetail, error) {
 	var workspaceIdentityDetail WorkspaceIdentityDetail
-	path := fmt.Sprintf("/api/2.0/identity/workspace-identity-details/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1116,7 +1132,7 @@ func (a *workspaceIamV2Impl) ListDirectGroupMembersProxyAll(ctx context.Context,
 
 func (a *workspaceIamV2Impl) internalListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) (*ListDirectGroupMembersResponse, error) {
 	var listDirectGroupMembersResponse ListDirectGroupMembersResponse
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v/direct-members", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/direct-members", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1228,7 +1244,7 @@ func (a *workspaceIamV2Impl) internalListServicePrincipalsProxy(ctx context.Cont
 
 func (a *workspaceIamV2Impl) ListTransitiveParentGroupsProxy(ctx context.Context, request ListTransitiveParentGroupsProxyRequest) (*ListTransitiveParentGroupsResponse, error) {
 	var listTransitiveParentGroupsResponse ListTransitiveParentGroupsResponse
-	path := fmt.Sprintf("/api/2.0/identity/principals/%v/transitive-parent-groups", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v/transitive-parent-groups", request.Parent)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1436,7 +1452,7 @@ func (a *workspaceIamV2Impl) ResolveUserProxy(ctx context.Context, request Resol
 
 func (a *workspaceIamV2Impl) UpdateGroupProxy(ctx context.Context, request UpdateGroupProxyRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/identity/groups/%v", request.GroupId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1455,7 +1471,7 @@ func (a *workspaceIamV2Impl) UpdateGroupProxy(ctx context.Context, request Updat
 
 func (a *workspaceIamV2Impl) UpdateServicePrincipalProxy(ctx context.Context, request UpdateServicePrincipalProxyRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/identity/service-principals/%v", request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1474,7 +1490,7 @@ func (a *workspaceIamV2Impl) UpdateServicePrincipalProxy(ctx context.Context, re
 
 func (a *workspaceIamV2Impl) UpdateUserProxy(ctx context.Context, request UpdateUserProxyRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/identity/users/%v", request.UserId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	if request.UpdateMask != "" {
@@ -1515,7 +1531,7 @@ func (a *workspaceIamV2Impl) UpdateWorkspaceAssignmentDetailProxy(ctx context.Co
 
 func (a *workspaceIamV2Impl) UpdateWorkspaceAssignmentProxy(ctx context.Context, request UpdateWorkspaceAssignmentProxyRequest) (*WorkspaceAssignment, error) {
 	var workspaceAssignment WorkspaceAssignment
-	path := fmt.Sprintf("/api/2.0/identity/workspace-assignments/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
@@ -1537,7 +1553,7 @@ func (a *workspaceIamV2Impl) UpdateWorkspaceAssignmentProxy(ctx context.Context,
 
 func (a *workspaceIamV2Impl) UpdateWorkspaceIdentityDetail(ctx context.Context, request UpdateWorkspaceIdentityDetailRequest) (*WorkspaceIdentityDetail, error) {
 	var workspaceIdentityDetail WorkspaceIdentityDetail
-	path := fmt.Sprintf("/api/2.0/identity/workspace-identity-details/%v", request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/identity/%v", request.Name)
 	queryParams := make(map[string]any)
 
 	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)

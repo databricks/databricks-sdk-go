@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/computemigrations"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
@@ -23,6 +24,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/domains"
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
+	"github.com/databricks/databricks-sdk-go/service/genieagents"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -214,6 +216,9 @@ type WorkspaceClient struct {
 	// Databricks Clusters. This API only supports (classic) all-purpose
 	// clusters. Serverless compute is not supported.
 	CommandExecution compute.CommandExecutionInterface
+
+	// Manage migrations of Classic compute workloads to Serverless.
+	ComputeMigrations computemigrations.ComputeMigrationsInterface
 
 	// A connection represents an external data source for use within
 	// Databricks.
@@ -459,6 +464,13 @@ type WorkspaceClient struct {
 	// requires at least CAN USE permission on a Pro or Serverless SQL
 	// warehouse. Also, Databricks Assistant must be enabled.
 	Genie dashboards.GenieInterface
+
+	// Genie provides a no-code experience for business users, powered by AI/BI.
+	// Analysts set up Genie Agents that business users can use to ask questions
+	// using natural language. Genie uses data registered to Unity Catalog and
+	// requires at least CAN USE permission on a Pro or Serverless SQL
+	// warehouse. Also, Databricks Assistant must be enabled.
+	GenieAgents genieagents.GenieAgentsInterface
 
 	// Registers personal access token for Databricks to do operations on behalf
 	// of the user.
@@ -1516,6 +1528,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ClusterPolicies:                     compute.NewClusterPolicies(databricksClient),
 		Clusters:                            compute.NewClusters(databricksClient),
 		CommandExecution:                    compute.NewCommandExecution(databricksClient),
+		ComputeMigrations:                   computemigrations.NewComputeMigrations(databricksClient),
 		Connections:                         catalog.NewConnections(databricksClient),
 		ConsumerFulfillments:                marketplace.NewConsumerFulfillments(databricksClient),
 		ConsumerInstallations:               marketplace.NewConsumerInstallations(databricksClient),
@@ -1546,6 +1559,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Forecasting:                         ml.NewForecasting(databricksClient),
 		Functions:                           catalog.NewFunctions(databricksClient),
 		Genie:                               dashboards.NewGenie(databricksClient),
+		GenieAgents:                         genieagents.NewGenieAgents(databricksClient),
 		GitCredentials:                      workspace.NewGitCredentials(databricksClient),
 		GlobalInitScripts:                   compute.NewGlobalInitScripts(databricksClient),
 		Grants:                              catalog.NewGrants(databricksClient),

@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/computemigrations"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/database"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dataclassification"
@@ -23,6 +24,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/domains"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/environments"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/genieagents"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
@@ -83,6 +85,7 @@ func NewMockWorkspaceClient(t interface {
 			ClusterPolicies:                     compute.NewMockClusterPoliciesInterface(t),
 			Clusters:                            compute.NewMockClustersInterface(t),
 			CommandExecution:                    compute.NewMockCommandExecutionInterface(t),
+			ComputeMigrations:                   computemigrations.NewMockComputeMigrationsInterface(t),
 			Connections:                         catalog.NewMockConnectionsInterface(t),
 			ConsumerFulfillments:                marketplace.NewMockConsumerFulfillmentsInterface(t),
 			ConsumerInstallations:               marketplace.NewMockConsumerInstallationsInterface(t),
@@ -113,6 +116,7 @@ func NewMockWorkspaceClient(t interface {
 			Forecasting:                         ml.NewMockForecastingInterface(t),
 			Functions:                           catalog.NewMockFunctionsInterface(t),
 			Genie:                               dashboards.NewMockGenieInterface(t),
+			GenieAgents:                         genieagents.NewMockGenieAgentsInterface(t),
 			GitCredentials:                      workspace.NewMockGitCredentialsInterface(t),
 			GlobalInitScripts:                   compute.NewMockGlobalInitScriptsInterface(t),
 			Grants:                              catalog.NewMockGrantsInterface(t),
@@ -566,6 +570,14 @@ func (m *MockWorkspaceClient) GetMockCommandExecutionAPI() *compute.MockCommandE
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockComputeMigrationsAPI() *computemigrations.MockComputeMigrationsInterface {
+	api, ok := m.WorkspaceClient.ComputeMigrations.(*computemigrations.MockComputeMigrationsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ComputeMigrations to be *computemigrations.MockComputeMigrationsInterface, actual was %T", m.WorkspaceClient.ComputeMigrations))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockConnectionsAPI() *catalog.MockConnectionsInterface {
 	api, ok := m.WorkspaceClient.Connections.(*catalog.MockConnectionsInterface)
 	if !ok {
@@ -802,6 +814,14 @@ func (m *MockWorkspaceClient) GetMockGenieAPI() *dashboards.MockGenieInterface {
 	api, ok := m.WorkspaceClient.Genie.(*dashboards.MockGenieInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Genie to be *dashboards.MockGenieInterface, actual was %T", m.WorkspaceClient.Genie))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockGenieAgentsAPI() *genieagents.MockGenieAgentsInterface {
+	api, ok := m.WorkspaceClient.GenieAgents.(*genieagents.MockGenieAgentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected GenieAgents to be *genieagents.MockGenieAgentsInterface, actual was %T", m.WorkspaceClient.GenieAgents))
 	}
 	return api
 }

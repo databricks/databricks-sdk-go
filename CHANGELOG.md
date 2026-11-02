@@ -1,5 +1,141 @@
 # Version changelog
 
+## Release v0.192.0 (2026-11-02)
+
+### API Changes
+* Add [computemigrations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/computemigrations) and [genieagents](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/genieagents) packages.
+* Add [w.ComputeMigrations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/computemigrations#ComputeMigrationsAPI) workspace-level service.
+* Add [w.GenieAgents](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/genieagents#GenieAgentsAPI) workspace-level service.
+* Add `DownloadFile` and `UploadFile` methods for [w.Sandbox](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#SandboxAPI) workspace-level service.
+* Add `UpdateNetworkConnectivityConfig` method for [a.NetworkConnectivity](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NetworkConnectivityAPI) account-level service.
+* [Breaking] Add `Parent` field for [iamv2.CreateDirectGroupMemberProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateDirectGroupMemberProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.CreateDirectGroupMemberRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateDirectGroupMemberRequest).
+* Add `Parent` field for [iamv2.CreateGroupProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateGroupProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.CreateGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateGroupRequest).
+* Add `Parent` field for [iamv2.CreateServicePrincipalProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateServicePrincipalProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.CreateServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateServicePrincipalRequest).
+* Add `Parent` field for [iamv2.CreateUserProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateUserProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.CreateUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateUserRequest).
+* Add `Parent` field for [iamv2.CreateWorkspaceAssignmentProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateWorkspaceAssignmentProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.CreateWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateWorkspaceAssignmentRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteDirectGroupMemberProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteDirectGroupMemberProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteDirectGroupMemberRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteDirectGroupMemberRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteGroupProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteGroupProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteGroupRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteServicePrincipalProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteServicePrincipalProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteServicePrincipalRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteUserProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteUserProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteUserRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteWorkspaceAssignmentProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteWorkspaceAssignmentProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.DeleteWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteWorkspaceAssignmentRequest).
+* Add `Name` and `Parent` fields for [iamv2.DirectGroupMember](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DirectGroupMember).
+* [Breaking] Add `Name` field for [iamv2.GetDirectGroupMemberProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetDirectGroupMemberProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.GetDirectGroupMemberRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetDirectGroupMemberRequest).
+* [Breaking] Add `Name` field for [iamv2.GetGroupProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetGroupProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.GetGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetGroupRequest).
+* [Breaking] Add `Name` field for [iamv2.GetServicePrincipalProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetServicePrincipalProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.GetServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetServicePrincipalRequest).
+* [Breaking] Add `Name` field for [iamv2.GetUserProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetUserProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.GetUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetUserRequest).
+* [Breaking] Add `Name` field for [iamv2.GetWorkspaceAccessDetailLocalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAccessDetailLocalRequest).
+* [Breaking] Add `Name` field for [iamv2.GetWorkspaceAccessDetailRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAccessDetailRequest).
+* [Breaking] Add `Name` field for [iamv2.GetWorkspaceAssignmentProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAssignmentProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.GetWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAssignmentRequest).
+* [Breaking] Add `Name` field for [iamv2.GetWorkspaceIdentityDetailRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceIdentityDetailRequest).
+* Add `Name` and `Parent` fields for [iamv2.Group](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#Group).
+* [Breaking] Add `Parent` field for [iamv2.ListDirectGroupMembersProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListDirectGroupMembersProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.ListDirectGroupMembersRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListDirectGroupMembersRequest).
+* Add `Parent` field for [iamv2.ListGroupsProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListGroupsProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.ListGroupsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListGroupsRequest).
+* Add `Parent` field for [iamv2.ListServicePrincipalsProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListServicePrincipalsProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.ListServicePrincipalsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListServicePrincipalsRequest).
+* [Breaking] Add `Parent` field for [iamv2.ListTransitiveParentGroupsProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListTransitiveParentGroupsProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.ListTransitiveParentGroupsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListTransitiveParentGroupsRequest).
+* Add `Parent` field for [iamv2.ListUsersProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListUsersProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.ListUsersRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListUsersRequest).
+* Add `Parent` field for [iamv2.ListWorkspaceAssignmentsProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListWorkspaceAssignmentsProxyRequest).
+* [Breaking] Add `Parent` field for [iamv2.ListWorkspaceAssignmentsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListWorkspaceAssignmentsRequest).
+* Add `Name` and `Parent` fields for [iamv2.ServicePrincipal](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ServicePrincipal).
+* Add `Name` field for [iamv2.TransitiveParentGroup](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#TransitiveParentGroup).
+* [Breaking] Add `Name` field for [iamv2.UpdateGroupProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateGroupProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateGroupRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateServicePrincipalProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateServicePrincipalProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateServicePrincipalRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateUserProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateUserProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateUserRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateWorkspaceAssignmentProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateWorkspaceAssignmentProxyRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateWorkspaceAssignmentRequest).
+* [Breaking] Add `Name` field for [iamv2.UpdateWorkspaceIdentityDetailRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateWorkspaceIdentityDetailRequest).
+* Add `Name` and `Parent` fields for [iamv2.User](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#User).
+* Add `Name` field for [iamv2.WorkspaceAccessDetail](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceAccessDetail).
+* Add `Name` and `Parent` fields for [iamv2.WorkspaceAssignment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceAssignment).
+* Add `Name` field for [iamv2.WorkspaceIdentityDetail](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIdentityDetail).
+* Add `ServerlessCompute` field for [jobs.JobCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobCluster).
+* Add `JobCompletion` field for [jobs.PerTriggerState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PerTriggerState).
+* Add `AiFunctionTask` field for [jobs.ResolvedValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedValues).
+* Add `AiFunctionTaskOutput` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+* Add `AiFunctionTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `AiFunctionTask` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `AiFunctionTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+* Add `JobCompletion` field for [jobs.TriggerConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerConfiguration).
+* Add `JobCompletion` field for [jobs.TriggerInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerInfo).
+* Add `JobCompletion` field for [jobs.TriggerSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerSettings).
+* Add `JobCompletion` field for [jobs.TriggerStateProto](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerStateProto).
+* Add `BillingWorkspaceId` field for [settings.NetworkConnectivityConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NetworkConnectivityConfiguration).
+* Add `CreateFeature` and `ReadFeature` enum values for [catalog.Privilege](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#Privilege).
+* Add `Feature` enum value for [catalog.SecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableType).
+* Add `JobCompletion` enum value for [jobs.TriggerType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerType).
+* [Breaking] Change `CreateDirectGroupMember`, `CreateGroup`, `CreateServicePrincipal`, `CreateUser`, `CreateWorkspaceAssignment`, `DeleteDirectGroupMember`, `DeleteGroup`, `DeleteServicePrincipal`, `DeleteUser`, `DeleteWorkspaceAssignment`, `GetDirectGroupMember`, `GetGroup`, `GetServicePrincipal`, `GetUser`, `GetWorkspaceAccessDetail`, `GetWorkspaceAssignment`, `ListDirectGroupMembers`, `ListGroups`, `ListServicePrincipals`, `ListTransitiveParentGroups`, `ListUsers`, `ListWorkspaceAssignments`, `UpdateGroup`, `UpdateServicePrincipal`, `UpdateUser` and `UpdateWorkspaceAssignment` methods for [a.AccountIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API) account-level service with new required argument order.
+* [Breaking] Change `CreateDirectGroupMember`, `CreateGroup`, `CreateServicePrincipal`, `CreateUser`, `CreateWorkspaceAssignment`, `DeleteDirectGroupMember`, `DeleteGroup`, `DeleteServicePrincipal`, `DeleteUser`, `DeleteWorkspaceAssignment`, `GetDirectGroupMember`, `GetGroup`, `GetServicePrincipal`, `GetUser`, `GetWorkspaceAccessDetail`, `GetWorkspaceAssignment`, `ListDirectGroupMembers`, `ListGroups`, `ListServicePrincipals`, `ListTransitiveParentGroups`, `ListUsers`, `ListWorkspaceAssignments`, `UpdateGroup`, `UpdateServicePrincipal`, `UpdateUser` and `UpdateWorkspaceAssignment` methods for [a.AccountIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#AccountIamV2API) account-level service. Method path has changed.
+* [Breaking] Change `CreateDirectGroupMemberProxy`, `DeleteDirectGroupMemberProxy`, `DeleteGroupProxy`, `DeleteServicePrincipalProxy`, `DeleteUserProxy`, `DeleteWorkspaceAssignmentProxy`, `GetDirectGroupMemberProxy`, `GetGroupProxy`, `GetServicePrincipalProxy`, `GetUserProxy`, `GetWorkspaceAccessDetailLocal`, `GetWorkspaceAssignmentProxy`, `GetWorkspaceIdentityDetail`, `ListDirectGroupMembersProxy`, `ListTransitiveParentGroupsProxy`, `UpdateGroupProxy`, `UpdateServicePrincipalProxy`, `UpdateUserProxy`, `UpdateWorkspaceAssignmentProxy` and `UpdateWorkspaceIdentityDetail` methods for [w.WorkspaceIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API) workspace-level service with new required argument order.
+* [Breaking] Change `CreateDirectGroupMemberProxy`, `DeleteDirectGroupMemberProxy`, `DeleteGroupProxy`, `DeleteServicePrincipalProxy`, `DeleteUserProxy`, `DeleteWorkspaceAssignmentProxy`, `GetDirectGroupMemberProxy`, `GetGroupProxy`, `GetServicePrincipalProxy`, `GetUserProxy`, `GetWorkspaceAccessDetailLocal`, `GetWorkspaceAssignmentProxy`, `GetWorkspaceIdentityDetail`, `ListDirectGroupMembersProxy`, `ListTransitiveParentGroupsProxy`, `UpdateGroupProxy`, `UpdateServicePrincipalProxy`, `UpdateUserProxy`, `UpdateWorkspaceAssignmentProxy` and `UpdateWorkspaceIdentityDetail` methods for [w.WorkspaceIamV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#WorkspaceIamV2API) workspace-level service. Method path has changed.
+* [Breaking] Remove `GroupId` field for [iamv2.CreateDirectGroupMemberProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateDirectGroupMemberProxyRequest).
+* [Breaking] Remove `AccountId` and `GroupId` fields for [iamv2.CreateDirectGroupMemberRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateDirectGroupMemberRequest).
+* [Breaking] Remove `AccountId` field for [iamv2.CreateGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateGroupRequest).
+* [Breaking] Remove `AccountId` field for [iamv2.CreateServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateServicePrincipalRequest).
+* [Breaking] Remove `AccountId` field for [iamv2.CreateUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateUserRequest).
+* [Breaking] Remove `AccountId` and `WorkspaceId` fields for [iamv2.CreateWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#CreateWorkspaceAssignmentRequest).
+* [Breaking] Remove `GroupId` and `PrincipalId` fields for [iamv2.DeleteDirectGroupMemberProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteDirectGroupMemberProxyRequest).
+* [Breaking] Remove `AccountId`, `GroupId` and `PrincipalId` fields for [iamv2.DeleteDirectGroupMemberRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteDirectGroupMemberRequest).
+* [Breaking] Remove `GroupId` field for [iamv2.DeleteGroupProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteGroupProxyRequest).
+* [Breaking] Remove `AccountId` and `GroupId` fields for [iamv2.DeleteGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteGroupRequest).
+* [Breaking] Remove `ServicePrincipalId` field for [iamv2.DeleteServicePrincipalProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteServicePrincipalProxyRequest).
+* [Breaking] Remove `AccountId` and `ServicePrincipalId` fields for [iamv2.DeleteServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteServicePrincipalRequest).
+* [Breaking] Remove `UserId` field for [iamv2.DeleteUserProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteUserProxyRequest).
+* [Breaking] Remove `AccountId` and `UserId` fields for [iamv2.DeleteUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteUserRequest).
+* [Breaking] Remove `PrincipalId` field for [iamv2.DeleteWorkspaceAssignmentProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteWorkspaceAssignmentProxyRequest).
+* [Breaking] Remove `AccountId`, `WorkspaceId` and `PrincipalId` fields for [iamv2.DeleteWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#DeleteWorkspaceAssignmentRequest).
+* [Breaking] Remove `GroupId` and `PrincipalId` fields for [iamv2.GetDirectGroupMemberProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetDirectGroupMemberProxyRequest).
+* [Breaking] Remove `AccountId`, `GroupId` and `PrincipalId` fields for [iamv2.GetDirectGroupMemberRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetDirectGroupMemberRequest).
+* [Breaking] Remove `GroupId` field for [iamv2.GetGroupProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetGroupProxyRequest).
+* [Breaking] Remove `AccountId` and `GroupId` fields for [iamv2.GetGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetGroupRequest).
+* [Breaking] Remove `ServicePrincipalId` field for [iamv2.GetServicePrincipalProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetServicePrincipalProxyRequest).
+* [Breaking] Remove `AccountId` and `ServicePrincipalId` fields for [iamv2.GetServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetServicePrincipalRequest).
+* [Breaking] Remove `UserId` field for [iamv2.GetUserProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetUserProxyRequest).
+* [Breaking] Remove `AccountId` and `UserId` fields for [iamv2.GetUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetUserRequest).
+* [Breaking] Remove `PrincipalId` field for [iamv2.GetWorkspaceAccessDetailLocalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAccessDetailLocalRequest).
+* [Breaking] Remove `AccountId`, `WorkspaceId` and `PrincipalId` fields for [iamv2.GetWorkspaceAccessDetailRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAccessDetailRequest).
+* [Breaking] Remove `PrincipalId` field for [iamv2.GetWorkspaceAssignmentProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAssignmentProxyRequest).
+* [Breaking] Remove `AccountId`, `WorkspaceId` and `PrincipalId` fields for [iamv2.GetWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceAssignmentRequest).
+* [Breaking] Remove `PrincipalId` field for [iamv2.GetWorkspaceIdentityDetailRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#GetWorkspaceIdentityDetailRequest).
+* [Breaking] Remove `GroupId` field for [iamv2.ListDirectGroupMembersProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListDirectGroupMembersProxyRequest).
+* [Breaking] Remove `AccountId` and `GroupId` fields for [iamv2.ListDirectGroupMembersRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListDirectGroupMembersRequest).
+* [Breaking] Remove `AccountId` field for [iamv2.ListGroupsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListGroupsRequest).
+* [Breaking] Remove `AccountId` field for [iamv2.ListServicePrincipalsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListServicePrincipalsRequest).
+* [Breaking] Remove `PrincipalId` field for [iamv2.ListTransitiveParentGroupsProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListTransitiveParentGroupsProxyRequest).
+* [Breaking] Remove `AccountId` and `PrincipalId` fields for [iamv2.ListTransitiveParentGroupsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListTransitiveParentGroupsRequest).
+* [Breaking] Remove `AccountId` field for [iamv2.ListUsersRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListUsersRequest).
+* [Breaking] Remove `AccountId` and `WorkspaceId` fields for [iamv2.ListWorkspaceAssignmentsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#ListWorkspaceAssignmentsRequest).
+* [Breaking] Remove `GroupId` field for [iamv2.UpdateGroupProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateGroupProxyRequest).
+* [Breaking] Remove `AccountId` and `GroupId` fields for [iamv2.UpdateGroupRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateGroupRequest).
+* [Breaking] Remove `ServicePrincipalId` field for [iamv2.UpdateServicePrincipalProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateServicePrincipalProxyRequest).
+* [Breaking] Remove `AccountId` and `ServicePrincipalId` fields for [iamv2.UpdateServicePrincipalRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateServicePrincipalRequest).
+* [Breaking] Remove `UserId` field for [iamv2.UpdateUserProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateUserProxyRequest).
+* [Breaking] Remove `AccountId` and `UserId` fields for [iamv2.UpdateUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateUserRequest).
+* [Breaking] Remove `PrincipalId` field for [iamv2.UpdateWorkspaceAssignmentProxyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateWorkspaceAssignmentProxyRequest).
+* [Breaking] Remove `AccountId`, `WorkspaceId` and `PrincipalId` fields for [iamv2.UpdateWorkspaceAssignmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateWorkspaceAssignmentRequest).
+* [Breaking] Remove `PrincipalId` field for [iamv2.UpdateWorkspaceIdentityDetailRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iamv2#UpdateWorkspaceIdentityDetailRequest).
+
 ## Release v0.191.1 (2026-10-28)
 
 ### Bug Fixes

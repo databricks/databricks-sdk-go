@@ -196,7 +196,13 @@ type PostgresService interface {
 	// Updates the specified database project.
 	UpdateProject(ctx context.Context, request UpdateProjectRequest) (*Operation, error)
 
-	// Update a role for a branch.
+	// Updates the mutable fields of a Postgres role for a branch.
+	//
+	// The fields `spec.identity_type`, `spec.auth_method`, and
+	// `spec.postgres_role` are fixed when the role is created. UpdateRole
+	// ignores values supplied for these fields in the request body and retains
+	// their existing values. Explicitly naming one of these fields in
+	// `update_mask` returns an INVALID_PARAMETER_VALUE error.
 	UpdateRole(ctx context.Context, request UpdateRoleRequest) (*Operation, error)
 
 	// Sets the snapshot schedule for a branch. The `schedule` field is replaced

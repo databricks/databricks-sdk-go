@@ -62,6 +62,8 @@
 //
 // - [settings.ComplianceSecurityProfileAPI]: Controls whether to enable the compliance security profile for the current workspace.
 //
+// - [computemigrations.ComputeMigrationsAPI]: Manage migrations of Classic compute workloads to Serverless.
+//
 // - [catalog.ConnectionsAPI]: A connection represents an external data source for use within Databricks.
 //
 // - [marketplace.ConsumerFulfillmentsAPI]: Fulfillments are entities that allow consumers to preview installations.
@@ -159,6 +161,8 @@
 // - [catalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 //
 // - [dashboards.GenieAPI]: Genie provides a no-code experience for business users, powered by AI/BI.
+//
+// - [genieagents.GenieAgentsAPI]: Genie provides a no-code experience for business users, powered by AI/BI.
 //
 // - [workspace.GitCredentialsAPI]: Registers personal access token for Databricks to do operations on behalf of the user.
 //
@@ -400,6 +404,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/computemigrations"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/dataclassification"
@@ -408,6 +413,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/domains"
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
+	"github.com/databricks/databricks-sdk-go/service/genieagents"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -468,6 +474,7 @@ var (
 	_ *compute.ClustersAPI                                = nil
 	_ *compute.CommandExecutionAPI                        = nil
 	_ *settings.ComplianceSecurityProfileAPI              = nil
+	_ *computemigrations.ComputeMigrationsAPI             = nil
 	_ *catalog.ConnectionsAPI                             = nil
 	_ *marketplace.ConsumerFulfillmentsAPI                = nil
 	_ *marketplace.ConsumerInstallationsAPI               = nil
@@ -517,6 +524,7 @@ var (
 	_ *ml.ForecastingAPI                                  = nil
 	_ *catalog.FunctionsAPI                               = nil
 	_ *dashboards.GenieAPI                                = nil
+	_ *genieagents.GenieAgentsAPI                         = nil
 	_ *workspace.GitCredentialsAPI                        = nil
 	_ *compute.GlobalInitScriptsAPI                       = nil
 	_ *catalog.GrantsAPI                                  = nil

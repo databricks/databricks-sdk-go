@@ -5,9 +5,262 @@ package jobs
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/duration"
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
+
+// Configuration for a task that runs the `ai_classify` function.
+//
+// The label set comes from exactly one of two places: `inline_labels`, which
+// holds up to 10 labels, or a Unity Catalog table named by `label_table`. Use
+// `label_table` for a larger label set.
+type AiClassifyFunction struct {
+	// When true, includes a per-label confidence score in the response.
+	EnableConfidenceScores bool `json:"enable_confidence_scores,omitempty"`
+	// When true, includes a rationale explaining each classification in the
+	// response.
+	EnableRationales bool `json:"enable_rationales,omitempty"`
+	// Labels listed inline, for a small label set.
+	InlineLabels *AiClassifyFunctionInlineLabels `json:"inline_labels,omitempty"`
+	// Global description of the task and domain, passed to the model to improve
+	// classification quality.
+	Instructions string `json:"instructions,omitempty"`
+	// When true, more than one label can be returned for each input.
+	Multilabel bool `json:"multilabel,omitempty"`
+	// The ai_classify function version to invoke (for example, `2.1`).
+	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiClassifyFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiClassifyFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A label set listed inline.
+type AiClassifyFunctionInlineLabels struct {
+	// The labels an input can be classified as. At least two labels are
+	// required unless `multilabel` is true, which also accepts a single label.
+	Labels []AiClassifyFunctionLabel `json:"labels"`
+}
+
+func (s *AiClassifyFunctionInlineLabels) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// One label the input can be classified as.
+type AiClassifyFunctionLabel struct {
+	// Guidance describing what belongs under this label.
+	Description string `json:"description,omitempty"`
+	// The name returned when an input is classified as this label.
+	Name string `json:"name"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiClassifyFunctionLabel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiClassifyFunctionLabel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Configuration for a task that runs the `ai_extract` function.
+//
+// The fields to extract come from exactly one of two places: an existing AI
+// Extract agent, named by `agent_id`, or the inline `schema` and
+// `instructions`. Set `agent_id` or the inline fields, not both.
+type AiExtractFunction struct {
+	// When true, includes citation metadata locating each extracted value in
+	// the source.
+	EnableCitations bool `json:"enable_citations,omitempty"`
+	// When true, includes a per-field confidence score in the response.
+	EnableConfidenceScores bool `json:"enable_confidence_scores,omitempty"`
+	// Global description of the task and domain, passed to the model to improve
+	// extraction quality.
+	Instructions string `json:"instructions,omitempty"`
+	// The extraction mode. Defaults to standard extraction when unspecified.
+	Mode AiExtractFunctionMode `json:"mode,omitempty"`
+	// The extraction schema defining the fields to extract, as a JSON string.
+	// Either an array of field names (e.g. ["company", "valuation"]) or an
+	// object mapping each field name to a type and an optional description.
+	// Supported types are string, integer, number, boolean, enum, object, and
+	// array; all fields are optional.
+	Schema string `json:"schema,omitempty"`
+	// The ai_extract function version to invoke (for example, `2.1`).
+	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiExtractFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiExtractFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The extraction mode.
+type AiExtractFunctionMode string
+
+const AiExtractFunctionModeModePrecision AiExtractFunctionMode = `MODE_PRECISION`
+
+// String representation for [fmt.Print]
+func (f *AiExtractFunctionMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AiExtractFunctionMode) Set(v string) error {
+	switch v {
+	case `MODE_PRECISION`:
+		*f = AiExtractFunctionMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MODE_PRECISION"`, v)
+	}
+}
+
+// Values returns all possible values for AiExtractFunctionMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AiExtractFunctionMode) Values() []AiExtractFunctionMode {
+	return []AiExtractFunctionMode{
+		AiExtractFunctionModeModePrecision,
+	}
+}
+
+// Type always returns AiExtractFunctionMode to satisfy [pflag.Value] interface
+func (f *AiExtractFunctionMode) Type() string {
+	return "AiExtractFunctionMode"
+}
+
+// A task that applies an AI function to a set of input documents or rows.
+type AiFunctionTask struct {
+	// Classifies each input document or row into one or more labels.
+	AiClassify *AiClassifyFunction `json:"ai_classify,omitempty"`
+	// Extracts structured fields from the input documents or rows.
+	AiExtract *AiExtractFunction `json:"ai_extract,omitempty"`
+	// Parses the input documents into structured text.
+	AiParseDocument *AiParseDocumentFunction `json:"ai_parse_document,omitempty"`
+	// A Unity Catalog Delta table. The function is applied to each row.
+	DeltaTable *DeltaTableSource `json:"delta_table,omitempty"`
+	// Output destination table. When `table` is unset the task generates a
+	// stable name from the function and task identity so a downstream task can
+	// reference it.
+	Output QualifiedName `json:"output"`
+	// A Unity Catalog volume. The function is applied to each file.
+	Volume *VolumeSource `json:"volume,omitempty"`
+}
+
+func (s *AiFunctionTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The result of an AI function task run. Also reported mid-run, so the counts
+// can be partial.
+type AiFunctionTaskOutput struct {
+	// Coarse estimate of the time left to run the function over the inputs,
+	// from the throughput so far. Covers that work only, not the merge into the
+	// output table that follows it.
+	EstimatedTimeRemaining *duration.Duration `json:"estimated_time_remaining,omitempty"`
+	// Inputs permanently failed so far. Each lands in the output table as an
+	// error row, and does not on its own fail the run.
+	FailedRowCount int64 `json:"failed_row_count,omitempty"`
+	// The table the run writes its results to. Reported even when
+	// `output.table` is unset and the name is generated, so a client can read
+	// the table.
+	OutputTable *QualifiedName `json:"output_table,omitempty"`
+	// Inputs with a result so far. Reported per batch, so it can lag mid-run.
+	SucceededRowCount int64 `json:"succeeded_row_count,omitempty"`
+	// Inputs to process: rows for a Delta table source, files for a volume
+	// source. Stays well inside 2^53, so a JavaScript client can hold it
+	// exactly.
+	TotalRowCount int64 `json:"total_row_count,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiFunctionTaskOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiFunctionTaskOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Configuration for a task that runs the `ai_parse_document` function.
+type AiParseDocumentFunction struct {
+	// Element types to generate AI descriptions for. Leave empty to generate no
+	// descriptions; use ALL for every supported type, or list specific types to
+	// restrict generation to only those.
+	DescriptionElementTypes []AiParseDocumentFunctionDescriptionElementType `json:"description_element_types,omitempty"`
+	// Unity Catalog volume path where rendered page and element images are
+	// written.
+	ImageOutputPath string `json:"image_output_path,omitempty"`
+	// Pages to parse (1-indexed), as a comma-separated list of page numbers or
+	// ranges (e.g. "1,3,5-10").
+	PageRange string `json:"page_range,omitempty"`
+	// The ai_parse_document output schema version to invoke (for example,
+	// `2.0`).
+	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiParseDocumentFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiParseDocumentFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// An element type that AI descriptions can be generated for.
+type AiParseDocumentFunctionDescriptionElementType string
+
+const AiParseDocumentFunctionDescriptionElementTypeDescriptionElementTypeAll AiParseDocumentFunctionDescriptionElementType = `DESCRIPTION_ELEMENT_TYPE_ALL`
+
+const AiParseDocumentFunctionDescriptionElementTypeDescriptionElementTypeFigure AiParseDocumentFunctionDescriptionElementType = `DESCRIPTION_ELEMENT_TYPE_FIGURE`
+
+// String representation for [fmt.Print]
+func (f *AiParseDocumentFunctionDescriptionElementType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AiParseDocumentFunctionDescriptionElementType) Set(v string) error {
+	switch v {
+	case `DESCRIPTION_ELEMENT_TYPE_ALL`, `DESCRIPTION_ELEMENT_TYPE_FIGURE`:
+		*f = AiParseDocumentFunctionDescriptionElementType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DESCRIPTION_ELEMENT_TYPE_ALL", "DESCRIPTION_ELEMENT_TYPE_FIGURE"`, v)
+	}
+}
+
+// Values returns all possible values for AiParseDocumentFunctionDescriptionElementType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AiParseDocumentFunctionDescriptionElementType) Values() []AiParseDocumentFunctionDescriptionElementType {
+	return []AiParseDocumentFunctionDescriptionElementType{
+		AiParseDocumentFunctionDescriptionElementTypeDescriptionElementTypeAll,
+		AiParseDocumentFunctionDescriptionElementTypeDescriptionElementTypeFigure,
+	}
+}
+
+// Type always returns AiParseDocumentFunctionDescriptionElementType to satisfy [pflag.Value] interface
+func (f *AiParseDocumentFunctionDescriptionElementType) Type() string {
+	return "AiParseDocumentFunctionDescriptionElementType"
+}
 
 // AiRuntimeTask: multi-node GPU compute task definition for Databricks AI
 // Runtime workloads.
@@ -778,6 +1031,31 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A single upstream completion that contributed to triggering the run, captured
+// at trigger time
+type CompletedJob struct {
+	// The completion time of the upstream run
+	CompletionTime *time.Time `json:"completion_time,omitempty"`
+	// The ID of the upstream job
+	JobId string `json:"job_id,omitempty"`
+	// The ID of the upstream run whose completion contributed to the trigger
+	RunId string `json:"run_id,omitempty"`
+	// The termination code of the upstream run
+	TerminationCode TerminationCodeCode `json:"termination_code,omitempty"`
+	// The ID of the workspace containing the upstream job
+	WorkspaceId string `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CompletedJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CompletedJob) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Compute struct {
 	// Hardware accelerator configuration for Serverless GPU workloads.
 	HardwareAccelerator compute.HardwareAcceleratorType `json:"hardware_accelerator,omitempty"`
@@ -1095,12 +1373,13 @@ type CreateJob struct {
 	// that uses Environments mode.
 	//
 	// For notebook tasks that use serverless compute or a compute resource that
-	// uses Environments mode, if the environment_key is not specified, the
+	// uses Environments mode, if the `environment_key` is not specified, the
 	// notebook environment will be used if present. If a jobs environment is
-	// specified, it will override the notebook environment. For other tasks
-	// that use serverless compute or a compute resource that uses Environments
-	// mode, the task environment is required to be specified using
-	// environment_key in the task settings.
+	// specified, it will override the notebook environment.
+	//
+	// For other tasks that use serverless compute or a compute resource that
+	// uses Environments mode, the task environment is required to be specified
+	// using `environment_key` in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -1648,6 +1927,27 @@ type DeleteRun struct {
 }
 
 func (s *DeleteRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A Unity Catalog Delta table input source. The function is applied to each
+// row.
+type DeltaTableSource struct {
+	// Name of the column holding the content the function is applied to.
+	InputColumn string `json:"input_column"`
+	// Columns that together identify a row across incremental runs, so results
+	// can be matched back to their source rows. When unset, the task derives an
+	// implicit key from Delta row tracking. If row tracking is also disabled
+	// there is no stable key, so each run reprocesses the entire source (a full
+	// refresh) rather than only the changed rows; set a key column or enable
+	// row tracking to keep runs incremental.
+	MergeKeyColumns []string `json:"merge_key_columns,omitempty"`
+	// Fully qualified three-part name of the source table
+	// (catalog.schema.table).
+	TableName string `json:"table_name"`
+}
+
+func (s *DeltaTableSource) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2334,6 +2634,10 @@ type JobCluster struct {
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	// Serverless compute settings for this cluster. At most one job cluster per
+	// job may set this field; the rate limit defined on the referenced policy
+	// applies across all tasks bound to this cluster.
+	ServerlessCompute *JobClusterServerlessCompute `json:"serverless_compute,omitempty"`
 	// The ID of the serverless compute object to bind this cluster to. At most
 	// one JobCluster per job may set this field; the rate limit defined on the
 	// referenced serverless compute applies across all tasks bound to this
@@ -2348,6 +2652,152 @@ func (s *JobCluster) UnmarshalJSON(b []byte) error {
 }
 
 func (s JobCluster) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Serverless compute settings for a job cluster.
+type JobClusterServerlessCompute struct {
+	// The ID of the serverless compute policy to apply to this cluster.
+	PolicyId string `json:"policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JobClusterServerlessCompute) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobClusterServerlessCompute) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A trigger that starts a run after every upstream job completes with a
+// configured status.
+type JobCompletionTriggerConfiguration struct {
+	// The status that all upstream jobs must have before this trigger fires.
+	// Defaults to SUCCESS.
+	IfStatus JobCompletionTriggerConfigurationIfStatus `json:"if_status,omitempty"`
+	// The upstream jobs to monitor. Each job must be in a workspace attached to
+	// the same Unity Catalog metastore as the downstream job. A maximum of 10
+	// jobs can be monitored.
+	Jobs []JobCompletionTriggerConfigurationMonitoredJob `json:"jobs"`
+}
+
+func (s *JobCompletionTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The status that all upstream jobs must have before a job completion trigger
+// fires.
+type JobCompletionTriggerConfigurationIfStatus string
+
+const JobCompletionTriggerConfigurationIfStatusDone JobCompletionTriggerConfigurationIfStatus = `DONE`
+
+const JobCompletionTriggerConfigurationIfStatusFailed JobCompletionTriggerConfigurationIfStatus = `FAILED`
+
+const JobCompletionTriggerConfigurationIfStatusSuccess JobCompletionTriggerConfigurationIfStatus = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (f *JobCompletionTriggerConfigurationIfStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobCompletionTriggerConfigurationIfStatus) Set(v string) error {
+	switch v {
+	case `DONE`, `FAILED`, `SUCCESS`:
+		*f = JobCompletionTriggerConfigurationIfStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DONE", "FAILED", "SUCCESS"`, v)
+	}
+}
+
+// Values returns all possible values for JobCompletionTriggerConfigurationIfStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *JobCompletionTriggerConfigurationIfStatus) Values() []JobCompletionTriggerConfigurationIfStatus {
+	return []JobCompletionTriggerConfigurationIfStatus{
+		JobCompletionTriggerConfigurationIfStatusDone,
+		JobCompletionTriggerConfigurationIfStatusFailed,
+		JobCompletionTriggerConfigurationIfStatusSuccess,
+	}
+}
+
+// Type always returns JobCompletionTriggerConfigurationIfStatus to satisfy [pflag.Value] interface
+func (f *JobCompletionTriggerConfigurationIfStatus) Type() string {
+	return "JobCompletionTriggerConfigurationIfStatus"
+}
+
+// An upstream job to monitor.
+type JobCompletionTriggerConfigurationMonitoredJob struct {
+	// The ID of the upstream job.
+	JobId string `json:"job_id"`
+	// The ID of the workspace containing the upstream job. This can differ from
+	// the caller's workspace and downstream services enforce correct
+	// entitlements and CAN_VIEW permissions for the user + job combination.
+	// SDR: https://databricks.atlassian.net/browse/SDR-5267
+	WorkspaceId string `json:"workspace_id"`
+}
+
+func (s *JobCompletionTriggerConfigurationMonitoredJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Contains the immutable set of upstream completions that triggered the run, in
+// configured jobs order
+type JobCompletionTriggerRunInfoDetails struct {
+	CompletedJobs []CompletedJob `json:"completed_jobs,omitempty"`
+}
+
+func (s *JobCompletionTriggerRunInfoDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Runtime state for a job completion trigger.
+type JobCompletionTriggerState struct {
+	// State for each configured upstream job, in the same order as `jobs`.
+	MonitoredJobStates []JobCompletionTriggerStateMonitoredJobState `json:"monitored_job_states,omitempty"`
+}
+
+func (s *JobCompletionTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type JobCompletionTriggerStateMonitoredJobState struct {
+	// Whether this job has contributed a matching completion toward the next
+	// trigger fire.
+	HasSeenCompletion bool `json:"has_seen_completion,omitempty"`
+	// Whether the upstream job was missing or deleted when last observed by
+	// this trigger. Omitted when deletion status is unknown. This observation
+	// may become stale while the trigger is paused or evaluation cannot access
+	// the upstream job.
+	IsDeleted bool `json:"is_deleted,omitempty"`
+	// The ID of the upstream job.
+	JobId string `json:"job_id,omitempty"`
+	// The completion time of the latest matching upstream run observed by the
+	// trigger.
+	LastSeenCompletionTime *time.Time `json:"last_seen_completion_time,omitempty"`
+	// The termination code of the latest matching upstream run observed by the
+	// trigger.
+	LastSeenResult TerminationCodeCode `json:"last_seen_result,omitempty"`
+	// The ID of the latest matching upstream run observed by the trigger.
+	LastSeenRunId string `json:"last_seen_run_id,omitempty"`
+	// The termination code of the latest upstream run if it does not satisfy
+	// `if_status`. Unset when the latest run matches or no run has been
+	// observed.
+	LatestNonMatchingResult TerminationCodeCode `json:"latest_non_matching_result,omitempty"`
+	// The ID of the workspace containing the upstream job.
+	WorkspaceId string `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JobCompletionTriggerStateMonitoredJobState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobCompletionTriggerStateMonitoredJobState) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2832,12 +3282,13 @@ type JobSettings struct {
 	// that uses Environments mode.
 	//
 	// For notebook tasks that use serverless compute or a compute resource that
-	// uses Environments mode, if the environment_key is not specified, the
+	// uses Environments mode, if the `environment_key` is not specified, the
 	// notebook environment will be used if present. If a jobs environment is
-	// specified, it will override the notebook environment. For other tasks
-	// that use serverless compute or a compute resource that uses Environments
-	// mode, the task environment is required to be specified using
-	// environment_key in the task settings.
+	// specified, it will override the notebook environment.
+	//
+	// For other tasks that use serverless compute or a compute resource that
+	// uses Environments mode, the task environment is required to be specified
+	// using `environment_key` in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -3565,6 +4016,8 @@ type PerTriggerState struct {
 
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
 
+	JobCompletion *JobCompletionTriggerState `json:"job_completion,omitempty"`
+
 	Model *ModelTriggerState `json:"model,omitempty"`
 	// Whether this trigger is paused or not. Mirrors the configured
 	// pause_status.
@@ -3869,6 +4322,27 @@ type PythonWheelTask struct {
 
 func (s *PythonWheelTask) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// A three-level Unity Catalog name (catalog.schema.table); any level may be
+// unset.
+type QualifiedName struct {
+	// Unity Catalog catalog.
+	Catalog string `json:"catalog,omitempty"`
+	// Unity Catalog schema, within the catalog.
+	Schema string `json:"schema,omitempty"`
+	// Table, within the catalog and schema.
+	Table string `json:"table,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *QualifiedName) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QualifiedName) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type QueueDetails struct {
@@ -4278,6 +4752,9 @@ func (s *ResolvedStringParamsValues) UnmarshalJSON(b []byte) error {
 }
 
 type ResolvedValues struct {
+	// Resolved values for an AI Function task: the Delta table input with
+	// upstream-task references replaced by concrete values before the run.
+	AiFunctionTask *ResolvedValuesAiFunctionTaskResolvedValues `json:"ai_function_task,omitempty"`
 	// Resolved values for an AI Runtime task — env_vars with
 	// `{{tasks.<key>.values.<name>}}` references substituted to concrete values
 	// before submission to the training service.
@@ -4307,6 +4784,14 @@ type ResolvedValues struct {
 }
 
 func (s *ResolvedValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Resolved values for an AI Function task's Delta table input.
+type ResolvedValuesAiFunctionTaskResolvedValues struct {
+}
+
+func (s *ResolvedValuesAiFunctionTaskResolvedValues) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -5049,6 +5534,8 @@ func (s RunNowResponse) MarshalJSON() ([]byte, error) {
 
 // Run output was retrieved successfully.
 type RunOutput struct {
+	// The output of an AI function task, if available
+	AiFunctionTaskOutput *AiFunctionTaskOutput `json:"ai_function_task_output,omitempty"`
 	// The output of an AiRuntimeTask, if available — MLflow identifiers,
 	// artifact paths, and per-replica allocated compute. Run lifecycle /
 	// termination status lives on the surrounding framework `RunTask.status`
@@ -5343,6 +5830,8 @@ func (s *RunStatus) UnmarshalJSON(b []byte) error {
 
 // Used when outputting a child run, in GetRun or ListRuns.
 type RunTask struct {
+	// Applies an AI function to a set of input documents or rows.
+	AiFunctionTask *AiFunctionTask `json:"ai_function_task,omitempty"`
 	// The task runs a multi-gpu compute workload on Databricks AI Runtime.
 	// Specify the accelerator type and count, the command to run, and where the
 	// workload's code and MLflow output are stored.
@@ -6451,6 +6940,8 @@ func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
 }
 
 type SubmitTask struct {
+	// Applies an AI function to a set of input documents or rows.
+	AiFunctionTask *AiFunctionTask `json:"ai_function_task,omitempty"`
 	// The task runs a multi-gpu compute workload on Databricks AI Runtime.
 	// Specify the accelerator type and count, the command to run, and where the
 	// workload's code and MLflow output are stored.
@@ -6868,6 +7359,8 @@ func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type Task struct {
+	// Applies an AI function to a set of input documents or rows.
+	AiFunctionTask *AiFunctionTask `json:"ai_function_task,omitempty"`
 	// The task runs a multi-gpu compute workload on Databricks AI Runtime.
 	// Specify the accelerator type and count, the command to run, and where the
 	// workload's code and MLflow output are stored.
@@ -7453,6 +7946,8 @@ type TriggerConfiguration struct {
 	Continuous *ContinuousTriggerConfiguration `json:"continuous,omitempty"`
 	// File arrival trigger configuration.
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+	// Job completion trigger configuration.
+	JobCompletion *JobCompletionTriggerConfiguration `json:"job_completion,omitempty"`
 	// Model trigger configuration.
 	Model *ModelTriggerConfiguration `json:"model,omitempty"`
 	// Whether this trigger is paused. Defaults to UNPAUSED when unset; the
@@ -7526,6 +8021,9 @@ func (s *TriggerHistory) UnmarshalJSON(b []byte) error {
 
 // Additional details about what triggered the run
 type TriggerInfo struct {
+	// Additional details for job runs triggered by a job completion trigger
+	// (trigger: "JOB_COMPLETION")
+	JobCompletion *JobCompletionTriggerRunInfoDetails `json:"job_completion,omitempty"`
 	// The run id of the Run Job task run
 	RunId int64 `json:"run_id,omitempty"`
 	// SQL condition evaluation details for this run
@@ -7545,6 +8043,8 @@ func (s TriggerInfo) MarshalJSON() ([]byte, error) {
 type TriggerSettings struct {
 	// File arrival trigger settings.
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+	// Job completion trigger settings.
+	JobCompletion *JobCompletionTriggerConfiguration `json:"job_completion,omitempty"`
 
 	Model *ModelTriggerConfiguration `json:"model,omitempty"`
 	// Whether this trigger is paused or not.
@@ -7565,6 +8065,8 @@ func (s *TriggerSettings) UnmarshalJSON(b []byte) error {
 
 type TriggerStateProto struct {
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
+
+	JobCompletion *JobCompletionTriggerState `json:"job_completion,omitempty"`
 	// Whether this trigger is paused or not. For continuous schedules, it can
 	// differ from the configured pause_status whenever a paused continuous job
 	// is kickstarted by an operation other than an update, such as a run-now.
@@ -7606,6 +8108,9 @@ const TriggerTypeContinuousRestart TriggerType = `CONTINUOUS_RESTART`
 // Indicates a run that is triggered by a file arrival.
 const TriggerTypeFileArrival TriggerType = `FILE_ARRIVAL`
 
+// Indicates a run that is triggered by an upstream job completion.
+const TriggerTypeJobCompletion TriggerType = `JOB_COMPLETION`
+
 // One time triggers that fire a single run. This occurs you triggered a single
 // run on demand through the UI or the API.
 const TriggerTypeOneTime TriggerType = `ONE_TIME`
@@ -7631,11 +8136,11 @@ func (f *TriggerType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TriggerType) Set(v string) error {
 	switch v {
-	case `CONTINUOUS`, `CONTINUOUS_RESTART`, `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`, `RUN_JOB_TASK`, `TABLE`:
+	case `CONTINUOUS`, `CONTINUOUS_RESTART`, `FILE_ARRIVAL`, `JOB_COMPLETION`, `ONE_TIME`, `PERIODIC`, `RETRY`, `RUN_JOB_TASK`, `TABLE`:
 		*f = TriggerType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "CONTINUOUS_RESTART", "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY", "RUN_JOB_TASK", "TABLE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "CONTINUOUS_RESTART", "FILE_ARRIVAL", "JOB_COMPLETION", "ONE_TIME", "PERIODIC", "RETRY", "RUN_JOB_TASK", "TABLE"`, v)
 	}
 }
 
@@ -7647,6 +8152,7 @@ func (f *TriggerType) Values() []TriggerType {
 		TriggerTypeContinuous,
 		TriggerTypeContinuousRestart,
 		TriggerTypeFileArrival,
+		TriggerTypeJobCompletion,
 		TriggerTypeOneTime,
 		TriggerTypePeriodic,
 		TriggerTypeRetry,
@@ -7789,6 +8295,17 @@ func (f *ViewsToExport) Values() []ViewsToExport {
 // Type always returns ViewsToExport to satisfy [pflag.Value] interface
 func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
+}
+
+// A Unity Catalog volume input source. The function is applied to each file.
+type VolumeSource struct {
+	// Unity Catalog volume path to the input files (e.g.
+	// `/Volumes/<catalog>/<schema>/<volume>/...`).
+	VolumePath string `json:"volume_path"`
+}
+
+func (s *VolumeSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type Webhook struct {
