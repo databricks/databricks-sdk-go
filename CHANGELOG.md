@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.193.0 (2026-11-03)
+
+### API Changes
+* Add `ViewName` field for [ml.IngestionDestination](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#IngestionDestination).
+* Add `Notifications` field for [ml.MaterializationSet](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializationSet).
+
 ## Release v0.192.0 (2026-11-02)
 
 ### API Changes
