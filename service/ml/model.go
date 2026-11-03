@@ -3150,6 +3150,10 @@ type IngestionDestination struct {
 	// The full three-part name (catalog, schema, name) of the Delta table to be
 	// created for ingestion.
 	DeltaTableName string `json:"delta_table_name,omitempty"`
+	// The full three-part name (catalog, schema, name) of an existing view to
+	// use instead of creating a Delta table. The view is dropped when the
+	// Stream is deleted.
+	ViewName string `json:"view_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4506,6 +4510,11 @@ type MaterializationSet struct {
 	// the set with a materialized feature removed from this set will cause it
 	// to be deleted.
 	MaterializedFeatures []MaterializedFeature `json:"materialized_features,omitempty"`
+	// Notification configuration around the materialization job or pipeline
+	// lifecycle. They are applied to every job and pipeline that materializes a
+	// feature in this set. Features which are materialized in the same pipeline
+	// will share the same notification.
+	Notifications *MaterializationNotifications `json:"notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
