@@ -360,8 +360,6 @@ type AiRuntimeTaskPriorityClass string
 
 const AiRuntimeTaskPriorityClassBestEffort AiRuntimeTaskPriorityClass = `BEST_EFFORT`
 
-const AiRuntimeTaskPriorityClassCritical AiRuntimeTaskPriorityClass = `CRITICAL`
-
 const AiRuntimeTaskPriorityClassNormal AiRuntimeTaskPriorityClass = `NORMAL`
 
 // String representation for [fmt.Print]
@@ -372,11 +370,11 @@ func (f *AiRuntimeTaskPriorityClass) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AiRuntimeTaskPriorityClass) Set(v string) error {
 	switch v {
-	case `BEST_EFFORT`, `CRITICAL`, `NORMAL`:
+	case `BEST_EFFORT`, `NORMAL`:
 		*f = AiRuntimeTaskPriorityClass(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BEST_EFFORT", "CRITICAL", "NORMAL"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BEST_EFFORT", "NORMAL"`, v)
 	}
 }
 
@@ -386,7 +384,6 @@ func (f *AiRuntimeTaskPriorityClass) Set(v string) error {
 func (f *AiRuntimeTaskPriorityClass) Values() []AiRuntimeTaskPriorityClass {
 	return []AiRuntimeTaskPriorityClass{
 		AiRuntimeTaskPriorityClassBestEffort,
-		AiRuntimeTaskPriorityClassCritical,
 		AiRuntimeTaskPriorityClassNormal,
 	}
 }
