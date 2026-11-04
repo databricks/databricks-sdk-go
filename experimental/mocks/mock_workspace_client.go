@@ -29,6 +29,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/knowledgeassistants"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/lakewatch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
@@ -128,6 +129,7 @@ func NewMockWorkspaceClient(t interface {
 			KnowledgeAssistants:                 knowledgeassistants.NewMockKnowledgeAssistantsInterface(t),
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
 			LakeviewEmbedded:                    dashboards.NewMockLakeviewEmbeddedInterface(t),
+			Lakewatch:                           lakewatch.NewMockLakewatchInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
 			MaterializedFeatures:                ml.NewMockMaterializedFeaturesInterface(t),
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
@@ -910,6 +912,14 @@ func (m *MockWorkspaceClient) GetMockLakeviewEmbeddedAPI() *dashboards.MockLakev
 	api, ok := m.WorkspaceClient.LakeviewEmbedded.(*dashboards.MockLakeviewEmbeddedInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected LakeviewEmbedded to be *dashboards.MockLakeviewEmbeddedInterface, actual was %T", m.WorkspaceClient.LakeviewEmbedded))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockLakewatchAPI() *lakewatch.MockLakewatchInterface {
+	api, ok := m.WorkspaceClient.Lakewatch.(*lakewatch.MockLakewatchInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Lakewatch to be *lakewatch.MockLakewatchInterface, actual was %T", m.WorkspaceClient.Lakewatch))
 	}
 	return api
 }

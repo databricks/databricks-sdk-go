@@ -281,6 +281,9 @@ type FeatureEngineeringService interface {
 	// Create a Feature.
 	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)
 
+	// Create a feature spec.
+	CreateFeatureSpec(ctx context.Context, request CreateFeatureSpecRequest) (*FeatureSpec, error)
+
 	// Create a Kafka config. During PrPr, Kafka configs can be read and used
 	// when creating features under the entire metastore. Only the creator of
 	// the Kafka config can delete it.
@@ -298,6 +301,9 @@ type FeatureEngineeringService interface {
 
 	// Delete a Feature.
 	DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error
+
+	// Delete a feature spec.
+	DeleteFeatureSpec(ctx context.Context, request DeleteFeatureSpecRequest) error
 
 	// Delete a Kafka config. During PrPr, Kafka configs can be read and used
 	// when creating features under the entire metastore. Only the creator of
@@ -317,6 +323,9 @@ type FeatureEngineeringService interface {
 
 	// Get a Feature.
 	GetFeature(ctx context.Context, request GetFeatureRequest) (*Feature, error)
+
+	// Get a feature spec.
+	GetFeatureSpec(ctx context.Context, request GetFeatureSpecRequest) (*FeatureSpec, error)
 
 	// Get a Kafka config. During PrPr, Kafka configs can be read and used when
 	// creating features under the entire metastore. Only the creator of the

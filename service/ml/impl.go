@@ -914,6 +914,21 @@ func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request Crea
 	return &feature, err
 }
 
+func (a *featureEngineeringImpl) CreateFeatureSpec(ctx context.Context, request CreateFeatureSpecRequest) (*FeatureSpec, error) {
+	var featureSpec FeatureSpec
+	path := "/api/2.0/feature-engineering/feature-specs"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.FeatureSpec, &featureSpec)
+	return &featureSpec, err
+}
+
 func (a *featureEngineeringImpl) CreateKafkaConfig(ctx context.Context, request CreateKafkaConfigRequest) (*KafkaConfig, error) {
 	var kafkaConfig KafkaConfig
 	path := "/api/2.0/feature-engineering/features/kafka-configs"
@@ -994,6 +1009,19 @@ func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request Dele
 	return err
 }
 
+func (a *featureEngineeringImpl) DeleteFeatureSpec(ctx context.Context, request DeleteFeatureSpecRequest) error {
+	path := fmt.Sprintf("/api/2.0/feature-engineering/feature-specs/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *featureEngineeringImpl) DeleteKafkaConfig(ctx context.Context, request DeleteKafkaConfigRequest) error {
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -1062,6 +1090,20 @@ func (a *featureEngineeringImpl) GetFeature(ctx context.Context, request GetFeat
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &feature)
 	return &feature, err
+}
+
+func (a *featureEngineeringImpl) GetFeatureSpec(ctx context.Context, request GetFeatureSpecRequest) (*FeatureSpec, error) {
+	var featureSpec FeatureSpec
+	path := fmt.Sprintf("/api/2.0/feature-engineering/feature-specs/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &featureSpec)
+	return &featureSpec, err
 }
 
 func (a *featureEngineeringImpl) GetKafkaConfig(ctx context.Context, request GetKafkaConfigRequest) (*KafkaConfig, error) {

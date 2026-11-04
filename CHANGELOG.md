@@ -1,5 +1,14 @@
 # Version changelog
 
+## Release v0.194.0 (2026-11-04)
+
+### API Changes
+* Add [lakewatch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch) package.
+* Add [w.Lakewatch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#LakewatchAPI) workspace-level service.
+* Add `CancelBatch`, `CreateBatch`, `GetBatch` and `ListBatches` methods for [w.AiFunctions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aifunctions#AiFunctionsAPI) workspace-level service.
+* Add `CreateFeatureSpec`, `DeleteFeatureSpec` and `GetFeatureSpec` methods for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service.
+* [Breaking] Remove `Critical` enum value for [jobs.AiRuntimeTaskPriorityClass](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTaskPriorityClass).
+
 ## Release v0.193.0 (2026-11-03)
 
 ### API Changes

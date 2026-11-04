@@ -29,6 +29,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
+	"github.com/databricks/databricks-sdk-go/service/lakewatch"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
@@ -596,6 +597,10 @@ type WorkspaceClient struct {
 	// Token-based Lakeview APIs for embedding dashboards in external
 	// applications.
 	LakeviewEmbedded dashboards.LakeviewEmbeddedInterface
+
+	// Manage Lakewatch: security-analytics data sources, detection rules, and
+	// per-catalog configuration.
+	Lakewatch lakewatch.LakewatchInterface
 
 	// The Libraries API allows you to install and uninstall libraries and get
 	// the status of libraries on a cluster.
@@ -1571,6 +1576,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		KnowledgeAssistants:                 knowledgeassistants.NewKnowledgeAssistants(databricksClient),
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
+		Lakewatch:                           lakewatch.NewLakewatch(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
 		MaterializedFeatures:                ml.NewMaterializedFeatures(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),

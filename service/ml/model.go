@@ -783,6 +783,15 @@ func (s *CreateFeatureRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type CreateFeatureSpecRequest struct {
+	// The feature spec to create.
+	FeatureSpec FeatureSpec `json:"feature_spec"`
+}
+
+func (s *CreateFeatureSpecRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateFeatureTagRequest struct {
 	FeatureName string `json:"-" url:"-"`
 
@@ -1379,6 +1388,35 @@ func (s *DatasetInput) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A reference to a Feature.
+type DeclarativeFeature struct {
+	// Three-part Unity Catalog name (catalog.schema.feature) of the Feature.
+	Feature string `json:"feature"`
+}
+
+func (s *DeclarativeFeature) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A default value for a looked-up feature.
+type DefaultValue struct {
+	// Default value for the feature.
+	DefaultValue string `json:"default_value,omitempty"`
+	// Name of the feature: its output name if it is renamed, otherwise its name
+	// in the feature table.
+	Feature string `json:"feature"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DefaultValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DefaultValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteCommentRequest struct {
 	// Unique identifier of an activity
 	Id string `json:"-" url:"id"`
@@ -1403,6 +1441,16 @@ type DeleteFeatureRequest struct {
 }
 
 func (s *DeleteFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type DeleteFeatureSpecRequest struct {
+	// Three-part name (catalog.schema.feature_spec) of the feature spec to
+	// delete.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteFeatureSpecRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2281,6 +2329,38 @@ func (s Feature) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A Python UDF that computes a feature.
+type FeatureFunction struct {
+	// Bindings of the UDF's parameters to features.
+	InputBindings []FeatureFunctionInputBinding `json:"input_bindings,omitempty"`
+	// Output name of the feature that the UDF computes.
+	Output string `json:"output,omitempty"`
+	// Three-part name of the Python UDF.
+	Udf string `json:"udf"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Binds one parameter of the UDF to a feature.
+type FeatureFunctionInputBinding struct {
+	// Name of the feature bound to the parameter.
+	BoundFeature string `json:"bound_feature"`
+	// Name of the UDF parameter.
+	Parameter string `json:"parameter"`
+}
+
+func (s *FeatureFunctionInputBinding) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type FeatureLineage struct {
 	// List of feature specs that contain this feature.
 	FeatureSpecs []FeatureLineageFeatureSpec `json:"feature_specs,omitempty"`
@@ -2352,6 +2432,35 @@ func (s *FeatureList) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Features to look up from a feature table.
+type FeatureLookup struct {
+	// Default values for features.
+	DefaultValues []DefaultValue `json:"default_values,omitempty"`
+	// Names of the features to look up, or empty to look up every feature in
+	// the table.
+	FeatureNames []string `json:"feature_names,omitempty"`
+	// Lookback window to use when performing point-in-time lookup.
+	LookbackWindow *duration.Duration `json:"lookback_window,omitempty"`
+	// Keys to use when joining with the feature table.
+	LookupKeys []string `json:"lookup_keys"`
+	// Output names for features, in place of their names in the feature table.
+	RenameOutputs []RenameOutput `json:"rename_outputs,omitempty"`
+	// Three-part name of the feature table.
+	Table string `json:"table"`
+	// Keys to use when performing point-in-time lookup.
+	TimestampLookupKeys []string `json:"timestamp_lookup_keys,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureLookup) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureLookup) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A reference to one registered upstream Feature. A message rather than a bare
 // name so an upstream can later be pinned more precisely (e.g. by version)
 // without a breaking type change.
@@ -2361,6 +2470,26 @@ type FeatureReference struct {
 }
 
 func (s *FeatureReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A named set of features to serve, stored as a Unity Catalog function.
+type FeatureSpec struct {
+	// Output names of columns to leave out of the feature spec.
+	ExcludeColumns []string `json:"exclude_columns,omitempty"`
+	// Extra pip requirements to install in the serving container, in addition
+	// to the defaults and those resolved from the features.
+	ExtraPipRequirements *PipRequirements `json:"extra_pip_requirements,omitempty"`
+	// The Features (either a declarative one, or a lookup from a feature table,
+	// or a feature function) to serve. A declarative feature
+	// (`DeclarativeFeature`) cannot be combined with lookups (`FeatureLookup`)
+	// and functions (`FeatureFunction`) in one feature spec.
+	Features []Features `json:"features,omitempty"`
+	// Three-part name (catalog.schema.feature_spec) of the feature spec.
+	Name string `json:"name"`
+}
+
+func (s *FeatureSpec) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2389,6 +2518,21 @@ type FeatureViewSource struct {
 }
 
 func (s *FeatureViewSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// One entry of a feature spec: a Feature, a feature table lookup, or a feature
+// function.
+type Features struct {
+	// A Feature, referenced by its three-part Unity Catalog name.
+	DeclarativeFeature *DeclarativeFeature `json:"declarative_feature,omitempty"`
+	// A feature function.
+	FeatureFunction *FeatureFunction `json:"feature_function,omitempty"`
+	// A feature table lookup.
+	FeatureLookup *FeatureLookup `json:"feature_lookup,omitempty"`
+}
+
+func (s *Features) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -2742,6 +2886,15 @@ type GetFeatureRequest struct {
 }
 
 func (s *GetFeatureRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetFeatureSpecRequest struct {
+	// Three-part name (catalog.schema.feature_spec) of the feature spec to get.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetFeatureSpecRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -4543,13 +4696,11 @@ func (s *MaterializationSetDeletionProgress) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// Progress of a materialization set operation. Shared by create, update and
-// delete, because databricks.longrunning freezes a method's metadata type once
-// it ships.
+// Progress of a materialization set operation.
 type MaterializationSetOperationMetadata struct {
 	// Time at which the operation was requested.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Set by a DeleteMaterializationSet operation.
+	// Set by a `DeleteMaterializationSet` operation.
 	DeletionProgress *MaterializationSetDeletionProgress `json:"deletion_progress,omitempty"`
 	// Full names of the features the set materializes, one entry per feature.
 	FeatureFullNames []string `json:"feature_full_names,omitempty"`
@@ -4557,7 +4708,7 @@ type MaterializationSetOperationMetadata struct {
 	MaterializationSetId string `json:"materialization_set_id,omitempty"`
 	// Current state of the operation.
 	State MaterializationSetOperationMetadataState `json:"state,omitempty"`
-	// Set by an UpdateMaterializationSet operation.
+	// Set by an `UpdateMaterializationSet` operation.
 	UpdateProgress *MaterializationSetUpdateProgress `json:"update_progress,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5370,6 +5521,16 @@ func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
+// Pip requirements to install in a serving container.
+type PipRequirements struct {
+	// Pip requirement strings (PEP 508) or UC Volume whl paths (/Volumes/...).
+	Requirements []string `json:"requirements"`
+}
+
+func (s *PipRequirements) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // A Protocol Buffer schema paired with the name of the message within it that
 // describes the Kafka payload. A .proto file may declare multiple messages;
 // message_name disambiguates.
@@ -5534,7 +5695,15 @@ const PurgeFeatureEntitiesMetadataStateFailed PurgeFeatureEntitiesMetadataState 
 
 const PurgeFeatureEntitiesMetadataStatePending PurgeFeatureEntitiesMetadataState = `PENDING`
 
+const PurgeFeatureEntitiesMetadataStatePendingCleanup PurgeFeatureEntitiesMetadataState = `PENDING_CLEANUP`
+
+const PurgeFeatureEntitiesMetadataStatePendingPurge PurgeFeatureEntitiesMetadataState = `PENDING_PURGE`
+
 const PurgeFeatureEntitiesMetadataStateRunning PurgeFeatureEntitiesMetadataState = `RUNNING`
+
+const PurgeFeatureEntitiesMetadataStateRunningCleanup PurgeFeatureEntitiesMetadataState = `RUNNING_CLEANUP`
+
+const PurgeFeatureEntitiesMetadataStateRunningPurge PurgeFeatureEntitiesMetadataState = `RUNNING_PURGE`
 
 const PurgeFeatureEntitiesMetadataStateSucceeded PurgeFeatureEntitiesMetadataState = `SUCCEEDED`
 
@@ -5546,11 +5715,11 @@ func (f *PurgeFeatureEntitiesMetadataState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PurgeFeatureEntitiesMetadataState) Set(v string) error {
 	switch v {
-	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
+	case `CANCELLED`, `FAILED`, `PENDING`, `PENDING_CLEANUP`, `PENDING_PURGE`, `RUNNING`, `RUNNING_CLEANUP`, `RUNNING_PURGE`, `SUCCEEDED`:
 		*f = PurgeFeatureEntitiesMetadataState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "PENDING_CLEANUP", "PENDING_PURGE", "RUNNING", "RUNNING_CLEANUP", "RUNNING_PURGE", "SUCCEEDED"`, v)
 	}
 }
 
@@ -5562,7 +5731,11 @@ func (f *PurgeFeatureEntitiesMetadataState) Values() []PurgeFeatureEntitiesMetad
 		PurgeFeatureEntitiesMetadataStateCancelled,
 		PurgeFeatureEntitiesMetadataStateFailed,
 		PurgeFeatureEntitiesMetadataStatePending,
+		PurgeFeatureEntitiesMetadataStatePendingCleanup,
+		PurgeFeatureEntitiesMetadataStatePendingPurge,
 		PurgeFeatureEntitiesMetadataStateRunning,
+		PurgeFeatureEntitiesMetadataStateRunningCleanup,
+		PurgeFeatureEntitiesMetadataStateRunningPurge,
 		PurgeFeatureEntitiesMetadataStateSucceeded,
 	}
 }
@@ -6149,6 +6322,18 @@ type RenameModelResponse struct {
 }
 
 func (s *RenameModelResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// An output name for a looked-up feature.
+type RenameOutput struct {
+	// Name of the feature in the feature table.
+	Feature string `json:"feature"`
+	// Output name for the feature.
+	Output string `json:"output"`
+}
+
+func (s *RenameOutput) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
