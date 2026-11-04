@@ -4,7 +4,9 @@ package aifunctions
 
 import (
 	"encoding/json"
+	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -481,5 +483,187 @@ func (s *AiParseDocumentResponseMetadata) UnmarshalJSON(b []byte) error {
 }
 
 func (s AiParseDocumentResponseMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// An asynchronous run of one AI function over a file of requests.
+type Batch struct {
+	// Output only. Time the batch was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The AI function to run for every request, for example `ai_extract`.
+	Endpoint string `json:"endpoint"`
+	// Path of the JSONL input file on a Unity Catalog volume. Each line is one
+	// request.
+	InputRef string `json:"input_ref"`
+	// ID of the batch, in the form `batch_<id>`. The service assigns it.
+	Name string `json:"name,omitempty"`
+	// Path on a Unity Catalog volume to write the JSONL output to. When it is
+	// omitted, the output stays on Databricks-managed storage and a finished
+	// batch returns a short-lived download URL in this field instead.
+	OutputRef string `json:"output_ref,omitempty"`
+	// Function options applied to every request in the batch, for example the
+	// extraction schema.
+	Params map[string]json.RawMessage `json:"params,omitempty"`
+	// Output only. Percentage of the requests that finished, from 0 to 100.
+	// Returned when one batch is read, not when batches are listed.
+	PercentComplete float64 `json:"percent_complete,omitempty"`
+	// Output only. Request counts. Returned when one batch is read, not when
+	// batches are listed.
+	RequestCounts *BatchRequestCounts `json:"request_counts,omitempty"`
+	// Output only. Status of the batch.
+	Status BatchStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Batch) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Batch) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Counts of the requests in a batch.
+type BatchRequestCounts struct {
+	// Output only. Number of requests that failed and will not be retried.
+	Failed int64 `json:"failed,omitempty"`
+	// Output only. Number of requests that finished successfully.
+	Succeeded int64 `json:"succeeded,omitempty"`
+	// Output only. Number of requests in the input file.
+	Total int64 `json:"total,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BatchRequestCounts) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BatchRequestCounts) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The status of a batch.
+type BatchStatus string
+
+const BatchStatusCancelled BatchStatus = `CANCELLED`
+
+const BatchStatusCancelling BatchStatus = `CANCELLING`
+
+const BatchStatusCompleted BatchStatus = `COMPLETED`
+
+const BatchStatusExpired BatchStatus = `EXPIRED`
+
+const BatchStatusFailed BatchStatus = `FAILED`
+
+const BatchStatusFinalizing BatchStatus = `FINALIZING`
+
+const BatchStatusInProgress BatchStatus = `IN_PROGRESS`
+
+const BatchStatusPending BatchStatus = `PENDING`
+
+// String representation for [fmt.Print]
+func (f *BatchStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *BatchStatus) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `CANCELLING`, `COMPLETED`, `EXPIRED`, `FAILED`, `FINALIZING`, `IN_PROGRESS`, `PENDING`:
+		*f = BatchStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "CANCELLING", "COMPLETED", "EXPIRED", "FAILED", "FINALIZING", "IN_PROGRESS", "PENDING"`, v)
+	}
+}
+
+// Values returns all possible values for BatchStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *BatchStatus) Values() []BatchStatus {
+	return []BatchStatus{
+		BatchStatusCancelled,
+		BatchStatusCancelling,
+		BatchStatusCompleted,
+		BatchStatusExpired,
+		BatchStatusFailed,
+		BatchStatusFinalizing,
+		BatchStatusInProgress,
+		BatchStatusPending,
+	}
+}
+
+// Type always returns BatchStatus to satisfy [pflag.Value] interface
+func (f *BatchStatus) Type() string {
+	return "BatchStatus"
+}
+
+type CancelBatchRequest struct {
+	// ID of the batch, in the form `batch_<id>`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *CancelBatchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type CancelBatchResponse struct {
+}
+
+func (s *CancelBatchResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type CreateBatchRequest struct {
+	// The batch to create.
+	Batch Batch `json:"batch"`
+}
+
+func (s *CreateBatchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetBatchRequest struct {
+	// ID of the batch, in the form `batch_<id>`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetBatchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type ListBatchesRequest struct {
+	// Maximum number of batches to return in one page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token from an earlier response. Omit it to read the first page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBatchesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBatchesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListBatchesResponse struct {
+	// The batches in this page.
+	Batches []Batch `json:"batches,omitempty"`
+	// Token that reads the next page. It is empty on the last page.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBatchesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBatchesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }

@@ -309,6 +309,74 @@ func (_c *MockFeatureEngineeringInterface_CreateFeature_Call) RunAndReturn(run f
 	return _c
 }
 
+// CreateFeatureSpec provides a mock function for the type MockFeatureEngineeringInterface
+func (_mock *MockFeatureEngineeringInterface) CreateFeatureSpec(ctx context.Context, request ml.CreateFeatureSpecRequest) (*ml.FeatureSpec, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateFeatureSpec")
+	}
+
+	var r0 *ml.FeatureSpec
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.CreateFeatureSpecRequest) (*ml.FeatureSpec, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.CreateFeatureSpecRequest) *ml.FeatureSpec); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.FeatureSpec)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, ml.CreateFeatureSpecRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_CreateFeatureSpec_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateFeatureSpec'
+type MockFeatureEngineeringInterface_CreateFeatureSpec_Call struct {
+	*mock.Call
+}
+
+// CreateFeatureSpec is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.CreateFeatureSpecRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) CreateFeatureSpec(ctx any, request any) *MockFeatureEngineeringInterface_CreateFeatureSpec_Call {
+	return &MockFeatureEngineeringInterface_CreateFeatureSpec_Call{Call: _e.mock.On("CreateFeatureSpec", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateFeatureSpec_Call) Run(run func(ctx context.Context, request ml.CreateFeatureSpecRequest)) *MockFeatureEngineeringInterface_CreateFeatureSpec_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 ml.CreateFeatureSpecRequest
+		if args[1] != nil {
+			arg1 = args[1].(ml.CreateFeatureSpecRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateFeatureSpec_Call) Return(featureSpec *ml.FeatureSpec, err error) *MockFeatureEngineeringInterface_CreateFeatureSpec_Call {
+	_c.Call.Return(featureSpec, err)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateFeatureSpec_Call) RunAndReturn(run func(ctx context.Context, request ml.CreateFeatureSpecRequest) (*ml.FeatureSpec, error)) *MockFeatureEngineeringInterface_CreateFeatureSpec_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateKafkaConfig provides a mock function for the type MockFeatureEngineeringInterface
 func (_mock *MockFeatureEngineeringInterface) CreateKafkaConfig(ctx context.Context, request ml.CreateKafkaConfigRequest) (*ml.KafkaConfig, error) {
 	ret := _mock.Called(ctx, request)
@@ -638,6 +706,63 @@ func (_c *MockFeatureEngineeringInterface_DeleteFeature_Call) RunAndReturn(run f
 	return _c
 }
 
+// DeleteFeatureSpec provides a mock function for the type MockFeatureEngineeringInterface
+func (_mock *MockFeatureEngineeringInterface) DeleteFeatureSpec(ctx context.Context, request ml.DeleteFeatureSpecRequest) error {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteFeatureSpec")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.DeleteFeatureSpecRequest) error); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockFeatureEngineeringInterface_DeleteFeatureSpec_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteFeatureSpec'
+type MockFeatureEngineeringInterface_DeleteFeatureSpec_Call struct {
+	*mock.Call
+}
+
+// DeleteFeatureSpec is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteFeatureSpecRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) DeleteFeatureSpec(ctx any, request any) *MockFeatureEngineeringInterface_DeleteFeatureSpec_Call {
+	return &MockFeatureEngineeringInterface_DeleteFeatureSpec_Call{Call: _e.mock.On("DeleteFeatureSpec", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteFeatureSpec_Call) Run(run func(ctx context.Context, request ml.DeleteFeatureSpecRequest)) *MockFeatureEngineeringInterface_DeleteFeatureSpec_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 ml.DeleteFeatureSpecRequest
+		if args[1] != nil {
+			arg1 = args[1].(ml.DeleteFeatureSpecRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteFeatureSpec_Call) Return(err error) *MockFeatureEngineeringInterface_DeleteFeatureSpec_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteFeatureSpec_Call) RunAndReturn(run func(ctx context.Context, request ml.DeleteFeatureSpecRequest) error) *MockFeatureEngineeringInterface_DeleteFeatureSpec_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteKafkaConfig provides a mock function for the type MockFeatureEngineeringInterface
 func (_mock *MockFeatureEngineeringInterface) DeleteKafkaConfig(ctx context.Context, request ml.DeleteKafkaConfigRequest) error {
 	ret := _mock.Called(ctx, request)
@@ -941,6 +1066,74 @@ func (_c *MockFeatureEngineeringInterface_GetFeature_Call) Return(feature *ml.Fe
 }
 
 func (_c *MockFeatureEngineeringInterface_GetFeature_Call) RunAndReturn(run func(ctx context.Context, request ml.GetFeatureRequest) (*ml.Feature, error)) *MockFeatureEngineeringInterface_GetFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetFeatureSpec provides a mock function for the type MockFeatureEngineeringInterface
+func (_mock *MockFeatureEngineeringInterface) GetFeatureSpec(ctx context.Context, request ml.GetFeatureSpecRequest) (*ml.FeatureSpec, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetFeatureSpec")
+	}
+
+	var r0 *ml.FeatureSpec
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.GetFeatureSpecRequest) (*ml.FeatureSpec, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, ml.GetFeatureSpecRequest) *ml.FeatureSpec); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.FeatureSpec)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, ml.GetFeatureSpecRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_GetFeatureSpec_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetFeatureSpec'
+type MockFeatureEngineeringInterface_GetFeatureSpec_Call struct {
+	*mock.Call
+}
+
+// GetFeatureSpec is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetFeatureSpecRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) GetFeatureSpec(ctx any, request any) *MockFeatureEngineeringInterface_GetFeatureSpec_Call {
+	return &MockFeatureEngineeringInterface_GetFeatureSpec_Call{Call: _e.mock.On("GetFeatureSpec", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_GetFeatureSpec_Call) Run(run func(ctx context.Context, request ml.GetFeatureSpecRequest)) *MockFeatureEngineeringInterface_GetFeatureSpec_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 ml.GetFeatureSpecRequest
+		if args[1] != nil {
+			arg1 = args[1].(ml.GetFeatureSpecRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetFeatureSpec_Call) Return(featureSpec *ml.FeatureSpec, err error) *MockFeatureEngineeringInterface_GetFeatureSpec_Call {
+	_c.Call.Return(featureSpec, err)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetFeatureSpec_Call) RunAndReturn(run func(ctx context.Context, request ml.GetFeatureSpecRequest) (*ml.FeatureSpec, error)) *MockFeatureEngineeringInterface_GetFeatureSpec_Call {
 	_c.Call.Return(run)
 	return _c
 }

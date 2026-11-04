@@ -7,6 +7,7 @@ package aifunctions
 import (
 	"context"
 
+	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/service/aifunctions"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -315,6 +316,337 @@ func (_c *MockAiFunctionsInterface_AiParseDocument_Call) Return(aiParseDocumentR
 }
 
 func (_c *MockAiFunctionsInterface_AiParseDocument_Call) RunAndReturn(run func(ctx context.Context, request aifunctions.AiParseDocumentRequest) (*aifunctions.AiParseDocumentResponse, error)) *MockAiFunctionsInterface_AiParseDocument_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CancelBatch provides a mock function for the type MockAiFunctionsInterface
+func (_mock *MockAiFunctionsInterface) CancelBatch(ctx context.Context, request aifunctions.CancelBatchRequest) (*aifunctions.CancelBatchResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CancelBatch")
+	}
+
+	var r0 *aifunctions.CancelBatchResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.CancelBatchRequest) (*aifunctions.CancelBatchResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.CancelBatchRequest) *aifunctions.CancelBatchResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*aifunctions.CancelBatchResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, aifunctions.CancelBatchRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAiFunctionsInterface_CancelBatch_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CancelBatch'
+type MockAiFunctionsInterface_CancelBatch_Call struct {
+	*mock.Call
+}
+
+// CancelBatch is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request aifunctions.CancelBatchRequest
+func (_e *MockAiFunctionsInterface_Expecter) CancelBatch(ctx any, request any) *MockAiFunctionsInterface_CancelBatch_Call {
+	return &MockAiFunctionsInterface_CancelBatch_Call{Call: _e.mock.On("CancelBatch", ctx, request)}
+}
+
+func (_c *MockAiFunctionsInterface_CancelBatch_Call) Run(run func(ctx context.Context, request aifunctions.CancelBatchRequest)) *MockAiFunctionsInterface_CancelBatch_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 aifunctions.CancelBatchRequest
+		if args[1] != nil {
+			arg1 = args[1].(aifunctions.CancelBatchRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_CancelBatch_Call) Return(cancelBatchResponse *aifunctions.CancelBatchResponse, err error) *MockAiFunctionsInterface_CancelBatch_Call {
+	_c.Call.Return(cancelBatchResponse, err)
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_CancelBatch_Call) RunAndReturn(run func(ctx context.Context, request aifunctions.CancelBatchRequest) (*aifunctions.CancelBatchResponse, error)) *MockAiFunctionsInterface_CancelBatch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateBatch provides a mock function for the type MockAiFunctionsInterface
+func (_mock *MockAiFunctionsInterface) CreateBatch(ctx context.Context, request aifunctions.CreateBatchRequest) (*aifunctions.Batch, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateBatch")
+	}
+
+	var r0 *aifunctions.Batch
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.CreateBatchRequest) (*aifunctions.Batch, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.CreateBatchRequest) *aifunctions.Batch); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*aifunctions.Batch)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, aifunctions.CreateBatchRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAiFunctionsInterface_CreateBatch_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateBatch'
+type MockAiFunctionsInterface_CreateBatch_Call struct {
+	*mock.Call
+}
+
+// CreateBatch is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request aifunctions.CreateBatchRequest
+func (_e *MockAiFunctionsInterface_Expecter) CreateBatch(ctx any, request any) *MockAiFunctionsInterface_CreateBatch_Call {
+	return &MockAiFunctionsInterface_CreateBatch_Call{Call: _e.mock.On("CreateBatch", ctx, request)}
+}
+
+func (_c *MockAiFunctionsInterface_CreateBatch_Call) Run(run func(ctx context.Context, request aifunctions.CreateBatchRequest)) *MockAiFunctionsInterface_CreateBatch_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 aifunctions.CreateBatchRequest
+		if args[1] != nil {
+			arg1 = args[1].(aifunctions.CreateBatchRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_CreateBatch_Call) Return(batch *aifunctions.Batch, err error) *MockAiFunctionsInterface_CreateBatch_Call {
+	_c.Call.Return(batch, err)
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_CreateBatch_Call) RunAndReturn(run func(ctx context.Context, request aifunctions.CreateBatchRequest) (*aifunctions.Batch, error)) *MockAiFunctionsInterface_CreateBatch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetBatch provides a mock function for the type MockAiFunctionsInterface
+func (_mock *MockAiFunctionsInterface) GetBatch(ctx context.Context, request aifunctions.GetBatchRequest) (*aifunctions.Batch, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBatch")
+	}
+
+	var r0 *aifunctions.Batch
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.GetBatchRequest) (*aifunctions.Batch, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.GetBatchRequest) *aifunctions.Batch); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*aifunctions.Batch)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, aifunctions.GetBatchRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAiFunctionsInterface_GetBatch_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBatch'
+type MockAiFunctionsInterface_GetBatch_Call struct {
+	*mock.Call
+}
+
+// GetBatch is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request aifunctions.GetBatchRequest
+func (_e *MockAiFunctionsInterface_Expecter) GetBatch(ctx any, request any) *MockAiFunctionsInterface_GetBatch_Call {
+	return &MockAiFunctionsInterface_GetBatch_Call{Call: _e.mock.On("GetBatch", ctx, request)}
+}
+
+func (_c *MockAiFunctionsInterface_GetBatch_Call) Run(run func(ctx context.Context, request aifunctions.GetBatchRequest)) *MockAiFunctionsInterface_GetBatch_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 aifunctions.GetBatchRequest
+		if args[1] != nil {
+			arg1 = args[1].(aifunctions.GetBatchRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_GetBatch_Call) Return(batch *aifunctions.Batch, err error) *MockAiFunctionsInterface_GetBatch_Call {
+	_c.Call.Return(batch, err)
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_GetBatch_Call) RunAndReturn(run func(ctx context.Context, request aifunctions.GetBatchRequest) (*aifunctions.Batch, error)) *MockAiFunctionsInterface_GetBatch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListBatches provides a mock function for the type MockAiFunctionsInterface
+func (_mock *MockAiFunctionsInterface) ListBatches(ctx context.Context, request aifunctions.ListBatchesRequest) listing.Iterator[aifunctions.Batch] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListBatches")
+	}
+
+	var r0 listing.Iterator[aifunctions.Batch]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.ListBatchesRequest) listing.Iterator[aifunctions.Batch]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[aifunctions.Batch])
+		}
+	}
+	return r0
+}
+
+// MockAiFunctionsInterface_ListBatches_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListBatches'
+type MockAiFunctionsInterface_ListBatches_Call struct {
+	*mock.Call
+}
+
+// ListBatches is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request aifunctions.ListBatchesRequest
+func (_e *MockAiFunctionsInterface_Expecter) ListBatches(ctx any, request any) *MockAiFunctionsInterface_ListBatches_Call {
+	return &MockAiFunctionsInterface_ListBatches_Call{Call: _e.mock.On("ListBatches", ctx, request)}
+}
+
+func (_c *MockAiFunctionsInterface_ListBatches_Call) Run(run func(ctx context.Context, request aifunctions.ListBatchesRequest)) *MockAiFunctionsInterface_ListBatches_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 aifunctions.ListBatchesRequest
+		if args[1] != nil {
+			arg1 = args[1].(aifunctions.ListBatchesRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_ListBatches_Call) Return(iterator listing.Iterator[aifunctions.Batch]) *MockAiFunctionsInterface_ListBatches_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_ListBatches_Call) RunAndReturn(run func(ctx context.Context, request aifunctions.ListBatchesRequest) listing.Iterator[aifunctions.Batch]) *MockAiFunctionsInterface_ListBatches_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListBatchesAll provides a mock function for the type MockAiFunctionsInterface
+func (_mock *MockAiFunctionsInterface) ListBatchesAll(ctx context.Context, request aifunctions.ListBatchesRequest) ([]aifunctions.Batch, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListBatchesAll")
+	}
+
+	var r0 []aifunctions.Batch
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.ListBatchesRequest) ([]aifunctions.Batch, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, aifunctions.ListBatchesRequest) []aifunctions.Batch); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]aifunctions.Batch)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, aifunctions.ListBatchesRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAiFunctionsInterface_ListBatchesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListBatchesAll'
+type MockAiFunctionsInterface_ListBatchesAll_Call struct {
+	*mock.Call
+}
+
+// ListBatchesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request aifunctions.ListBatchesRequest
+func (_e *MockAiFunctionsInterface_Expecter) ListBatchesAll(ctx any, request any) *MockAiFunctionsInterface_ListBatchesAll_Call {
+	return &MockAiFunctionsInterface_ListBatchesAll_Call{Call: _e.mock.On("ListBatchesAll", ctx, request)}
+}
+
+func (_c *MockAiFunctionsInterface_ListBatchesAll_Call) Run(run func(ctx context.Context, request aifunctions.ListBatchesRequest)) *MockAiFunctionsInterface_ListBatchesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 aifunctions.ListBatchesRequest
+		if args[1] != nil {
+			arg1 = args[1].(aifunctions.ListBatchesRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_ListBatchesAll_Call) Return(batchs []aifunctions.Batch, err error) *MockAiFunctionsInterface_ListBatchesAll_Call {
+	_c.Call.Return(batchs, err)
+	return _c
+}
+
+func (_c *MockAiFunctionsInterface_ListBatchesAll_Call) RunAndReturn(run func(ctx context.Context, request aifunctions.ListBatchesRequest) ([]aifunctions.Batch, error)) *MockAiFunctionsInterface_ListBatchesAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -192,6 +192,8 @@
 //
 // - [dashboards.LakeviewEmbeddedAPI]: Token-based Lakeview APIs for embedding dashboards in external applications.
 //
+// - [lakewatch.LakewatchAPI]: Manage Lakewatch: security-analytics data sources, detection rules, and per-catalog configuration.
+//
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
 //
 // - [settings.LlmProxyPartnerPoweredAccountAPI]: Determines if partner powered models are enabled or not for a specific account.
@@ -418,6 +420,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/knowledgeassistants"
+	"github.com/databricks/databricks-sdk-go/service/lakewatch"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/networking"
@@ -539,6 +542,7 @@ var (
 	_ *knowledgeassistants.KnowledgeAssistantsAPI         = nil
 	_ *dashboards.LakeviewAPI                             = nil
 	_ *dashboards.LakeviewEmbeddedAPI                     = nil
+	_ *lakewatch.LakewatchAPI                             = nil
 	_ *compute.LibrariesAPI                               = nil
 	_ *settings.LlmProxyPartnerPoweredAccountAPI          = nil
 	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil

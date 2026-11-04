@@ -30,4 +30,19 @@ type AiFunctionsService interface {
 
 	// Parse structured content from unstructured documents.
 	AiParseDocument(ctx context.Context, request AiParseDocumentRequest) (*AiParseDocumentResponse, error)
+
+	// Cancel a batch. Cancellation is asynchronous: requests in flight drain
+	// first, so read the batch to observe the `CANCELLING` and `CANCELLED`
+	// statuses.
+	CancelBatch(ctx context.Context, request CancelBatchRequest) (*CancelBatchResponse, error)
+
+	// Run an AI function over every request in a file on a Unity Catalog
+	// volume. The batch runs asynchronously; read it to follow its progress.
+	CreateBatch(ctx context.Context, request CreateBatchRequest) (*Batch, error)
+
+	// Read one batch, with its status and progress.
+	GetBatch(ctx context.Context, request GetBatchRequest) (*Batch, error)
+
+	// List the batches the caller created in this workspace.
+	ListBatches(ctx context.Context, request ListBatchesRequest) (*ListBatchesResponse, error)
 }
