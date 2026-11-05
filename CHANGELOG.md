@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.195.0 (2026-11-05)
+
+### API Changes
+* Add `UndropMetastoreById` method for [w.Metastores](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MetastoresAPI) workspace-level service.
+
 ## Release v0.194.0 (2026-11-04)
 
 ### API Changes

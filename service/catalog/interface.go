@@ -896,6 +896,12 @@ type MetastoresService interface {
 	// administrator.
 	Unassign(ctx context.Context, request UnassignRequest) error
 
+	// Restores a soft-deleted metastore identified by its ID. The caller must
+	// be an account admin. A metastore may be eligible for restoration for up
+	// to five days after deletion. Restoration may become unavailable earlier
+	// once permanent deletion begins. Returns the restored metastore.
+	UndropMetastoreById(ctx context.Context, request UndropMetastoreByIdRequest) (*MetastoreInfo, error)
+
 	// Updates information for a specific metastore. The caller must be a
 	// metastore admin. If the __owner__ field is set to the empty string
 	// (**""**), the ownership is updated to the System User.

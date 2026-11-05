@@ -10784,6 +10784,16 @@ func (s *UnassignRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Request to restore a soft-deleted metastore by ID.
+type UndropMetastoreByIdRequest struct {
+	// Required. Id of the metastore to undrop.
+	Id string `json:"id"`
+}
+
+func (s *UndropMetastoreByIdRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateAccessRequestDestinationsRequest struct {
 	// The access request destinations to assign to the securable. For each
 	// destination, a **destination_id** and **destination_type** must be
