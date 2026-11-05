@@ -371,10 +371,12 @@ type FeatureEngineeringService interface {
 	// the Kafka config can delete it.
 	UpdateKafkaConfig(ctx context.Context, request UpdateKafkaConfigRequest) (*KafkaConfig, error)
 
-	// Update the materialization set's state to match the supplied
-	// materialization set. Changes are applied member by member and are not
-	// atomic: when one member fails, the error reports which members were
-	// already changed.
+	// Updates a materialization set. Supports changing pause settings and
+	// deleting materialized features from the set.
+	//
+	// Changes are not atomic. Some updates or deletions may succeed even if the
+	// operation fails. Individual outcomes are available in
+	// `MaterializationSetUpdateProgress`.
 	UpdateMaterializationSet(ctx context.Context, request UpdateMaterializationSetRequest) (*Operation, error)
 
 	// Updates a materialized feature.

@@ -2243,6 +2243,21 @@ func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) 
 	return err
 }
 
+func (a *metastoresImpl) UndropMetastoreById(ctx context.Context, request UndropMetastoreByIdRequest) (*MetastoreInfo, error) {
+	var metastoreInfo MetastoreInfo
+	path := "/api/2.1/unity-catalog/metastores:undropById"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &metastoreInfo)
+	return &metastoreInfo, err
+}
+
 func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)

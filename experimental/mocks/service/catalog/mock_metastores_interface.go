@@ -788,6 +788,74 @@ func (_c *MockMetastoresInterface_UnassignByWorkspaceId_Call) RunAndReturn(run f
 	return _c
 }
 
+// UndropMetastoreById provides a mock function for the type MockMetastoresInterface
+func (_mock *MockMetastoresInterface) UndropMetastoreById(ctx context.Context, request catalog.UndropMetastoreByIdRequest) (*catalog.MetastoreInfo, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UndropMetastoreById")
+	}
+
+	var r0 *catalog.MetastoreInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, catalog.UndropMetastoreByIdRequest) (*catalog.MetastoreInfo, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, catalog.UndropMetastoreByIdRequest) *catalog.MetastoreInfo); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.MetastoreInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, catalog.UndropMetastoreByIdRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockMetastoresInterface_UndropMetastoreById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UndropMetastoreById'
+type MockMetastoresInterface_UndropMetastoreById_Call struct {
+	*mock.Call
+}
+
+// UndropMetastoreById is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.UndropMetastoreByIdRequest
+func (_e *MockMetastoresInterface_Expecter) UndropMetastoreById(ctx any, request any) *MockMetastoresInterface_UndropMetastoreById_Call {
+	return &MockMetastoresInterface_UndropMetastoreById_Call{Call: _e.mock.On("UndropMetastoreById", ctx, request)}
+}
+
+func (_c *MockMetastoresInterface_UndropMetastoreById_Call) Run(run func(ctx context.Context, request catalog.UndropMetastoreByIdRequest)) *MockMetastoresInterface_UndropMetastoreById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 catalog.UndropMetastoreByIdRequest
+		if args[1] != nil {
+			arg1 = args[1].(catalog.UndropMetastoreByIdRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockMetastoresInterface_UndropMetastoreById_Call) Return(metastoreInfo *catalog.MetastoreInfo, err error) *MockMetastoresInterface_UndropMetastoreById_Call {
+	_c.Call.Return(metastoreInfo, err)
+	return _c
+}
+
+func (_c *MockMetastoresInterface_UndropMetastoreById_Call) RunAndReturn(run func(ctx context.Context, request catalog.UndropMetastoreByIdRequest) (*catalog.MetastoreInfo, error)) *MockMetastoresInterface_UndropMetastoreById_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Update provides a mock function for the type MockMetastoresInterface
 func (_mock *MockMetastoresInterface) Update(ctx context.Context, request catalog.UpdateMetastore) (*catalog.MetastoreInfo, error) {
 	ret := _mock.Called(ctx, request)
