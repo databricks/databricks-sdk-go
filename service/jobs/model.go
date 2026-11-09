@@ -4786,6 +4786,10 @@ func (s *ResolvedValues) UnmarshalJSON(b []byte) error {
 
 // Resolved values for an AI Function task's Delta table input.
 type ResolvedValuesAiFunctionTaskResolvedValues struct {
+	// The Delta table source with any upstream-task references (such as
+	// `{{tasks.<task_key>.values.output_table_name}}`) in the table name
+	// replaced by concrete values before the run.
+	DeltaTable *DeltaTableSource `json:"delta_table,omitempty"`
 }
 
 func (s *ResolvedValuesAiFunctionTaskResolvedValues) UnmarshalJSON(b []byte) error {
@@ -6335,15 +6339,15 @@ func (s *SqlConditionConfiguration) UnmarshalJSON(b []byte) error {
 
 // SQL condition evaluation details captured at the time the run was triggered
 type SqlConditionRunInfoDetails struct {
-	// Whether the last condition evaluation was satisfied (query returned
-	// truthy result).
+	// Whether the last condition evaluation was satisfied. For
+	// QUERY_RETURNS_ROWS, the query returned at least one row. For
+	// RESULT_VALUE_CHANGES, the result value changed.
 	ConditionEvaluationSatisfied bool `json:"condition_evaluation_satisfied,omitempty"`
-	// The ID of the SQL session, used by the UI to track session context. Set
-	// for the QUERY_RETURNS_ROWS trigger mode.
+	// The ID of the SQL session of the condition evaluation. Not set by current
+	// evaluations. Use condition_evaluation_sql_statement_id instead.
 	ConditionEvaluationSqlSessionId string `json:"condition_evaluation_sql_session_id,omitempty"`
-	// The SQL statement ID of the condition evaluation, set when the condition
-	// is evaluated by running a single SQL statement (the RESULT_VALUE_CHANGES
-	// trigger mode). The UI uses it to link to the query execution details.
+	// The SQL statement ID of the condition evaluation. Set for both the
+	// QUERY_RETURNS_ROWS and RESULT_VALUE_CHANGES trigger modes.
 	ConditionEvaluationSqlStatementId string `json:"condition_evaluation_sql_statement_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6358,15 +6362,16 @@ func (s SqlConditionRunInfoDetails) MarshalJSON() ([]byte, error) {
 }
 
 type SqlConditionState struct {
-	// Whether the last condition evaluation was satisfied (query returned
-	// truthy result).
+	// Whether the last condition evaluation was satisfied. For
+	// QUERY_RETURNS_ROWS, the query returned at least one row. For
+	// RESULT_VALUE_CHANGES, the result value changed.
 	LatestConditionEvaluationSatisfied bool `json:"latest_condition_evaluation_satisfied,omitempty"`
-	// The ID of the SQL session, used by UI to track session context. Populated
-	// for QUERY_RETURNS_ROWS, which executes the query through Redash.
+	// The ID of the SQL session of the latest condition evaluation. Not set by
+	// current evaluations. Use latest_condition_evaluation_sql_statement_id
+	// instead.
 	LatestConditionEvaluationSqlSessionId string `json:"latest_condition_evaluation_sql_session_id,omitempty"`
-	// The SEA statement ID of the SQL statement executed for the latest
-	// condition evaluation. Populated for RESULT_VALUE_CHANGES, which executes
-	// the query through the SQL execution API.
+	// The ID of the SQL statement executed for the latest condition evaluation.
+	// Populated for both QUERY_RETURNS_ROWS and RESULT_VALUE_CHANGES.
 	LatestConditionEvaluationSqlStatementId string `json:"latest_condition_evaluation_sql_statement_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6389,8 +6394,9 @@ func (s SqlConditionState) MarshalJSON() ([]byte, error) {
 // `QUERY_RETURNS_ROWS`: Fires whenever the result set has at least one row.
 // Zero rows means the condition is not met. This is the original SQL condition
 // behavior. * `RESULT_VALUE_CHANGES`: Fires whenever the query's single result
-// value differs from the previous evaluation. The first evaluation always
-// fires. Queries must return exactly one cell (one row, one column).
+// value differs from the previous evaluation. The first evaluation stores the
+// result as a baseline and does not fire. Queries must return exactly one cell
+// (one row, one column).
 type SqlConditionTriggerMode string
 
 // Fires whenever the result set has at least one row. Zero rows means

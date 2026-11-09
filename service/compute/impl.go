@@ -1284,3 +1284,104 @@ func (a *policyFamiliesImpl) internalList(ctx context.Context, request ListPolic
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPolicyFamiliesResponse)
 	return &listPolicyFamiliesResponse, err
 }
+
+// unexported type that holds implementations of just ServerlessComputeService API methods
+type serverlessComputeServiceImpl struct {
+	client *client.DatabricksClient
+}
+
+// Lists Interactive serverless computes that the caller can use or manage.
+// Results are returned in an unspecified order.
+func (a *serverlessComputeServiceImpl) List(ctx context.Context, request ListServerlessComputesRequest) listing.Iterator[ServerlessCompute] {
+
+	getNextPage := func(ctx context.Context, req ListServerlessComputesRequest) (*ListServerlessComputesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListServerlessComputesResponse) []ServerlessCompute {
+		return resp.ServerlessComputes
+	}
+	getNextReq := func(resp *ListServerlessComputesResponse) *ListServerlessComputesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists Interactive serverless computes that the caller can use or manage.
+// Results are returned in an unspecified order.
+func (a *serverlessComputeServiceImpl) ListAll(ctx context.Context, request ListServerlessComputesRequest) ([]ServerlessCompute, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ServerlessCompute](ctx, iterator)
+}
+
+func (a *serverlessComputeServiceImpl) internalList(ctx context.Context, request ListServerlessComputesRequest) (*ListServerlessComputesResponse, error) {
+	var listServerlessComputesResponse ListServerlessComputesResponse
+	path := "/api/2.0/serverless-compute"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServerlessComputesResponse)
+	return &listServerlessComputesResponse, err
+}
+
+// Lists compute policies in the workspace. Results are returned in an
+// unspecified order; callers should sort client-side if a specific order is
+// needed.
+func (a *serverlessComputeServiceImpl) ListComputePolicies(ctx context.Context, request ListComputePoliciesRequest) listing.Iterator[ComputePolicy] {
+
+	getNextPage := func(ctx context.Context, req ListComputePoliciesRequest) (*ListComputePoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListComputePolicies(ctx, req)
+	}
+	getItems := func(resp *ListComputePoliciesResponse) []ComputePolicy {
+		return resp.ComputePolicies
+	}
+	getNextReq := func(resp *ListComputePoliciesResponse) *ListComputePoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists compute policies in the workspace. Results are returned in an
+// unspecified order; callers should sort client-side if a specific order is
+// needed.
+func (a *serverlessComputeServiceImpl) ListComputePoliciesAll(ctx context.Context, request ListComputePoliciesRequest) ([]ComputePolicy, error) {
+	iterator := a.ListComputePolicies(ctx, request)
+	return listing.ToSlice[ComputePolicy](ctx, iterator)
+}
+
+func (a *serverlessComputeServiceImpl) internalListComputePolicies(ctx context.Context, request ListComputePoliciesRequest) (*ListComputePoliciesResponse, error) {
+	var listComputePoliciesResponse ListComputePoliciesResponse
+	path := "/api/2.0/policies/compute"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listComputePoliciesResponse)
+	return &listComputePoliciesResponse, err
+}

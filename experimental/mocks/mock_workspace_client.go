@@ -41,6 +41,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/softwareartifacts"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sql"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/tags"
@@ -172,12 +173,14 @@ func NewMockWorkspaceClient(t interface {
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			SecretsUc:                           catalog.NewMockSecretsUcInterface(t),
+			ServerlessComputeService:            compute.NewMockServerlessComputeServiceInterface(t),
 			ServicePrincipalSecretsProxy:        oauth2.NewMockServicePrincipalSecretsProxyInterface(t),
 			ServicePrincipalsV2:                 iam.NewMockServicePrincipalsV2Interface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
 			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
 			Settings:                            settings.NewMockSettingsInterface(t),
 			Shares:                              sharing.NewMockSharesInterface(t),
+			SoftwareArtifacts:                   softwareartifacts.NewMockSoftwareArtifactsInterface(t),
 			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
 			StorageCredentials:                  catalog.NewMockStorageCredentialsInterface(t),
 			SupervisorAgents:                    supervisoragents.NewMockSupervisorAgentsInterface(t),
@@ -1260,6 +1263,14 @@ func (m *MockWorkspaceClient) GetMockSecretsUcAPI() *catalog.MockSecretsUcInterf
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockServerlessComputeServiceAPI() *compute.MockServerlessComputeServiceInterface {
+	api, ok := m.WorkspaceClient.ServerlessComputeService.(*compute.MockServerlessComputeServiceInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServerlessComputeService to be *compute.MockServerlessComputeServiceInterface, actual was %T", m.WorkspaceClient.ServerlessComputeService))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockServicePrincipalSecretsProxyAPI() *oauth2.MockServicePrincipalSecretsProxyInterface {
 	api, ok := m.WorkspaceClient.ServicePrincipalSecretsProxy.(*oauth2.MockServicePrincipalSecretsProxyInterface)
 	if !ok {
@@ -1304,6 +1315,14 @@ func (m *MockWorkspaceClient) GetMockSharesAPI() *sharing.MockSharesInterface {
 	api, ok := m.WorkspaceClient.Shares.(*sharing.MockSharesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Shares to be *sharing.MockSharesInterface, actual was %T", m.WorkspaceClient.Shares))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockSoftwareArtifactsAPI() *softwareartifacts.MockSoftwareArtifactsInterface {
+	api, ok := m.WorkspaceClient.SoftwareArtifacts.(*softwareartifacts.MockSoftwareArtifactsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected SoftwareArtifacts to be *softwareartifacts.MockSoftwareArtifactsInterface, actual was %T", m.WorkspaceClient.SoftwareArtifacts))
 	}
 	return api
 }

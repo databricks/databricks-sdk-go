@@ -59,6 +59,20 @@ func (s *Adlsgen2Info) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Compute products allowed by a policy and their product-specific constraints.
+// At least one product must be set.
+type AllowedComputeProducts struct {
+	// Constraints for serverless automated compute. Absence disallows automated
+	// compute.
+	Automated *AutomatedConstraints `json:"automated,omitempty"`
+	// Constraints for Lakebase instances. Absence disallows Lakebase.
+	Lakebase *LakebaseConstraints `json:"lakebase,omitempty"`
+}
+
+func (s *AllowedComputeProducts) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. Note that `max_workers` must be strictly greater than
@@ -78,6 +92,16 @@ func (s *AutoScale) UnmarshalJSON(b []byte) error {
 
 func (s AutoScale) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Constraints applied to serverless automated workloads by a compute policy.
+type AutomatedConstraints struct {
+	// Maximum per-workload Spark executor allocation. Absence imposes no limit.
+	PerWorkloadMax *RateLimitConfig `json:"per_workload_max,omitempty"`
+}
+
+func (s *AutomatedConstraints) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Attributes set during cluster creation which are related to Amazon Web
@@ -1592,6 +1616,44 @@ func (s *CommandStatusResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s CommandStatusResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A compute policy resource. A workspace-scoped policy that allows one or more
+// compute products, each with product-specific constraints.
+type ComputePolicy struct {
+	// The compute products allowed by this policy and their constraints. At
+	// least one product must be set.
+	AllowedComputeProducts *AllowedComputeProducts `json:"allowed_compute_products,omitempty"`
+	// Whether the calling user has manage permission on this compute policy.
+	// Manage includes use, so can_use is also true whenever this is true.
+	CanManage bool `json:"can_manage,omitempty"`
+	// Whether the calling user has use permission on this compute policy.
+	CanUse bool `json:"can_use,omitempty"`
+	// The unique identifier of the compute policy (UUID). Server-assigned on
+	// create.
+	ComputePolicyId string `json:"compute_policy_id,omitempty"`
+	// The creation timestamp.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The display name of the compute policy.
+	DisplayName string `json:"display_name,omitempty"`
+	// Whether this is the workspace default policy for its single allowed
+	// compute product. Default policies are system-provisioned and cannot be
+	// deleted or renamed.
+	IsDefault bool `json:"is_default,omitempty"`
+	// User-defined key/value tags on the compute policy, provided at creation
+	// and validated. unified-tagging is the system of record for tag
+	// assignments.
+	Tags map[string]string `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ComputePolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComputePolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4978,6 +5040,25 @@ func (f *Kind) Type() string {
 	return "Kind"
 }
 
+// Constraints applied to Lakebase instances by a compute policy.
+type LakebaseConstraints struct {
+	// Maximum capacity units permitted per instance. Absence imposes no limit.
+	MaxCapacityUnitsPerInstance int64 `json:"max_capacity_units_per_instance,omitempty"`
+	// Maximum idle time in minutes before scale-to-zero. Absence imposes no
+	// requirement.
+	MaxIdleMinutesBeforeScaleToZero int64 `json:"max_idle_minutes_before_scale_to_zero,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LakebaseConstraints) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LakebaseConstraints) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Language string
 
 const LanguagePython Language = `python`
@@ -5385,6 +5466,42 @@ func (f *ListClustersSortByField) Type() string {
 	return "ListClustersSortByField"
 }
 
+type ListComputePoliciesRequest struct {
+	// Maximum number of policies to return per response. Unset or zero defaults
+	// to 100. The server caps requests above 150.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Token for cursor-based pagination.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListComputePoliciesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListComputePoliciesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response for listing compute policies.
+type ListComputePoliciesResponse struct {
+	// The list of compute policies.
+	ComputePolicies []ComputePolicy `json:"compute_policies,omitempty"`
+	// Token for the next page of results. Empty if no more results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListComputePoliciesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListComputePoliciesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListGlobalInitScriptsResponse struct {
 	Scripts []GlobalInitScriptDetails `json:"scripts,omitempty"`
 }
@@ -5460,6 +5577,43 @@ func (s *ListPolicyFamiliesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListPolicyFamiliesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListServerlessComputesRequest struct {
+	// Maximum number of computes to return per response. Unset or zero defaults
+	// to 100. The server caps requests above 150 to bound per-request RBAC
+	// fan-out.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Token for cursor-based pagination.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListServerlessComputesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServerlessComputesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response for listing serverless computes.
+type ListServerlessComputesResponse struct {
+	// Token for the next page of results. Empty if no more results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The list of serverless computes.
+	ServerlessComputes []ServerlessCompute `json:"serverless_computes,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListServerlessComputesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServerlessComputesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5943,6 +6097,25 @@ func (s RCranLibrary) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Rate-limit configuration for serverless compute workloads.
+type RateLimitConfig struct {
+	TShirtSize TshirtSize `json:"t_shirt_size,omitempty"`
+	// Proto enum name of t_shirt_size (e.g. T_SHIRT_SIZE_SMALL). Output-only;
+	// derived on read so a minting client that does not know a new enum value
+	// can still put the name on the cost-control token.
+	TShirtSizeName string `json:"t_shirt_size_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RateLimitConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RateLimitConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type RemoveInstanceProfile struct {
 	// The ARN of the instance profile to remove. This field is required.
 	InstanceProfileArn string `json:"instance_profile_arn"`
@@ -6168,6 +6341,35 @@ func (s *S3StorageInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s S3StorageInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A serverless compute resource.
+type ServerlessCompute struct {
+	// Whether the calling user has ManageServerlessComputePermission on this
+	// compute.
+	CanManage bool `json:"can_manage,omitempty"`
+	// Whether the calling user has UseServerlessComputePermission on this
+	// compute.
+	CanUse bool `json:"can_use,omitempty"`
+	// The creation timestamp.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Whether this is the workspace default compute for its compute_type.
+	// Default computes are system-provisioned and cannot be deleted or renamed.
+	IsDefault bool `json:"is_default,omitempty"`
+	// The display name of the serverless compute.
+	Name string `json:"name,omitempty"`
+	// The unique identifier of the serverless compute (UUID).
+	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ServerlessCompute) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ServerlessCompute) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -6960,6 +7162,62 @@ func (f *TerminationReasonType) Values() []TerminationReasonType {
 // Type always returns TerminationReasonType to satisfy [pflag.Value] interface
 func (f *TerminationReasonType) Type() string {
 	return "TerminationReasonType"
+}
+
+// T-shirt size for per-workload Spark executor limits.
+type TshirtSize string
+
+const TshirtSizeTShirtSize2xLarge TshirtSize = `T_SHIRT_SIZE_2X_LARGE`
+
+const TshirtSizeTShirtSize3xLarge TshirtSize = `T_SHIRT_SIZE_3X_LARGE`
+
+const TshirtSizeTShirtSize4xLarge TshirtSize = `T_SHIRT_SIZE_4X_LARGE`
+
+const TshirtSizeTShirtSizeLarge TshirtSize = `T_SHIRT_SIZE_LARGE`
+
+const TshirtSizeTShirtSizeMedium TshirtSize = `T_SHIRT_SIZE_MEDIUM`
+
+const TshirtSizeTShirtSizeSmall TshirtSize = `T_SHIRT_SIZE_SMALL`
+
+const TshirtSizeTShirtSizeUnspecified TshirtSize = `T_SHIRT_SIZE_UNSPECIFIED`
+
+const TshirtSizeTShirtSizeXLarge TshirtSize = `T_SHIRT_SIZE_X_LARGE`
+
+// String representation for [fmt.Print]
+func (f *TshirtSize) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TshirtSize) Set(v string) error {
+	switch v {
+	case `T_SHIRT_SIZE_2X_LARGE`, `T_SHIRT_SIZE_3X_LARGE`, `T_SHIRT_SIZE_4X_LARGE`, `T_SHIRT_SIZE_LARGE`, `T_SHIRT_SIZE_MEDIUM`, `T_SHIRT_SIZE_SMALL`, `T_SHIRT_SIZE_UNSPECIFIED`, `T_SHIRT_SIZE_X_LARGE`:
+		*f = TshirtSize(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "T_SHIRT_SIZE_2X_LARGE", "T_SHIRT_SIZE_3X_LARGE", "T_SHIRT_SIZE_4X_LARGE", "T_SHIRT_SIZE_LARGE", "T_SHIRT_SIZE_MEDIUM", "T_SHIRT_SIZE_SMALL", "T_SHIRT_SIZE_UNSPECIFIED", "T_SHIRT_SIZE_X_LARGE"`, v)
+	}
+}
+
+// Values returns all possible values for TshirtSize.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TshirtSize) Values() []TshirtSize {
+	return []TshirtSize{
+		TshirtSizeTShirtSize2xLarge,
+		TshirtSizeTShirtSize3xLarge,
+		TshirtSizeTShirtSize4xLarge,
+		TshirtSizeTShirtSizeLarge,
+		TshirtSizeTShirtSizeMedium,
+		TshirtSizeTShirtSizeSmall,
+		TshirtSizeTShirtSizeUnspecified,
+		TshirtSizeTShirtSizeXLarge,
+	}
+}
+
+// Type always returns TshirtSize to satisfy [pflag.Value] interface
+func (f *TshirtSize) Type() string {
+	return "TshirtSize"
 }
 
 type UninstallLibraries struct {

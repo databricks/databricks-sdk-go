@@ -341,11 +341,32 @@ func (s Endpoint) MarshalJSON() ([]byte, error) {
 // Scaling information for a Standard endpoint: the current scaling state, the
 // requested QPS target, and the progress of an in-progress scaling change.
 type EndpointScalingInfo struct {
+	// Reason the in-progress scaling change is delayed. When set,
+	// `estimated_completion_time` is unset. Unset when the change is not
+	// delayed or no scaling change is in progress.
+	DelayedReason EndpointScalingInfoDelayReason `json:"delayed_reason,omitempty"`
+	// Estimated time at which the in-progress scaling change will complete. The
+	// estimate may change as the scaling change progresses. Unset when no
+	// scaling change is in progress, when no estimate is available, or when the
+	// change is delayed (see `delayed_reason`).
+	EstimatedCompletionTime *time.Time `json:"estimated_completion_time,omitempty"`
+	// Percentage of index initialization completed, from 0 to 100. Set only
+	// during the `INITIALIZING_INDEX` phase; unset in other phases or when
+	// progress is not available.
+	IndexInitializationPercentage int `json:"index_initialization_percentage,omitempty"`
+	// Current phase of the in-progress scaling change. Unset when no scaling
+	// change is in progress or the phase is not available.
+	Phase EndpointScalingInfoPhase `json:"phase,omitempty"`
 	// The requested QPS target for the endpoint. Best-effort; the system does
 	// not guarantee this QPS will be achieved.
 	RequestedTargetQps int64 `json:"requested_target_qps,omitempty"`
 	// The current state of the scaling change request.
 	State ScalingChangeState `json:"state,omitempty"`
+	// Earliest time a new Target QPS change is accepted. Set only while a
+	// scaling change is in progress, the change lock is on, and the endpoint
+	// has a recorded last throughput change; may be in the past once the lock
+	// has expired.
+	TargetQpsChangeAllowedAfterTime *time.Time `json:"target_qps_change_allowed_after_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -356,6 +377,88 @@ func (s *EndpointScalingInfo) UnmarshalJSON(b []byte) error {
 
 func (s EndpointScalingInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Reason an in-progress scaling change is delayed.
+type EndpointScalingInfoDelayReason string
+
+const EndpointScalingInfoDelayReasonCapacityUnavailable EndpointScalingInfoDelayReason = `CAPACITY_UNAVAILABLE`
+
+const EndpointScalingInfoDelayReasonScaleDownBlocked EndpointScalingInfoDelayReason = `SCALE_DOWN_BLOCKED`
+
+const EndpointScalingInfoDelayReasonTakingLongerThanExpected EndpointScalingInfoDelayReason = `TAKING_LONGER_THAN_EXPECTED`
+
+// String representation for [fmt.Print]
+func (f *EndpointScalingInfoDelayReason) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EndpointScalingInfoDelayReason) Set(v string) error {
+	switch v {
+	case `CAPACITY_UNAVAILABLE`, `SCALE_DOWN_BLOCKED`, `TAKING_LONGER_THAN_EXPECTED`:
+		*f = EndpointScalingInfoDelayReason(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAPACITY_UNAVAILABLE", "SCALE_DOWN_BLOCKED", "TAKING_LONGER_THAN_EXPECTED"`, v)
+	}
+}
+
+// Values returns all possible values for EndpointScalingInfoDelayReason.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointScalingInfoDelayReason) Values() []EndpointScalingInfoDelayReason {
+	return []EndpointScalingInfoDelayReason{
+		EndpointScalingInfoDelayReasonCapacityUnavailable,
+		EndpointScalingInfoDelayReasonScaleDownBlocked,
+		EndpointScalingInfoDelayReasonTakingLongerThanExpected,
+	}
+}
+
+// Type always returns EndpointScalingInfoDelayReason to satisfy [pflag.Value] interface
+func (f *EndpointScalingInfoDelayReason) Type() string {
+	return "EndpointScalingInfoDelayReason"
+}
+
+// Phase of an in-progress scaling change.
+type EndpointScalingInfoPhase string
+
+const EndpointScalingInfoPhaseAdjustingCapacity EndpointScalingInfoPhase = `ADJUSTING_CAPACITY`
+
+const EndpointScalingInfoPhaseEstimating EndpointScalingInfoPhase = `ESTIMATING`
+
+const EndpointScalingInfoPhaseInitializingIndex EndpointScalingInfoPhase = `INITIALIZING_INDEX`
+
+// String representation for [fmt.Print]
+func (f *EndpointScalingInfoPhase) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EndpointScalingInfoPhase) Set(v string) error {
+	switch v {
+	case `ADJUSTING_CAPACITY`, `ESTIMATING`, `INITIALIZING_INDEX`:
+		*f = EndpointScalingInfoPhase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ADJUSTING_CAPACITY", "ESTIMATING", "INITIALIZING_INDEX"`, v)
+	}
+}
+
+// Values returns all possible values for EndpointScalingInfoPhase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointScalingInfoPhase) Values() []EndpointScalingInfoPhase {
+	return []EndpointScalingInfoPhase{
+		EndpointScalingInfoPhaseAdjustingCapacity,
+		EndpointScalingInfoPhaseEstimating,
+		EndpointScalingInfoPhaseInitializingIndex,
+	}
+}
+
+// Type always returns EndpointScalingInfoPhase to satisfy [pflag.Value] interface
+func (f *EndpointScalingInfoPhase) Type() string {
+	return "EndpointScalingInfoPhase"
 }
 
 // Lifecycle and health state of an AI Search endpoint, along with any

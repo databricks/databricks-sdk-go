@@ -1,5 +1,23 @@
 # Version changelog
 
+## Release v0.196.0 (2026-11-09)
+
+### API Changes
+* Add [softwareartifacts](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/softwareartifacts) package.
+* Add [w.ServerlessComputeService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ServerlessComputeServiceAPI) workspace-level service.
+* Add [w.SoftwareArtifacts](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/softwareartifacts#SoftwareArtifactsAPI) workspace-level service.
+* Add `TriggerMaterializationSet` method for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service.
+* Add `AcknowledgeAssessmentWarnings`, `AssessMigration`, `CreateMigration`, `DeleteMigration`, `GetAssessment`, `GetMigration`, `ListAssessments`, `ListMigrations`, `StartMigration`, `UndeleteMigration` and `UpdateMigration` methods for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `DelayedReason`, `EstimatedCompletionTime`, `IndexInitializationPercentage`, `Phase` and `TargetQpsChangeAllowedAfterTime` fields for [aisearch.EndpointScalingInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aisearch#EndpointScalingInfo).
+* Add `DeltaTable` field for [jobs.ResolvedValuesAiFunctionTaskResolvedValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedValuesAiFunctionTaskResolvedValues).
+* Add `Paused` field for [ml.CronSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#CronSchedule).
+* Add `ExternalTrigger` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `Paused` field for [ml.TableTrigger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#TableTrigger).
+* Add `EffectiveWorkspaceDashboardTheme` and `WorkspaceDashboardTheme` fields for [settingsv2.Setting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#Setting).
+* Add `DelayedReason`, `EstimatedCompletionTimestamp`, `IndexInitializationPercentage`, `Phase` and `TargetQpsChangeAllowedAfterTimestamp` fields for [vectorsearch.EndpointScalingInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointScalingInfo).
+* [Breaking] Change `WarehouseId` field for [lakewatch.Datasource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#Datasource) to no longer be required.
+* Change `WarehouseId` field for [lakewatch.Datasource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#Datasource) to no longer be required.
+
 ## Release v0.195.0 (2026-11-05)
 
 ### API Changes

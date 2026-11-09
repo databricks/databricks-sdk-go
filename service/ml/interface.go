@@ -363,6 +363,23 @@ type FeatureEngineeringService interface {
 	// Purge materialized feature values for specified entities.
 	PurgeFeatureEntities(ctx context.Context, request PurgeFeatureEntitiesRequest) (*Operation, error)
 
+	// Requests materialization of all members of the set. The set must be
+	// nonempty and contain only batch materializations. Runs are allowed while
+	// automatic scheduling is paused. Requested runs may wait in a queue,
+	// subject to queue limits and expiry.
+	//
+	// Returns a long-running operation that completes when every requested run
+	// reaches a terminal state. Success requires all runs and any required
+	// online synchronization to succeed. Individual outcomes are available in
+	// `MaterializationSetTriggerProgress`.
+	//
+	// Use `CancelOperation` to request cancellation of this operation's
+	// unfinished work. Cancellation is best effort and does not undo completed
+	// writes. Online synchronization already in progress may continue.
+	//
+	// Runs use the features' configured windows and settling delay.
+	TriggerMaterializationSet(ctx context.Context, request TriggerMaterializationSetRequest) (*Operation, error)
+
 	// Update a Feature.
 	UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error)
 

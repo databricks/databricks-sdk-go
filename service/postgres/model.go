@@ -12,6 +12,217 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// Request to acknowledge assessment warnings.
+type AcknowledgeAssessmentWarningsRequest struct {
+	// Required. The assessment resource name, in the format
+	// `migrations/{migration}/assessments/{assessment}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *AcknowledgeAssessmentWarningsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response produced after assessment warnings are acknowledged.
+type AcknowledgeAssessmentWarningsResponse struct {
+	// The assessment after its warnings are acknowledged.
+	Assessment *Assessment `json:"assessment,omitempty"`
+}
+
+func (s *AcknowledgeAssessmentWarningsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Request to assess a migration.
+type AssessMigrationRequest struct {
+	// Required. The migration resource name, in the format
+	// `migrations/{migration}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *AssessMigrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response produced after an assessment run is created.
+type AssessMigrationResponse struct {
+	// The assessment run created for the migration.
+	Assessment *Assessment `json:"assessment,omitempty"`
+}
+
+func (s *AssessMigrationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A server-managed assessment of a migration's source configuration. Completed
+// check results are immutable.
+type Assessment struct {
+	// Output-only. Results of the checks performed by this assessment.
+	Checks []AssessmentCheck `json:"checks,omitempty"`
+	// Output-only. The time when the assessment completed.
+	CompleteTime *time.Time `json:"complete_time,omitempty"`
+	// Output-only. The time when the assessment started.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Output-only. The time when the assessment expires.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
+	// The assessment resource name, in the format
+	// `migrations/{migration}/assessments/{assessment}`.
+	Name string `json:"name,omitempty"`
+	// Output-only. The aggregate assessment state.
+	State AssessmentState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Assessment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Assessment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The result of one assessment check.
+type AssessmentCheck struct {
+	// Output-only. Whether this result blocks migration from starting.
+	BlocksMigration bool `json:"blocks_migration,omitempty"`
+	// Output-only. Stable identifier of the check.
+	CheckId string `json:"check_id,omitempty"`
+	// Output-only. The source database the check evaluated. Unset for checks
+	// that assess the whole source server rather than a single database.
+	Database string `json:"database,omitempty"`
+	// Output-only. Measurements observed by this check. Absent when
+	// unavailable.
+	Details *AssessmentCheckDetails `json:"details,omitempty"`
+	// Output-only. Explanation of the result.
+	Reason string `json:"reason,omitempty"`
+	// Output-only. The check verdict.
+	Verdict AssessmentCheckVerdict `json:"verdict,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AssessmentCheck) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AssessmentCheck) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Measurements observed when an assessment check ran. Unset for older
+// assessments.
+type AssessmentCheckDetails struct {
+	// Output-only. Physical size of the source database observed by this check.
+	DatabaseSize *DatabaseSizeDetails `json:"database_size,omitempty"`
+	// Output-only. Age of the oldest source transaction observed by this check.
+	LongTransaction *LongTransactionDetails `json:"long_transaction,omitempty"`
+}
+
+func (s *AssessmentCheckDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The verdict of a single assessment check.
+type AssessmentCheckVerdict string
+
+const AssessmentCheckVerdictAssessmentCheckVerdictActionRequired AssessmentCheckVerdict = `ASSESSMENT_CHECK_VERDICT_ACTION_REQUIRED`
+
+const AssessmentCheckVerdictAssessmentCheckVerdictError AssessmentCheckVerdict = `ASSESSMENT_CHECK_VERDICT_ERROR`
+
+const AssessmentCheckVerdictAssessmentCheckVerdictPass AssessmentCheckVerdict = `ASSESSMENT_CHECK_VERDICT_PASS`
+
+const AssessmentCheckVerdictAssessmentCheckVerdictUnsupported AssessmentCheckVerdict = `ASSESSMENT_CHECK_VERDICT_UNSUPPORTED`
+
+const AssessmentCheckVerdictAssessmentCheckVerdictWarning AssessmentCheckVerdict = `ASSESSMENT_CHECK_VERDICT_WARNING`
+
+// String representation for [fmt.Print]
+func (f *AssessmentCheckVerdict) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AssessmentCheckVerdict) Set(v string) error {
+	switch v {
+	case `ASSESSMENT_CHECK_VERDICT_ACTION_REQUIRED`, `ASSESSMENT_CHECK_VERDICT_ERROR`, `ASSESSMENT_CHECK_VERDICT_PASS`, `ASSESSMENT_CHECK_VERDICT_UNSUPPORTED`, `ASSESSMENT_CHECK_VERDICT_WARNING`:
+		*f = AssessmentCheckVerdict(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ASSESSMENT_CHECK_VERDICT_ACTION_REQUIRED", "ASSESSMENT_CHECK_VERDICT_ERROR", "ASSESSMENT_CHECK_VERDICT_PASS", "ASSESSMENT_CHECK_VERDICT_UNSUPPORTED", "ASSESSMENT_CHECK_VERDICT_WARNING"`, v)
+	}
+}
+
+// Values returns all possible values for AssessmentCheckVerdict.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AssessmentCheckVerdict) Values() []AssessmentCheckVerdict {
+	return []AssessmentCheckVerdict{
+		AssessmentCheckVerdictAssessmentCheckVerdictActionRequired,
+		AssessmentCheckVerdictAssessmentCheckVerdictError,
+		AssessmentCheckVerdictAssessmentCheckVerdictPass,
+		AssessmentCheckVerdictAssessmentCheckVerdictUnsupported,
+		AssessmentCheckVerdictAssessmentCheckVerdictWarning,
+	}
+}
+
+// Type always returns AssessmentCheckVerdict to satisfy [pflag.Value] interface
+func (f *AssessmentCheckVerdict) Type() string {
+	return "AssessmentCheckVerdict"
+}
+
+// The aggregate state of an assessment run.
+type AssessmentState string
+
+const AssessmentStateAssessmentStateAssessing AssessmentState = `ASSESSMENT_STATE_ASSESSING`
+
+const AssessmentStateAssessmentStateAwaitingAck AssessmentState = `ASSESSMENT_STATE_AWAITING_ACK`
+
+const AssessmentStateAssessmentStateBlocked AssessmentState = `ASSESSMENT_STATE_BLOCKED`
+
+const AssessmentStateAssessmentStateExpired AssessmentState = `ASSESSMENT_STATE_EXPIRED`
+
+const AssessmentStateAssessmentStateFailed AssessmentState = `ASSESSMENT_STATE_FAILED`
+
+const AssessmentStateAssessmentStateNeedsAction AssessmentState = `ASSESSMENT_STATE_NEEDS_ACTION`
+
+const AssessmentStateAssessmentStateReady AssessmentState = `ASSESSMENT_STATE_READY`
+
+// String representation for [fmt.Print]
+func (f *AssessmentState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AssessmentState) Set(v string) error {
+	switch v {
+	case `ASSESSMENT_STATE_ASSESSING`, `ASSESSMENT_STATE_AWAITING_ACK`, `ASSESSMENT_STATE_BLOCKED`, `ASSESSMENT_STATE_EXPIRED`, `ASSESSMENT_STATE_FAILED`, `ASSESSMENT_STATE_NEEDS_ACTION`, `ASSESSMENT_STATE_READY`:
+		*f = AssessmentState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ASSESSMENT_STATE_ASSESSING", "ASSESSMENT_STATE_AWAITING_ACK", "ASSESSMENT_STATE_BLOCKED", "ASSESSMENT_STATE_EXPIRED", "ASSESSMENT_STATE_FAILED", "ASSESSMENT_STATE_NEEDS_ACTION", "ASSESSMENT_STATE_READY"`, v)
+	}
+}
+
+// Values returns all possible values for AssessmentState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AssessmentState) Values() []AssessmentState {
+	return []AssessmentState{
+		AssessmentStateAssessmentStateAssessing,
+		AssessmentStateAssessmentStateAwaitingAck,
+		AssessmentStateAssessmentStateBlocked,
+		AssessmentStateAssessmentStateExpired,
+		AssessmentStateAssessmentStateFailed,
+		AssessmentStateAssessmentStateNeedsAction,
+		AssessmentStateAssessmentStateReady,
+	}
+}
+
+// Type always returns AssessmentState to satisfy [pflag.Value] interface
+func (f *AssessmentState) Type() string {
+	return "AssessmentState"
+}
+
 type Branch struct {
 	// The part of the name, chosen by the user when the resource was created.
 	BranchId string `json:"branch_id,omitempty"`
@@ -557,6 +768,20 @@ func (s CreateEndpointRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateMigrationRequest struct {
+	// Required. The migration to create.
+	Migration Migration `json:"migration"`
+	// Required. The ID to use for the migration. It becomes the final component
+	// of the resource name (`migrations/{migration_id}`). It must be 1-63
+	// characters long, start with a lowercase letter, and contain only
+	// lowercase letters, numbers, and hyphens.
+	MigrationId string `json:"-" url:"migration_id"`
+}
+
+func (s *CreateMigrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateProjectRequest struct {
 	// The Project to create.
 	Project Project `json:"project"`
@@ -582,11 +807,13 @@ type CreateRoleRequest struct {
 	// When the role already exists, only mutable fields are updated. Attributes
 	// omitted from the request retain their current values. Set an attribute
 	// explicitly to false to disable it. `identity_type`, `auth_method`, and
-	// `postgres_role` retain their existing values; supplied values for these
-	// fields are ignored. `membership_roles` is overwritten, not merged.
-	// Leaving `membership_roles` empty clears all of the role's existing
-	// memberships, including `DATABRICKS_SUPERUSER`. Always send the complete
-	// desired list of memberships when using this field.
+	// `postgres_role` retain their existing values. Omit these fields or supply
+	// their current values. A differing supplied value returns
+	// INVALID_PARAMETER_VALUE and rejects the entire request, including changes
+	// to mutable fields. `membership_roles` is overwritten, not merged. Leaving
+	// `membership_roles` empty clears all of the role's existing memberships,
+	// including `DATABRICKS_SUPERUSER`. Always send the complete desired list
+	// of memberships when using this field.
 	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
 	// The desired specification of a Role.
 	Role Role `json:"role"`
@@ -872,11 +1099,51 @@ func (s DatabaseDatabaseStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A mapping between one source and target database.
+type DatabaseMapping struct {
+	// Output-only. The resolved target PostgreSQL database name. Equal to
+	// `target_database` when provided; otherwise equal to `source_database`.
+	EffectiveTargetDatabase string `json:"effective_target_database,omitempty"`
+	// Required. The exact PostgreSQL database name on the source server.
+	SourceDatabase string `json:"source_database"`
+	// The PostgreSQL database name to create on the target branch. When
+	// omitted, the source database name is preserved.
+	TargetDatabase string `json:"target_database,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseMapping) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseMapping) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DatabaseOperationMetadata struct {
 }
 
 func (s *DatabaseOperationMetadata) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Physical database size, including indexes and bloat; not a dump archive size
+// estimate.
+type DatabaseSizeDetails struct {
+	// Size reported by pg_database_size, in bytes. Zero is a measured empty
+	// size.
+	SizeBytes int64 `json:"size_bytes,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseSizeDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseSizeDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Databricks Error that is returned by all Databricks APIs.
@@ -1029,6 +1296,16 @@ type DeleteEndpointRequest struct {
 }
 
 func (s *DeleteEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type DeleteMigrationRequest struct {
+	// Required. The migration resource name, in the format
+	// `migrations/{migration}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteMigrationRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -1708,6 +1985,16 @@ func (s GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetAssessmentRequest struct {
+	// Required. The assessment resource name, in the format
+	// `migrations/{migration}/assessments/{assessment}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetAssessmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetBranchRequest struct {
 	// The full resource path of the branch to retrieve. Format:
 	// projects/{project_id}/branches/{branch_id}
@@ -1776,6 +2063,16 @@ type GetEndpointRequest struct {
 }
 
 func (s *GetEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetMigrationRequest struct {
+	// Required. The migration resource name, in the format
+	// `migrations/{migration}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetMigrationRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -1881,6 +2178,46 @@ func (s *InitialEndpointSpec) UnmarshalJSON(b []byte) error {
 }
 
 func (s InitialEndpointSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAssessmentsRequest struct {
+	// The maximum number of assessments to return. The server default is 100;
+	// values above 1000 are capped to 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token from a previous call.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Required. The parent migration resource name, in the format
+	// `migrations/{migration}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAssessmentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAssessmentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to list assessments.
+type ListAssessmentsResponse struct {
+	// Assessment runs ordered from newest to oldest.
+	Assessments []Assessment `json:"assessments,omitempty"`
+	// A token for retrieving the next page. Empty when there are no more
+	// results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAssessmentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAssessmentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2082,6 +2419,46 @@ func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListMigrationsRequest struct {
+	// The maximum number of migrations to return. The server default is 100;
+	// values above 1000 are capped to 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token from a previous call.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Whether to include soft-deleted migrations in the response. Hard-deleted
+	// and already-purged migrations are never returned.
+	ShowDeleted bool `json:"-" url:"show_deleted,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMigrationsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMigrationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to list migrations.
+type ListMigrationsResponse struct {
+	// Migrations visible to the caller.
+	Migrations []Migration `json:"migrations,omitempty"`
+	// A token for retrieving the next page. Empty when there are no more
+	// results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMigrationsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMigrationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListProjectsRequest struct {
 	// Upper bound for items returned. Cannot be negative. The maximum value is
 	// 100.
@@ -2195,6 +2572,188 @@ func (s *ListSnapshotsResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListSnapshotsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Oldest active source transaction at assessment time.
+type LongTransactionDetails struct {
+	// Age of the oldest active transaction when assessed. Zero when none is
+	// active.
+	OldestTransactionAge *duration.Duration `json:"oldest_transaction_age,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LongTransactionDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LongTransactionDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A managed migration of PostgreSQL databases into a Lakebase branch.
+type Migration struct {
+	// Output-only. The time when the migration was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// Required. Mappings from source databases to target databases.
+	DatabaseMappings []DatabaseMapping `json:"database_mappings"`
+	// Output-only. The time when the migration was soft-deleted. Empty if the
+	// migration is active.
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
+	// Output-only. The current error preventing migration progress, if any.
+	Error *MigrationError `json:"error,omitempty"`
+	// Required. Immutable. The intended migration mode, selected when the
+	// migration is created.
+	MigrationType MigrationType `json:"migration_type"`
+	// The migration resource name, in the format `migrations/{migration}`.
+	Name string `json:"name,omitempty"`
+	// Output-only. The time when the soft-deleted migration is scheduled for
+	// permanent deletion. Empty if the migration is active or permanent
+	// deletion is not scheduled.
+	PurgeTime *time.Time `json:"purge_time,omitempty"`
+	// Required. The name of the Unity Catalog connection (a UC securable name,
+	// such as `my_postgres_connection`) used to connect to the source
+	// PostgreSQL server.
+	SourceConnection string `json:"source_connection"`
+	// Output-only. The authoritative migration lifecycle state.
+	State MigrationState `json:"state,omitempty"`
+	// The Lakebase branch receiving the migrated databases, in the format
+	// `projects/{project_id}/branches/{branch_id}`. May be omitted during
+	// assessment, but must be set before the migration starts, and may be
+	// changed until then.
+	TargetBranch string `json:"target_branch,omitempty"`
+	// Output-only. The time when the migration was last updated.
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Migration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Migration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// An error that prevents migration progress.
+type MigrationError struct {
+	// A stable machine-readable error code.
+	Code string `json:"code,omitempty"`
+	// A concise explanation of the failure.
+	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MigrationError) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MigrationError) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Metadata for a long-running operation that applies an action to a migration.
+type MigrationOperationMetadata struct {
+}
+
+func (s *MigrationOperationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The lifecycle state of a migration.
+type MigrationState string
+
+const MigrationStateMigrationStateAssessing MigrationState = `MIGRATION_STATE_ASSESSING`
+
+const MigrationStateMigrationStateAssessmentNeedsAction MigrationState = `MIGRATION_STATE_ASSESSMENT_NEEDS_ACTION`
+
+const MigrationStateMigrationStateCompleted MigrationState = `MIGRATION_STATE_COMPLETED`
+
+const MigrationStateMigrationStateDraft MigrationState = `MIGRATION_STATE_DRAFT`
+
+const MigrationStateMigrationStateFailed MigrationState = `MIGRATION_STATE_FAILED`
+
+const MigrationStateMigrationStateInitialDataLoad MigrationState = `MIGRATION_STATE_INITIAL_DATA_LOAD`
+
+const MigrationStateMigrationStateReadyToStart MigrationState = `MIGRATION_STATE_READY_TO_START`
+
+const MigrationStateMigrationStateSchemaLoad MigrationState = `MIGRATION_STATE_SCHEMA_LOAD`
+
+// String representation for [fmt.Print]
+func (f *MigrationState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MigrationState) Set(v string) error {
+	switch v {
+	case `MIGRATION_STATE_ASSESSING`, `MIGRATION_STATE_ASSESSMENT_NEEDS_ACTION`, `MIGRATION_STATE_COMPLETED`, `MIGRATION_STATE_DRAFT`, `MIGRATION_STATE_FAILED`, `MIGRATION_STATE_INITIAL_DATA_LOAD`, `MIGRATION_STATE_READY_TO_START`, `MIGRATION_STATE_SCHEMA_LOAD`:
+		*f = MigrationState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MIGRATION_STATE_ASSESSING", "MIGRATION_STATE_ASSESSMENT_NEEDS_ACTION", "MIGRATION_STATE_COMPLETED", "MIGRATION_STATE_DRAFT", "MIGRATION_STATE_FAILED", "MIGRATION_STATE_INITIAL_DATA_LOAD", "MIGRATION_STATE_READY_TO_START", "MIGRATION_STATE_SCHEMA_LOAD"`, v)
+	}
+}
+
+// Values returns all possible values for MigrationState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MigrationState) Values() []MigrationState {
+	return []MigrationState{
+		MigrationStateMigrationStateAssessing,
+		MigrationStateMigrationStateAssessmentNeedsAction,
+		MigrationStateMigrationStateCompleted,
+		MigrationStateMigrationStateDraft,
+		MigrationStateMigrationStateFailed,
+		MigrationStateMigrationStateInitialDataLoad,
+		MigrationStateMigrationStateReadyToStart,
+		MigrationStateMigrationStateSchemaLoad,
+	}
+}
+
+// Type always returns MigrationState to satisfy [pflag.Value] interface
+func (f *MigrationState) Type() string {
+	return "MigrationState"
+}
+
+// The intended data transfer mode of a migration.
+type MigrationType string
+
+const MigrationTypeMigrationTypeOneTimeCopy MigrationType = `MIGRATION_TYPE_ONE_TIME_COPY`
+
+const MigrationTypeMigrationTypeOnline MigrationType = `MIGRATION_TYPE_ONLINE`
+
+// String representation for [fmt.Print]
+func (f *MigrationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MigrationType) Set(v string) error {
+	switch v {
+	case `MIGRATION_TYPE_ONE_TIME_COPY`, `MIGRATION_TYPE_ONLINE`:
+		*f = MigrationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MIGRATION_TYPE_ONE_TIME_COPY", "MIGRATION_TYPE_ONLINE"`, v)
+	}
+}
+
+// Values returns all possible values for MigrationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MigrationType) Values() []MigrationType {
+	return []MigrationType{
+		MigrationTypeMigrationTypeOneTimeCopy,
+		MigrationTypeMigrationTypeOnline,
+	}
+}
+
+// Type always returns MigrationType to satisfy [pflag.Value] interface
+func (f *MigrationType) Type() string {
+	return "MigrationType"
 }
 
 // Take a snapshot once per month, on the configured day at the configured hour.
@@ -2925,10 +3484,13 @@ type RoleRoleSpec struct {
 	// NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the
 	// default auth method (group can login as well).
 	//
-	// This field is set when the role is created and cannot be changed by
-	// UpdateRole. If provided in an UpdateRole request body, its value is
-	// ignored and the existing value is retained. Do not include this field as
-	// an explicit path in update_mask.
+	// This field is set when the role is created and cannot be changed. When
+	// replacing an existing role with replace_existing=true, omit this field or
+	// supply its current value. A differing value returns
+	// INVALID_PARAMETER_VALUE and rejects the entire request, including changes
+	// to mutable fields. With `*` or masks containing only mutable fields,
+	// supplied values are ignored. Including this field as an explicit path in
+	// update_mask returns INVALID_PARAMETER_VALUE.
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
 	// The type of role. When specifying a managed-identity, the chosen role_id
 	// must be a valid:
@@ -2936,10 +3498,13 @@ type RoleRoleSpec struct {
 	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
 	// for GROUP
 	//
-	// This field is set when the role is created and cannot be changed by
-	// UpdateRole. If provided in an UpdateRole request body, its value is
-	// ignored and the existing value is retained. Do not include this field as
-	// an explicit path in update_mask.
+	// This field is set when the role is created and cannot be changed. When
+	// replacing an existing role with replace_existing=true, omit this field or
+	// supply its current value. A differing value returns
+	// INVALID_PARAMETER_VALUE and rejects the entire request, including changes
+	// to mutable fields. With `*` or masks containing only mutable fields,
+	// supplied values are ignored. Including this field as an explicit path in
+	// update_mask returns INVALID_PARAMETER_VALUE.
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
 	// An enum value for a standard role that this role is a member of.
 	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
@@ -2956,10 +3521,13 @@ type RoleRoleSpec struct {
 	// 1. user email for IdentityType.USER 2. app ID for
 	// IdentityType.SERVICE_PRINCIPAL 2. group name for IdentityType.GROUP
 	//
-	// This field is set when the role is created and cannot be changed by
-	// UpdateRole. If provided in an UpdateRole request body, its value is
-	// ignored and the existing value is retained. Do not include this field as
-	// an explicit path in update_mask.
+	// This field is set when the role is created and cannot be changed. When
+	// replacing an existing role with replace_existing=true, omit this field or
+	// supply its current value. A differing value returns
+	// INVALID_PARAMETER_VALUE and rejects the entire request, including changes
+	// to mutable fields. With `*` or masks containing only mutable fields,
+	// supplied values are ignored. Including this field as an explicit path in
+	// update_mask returns INVALID_PARAMETER_VALUE.
 	PostgresRole string `json:"postgres_role,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3141,6 +3709,27 @@ func (s *SnapshotStatus) UnmarshalJSON(b []byte) error {
 
 func (s SnapshotStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Request to start a migration.
+type StartMigrationRequest struct {
+	// Required. The migration resource name, in the format
+	// `migrations/{migration}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *StartMigrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response produced after migration preparation has started.
+type StartMigrationResponse struct {
+	// The migration after the start action is applied.
+	Migration *Migration `json:"migration,omitempty"`
+}
+
+func (s *StartMigrationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type SyncedTable struct {
@@ -3578,6 +4167,27 @@ func (s *UndeleteBranchRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Request to restore a soft-deleted migration before it is permanently purged.
+type UndeleteMigrationRequest struct {
+	// Required. The migration resource name, in the format
+	// `migrations/{migration}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *UndeleteMigrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response produced after a soft-deleted migration is restored.
+type UndeleteMigrationResponse struct {
+	// The restored migration.
+	Migration *Migration `json:"migration,omitempty"`
+}
+
+func (s *UndeleteMigrationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Request to restore a soft-deleted project within its retention period.
 type UndeleteProjectRequest struct {
 	// The full resource path of the project to undelete. Format:
@@ -3657,6 +4267,19 @@ func (s *UpdateEndpointRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type UpdateMigrationRequest struct {
+	// Required. The migration containing the user-owned fields to update.
+	Migration Migration `json:"migration"`
+	// The migration resource name, in the format `migrations/{migration}`.
+	Name string `json:"-" url:"-"`
+	// Required. The fields to update.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateMigrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateProjectRequest struct {
 	// Output only. The full resource path of the project. Format:
 	// projects/{project_id}
@@ -3688,16 +4311,14 @@ type UpdateRoleRequest struct {
 	// `spec.attributes.createrole`, and `spec.attributes.bypassrls`.
 	//
 	// `spec.identity_type`, `spec.auth_method`, and `spec.postgres_role` cannot
-	// be changed. Values supplied for these fields in the request body are
-	// ignored. Including one of these fields as an explicit path in update_mask
-	// returns an INVALID_PARAMETER_VALUE error. When `spec` is the only path in
-	// the mask, only the supplied mutable attributes are updated. `*` by
-	// itself, or `spec` combined with other supported paths, selects all
-	// supported mutable fields. For these masks, all three attributes
-	// (`createdb`, `createrole`, and `bypassrls`) must be supplied; omitting
-	// any returns an INVALID_PARAMETER_VALUE error. Each of these mask forms
-	// replaces `membership_roles`. Omitting it or supplying an empty list
-	// clears all memberships, including `DATABRICKS_SUPERUSER`.
+	// be changed. Including an immutable field as an explicit path in
+	// update_mask returns INVALID_PARAMETER_VALUE. With `*` or masks containing
+	// only mutable fields, supplied values for these immutable fields are
+	// ignored. `*` by itself selects all supported mutable fields. For this
+	// mask, all three attributes (`createdb`, `createrole`, and `bypassrls`)
+	// must be supplied; omitting any returns an INVALID_PARAMETER_VALUE error.
+	// The `*` mask replaces `membership_roles`. Omitting it or supplying an
+	// empty list clears all memberships, including `DATABRICKS_SUPERUSER`.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

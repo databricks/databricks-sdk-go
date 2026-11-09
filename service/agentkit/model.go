@@ -678,7 +678,9 @@ type ManagedMemoryEntry struct {
 	// When omitted, the entry applies across the actor's sessions.
 	SessionId string `json:"session_id,omitempty"`
 	// Which writer created this entry. Caller sets this on Create; immutable
-	// after creation.
+	// after creation. While the workspace's default-source-type rollout flag is
+	// on, omitted or UNSPECIFIED is stored as AGENT. While it is off, omitted
+	// is stored unset and UNSPECIFIED as UNSPECIFIED.
 	SourceType ManagedMemoryEntrySourceType `json:"source_type,omitempty"`
 	// Time when the entry was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`

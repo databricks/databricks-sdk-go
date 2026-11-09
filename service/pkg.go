@@ -308,6 +308,8 @@
 //
 // - [catalog.SecretsUcAPI]: A secret is a Unity Catalog securable object that stores sensitive credential data (such as passwords, tokens, and keys) within a three-level namespace (**catalog_name.schema_name.secret_name**).
 //
+// - [compute.ServerlessComputeServiceAPI]: ServerlessCompute Service API.
+//
 // - [oauth2.ServicePrincipalFederationPolicyAPI]: These APIs manage service principal federation policies.
 //
 // - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
@@ -329,6 +331,8 @@
 // - [settingsv2.AccountSettingsV2API]: APIs to manage account level settings.
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
+//
+// - [softwareartifacts.SoftwareArtifactsAPI]: Manage software artifacts and their versions in Unity Catalog.
 //
 // - [settings.SqlResultsDownloadAPI]: Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI Dashboards UIs.
 //
@@ -434,6 +438,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
+	"github.com/databricks/databricks-sdk-go/service/softwareartifacts"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/service/tags"
@@ -600,6 +605,7 @@ var (
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
 	_ *catalog.SecretsUcAPI                               = nil
+	_ *compute.ServerlessComputeServiceAPI                = nil
 	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
 	_ *oauth2.ServicePrincipalSecretsProxyAPI             = nil
@@ -611,6 +617,7 @@ var (
 	_ *settings.AccountSettingsAPI                        = nil
 	_ *settingsv2.AccountSettingsV2API                    = nil
 	_ *sharing.SharesAPI                                  = nil
+	_ *softwareartifacts.SoftwareArtifactsAPI             = nil
 	_ *settings.SqlResultsDownloadAPI                     = nil
 	_ *sql.StatementExecutionAPI                          = nil
 	_ *provisioning.StorageAPI                            = nil
