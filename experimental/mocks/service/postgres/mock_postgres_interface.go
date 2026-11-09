@@ -48,6 +48,142 @@ func (_m *MockPostgresInterface) EXPECT() *MockPostgresInterface_Expecter {
 	return &MockPostgresInterface_Expecter{mock: &_m.Mock}
 }
 
+// AcknowledgeAssessmentWarnings provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) AcknowledgeAssessmentWarnings(ctx context.Context, request postgres.AcknowledgeAssessmentWarningsRequest) (postgres.AcknowledgeAssessmentWarningsOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for AcknowledgeAssessmentWarnings")
+	}
+
+	var r0 postgres.AcknowledgeAssessmentWarningsOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.AcknowledgeAssessmentWarningsRequest) (postgres.AcknowledgeAssessmentWarningsOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.AcknowledgeAssessmentWarningsRequest) postgres.AcknowledgeAssessmentWarningsOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.AcknowledgeAssessmentWarningsOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.AcknowledgeAssessmentWarningsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_AcknowledgeAssessmentWarnings_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AcknowledgeAssessmentWarnings'
+type MockPostgresInterface_AcknowledgeAssessmentWarnings_Call struct {
+	*mock.Call
+}
+
+// AcknowledgeAssessmentWarnings is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.AcknowledgeAssessmentWarningsRequest
+func (_e *MockPostgresInterface_Expecter) AcknowledgeAssessmentWarnings(ctx any, request any) *MockPostgresInterface_AcknowledgeAssessmentWarnings_Call {
+	return &MockPostgresInterface_AcknowledgeAssessmentWarnings_Call{Call: _e.mock.On("AcknowledgeAssessmentWarnings", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_AcknowledgeAssessmentWarnings_Call) Run(run func(ctx context.Context, request postgres.AcknowledgeAssessmentWarningsRequest)) *MockPostgresInterface_AcknowledgeAssessmentWarnings_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.AcknowledgeAssessmentWarningsRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.AcknowledgeAssessmentWarningsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_AcknowledgeAssessmentWarnings_Call) Return(acknowledgeAssessmentWarningsOperationInterface postgres.AcknowledgeAssessmentWarningsOperationInterface, err error) *MockPostgresInterface_AcknowledgeAssessmentWarnings_Call {
+	_c.Call.Return(acknowledgeAssessmentWarningsOperationInterface, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_AcknowledgeAssessmentWarnings_Call) RunAndReturn(run func(ctx context.Context, request postgres.AcknowledgeAssessmentWarningsRequest) (postgres.AcknowledgeAssessmentWarningsOperationInterface, error)) *MockPostgresInterface_AcknowledgeAssessmentWarnings_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// AssessMigration provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) AssessMigration(ctx context.Context, request postgres.AssessMigrationRequest) (postgres.AssessMigrationOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for AssessMigration")
+	}
+
+	var r0 postgres.AssessMigrationOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.AssessMigrationRequest) (postgres.AssessMigrationOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.AssessMigrationRequest) postgres.AssessMigrationOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.AssessMigrationOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.AssessMigrationRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_AssessMigration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AssessMigration'
+type MockPostgresInterface_AssessMigration_Call struct {
+	*mock.Call
+}
+
+// AssessMigration is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.AssessMigrationRequest
+func (_e *MockPostgresInterface_Expecter) AssessMigration(ctx any, request any) *MockPostgresInterface_AssessMigration_Call {
+	return &MockPostgresInterface_AssessMigration_Call{Call: _e.mock.On("AssessMigration", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_AssessMigration_Call) Run(run func(ctx context.Context, request postgres.AssessMigrationRequest)) *MockPostgresInterface_AssessMigration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.AssessMigrationRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.AssessMigrationRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_AssessMigration_Call) Return(assessMigrationOperationInterface postgres.AssessMigrationOperationInterface, err error) *MockPostgresInterface_AssessMigration_Call {
+	_c.Call.Return(assessMigrationOperationInterface, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_AssessMigration_Call) RunAndReturn(run func(ctx context.Context, request postgres.AssessMigrationRequest) (postgres.AssessMigrationOperationInterface, error)) *MockPostgresInterface_AssessMigration_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateBranch provides a mock function for the type MockPostgresInterface
 func (_mock *MockPostgresInterface) CreateBranch(ctx context.Context, request postgres.CreateBranchRequest) (postgres.CreateBranchOperationInterface, error) {
 	ret := _mock.Called(ctx, request)
@@ -452,6 +588,74 @@ func (_c *MockPostgresInterface_CreateEndpoint_Call) Return(createEndpointOperat
 }
 
 func (_c *MockPostgresInterface_CreateEndpoint_Call) RunAndReturn(run func(ctx context.Context, request postgres.CreateEndpointRequest) (postgres.CreateEndpointOperationInterface, error)) *MockPostgresInterface_CreateEndpoint_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateMigration provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) CreateMigration(ctx context.Context, request postgres.CreateMigrationRequest) (postgres.CreateMigrationOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateMigration")
+	}
+
+	var r0 postgres.CreateMigrationOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.CreateMigrationRequest) (postgres.CreateMigrationOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.CreateMigrationRequest) postgres.CreateMigrationOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateMigrationOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.CreateMigrationRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateMigration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMigration'
+type MockPostgresInterface_CreateMigration_Call struct {
+	*mock.Call
+}
+
+// CreateMigration is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateMigrationRequest
+func (_e *MockPostgresInterface_Expecter) CreateMigration(ctx any, request any) *MockPostgresInterface_CreateMigration_Call {
+	return &MockPostgresInterface_CreateMigration_Call{Call: _e.mock.On("CreateMigration", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateMigration_Call) Run(run func(ctx context.Context, request postgres.CreateMigrationRequest)) *MockPostgresInterface_CreateMigration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.CreateMigrationRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.CreateMigrationRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateMigration_Call) Return(createMigrationOperationInterface postgres.CreateMigrationOperationInterface, err error) *MockPostgresInterface_CreateMigration_Call {
+	_c.Call.Return(createMigrationOperationInterface, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateMigration_Call) RunAndReturn(run func(ctx context.Context, request postgres.CreateMigrationRequest) (postgres.CreateMigrationOperationInterface, error)) *MockPostgresInterface_CreateMigration_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1136,6 +1340,74 @@ func (_c *MockPostgresInterface_DeleteEndpoint_Call) RunAndReturn(run func(ctx c
 	return _c
 }
 
+// DeleteMigration provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) DeleteMigration(ctx context.Context, request postgres.DeleteMigrationRequest) (postgres.DeleteMigrationOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMigration")
+	}
+
+	var r0 postgres.DeleteMigrationOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.DeleteMigrationRequest) (postgres.DeleteMigrationOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.DeleteMigrationRequest) postgres.DeleteMigrationOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteMigrationOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.DeleteMigrationRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteMigration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMigration'
+type MockPostgresInterface_DeleteMigration_Call struct {
+	*mock.Call
+}
+
+// DeleteMigration is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteMigrationRequest
+func (_e *MockPostgresInterface_Expecter) DeleteMigration(ctx any, request any) *MockPostgresInterface_DeleteMigration_Call {
+	return &MockPostgresInterface_DeleteMigration_Call{Call: _e.mock.On("DeleteMigration", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteMigration_Call) Run(run func(ctx context.Context, request postgres.DeleteMigrationRequest)) *MockPostgresInterface_DeleteMigration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.DeleteMigrationRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.DeleteMigrationRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteMigration_Call) Return(deleteMigrationOperationInterface postgres.DeleteMigrationOperationInterface, err error) *MockPostgresInterface_DeleteMigration_Call {
+	_c.Call.Return(deleteMigrationOperationInterface, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteMigration_Call) RunAndReturn(run func(ctx context.Context, request postgres.DeleteMigrationRequest) (postgres.DeleteMigrationOperationInterface, error)) *MockPostgresInterface_DeleteMigration_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteProject provides a mock function for the type MockPostgresInterface
 func (_mock *MockPostgresInterface) DeleteProject(ctx context.Context, request postgres.DeleteProjectRequest) (postgres.DeleteProjectOperationInterface, error) {
 	ret := _mock.Called(ctx, request)
@@ -1472,6 +1744,74 @@ func (_c *MockPostgresInterface_GenerateDatabaseCredential_Call) Return(database
 }
 
 func (_c *MockPostgresInterface_GenerateDatabaseCredential_Call) RunAndReturn(run func(ctx context.Context, request postgres.GenerateDatabaseCredentialRequest) (*postgres.DatabaseCredential, error)) *MockPostgresInterface_GenerateDatabaseCredential_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetAssessment provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) GetAssessment(ctx context.Context, request postgres.GetAssessmentRequest) (*postgres.Assessment, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetAssessment")
+	}
+
+	var r0 *postgres.Assessment
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.GetAssessmentRequest) (*postgres.Assessment, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.GetAssessmentRequest) *postgres.Assessment); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.Assessment)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.GetAssessmentRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_GetAssessment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAssessment'
+type MockPostgresInterface_GetAssessment_Call struct {
+	*mock.Call
+}
+
+// GetAssessment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetAssessmentRequest
+func (_e *MockPostgresInterface_Expecter) GetAssessment(ctx any, request any) *MockPostgresInterface_GetAssessment_Call {
+	return &MockPostgresInterface_GetAssessment_Call{Call: _e.mock.On("GetAssessment", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetAssessment_Call) Run(run func(ctx context.Context, request postgres.GetAssessmentRequest)) *MockPostgresInterface_GetAssessment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.GetAssessmentRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.GetAssessmentRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetAssessment_Call) Return(assessment *postgres.Assessment, err error) *MockPostgresInterface_GetAssessment_Call {
+	_c.Call.Return(assessment, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetAssessment_Call) RunAndReturn(run func(ctx context.Context, request postgres.GetAssessmentRequest) (*postgres.Assessment, error)) *MockPostgresInterface_GetAssessment_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1952,6 +2292,74 @@ func (_c *MockPostgresInterface_GetEndpoint_Call) RunAndReturn(run func(ctx cont
 	return _c
 }
 
+// GetMigration provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) GetMigration(ctx context.Context, request postgres.GetMigrationRequest) (*postgres.Migration, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMigration")
+	}
+
+	var r0 *postgres.Migration
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.GetMigrationRequest) (*postgres.Migration, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.GetMigrationRequest) *postgres.Migration); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.Migration)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.GetMigrationRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_GetMigration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMigration'
+type MockPostgresInterface_GetMigration_Call struct {
+	*mock.Call
+}
+
+// GetMigration is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetMigrationRequest
+func (_e *MockPostgresInterface_Expecter) GetMigration(ctx any, request any) *MockPostgresInterface_GetMigration_Call {
+	return &MockPostgresInterface_GetMigration_Call{Call: _e.mock.On("GetMigration", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetMigration_Call) Run(run func(ctx context.Context, request postgres.GetMigrationRequest)) *MockPostgresInterface_GetMigration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.GetMigrationRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.GetMigrationRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetMigration_Call) Return(migration *postgres.Migration, err error) *MockPostgresInterface_GetMigration_Call {
+	_c.Call.Return(migration, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetMigration_Call) RunAndReturn(run func(ctx context.Context, request postgres.GetMigrationRequest) (*postgres.Migration, error)) *MockPostgresInterface_GetMigration_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetOperation provides a mock function for the type MockPostgresInterface
 func (_mock *MockPostgresInterface) GetOperation(ctx context.Context, request postgres.GetOperationRequest) (*postgres.Operation, error) {
 	ret := _mock.Called(ctx, request)
@@ -2356,6 +2764,133 @@ func (_c *MockPostgresInterface_GetSyncedTable_Call) Return(syncedTable *postgre
 }
 
 func (_c *MockPostgresInterface_GetSyncedTable_Call) RunAndReturn(run func(ctx context.Context, request postgres.GetSyncedTableRequest) (*postgres.SyncedTable, error)) *MockPostgresInterface_GetSyncedTable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListAssessments provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) ListAssessments(ctx context.Context, request postgres.ListAssessmentsRequest) listing.Iterator[postgres.Assessment] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAssessments")
+	}
+
+	var r0 listing.Iterator[postgres.Assessment]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.ListAssessmentsRequest) listing.Iterator[postgres.Assessment]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[postgres.Assessment])
+		}
+	}
+	return r0
+}
+
+// MockPostgresInterface_ListAssessments_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAssessments'
+type MockPostgresInterface_ListAssessments_Call struct {
+	*mock.Call
+}
+
+// ListAssessments is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListAssessmentsRequest
+func (_e *MockPostgresInterface_Expecter) ListAssessments(ctx any, request any) *MockPostgresInterface_ListAssessments_Call {
+	return &MockPostgresInterface_ListAssessments_Call{Call: _e.mock.On("ListAssessments", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListAssessments_Call) Run(run func(ctx context.Context, request postgres.ListAssessmentsRequest)) *MockPostgresInterface_ListAssessments_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.ListAssessmentsRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.ListAssessmentsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListAssessments_Call) Return(iterator listing.Iterator[postgres.Assessment]) *MockPostgresInterface_ListAssessments_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListAssessments_Call) RunAndReturn(run func(ctx context.Context, request postgres.ListAssessmentsRequest) listing.Iterator[postgres.Assessment]) *MockPostgresInterface_ListAssessments_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListAssessmentsAll provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) ListAssessmentsAll(ctx context.Context, request postgres.ListAssessmentsRequest) ([]postgres.Assessment, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAssessmentsAll")
+	}
+
+	var r0 []postgres.Assessment
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.ListAssessmentsRequest) ([]postgres.Assessment, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.ListAssessmentsRequest) []postgres.Assessment); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]postgres.Assessment)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.ListAssessmentsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_ListAssessmentsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAssessmentsAll'
+type MockPostgresInterface_ListAssessmentsAll_Call struct {
+	*mock.Call
+}
+
+// ListAssessmentsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListAssessmentsRequest
+func (_e *MockPostgresInterface_Expecter) ListAssessmentsAll(ctx any, request any) *MockPostgresInterface_ListAssessmentsAll_Call {
+	return &MockPostgresInterface_ListAssessmentsAll_Call{Call: _e.mock.On("ListAssessmentsAll", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListAssessmentsAll_Call) Run(run func(ctx context.Context, request postgres.ListAssessmentsRequest)) *MockPostgresInterface_ListAssessmentsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.ListAssessmentsRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.ListAssessmentsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListAssessmentsAll_Call) Return(assessments []postgres.Assessment, err error) *MockPostgresInterface_ListAssessmentsAll_Call {
+	_c.Call.Return(assessments, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListAssessmentsAll_Call) RunAndReturn(run func(ctx context.Context, request postgres.ListAssessmentsRequest) ([]postgres.Assessment, error)) *MockPostgresInterface_ListAssessmentsAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2995,6 +3530,133 @@ func (_c *MockPostgresInterface_ListEndpointsAll_Call) RunAndReturn(run func(ctx
 	return _c
 }
 
+// ListMigrations provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) ListMigrations(ctx context.Context, request postgres.ListMigrationsRequest) listing.Iterator[postgres.Migration] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListMigrations")
+	}
+
+	var r0 listing.Iterator[postgres.Migration]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.ListMigrationsRequest) listing.Iterator[postgres.Migration]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[postgres.Migration])
+		}
+	}
+	return r0
+}
+
+// MockPostgresInterface_ListMigrations_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMigrations'
+type MockPostgresInterface_ListMigrations_Call struct {
+	*mock.Call
+}
+
+// ListMigrations is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListMigrationsRequest
+func (_e *MockPostgresInterface_Expecter) ListMigrations(ctx any, request any) *MockPostgresInterface_ListMigrations_Call {
+	return &MockPostgresInterface_ListMigrations_Call{Call: _e.mock.On("ListMigrations", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListMigrations_Call) Run(run func(ctx context.Context, request postgres.ListMigrationsRequest)) *MockPostgresInterface_ListMigrations_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.ListMigrationsRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.ListMigrationsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListMigrations_Call) Return(iterator listing.Iterator[postgres.Migration]) *MockPostgresInterface_ListMigrations_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListMigrations_Call) RunAndReturn(run func(ctx context.Context, request postgres.ListMigrationsRequest) listing.Iterator[postgres.Migration]) *MockPostgresInterface_ListMigrations_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListMigrationsAll provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) ListMigrationsAll(ctx context.Context, request postgres.ListMigrationsRequest) ([]postgres.Migration, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListMigrationsAll")
+	}
+
+	var r0 []postgres.Migration
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.ListMigrationsRequest) ([]postgres.Migration, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.ListMigrationsRequest) []postgres.Migration); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]postgres.Migration)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.ListMigrationsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_ListMigrationsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMigrationsAll'
+type MockPostgresInterface_ListMigrationsAll_Call struct {
+	*mock.Call
+}
+
+// ListMigrationsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListMigrationsRequest
+func (_e *MockPostgresInterface_Expecter) ListMigrationsAll(ctx any, request any) *MockPostgresInterface_ListMigrationsAll_Call {
+	return &MockPostgresInterface_ListMigrationsAll_Call{Call: _e.mock.On("ListMigrationsAll", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListMigrationsAll_Call) Run(run func(ctx context.Context, request postgres.ListMigrationsRequest)) *MockPostgresInterface_ListMigrationsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.ListMigrationsRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.ListMigrationsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListMigrationsAll_Call) Return(migrations []postgres.Migration, err error) *MockPostgresInterface_ListMigrationsAll_Call {
+	_c.Call.Return(migrations, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListMigrationsAll_Call) RunAndReturn(run func(ctx context.Context, request postgres.ListMigrationsRequest) ([]postgres.Migration, error)) *MockPostgresInterface_ListMigrationsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListProjects provides a mock function for the type MockPostgresInterface
 func (_mock *MockPostgresInterface) ListProjects(ctx context.Context, request postgres.ListProjectsRequest) listing.Iterator[postgres.Project] {
 	ret := _mock.Called(ctx, request)
@@ -3444,6 +4106,74 @@ func (_c *MockPostgresInterface_RevealRolePassword_Call) RunAndReturn(run func(c
 	return _c
 }
 
+// StartMigration provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) StartMigration(ctx context.Context, request postgres.StartMigrationRequest) (postgres.StartMigrationOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StartMigration")
+	}
+
+	var r0 postgres.StartMigrationOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.StartMigrationRequest) (postgres.StartMigrationOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.StartMigrationRequest) postgres.StartMigrationOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.StartMigrationOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.StartMigrationRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_StartMigration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StartMigration'
+type MockPostgresInterface_StartMigration_Call struct {
+	*mock.Call
+}
+
+// StartMigration is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.StartMigrationRequest
+func (_e *MockPostgresInterface_Expecter) StartMigration(ctx any, request any) *MockPostgresInterface_StartMigration_Call {
+	return &MockPostgresInterface_StartMigration_Call{Call: _e.mock.On("StartMigration", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_StartMigration_Call) Run(run func(ctx context.Context, request postgres.StartMigrationRequest)) *MockPostgresInterface_StartMigration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.StartMigrationRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.StartMigrationRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_StartMigration_Call) Return(startMigrationOperationInterface postgres.StartMigrationOperationInterface, err error) *MockPostgresInterface_StartMigration_Call {
+	_c.Call.Return(startMigrationOperationInterface, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_StartMigration_Call) RunAndReturn(run func(ctx context.Context, request postgres.StartMigrationRequest) (postgres.StartMigrationOperationInterface, error)) *MockPostgresInterface_StartMigration_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UndeleteBranch provides a mock function for the type MockPostgresInterface
 func (_mock *MockPostgresInterface) UndeleteBranch(ctx context.Context, request postgres.UndeleteBranchRequest) (postgres.UndeleteBranchOperationInterface, error) {
 	ret := _mock.Called(ctx, request)
@@ -3508,6 +4238,74 @@ func (_c *MockPostgresInterface_UndeleteBranch_Call) Return(undeleteBranchOperat
 }
 
 func (_c *MockPostgresInterface_UndeleteBranch_Call) RunAndReturn(run func(ctx context.Context, request postgres.UndeleteBranchRequest) (postgres.UndeleteBranchOperationInterface, error)) *MockPostgresInterface_UndeleteBranch_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UndeleteMigration provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) UndeleteMigration(ctx context.Context, request postgres.UndeleteMigrationRequest) (postgres.UndeleteMigrationOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UndeleteMigration")
+	}
+
+	var r0 postgres.UndeleteMigrationOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.UndeleteMigrationRequest) (postgres.UndeleteMigrationOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.UndeleteMigrationRequest) postgres.UndeleteMigrationOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.UndeleteMigrationOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.UndeleteMigrationRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_UndeleteMigration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UndeleteMigration'
+type MockPostgresInterface_UndeleteMigration_Call struct {
+	*mock.Call
+}
+
+// UndeleteMigration is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.UndeleteMigrationRequest
+func (_e *MockPostgresInterface_Expecter) UndeleteMigration(ctx any, request any) *MockPostgresInterface_UndeleteMigration_Call {
+	return &MockPostgresInterface_UndeleteMigration_Call{Call: _e.mock.On("UndeleteMigration", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_UndeleteMigration_Call) Run(run func(ctx context.Context, request postgres.UndeleteMigrationRequest)) *MockPostgresInterface_UndeleteMigration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.UndeleteMigrationRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.UndeleteMigrationRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_UndeleteMigration_Call) Return(undeleteMigrationOperationInterface postgres.UndeleteMigrationOperationInterface, err error) *MockPostgresInterface_UndeleteMigration_Call {
+	_c.Call.Return(undeleteMigrationOperationInterface, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_UndeleteMigration_Call) RunAndReturn(run func(ctx context.Context, request postgres.UndeleteMigrationRequest) (postgres.UndeleteMigrationOperationInterface, error)) *MockPostgresInterface_UndeleteMigration_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -3848,6 +4646,74 @@ func (_c *MockPostgresInterface_UpdateEndpoint_Call) Return(updateEndpointOperat
 }
 
 func (_c *MockPostgresInterface_UpdateEndpoint_Call) RunAndReturn(run func(ctx context.Context, request postgres.UpdateEndpointRequest) (postgres.UpdateEndpointOperationInterface, error)) *MockPostgresInterface_UpdateEndpoint_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateMigration provides a mock function for the type MockPostgresInterface
+func (_mock *MockPostgresInterface) UpdateMigration(ctx context.Context, request postgres.UpdateMigrationRequest) (postgres.UpdateMigrationOperationInterface, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateMigration")
+	}
+
+	var r0 postgres.UpdateMigrationOperationInterface
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.UpdateMigrationRequest) (postgres.UpdateMigrationOperationInterface, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, postgres.UpdateMigrationRequest) postgres.UpdateMigrationOperationInterface); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.UpdateMigrationOperationInterface)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, postgres.UpdateMigrationRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockPostgresInterface_UpdateMigration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateMigration'
+type MockPostgresInterface_UpdateMigration_Call struct {
+	*mock.Call
+}
+
+// UpdateMigration is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.UpdateMigrationRequest
+func (_e *MockPostgresInterface_Expecter) UpdateMigration(ctx any, request any) *MockPostgresInterface_UpdateMigration_Call {
+	return &MockPostgresInterface_UpdateMigration_Call{Call: _e.mock.On("UpdateMigration", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_UpdateMigration_Call) Run(run func(ctx context.Context, request postgres.UpdateMigrationRequest)) *MockPostgresInterface_UpdateMigration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 postgres.UpdateMigrationRequest
+		if args[1] != nil {
+			arg1 = args[1].(postgres.UpdateMigrationRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateMigration_Call) Return(updateMigrationOperationInterface postgres.UpdateMigrationOperationInterface, err error) *MockPostgresInterface_UpdateMigration_Call {
+	_c.Call.Return(updateMigrationOperationInterface, err)
+	return _c
+}
+
+func (_c *MockPostgresInterface_UpdateMigration_Call) RunAndReturn(run func(ctx context.Context, request postgres.UpdateMigrationRequest) (postgres.UpdateMigrationOperationInterface, error)) *MockPostgresInterface_UpdateMigration_Call {
 	_c.Call.Return(run)
 	return _c
 }

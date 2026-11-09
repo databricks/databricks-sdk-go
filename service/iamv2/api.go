@@ -12,94 +12,90 @@ import (
 
 type AccountIamV2Interface interface {
 
-	// Creates a group membership (assigns a principal to a group).
+	// Adds a user, service principal, or group as a direct member of a group.
 	//
-	// Authorization: the caller must be an account admin or a manager of the group
-	// (holds the `roles/group.manager` role on it).
+	// If automatic identity management is on and the group has an `external_id`,
+	// its members come from your identity provider and can't be changed in
+	// Databricks.
 	CreateDirectGroupMember(ctx context.Context, request CreateDirectGroupMemberRequest) (*DirectGroupMember, error)
 
-	// Creates a local group in the Databricks account and returns the created
-	// group. A local group is one that is not synced from the customer's identity
-	// provider, and can be created whether or not Account Identity Management (AIM)
-	// is enabled.
+	// Creates a local group, which is a group that isn't synced from your identity
+	// provider (IdP). You become a manager of the new group.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. To provision
-	// the identity from your identity provider, resolve it by its external ID with
-	// ResolveGroup; to read an existing external identity, use the ExternalGroup
-	// resource.
+	// If automatic identity management is on, you can't set `external_id`. To add a
+	// group from your IdP, get it as an external group instead.
 	CreateGroup(ctx context.Context, request CreateGroupRequest) (*Group, error)
 
-	// Creates a group visibility filter in the account. Requires account admin
-	// privileges. Set `principal_type` to `GROUP` and specify exactly one of
-	// `exact` (external ID), `prefix` (display-name starts with), or `regex` (full
-	// RE2 display-name match). The filter applies across all workspaces in the
-	// account. A duplicate filter ID or an existing rule with the same type and
-	// match value returns `ALREADY_EXISTS`. Filters are immutable; to change a
-	// rule, delete it and create a new one.
+	// Creates a group visibility filter. It applies to every workspace in the
+	// account.
+	//
+	// Returns `ALREADY_EXISTS` if a filter with the same ID, or the same type and
+	// match value, already exists. Returns `RESOURCE_EXHAUSTED` if the account
+	// already has the maximum number of filters of that type. You can't change a
+	// filter: to change a rule, delete it and create a new one.
 	CreateIdentityVisibilityFilter(ctx context.Context, request CreateIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
 
-	// Creates a local service principal in the Databricks account and returns the
-	// created service principal. A local service principal is one that is not
-	// synced from the customer's identity provider, and can be created whether or
-	// not Account Identity Management (AIM) is enabled.
+	// Creates a local service principal, which is a service principal that isn't
+	// synced from your identity provider (IdP).
 	//
-	// When AIM is enabled, supplying an external ID returns an error. To provision
-	// the identity from your identity provider, resolve it by its external ID with
-	// ResolveServicePrincipal; to read an existing external identity, use the
-	// ExternalServicePrincipal resource.
+	// If automatic identity management is on, you can't set `external_id`. To add a
+	// service principal from your IdP, get it as an external service principal
+	// instead.
 	CreateServicePrincipal(ctx context.Context, request CreateServicePrincipalRequest) (*ServicePrincipal, error)
 
-	// Creates a local user in the Databricks account and returns the created user.
-	// A local user is one that is not synced from the customer's identity provider,
-	// and can be created whether or not Account Identity Management (AIM) is
-	// enabled.
+	// Creates a local user, which is a user that isn't synced from your identity
+	// provider (IdP).
 	//
-	// When AIM is enabled, supplying an external ID returns an error. To provision
-	// the identity from your identity provider, resolve it by its external ID with
-	// ResolveUser; to read an existing external identity, use the ExternalUser
-	// resource.
+	// If automatic identity management is on, you can't set `external_id`. To add a
+	// user from your IdP, get them as an external user instead.
 	CreateUser(ctx context.Context, request CreateUserRequest) (*User, error)
 
-	// Creates a workspace assignment for a principal. Entitlements are granted one
-	// at a time rather than atomically. If the request fails partway through, the
-	// principal stays assigned to the workspace with only some of the requested
-	// entitlements. Get the assignment afterwards to confirm which entitlements
-	// were granted.
+	// Assigns a user, service principal, or group directly to a workspace with the
+	// given entitlements. Returns an error if the principal is already assigned
+	// directly.
+	//
+	// Entitlements are granted one at a time. If the request fails partway through,
+	// the principal stays assigned with only some of the entitlements. Get the
+	// assignment afterwards to check which were granted.
 	CreateWorkspaceAssignment(ctx context.Context, request CreateWorkspaceAssignmentRequest) (*WorkspaceAssignment, error)
 
 	// Creates a workspace assignment detail for a principal.
 	CreateWorkspaceAssignmentDetail(ctx context.Context, request CreateWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error)
 
-	// Deletes a group membership (unassigns a principal from a group).
+	// Removes a direct member from a group.
 	//
-	// Authorization: the caller must be an account admin or a manager of the group
-	// (holds the `roles/group.manager` role on it).
+	// If automatic identity management is on and the group has an `external_id`,
+	// its members come from your identity provider and can't be changed in
+	// Databricks.
 	DeleteDirectGroupMember(ctx context.Context, request DeleteDirectGroupMemberRequest) error
 
-	// Deletes a group from the Databricks account by its internal ID.
-	//
-	// Authorization: the caller must be an account admin or a manager of the group
-	// (holds the `roles/group.manager` role on it).
+	// Deletes a group from your account and removes it from the workspaces it's
+	// assigned to.
 	DeleteGroup(ctx context.Context, request DeleteGroupRequest) error
 
-	// Deletes a group visibility filter by its resource name. Requires account
-	// admin privileges. Deleting a filter does not delete groups or revoke access.
-	// Groups covered only by this rule stop being discoverable unless they or a
-	// transitive parent are already provisioned in the account. If no group filters
-	// remain, all groups become visible again. Deleting a filter that does not
-	// exist succeeds without making any changes.
+	// Deletes a group visibility filter. Deleting a filter doesn't delete groups or
+	// remove access. Groups that only this filter matched stop being visible,
+	// unless they or a parent group are already in your account. If no group
+	// filters remain, all groups become visible again. Deleting a filter that
+	// doesn't exist succeeds.
 	DeleteIdentityVisibilityFilter(ctx context.Context, request DeleteIdentityVisibilityFilterRequest) error
 
-	// Deletes a service principal from the Databricks account by its internal ID.
+	// Deletes a service principal from your account and removes it from the
+	// workspaces it's assigned to. You can't delete service principals that
+	// Databricks manages.
 	DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error
 
-	// Deletes a user from the Databricks account by its internal ID.
+	// Deletes a user from your account and removes them from the workspaces they're
+	// assigned to.
 	DeleteUser(ctx context.Context, request DeleteUserRequest) error
 
-	// Deletes a workspace assignment for a principal, revoking all of its
-	// entitlements. Entitlements are revoked one at a time rather than atomically.
-	// If the request fails partway through, the principal stays assigned with some
-	// of its original entitlements. Retrying is safe.
+	// Removes a principal's direct assignment to a workspace and revokes the
+	// entitlements it granted. The principal keeps any access it gets through
+	// groups.
+	//
+	// Entitlements are revoked one at a time. If the request fails partway through,
+	// the principal stays assigned with some of its entitlements. You can retry the
+	// request.
 	DeleteWorkspaceAssignment(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
 
 	// Deletes a workspace assignment detail for a principal, revoking all of its
@@ -108,38 +104,38 @@ type AccountIamV2Interface interface {
 	// of its original entitlements. Retrying is safe.
 	DeleteWorkspaceAssignmentDetail(ctx context.Context, request DeleteWorkspaceAssignmentDetailRequest) error
 
-	// Gets a provisioned direct member of a group.
+	// Gets a direct member of a group, including where the membership comes from.
+	// Returns an error if the principal isn't a direct member.
 	GetDirectGroupMember(ctx context.Context, request GetDirectGroupMemberRequest) (*DirectGroupMember, error)
 
-	// Retrieves an external group with the given external ID from the customer's
-	// IdP. If the group does not exist, it will be created in the account. If the
-	// customer is not onboarded onto Automatic Identity Management (AIM), this will
-	// return an error.
+	// Gets a group by its ID in your identity provider (IdP) and syncs its name and
+	// parent groups from your IdP. If the group isn't in your account yet, it's
+	// added. Requires automatic identity management. If your account has group
+	// visibility filters, the group must match them.
 	GetExternalGroup(ctx context.Context, request GetExternalGroupRequest) (*ExternalGroup, error)
 
-	// Retrieves an external service principal with the given external ID from the
-	// customer's IdP. If the service principal does not exist, it will be created.
-	// If the customer is not onboarded onto Automatic Identity Management (AIM),
-	// this will return an error.
+	// Gets a service principal by its ID in your identity provider (IdP) and syncs
+	// its details and group memberships from your IdP. If the service principal
+	// isn't in your account yet, it's added. Requires automatic identity management
+	// with Microsoft Entra ID as your IdP.
 	GetExternalServicePrincipal(ctx context.Context, request GetExternalServicePrincipalRequest) (*ExternalServicePrincipal, error)
 
-	// Retrieves an external user with the given external ID from the customer's
-	// IdP. If the user does not exist, it will be created. If the customer is not
-	// onboarded onto Automatic Identity Management (AIM), this will return an
-	// error.
+	// Gets a user by their ID in your identity provider (IdP) and syncs their
+	// details and group memberships from your IdP. If the user isn't in your
+	// account yet, they're added. Requires automatic identity management.
 	GetExternalUser(ctx context.Context, request GetExternalUserRequest) (*ExternalUser, error)
 
-	// Fetches a group from the Databricks account by its internal ID.
+	// Gets a group by its Databricks ID.
 	GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error)
 
-	// Gets a group visibility filter by its resource name. Requires account admin
-	// privileges. Returns the filter rule, not the groups matched by the rule.
+	// Gets a group visibility filter. It returns the rule, not the groups it
+	// matches.
 	GetIdentityVisibilityFilter(ctx context.Context, request GetIdentityVisibilityFilterRequest) (*IdentityVisibilityFilter, error)
 
-	// Fetches a service principal from the Databricks account by its internal ID.
+	// Gets a service principal by its Databricks ID.
 	GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error)
 
-	// Fetches a user from the Databricks account by its internal ID.
+	// Gets a user by their Databricks ID.
 	GetUser(ctx context.Context, request GetUserRequest) (*User, error)
 
 	// Returns the access details for a principal in a workspace. Allows for
@@ -150,77 +146,79 @@ type AccountIamV2Interface interface {
 	// parameter to control what fields are returned (BASIC by default or FULL).
 	GetWorkspaceAccessDetail(ctx context.Context, request GetWorkspaceAccessDetailRequest) (*WorkspaceAccessDetail, error)
 
-	// Returns the assignment for a principal in a workspace.
+	// Gets a principal's direct assignment to a workspace, including its effective
+	// entitlements. Returns an error if the principal isn't assigned directly.
 	GetWorkspaceAssignment(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspaceAssignment, error)
 
 	// Returns the assignment details for a principal in a workspace.
 	GetWorkspaceAssignmentDetail(ctx context.Context, request GetWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error)
 
-	// Lists provisioned direct members of a group with their membership source
-	// (internal or from identity provider).
+	// Lists the direct members of a group, sorted by display name, with where each
+	// membership comes from. Members in your identity provider who haven't been
+	// added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) listing.Iterator[DirectGroupMember]
 
-	// Lists provisioned direct members of a group with their membership source
-	// (internal or from identity provider).
+	// Lists the direct members of a group, sorted by display name, with where each
+	// membership comes from. Members in your identity provider who haven't been
+	// added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDirectGroupMembersAll(ctx context.Context, request ListDirectGroupMembersRequest) ([]DirectGroupMember, error)
 
-	// Lists the groups in the Databricks account, returning one page per call.
-	// Supports filtering by group name or external ID.
+	// Lists the groups in your account, sorted by Databricks ID. Groups in your
+	// identity provider that haven't been added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListGroups(ctx context.Context, request ListGroupsRequest) listing.Iterator[Group]
 
-	// Lists the groups in the Databricks account, returning one page per call.
-	// Supports filtering by group name or external ID.
+	// Lists the groups in your account, sorted by Databricks ID. Groups in your
+	// identity provider that haven't been added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListGroupsAll(ctx context.Context, request ListGroupsRequest) ([]Group, error)
 
-	// Lists group visibility filters in the account, returning one page per call.
-	// Requires account admin privileges. Returns filter rules, not the groups
-	// matched by those rules. To retrieve the next page, pass the response's
-	// `next_page_token` as `page_token` in the next request. If `next_page_token`
-	// is omitted, there are no more pages.
+	// Lists the group visibility filters in an account. It returns the rules, not
+	// the groups they match.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) listing.Iterator[IdentityVisibilityFilter]
 
-	// Lists group visibility filters in the account, returning one page per call.
-	// Requires account admin privileges. Returns filter rules, not the groups
-	// matched by those rules. To retrieve the next page, pass the response's
-	// `next_page_token` as `page_token` in the next request. If `next_page_token`
-	// is omitted, there are no more pages.
+	// Lists the group visibility filters in an account. It returns the rules, not
+	// the groups they match.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListIdentityVisibilityFiltersAll(ctx context.Context, request ListIdentityVisibilityFiltersRequest) ([]IdentityVisibilityFilter, error)
 
-	// Lists the service principals in the Databricks account, returning one page
-	// per call. Supports filtering by application ID or external ID.
+	// Lists the service principals in your account, sorted by Databricks ID.
+	// Service principals in your identity provider that haven't been added to
+	// Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) listing.Iterator[ServicePrincipal]
 
-	// Lists the service principals in the Databricks account, returning one page
-	// per call. Supports filtering by application ID or external ID.
+	// Lists the service principals in your account, sorted by Databricks ID.
+	// Service principals in your identity provider that haven't been added to
+	// Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListServicePrincipalsAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error)
 
-	// Lists all transitive parent groups of a principal.
+	// Lists every group that a user, service principal, or group belongs to,
+	// directly or through other groups, sorted by Databricks ID. If automatic
+	// identity management is on, the principal's group memberships are synced from
+	// your identity provider first.
 	ListTransitiveParentGroups(ctx context.Context, request ListTransitiveParentGroupsRequest) (*ListTransitiveParentGroupsResponse, error)
 
-	// Lists the users in the Databricks account, returning one page per call.
-	// Supports filtering by username or external ID.
+	// Lists the users in your account, sorted by Databricks ID. Users in your
+	// identity provider who haven't been added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListUsers(ctx context.Context, request ListUsersRequest) listing.Iterator[User]
 
-	// Lists the users in the Databricks account, returning one page per call.
-	// Supports filtering by username or external ID.
+	// Lists the users in your account, sorted by Databricks ID. Users in your
+	// identity provider who haven't been added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListUsersAll(ctx context.Context, request ListUsersRequest) ([]User, error)
@@ -241,77 +239,67 @@ type AccountIamV2Interface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListWorkspaceAssignmentDetailsAll(ctx context.Context, request ListWorkspaceAssignmentDetailsRequest) ([]WorkspaceAssignmentDetail, error)
 
-	// Lists workspace assignments for a workspace. The response omits the
-	// per-principal entitlement fields (`entitlements` and
-	// `effective_entitlements`). To read the entitlements for a single principal,
-	// get that principal's assignment.
+	// Lists the principals assigned directly to a workspace. The response leaves
+	// `entitlements` and `effective_entitlements` empty. To read a principal's
+	// entitlements, get its assignment.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListWorkspaceAssignments(ctx context.Context, request ListWorkspaceAssignmentsRequest) listing.Iterator[WorkspaceAssignment]
 
-	// Lists workspace assignments for a workspace. The response omits the
-	// per-principal entitlement fields (`entitlements` and
-	// `effective_entitlements`). To read the entitlements for a single principal,
-	// get that principal's assignment.
+	// Lists the principals assigned directly to a workspace. The response leaves
+	// `entitlements` and `effective_entitlements` empty. To read a principal's
+	// entitlements, get its assignment.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListWorkspaceAssignmentsAll(ctx context.Context, request ListWorkspaceAssignmentsRequest) ([]WorkspaceAssignment, error)
 
-	// Resolves a group with the given external ID from the customer's IdP. If the
-	// group does not exist, it will be created in the account. If the customer is
-	// not onboarded onto Automatic Identity Management (AIM), this will return an
-	// error.
+	// Gets a group by its ID in your identity provider (IdP) and syncs its name and
+	// parent groups from your IdP. If the group isn't in your account yet, it's
+	// added. Requires automatic identity management. If your account has group
+	// visibility filters, the group must match them.
 	ResolveGroup(ctx context.Context, request ResolveGroupRequest) (*ResolveGroupResponse, error)
 
-	// Resolves a service principal with the given external ID from the customer's
-	// IdP. If the service principal does not exist, it will be created. If the
-	// customer is not onboarded onto Automatic Identity Management (AIM), this will
-	// return an error.
+	// Gets a service principal by its ID in your identity provider (IdP) and syncs
+	// its details and group memberships from your IdP. If the service principal
+	// isn't in your account yet, it's added. Requires automatic identity management
+	// with Microsoft Entra ID as your IdP.
 	ResolveServicePrincipal(ctx context.Context, request ResolveServicePrincipalRequest) (*ResolveServicePrincipalResponse, error)
 
-	// Resolves a user with the given external ID from the customer's IdP. If the
-	// user does not exist, it will be created. If the customer is not onboarded
-	// onto Automatic Identity Management (AIM), this will return an error.
+	// Gets a user by their ID in your identity provider (IdP) and syncs their
+	// details and group memberships from your IdP. If the user isn't in your
+	// account yet, they're added. Requires automatic identity management.
 	ResolveUser(ctx context.Context, request ResolveUserRequest) (*ResolveUserResponse, error)
 
-	// Updates an existing group in the Databricks account. Only the fields named in
-	// the update mask are modified. Returns the updated Group resource.
+	// Updates a group. Only the fields in `update_mask` change.
 	//
-	// When AIM is enabled and the group is an external identity (its external_id is
-	// set), only external_id can be updated; its other fields are sourced from your
-	// identity provider. With AIM and group visibility filters, a new nonempty
-	// external_id must identify a visible group. Clearing external_id is allowed.
-	//
-	// Authorization: the caller must be an account admin or a manager of the group
-	// (holds the `roles/group.manager` role on it).
+	// If automatic identity management is on and the group has an `external_id`,
+	// you can only update `external_id`. The group's other fields come from your
+	// identity provider. If your account also has group visibility filters, a new
+	// `external_id` must match them. You can always clear `external_id`.
 	UpdateGroup(ctx context.Context, request UpdateGroupRequest) (*Group, error)
 
-	// Updates an existing service principal in the Databricks account. Only the
-	// fields named in the update mask are modified. Returns the updated
-	// ServicePrincipal resource.
+	// Updates a service principal. Only the fields in `update_mask` change.
 	//
-	// To change is_agent on a locally managed service principal, set it to true or
-	// false. Naming is_agent in the update mask without a value leaves it
-	// unchanged.
-	//
-	// When AIM is enabled and the service principal is an external identity (its
-	// external_id is set), only external_id can be updated; its other fields are
-	// sourced from your identity provider.
+	// If automatic identity management is on and the service principal has an
+	// `external_id`, you can only update `external_id`. Its other fields come from
+	// your identity provider. A service principal can't deactivate itself, and you
+	// can't update service principals that Databricks manages.
 	UpdateServicePrincipal(ctx context.Context, request UpdateServicePrincipalRequest) (*ServicePrincipal, error)
 
-	// Updates an existing user in the Databricks account and returns the updated
-	// user. Only the fields named in the update mask are modified. The updatable
-	// fields are fullName.givenName, fullName.familyName, status, and externalId.
+	// Updates a user. Only the fields in `update_mask` change.
 	//
-	// When AIM is enabled and the user is an external identity (its external_id is
-	// set), only external_id can be updated; its other fields are sourced from your
-	// identity provider.
+	// If automatic identity management is on and the user has an `external_id`, you
+	// can only update `external_id`. The user's other fields come from your
+	// identity provider. You can't deactivate yourself or change the status of the
+	// account owner.
 	UpdateUser(ctx context.Context, request UpdateUserRequest) (*User, error)
 
-	// Updates the entitlements of a directly assigned principal in a workspace.
-	// Changes are applied one at a time rather than atomically. If the request
-	// fails partway through, only some of the requested changes take effect. Get
-	// the assignment afterwards to confirm the final state.
+	// Replaces the entitlements of a principal's direct assignment to a workspace.
+	// The new list can't be empty.
+	//
+	// Entitlements are changed one at a time. If the request fails partway through,
+	// only some of the changes take effect. Get the assignment afterwards to check
+	// the result.
 	UpdateWorkspaceAssignment(ctx context.Context, request UpdateWorkspaceAssignmentRequest) (*WorkspaceAssignment, error)
 
 	// Updates the entitlements of a directly assigned principal in a workspace.
@@ -337,67 +325,70 @@ type AccountIamV2API struct {
 
 type WorkspaceIamV2Interface interface {
 
-	// Creates a group membership (assigns a principal to a group).
+	// Adds a user, service principal, or group as a direct member of a group in the
+	// account that contains this workspace.
+	//
+	// If automatic identity management is on and the group has an `external_id`,
+	// its members come from your identity provider and can't be changed in
+	// Databricks.
 	CreateDirectGroupMemberProxy(ctx context.Context, request CreateDirectGroupMemberProxyRequest) (*DirectGroupMember, error)
 
-	// Creates a local group in the Databricks account that parents the calling
-	// workspace and returns the created group. A local group is one that is not
-	// synced from the customer's identity provider, and can be created whether or
-	// not Account Identity Management (AIM) is enabled.
+	// Creates a local group in the account that contains this workspace. A local
+	// group is a group that isn't synced from your identity provider (IdP). You
+	// become a manager of the new group.
 	//
-	// When AIM is enabled, supplying an external ID returns an error. To provision
-	// the identity from your identity provider, resolve it by its external ID with
-	// ResolveGroup; to read an existing external identity, use the ExternalGroup
-	// resource.
+	// If automatic identity management is on, you can't set `external_id`. To add a
+	// group from your IdP, get it as an external group instead.
 	CreateGroupProxy(ctx context.Context, request CreateGroupProxyRequest) (*Group, error)
 
-	// Creates a local service principal in the Databricks account that parents the
-	// calling workspace and returns the created service principal. A local service
-	// principal is one that is not synced from the customer's identity provider,
-	// and can be created whether or not Account Identity Management (AIM) is
-	// enabled.
+	// Creates a local service principal in the account that contains this
+	// workspace. A local service principal is one that isn't synced from your
+	// identity provider (IdP).
 	//
-	// When AIM is enabled, supplying an external ID returns an error. To provision
-	// the identity from your identity provider, resolve it by its external ID with
-	// ResolveServicePrincipal; to read an existing external identity, use the
-	// ExternalServicePrincipal resource.
+	// If automatic identity management is on, you can't set `external_id`. To add a
+	// service principal from your IdP, get it as an external service principal
+	// instead.
 	CreateServicePrincipalProxy(ctx context.Context, request CreateServicePrincipalProxyRequest) (*ServicePrincipal, error)
 
-	// Creates a local user in the Databricks account that parents the calling
-	// workspace and returns the created user. A local user is one that is not
-	// synced from the customer's identity provider, and can be created whether or
-	// not Account Identity Management (AIM) is enabled.
+	// Creates a local user in the account that contains this workspace. A local
+	// user is a user that isn't synced from your identity provider (IdP).
 	//
-	// When AIM is enabled, supplying an external ID returns an error. To provision
-	// the identity from your identity provider, resolve it by its external ID with
-	// ResolveUser; to read an existing external identity, use the ExternalUser
-	// resource.
+	// If automatic identity management is on, you can't set `external_id`. To add a
+	// user from your IdP, get them as an external user instead.
 	CreateUserProxy(ctx context.Context, request CreateUserProxyRequest) (*User, error)
 
 	// Creates a workspace assignment detail for a principal in the calling
 	// workspace.
 	CreateWorkspaceAssignmentDetailProxy(ctx context.Context, request CreateWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error)
 
-	// Creates a workspace assignment for a principal in the calling workspace.
-	// Entitlements are granted one at a time rather than atomically. If the request
-	// fails partway through, the principal stays assigned to the workspace with
-	// only some of the requested entitlements. Get the assignment afterwards to
-	// confirm which entitlements were granted.
+	// Assigns a user, service principal, or group directly to this workspace with
+	// the given entitlements. Returns an error if the principal is already assigned
+	// directly.
+	//
+	// Entitlements are granted one at a time. If the request fails partway through,
+	// the principal stays assigned with only some of the entitlements. Get the
+	// assignment afterwards to check which were granted.
 	CreateWorkspaceAssignmentProxy(ctx context.Context, request CreateWorkspaceAssignmentProxyRequest) (*WorkspaceAssignment, error)
 
-	// Deletes a group membership (unassigns a principal from a group).
+	// Removes a direct member from a group in the account that contains this
+	// workspace.
+	//
+	// If automatic identity management is on and the group has an `external_id`,
+	// its members come from your identity provider and can't be changed in
+	// Databricks.
 	DeleteDirectGroupMemberProxy(ctx context.Context, request DeleteDirectGroupMemberProxyRequest) error
 
-	// Deletes a group by its internal ID from the Databricks account that parents
-	// the calling workspace.
+	// Deletes a group from the account that contains this workspace and removes it
+	// from the workspaces it's assigned to.
 	DeleteGroupProxy(ctx context.Context, request DeleteGroupProxyRequest) error
 
-	// Deletes a service principal by its internal ID from the Databricks account
-	// that parents the calling workspace.
+	// Deletes a service principal from the account that contains this workspace and
+	// removes it from the workspaces it's assigned to. You can't delete service
+	// principals that Databricks manages.
 	DeleteServicePrincipalProxy(ctx context.Context, request DeleteServicePrincipalProxyRequest) error
 
-	// Deletes a user by its internal ID from the Databricks account that parents
-	// the calling workspace.
+	// Deletes a user from the account that contains this workspace and removes them
+	// from the workspaces they're assigned to.
 	DeleteUserProxy(ctx context.Context, request DeleteUserProxyRequest) error
 
 	// Deletes a workspace assignment detail for a principal in the calling
@@ -407,45 +398,48 @@ type WorkspaceIamV2Interface interface {
 	// safe.
 	DeleteWorkspaceAssignmentDetailProxy(ctx context.Context, request DeleteWorkspaceAssignmentDetailProxyRequest) error
 
-	// Deletes a workspace assignment for a principal in the calling workspace,
-	// revoking all of its entitlements. Entitlements are revoked one at a time
-	// rather than atomically. If the request fails partway through, the principal
-	// stays assigned with some of its original entitlements. Retrying is safe.
+	// Removes a principal's direct assignment to this workspace and revokes the
+	// entitlements it granted. The principal keeps any access it gets through
+	// groups.
+	//
+	// Entitlements are revoked one at a time. If the request fails partway through,
+	// the principal stays assigned with some of its entitlements. You can retry the
+	// request.
 	DeleteWorkspaceAssignmentProxy(ctx context.Context, request DeleteWorkspaceAssignmentProxyRequest) error
 
-	// Gets a provisioned direct member of a group.
+	// Gets a direct member of a group in the account that contains this workspace,
+	// including where the membership comes from. Returns an error if the principal
+	// isn't a direct member.
 	GetDirectGroupMemberProxy(ctx context.Context, request GetDirectGroupMemberProxyRequest) (*DirectGroupMember, error)
 
-	// Retrieves an external group with the given external ID from the customer's
-	// IdP. If the group does not exist, it will be created in the account. If the
-	// customer is not onboarded onto Automatic Identity Management (AIM), this will
-	// return an error. Workspace-scoped variant for workspace-authenticated
-	// callers.
+	// Gets a group by its ID in your identity provider (IdP) and syncs its name and
+	// parent groups from your IdP. If the group isn't in the account that contains
+	// this workspace yet, it's added. Requires automatic identity management. If
+	// your account has group visibility filters, the group must match them.
 	GetExternalGroupProxy(ctx context.Context, request GetExternalGroupProxyRequest) (*ExternalGroup, error)
 
-	// Retrieves an external service principal with the given external ID from the
-	// customer's IdP. If the service principal does not exist, it will be created.
-	// If the customer is not onboarded onto Automatic Identity Management (AIM),
-	// this will return an error. Workspace-scoped variant for
-	// workspace-authenticated callers.
+	// Gets a service principal by its ID in your identity provider (IdP) and syncs
+	// its details and group memberships from your IdP. If the service principal
+	// isn't in the account that contains this workspace yet, it's added. Requires
+	// automatic identity management with Microsoft Entra ID as your IdP.
 	GetExternalServicePrincipalProxy(ctx context.Context, request GetExternalServicePrincipalProxyRequest) (*ExternalServicePrincipal, error)
 
-	// Retrieves an external user with the given external ID from the customer's
-	// IdP. If the user does not exist, it will be created. If the customer is not
-	// onboarded onto Automatic Identity Management (AIM), this will return an
-	// error. Workspace-scoped variant for workspace-authenticated callers.
+	// Gets a user by their ID in your identity provider (IdP) and syncs their
+	// details and group memberships from your IdP. If the user isn't in the account
+	// that contains this workspace yet, they're added. Requires automatic identity
+	// management.
 	GetExternalUserProxy(ctx context.Context, request GetExternalUserProxyRequest) (*ExternalUser, error)
 
-	// Fetches a group by its internal ID from the Databricks account that parents
-	// the calling workspace.
+	// Gets a group in the account that contains this workspace by its Databricks
+	// ID.
 	GetGroupProxy(ctx context.Context, request GetGroupProxyRequest) (*Group, error)
 
-	// Fetches a service principal by its internal ID from the Databricks account
-	// that parents the calling workspace.
+	// Gets a service principal in the account that contains this workspace by its
+	// Databricks ID.
 	GetServicePrincipalProxy(ctx context.Context, request GetServicePrincipalProxyRequest) (*ServicePrincipal, error)
 
-	// Fetches a user by its internal ID from the Databricks account that parents
-	// the calling workspace.
+	// Gets a user in the account that contains this workspace by their Databricks
+	// ID.
 	GetUserProxy(ctx context.Context, request GetUserProxyRequest) (*User, error)
 
 	// Returns the access details for a principal in the current workspace. Allows
@@ -459,63 +453,77 @@ type WorkspaceIamV2Interface interface {
 	// Returns the assignment details for a principal in the calling workspace.
 	GetWorkspaceAssignmentDetailProxy(ctx context.Context, request GetWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error)
 
-	// Returns the assignment for a principal in the calling workspace.
+	// Gets a principal's direct assignment to this workspace, including its
+	// effective entitlements. Returns an error if the principal isn't assigned
+	// directly.
 	GetWorkspaceAssignmentProxy(ctx context.Context, request GetWorkspaceAssignmentProxyRequest) (*WorkspaceAssignment, error)
 
-	// Returns the identity details for a principal in a workspace.
+	// Gets a principal's status in this workspace and whether it has access
+	// directly or through a group. Returns an error if the principal doesn't have
+	// access to the workspace.
 	GetWorkspaceIdentityDetail(ctx context.Context, request GetWorkspaceIdentityDetailRequest) (*WorkspaceIdentityDetail, error)
 
-	// Lists provisioned direct members of a group with their membership source
-	// (internal or from identity provider).
+	// Lists the direct members of a group in the account that contains this
+	// workspace, sorted by display name, with where each membership comes from.
+	// Members in your identity provider who haven't been added to Databricks aren't
+	// included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) listing.Iterator[DirectGroupMember]
 
-	// Lists provisioned direct members of a group with their membership source
-	// (internal or from identity provider).
+	// Lists the direct members of a group in the account that contains this
+	// workspace, sorted by display name, with where each membership comes from.
+	// Members in your identity provider who haven't been added to Databricks aren't
+	// included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListDirectGroupMembersProxyAll(ctx context.Context, request ListDirectGroupMembersProxyRequest) ([]DirectGroupMember, error)
 
-	// Lists the groups in the Databricks account that parents the calling
-	// workspace, returning one page per call. Supports filtering by group name or
-	// external ID.
+	// Lists the groups in the account that contains this workspace, sorted by
+	// Databricks ID. Groups in your identity provider that haven't been added to
+	// Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListGroupsProxy(ctx context.Context, request ListGroupsProxyRequest) listing.Iterator[Group]
 
-	// Lists the groups in the Databricks account that parents the calling
-	// workspace, returning one page per call. Supports filtering by group name or
-	// external ID.
+	// Lists the groups in the account that contains this workspace, sorted by
+	// Databricks ID. Groups in your identity provider that haven't been added to
+	// Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListGroupsProxyAll(ctx context.Context, request ListGroupsProxyRequest) ([]Group, error)
 
-	// Lists the service principals in the Databricks account that parents the
-	// calling workspace, returning one page per call. Supports filtering by
-	// application ID or external ID.
+	// Lists the service principals in the account that contains this workspace,
+	// sorted by Databricks ID. Service principals in your identity provider that
+	// haven't been added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListServicePrincipalsProxy(ctx context.Context, request ListServicePrincipalsProxyRequest) listing.Iterator[ServicePrincipal]
 
-	// Lists the service principals in the Databricks account that parents the
-	// calling workspace, returning one page per call. Supports filtering by
-	// application ID or external ID.
+	// Lists the service principals in the account that contains this workspace,
+	// sorted by Databricks ID. Service principals in your identity provider that
+	// haven't been added to Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListServicePrincipalsProxyAll(ctx context.Context, request ListServicePrincipalsProxyRequest) ([]ServicePrincipal, error)
 
-	// Lists all transitive parent groups of a principal.
+	// Lists every group that a user, service principal, or group belongs to,
+	// directly or through other groups, in the account that contains this
+	// workspace. Results are sorted by Databricks ID. If automatic identity
+	// management is on, the principal's group memberships are synced from your
+	// identity provider first.
 	ListTransitiveParentGroupsProxy(ctx context.Context, request ListTransitiveParentGroupsProxyRequest) (*ListTransitiveParentGroupsResponse, error)
 
-	// Lists the users in the Databricks account that parents the calling workspace,
-	// returning one page per call. Supports filtering by username or external ID.
+	// Lists the users in the account that contains this workspace, sorted by
+	// Databricks ID. Users in your identity provider who haven't been added to
+	// Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListUsersProxy(ctx context.Context, request ListUsersProxyRequest) listing.Iterator[User]
 
-	// Lists the users in the Databricks account that parents the calling workspace,
-	// returning one page per call. Supports filtering by username or external ID.
+	// Lists the users in the account that contains this workspace, sorted by
+	// Databricks ID. Users in your identity provider who haven't been added to
+	// Databricks aren't included.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListUsersProxyAll(ctx context.Context, request ListUsersProxyRequest) ([]User, error)
@@ -536,70 +544,63 @@ type WorkspaceIamV2Interface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListWorkspaceAssignmentDetailsProxyAll(ctx context.Context, request ListWorkspaceAssignmentDetailsProxyRequest) ([]WorkspaceAssignmentDetail, error)
 
-	// Lists workspace assignments for the calling workspace. The response omits the
-	// per-principal entitlement fields (`entitlements` and
-	// `effective_entitlements`). To read the entitlements for a single principal,
-	// get that principal's assignment.
+	// Lists the principals assigned directly to this workspace. The response leaves
+	// `entitlements` and `effective_entitlements` empty. To read a principal's
+	// entitlements, get its assignment.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListWorkspaceAssignmentsProxy(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) listing.Iterator[WorkspaceAssignment]
 
-	// Lists workspace assignments for the calling workspace. The response omits the
-	// per-principal entitlement fields (`entitlements` and
-	// `effective_entitlements`). To read the entitlements for a single principal,
-	// get that principal's assignment.
+	// Lists the principals assigned directly to this workspace. The response leaves
+	// `entitlements` and `effective_entitlements` empty. To read a principal's
+	// entitlements, get its assignment.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListWorkspaceAssignmentsProxyAll(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) ([]WorkspaceAssignment, error)
 
-	// Resolves a group with the given external ID from the customer's IdP. If the
-	// group does not exist, it will be created in the account. If the customer is
-	// not onboarded onto Automatic Identity Management (AIM), this will return an
-	// error.
+	// Gets a group by its ID in your identity provider (IdP) and syncs its name and
+	// parent groups from your IdP. If the group isn't in the account that contains
+	// this workspace yet, it's added. Requires automatic identity management. If
+	// your account has group visibility filters, the group must match them.
 	ResolveGroupProxy(ctx context.Context, request ResolveGroupProxyRequest) (*ResolveGroupResponse, error)
 
-	// Resolves a service principal with the given external ID from the customer's
-	// IdP. If the service principal does not exist, it will be created. If the
-	// customer is not onboarded onto Automatic Identity Management (AIM), this will
-	// return an error.
+	// Gets a service principal by its ID in your identity provider (IdP) and syncs
+	// its details and group memberships from your IdP. If the service principal
+	// isn't in the account that contains this workspace yet, it's added. Requires
+	// automatic identity management with Microsoft Entra ID as your IdP.
 	ResolveServicePrincipalProxy(ctx context.Context, request ResolveServicePrincipalProxyRequest) (*ResolveServicePrincipalResponse, error)
 
-	// Resolves a user with the given external ID from the customer's IdP. If the
-	// user does not exist, it will be created. If the customer is not onboarded
-	// onto Automatic Identity Management (AIM), this will return an error.
+	// Gets a user by their ID in your identity provider (IdP) and syncs their
+	// details and group memberships from your IdP. If the user isn't in the account
+	// that contains this workspace yet, they're added. Requires automatic identity
+	// management.
 	ResolveUserProxy(ctx context.Context, request ResolveUserProxyRequest) (*ResolveUserResponse, error)
 
-	// Updates an existing group in the Databricks account that parents the calling
-	// workspace. Only the fields named in the update mask are modified. Returns the
-	// updated Group resource.
+	// Updates a group in the account that contains this workspace. Only the fields
+	// in `update_mask` change.
 	//
-	// When AIM is enabled and the group is an external identity (its external_id is
-	// set), only external_id can be updated; its other fields are sourced from your
-	// identity provider. With AIM and group visibility filters, a new nonempty
-	// external_id must identify a visible group. Clearing external_id is allowed.
+	// If automatic identity management is on and the group has an `external_id`,
+	// you can only update `external_id`. The group's other fields come from your
+	// identity provider. If your account also has group visibility filters, a new
+	// `external_id` must match them. You can always clear `external_id`.
 	UpdateGroupProxy(ctx context.Context, request UpdateGroupProxyRequest) (*Group, error)
 
-	// Updates an existing service principal in the Databricks account that parents
-	// the calling workspace. Only the fields named in the update mask are modified.
-	// Returns the updated ServicePrincipal resource.
+	// Updates a service principal in the account that contains this workspace. Only
+	// the fields in `update_mask` change.
 	//
-	// To change is_agent on a locally managed service principal, set it to true or
-	// false. Naming is_agent in the update mask without a value leaves it
-	// unchanged.
-	//
-	// When AIM is enabled and the service principal is an external identity (its
-	// external_id is set), only external_id can be updated; its other fields are
-	// sourced from your identity provider.
+	// If automatic identity management is on and the service principal has an
+	// `external_id`, you can only update `external_id`. Its other fields come from
+	// your identity provider. A service principal can't deactivate itself, and you
+	// can't update service principals that Databricks manages.
 	UpdateServicePrincipalProxy(ctx context.Context, request UpdateServicePrincipalProxyRequest) (*ServicePrincipal, error)
 
-	// Updates an existing user in the Databricks account that parents the calling
-	// workspace and returns the updated user. Only the fields named in the update
-	// mask are modified. The updatable fields are fullName.givenName,
-	// fullName.familyName, status, and externalId.
+	// Updates a user in the account that contains this workspace. Only the fields
+	// in `update_mask` change.
 	//
-	// When AIM is enabled and the user is an external identity (its external_id is
-	// set), only external_id can be updated; its other fields are sourced from your
-	// identity provider.
+	// If automatic identity management is on and the user has an `external_id`, you
+	// can only update `external_id`. The user's other fields come from your
+	// identity provider. You can't deactivate yourself or change the status of the
+	// account owner.
 	UpdateUserProxy(ctx context.Context, request UpdateUserProxyRequest) (*User, error)
 
 	// Updates the entitlements of a directly assigned principal in the calling
@@ -608,13 +609,17 @@ type WorkspaceIamV2Interface interface {
 	// effect. Get the assignment detail afterwards to confirm the final state.
 	UpdateWorkspaceAssignmentDetailProxy(ctx context.Context, request UpdateWorkspaceAssignmentDetailProxyRequest) (*WorkspaceAssignmentDetail, error)
 
-	// Updates the entitlements of a directly assigned principal in the calling
-	// workspace. Changes are applied one at a time rather than atomically. If the
-	// request fails partway through, only some of the requested changes take
-	// effect. Get the assignment afterwards to confirm the final state.
+	// Replaces the entitlements of a principal's direct assignment to this
+	// workspace. The new list can't be empty.
+	//
+	// Entitlements are changed one at a time. If the request fails partway through,
+	// only some of the changes take effect. Get the assignment afterwards to check
+	// the result.
 	UpdateWorkspaceAssignmentProxy(ctx context.Context, request UpdateWorkspaceAssignmentProxyRequest) (*WorkspaceAssignment, error)
 
-	// Updates a workspace identity detail for a principal.
+	// Activates or deactivates a user or service principal in this workspace. You
+	// can only update `workspace_identity_status`. You can't change your own status
+	// or the status of a group.
 	UpdateWorkspaceIdentityDetail(ctx context.Context, request UpdateWorkspaceIdentityDetailRequest) (*WorkspaceIdentityDetail, error)
 }
 

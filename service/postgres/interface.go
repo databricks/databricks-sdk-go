@@ -23,6 +23,13 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PostgresService interface {
 
+	// Acknowledges non-blocking warnings on a specific assessment.
+	AcknowledgeAssessmentWarnings(ctx context.Context, request AcknowledgeAssessmentWarningsRequest) (*Operation, error)
+
+	// Creates an immutable assessment run for the migration's current source
+	// configuration.
+	AssessMigration(ctx context.Context, request AssessMigrationRequest) (*Operation, error)
+
 	// Creates a new database branch in the project.
 	CreateBranch(ctx context.Context, request CreateBranchRequest) (*Operation, error)
 
@@ -46,6 +53,9 @@ type PostgresService interface {
 
 	// Creates a new compute endpoint in the branch.
 	CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Operation, error)
+
+	// Creates a migration.
+	CreateMigration(ctx context.Context, request CreateMigrationRequest) (*Operation, error)
 
 	// Creates a new Lakebase Autoscaling Postgres database project, which
 	// contains branches and compute endpoints.
@@ -82,6 +92,9 @@ type PostgresService interface {
 	// Deletes the specified compute endpoint.
 	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*Operation, error)
 
+	// Soft-deletes a migration.
+	DeleteMigration(ctx context.Context, request DeleteMigrationRequest) (*Operation, error)
+
 	// Deletes the specified database project.
 	DeleteProject(ctx context.Context, request DeleteProjectRequest) (*Operation, error)
 
@@ -96,6 +109,9 @@ type PostgresService interface {
 
 	// Generate OAuth credentials for a Postgres database.
 	GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error)
+
+	// Gets a migration assessment run.
+	GetAssessment(ctx context.Context, request GetAssessmentRequest) (*Assessment, error)
 
 	// Retrieves information about the specified database branch.
 	GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error)
@@ -121,6 +137,9 @@ type PostgresService interface {
 	// connection details and operational state.
 	GetEndpoint(ctx context.Context, request GetEndpointRequest) (*Endpoint, error)
 
+	// Gets a migration.
+	GetMigration(ctx context.Context, request GetMigrationRequest) (*Migration, error)
+
 	// Retrieves the status of a long-running operation.
 	GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
 
@@ -141,6 +160,9 @@ type PostgresService interface {
 	// Get a Synced Table.
 	GetSyncedTable(ctx context.Context, request GetSyncedTableRequest) (*SyncedTable, error)
 
+	// Lists assessment runs for a migration.
+	ListAssessments(ctx context.Context, request ListAssessmentsRequest) (*ListAssessmentsResponse, error)
+
 	// Returns a paginated list of database branches in the project.
 	ListBranches(ctx context.Context, request ListBranchesRequest) (*ListBranchesResponse, error)
 
@@ -160,6 +182,9 @@ type PostgresService interface {
 	// Returns a paginated list of compute endpoints in the branch.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointsResponse, error)
 
+	// Lists migrations in the workspace.
+	ListMigrations(ctx context.Context, request ListMigrationsRequest) (*ListMigrationsResponse, error)
+
 	// Returns a paginated list of database projects in the workspace that the
 	// user has permission to access.
 	ListProjects(ctx context.Context, request ListProjectsRequest) (*ListProjectsResponse, error)
@@ -173,8 +198,17 @@ type PostgresService interface {
 	// Reveals the current password for a password-authenticated Postgres role.
 	RevealRolePassword(ctx context.Context, request RevealRolePasswordRequest) (*RevealRolePasswordResponse, error)
 
+	// Starts the assessed migration named in the request, moving it from
+	// READY_TO_START into execution. Its first phase, SCHEMA_LOAD, creates the
+	// target databases, roles, and schema on the migration's target Lakebase
+	// branch without copying any table data, ahead of INITIAL_DATA_LOAD.
+	StartMigration(ctx context.Context, request StartMigrationRequest) (*Operation, error)
+
 	// Undeletes the specified database branch.
 	UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error)
+
+	// Restores a soft-deleted migration before it is permanently purged.
+	UndeleteMigration(ctx context.Context, request UndeleteMigrationRequest) (*Operation, error)
 
 	// Undeletes a soft-deleted project.
 	UndeleteProject(ctx context.Context, request UndeleteProjectRequest) (*Operation, error)
@@ -192,6 +226,9 @@ type PostgresService interface {
 	// Updates the specified compute endpoint. You can update autoscaling
 	// limits, suspend timeout, or enable/disable the compute endpoint.
 	UpdateEndpoint(ctx context.Context, request UpdateEndpointRequest) (*Operation, error)
+
+	// Updates user-owned migration configuration.
+	UpdateMigration(ctx context.Context, request UpdateMigrationRequest) (*Operation, error)
 
 	// Updates the specified database project.
 	UpdateProject(ctx context.Context, request UpdateProjectRequest) (*Operation, error)

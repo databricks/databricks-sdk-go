@@ -1378,6 +1378,24 @@ func (a *featureEngineeringImpl) PurgeFeatureEntities(ctx context.Context, reque
 	return &operation, err
 }
 
+func (a *featureEngineeringImpl) TriggerMaterializationSet(ctx context.Context, request TriggerMaterializationSetRequest) (*Operation, error) {
+	var operation Operation
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialization-sets/%v/trigger", request.MaterializationSetId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error) {
 	var feature Feature
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)

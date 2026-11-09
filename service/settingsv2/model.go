@@ -327,6 +327,465 @@ func (f *CollaborationPlatformConnectivityMessageConnectivity) Type() string {
 	return "CollaborationPlatformConnectivityMessageConnectivity"
 }
 
+// Theme settings for customizing AI/BI dashboard UI, including visualization
+// colors, font colors, background colors, and more.
+type DashboardTheme struct {
+	// Color of the zero-value grid line, making it visually distinct from other
+	// grid lines.
+	AxisLineColor *DashboardThemeDashboardThemeColor `json:"axis_line_color,omitempty"`
+	// The background color of the dashboard canvas.
+	CanvasBackgroundColor *DashboardThemeDashboardThemeColor `json:"canvas_background_color,omitempty"`
+	// The continuous gradient configuration for the dashboard.
+	ContinuousGradient *DashboardThemeContinuousGradient `json:"continuous_gradient,omitempty"`
+	// The default font color applied to all text in the dashboard. Superseded
+	// by font_settings.base.font_color when font_settings is set. More specific
+	// font settings in turn override base.
+	FontColor *DashboardThemeDashboardThemeColor `json:"font_color,omitempty"`
+	// Font family to customize all text within the dashboard. Unsupported font
+	// names fall back to the default font. Superseded by
+	// font_settings.base.font_family when font_settings is set.
+	FontFamily string `json:"font_family,omitempty"`
+	// The per-category typography overrides for the dashboard.
+	FontSettings *DashboardThemeFontSettings `json:"font_settings,omitempty"`
+	// Color of chart grid lines in visualizations (horizontal and vertical
+	// guide lines).
+	GridLineColor *DashboardThemeDashboardThemeColor `json:"grid_line_color,omitempty"`
+	// The corner radius in pixels for rectangular marks in visualizations
+	// (bars, columns, histogram bins, etc.).
+	MarkCornerRadius int `json:"mark_corner_radius,omitempty"`
+	// The highlight color for selected elements in widgets.
+	SelectionColor *DashboardThemeDashboardThemeColor `json:"selection_color,omitempty"`
+	// The sentiment color palette for the dashboard.
+	SentimentColors *DashboardThemeSentimentColors `json:"sentiment_colors,omitempty"`
+	// The default vertical alignment for all text box widgets in the dashboard.
+	// Individual text box widgets can override this.
+	TextBoxVerticalAlign DashboardThemeVerticalAlign `json:"text_box_vertical_align,omitempty"`
+	// Color palette for visualizations. Colors are applied in order
+	// (visualization_color_01, visualization_color_02, etc.). Invalid color
+	// values are preserved but ignored during rendering.
+	VisualizationColor01 string `json:"visualization_color_01,omitempty"`
+	// The color at position 2 in the visualization color palette.
+	VisualizationColor02 string `json:"visualization_color_02,omitempty"`
+	// The color at position 3 in the visualization color palette.
+	VisualizationColor03 string `json:"visualization_color_03,omitempty"`
+	// The color at position 4 in the visualization color palette.
+	VisualizationColor04 string `json:"visualization_color_04,omitempty"`
+	// The color at position 5 in the visualization color palette.
+	VisualizationColor05 string `json:"visualization_color_05,omitempty"`
+	// The color at position 6 in the visualization color palette.
+	VisualizationColor06 string `json:"visualization_color_06,omitempty"`
+	// The color at position 7 in the visualization color palette.
+	VisualizationColor07 string `json:"visualization_color_07,omitempty"`
+	// The color at position 8 in the visualization color palette.
+	VisualizationColor08 string `json:"visualization_color_08,omitempty"`
+	// The color at position 9 in the visualization color palette.
+	VisualizationColor09 string `json:"visualization_color_09,omitempty"`
+	// The color at position 10 in the visualization color palette.
+	VisualizationColor10 string `json:"visualization_color_10,omitempty"`
+	// The color at position 11 in the visualization color palette.
+	VisualizationColor11 string `json:"visualization_color_11,omitempty"`
+	// The color at position 12 in the visualization color palette.
+	VisualizationColor12 string `json:"visualization_color_12,omitempty"`
+	// The color at position 13 in the visualization color palette.
+	VisualizationColor13 string `json:"visualization_color_13,omitempty"`
+	// The color at position 14 in the visualization color palette.
+	VisualizationColor14 string `json:"visualization_color_14,omitempty"`
+	// The color at position 15 in the visualization color palette.
+	VisualizationColor15 string `json:"visualization_color_15,omitempty"`
+	// The color at position 16 in the visualization color palette.
+	VisualizationColor16 string `json:"visualization_color_16,omitempty"`
+	// The color at position 17 in the visualization color palette.
+	VisualizationColor17 string `json:"visualization_color_17,omitempty"`
+	// The color at position 18 in the visualization color palette.
+	VisualizationColor18 string `json:"visualization_color_18,omitempty"`
+	// The color at position 19 in the visualization color palette.
+	VisualizationColor19 string `json:"visualization_color_19,omitempty"`
+	// The color at position 20 in the visualization color palette.
+	VisualizationColor20 string `json:"visualization_color_20,omitempty"`
+	// The background color of widgets.
+	WidgetBackgroundColor *DashboardThemeDashboardThemeColor `json:"widget_background_color,omitempty"`
+	// The border color of widgets.
+	WidgetBorderColor *DashboardThemeDashboardThemeColor `json:"widget_border_color,omitempty"`
+	// The widget border radius in pixels.
+	WidgetCornerRadius int `json:"widget_corner_radius,omitempty"`
+	// Alignment setting for all widget titles and descriptions at the dashboard
+	// level.
+	WidgetHeaderAlignment DashboardThemeAlignment `json:"widget_header_alignment,omitempty"`
+	// The gap between widgets in pixels.
+	WidgetMargin int `json:"widget_margin,omitempty"`
+	// The content padding inside each widget in pixels.
+	WidgetPadding int `json:"widget_padding,omitempty"`
+	// The shadow intensity level applied to widgets (0 = no shadow, 100 =
+	// maximum). The actual CSS box-shadow is computed at render time from this
+	// value, factoring in background colors and color mode.
+	WidgetShadow int `json:"widget_shadow,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardTheme) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardTheme) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Horizontal alignment options for widget titles and descriptions.
+type DashboardThemeAlignment string
+
+const DashboardThemeAlignmentCenter DashboardThemeAlignment = `CENTER`
+
+const DashboardThemeAlignmentLeft DashboardThemeAlignment = `LEFT`
+
+const DashboardThemeAlignmentRight DashboardThemeAlignment = `RIGHT`
+
+// String representation for [fmt.Print]
+func (f *DashboardThemeAlignment) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DashboardThemeAlignment) Set(v string) error {
+	switch v {
+	case `CENTER`, `LEFT`, `RIGHT`:
+		*f = DashboardThemeAlignment(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CENTER", "LEFT", "RIGHT"`, v)
+	}
+}
+
+// Values returns all possible values for DashboardThemeAlignment.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DashboardThemeAlignment) Values() []DashboardThemeAlignment {
+	return []DashboardThemeAlignment{
+		DashboardThemeAlignmentCenter,
+		DashboardThemeAlignmentLeft,
+		DashboardThemeAlignmentRight,
+	}
+}
+
+// Type always returns DashboardThemeAlignment to satisfy [pflag.Value] interface
+func (f *DashboardThemeAlignment) Type() string {
+	return "DashboardThemeAlignment"
+}
+
+// Configuration for continuous color gradients, with separate values for light
+// and dark mode. Each mode's gradient can reference the visualization color
+// palette via from_categorical_index, use a named color scheme, or define a
+// custom sequential or diverging ramp.
+type DashboardThemeContinuousGradient struct {
+	// Gradient value used when the dashboard is rendered in dark mode.
+	DarkMode *DashboardThemeContinuousGradientGradientValue `json:"dark_mode,omitempty"`
+	// Gradient value used when the dashboard is rendered in light mode.
+	LightMode *DashboardThemeContinuousGradientGradientValue `json:"light_mode,omitempty"`
+}
+
+func (s *DashboardThemeContinuousGradient) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A custom three-stop diverging gradient ramp.
+type DashboardThemeContinuousGradientCustomDivergingRamp struct {
+	// The color at the end of the gradient (highest value).
+	End *DashboardThemeDashboardThemeColor `json:"end,omitempty"`
+	// The color at the midpoint of the gradient.
+	Mid *DashboardThemeDashboardThemeColor `json:"mid,omitempty"`
+	// The color at the start of the gradient (lowest value).
+	Start *DashboardThemeDashboardThemeColor `json:"start,omitempty"`
+}
+
+func (s *DashboardThemeContinuousGradientCustomDivergingRamp) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A custom two-stop sequential gradient ramp.
+type DashboardThemeContinuousGradientCustomSequentialRamp struct {
+	// The color at the end of the gradient (highest value).
+	End *DashboardThemeDashboardThemeColor `json:"end,omitempty"`
+	// The color at the start of the gradient (lowest value).
+	Start *DashboardThemeDashboardThemeColor `json:"start,omitempty"`
+}
+
+func (s *DashboardThemeContinuousGradientCustomSequentialRamp) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The gradient for one color mode. Set at most one field.
+type DashboardThemeContinuousGradientGradientValue struct {
+	// A static color string (for example, '#FF0000').
+	Color string `json:"color,omitempty"`
+	// A named color scheme (for example, 'blues', 'viridis', 'spectral').
+	ColorScheme string `json:"color_scheme,omitempty"`
+	// A custom three-stop diverging gradient.
+	CustomDiverging *DashboardThemeContinuousGradientCustomDivergingRamp `json:"custom_diverging,omitempty"`
+	// A custom two-stop sequential gradient.
+	CustomSequential *DashboardThemeContinuousGradientCustomSequentialRamp `json:"custom_sequential,omitempty"`
+	// A 0-based index into the visualization color palette, where 0 is
+	// visualization_color_01. Valid values are 0 to 19.
+	FromCategoricalIndex int `json:"from_categorical_index,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardThemeContinuousGradientGradientValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardThemeContinuousGradientGradientValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Represents a color value with optional overrides for light and dark modes.
+// Authors can customize colors separately to cater to each mode, based on the
+// viewer's user-level theme preference.
+type DashboardThemeDashboardThemeColor struct {
+	// The color used when the dashboard is rendered in dark mode (for example,
+	// '#FF0000').
+	Dark string `json:"dark,omitempty"`
+	// The color used when the dashboard is rendered in light mode (for example,
+	// '#FF0000').
+	Light string `json:"light,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardThemeDashboardThemeColor) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardThemeDashboardThemeColor) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Defines the typography settings for a single text category.
+type DashboardThemeFontConfig struct {
+	// The font color applied to text in this category.
+	FontColor *DashboardThemeDashboardThemeColor `json:"font_color,omitempty"`
+	// The font family name used for text in this category.
+	FontFamily string `json:"font_family,omitempty"`
+	// The font size in pixels.
+	FontSize int `json:"font_size,omitempty"`
+	// The font style (slant) applied to text in this category.
+	FontStyle DashboardThemeFontStyle `json:"font_style,omitempty"`
+	// The font weight value (for example, 400 for normal, 700 for bold).
+	FontWeight int `json:"font_weight,omitempty"`
+	// The text case transformation applied to text in this category.
+	TextCase DashboardThemeTextCase `json:"text_case,omitempty"`
+	// The text decoration applied to text in this category.
+	TextDecoration DashboardThemeTextDecoration `json:"text_decoration,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardThemeFontConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardThemeFontConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Per-category typography overrides. When font_settings.base is set, it takes
+// precedence over the top-level font_family and font_color. More specific
+// categories (widget_title, widget_description, field_title, field_value) in
+// turn override base.
+type DashboardThemeFontSettings struct {
+	// The default font config applied to all text unless overridden by a more
+	// specific category.
+	Base *DashboardThemeFontConfig `json:"base,omitempty"`
+	// The font config applied to field titles (for example, axis titles, table
+	// heading titles).
+	FieldTitle *DashboardThemeFontConfig `json:"field_title,omitempty"`
+	// The font config applied to field values (for example, axis tick labels,
+	// table cell values, tooltip values).
+	FieldValue *DashboardThemeFontConfig `json:"field_value,omitempty"`
+	// The font config applied to widget descriptions.
+	WidgetDescription *DashboardThemeFontConfig `json:"widget_description,omitempty"`
+	// The font config applied to widget titles.
+	WidgetTitle *DashboardThemeFontConfig `json:"widget_title,omitempty"`
+}
+
+func (s *DashboardThemeFontSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Defines the font style (slant) applied to rendered text.
+type DashboardThemeFontStyle string
+
+const DashboardThemeFontStyleFontStyleItalic DashboardThemeFontStyle = `FONT_STYLE_ITALIC`
+
+const DashboardThemeFontStyleFontStyleNormal DashboardThemeFontStyle = `FONT_STYLE_NORMAL`
+
+// String representation for [fmt.Print]
+func (f *DashboardThemeFontStyle) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DashboardThemeFontStyle) Set(v string) error {
+	switch v {
+	case `FONT_STYLE_ITALIC`, `FONT_STYLE_NORMAL`:
+		*f = DashboardThemeFontStyle(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FONT_STYLE_ITALIC", "FONT_STYLE_NORMAL"`, v)
+	}
+}
+
+// Values returns all possible values for DashboardThemeFontStyle.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DashboardThemeFontStyle) Values() []DashboardThemeFontStyle {
+	return []DashboardThemeFontStyle{
+		DashboardThemeFontStyleFontStyleItalic,
+		DashboardThemeFontStyleFontStyleNormal,
+	}
+}
+
+// Type always returns DashboardThemeFontStyle to satisfy [pflag.Value] interface
+func (f *DashboardThemeFontStyle) Type() string {
+	return "DashboardThemeFontStyle"
+}
+
+// Shared sentiment colors reusable across visualizations, primarily for
+// conditional formatting, ensuring consistent positive, negative, and neutral
+// meaning throughout the dashboard.
+type DashboardThemeSentimentColors struct {
+	// The color applied to negative sentiment values.
+	Negative *DashboardThemeDashboardThemeColor `json:"negative,omitempty"`
+	// The color applied to neutral sentiment values.
+	Neutral *DashboardThemeDashboardThemeColor `json:"neutral,omitempty"`
+	// The color applied to positive sentiment values.
+	Positive *DashboardThemeDashboardThemeColor `json:"positive,omitempty"`
+}
+
+func (s *DashboardThemeSentimentColors) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Defines the text case transformation applied to rendered text.
+type DashboardThemeTextCase string
+
+const DashboardThemeTextCaseTextCaseCapitalize DashboardThemeTextCase = `TEXT_CASE_CAPITALIZE`
+
+const DashboardThemeTextCaseTextCaseLowercase DashboardThemeTextCase = `TEXT_CASE_LOWERCASE`
+
+const DashboardThemeTextCaseTextCaseUppercase DashboardThemeTextCase = `TEXT_CASE_UPPERCASE`
+
+// String representation for [fmt.Print]
+func (f *DashboardThemeTextCase) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DashboardThemeTextCase) Set(v string) error {
+	switch v {
+	case `TEXT_CASE_CAPITALIZE`, `TEXT_CASE_LOWERCASE`, `TEXT_CASE_UPPERCASE`:
+		*f = DashboardThemeTextCase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TEXT_CASE_CAPITALIZE", "TEXT_CASE_LOWERCASE", "TEXT_CASE_UPPERCASE"`, v)
+	}
+}
+
+// Values returns all possible values for DashboardThemeTextCase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DashboardThemeTextCase) Values() []DashboardThemeTextCase {
+	return []DashboardThemeTextCase{
+		DashboardThemeTextCaseTextCaseCapitalize,
+		DashboardThemeTextCaseTextCaseLowercase,
+		DashboardThemeTextCaseTextCaseUppercase,
+	}
+}
+
+// Type always returns DashboardThemeTextCase to satisfy [pflag.Value] interface
+func (f *DashboardThemeTextCase) Type() string {
+	return "DashboardThemeTextCase"
+}
+
+// Defines the decoration line applied to rendered text.
+type DashboardThemeTextDecoration string
+
+const DashboardThemeTextDecorationTextDecorationNone DashboardThemeTextDecoration = `TEXT_DECORATION_NONE`
+
+const DashboardThemeTextDecorationTextDecorationUnderline DashboardThemeTextDecoration = `TEXT_DECORATION_UNDERLINE`
+
+// String representation for [fmt.Print]
+func (f *DashboardThemeTextDecoration) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DashboardThemeTextDecoration) Set(v string) error {
+	switch v {
+	case `TEXT_DECORATION_NONE`, `TEXT_DECORATION_UNDERLINE`:
+		*f = DashboardThemeTextDecoration(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TEXT_DECORATION_NONE", "TEXT_DECORATION_UNDERLINE"`, v)
+	}
+}
+
+// Values returns all possible values for DashboardThemeTextDecoration.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DashboardThemeTextDecoration) Values() []DashboardThemeTextDecoration {
+	return []DashboardThemeTextDecoration{
+		DashboardThemeTextDecorationTextDecorationNone,
+		DashboardThemeTextDecorationTextDecorationUnderline,
+	}
+}
+
+// Type always returns DashboardThemeTextDecoration to satisfy [pflag.Value] interface
+func (f *DashboardThemeTextDecoration) Type() string {
+	return "DashboardThemeTextDecoration"
+}
+
+// Vertical alignment options for text box content.
+type DashboardThemeVerticalAlign string
+
+const DashboardThemeVerticalAlignVerticalAlignBottom DashboardThemeVerticalAlign = `VERTICAL_ALIGN_BOTTOM`
+
+const DashboardThemeVerticalAlignVerticalAlignCenter DashboardThemeVerticalAlign = `VERTICAL_ALIGN_CENTER`
+
+const DashboardThemeVerticalAlignVerticalAlignTop DashboardThemeVerticalAlign = `VERTICAL_ALIGN_TOP`
+
+// String representation for [fmt.Print]
+func (f *DashboardThemeVerticalAlign) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DashboardThemeVerticalAlign) Set(v string) error {
+	switch v {
+	case `VERTICAL_ALIGN_BOTTOM`, `VERTICAL_ALIGN_CENTER`, `VERTICAL_ALIGN_TOP`:
+		*f = DashboardThemeVerticalAlign(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "VERTICAL_ALIGN_BOTTOM", "VERTICAL_ALIGN_CENTER", "VERTICAL_ALIGN_TOP"`, v)
+	}
+}
+
+// Values returns all possible values for DashboardThemeVerticalAlign.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DashboardThemeVerticalAlign) Values() []DashboardThemeVerticalAlign {
+	return []DashboardThemeVerticalAlign{
+		DashboardThemeVerticalAlignVerticalAlignBottom,
+		DashboardThemeVerticalAlignVerticalAlignCenter,
+		DashboardThemeVerticalAlignVerticalAlignTop,
+	}
+}
+
+// Type always returns DashboardThemeVerticalAlign to satisfy [pflag.Value] interface
+func (f *DashboardThemeVerticalAlign) Type() string {
+	return "DashboardThemeVerticalAlign"
+}
+
 type GetPublicAccountSettingRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -768,6 +1227,10 @@ type Setting struct {
 	// Effective setting value for string type setting. This is the final
 	// effective value of setting. To set a value use string_val.
 	EffectiveStringVal *StringMessage `json:"effective_string_val,omitempty"`
+	// Effective setting value for the workspace_dashboard_theme setting. This
+	// is the final effective value of the setting. To set a value, use
+	// workspace_dashboard_theme.
+	EffectiveWorkspaceDashboardTheme *DashboardTheme `json:"effective_workspace_dashboard_theme,omitempty"`
 	// Effective setting value for workspace_label setting. This is the final
 	// effective value of setting. To set a value use workspace_label.
 	EffectiveWorkspaceLabel *WorkspaceLabelMessage `json:"effective_workspace_label,omitempty"`
@@ -790,6 +1253,10 @@ type Setting struct {
 	// Setting value for string type setting. This is the setting value set by
 	// consumers, check effective_string_val for final setting value.
 	StringVal *StringMessage `json:"string_val,omitempty"`
+	// Setting value for the workspace_dashboard_theme setting. This is the
+	// setting value set by consumers. Check effective_workspace_dashboard_theme
+	// for the final setting value.
+	WorkspaceDashboardTheme *DashboardTheme `json:"workspace_dashboard_theme,omitempty"`
 	// Setting value for workspace_label setting. This is the setting value set
 	// by consumers, check effective_workspace_label for final setting value.
 	WorkspaceLabel *WorkspaceLabelMessage `json:"workspace_label,omitempty"`

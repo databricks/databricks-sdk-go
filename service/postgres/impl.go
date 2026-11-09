@@ -20,6 +20,36 @@ type postgresImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *postgresImpl) AcknowledgeAssessmentWarnings(ctx context.Context, request AcknowledgeAssessmentWarningsRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/acknowledgeWarnings", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) AssessMigration(ctx context.Context, request AssessMigrationRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/assess", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) CreateBranch(ctx context.Context, request CreateBranchRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/branches", request.Parent)
@@ -139,6 +169,25 @@ func (a *postgresImpl) CreateEndpoint(ctx context.Context, request CreateEndpoin
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Endpoint, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) CreateMigration(ctx context.Context, request CreateMigrationRequest) (*Operation, error) {
+	var operation Operation
+	path := "/api/2.0/postgres/migrations"
+	queryParams := make(map[string]any)
+
+	if request.MigrationId != "" {
+		queryParams["migration_id"] = request.MigrationId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Migration, &operation)
 	return &operation, err
 }
 
@@ -306,6 +355,20 @@ func (a *postgresImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpoin
 	return &operation, err
 }
 
+func (a *postgresImpl) DeleteMigration(ctx context.Context, request DeleteMigrationRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
@@ -375,6 +438,20 @@ func (a *postgresImpl) GenerateDatabaseCredential(ctx context.Context, request G
 	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &databaseCredential)
 	return &databaseCredential, err
+}
+
+func (a *postgresImpl) GetAssessment(ctx context.Context, request GetAssessmentRequest) (*Assessment, error) {
+	var assessment Assessment
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &assessment)
+	return &assessment, err
 }
 
 func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error) {
@@ -475,6 +552,20 @@ func (a *postgresImpl) GetEndpoint(ctx context.Context, request GetEndpointReque
 	return &endpoint, err
 }
 
+func (a *postgresImpl) GetMigration(ctx context.Context, request GetMigrationRequest) (*Migration, error) {
+	var migration Migration
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &migration)
+	return &migration, err
+}
+
 func (a *postgresImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
@@ -557,6 +648,51 @@ func (a *postgresImpl) GetSyncedTable(ctx context.Context, request GetSyncedTabl
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &syncedTable)
 	return &syncedTable, err
+}
+
+// Lists assessment runs for a migration.
+func (a *postgresImpl) ListAssessments(ctx context.Context, request ListAssessmentsRequest) listing.Iterator[Assessment] {
+
+	getNextPage := func(ctx context.Context, req ListAssessmentsRequest) (*ListAssessmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListAssessments(ctx, req)
+	}
+	getItems := func(resp *ListAssessmentsResponse) []Assessment {
+		return resp.Assessments
+	}
+	getNextReq := func(resp *ListAssessmentsResponse) *ListAssessmentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists assessment runs for a migration.
+func (a *postgresImpl) ListAssessmentsAll(ctx context.Context, request ListAssessmentsRequest) ([]Assessment, error) {
+	iterator := a.ListAssessments(ctx, request)
+	return listing.ToSlice[Assessment](ctx, iterator)
+}
+
+func (a *postgresImpl) internalListAssessments(ctx context.Context, request ListAssessmentsRequest) (*ListAssessmentsResponse, error) {
+	var listAssessmentsResponse ListAssessmentsResponse
+	path := fmt.Sprintf("/api/2.0/postgres/%v/assessments", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAssessmentsResponse)
+	return &listAssessmentsResponse, err
 }
 
 // Returns a paginated list of database branches in the project.
@@ -792,6 +928,51 @@ func (a *postgresImpl) internalListEndpoints(ctx context.Context, request ListEn
 	return &listEndpointsResponse, err
 }
 
+// Lists migrations in the workspace.
+func (a *postgresImpl) ListMigrations(ctx context.Context, request ListMigrationsRequest) listing.Iterator[Migration] {
+
+	getNextPage := func(ctx context.Context, req ListMigrationsRequest) (*ListMigrationsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListMigrations(ctx, req)
+	}
+	getItems := func(resp *ListMigrationsResponse) []Migration {
+		return resp.Migrations
+	}
+	getNextReq := func(resp *ListMigrationsResponse) *ListMigrationsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists migrations in the workspace.
+func (a *postgresImpl) ListMigrationsAll(ctx context.Context, request ListMigrationsRequest) ([]Migration, error) {
+	iterator := a.ListMigrations(ctx, request)
+	return listing.ToSlice[Migration](ctx, iterator)
+}
+
+func (a *postgresImpl) internalListMigrations(ctx context.Context, request ListMigrationsRequest) (*ListMigrationsResponse, error) {
+	var listMigrationsResponse ListMigrationsResponse
+	path := "/api/2.0/postgres/migrations"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listMigrationsResponse)
+	return &listMigrationsResponse, err
+}
+
 // Returns a paginated list of database projects in the workspace that the user
 // has permission to access.
 func (a *postgresImpl) ListProjects(ctx context.Context, request ListProjectsRequest) listing.Iterator[Project] {
@@ -944,7 +1125,37 @@ func (a *postgresImpl) RevealRolePassword(ctx context.Context, request RevealRol
 	return &revealRolePasswordResponse, err
 }
 
+func (a *postgresImpl) StartMigration(ctx context.Context, request StartMigrationRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/start", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) UndeleteBranch(ctx context.Context, request UndeleteBranchRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) UndeleteMigration(ctx context.Context, request UndeleteMigrationRequest) (*Operation, error) {
 	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v/undelete", request.Name)
 	queryParams := make(map[string]any)
@@ -1059,6 +1270,28 @@ func (a *postgresImpl) UpdateEndpoint(ctx context.Context, request UpdateEndpoin
 		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Endpoint, &operation)
+	return &operation, err
+}
+
+func (a *postgresImpl) UpdateMigration(ctx context.Context, request UpdateMigrationRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Migration, &operation)
 	return &operation, err
 }
 

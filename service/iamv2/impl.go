@@ -299,8 +299,9 @@ func (a *accountIamV2Impl) GetWorkspaceAssignmentDetail(ctx context.Context, req
 	return &workspaceAssignmentDetail, err
 }
 
-// Lists provisioned direct members of a group with their membership source
-// (internal or from identity provider).
+// Lists the direct members of a group, sorted by display name, with where each
+// membership comes from. Members in your identity provider who haven't been
+// added to Databricks aren't included.
 func (a *accountIamV2Impl) ListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) listing.Iterator[DirectGroupMember] {
 
 	getNextPage := func(ctx context.Context, req ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error) {
@@ -325,8 +326,9 @@ func (a *accountIamV2Impl) ListDirectGroupMembers(ctx context.Context, request L
 	return iterator
 }
 
-// Lists provisioned direct members of a group with their membership source
-// (internal or from identity provider).
+// Lists the direct members of a group, sorted by display name, with where each
+// membership comes from. Members in your identity provider who haven't been
+// added to Databricks aren't included.
 func (a *accountIamV2Impl) ListDirectGroupMembersAll(ctx context.Context, request ListDirectGroupMembersRequest) ([]DirectGroupMember, error) {
 	iterator := a.ListDirectGroupMembers(ctx, request)
 	return listing.ToSlice[DirectGroupMember](ctx, iterator)
@@ -343,8 +345,8 @@ func (a *accountIamV2Impl) internalListDirectGroupMembers(ctx context.Context, r
 	return &listDirectGroupMembersResponse, err
 }
 
-// Lists the groups in the Databricks account, returning one page per call.
-// Supports filtering by group name or external ID.
+// Lists the groups in your account, sorted by Databricks ID. Groups in your
+// identity provider that haven't been added to Databricks aren't included.
 func (a *accountIamV2Impl) ListGroups(ctx context.Context, request ListGroupsRequest) listing.Iterator[Group] {
 
 	getNextPage := func(ctx context.Context, req ListGroupsRequest) (*ListGroupsResponse, error) {
@@ -369,8 +371,8 @@ func (a *accountIamV2Impl) ListGroups(ctx context.Context, request ListGroupsReq
 	return iterator
 }
 
-// Lists the groups in the Databricks account, returning one page per call.
-// Supports filtering by group name or external ID.
+// Lists the groups in your account, sorted by Databricks ID. Groups in your
+// identity provider that haven't been added to Databricks aren't included.
 func (a *accountIamV2Impl) ListGroupsAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
 	iterator := a.ListGroups(ctx, request)
 	return listing.ToSlice[Group](ctx, iterator)
@@ -387,11 +389,8 @@ func (a *accountIamV2Impl) internalListGroups(ctx context.Context, request ListG
 	return &listGroupsResponse, err
 }
 
-// Lists group visibility filters in the account, returning one page per call.
-// Requires account admin privileges. Returns filter rules, not the groups
-// matched by those rules. To retrieve the next page, pass the response's
-// `next_page_token` as `page_token` in the next request. If `next_page_token`
-// is omitted, there are no more pages.
+// Lists the group visibility filters in an account. It returns the rules, not
+// the groups they match.
 func (a *accountIamV2Impl) ListIdentityVisibilityFilters(ctx context.Context, request ListIdentityVisibilityFiltersRequest) listing.Iterator[IdentityVisibilityFilter] {
 
 	getNextPage := func(ctx context.Context, req ListIdentityVisibilityFiltersRequest) (*ListIdentityVisibilityFiltersResponse, error) {
@@ -416,11 +415,8 @@ func (a *accountIamV2Impl) ListIdentityVisibilityFilters(ctx context.Context, re
 	return iterator
 }
 
-// Lists group visibility filters in the account, returning one page per call.
-// Requires account admin privileges. Returns filter rules, not the groups
-// matched by those rules. To retrieve the next page, pass the response's
-// `next_page_token` as `page_token` in the next request. If `next_page_token`
-// is omitted, there are no more pages.
+// Lists the group visibility filters in an account. It returns the rules, not
+// the groups they match.
 func (a *accountIamV2Impl) ListIdentityVisibilityFiltersAll(ctx context.Context, request ListIdentityVisibilityFiltersRequest) ([]IdentityVisibilityFilter, error) {
 	iterator := a.ListIdentityVisibilityFilters(ctx, request)
 	return listing.ToSlice[IdentityVisibilityFilter](ctx, iterator)
@@ -437,8 +433,9 @@ func (a *accountIamV2Impl) internalListIdentityVisibilityFilters(ctx context.Con
 	return &listIdentityVisibilityFiltersResponse, err
 }
 
-// Lists the service principals in the Databricks account, returning one page
-// per call. Supports filtering by application ID or external ID.
+// Lists the service principals in your account, sorted by Databricks ID.
+// Service principals in your identity provider that haven't been added to
+// Databricks aren't included.
 func (a *accountIamV2Impl) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
 
 	getNextPage := func(ctx context.Context, req ListServicePrincipalsRequest) (*ListServicePrincipalsResponse, error) {
@@ -463,8 +460,9 @@ func (a *accountIamV2Impl) ListServicePrincipals(ctx context.Context, request Li
 	return iterator
 }
 
-// Lists the service principals in the Databricks account, returning one page
-// per call. Supports filtering by application ID or external ID.
+// Lists the service principals in your account, sorted by Databricks ID.
+// Service principals in your identity provider that haven't been added to
+// Databricks aren't included.
 func (a *accountIamV2Impl) ListServicePrincipalsAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
 	iterator := a.ListServicePrincipals(ctx, request)
 	return listing.ToSlice[ServicePrincipal](ctx, iterator)
@@ -492,8 +490,8 @@ func (a *accountIamV2Impl) ListTransitiveParentGroups(ctx context.Context, reque
 	return &listTransitiveParentGroupsResponse, err
 }
 
-// Lists the users in the Databricks account, returning one page per call.
-// Supports filtering by username or external ID.
+// Lists the users in your account, sorted by Databricks ID. Users in your
+// identity provider who haven't been added to Databricks aren't included.
 func (a *accountIamV2Impl) ListUsers(ctx context.Context, request ListUsersRequest) listing.Iterator[User] {
 
 	getNextPage := func(ctx context.Context, req ListUsersRequest) (*ListUsersResponse, error) {
@@ -518,8 +516,8 @@ func (a *accountIamV2Impl) ListUsers(ctx context.Context, request ListUsersReque
 	return iterator
 }
 
-// Lists the users in the Databricks account, returning one page per call.
-// Supports filtering by username or external ID.
+// Lists the users in your account, sorted by Databricks ID. Users in your
+// identity provider who haven't been added to Databricks aren't included.
 func (a *accountIamV2Impl) ListUsersAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
 	iterator := a.ListUsers(ctx, request)
 	return listing.ToSlice[User](ctx, iterator)
@@ -584,10 +582,9 @@ func (a *accountIamV2Impl) internalListWorkspaceAssignmentDetails(ctx context.Co
 	return &listWorkspaceAssignmentDetailsResponse, err
 }
 
-// Lists workspace assignments for a workspace. The response omits the
-// per-principal entitlement fields (`entitlements` and
-// `effective_entitlements`). To read the entitlements for a single principal,
-// get that principal's assignment.
+// Lists the principals assigned directly to a workspace. The response leaves
+// `entitlements` and `effective_entitlements` empty. To read a principal's
+// entitlements, get its assignment.
 func (a *accountIamV2Impl) ListWorkspaceAssignments(ctx context.Context, request ListWorkspaceAssignmentsRequest) listing.Iterator[WorkspaceAssignment] {
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentsRequest) (*ListWorkspaceAssignmentsResponse, error) {
@@ -612,10 +609,9 @@ func (a *accountIamV2Impl) ListWorkspaceAssignments(ctx context.Context, request
 	return iterator
 }
 
-// Lists workspace assignments for a workspace. The response omits the
-// per-principal entitlement fields (`entitlements` and
-// `effective_entitlements`). To read the entitlements for a single principal,
-// get that principal's assignment.
+// Lists the principals assigned directly to a workspace. The response leaves
+// `entitlements` and `effective_entitlements` empty. To read a principal's
+// entitlements, get its assignment.
 func (a *accountIamV2Impl) ListWorkspaceAssignmentsAll(ctx context.Context, request ListWorkspaceAssignmentsRequest) ([]WorkspaceAssignment, error) {
 	iterator := a.ListWorkspaceAssignments(ctx, request)
 	return listing.ToSlice[WorkspaceAssignment](ctx, iterator)
@@ -1097,8 +1093,10 @@ func (a *workspaceIamV2Impl) GetWorkspaceIdentityDetail(ctx context.Context, req
 	return &workspaceIdentityDetail, err
 }
 
-// Lists provisioned direct members of a group with their membership source
-// (internal or from identity provider).
+// Lists the direct members of a group in the account that contains this
+// workspace, sorted by display name, with where each membership comes from.
+// Members in your identity provider who haven't been added to Databricks aren't
+// included.
 func (a *workspaceIamV2Impl) ListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) listing.Iterator[DirectGroupMember] {
 
 	getNextPage := func(ctx context.Context, req ListDirectGroupMembersProxyRequest) (*ListDirectGroupMembersResponse, error) {
@@ -1123,8 +1121,10 @@ func (a *workspaceIamV2Impl) ListDirectGroupMembersProxy(ctx context.Context, re
 	return iterator
 }
 
-// Lists provisioned direct members of a group with their membership source
-// (internal or from identity provider).
+// Lists the direct members of a group in the account that contains this
+// workspace, sorted by display name, with where each membership comes from.
+// Members in your identity provider who haven't been added to Databricks aren't
+// included.
 func (a *workspaceIamV2Impl) ListDirectGroupMembersProxyAll(ctx context.Context, request ListDirectGroupMembersProxyRequest) ([]DirectGroupMember, error) {
 	iterator := a.ListDirectGroupMembersProxy(ctx, request)
 	return listing.ToSlice[DirectGroupMember](ctx, iterator)
@@ -1144,9 +1144,9 @@ func (a *workspaceIamV2Impl) internalListDirectGroupMembersProxy(ctx context.Con
 	return &listDirectGroupMembersResponse, err
 }
 
-// Lists the groups in the Databricks account that parents the calling
-// workspace, returning one page per call. Supports filtering by group name or
-// external ID.
+// Lists the groups in the account that contains this workspace, sorted by
+// Databricks ID. Groups in your identity provider that haven't been added to
+// Databricks aren't included.
 func (a *workspaceIamV2Impl) ListGroupsProxy(ctx context.Context, request ListGroupsProxyRequest) listing.Iterator[Group] {
 
 	getNextPage := func(ctx context.Context, req ListGroupsProxyRequest) (*ListGroupsResponse, error) {
@@ -1171,9 +1171,9 @@ func (a *workspaceIamV2Impl) ListGroupsProxy(ctx context.Context, request ListGr
 	return iterator
 }
 
-// Lists the groups in the Databricks account that parents the calling
-// workspace, returning one page per call. Supports filtering by group name or
-// external ID.
+// Lists the groups in the account that contains this workspace, sorted by
+// Databricks ID. Groups in your identity provider that haven't been added to
+// Databricks aren't included.
 func (a *workspaceIamV2Impl) ListGroupsProxyAll(ctx context.Context, request ListGroupsProxyRequest) ([]Group, error) {
 	iterator := a.ListGroupsProxy(ctx, request)
 	return listing.ToSlice[Group](ctx, iterator)
@@ -1193,9 +1193,9 @@ func (a *workspaceIamV2Impl) internalListGroupsProxy(ctx context.Context, reques
 	return &listGroupsResponse, err
 }
 
-// Lists the service principals in the Databricks account that parents the
-// calling workspace, returning one page per call. Supports filtering by
-// application ID or external ID.
+// Lists the service principals in the account that contains this workspace,
+// sorted by Databricks ID. Service principals in your identity provider that
+// haven't been added to Databricks aren't included.
 func (a *workspaceIamV2Impl) ListServicePrincipalsProxy(ctx context.Context, request ListServicePrincipalsProxyRequest) listing.Iterator[ServicePrincipal] {
 
 	getNextPage := func(ctx context.Context, req ListServicePrincipalsProxyRequest) (*ListServicePrincipalsResponse, error) {
@@ -1220,9 +1220,9 @@ func (a *workspaceIamV2Impl) ListServicePrincipalsProxy(ctx context.Context, req
 	return iterator
 }
 
-// Lists the service principals in the Databricks account that parents the
-// calling workspace, returning one page per call. Supports filtering by
-// application ID or external ID.
+// Lists the service principals in the account that contains this workspace,
+// sorted by Databricks ID. Service principals in your identity provider that
+// haven't been added to Databricks aren't included.
 func (a *workspaceIamV2Impl) ListServicePrincipalsProxyAll(ctx context.Context, request ListServicePrincipalsProxyRequest) ([]ServicePrincipal, error) {
 	iterator := a.ListServicePrincipalsProxy(ctx, request)
 	return listing.ToSlice[ServicePrincipal](ctx, iterator)
@@ -1256,8 +1256,9 @@ func (a *workspaceIamV2Impl) ListTransitiveParentGroupsProxy(ctx context.Context
 	return &listTransitiveParentGroupsResponse, err
 }
 
-// Lists the users in the Databricks account that parents the calling workspace,
-// returning one page per call. Supports filtering by username or external ID.
+// Lists the users in the account that contains this workspace, sorted by
+// Databricks ID. Users in your identity provider who haven't been added to
+// Databricks aren't included.
 func (a *workspaceIamV2Impl) ListUsersProxy(ctx context.Context, request ListUsersProxyRequest) listing.Iterator[User] {
 
 	getNextPage := func(ctx context.Context, req ListUsersProxyRequest) (*ListUsersResponse, error) {
@@ -1282,8 +1283,9 @@ func (a *workspaceIamV2Impl) ListUsersProxy(ctx context.Context, request ListUse
 	return iterator
 }
 
-// Lists the users in the Databricks account that parents the calling workspace,
-// returning one page per call. Supports filtering by username or external ID.
+// Lists the users in the account that contains this workspace, sorted by
+// Databricks ID. Users in your identity provider who haven't been added to
+// Databricks aren't included.
 func (a *workspaceIamV2Impl) ListUsersProxyAll(ctx context.Context, request ListUsersProxyRequest) ([]User, error) {
 	iterator := a.ListUsersProxy(ctx, request)
 	return listing.ToSlice[User](ctx, iterator)
@@ -1354,10 +1356,9 @@ func (a *workspaceIamV2Impl) internalListWorkspaceAssignmentDetailsProxy(ctx con
 	return &listWorkspaceAssignmentDetailsResponse, err
 }
 
-// Lists workspace assignments for the calling workspace. The response omits the
-// per-principal entitlement fields (`entitlements` and
-// `effective_entitlements`). To read the entitlements for a single principal,
-// get that principal's assignment.
+// Lists the principals assigned directly to this workspace. The response leaves
+// `entitlements` and `effective_entitlements` empty. To read a principal's
+// entitlements, get its assignment.
 func (a *workspaceIamV2Impl) ListWorkspaceAssignmentsProxy(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) listing.Iterator[WorkspaceAssignment] {
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentsProxyRequest) (*ListWorkspaceAssignmentsResponse, error) {
@@ -1382,10 +1383,9 @@ func (a *workspaceIamV2Impl) ListWorkspaceAssignmentsProxy(ctx context.Context, 
 	return iterator
 }
 
-// Lists workspace assignments for the calling workspace. The response omits the
-// per-principal entitlement fields (`entitlements` and
-// `effective_entitlements`). To read the entitlements for a single principal,
-// get that principal's assignment.
+// Lists the principals assigned directly to this workspace. The response leaves
+// `entitlements` and `effective_entitlements` empty. To read a principal's
+// entitlements, get its assignment.
 func (a *workspaceIamV2Impl) ListWorkspaceAssignmentsProxyAll(ctx context.Context, request ListWorkspaceAssignmentsProxyRequest) ([]WorkspaceAssignment, error) {
 	iterator := a.ListWorkspaceAssignmentsProxy(ctx, request)
 	return listing.ToSlice[WorkspaceAssignment](ctx, iterator)

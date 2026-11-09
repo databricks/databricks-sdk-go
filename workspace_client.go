@@ -41,6 +41,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
+	"github.com/databricks/databricks-sdk-go/service/softwareartifacts"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/service/tags"
@@ -1041,6 +1042,9 @@ type WorkspaceClient struct {
 	// scoped to a schema within a catalog.
 	SecretsUc catalog.SecretsUcInterface
 
+	// ServerlessCompute Service API.
+	ServerlessComputeService compute.ServerlessComputeServiceInterface
+
 	// These APIs enable administrators to manage service principal secrets at
 	// the workspace level. To use these APIs, the service principal must be
 	// first added to the current workspace.
@@ -1097,6 +1101,9 @@ type WorkspaceClient struct {
 	// register data assets under their original name, qualified by their
 	// original schema, or provide alternate exposed names.
 	Shares sharing.SharesInterface
+
+	// Manage software artifacts and their versions in Unity Catalog.
+	SoftwareArtifacts softwareartifacts.SoftwareArtifactsInterface
 
 	// The Databricks SQL Statement Execution API can be used to execute SQL
 	// statements on a SQL warehouse and fetch the result.
@@ -1619,12 +1626,14 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		SecretsUc:                           catalog.NewSecretsUc(databricksClient),
+		ServerlessComputeService:            compute.NewServerlessComputeService(databricksClient),
 		ServicePrincipalSecretsProxy:        oauth2.NewServicePrincipalSecretsProxy(databricksClient),
 		ServicePrincipalsV2:                 iam.NewServicePrincipalsV2(databricksClient),
 		ServingEndpoints:                    servingEndpoints,
 		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),
 		Settings:                            settings.NewSettings(databricksClient),
 		Shares:                              sharing.NewShares(databricksClient),
+		SoftwareArtifacts:                   softwareartifacts.NewSoftwareArtifacts(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),
 		StorageCredentials:                  catalog.NewStorageCredentials(databricksClient),
 		SupervisorAgents:                    supervisoragents.NewSupervisorAgents(databricksClient),

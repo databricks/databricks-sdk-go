@@ -519,3 +519,18 @@ type PolicyFamiliesService interface {
 	// latest version. This API is paginated.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)
 }
+
+// ServerlessCompute Service API.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type ServerlessComputeServiceService interface {
+
+	// Lists Interactive serverless computes that the caller can use or manage.
+	// Results are returned in an unspecified order.
+	List(ctx context.Context, request ListServerlessComputesRequest) (*ListServerlessComputesResponse, error)
+
+	// Lists compute policies in the workspace. Results are returned in an
+	// unspecified order; callers should sort client-side if a specific order is
+	// needed.
+	ListComputePolicies(ctx context.Context, request ListComputePoliciesRequest) (*ListComputePoliciesResponse, error)
+}

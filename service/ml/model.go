@@ -1226,6 +1226,14 @@ type CronSchedule struct {
 	CronExpression string `json:"cron_expression,omitempty"`
 	// How the schedule is determined. Defaults to MANUAL when unset.
 	Mode CronScheduleMode `json:"mode,omitempty"`
+	// Whether automatic materialization is paused. Defaults to `false`.
+	// Supported only for materializations in a materialization set. Use the
+	// `UpdateMaterializationSet` API to pause or resume the set.
+	//
+	// Pausing does not cancel running or queued runs. Runs can still be
+	// triggered through the `TriggerMaterializationSet` API. Resuming does not
+	// submit a run. Creating a paused materialization skips its initial run.
+	Paused bool `json:"paused,omitempty"`
 	// A Java timezone ID. The schedule is resolved with respect to this
 	// timezone. Defaults to UTC when omitted. Can only be configured for MANUAL
 	// schedules; DERIVED schedules are always aligned to UTC.
@@ -2272,6 +2280,17 @@ type ExperimentTraceLocation struct {
 }
 
 func (s *ExperimentTraceLocation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A trigger that disables automatic materialization, including the initial run
+// at creation. Runs are instead triggered through the
+// `TriggerMaterializationSet` API. Supported only for batch materializations in
+// a materialization set.
+type ExternalTrigger struct {
+}
+
+func (s *ExternalTrigger) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -4655,6 +4674,70 @@ func (s *MaterializationNotifications) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Progress of a requested run, which may materialize multiple members of the
+// set.
+type MaterializationRunProgress struct {
+	// The failure, including a failure to submit the run. Present when `state`
+	// is `FAILED`.
+	Error *DatabricksServiceExceptionWithDetailsProto `json:"error,omitempty"`
+	// IDs of the materialized features assigned to this run when the operation
+	// was created.
+	MaterializedFeatureIds []string `json:"materialized_feature_ids,omitempty"`
+	// Current state of the requested run.
+	State MaterializationRunProgressState `json:"state,omitempty"`
+}
+
+func (s *MaterializationRunProgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Lifecycle state of a requested materialization run.
+type MaterializationRunProgressState string
+
+const MaterializationRunProgressStateCancelled MaterializationRunProgressState = `CANCELLED`
+
+const MaterializationRunProgressStateFailed MaterializationRunProgressState = `FAILED`
+
+const MaterializationRunProgressStatePending MaterializationRunProgressState = `PENDING`
+
+const MaterializationRunProgressStateRunning MaterializationRunProgressState = `RUNNING`
+
+const MaterializationRunProgressStateSucceeded MaterializationRunProgressState = `SUCCEEDED`
+
+// String representation for [fmt.Print]
+func (f *MaterializationRunProgressState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MaterializationRunProgressState) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
+		*f = MaterializationRunProgressState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCEEDED"`, v)
+	}
+}
+
+// Values returns all possible values for MaterializationRunProgressState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MaterializationRunProgressState) Values() []MaterializationRunProgressState {
+	return []MaterializationRunProgressState{
+		MaterializationRunProgressStateCancelled,
+		MaterializationRunProgressStateFailed,
+		MaterializationRunProgressStatePending,
+		MaterializationRunProgressStateRunning,
+		MaterializationRunProgressStateSucceeded,
+	}
+}
+
+// Type always returns MaterializationRunProgressState to satisfy [pflag.Value] interface
+func (f *MaterializationRunProgressState) Type() string {
+	return "MaterializationRunProgressState"
+}
+
 // A group of materialized features created and managed as a single unit.
 type MaterializationSet struct {
 	// Server-assigned unique identifier for the materialization set.
@@ -4708,6 +4791,8 @@ type MaterializationSetOperationMetadata struct {
 	MaterializationSetId string `json:"materialization_set_id,omitempty"`
 	// Current state of the operation.
 	State MaterializationSetOperationMetadataState `json:"state,omitempty"`
+	// Set by a `TriggerMaterializationSet` operation.
+	TriggerProgress *MaterializationSetTriggerProgress `json:"trigger_progress,omitempty"`
 	// Set by an `UpdateMaterializationSet` operation.
 	UpdateProgress *MaterializationSetUpdateProgress `json:"update_progress,omitempty"`
 
@@ -4769,6 +4854,22 @@ func (f *MaterializationSetOperationMetadataState) Type() string {
 	return "MaterializationSetOperationMetadataState"
 }
 
+// Progress and outcomes of the runs requested by `TriggerMaterializationSet`.
+// Entries remain available after the operation finishes.
+//
+// Once all requested runs have finished, the operation fails if any run failed.
+// Otherwise, it is cancelled if any run was cancelled, and succeeds if all runs
+// succeeded.
+type MaterializationSetTriggerProgress struct {
+	// One entry per requested run, including runs that fail or are cancelled
+	// before submission.
+	Runs []MaterializationRunProgress `json:"runs,omitempty"`
+}
+
+func (s *MaterializationSetTriggerProgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Progress and outcomes of an `UpdateMaterializationSet` operation.
 type MaterializationSetUpdateProgress struct {
 	// IDs of materialized features that were deleted.
@@ -4809,6 +4910,11 @@ type MaterializedFeature struct {
 	CronSchedule string `json:"cron_schedule,omitempty"`
 	// A cron-based schedule trigger for batch materialization.
 	CronScheduleTrigger *CronSchedule `json:"cron_schedule_trigger,omitempty"`
+	// A trigger that disables automatic materialization, including the initial
+	// run at creation. Runs are instead triggered through the
+	// `TriggerMaterializationSet` API. Supported only for batch
+	// materializations in a materialization set.
+	ExternalTrigger *ExternalTrigger `json:"external_trigger,omitempty"`
 	// The full name of the feature in Unity Catalog.
 	FeatureName string `json:"feature_name"`
 	// True if this is an online materialized feature. False if it is an offline
@@ -6806,7 +6912,7 @@ type SdpSource struct {
 	// to materialize this feature with a TableTrigger, which starts a run when
 	// these tables update. Each table must exist when the feature is created.
 	// Feature Store doesn't confirm that the pipeline reads from these tables.
-	// At most 100 tables.
+	// At most 25 tables.
 	InputTables []string `json:"input_tables,omitempty"`
 	// The full three-part (catalog, schema, table) name of the pipeline's
 	// output table to read from. The table doesn't need to exist until the
@@ -7750,6 +7856,14 @@ type TableTrigger struct {
 	// tumbling window uses half its window_duration, clamped to between 5
 	// minutes and 1 hour. Other features have no minimum.
 	MinTimeBetweenTriggers *duration.Duration `json:"min_time_between_triggers,omitempty"`
+	// Whether automatic materialization is paused. Defaults to `false`.
+	// Supported only for materializations in a materialization set. Use the
+	// `UpdateMaterializationSet` API to pause or resume the set.
+	//
+	// Pausing does not cancel running or queued runs. Runs can still be
+	// triggered through the `TriggerMaterializationSet` API. Resuming does not
+	// submit a run. Creating a paused materialization skips its initial run.
+	Paused bool `json:"paused,omitempty"`
 	// How long the source table must go without updates before a run starts, so
 	// a series of updates settles before the run. If not set, a run starts as
 	// soon as the source table updates.
@@ -7960,6 +8074,35 @@ type TransitionStageResponse struct {
 }
 
 func (s *TransitionStageResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Request to trigger materialization for a materialization set.
+type TriggerMaterializationSetRequest struct {
+	// The ID of the materialization set to trigger.
+	MaterializationSetId string `json:"-" url:"-"`
+	// Idempotency token in UUID format. Reusing it returns the original
+	// operation without starting additional runs, even if the request differs
+	// or the operation has finished. If omitted, each request triggers
+	// independently.
+	RequestId string `json:"request_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TriggerMaterializationSetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TriggerMaterializationSetRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Result of a successful `TriggerMaterializationSet` operation.
+type TriggerMaterializationSetResponse struct {
+}
+
+func (s *TriggerMaterializationSetResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
