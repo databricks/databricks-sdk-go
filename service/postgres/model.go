@@ -536,6 +536,11 @@ type CdfConfig struct {
 	// The Unity Catalog schema that replicated tables are written into. Set at
 	// creation; the CdfConfig is immutable.
 	Schema string `json:"schema"`
+	// The service principal (application id) whose identity authorizes this
+	// change data feed's ongoing writes to Unity Catalog. When unset, writes
+	// are authorized as the creating identity. Changing it requires a new
+	// CdfConfig, which writes to new Delta tables.
+	ServicePrincipal string `json:"service_principal,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1970,6 +1975,12 @@ type GenerateDatabaseCredentialRequest struct {
 	// Timestamp in UTC of when this credential should expire. Must be at least
 	// 300 seconds (5 minutes) and at most 1 hour from the current time.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
+	// The display name of a `Databricks` workspace group. When set, the
+	// returned credential is scoped to this group, so the caller connects
+	// directly as the group's Postgres role. The caller must be a member of the
+	// group. When omitted, the credential is scoped to the caller's own
+	// identity.
+	GroupName string `json:"group_name,omitempty"`
 	// The requested time-to-live for the generated credential token. Must be at
 	// least 300 seconds (5 minutes) and at most 3600 seconds (1 hour).
 	Ttl *duration.Duration `json:"ttl,omitempty"`

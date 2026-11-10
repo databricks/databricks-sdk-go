@@ -2326,6 +2326,9 @@ type Feature struct {
 	// Name of the feature, extracted from the full three-part name
 	// (catalog.schema.name).
 	Name string `json:"name,omitempty"`
+	// Output type in Databricks SQL DDL (e.g., "BIGINT", "DECIMAL(10,2)",
+	// "ARRAY<STRING>", "STRUCT<name:STRING>").
+	OutputTypeText string `json:"output_type_text,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name,omitempty"`
 	// The data source of the feature.
@@ -2350,7 +2353,8 @@ func (s Feature) MarshalJSON() ([]byte, error) {
 
 // A Python UDF that computes a feature.
 type FeatureFunction struct {
-	// Bindings of the UDF's parameters to features.
+	// Bindings of the UDF's parameters to features. Order is not significant,
+	// and GetFeatureSpec can return them in a different order.
 	InputBindings []FeatureFunctionInputBinding `json:"input_bindings,omitempty"`
 	// Output name of the feature that the UDF computes.
 	Output string `json:"output,omitempty"`
@@ -2453,7 +2457,8 @@ func (s *FeatureList) UnmarshalJSON(b []byte) error {
 
 // Features to look up from a feature table.
 type FeatureLookup struct {
-	// Default values for features.
+	// Default values for features. Order is not significant, and GetFeatureSpec
+	// can return them in a different order.
 	DefaultValues []DefaultValue `json:"default_values,omitempty"`
 	// Names of the features to look up, or empty to look up every feature in
 	// the table.
@@ -2463,6 +2468,8 @@ type FeatureLookup struct {
 	// Keys to use when joining with the feature table.
 	LookupKeys []string `json:"lookup_keys"`
 	// Output names for features, in place of their names in the feature table.
+	// Order is not significant, and GetFeatureSpec can return them in a
+	// different order.
 	RenameOutputs []RenameOutput `json:"rename_outputs,omitempty"`
 	// Three-part name of the feature table.
 	Table string `json:"table"`
@@ -2494,7 +2501,8 @@ func (s *FeatureReference) UnmarshalJSON(b []byte) error {
 
 // A named set of features to serve, stored as a Unity Catalog function.
 type FeatureSpec struct {
-	// Output names of columns to leave out of the feature spec.
+	// Output names of columns to leave out of the feature spec. Order is not
+	// significant, and GetFeatureSpec can return them in a different order.
 	ExcludeColumns []string `json:"exclude_columns,omitempty"`
 	// Extra pip requirements to install in the serving container, in addition
 	// to the defaults and those resolved from the features.

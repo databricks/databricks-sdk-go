@@ -1,5 +1,14 @@
 # Version changelog
 
+## Release v0.197.0 (2026-11-10)
+
+### API Changes
+* Add `OutputTypeText` field for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature).
+* Add `ServicePrincipal` field for [postgres.CdfConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#CdfConfig).
+* Add `GroupName` field for [postgres.GenerateDatabaseCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#GenerateDatabaseCredentialRequest).
+* [Breaking] Change `NotebookContent` field for [cleanrooms.CleanRoomAssetNotebook](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/cleanrooms#CleanRoomAssetNotebook) to no longer be required.
+* Change `NotebookContent` field for [cleanrooms.CleanRoomAssetNotebook](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/cleanrooms#CleanRoomAssetNotebook) to no longer be required.
+
 ## Release v0.196.0 (2026-11-09)
 
 ### API Changes

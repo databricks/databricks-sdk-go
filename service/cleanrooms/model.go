@@ -274,7 +274,7 @@ type CleanRoomAssetNotebook struct {
 	// as returned by [workspace/export] with the format of **HTML**.
 	//
 	// [workspace/export]: https://docs.databricks.com/api/workspace/workspace/export
-	NotebookContent string `json:"notebook_content"`
+	NotebookContent string `json:"notebook_content,omitempty"`
 	// Top-level status derived from all reviews
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// All existing approvals or rejections
