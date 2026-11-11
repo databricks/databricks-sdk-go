@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.198.0 (2026-11-11)
+
+### API Changes
+* Add `PtTerm` field for [serving.PtServedModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#PtServedModel).
+* [Breaking] Remove `CustomContentPackPath` and `CustomPresetsPath` fields for [lakewatch.CommonConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#CommonConfig).
+
 ## Release v0.197.0 (2026-11-10)
 
 ### API Changes

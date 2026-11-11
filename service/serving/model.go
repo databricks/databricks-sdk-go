@@ -617,6 +617,62 @@ func (s CohereConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The commitment term length for a Provisioned Throughput pool.
+type CommitmentTerm string
+
+const CommitmentTermCommitmentTerm12Hours CommitmentTerm = `COMMITMENT_TERM_12_HOURS`
+
+const CommitmentTermCommitmentTerm1Day CommitmentTerm = `COMMITMENT_TERM_1_DAY`
+
+const CommitmentTermCommitmentTerm1Hour CommitmentTerm = `COMMITMENT_TERM_1_HOUR`
+
+const CommitmentTermCommitmentTerm1Month CommitmentTerm = `COMMITMENT_TERM_1_MONTH`
+
+const CommitmentTermCommitmentTerm1Week CommitmentTerm = `COMMITMENT_TERM_1_WEEK`
+
+const CommitmentTermCommitmentTerm1Year CommitmentTerm = `COMMITMENT_TERM_1_YEAR`
+
+const CommitmentTermCommitmentTerm3Months CommitmentTerm = `COMMITMENT_TERM_3_MONTHS`
+
+const CommitmentTermCommitmentTerm6Months CommitmentTerm = `COMMITMENT_TERM_6_MONTHS`
+
+// String representation for [fmt.Print]
+func (f *CommitmentTerm) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CommitmentTerm) Set(v string) error {
+	switch v {
+	case `COMMITMENT_TERM_12_HOURS`, `COMMITMENT_TERM_1_DAY`, `COMMITMENT_TERM_1_HOUR`, `COMMITMENT_TERM_1_MONTH`, `COMMITMENT_TERM_1_WEEK`, `COMMITMENT_TERM_1_YEAR`, `COMMITMENT_TERM_3_MONTHS`, `COMMITMENT_TERM_6_MONTHS`:
+		*f = CommitmentTerm(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COMMITMENT_TERM_12_HOURS", "COMMITMENT_TERM_1_DAY", "COMMITMENT_TERM_1_HOUR", "COMMITMENT_TERM_1_MONTH", "COMMITMENT_TERM_1_WEEK", "COMMITMENT_TERM_1_YEAR", "COMMITMENT_TERM_3_MONTHS", "COMMITMENT_TERM_6_MONTHS"`, v)
+	}
+}
+
+// Values returns all possible values for CommitmentTerm.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CommitmentTerm) Values() []CommitmentTerm {
+	return []CommitmentTerm{
+		CommitmentTermCommitmentTerm12Hours,
+		CommitmentTermCommitmentTerm1Day,
+		CommitmentTermCommitmentTerm1Hour,
+		CommitmentTermCommitmentTerm1Month,
+		CommitmentTermCommitmentTerm1Week,
+		CommitmentTermCommitmentTerm1Year,
+		CommitmentTermCommitmentTerm3Months,
+		CommitmentTermCommitmentTerm6Months,
+	}
+}
+
+// Type always returns CommitmentTerm to satisfy [pflag.Value] interface
+func (f *CommitmentTerm) Type() string {
+	return "CommitmentTerm"
+}
+
 type CreatePtEndpointRequest struct {
 	// The AI Gateway configuration for the serving endpoint.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
@@ -1607,6 +1663,10 @@ type PtServedModel struct {
 	// The number of model units to be provisioned. Dedicated inference requires
 	// positive fixed capacity and does not support scale-to-zero.
 	ProvisionedModelUnits int64 `json:"provisioned_model_units"`
+	// Commitment term to purchase for this served entity; its presence marks
+	// the entity as reserved (vs on-demand) PT. Valid on create and on update
+	// (purchases a commitment for a scale-up).
+	PtTerm CommitmentTerm `json:"pt_term,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
