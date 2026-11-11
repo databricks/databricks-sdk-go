@@ -956,8 +956,12 @@ func (s *CreateLoggedModelResponse) UnmarshalJSON(b []byte) error {
 }
 
 type CreateMaterializationSetRequest struct {
-	// The materialization set to create. Supply materialization_set_id to
-	// choose the identifier; leave it unset to have one assigned.
+	// The materialization set to create. Set `materialization_set_id` to choose
+	// the identifier, or omit it to have one assigned.
+	//
+	// Members with a cron schedule or table trigger must request the same
+	// `paused` value. An omitted `paused` defaults to `false`. A set can be
+	// created paused only if all members are batch materializations.
 	MaterializationSet MaterializationSet `json:"materialization_set"`
 	// Idempotency token for the request. A second request carrying a token that
 	// has already been used returns the operation the first one created,
@@ -4669,8 +4673,8 @@ func (s MaterializationFailureNotification) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Notifications for the jobs and pipelines that materialize the features in a
-// set, one field per trigger.
+// Notifications for the jobs and pipelines that materialize features, one field
+// per trigger.
 type MaterializationNotifications struct {
 	// Who to notify when a run fails, and on which attempts.
 	OnFailure *MaterializationFailureNotification `json:"on_failure,omitempty"`
@@ -4942,8 +4946,9 @@ type MaterializedFeature struct {
 	MaterializationSetId string `json:"materialization_set_id,omitempty"`
 	// Server-assigned unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
-	// Notification configuration for the jobs and pipelines that materialize
-	// this feature.
+	// Notification configuration around the lifecycle of the job or pipeline
+	// that materializes this feature. Features which are materialized in the
+	// same pipeline will share the same notification.
 	Notifications *MaterializationNotifications `json:"notifications,omitempty"`
 	// Destination for writing feature values to an offline Delta table. The
 	// resulting table is returned as `table_name`.
