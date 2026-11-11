@@ -199,16 +199,6 @@ func (s CloudWatchLogsEnvelope) MarshalJSON() ([]byte, error) {
 // Catch-all per-catalog config — settings that don't belong to any one
 // resource family. Singleton. Name format: `catalogs/{catalog}/commonConfig`.
 type CommonConfig struct {
-	// UC volume path holding user-authored custom content packs, e.g.
-	// `/Volumes/{catalog}/{schema}/{volume}`. User-provided with no default:
-	// when unset, custom content packs are unavailable (referencing one is
-	// rejected) and only built-in content packs apply.
-	CustomContentPackPath string `json:"custom_content_pack_path,omitempty"`
-	// UC volume path holding user-authored custom presets, e.g.
-	// `/Volumes/{catalog}/{schema}/{volume}`. User-provided with no default:
-	// when unset, custom presets are unavailable and only built-in presets
-	// apply.
-	CustomPresetsPath string `json:"custom_presets_path,omitempty"`
 	// Opaque entity tag for optimistic concurrency. Returned on every read;
 	// pass it back as the Update request's `etag` to make the update
 	// conditional on the resource being unchanged.
@@ -1164,7 +1154,8 @@ type Rule struct {
 	RunAsPrincipal string `json:"run_as_principal,omitempty"`
 	// Long-form operational guidance carried from the authored rule metadata.
 	// Supports up to 4096 characters. Requests exceeding this limit are
-	// rejected.
+	// rejected. Supports Markdown; analysts and the investigation agent follow
+	// it when triaging this rule's alerts.
 	Runbook string `json:"runbook,omitempty"`
 	// When the rule executes.
 	Schedule RuleSchedule `json:"schedule"`
