@@ -272,7 +272,8 @@ func (a *AlertsLegacyAPI) GetByAlertId(ctx context.Context, alertId string) (*Le
 
 type AlertsV2Interface interface {
 
-	// Create Alert
+	// Creates an alert that runs `query_text` on the given schedule and evaluates
+	// the result against the configured condition.
 	CreateAlert(ctx context.Context, request CreateAlertV2Request) (*AlertV2, error)
 
 	// Gets an alert.
@@ -319,7 +320,8 @@ type AlertsV2Interface interface {
 	// UI. A trashed alert is permanently deleted after 30 days.
 	TrashAlertById(ctx context.Context, id string) error
 
-	// Update alert
+	// Updates an alert. Only the fields listed in `update_mask` are changed; all
+	// other fields keep their current values.
 	UpdateAlert(ctx context.Context, request UpdateAlertV2Request) (*AlertV2, error)
 }
 

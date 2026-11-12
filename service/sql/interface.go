@@ -100,7 +100,8 @@ type AlertsLegacyService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AlertsV2Service interface {
 
-	// Create Alert
+	// Creates an alert that runs `query_text` on the given schedule and
+	// evaluates the result against the configured condition.
 	CreateAlert(ctx context.Context, request CreateAlertV2Request) (*AlertV2, error)
 
 	// Gets an alert.
@@ -114,7 +115,8 @@ type AlertsV2Service interface {
 	// through the UI. A trashed alert is permanently deleted after 30 days.
 	TrashAlert(ctx context.Context, request TrashAlertV2Request) error
 
-	// Update alert
+	// Updates an alert. Only the fields listed in `update_mask` are changed;
+	// all other fields keep their current values.
 	UpdateAlert(ctx context.Context, request UpdateAlertV2Request) (*AlertV2, error)
 }
 

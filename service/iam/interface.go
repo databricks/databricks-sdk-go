@@ -171,6 +171,28 @@ type AccountUsersV2Service interface {
 	Update(ctx context.Context, request UpdateAccountUserRequest) error
 }
 
+// Manage the workspace's restricted sharing groups.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type AssumeGroupService interface {
+
+	// Adds a group to the workspace's restricted list. The workspace allows at
+	// most 100 restricted sharing groups. Requires workspace admin.
+	CreateRestrictedSharingGroup(ctx context.Context, request CreateRestrictedSharingGroupRequest) (*RestrictedSharingGroup, error)
+
+	// Removes a group from the workspace's restricted list. Requires workspace
+	// admin.
+	DeleteRestrictedSharingGroup(ctx context.Context, request DeleteRestrictedSharingGroupRequest) error
+
+	// Gets a restricted sharing group in the workspace. Use it to check whether
+	// a group is on the workspace's restricted list. Requires workspace admin.
+	GetRestrictedSharingGroup(ctx context.Context, request GetRestrictedSharingGroupRequest) (*RestrictedSharingGroup, error)
+
+	// Lists the restricted sharing groups in the workspace. Requires workspace
+	// admin.
+	ListRestrictedSharingGroups(ctx context.Context, request ListRestrictedSharingGroupsRequest) (*ListRestrictedSharingGroupsResponse, error)
+}
+
 // This API allows retrieving information about currently authenticated user or
 // service principal.
 //

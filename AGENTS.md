@@ -8,7 +8,6 @@ For scoped coding rules, skills, and prompt templates, see the `.agent/` directo
 ### Rules (`.agent/rules/`)
 - **api-design.md** — API design principles for the Databricks SDK.
 - **error-handling.md** — Error handling conventions for the Databricks SDK.
-- **style-guide.md** — Go code style and naming conventions for the Databricks SDK.
 - **testing.md** — Testing standards and anti-patterns for the Databricks SDK.
 
 ### Skills (`.agent/skills/`)

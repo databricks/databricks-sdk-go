@@ -1061,7 +1061,7 @@ func (f *ResourceStatusRunState) Type() string {
 type Rule struct {
 	// Free-form client-managed key/value annotations.
 	Annotations map[string]string `json:"annotations,omitempty"`
-	// Batch SQL rule input.
+	// Scheduled detection (also known as batch detection) input.
 	Batch *RuleInputBatch `json:"batch,omitempty"`
 	// Name of the Unity Catalog catalog that contains the rule. Required.
 	// Cannot be changed after creation. Reads return the value as supplied; the
@@ -1070,9 +1070,9 @@ type Rule struct {
 	// Free-form rule category.
 	Category string `json:"category,omitempty"`
 	// ID of the workspace whose compute runs this rule's jobs and owns its
-	// associated resources, such as the SQL warehouse a scheduled rule runs on.
-	// Server-assigned; a rule's warehouse can only be changed from this
-	// workspace.
+	// associated resources, such as the SQL warehouse a scheduled detection
+	// runs on. Server-assigned; a rule's warehouse can only be changed from
+	// this workspace.
 	ComputeWorkspaceId string `json:"compute_workspace_id,omitempty"`
 	// Immutable UUIDv4 identifying the authored content resource installed as
 	// this rule.
@@ -1170,8 +1170,8 @@ type Rule struct {
 	Status *ResourceStatus `json:"status,omitempty"`
 	// If set, this rule's signals do not open new alerts until the given time.
 	SuppressUntilTime *time.Time `json:"suppress_until_time,omitempty"`
-	// Time-range configuration for batch rules. If unset, the execution time
-	// range is extended by a fixed `15m` lookback.
+	// Time-range configuration for scheduled detections. If unset, the
+	// execution time range is extended by a fixed `15m` lookback.
 	Timerange *RuleTimeRange `json:"timerange,omitempty"`
 	// Time the rule was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
@@ -1331,14 +1331,14 @@ func (f *RuleFidelity) Type() string {
 	return "RuleFidelity"
 }
 
-// Batch input for a detection rule.
+// Input for a scheduled detection (also known as batch detection).
 type RuleInputBatch struct {
 	// Custom-notebook user function. The output is used as input data for the
 	// rule.
 	Custom *RuleInputCustomNotebook `json:"custom,omitempty"`
 	// SQL query evaluated as the rule input.
 	Sql *RuleInputBatchSql `json:"sql,omitempty"`
-	// SQL warehouse used to run this batch rule.
+	// SQL warehouse that runs this scheduled detection.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1352,7 +1352,7 @@ func (s RuleInputBatch) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Batch SQL input for a detection rule.
+// SQL query input for a scheduled detection.
 type RuleInputBatchSql struct {
 	// Default catalog used to resolve unqualified identifiers in `query`. If
 	// unset, the rule's `catalog_name` is used.
@@ -1374,7 +1374,7 @@ func (s RuleInputBatchSql) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Reference to a custom-user-function notebook for stream or batch input.
+// Reference to a custom-user-function notebook for scheduled detection input.
 type RuleInputCustomNotebook struct {
 	// Fully-qualified notebook path, or a path relative to the configured base
 	// notebook directory.
@@ -1441,18 +1441,15 @@ func (s RuleOutput) MarshalJSON() ([]byte, error) {
 
 // Defines when a detection rule executes.
 //
-// A batch rule sets exactly one of `at_least_every` or `cron_expression`. A
-// streaming rule runs continuously and sets no timing; it accepts only
-// `enabled`, and an omitted schedule means enabled. The server rejects any
-// other combination. `enabled` is orthogonal to the timing.
+// A scheduled detection sets exactly one of `at_least_every` or
+// `cron_expression`. A streaming rule runs continuously and sets no timing; it
+// accepts only `enabled`, and an omitted schedule means enabled. The server
+// rejects any other combination. `enabled` is orthogonal to the timing.
 type RuleSchedule struct {
 	// Defines the minimum cadence as a duration string. It may contain
 	// components for days, hours, minutes, and seconds (e.g. `5d`, `5d3h`,
 	// `3d2h5m12s`, `12m16s`).
 	AtLeastEvery string `json:"at_least_every,omitempty"`
-	// Runs the rule continuously. Detection rules do not accept it: batch rules
-	// reject it, and streaming rules run continuously without it.
-	Continuous bool `json:"continuous,omitempty"`
 	// Defines the schedule using a Quartz cron expression.
 	CronExpression string `json:"cron_expression,omitempty"`
 	// Sets whether the job is scheduled to run. Defaults to true.
@@ -1469,14 +1466,14 @@ func (s RuleSchedule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Time-range configuration for a batch detection rule.
+// Time-range configuration for a scheduled detection.
 type RuleTimeRange struct {
 	// Extends the start of the execution time range by a compact duration with
 	// integer days, hours, minutes, and seconds in that order, such as `1h30m`
 	// or `15m`. Zero duration disables extension. Unset or empty uses a fixed
 	// `15m` at execution time. Only the start moves; the end is unchanged. Has
-	// no effect on batch SQL that does not use `IN_TIMERANGE`. Values must fit
-	// signed 64-bit microseconds.
+	// no effect on a detection query that does not use `IN_TIMERANGE`. Values
+	// must fit signed 64-bit microseconds.
 	ExtendLookback string `json:"extend_lookback,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

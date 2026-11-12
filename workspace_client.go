@@ -124,6 +124,9 @@ type WorkspaceClient struct {
 	// compute configured with shared access mode.
 	ArtifactAllowlists catalog.ArtifactAllowlistsInterface
 
+	// Manage the workspace's restricted sharing groups.
+	AssumeGroup iam.AssumeGroupInterface
+
 	// Service for managing bundle deployment metadata.
 	BundleDeployments bundledeployments.BundleDeploymentsInterface
 
@@ -1530,6 +1533,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Apps:                                apps.NewApps(databricksClient),
 		AppsSettings:                        apps.NewAppsSettings(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
+		AssumeGroup:                         iam.NewAssumeGroup(databricksClient),
 		BundleDeployments:                   bundledeployments.NewBundleDeployments(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
 		CleanRoomAssetRevisions:             cleanrooms.NewCleanRoomAssetRevisions(databricksClient),
