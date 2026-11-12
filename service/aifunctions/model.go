@@ -486,31 +486,36 @@ func (s AiParseDocumentResponseMetadata) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// An asynchronous run of one AI function over a file of requests.
+// The AI Functions Asynchronous API lets you process large volumes of requests
+// as a batch in a single call.
 type Batch struct {
-	// Output only. Time the batch was created.
+	// Output only. The time when the batch was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// The AI function to run for every request, for example `ai_extract`.
+	// The AI function, for example `ai_parse_document`.
 	Endpoint string `json:"endpoint"`
-	// Path of the JSONL input file on a Unity Catalog volume. Each line is one
-	// request.
+	// Unity Catalog volume path of the JSONL input file. Each line is one
+	// request, in the form `{"custom_id": ..., "body": ...}`. The file can hold
+	// up to 50,000 requests and be up to 200 MiB.
 	InputRef string `json:"input_ref"`
-	// ID of the batch, in the form `batch_<id>`. The service assigns it.
+	// Output only. Identifier. Resource name of the batch, returned by create.
+	// Format: `batch_<id>`.
 	Name string `json:"name,omitempty"`
-	// Path on a Unity Catalog volume to write the JSONL output to. When it is
-	// omitted, the output stays on Databricks-managed storage and a finished
-	// batch returns a short-lived download URL in this field instead.
-	OutputRef string `json:"output_ref,omitempty"`
-	// Function options applied to every request in the batch, for example the
-	// extraction schema.
+	// Unity Catalog volume path to write the JSONL output file to. If the path
+	// is a directory, the file is `<path>/<name>_output.jsonl`.
+	OutputRef string `json:"output_ref"`
+	// Parameters of the function other than its input, applied to every request
+	// in the batch, for example `schema` for `ai_extract`. Put function
+	// options, such as `version`, in a nested `options` object. For the
+	// parameters of each function, see [AI
+	// Functions](/large-language-models/ai-functions).
 	Params map[string]json.RawMessage `json:"params,omitempty"`
-	// Output only. Percentage of the requests that finished, from 0 to 100.
-	// Returned when one batch is read, not when batches are listed.
+	// Output only. The percentage of requests that are processed, from 0 to
+	// 100. Returned when you get a batch, not when you list batches.
 	PercentComplete float64 `json:"percent_complete,omitempty"`
-	// Output only. Request counts. Returned when one batch is read, not when
-	// batches are listed.
+	// Output only. The number of requests in the batch, by result. Returned
+	// when you get a batch, not when you list batches.
 	RequestCounts *BatchRequestCounts `json:"request_counts,omitempty"`
-	// Output only. Status of the batch.
+	// Output only. The status of the batch.
 	Status BatchStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -526,11 +531,12 @@ func (s Batch) MarshalJSON() ([]byte, error) {
 
 // Counts of the requests in a batch.
 type BatchRequestCounts struct {
-	// Output only. Number of requests that failed and will not be retried.
+	// Output only. The number of requests that failed. The service does not
+	// retry them.
 	Failed int64 `json:"failed,omitempty"`
-	// Output only. Number of requests that finished successfully.
+	// Output only. The number of requests that were processed successfully.
 	Succeeded int64 `json:"succeeded,omitempty"`
-	// Output only. Number of requests in the input file.
+	// Output only. The number of requests in the batch.
 	Total int64 `json:"total,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -553,8 +559,6 @@ const BatchStatusCancelling BatchStatus = `CANCELLING`
 
 const BatchStatusCompleted BatchStatus = `COMPLETED`
 
-const BatchStatusExpired BatchStatus = `EXPIRED`
-
 const BatchStatusFailed BatchStatus = `FAILED`
 
 const BatchStatusFinalizing BatchStatus = `FINALIZING`
@@ -571,11 +575,11 @@ func (f *BatchStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *BatchStatus) Set(v string) error {
 	switch v {
-	case `CANCELLED`, `CANCELLING`, `COMPLETED`, `EXPIRED`, `FAILED`, `FINALIZING`, `IN_PROGRESS`, `PENDING`:
+	case `CANCELLED`, `CANCELLING`, `COMPLETED`, `FAILED`, `FINALIZING`, `IN_PROGRESS`, `PENDING`:
 		*f = BatchStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "CANCELLING", "COMPLETED", "EXPIRED", "FAILED", "FINALIZING", "IN_PROGRESS", "PENDING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "CANCELLING", "COMPLETED", "FAILED", "FINALIZING", "IN_PROGRESS", "PENDING"`, v)
 	}
 }
 
@@ -587,7 +591,6 @@ func (f *BatchStatus) Values() []BatchStatus {
 		BatchStatusCancelled,
 		BatchStatusCancelling,
 		BatchStatusCompleted,
-		BatchStatusExpired,
 		BatchStatusFailed,
 		BatchStatusFinalizing,
 		BatchStatusInProgress,
@@ -601,7 +604,7 @@ func (f *BatchStatus) Type() string {
 }
 
 type CancelBatchRequest struct {
-	// ID of the batch, in the form `batch_<id>`.
+	// Resource name of the batch. Format: `batch_<id>`.
 	Name string `json:"-" url:"-"`
 }
 
@@ -626,7 +629,7 @@ func (s *CreateBatchRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetBatchRequest struct {
-	// ID of the batch, in the form `batch_<id>`.
+	// Resource name of the batch. Format: `batch_<id>`.
 	Name string `json:"-" url:"-"`
 }
 
@@ -637,7 +640,8 @@ func (s *GetBatchRequest) UnmarshalJSON(b []byte) error {
 type ListBatchesRequest struct {
 	// Maximum number of batches to return in one page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Page token from an earlier response. Omit it to read the first page.
+	// A page token from a previous call to list batches. Omit it to get the
+	// first page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -654,7 +658,7 @@ func (s ListBatchesRequest) MarshalJSON() ([]byte, error) {
 type ListBatchesResponse struct {
 	// The batches in this page.
 	Batches []Batch `json:"batches,omitempty"`
-	// Token that reads the next page. It is empty on the last page.
+	// A token to get the next page. It is empty on the last page.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

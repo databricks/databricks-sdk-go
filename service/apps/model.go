@@ -47,6 +47,9 @@ type App struct {
 	Description string `json:"description,omitempty"`
 
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Resources added to the app, plus the resources it inherits from its
+	// space. Empty for apps that are not in a space.
+	EffectiveResources []AppResource `json:"effective_resources,omitempty"`
 
 	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.

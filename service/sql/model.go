@@ -536,14 +536,19 @@ func (s AlertStatementParameter) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A SQL alert. An alert runs a query on a schedule, evaluates the result
+// against a condition, and notifies users or notification destinations when the
+// condition is met.
 type AlertV2 struct {
 	// The timestamp indicating when the alert was created.
 	CreateTime string `json:"create_time,omitempty"`
-	// Custom description for the alert. Interpreted according to
-	// `custom_template_format`.
+	// Custom description for the alert, used as the notification body.
+	// Interpreted according to `custom_template_format`. The available template
+	// variables are listed at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/create#notification-templates.
 	CustomDescription string `json:"custom_description,omitempty"`
-	// Custom summary for the alert. Interpreted according to
-	// `custom_template_format`.
+	// Custom summary for the alert, used as the notification subject.
+	// Interpreted according to `custom_template_format`.
 	CustomSummary string `json:"custom_summary,omitempty"`
 	// The format used to interpret the `custom_summary` and
 	// `custom_description` templates.
@@ -563,11 +568,13 @@ type AlertV2 struct {
 	// output-only field that shows the resolved run-as identity after applying
 	// permissions and defaults.
 	EffectiveRunAs *AlertV2RunAs `json:"effective_run_as,omitempty"`
-
+	// Condition evaluated against the query result, and who is notified when it
+	// is met.
 	Evaluation AlertV2Evaluation `json:"evaluation"`
 	// The canonical identifier of the alert to retrieve information about.
 	Id string `json:"id,omitempty"`
-	// Indicates whether the query is trashed.
+	// Indicates whether the alert is active (`ACTIVE`) or has been moved to the
+	// trash (`DELETED`).
 	LifecycleState AlertLifecycleState `json:"lifecycle_state,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
@@ -602,13 +609,13 @@ type AlertV2 struct {
 	// the `servicePrincipal/user` role. If not specified, the alert will run as
 	// the request user.
 	RunAs *AlertV2RunAs `json:"run_as,omitempty"`
-	// The run as username or application ID of service principal. On Create and
-	// Update, this field can be set to application ID of an active service
-	// principal. Setting this field requires the servicePrincipal/user role.
 	// Deprecated: Use `run_as` field instead. This field will be removed in a
-	// future release.
+	// future release. The run as username or application ID of service
+	// principal. On Create and Update, this field can be set to application ID
+	// of an active service principal. Setting this field requires the
+	// servicePrincipal/user role.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
-
+	// Schedule on which the alert runs its query and evaluates the condition.
 	Schedule CronSchedule `json:"schedule"`
 	// The timestamp indicating when the alert was updated.
 	UpdateTime string `json:"update_time,omitempty"`
@@ -627,10 +634,13 @@ func (s AlertV2) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2Evaluation struct {
-	// Operator used for comparison in alert evaluation.
+	// Operator used for comparison in alert evaluation. The alert is triggered
+	// when the comparison of the source value with the threshold is true.
+	// `IS_NULL` and `IS_NOT_NULL` take no threshold.
 	ComparisonOperator ComparisonOperator `json:"comparison_operator"`
-	// Alert state if result is empty. Please avoid setting this field to be
-	// `UNKNOWN` because `UNKNOWN` state is planned to be deprecated.
+	// Alert state if result is empty. If not set, an empty result sets the
+	// state to `ERROR`. Please avoid setting this field to be `UNKNOWN` because
+	// `UNKNOWN` state is planned to be deprecated.
 	EmptyResultState AlertEvaluationState `json:"empty_result_state,omitempty"`
 	// Timestamp of the last evaluation.
 	LastEvaluatedAt string `json:"last_evaluated_at,omitempty"`
@@ -638,9 +648,12 @@ type AlertV2Evaluation struct {
 	Notification *AlertV2Notification `json:"notification,omitempty"`
 	// Source column from result to use to evaluate alert
 	Source AlertV2OperandColumn `json:"source"`
-	// Latest state of alert evaluation.
+	// Latest state of alert evaluation: `TRIGGERED` when the condition was met,
+	// `OK` when it was not, and `ERROR` when the evaluation failed.
 	State AlertEvaluationState `json:"state,omitempty"`
-	// Threshold to user for alert evaluation, can be a column or a value.
+	// Threshold to compare the source column against, either another column or
+	// a fixed value. Not needed when `comparison_operator` is `IS_NULL` or
+	// `IS_NOT_NULL`.
 	Threshold *AlertV2Operand `json:"threshold,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -664,7 +677,7 @@ type AlertV2Notification struct {
 	// evaluation where the condition is met, effectively making it always
 	// retrigger for notification purposes.
 	RetriggerSeconds int `json:"retrigger_seconds,omitempty"`
-
+	// Users and notification destinations that receive notifications.
 	Subscriptions []AlertV2Subscription `json:"subscriptions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -679,8 +692,9 @@ func (s AlertV2Notification) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2Operand struct {
+	// Compare the source against another column of the query result.
 	Column *AlertV2OperandColumn `json:"column,omitempty"`
-
+	// Compare the source against a fixed value.
 	Value *AlertV2OperandValue `json:"value,omitempty"`
 }
 
@@ -689,11 +703,14 @@ func (s *AlertV2Operand) UnmarshalJSON(b []byte) error {
 }
 
 type AlertV2OperandColumn struct {
-	// If not set, the behavior is equivalent to using `First row` in the UI.
+	// Aggregation applied to the column across all rows of the query result:
+	// `SUM`, `COUNT`, `COUNT_DISTINCT`, `AVG`, `MEDIAN`, `MIN`, `MAX` or
+	// `STDDEV`. If not set, the value in the first row is used, which is
+	// equivalent to using `First row` in the UI.
 	Aggregation Aggregation `json:"aggregation,omitempty"`
-
+	// Label for the column in notifications. Defaults to `name`.
 	Display string `json:"display,omitempty"`
-
+	// Name of the column in the query result.
 	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -708,10 +725,11 @@ func (s AlertV2OperandColumn) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2OperandValue struct {
+	// Boolean threshold, for boolean columns.
 	BoolValue bool `json:"bool_value,omitempty"`
-
+	// Numeric threshold, for numeric columns.
 	DoubleValue float64 `json:"double_value,omitempty"`
-
+	// String threshold, for string or timestamp columns.
 	StringValue string `json:"string_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -745,8 +763,10 @@ func (s AlertV2RunAs) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2Subscription struct {
+	// ID of the notification destination to notify, as returned by the
+	// Notification Destinations API.
 	DestinationId string `json:"destination_id,omitempty"`
-
+	// Email address of the workspace user to notify.
 	UserEmail string `json:"user_email,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1476,10 +1496,11 @@ func (s CreateWidget) MarshalJSON() ([]byte, error) {
 }
 
 type CronSchedule struct {
-	// Indicate whether this schedule is paused or not.
+	// Indicates whether this schedule is paused. While paused, the alert is not
+	// evaluated.
 	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
 	// A cron expression using quartz syntax that specifies the schedule for
-	// this pipeline. Should use the quartz format described here:
+	// this alert. Should use the quartz format described here:
 	// http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html
 	QuartzCronSchedule string `json:"quartz_cron_schedule"`
 	// A Java timezone id. The schedule will be resolved using this timezone.
@@ -2809,6 +2830,7 @@ func (s *GetAlertRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetAlertV2Request struct {
+	// ID of the alert to retrieve, as returned in the alert's `id` field.
 	Id string `json:"-" url:"-"`
 }
 
@@ -3500,8 +3522,11 @@ func (s ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
 }
 
 type ListAlertsV2Request struct {
+	// Maximum number of alerts to return per page. Values above 100 are coerced
+	// to 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Page token returned as `next_page_token` by a previous call. Omit it to
+	// retrieve the first page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6358,6 +6383,7 @@ func (s *TrashAlertRequest) UnmarshalJSON(b []byte) error {
 }
 
 type TrashAlertV2Request struct {
+	// ID of the alert to move to the trash.
 	Id string `json:"-" url:"-"`
 	// Whether to permanently delete the alert. If not set, the alert will only
 	// be soft deleted.
@@ -6457,17 +6483,10 @@ type UpdateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
 	// The canonical identifier of the alert to retrieve information about.
 	Id string `json:"-" url:"-"`
-	// The field mask must be a single string, with multiple fields separated by
-	// commas (no spaces). The field path is relative to the resource object,
-	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
-	// Specification of elements in sequence or map fields is not allowed, as
-	// only the entire collection field can be specified. Field names must
-	// exactly match the resource field names.
-	//
-	// A field mask of `*` indicates full replacement. It’s recommended to
-	// always explicitly list the fields being updated and avoid using `*`
-	// wildcards, as it can lead to unintended results if the API changes in the
-	// future.
+	// Comma-separated list of the alert fields to update, for example
+	// `display_name,query_text` or `schedule.pause_status`. Only the listed
+	// fields are changed; all other fields keep their current values.
+	// `parent_path` cannot be updated.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 

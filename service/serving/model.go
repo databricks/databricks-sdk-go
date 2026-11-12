@@ -467,7 +467,7 @@ type AutoCaptureConfigOutput struct {
 	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
 	// change the schema name if the inference table is already enabled.
 	SchemaName string `json:"schema_name,omitempty"`
-
+	// The state of the inference table.
 	State *AutoCaptureState `json:"state,omitempty"`
 	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
 	// change the prefix name if the inference table is already enabled.
@@ -485,6 +485,7 @@ func (s AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
 }
 
 type AutoCaptureState struct {
+	// The payload table that stores the logged requests and responses.
 	PayloadTable *PayloadTable `json:"payload_table,omitempty"`
 }
 
@@ -710,7 +711,7 @@ type CreateServingEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The core config of the serving endpoint.
 	Config *EndpointCoreConfigInput `json:"config,omitempty"`
-
+	// The description of the serving endpoint.
 	Description string `json:"description,omitempty"`
 	// Email notification settings.
 	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
@@ -819,6 +820,7 @@ func (s *DataframeSplitInput) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteServingEndpointRequest struct {
+	// The name of the serving endpoint to delete.
 	Name string `json:"-" url:"-"`
 }
 
@@ -967,7 +969,8 @@ type EndpointPendingConfig struct {
 	// (Deprecated, use served_entities instead) The list of served models
 	// belonging to the last issued update to the serving endpoint.
 	ServedModels []ServedModelOutput `json:"served_models,omitempty"`
-	// The timestamp when the update to the pending config started.
+	// The timestamp when the update to the pending config started, in
+	// milliseconds since the Unix epoch.
 	StartTime int64 `json:"start_time,omitempty"`
 	// The traffic config defining how invocations to the serving endpoint
 	// should be routed.
@@ -1100,6 +1103,7 @@ func (s EndpointTag) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointTags struct {
+	// The tags attached to the serving endpoint after the update.
 	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
@@ -1335,12 +1339,13 @@ func (s *FallbackConfig) UnmarshalJSON(b []byte) error {
 // All fields are not sensitive as they are hard-coded in the system and made
 // available to customers.
 type FoundationModel struct {
+	// A description of the foundation model.
 	Description string `json:"description,omitempty"`
-
+	// The human-readable display name of the foundation model.
 	DisplayName string `json:"display_name,omitempty"`
-
+	// The URL of the Databricks documentation page for the foundation model.
 	Docs string `json:"docs,omitempty"`
-
+	// The name of the foundation model.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1612,10 +1617,12 @@ func (s *PatchTelemetryConfigRequest) UnmarshalJSON(b []byte) error {
 }
 
 type PayloadTable struct {
+	// The name of the payload table within the configured catalog and schema.
 	Name string `json:"name,omitempty"`
-
+	// The status of the payload table. One of PENDING, READY, FAILED or
+	// DISABLED.
 	Status string `json:"status,omitempty"`
-
+	// More information about the status of the payload table, if available.
 	StatusMessage string `json:"status_message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1632,7 +1639,7 @@ func (s PayloadTable) MarshalJSON() ([]byte, error) {
 type PtEndpointCoreConfig struct {
 	// The list of served entities under the serving endpoint config.
 	ServedEntities []PtServedModel `json:"served_entities,omitempty"`
-
+	// The traffic configuration associated with the serving endpoint config.
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
 }
 
@@ -1652,7 +1659,7 @@ type PtServedModel struct {
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
 	EntityName string `json:"entity_name"`
-
+	// The version of the model in Unity Catalog to be served.
 	EntityVersion string `json:"entity_version,omitempty"`
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
@@ -1994,6 +2001,7 @@ func (f *RateLimitRenewalPeriod) Type() string {
 }
 
 type Route struct {
+	// The name of the served entity this route configures traffic for.
 	ServedEntityName string `json:"served_entity_name,omitempty"`
 	// The name of the served model this route configures traffic for.
 	ServedModelName string `json:"served_model_name,omitempty"`
@@ -2024,7 +2032,8 @@ type ServedEntityInput struct {
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
 	EntityName string `json:"entity_name,omitempty"`
-
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served, or empty if the entity is a FEATURE_SPEC function.
 	EntityVersion string `json:"entity_version,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
@@ -2103,9 +2112,10 @@ type ServedEntityOutput struct {
 	// spikes. When disabled, the endpoint maintains fixed capacity at
 	// provisioned_model_units.
 	BurstScalingEnabled bool `json:"burst_scaling_enabled,omitempty"`
-
+	// The timestamp when the served entity was created, in milliseconds since
+	// the Unix epoch.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
+	// The email of the user who created the served entity.
 	Creator string `json:"creator,omitempty"`
 	// The name of the entity to be served. The entity may be a model in the
 	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
@@ -2113,7 +2123,8 @@ type ServedEntityOutput struct {
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
 	EntityName string `json:"entity_name,omitempty"`
-
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served, or empty if the entity is a FEATURE_SPEC function.
 	EntityVersion string `json:"entity_version,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
@@ -2131,7 +2142,8 @@ type ServedEntityOutput struct {
 	// external_model, users cannot update it to add external_model later. The
 	// task type of all external models within an endpoint must be the same.
 	ExternalModel *ExternalModel `json:"external_model,omitempty"`
-
+	// The foundation model that is served. Present for served entities that
+	// serve a Databricks-hosted foundation model.
 	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
@@ -2157,7 +2169,7 @@ type ServedEntityOutput struct {
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
-
+	// Information corresponding to the state of the served entity.
 	State *ServedModelState `json:"state,omitempty"`
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
@@ -2191,14 +2203,24 @@ func (s ServedEntityOutput) MarshalJSON() ([]byte, error) {
 }
 
 type ServedEntitySpec struct {
+	// The name of the entity to be served. The entity may be a model in the
+	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
+	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
+	// name of the object is given in the form of
+	// **catalog_name.schema_name.model_name**.
 	EntityName string `json:"entity_name,omitempty"`
-
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served, or empty if the entity is a FEATURE_SPEC function.
 	EntityVersion string `json:"entity_version,omitempty"`
-
+	// The external model that is served. NOTE: Only one of external_model,
+	// foundation_model, and (entity_name, entity_version) is returned based on
+	// the endpoint type.
 	ExternalModel *ExternalModel `json:"external_model,omitempty"`
-
+	// The foundation model that is served. NOTE: Only one of foundation_model,
+	// external_model, and (entity_name, entity_version) is returned based on
+	// the endpoint type.
 	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
-
+	// The name of the served entity.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2238,9 +2260,12 @@ type ServedModelInput struct {
 	MinProvisionedConcurrency int `json:"min_provisioned_concurrency,omitempty"`
 	// The minimum tokens per second that the endpoint can scale down to.
 	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
-
+	// The name of the model in Databricks Model Registry to be served or, if
+	// the model resides in Unity Catalog, the full name of the model in the
+	// form of **catalog_name.schema_name.model_name**.
 	ModelName string `json:"model_name"`
-
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served.
 	ModelVersion string `json:"model_version"`
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
@@ -2350,9 +2375,10 @@ type ServedModelOutput struct {
 	// spikes. When disabled, the endpoint maintains fixed capacity at
 	// provisioned_model_units.
 	BurstScalingEnabled bool `json:"burst_scaling_enabled,omitempty"`
-
+	// The timestamp when the served entity was created, in milliseconds since
+	// the Unix epoch.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
+	// The email of the user who created the served entity.
 	Creator string `json:"creator,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
@@ -2370,9 +2396,12 @@ type ServedModelOutput struct {
 	// The minimum provisioned concurrency that the endpoint can scale down to.
 	// Do not use if workload_size is specified.
 	MinProvisionedConcurrency int `json:"min_provisioned_concurrency,omitempty"`
-
+	// The name of the model in Databricks Model Registry to be served or, if
+	// the model resides in Unity Catalog, the full name of the model in the
+	// form of **catalog_name.schema_name.model_name**.
 	ModelName string `json:"model_name,omitempty"`
-
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served.
 	ModelVersion string `json:"model_version,omitempty"`
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
@@ -2385,7 +2414,7 @@ type ServedModelOutput struct {
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
-
+	// Information corresponding to the state of the served entity.
 	State *ServedModelState `json:"state,omitempty"`
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
@@ -2419,11 +2448,14 @@ func (s ServedModelOutput) MarshalJSON() ([]byte, error) {
 }
 
 type ServedModelSpec struct {
-	// Only one of model_name and entity_name should be populated
+	// The name of the model in Databricks Model Registry to be served or, if
+	// the model resides in Unity Catalog, the full name of the model in the
+	// form of **catalog_name.schema_name.model_name**.
 	ModelName string `json:"model_name,omitempty"`
-	// Only one of model_version and entity_version should be populated
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served.
 	ModelVersion string `json:"model_version,omitempty"`
-
+	// The name of the served entity.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2438,8 +2470,20 @@ func (s ServedModelSpec) MarshalJSON() ([]byte, error) {
 }
 
 type ServedModelState struct {
+	// The state of the deployment of the served entity. DEPLOYMENT_CREATING
+	// indicates that the served entity is not ready yet because the deployment
+	// is still being created (for example, the container image is building or
+	// the model server is starting for the first time). DEPLOYMENT_RECOVERING
+	// indicates that the served entity was previously ready but no longer is
+	// and is attempting to recover. DEPLOYMENT_READY indicates that the served
+	// entity is ready to receive traffic. DEPLOYMENT_FAILED indicates that
+	// there was an error bringing up the served entity (for example, the
+	// container image build failed or the model server failed to start due to a
+	// model loading error). DEPLOYMENT_ABORTED indicates that the deployment
+	// was terminated, likely due to a failure in bringing up another served
+	// entity under the same endpoint and config version.
 	Deployment ServedModelStateDeployment `json:"deployment,omitempty"`
-
+	// More information about the state of the served entity, if available.
 	DeploymentStateMessage string `json:"deployment_state_message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2518,7 +2562,8 @@ type ServingEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigSummary `json:"config,omitempty"`
-	// The timestamp when the endpoint was created in Unix time.
+	// The timestamp when the endpoint was created, in milliseconds since the
+	// Unix epoch.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// The email of the user who created the serving endpoint.
 	Creator string `json:"creator,omitempty"`
@@ -2527,7 +2572,8 @@ type ServingEndpoint struct {
 	// System-generated ID of the endpoint, included to be used by the
 	// Permissions API.
 	Id string `json:"id,omitempty"`
-	// The timestamp when the endpoint was last updated by a user in Unix time.
+	// The timestamp when the endpoint was last updated by a user, in
+	// milliseconds since the Unix epoch.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// The name of the serving endpoint.
 	Name string `json:"name,omitempty"`
@@ -2607,13 +2653,14 @@ type ServingEndpointDetailed struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
-	// The timestamp when the endpoint was created in Unix time.
+	// The timestamp when the endpoint was created, in milliseconds since the
+	// Unix epoch.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// The email of the user who created the serving endpoint.
 	Creator string `json:"creator,omitempty"`
 	// Information required to query DataPlane APIs.
 	DataPlaneInfo *ModelDataPlaneInfo `json:"data_plane_info,omitempty"`
-	// Description of the serving model
+	// Description of the serving endpoint.
 	Description string `json:"description,omitempty"`
 	// Email notification settings.
 	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
@@ -2622,7 +2669,8 @@ type ServingEndpointDetailed struct {
 	// System-generated ID of the endpoint. This is used to refer to the
 	// endpoint in the Permissions API
 	Id string `json:"id,omitempty"`
-	// The timestamp when the endpoint was last updated by a user in Unix time.
+	// The timestamp when the endpoint was last updated by a user, in
+	// milliseconds since the Unix epoch.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// The name of the serving endpoint.
 	Name string `json:"name,omitempty"`
@@ -2995,8 +3043,10 @@ func (s *UpdateInferenceEndpointNotifications) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateInferenceEndpointNotificationsResponse struct {
+	// The email notification settings now in effect for the serving endpoint.
 	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
-
+	// The name of the serving endpoint whose notification settings were
+	// updated.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3011,6 +3061,7 @@ func (s UpdateInferenceEndpointNotificationsResponse) MarshalJSON() ([]byte, err
 }
 
 type UpdateProvisionedThroughputEndpointConfigRequest struct {
+	// The core config of the serving endpoint.
 	Config PtEndpointCoreConfig `json:"config"`
 	// The name of the pt endpoint to update. This field is required.
 	Name string `json:"-" url:"-"`

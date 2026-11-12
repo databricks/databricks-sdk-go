@@ -32,6 +32,8 @@
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can use these artifacts on compute configured with shared access mode.
 //
+// - [iam.AssumeGroupAPI]: Manage the workspace's restricted sharing groups.
+//
 // - [settings.AutomaticClusterUpdateAPI]: Controls whether automatic cluster update is enabled for the current workspace.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
@@ -467,6 +469,7 @@ var (
 	_ *apps.AppsAPI                                       = nil
 	_ *apps.AppsSettingsAPI                               = nil
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
+	_ *iam.AssumeGroupAPI                                 = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
 	_ *billing.BudgetPolicyAPI                            = nil

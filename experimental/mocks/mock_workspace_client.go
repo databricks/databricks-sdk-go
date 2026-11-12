@@ -77,6 +77,7 @@ func NewMockWorkspaceClient(t interface {
 			Apps:                                apps.NewMockAppsInterface(t),
 			AppsSettings:                        apps.NewMockAppsSettingsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
+			AssumeGroup:                         iam.NewMockAssumeGroupInterface(t),
 			BundleDeployments:                   bundledeployments.NewMockBundleDeploymentsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
 			CleanRoomAssetRevisions:             cleanrooms.NewMockCleanRoomAssetRevisionsInterface(t),
@@ -491,6 +492,14 @@ func (m *MockWorkspaceClient) GetMockArtifactAllowlistsAPI() *catalog.MockArtifa
 	api, ok := m.WorkspaceClient.ArtifactAllowlists.(*catalog.MockArtifactAllowlistsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ArtifactAllowlists to be *catalog.MockArtifactAllowlistsInterface, actual was %T", m.WorkspaceClient.ArtifactAllowlists))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAssumeGroupAPI() *iam.MockAssumeGroupInterface {
+	api, ok := m.WorkspaceClient.AssumeGroup.(*iam.MockAssumeGroupInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AssumeGroup to be *iam.MockAssumeGroupInterface, actual was %T", m.WorkspaceClient.AssumeGroup))
 	}
 	return api
 }
