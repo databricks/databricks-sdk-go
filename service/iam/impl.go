@@ -443,6 +443,104 @@ func (a *accountUsersV2Impl) Update(ctx context.Context, request UpdateAccountUs
 	return err
 }
 
+// unexported type that holds implementations of just AssumeGroup API methods
+type assumeGroupImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *assumeGroupImpl) CreateRestrictedSharingGroup(ctx context.Context, request CreateRestrictedSharingGroupRequest) (*RestrictedSharingGroup, error) {
+	var restrictedSharingGroup RestrictedSharingGroup
+	path := "/api/2.0/access-control/restricted-sharing-groups"
+	queryParams := make(map[string]any)
+
+	if request.RestrictedSharingGroupId != "" {
+		queryParams["restricted_sharing_group_id"] = request.RestrictedSharingGroupId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.RestrictedSharingGroup, &restrictedSharingGroup)
+	return &restrictedSharingGroup, err
+}
+
+func (a *assumeGroupImpl) DeleteRestrictedSharingGroup(ctx context.Context, request DeleteRestrictedSharingGroupRequest) error {
+	path := fmt.Sprintf("/api/2.0/access-control/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *assumeGroupImpl) GetRestrictedSharingGroup(ctx context.Context, request GetRestrictedSharingGroupRequest) (*RestrictedSharingGroup, error) {
+	var restrictedSharingGroup RestrictedSharingGroup
+	path := fmt.Sprintf("/api/2.0/access-control/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &restrictedSharingGroup)
+	return &restrictedSharingGroup, err
+}
+
+// Lists the restricted sharing groups in the workspace. Requires workspace
+// admin.
+func (a *assumeGroupImpl) ListRestrictedSharingGroups(ctx context.Context, request ListRestrictedSharingGroupsRequest) listing.Iterator[RestrictedSharingGroup] {
+
+	getNextPage := func(ctx context.Context, req ListRestrictedSharingGroupsRequest) (*ListRestrictedSharingGroupsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListRestrictedSharingGroups(ctx, req)
+	}
+	getItems := func(resp *ListRestrictedSharingGroupsResponse) []RestrictedSharingGroup {
+		return resp.RestrictedSharingGroups
+	}
+	getNextReq := func(resp *ListRestrictedSharingGroupsResponse) *ListRestrictedSharingGroupsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the restricted sharing groups in the workspace. Requires workspace
+// admin.
+func (a *assumeGroupImpl) ListRestrictedSharingGroupsAll(ctx context.Context, request ListRestrictedSharingGroupsRequest) ([]RestrictedSharingGroup, error) {
+	iterator := a.ListRestrictedSharingGroups(ctx, request)
+	return listing.ToSlice[RestrictedSharingGroup](ctx, iterator)
+}
+
+func (a *assumeGroupImpl) internalListRestrictedSharingGroups(ctx context.Context, request ListRestrictedSharingGroupsRequest) (*ListRestrictedSharingGroupsResponse, error) {
+	var listRestrictedSharingGroupsResponse ListRestrictedSharingGroupsResponse
+	path := "/api/2.0/access-control/restricted-sharing-groups"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRestrictedSharingGroupsResponse)
+	return &listRestrictedSharingGroupsResponse, err
+}
+
 // unexported type that holds implementations of just CurrentUser API methods
 type currentUserImpl struct {
 	client *client.DatabricksClient

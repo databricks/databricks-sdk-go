@@ -394,6 +394,19 @@ func (s CreateGroupRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateRestrictedSharingGroupRequest struct {
+	// The restricted sharing group to create. It has no client-set fields; the
+	// group is identified by restricted_sharing_group_id.
+	RestrictedSharingGroup RestrictedSharingGroup `json:"restricted_sharing_group"`
+	// The id of the workspace group to restrict: the numeric id of an existing
+	// and non-system workspace group.
+	RestrictedSharingGroupId string `json:"-" url:"restricted_sharing_group_id"`
+}
+
+func (s *CreateRestrictedSharingGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateServicePrincipalRequest struct {
 	// If this user is active
 	Active bool `json:"active,omitempty"`
@@ -504,6 +517,16 @@ type DeleteGroupRequest struct {
 }
 
 func (s *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type DeleteRestrictedSharingGroupRequest struct {
+	// The name of the restricted sharing group to delete. Format:
+	// `restricted-sharing-groups/{restricted_sharing_group_id}`
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteRestrictedSharingGroupRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -684,6 +707,16 @@ type GetPermissionRequest struct {
 }
 
 func (s *GetPermissionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetRestrictedSharingGroupRequest struct {
+	// The name of the restricted sharing group to get. Format:
+	// `restricted-sharing-groups/{restricted_sharing_group_id}`
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetRestrictedSharingGroupRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -1149,6 +1182,45 @@ func (f *ListResponseSchema) Values() []ListResponseSchema {
 // Type always returns ListResponseSchema to satisfy [pflag.Value] interface
 func (f *ListResponseSchema) Type() string {
 	return "ListResponseSchema"
+}
+
+type ListRestrictedSharingGroupsRequest struct {
+	// The maximum number of groups to return. The service may return fewer. If
+	// unspecified or 0, at most 100 groups are returned. Values above 100 are
+	// coerced to 100. Negative values are rejected.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token from a previous ListRestrictedSharingGroups call. Provide
+	// this to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListRestrictedSharingGroupsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRestrictedSharingGroupsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A page of restricted sharing groups in the caller's workspace.
+type ListRestrictedSharingGroupsResponse struct {
+	// A token that can be sent as page_token to retrieve the next page. If this
+	// field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The restricted sharing groups in the workspace.
+	RestrictedSharingGroups []RestrictedSharingGroup `json:"restricted_sharing_groups,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListRestrictedSharingGroupsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRestrictedSharingGroupsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListServicePrincipalResponse struct {
@@ -1988,6 +2060,31 @@ func (s *ResourceMeta) UnmarshalJSON(b []byte) error {
 }
 
 func (s ResourceMeta) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A RestrictedSharingGroup is a workspace group whose members cannot grant or
+// revoke permissions on workspace assets while they have assumed the group or
+// one of its child groups. Users acting as themselves are not affected.
+type RestrictedSharingGroup struct {
+	// The display name of the restricted workspace group.
+	GroupDisplayName string `json:"group_display_name,omitempty"`
+	// The resource name of the restricted sharing group. Format:
+	// `restricted-sharing-groups/{restricted_sharing_group_id}` Example:
+	// `restricted-sharing-groups/123`
+	Name string `json:"name,omitempty"`
+	// The id of the restricted workspace group: the numeric id of an existing
+	// and non-system workspace group.
+	RestrictedSharingGroupId string `json:"restricted_sharing_group_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RestrictedSharingGroup) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RestrictedSharingGroup) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

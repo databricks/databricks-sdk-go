@@ -121,7 +121,7 @@ func (a *aiFunctionsImpl) GetBatch(ctx context.Context, request GetBatchRequest)
 	return &batch, err
 }
 
-// List the batches the caller created in this workspace.
+// Lists the batches that the caller created in this workspace.
 func (a *aiFunctionsImpl) ListBatches(ctx context.Context, request ListBatchesRequest) listing.Iterator[Batch] {
 
 	getNextPage := func(ctx context.Context, req ListBatchesRequest) (*ListBatchesResponse, error) {
@@ -146,7 +146,7 @@ func (a *aiFunctionsImpl) ListBatches(ctx context.Context, request ListBatchesRe
 	return iterator
 }
 
-// List the batches the caller created in this workspace.
+// Lists the batches that the caller created in this workspace.
 func (a *aiFunctionsImpl) ListBatchesAll(ctx context.Context, request ListBatchesRequest) ([]Batch, error) {
 	iterator := a.ListBatches(ctx, request)
 	return listing.ToSlice[Batch](ctx, iterator)

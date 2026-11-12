@@ -1,5 +1,15 @@
 # Version changelog
 
+## Release v0.199.0 (2026-11-12)
+
+### API Changes
+* Add [w.AssumeGroup](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#AssumeGroupAPI) workspace-level service.
+* Add `EffectiveResources` field for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* [Breaking] Change `OutputRef` field for [aifunctions.Batch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aifunctions#Batch) to be required.
+* Change `OutputRef` field for [aifunctions.Batch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aifunctions#Batch) to be required.
+* [Breaking] Remove `Continuous` field for [lakewatch.RuleSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#RuleSchedule).
+* [Breaking] Remove `Expired` enum value for [aifunctions.BatchStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aifunctions#BatchStatus).
+
 ## Release v0.198.0 (2026-11-11)
 
 ### API Changes

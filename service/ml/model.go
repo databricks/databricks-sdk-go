@@ -1730,19 +1730,17 @@ type DeltaTableSource struct {
 	DataframeSchema string `json:"dataframe_schema,omitempty"`
 
 	EntityColumns []string `json:"entity_columns,omitempty"`
-	// Single WHERE clause to filter delta table before applying
-	// transformations. Will be row-wise evaluated, so should only include
-	// conditionals and projections.
+	// A single WHERE clause to filter the Delta table before applying
+	// transformations. The predicate is evaluated for each row.
 	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part (catalog, schema, table) name of the Delta table.
 	FullName string `json:"full_name"`
 
 	TimeseriesColumn string `json:"timeseries_column,omitempty"`
-	// A single SQL SELECT expression applied after filter_condition. Should
-	// contains all the columns needed (eg. "SELECT *, col_a + col_b AS col_c
-	// FROM x.y.z WHERE col_a > 0" would have `transformation_sql` "*, col_a +
-	// col_b AS col_c") If transformation_sql is not provided, all columns of
-	// the delta table are present in the DataSource dataframe.
+	// A single SQL SELECT expression applied after filter_condition. The
+	// expression must contain all required columns (e.g., "*, col_a + col_b AS
+	// col_c"). If transformation_sql is not provided, all columns of the delta
+	// table are present in the DataSource dataframe.
 	TransformationSql string `json:"transformation_sql,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
