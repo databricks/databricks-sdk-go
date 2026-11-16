@@ -61,11 +61,9 @@ type CreateIndexRequest struct {
 	// desired configuration; `index.name` is server-assigned from `parent` and
 	// `index_id`.
 	Index Index `json:"index"`
-	// The user-supplied Unity Catalog table name for the Index, per AIP-133.
-	// The server composes the full `Index.name` as
-	// `{parent}/indexes/{index_id}`. AIP-133 does not list `index_id` as a
-	// fields-may-be-required entry, so we annotate it OPTIONAL on the wire; the
-	// server still rejects empty values with INVALID_PARAMETER_VALUE.
+	// Three-level Unity Catalog table name for the new index, in the form
+	// `catalog.schema.name`. The server composes the full `Index.name` as
+	// `{parent}/indexes/{index_id}` and rejects an empty value.
 	IndexId string `json:"-" url:"index_id,omitempty"`
 	// The Endpoint where this Index will be created. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}`
@@ -184,27 +182,31 @@ func (s *DeleteIndexRequest) UnmarshalJSON(b []byte) error {
 // Specification for a Delta Sync index — the index is kept in sync with a
 // source Delta table.
 type DeltaSyncIndexSpec struct {
-	// [Optional] Select the columns to sync with the index. If left blank, all
-	// columns from the source table are synced. The primary key column and
-	// embedding source or vector column are always synced.
+	// Columns of the source table to include in the index. When empty, all
+	// columns are synced. The primary key and the embedding source or vector
+	// column are always synced. Only synced columns can be returned in query
+	// results or used in filters.
 	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
-	// The columns that contain the embedding source.
+	// Columns whose text Databricks embeds during sync, using the model
+	// endpoint named on each column. Set either this field or
+	// `embedding_vector_columns`, not both.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-	// The columns that contain the embedding vectors.
+	// Columns of the source table that already hold precomputed embedding
+	// vectors. Set either this field or `embedding_source_columns`, not both.
 	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
-	// [Optional] Name of the Delta table to sync the index contents and
-	// computed embeddings to.
+	// Three-level name of a Delta table to write the synced rows and computed
+	// embeddings to. It applies only when embeddings are computed from
+	// `embedding_source_columns`, and the table must not already exist.
 	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
 	// The ID of the pipeline that is used to sync the index.
 	PipelineId string `json:"pipeline_id,omitempty"`
-	// Pipeline execution mode. Required on create — the backend rejects an
-	// unset value. Storage Optimized endpoints accept only `TRIGGERED`;
-	// Standard endpoints accept both. No explicit `stage` — a REQUIRED field
-	// staged below its service would be dropped from combined specs while
-	// remaining in `required`, tripping the OpenAPI required-vs-properties
-	// consistency check. The field inherits the service's launch stage.
+	// Sync mode of the pipeline that keeps the index up to date. `TRIGGERED`
+	// syncs at creation and then each time SyncIndex is called; `CONTINUOUS`
+	// processes source changes as they arrive. Storage Optimized endpoints
+	// accept only `TRIGGERED`, and an unset value is rejected.
 	PipelineType PipelineType `json:"pipeline_type"`
-	// The full name of the source Delta table.
+	// Three-level Unity Catalog name of the source Delta table, in the form
+	// `catalog.schema.table`.
 	SourceTable string `json:"source_table,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -221,13 +223,17 @@ func (s DeltaSyncIndexSpec) MarshalJSON() ([]byte, error) {
 // Specification for a Direct Access index — the customer manages vectors and
 // metadata directly.
 type DirectAccessIndexSpec struct {
-	// The columns that contain the embedding source.
+	// Columns that contain the text to embed, each with the model endpoint that
+	// computes its embeddings.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-	// The columns that contain the embedding vectors.
+	// Columns that hold precomputed embedding vectors. A single vector column
+	// is supported, and it cannot be the primary key.
 	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
-	// The schema of the index in JSON format. Supported types are `integer`,
-	// `long`, `float`, `double`, `boolean`, `string`, `date`, `timestamp`.
-	// Supported types for vector columns: `array<float>`, `array<double>`.
+	// The schema of the index in JSON format, mapping each column name to its
+	// type. Supported types are `integer`, `long`, `float`, `double`,
+	// `boolean`, `string`, `date`, `timestamp`. Supported types for vector
+	// columns: `array<float>`, `array<double>`. The schema must include the
+	// primary key column and the embedding vector column.
 	SchemaJson string `json:"schema_json,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -250,7 +256,7 @@ type EmbeddingSourceColumn struct {
 	// Name of the embedding model endpoint which, if specified, is used for
 	// querying (not ingestion).
 	ModelEndpointNameForQuery string `json:"model_endpoint_name_for_query,omitempty"`
-	// Name of the source column.
+	// Name of the column whose text is embedded.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -266,9 +272,9 @@ func (s EmbeddingSourceColumn) MarshalJSON() ([]byte, error) {
 
 // Name and dimension of an embedding vector column.
 type EmbeddingVectorColumn struct {
-	// Dimension of the embedding vector.
+	// Number of elements in each embedding vector. It must be positive.
 	EmbeddingDimension int `json:"embedding_dimension,omitempty"`
-	// Name of the column.
+	// Name of the column that holds the precomputed embedding vectors.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -668,9 +674,13 @@ type Index struct {
 	// endpoint is taken from `CreateIndexRequest.parent`; populated only on
 	// output.
 	Endpoint string `json:"endpoint,omitempty"`
-	// The subtype of the index. Set on create and immutable thereafter.
+	// Subtype of the index. Use `HYBRID` for vector and hybrid search, or
+	// `FULL_TEXT` for keyword-only search without embeddings; `VECTOR` is not a
+	// supported create value. Set on create and immutable thereafter.
 	IndexSubtype IndexSubtype `json:"index_subtype,omitempty"`
-	// Type of index. Required on create and immutable thereafter.
+	// Type of index. A `DELTA_SYNC` index is kept in sync with a source Delta
+	// table; a `DIRECT_ACCESS` index holds rows that you write through
+	// UpsertData and RemoveData. Set on create and immutable thereafter.
 	IndexType IndexType `json:"index_type"`
 	// Name of the AI Search index. Server-assigned full resource path
 	// (`workspaces/{workspace}/endpoints/{endpoint}/indexes/{index}`) on
@@ -679,7 +689,10 @@ type Index struct {
 	// `CreateIndexRequest.index_id`; the server composes the full `name` and
 	// returns it on the response.
 	Name string `json:"name,omitempty"`
-	// Primary key of the index. Set on create and immutable thereafter.
+	// Name of the column that uniquely identifies each row. It must exist in
+	// the source table (Delta Sync) or in `schema_json` (Direct Access) and
+	// cannot be the embedding source or vector column. Set on create and
+	// immutable thereafter.
 	PrimaryKey string `json:"primary_key"`
 	// Current status of the index.
 	Status *IndexStatus `json:"status,omitempty"`
@@ -704,7 +717,9 @@ type IndexStatus struct {
 	IndexedRowCount int64 `json:"indexed_row_count,omitempty"`
 	// Human-readable detail about the index's current state.
 	Message string `json:"message,omitempty"`
-	// Whether the index is ready for search.
+	// Whether the index is ready to serve queries. After CreateIndex, poll
+	// GetIndex until this is true; `message` describes the current state in the
+	// meantime.
 	Ready bool `json:"ready,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -859,10 +874,8 @@ func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListIndexesRequest struct {
-	// Best-effort upper bound on the number of results to return. Honored as an
-	// upper bound by the shim: `page_size` only narrows the legacy backend's
-	// response, never widens it, so the practical cap is `min(page_size,
-	// legacy_fixed_page_size)`.
+	// Maximum number of indexes to return. When unset, every index on the
+	// endpoint is returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
@@ -956,17 +969,22 @@ func (f *PipelineType) Type() string {
 // is exposed as `max_results`; v1 returns up to `max_results` rows in a single
 // response (no cursor pagination — see the note on `max_results` below).
 type QueryIndexRequest struct {
-	// Column names to include in each result row.
+	// Columns to include in each result row. Only columns that are part of the
+	// index can be returned.
 	Columns []string `json:"columns"`
 	// Columns whose values are sent to the reranker.
 	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 	// Facets to compute over the matched results (e.g. `"category TOP 5"`).
 	Facets []string `json:"facets,omitempty"`
-	// JSON string describing query filters (e.g. `{"id >": 5}`).
+	// JSON object of filters to apply, serialized as a string. Each key is a
+	// column name with an optional operator suffix such as `<`, `>=`, `NOT`, or
+	// `OR`, and each value is the value to compare against. Only columns that
+	// are part of the index can be filtered. See
+	// https://docs.databricks.com/aws/en/ai-search/query-ai-search#filters for
+	// the supported operators.
 	FiltersJson string `json:"filters_json,omitempty"`
-	// Maximum number of results to return (the legacy `num_results`). Defaults
-	// to 10. Prefer `page_size`; when both are set, `page_size` takes
-	// precedence.
+	// Maximum number of results to return. Defaults to 10. It corresponds to
+	// `num_results` in the Vector Search API.
 	MaxResults int `json:"max_results,omitempty"`
 	// Full resource name of the index to query. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
@@ -975,17 +993,21 @@ type QueryIndexRequest struct {
 	// searched.
 	QueryColumns []string `json:"query_columns,omitempty"`
 	// Query text. Required for Delta Sync indexes that compute embeddings from
-	// a model endpoint.
+	// a model endpoint, and for `HYBRID` and `FULL_TEXT` queries.
 	QueryText string `json:"query_text,omitempty"`
-	// Query type: `ANN`, `HYBRID`, or `FULL_TEXT`. Defaults to `ANN`.
+	// Query type: `ANN` for vector similarity search, `HYBRID` for combined
+	// vector and keyword search, or `FULL_TEXT` for keyword search without
+	// embeddings. Defaults to `ANN`.
 	QueryType string `json:"query_type,omitempty"`
 	// Query vector. Required for Direct Access indexes and Delta Sync indexes
 	// with self-managed vectors.
 	QueryVector []float64 `json:"query_vector,omitempty"`
-	// If set, results are reranked before being returned.
+	// If set, results are reranked before being returned. See
+	// https://docs.databricks.com/aws/en/ai-search/query-ai-search#rerank for
+	// details.
 	Reranker *RerankerConfig `json:"reranker,omitempty"`
-	// Score threshold for the approximate nearest-neighbor search. Defaults to
-	// 0.0.
+	// Score threshold for the approximate nearest-neighbor search; results that
+	// score below it are not returned. Defaults to 0.0.
 	ScoreThreshold float64 `json:"score_threshold,omitempty"`
 	// Sort clauses, e.g. `["rating DESC", "price ASC"]`. Overrides relevance
 	// ordering.
@@ -1036,7 +1058,9 @@ func (s *RemoveDataRequest) UnmarshalJSON(b []byte) error {
 type RemoveDataResponse struct {
 	// Per-row outcome of the delete.
 	Result *DataModificationResult `json:"result,omitempty"`
-	// Overall status of the delete.
+	// Overall status of the delete: `SUCCESS` when every row was removed,
+	// `PARTIAL_SUCCESS` when some rows failed (see
+	// `result.failed_primary_keys`), or `FAILURE` when the operation failed.
 	Status DataModificationStatus `json:"status,omitempty"`
 }
 
@@ -1202,7 +1226,7 @@ type ScanIndexRequest struct {
 	// Full resource name of the index to scan. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
 	Name string `json:"-" url:"-"`
-	// Maximum number of rows to return in this page.
+	// Maximum number of rows to return in this page. Defaults to 10.
 	PageSize int `json:"page_size,omitempty"`
 	// Page token from a previous response; if unset, scanning starts from the
 	// beginning.
@@ -1222,7 +1246,8 @@ func (s ScanIndexRequest) MarshalJSON() ([]byte, error) {
 // Response for ScanIndex carrying a page of rows and an optional continuation
 // token.
 type ScanIndexResponse struct {
-	// The rows in this page, each a struct of column name to value.
+	// Rows in this page, ordered by primary key. Each row is a JSON object that
+	// maps column names to values.
 	Data []map[string]json.RawMessage `json:"data,omitempty"`
 	// Token for the next page; empty when the scan is exhausted.
 	NextPageToken string `json:"next_page_token,omitempty"`
@@ -1332,7 +1357,11 @@ func (s *UpdateEndpointRequest) UnmarshalJSON(b []byte) error {
 
 // Request to upsert rows into a Direct Access AI Search index.
 type UpsertDataRequest struct {
-	// JSON document describing the rows to upsert.
+	// JSON array of the rows to insert or update, serialized as a string. Each
+	// element is an object that maps column names to values and must include
+	// the primary key column; vector columns are given as arrays of numbers. A
+	// row whose primary key already exists is overwritten. The array must not
+	// be empty.
 	InputsJson string `json:"inputs_json"`
 	// Full resource name of the index. Must be a Direct Access index. Format:
 	// `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
@@ -1347,7 +1376,9 @@ func (s *UpsertDataRequest) UnmarshalJSON(b []byte) error {
 type UpsertDataResponse struct {
 	// Per-row outcome of the upsert.
 	Result *DataModificationResult `json:"result,omitempty"`
-	// Overall status of the upsert.
+	// Overall status of the upsert: `SUCCESS` when every row was written,
+	// `PARTIAL_SUCCESS` when some rows failed (see
+	// `result.failed_primary_keys`), or `FAILURE` when the operation failed.
 	Status DataModificationStatus `json:"status,omitempty"`
 }
 

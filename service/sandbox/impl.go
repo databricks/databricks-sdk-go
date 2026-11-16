@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Sandbox API methods
@@ -199,7 +200,9 @@ func (a *sandboxImpl) internalListDirectoryContents(ctx context.Context, request
 	return &listDirectoryContentsResponse, err
 }
 
-// Lists all Sandboxes.
+// Lists the sandboxes in the workspace that are visible to the caller,
+// including stopped sandboxes. Sandboxes that are being deleted are not
+// returned.
 func (a *sandboxImpl) ListSandboxes(ctx context.Context, request ListSandboxesRequest) listing.Iterator[Sandbox] {
 
 	getNextPage := func(ctx context.Context, req ListSandboxesRequest) (*ListSandboxesResponse, error) {
@@ -224,7 +227,9 @@ func (a *sandboxImpl) ListSandboxes(ctx context.Context, request ListSandboxesRe
 	return iterator
 }
 
-// Lists all Sandboxes.
+// Lists the sandboxes in the workspace that are visible to the caller,
+// including stopped sandboxes. Sandboxes that are being deleted are not
+// returned.
 func (a *sandboxImpl) ListSandboxesAll(ctx context.Context, request ListSandboxesRequest) ([]Sandbox, error) {
 	iterator := a.ListSandboxes(ctx, request)
 	return listing.ToSlice[Sandbox](ctx, iterator)
@@ -315,7 +320,11 @@ func (a *sandboxImpl) UploadFile(ctx context.Context, request UploadFileRequest)
 	path := fmt.Sprintf("/api/2.0/sandbox-files/%v/content", request.Parent)
 	queryParams := make(map[string]any)
 
-	if request.Path != "" {
+	if request.Overwrite != false || slices.Contains(request.ForceSendFields, "Overwrite") {
+		queryParams["overwrite"] = request.Overwrite
+	}
+
+	if request.Path != "" || slices.Contains(request.ForceSendFields, "Path") {
 		queryParams["path"] = request.Path
 	}
 	headers := make(map[string]string)

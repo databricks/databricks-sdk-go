@@ -333,10 +333,11 @@ func (f *AzureAvailability) Type() string {
 }
 
 type CancelCommand struct {
+	// ID of the cluster that hosts the execution context.
 	ClusterId string `json:"clusterId,omitempty"`
-
+	// ID of the command to cancel, as returned by __execute__.
 	CommandId string `json:"commandId,omitempty"`
-
+	// ID of the execution context the command runs in.
 	ContextId string `json:"contextId,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1520,13 +1521,14 @@ func (s *ClusterStatus) UnmarshalJSON(b []byte) error {
 }
 
 type Command struct {
-	// Running cluster id
+	// ID of the cluster that hosts the execution context.
 	ClusterId string `json:"clusterId,omitempty"`
-	// Executable code
+	// Code to run, written in the specified language.
 	Command string `json:"command,omitempty"`
-	// Running context id
+	// ID of the execution context to run the command in, as returned by
+	// __Create__.
 	ContextId string `json:"contextId,omitempty"`
-
+	// Language the command is written in.
 	Language Language `json:"language,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1590,10 +1592,11 @@ func (f *CommandStatus) Type() string {
 }
 
 type CommandStatusRequest struct {
+	// ID of the cluster that hosts the execution context.
 	ClusterId string `json:"-" url:"clusterId"`
-
+	// ID of the command, as returned by __execute__.
 	CommandId string `json:"-" url:"commandId"`
-
+	// ID of the execution context the command runs in.
 	ContextId string `json:"-" url:"contextId"`
 }
 
@@ -1602,10 +1605,19 @@ func (s *CommandStatusRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CommandStatusResponse struct {
+	// ID of the command.
 	Id string `json:"id,omitempty"`
-
+	// Output of the command. It is populated only once the command has reached
+	// a terminal status, and its `resultType` tells which of its other fields
+	// are set.
 	Results *Results `json:"results,omitempty"`
-
+	// Current status of the command. `Queued` and `Running` mean the command
+	// has not completed yet, and `Cancelling` means a cancellation is in
+	// progress. `Finished`, `Error` and `Cancelled` are terminal: `Finished`
+	// means the command ran to completion, including when the code itself
+	// raised an error (reported in `results` with the `error` result type),
+	// while `Error` means the execution environment failed, for example because
+	// the driver or the context stopped.
 	Status CommandStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1739,8 +1751,9 @@ func (f *ContextStatus) Type() string {
 }
 
 type ContextStatusRequest struct {
+	// ID of the cluster that hosts the execution context.
 	ClusterId string `json:"-" url:"clusterId"`
-
+	// ID of the execution context, as returned by __Create__.
 	ContextId string `json:"-" url:"contextId"`
 }
 
@@ -1749,8 +1762,12 @@ func (s *ContextStatusRequest) UnmarshalJSON(b []byte) error {
 }
 
 type ContextStatusResponse struct {
+	// ID of the execution context.
 	Id string `json:"id,omitempty"`
-
+	// Current status of the execution context. `Pending` means the context is
+	// still initializing and does not accept commands yet, `Running` means it
+	// is ready, and `Error` means it failed: running commands may not complete
+	// and new commands may be rejected, so create a new context.
 	Status ContextStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1954,9 +1971,10 @@ func (s CreateClusterResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateContext struct {
-	// Running cluster id
+	// ID of the cluster to create the execution context on. The cluster must be
+	// running.
 	ClusterId string `json:"clusterId,omitempty"`
-
+	// Programming language of the execution context.
 	Language Language `json:"language,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2142,6 +2160,9 @@ func (s CreateResponse) MarshalJSON() ([]byte, error) {
 }
 
 type Created struct {
+	// ID of the new execution context when returned by __Create__, or of the
+	// submitted command when returned by __execute__. Pass it to the other
+	// methods of this API as `contextId` or `commandId`.
 	Id string `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2439,8 +2460,9 @@ func (f *DependencyMode) Type() string {
 }
 
 type DestroyContext struct {
+	// ID of the cluster that hosts the execution context.
 	ClusterId string `json:"clusterId"`
-
+	// ID of the execution context to delete, as returned by __Create__.
 	ContextId string `json:"contextId"`
 }
 
@@ -3269,6 +3291,11 @@ type Environment struct {
 	// version comes with a specific Python version and a set of Python
 	// packages. The version is a string, consisting of an integer.
 	EnvironmentVersion string `json:"environment_version,omitempty"`
+	// Customer-provided container image to use as the whole environment for
+	// this workload, stored in Databricks Artifact Registry and named by its
+	// Unity Catalog name and tag, as `catalog.schema.artifact:tag`. Cannot be
+	// combined with `environment_version` or `base_environment`.
+	ImageUri string `json:"image_uri,omitempty"`
 	// List of Java dependencies. Each dependency is a string representing a
 	// Java library path. For example: `/Volumes/path/to/test.jar`.
 	JavaDependencies []string `json:"java_dependencies,omitempty"`
@@ -6219,9 +6246,12 @@ func (f *ResultType) Type() string {
 }
 
 type Results struct {
-	// The cause of the error
+	// Details of an `error` result, usually the exception message or stack
+	// trace.
 	Cause string `json:"cause,omitempty"`
-
+	// Output of a `text` result as a string, or the rows of a `table` result as
+	// an array of rows, each an array of column values in the order of
+	// `schema`.
 	Data any `json:"data,omitempty"`
 	// The image data in one of the following formats:
 	//
@@ -6240,13 +6270,19 @@ type Results struct {
 	IsJsonSchema bool `json:"isJsonSchema,omitempty"`
 	// internal field used by SDK
 	Pos int `json:"pos,omitempty"`
-
+	// Type of the result, which determines which other fields are set: `text`
+	// puts the output in `data`, `table` fills `data`, `schema`, `truncated`
+	// and `isJsonSchema`, `image` and `images` fill `fileName` and `fileNames`
+	// respectively, and `error` fills `cause` and `summary`.
 	ResultType ResultType `json:"resultType,omitempty"`
-	// The table schema
+	// Columns of a `table` result, in the order of the values within each row
+	// of `data`. Each entry has a `name`, a `type` and a `metadata` key.
 	Schema []map[string]any `json:"schema,omitempty"`
-	// The summary of the error
+	// Short description of an `error` result, such as the exception type and
+	// message, when available.
 	Summary string `json:"summary,omitempty"`
-	// true if partial results are returned.
+	// Whether a `table` result was cut off because the command output exceeded
+	// the row or byte limit.
 	Truncated bool `json:"truncated,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7164,7 +7200,7 @@ func (f *TerminationReasonType) Type() string {
 	return "TerminationReasonType"
 }
 
-// T-shirt size for per-workload Spark executor limits.
+// T-shirt size for Spark executor limits.
 type TshirtSize string
 
 const TshirtSizeTShirtSize2xLarge TshirtSize = `T_SHIRT_SIZE_2X_LARGE`

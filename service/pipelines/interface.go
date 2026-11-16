@@ -45,7 +45,8 @@ type PipelinesService interface {
 	// Databricks support for assistance to undo this action.
 	Delete(ctx context.Context, request DeletePipelineRequest) error
 
-	// Get a pipeline.
+	// Returns the details of a pipeline, including its settings, current state,
+	// and the status of its most recent updates.
 	Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
 
 	// Gets the permission levels that a user can have on an object.

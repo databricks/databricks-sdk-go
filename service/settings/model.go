@@ -534,19 +534,24 @@ func (f *ComplianceStandard) Type() string {
 	return "ComplianceStandard"
 }
 
+// Holds the destination-specific configuration. Exactly one of the nested
+// configs is set.
 type Config struct {
+	// Configures a Slack channel reached through the Databricks Genie app for
+	// Slack.
 	DatabricksAppSlack *DatabricksAppSlackConfig `json:"databricks_app_slack,omitempty"`
-
+	// Configures a Microsoft Teams channel reached through the Databricks Genie
+	// app for Microsoft Teams.
 	DatabricksAppTeams *DatabricksAppTeamsConfig `json:"databricks_app_teams,omitempty"`
-
+	// Configures an email destination.
 	Email *EmailConfig `json:"email,omitempty"`
-
+	// Configures a generic HTTPS webhook destination.
 	GenericWebhook *GenericWebhookConfig `json:"generic_webhook,omitempty"`
-
+	// Configures a Microsoft Teams incoming webhook destination.
 	MicrosoftTeams *MicrosoftTeamsConfig `json:"microsoft_teams,omitempty"`
-
+	// Configures a PagerDuty destination.
 	Pagerduty *PagerdutyConfig `json:"pagerduty,omitempty"`
-
+	// Configures a Slack incoming webhook destination.
 	Slack *SlackConfig `json:"slack,omitempty"`
 }
 
@@ -2140,6 +2145,7 @@ func (s *DeleteNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteNotificationDestinationRequest struct {
+	// A UUID identifying the notification destination.
 	Id string `json:"-" url:"-"`
 }
 
@@ -2278,6 +2284,7 @@ func (s *DeleteTokenManagementRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// The kind of destination that notifications are sent to.
 type DestinationType string
 
 const DestinationTypeDatabricksAppSlack DestinationType = `DATABRICKS_APP_SLACK`
@@ -3063,8 +3070,9 @@ func (f *EgressResourceType) Type() string {
 	return "EgressResourceType"
 }
 
+// Configures an email destination.
 type EmailConfig struct {
-	// Email addresses to notify.
+	// Email addresses to notify. At least one address is required.
 	Addresses []string `json:"addresses,omitempty"`
 }
 
@@ -3301,16 +3309,21 @@ func (s GcpEndpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Configures a generic webhook destination. Notifications are delivered as
+// HTTPS POST requests to url, optionally authenticated with HTTP Basic
+// authentication.
 type GenericWebhookConfig struct {
-	// [Input-Only][Optional] Password for webhook.
+	// [Input-Only][Optional] Password for HTTP Basic authentication. Set it
+	// together with username.
 	Password string `json:"password,omitempty"`
 	// [Output-Only] Whether password is set.
 	PasswordSet bool `json:"password_set,omitempty"`
-	// [Input-Only] URL for webhook.
+	// [Input-Only] HTTPS URL that notifications are posted to.
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`
-	// [Input-Only][Optional] Username for webhook.
+	// [Input-Only][Optional] Username for HTTP Basic authentication. Set it
+	// together with password.
 	Username string `json:"username,omitempty"`
 	// [Output-Only] Whether username is set.
 	UsernameSet bool `json:"username_set,omitempty"`
@@ -3737,6 +3750,7 @@ func (s *GetNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetNotificationDestinationRequest struct {
+	// A UUID identifying the notification destination.
 	Id string `json:"-" url:"-"`
 }
 
@@ -3984,8 +3998,11 @@ func (s ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListNotificationDestinationsRequest struct {
+	// Maximum number of notification destinations to return per page. Defaults
+	// to 20.
 	PageSize int64 `json:"-" url:"page_size,omitempty"`
-
+	// Opaque token returned as next_page_token by a previous call. Omit it to
+	// request the first page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4000,9 +4017,10 @@ func (s ListNotificationDestinationsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListNotificationDestinationsResponse struct {
-	// Page token for next of results.
+	// Token to pass as page_token to fetch the next page of results. Absent
+	// when there are no more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
-
+	// Notification destinations in the current page.
 	Results []ListNotificationDestinationsResult `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4016,13 +4034,22 @@ func (s ListNotificationDestinationsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A reusable definition of where a workspace sends notifications, such as a
+// Slack channel, a set of email addresses, a PagerDuty service, a Microsoft
+// Teams channel or a generic webhook. Job notifications, SQL alerts and other
+// workspace features reference a destination by its id. Only workspace admins
+// can create, update and delete destinations; once created, a destination is
+// available to all users in the workspace. Secret values such as webhook URLs
+// and tokens are write-only: responses report whether each one is set, never
+// its value.
 type ListNotificationDestinationsResult struct {
-	// [Output-only] The type of the notification destination. The type can not
-	// be changed once set.
+	// [Output-only] The type of the notification destination, determined by
+	// which nested config was provided on creation. The type can not be changed
+	// once set.
 	DestinationType DestinationType `json:"destination_type,omitempty"`
 	// The display name for the notification destination.
 	DisplayName string `json:"display_name,omitempty"`
-	// UUID identifying notification destination.
+	// A UUID identifying the notification destination.
 	Id string `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4236,24 +4263,35 @@ func (s LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Configures a Microsoft Teams destination. Notifications are posted to the
+// incoming webhook url, which is required. The app_id, auth_secret, channel_url
+// and tenant_id fields can optionally be set together to post through a
+// Microsoft Teams app.
 type MicrosoftTeamsConfig struct {
-	// [Input-Only] App ID for Microsoft Teams App.
+	// [Input-Only] Application (client) ID of the Microsoft Teams app, as a
+	// UUID. Optional; set it together with auth_secret, channel_url and
+	// tenant_id.
 	AppId string `json:"app_id,omitempty"`
 	// [Output-Only] Whether App ID is set.
 	AppIdSet bool `json:"app_id_set,omitempty"`
-	// [Input-Only] Secret for Microsoft Teams App authentication.
+	// [Input-Only] Client secret of the Microsoft Teams app. Optional; set it
+	// together with app_id, channel_url and tenant_id.
 	AuthSecret string `json:"auth_secret,omitempty"`
 	// [Output-Only] Whether secret is set.
 	AuthSecretSet bool `json:"auth_secret_set,omitempty"`
-	// [Input-Only] Channel URL for Microsoft Teams App.
+	// [Input-Only] URL of the Microsoft Teams channel that the app posts to.
+	// Optional; set it together with app_id, auth_secret and tenant_id.
 	ChannelUrl string `json:"channel_url,omitempty"`
 	// [Output-Only] Whether Channel URL is set.
 	ChannelUrlSet bool `json:"channel_url_set,omitempty"`
-	// [Input-Only] Tenant ID for Microsoft Teams App.
+	// [Input-Only] Microsoft Entra tenant ID of the Microsoft Teams app, as a
+	// UUID. Optional; set it together with app_id, auth_secret and channel_url.
 	TenantId string `json:"tenant_id,omitempty"`
 	// [Output-Only] Whether Tenant ID is set.
 	TenantIdSet bool `json:"tenant_id_set,omitempty"`
-	// [Input-Only] URL for Microsoft Teams webhook.
+	// [Input-Only] Microsoft Teams incoming webhook URL that notifications are
+	// posted to. Must be an HTTPS URL. The URL is required even when the app
+	// fields are set.
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`
@@ -4640,17 +4678,26 @@ func (s *NetworkPolicyEgress) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A reusable definition of where a workspace sends notifications, such as a
+// Slack channel, a set of email addresses, a PagerDuty service, a Microsoft
+// Teams channel or a generic webhook. Job notifications, SQL alerts and other
+// workspace features reference a destination by its id. Only workspace admins
+// can create, update and delete destinations; once created, a destination is
+// available to all users in the workspace. Secret values such as webhook URLs
+// and tokens are write-only: responses report whether each one is set, never
+// its value.
 type NotificationDestination struct {
 	// The configuration for the notification destination. Will be exactly one
-	// of the nested configs. Only returns for users with workspace admin
+	// of the nested configs. Only returned to users with workspace admin
 	// permissions.
 	Config *Config `json:"config,omitempty"`
-	// [Output-only] The type of the notification destination. The type can not
-	// be changed once set.
+	// [Output-only] The type of the notification destination, determined by
+	// which nested config was provided on creation. The type can not be changed
+	// once set.
 	DestinationType DestinationType `json:"destination_type,omitempty"`
 	// The display name for the notification destination.
 	DisplayName string `json:"display_name,omitempty"`
-	// UUID identifying notification destination.
+	// A UUID identifying the notification destination.
 	Id string `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4664,8 +4711,11 @@ func (s NotificationDestination) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Configures a PagerDuty destination. Notifications are sent as events to the
+// PagerDuty Events API v2.
 type PagerdutyConfig struct {
-	// [Input-Only] Integration key for PagerDuty.
+	// [Input-Only] Integration key from an Events API v2 integration on the
+	// PagerDuty service that receives the notifications.
 	IntegrationKey string `json:"integration_key,omitempty"`
 	// [Output-Only] Whether integration key is set.
 	IntegrationKeySet bool `json:"integration_key_set,omitempty"`
@@ -4919,16 +4969,24 @@ func (s *RevokeTokenRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Configures a Slack destination. Notifications are posted to the incoming
+// webhook url, which is required. A bot oauth_token and channel_id can
+// optionally be set together to post to the channel through the Slack API.
 type SlackConfig struct {
-	// [Input-Only] Slack channel ID for notifications.
+	// [Input-Only] ID of the Slack channel that notifications are posted to
+	// through the Slack API. Optional; set it together with oauth_token.
 	ChannelId string `json:"channel_id,omitempty"`
 	// [Output-Only] Whether channel ID is set.
 	ChannelIdSet bool `json:"channel_id_set,omitempty"`
-	// [Input-Only] OAuth token for Slack authentication.
+	// [Input-Only] Slack bot OAuth token (xoxb-...). Optional; when set
+	// together with channel_id, notifications are posted to that channel
+	// through the Slack API.
 	OauthToken string `json:"oauth_token,omitempty"`
 	// [Output-Only] Whether OAuth token is set.
 	OauthTokenSet bool `json:"oauth_token_set,omitempty"`
-	// [Input-Only] URL for Slack destination.
+	// [Input-Only] Slack incoming webhook URL that notifications are posted to.
+	// Must be an HTTPS URL. The URL is required even when oauth_token and
+	// channel_id are set.
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`
@@ -5791,7 +5849,7 @@ type UpdateNotificationDestinationRequest struct {
 	Config *Config `json:"config,omitempty"`
 	// The display name for the notification destination.
 	DisplayName string `json:"display_name,omitempty"`
-	// UUID identifying notification destination.
+	// A UUID identifying the notification destination.
 	Id string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`

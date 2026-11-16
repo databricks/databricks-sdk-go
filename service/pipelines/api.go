@@ -57,10 +57,12 @@ type PipelinesInterface interface {
 	// support for assistance to undo this action.
 	DeleteByPipelineId(ctx context.Context, pipelineId string) error
 
-	// Get a pipeline.
+	// Returns the details of a pipeline, including its settings, current state, and
+	// the status of its most recent updates.
 	Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
 
-	// Get a pipeline.
+	// Returns the details of a pipeline, including its settings, current state, and
+	// the status of its most recent updates.
 	GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error)
 
 	// Gets the permission levels that a user can have on an object.
@@ -250,7 +252,8 @@ func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string
 	})
 }
 
-// Get a pipeline.
+// Returns the details of a pipeline, including its settings, current state, and
+// the status of its most recent updates.
 func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
 	return a.pipelinesImpl.Get(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,

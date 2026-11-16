@@ -1353,7 +1353,8 @@ func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotif
 	return &notificationDestination, err
 }
 
-// Lists notification destinations.
+// Lists the notification destinations in the workspace. Results never include a
+// destination's config; workspace admins can retrieve it with Get.
 func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNotificationDestinationsRequest) listing.Iterator[ListNotificationDestinationsResult] {
 
 	getNextPage := func(ctx context.Context, req ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
@@ -1378,7 +1379,8 @@ func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNot
 	return iterator
 }
 
-// Lists notification destinations.
+// Lists the notification destinations in the workspace. Results never include a
+// destination's config; workspace admins can retrieve it with Get.
 func (a *notificationDestinationsImpl) ListAll(ctx context.Context, request ListNotificationDestinationsRequest) ([]ListNotificationDestinationsResult, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ListNotificationDestinationsResult](ctx, iterator)

@@ -177,6 +177,8 @@ func (f *AlertConfigurationScopeType) Type() string {
 
 type AlertConfigurationTimePeriod string
 
+const AlertConfigurationTimePeriodDay AlertConfigurationTimePeriod = `DAY`
+
 const AlertConfigurationTimePeriodMonth AlertConfigurationTimePeriod = `MONTH`
 
 // String representation for [fmt.Print]
@@ -187,11 +189,11 @@ func (f *AlertConfigurationTimePeriod) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AlertConfigurationTimePeriod) Set(v string) error {
 	switch v {
-	case `MONTH`:
+	case `DAY`, `MONTH`:
 		*f = AlertConfigurationTimePeriod(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "MONTH"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DAY", "MONTH"`, v)
 	}
 }
 
@@ -200,6 +202,7 @@ func (f *AlertConfigurationTimePeriod) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertConfigurationTimePeriod) Values() []AlertConfigurationTimePeriod {
 	return []AlertConfigurationTimePeriod{
+		AlertConfigurationTimePeriodDay,
 		AlertConfigurationTimePeriodMonth,
 	}
 }

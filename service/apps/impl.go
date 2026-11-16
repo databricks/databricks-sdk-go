@@ -139,6 +139,20 @@ func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error)
 	return &app, err
 }
 
+func (a *appsImpl) GetAppDeploymentScanFinding(ctx context.Context, request GetAppDeploymentScanFindingRequest) (*AppDeploymentScanFinding, error) {
+	var appDeploymentScanFinding AppDeploymentScanFinding
+	path := fmt.Sprintf("/api/2.0/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appDeploymentScanFinding)
+	return &appDeploymentScanFinding, err
+}
+
 func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
 	var appDeployment AppDeployment
 	path := fmt.Sprintf("/api/2.0/apps/%v/deployments/%v", request.AppName, request.DeploymentId)
@@ -266,6 +280,51 @@ func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppsResponse)
 	return &listAppsResponse, err
+}
+
+// Lists the security scan findings for an app deployment.
+func (a *appsImpl) ListAppDeploymentScanFindings(ctx context.Context, request ListAppDeploymentScanFindingsRequest) listing.Iterator[AppDeploymentScanFinding] {
+
+	getNextPage := func(ctx context.Context, req ListAppDeploymentScanFindingsRequest) (*ListAppDeploymentScanFindingsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListAppDeploymentScanFindings(ctx, req)
+	}
+	getItems := func(resp *ListAppDeploymentScanFindingsResponse) []AppDeploymentScanFinding {
+		return resp.AppDeploymentScanFindings
+	}
+	getNextReq := func(resp *ListAppDeploymentScanFindingsResponse) *ListAppDeploymentScanFindingsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the security scan findings for an app deployment.
+func (a *appsImpl) ListAppDeploymentScanFindingsAll(ctx context.Context, request ListAppDeploymentScanFindingsRequest) ([]AppDeploymentScanFinding, error) {
+	iterator := a.ListAppDeploymentScanFindings(ctx, request)
+	return listing.ToSlice[AppDeploymentScanFinding](ctx, iterator)
+}
+
+func (a *appsImpl) internalListAppDeploymentScanFindings(ctx context.Context, request ListAppDeploymentScanFindingsRequest) (*ListAppDeploymentScanFindingsResponse, error) {
+	var listAppDeploymentScanFindingsResponse ListAppDeploymentScanFindingsResponse
+	path := fmt.Sprintf("/api/2.0/%v/scanFindings", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppDeploymentScanFindingsResponse)
+	return &listAppDeploymentScanFindingsResponse, err
 }
 
 // Lists all app deployments for the app with the supplied name.
@@ -416,6 +475,28 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.App, &app)
 	return &app, err
+}
+
+func (a *appsImpl) UpdateAppDeploymentScanFinding(ctx context.Context, request UpdateAppDeploymentScanFindingRequest) (*AppDeploymentScanFinding, error) {
+	var appDeploymentScanFinding AppDeploymentScanFinding
+	path := fmt.Sprintf("/api/2.0/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.AppDeploymentScanFinding, &appDeploymentScanFinding)
+	return &appDeploymentScanFinding, err
 }
 
 func (a *appsImpl) UpdateAppThumbnail(ctx context.Context, request UpdateAppThumbnailRequest) (*AppThumbnail, error) {

@@ -123,7 +123,10 @@ type Dashboard struct {
 	CreateTime string `json:"create_time,omitempty"`
 	// UUID identifying the dashboard.
 	DashboardId string `json:"dashboard_id,omitempty"`
-	// The display name of the dashboard.
+	// The display name of the dashboard. It is also the file name of the
+	// dashboard asset in the workspace, so it must be unique within the parent
+	// folder, cannot contain `/`, and cannot end with `.json`, `.lvdash` or
+	// `.yml`. The display name must not exceed 500 characters.
 	DisplayName string `json:"display_name,omitempty"`
 	// The etag for the dashboard. Can be optionally provided on updates to
 	// ensure that the dashboard has not been modified since the last read. This
@@ -132,18 +135,21 @@ type Dashboard struct {
 	// The state of the dashboard resource. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// The workspace path of the folder containing the dashboard. Includes
-	// leading slash and no trailing slash. This field is excluded in List
-	// Dashboards responses.
+	// leading slash and no trailing slash. The folder must already exist; when
+	// omitted on create, the dashboard is created in the caller's home folder.
+	// This field is excluded in List Dashboards responses.
 	ParentPath string `json:"parent_path,omitempty"`
 	// The workspace path of the dashboard asset, including the file name.
 	// Exported dashboards always have the file extension `.lvdash.json`. This
 	// field is excluded in List Dashboards responses.
 	Path string `json:"path,omitempty"`
-	// The contents of the dashboard in serialized string form. This field is
-	// excluded in List Dashboards responses. Use the [get dashboard API] to
-	// retrieve an example response, which includes the `serialized_dashboard`
-	// field. This field provides the structure of the JSON string that
-	// represents the dashboard's layout and components.
+	// The dashboard definition (datasets, pages and widgets) as a JSON string,
+	// in the same format as a dashboard file exported from the workspace
+	// (`.lvdash.json`). When omitted on create, an empty dashboard is created;
+	// when omitted on update, the existing definition is kept and only the
+	// other fields change. Use the [get dashboard API] on an existing dashboard
+	// to see a complete example. This field is excluded in List Dashboards
+	// responses.
 	//
 	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
@@ -307,9 +313,11 @@ func (f *EvaluationStatusType) Type() string {
 	return "EvaluationStatusType"
 }
 
-// Genie AI Response
+// One part of Genie's response to a message. Exactly one of the attachment
+// fields is set.
 type GenieAttachment struct {
-	// Attachment ID
+	// The ID of the attachment. The attachment query-result, execute-query,
+	// download, and visualization endpoints take this ID.
 	AttachmentId string `json:"attachment_id,omitempty"`
 	// Query Attachment if Genie responds with a SQL query
 	Query *GenieQueryAttachment `json:"query,omitempty"`
@@ -353,15 +361,18 @@ func (s *GenieCancelResponseRequest) UnmarshalJSON(b []byte) error {
 type GenieConversation struct {
 	// Conversation ID
 	ConversationId string `json:"conversation_id"`
-	// Timestamp when the message was created
+	// Time when the conversation was created, in milliseconds since the Unix
+	// epoch.
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 	// Conversation ID. Legacy identifier, use conversation_id instead
 	Id string `json:"id,omitempty"`
-	// Timestamp when the message was last updated
+	// Time when the conversation was last updated, in milliseconds since the
+	// Unix epoch.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Genie space ID
 	SpaceId string `json:"space_id"`
-	// Conversation title
+	// Title of the conversation. Genie sets it to the text of the first
+	// message, truncated to 255 characters.
 	Title string `json:"title"`
 	// ID of the user who created the conversation
 	UserId int `json:"user_id,omitempty"`
@@ -377,16 +388,19 @@ func (s GenieConversation) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A summary of a conversation, as returned when listing the conversations in a
+// space.
 type GenieConversationSummary struct {
 	// Whether this is a classic chat or an agent-mode conversation. Allows
 	// callers to route message retrieval (chat vs. agent endpoint) without an
 	// extra lookup.
 	AgentType GenieConversationType `json:"agent_type,omitempty"`
-
+	// The ID of the conversation.
 	ConversationId string `json:"conversation_id"`
-
+	// Time when the conversation was created, in milliseconds since the Unix
+	// epoch.
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
-
+	// The title of the conversation.
 	Title string `json:"title,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -491,19 +505,20 @@ func (s *GenieCreateMessageCommentRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GenieCreateSpaceRequest struct {
-	// Optional description
+	// Description of the space, up to 16384 bytes.
 	Description string `json:"description,omitempty"`
-	// Parent folder path where the space will be registered
+	// Path of the workspace folder in which to create the space.
 	ParentPath string `json:"parent_path,omitempty"`
-	// The contents of the Genie Space in serialized string form. Use the [Get
-	// Genie Space](:method:genie/getspace) API to retrieve an example response,
-	// which includes the `serialized_space` field. This field provides the
-	// structure of the JSON string that represents the space's layout and
-	// components.
+	// Configuration of the new space as a JSON string. To copy an existing
+	// space, use the value that [Get Genie Space](:method:genie/getspace)
+	// returns when `include_serialized_space` is true. For the JSON format and
+	// its validation rules, see
+	// https://docs.databricks.com/aws/en/genie-agents/conversation-api.
 	SerializedSpace string `json:"serialized_space"`
-	// Optional title override
+	// Display name of the new space. A default name is assigned when omitted.
 	Title string `json:"title,omitempty"`
-	// Warehouse to associate with the new space
+	// ID of the SQL warehouse that runs the queries Genie generates for the
+	// space, as a 16-character hexadecimal string.
 	WarehouseId string `json:"warehouse_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1029,8 +1044,9 @@ func (s *GenieGetQueryResultByAttachmentRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GenieGetSpaceRequest struct {
-	// Whether to include the serialized space export in the response. Requires
-	// at least CAN EDIT permission on the space.
+	// Whether to include the serialized space export in the response. When
+	// true, the response also carries the configuration `etag`. Requires at
+	// least CAN EDIT permission on the space.
 	IncludeSerializedSpace bool `json:"-" url:"include_serialized_space,omitempty"`
 	// The ID associated with the Genie space
 	SpaceId string `json:"-" url:"-"`
@@ -1312,13 +1328,14 @@ func (s GenieListSpacesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type GenieMessage struct {
-	// AI-generated response to the message
+	// Genie's response to the message. Each attachment holds one part of the
+	// response, such as a text answer or a SQL query.
 	Attachments []GenieAttachment `json:"attachments,omitempty"`
 	// User message content
 	Content string `json:"content"`
 	// Conversation ID
 	ConversationId string `json:"conversation_id"`
-	// Timestamp when the message was created
+	// Time when the message was created, in milliseconds since the Unix epoch.
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 	// Error message if Genie failed to respond to the message
 	Error *MessageError `json:"error,omitempty"`
@@ -1326,7 +1343,8 @@ type GenieMessage struct {
 	Feedback *GenieFeedback `json:"feedback,omitempty"`
 	// Message ID. Legacy identifier, use message_id instead
 	Id string `json:"id,omitempty"`
-	// Timestamp when the message was last updated
+	// Time when the message was last updated, in milliseconds since the Unix
+	// epoch.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Message ID
 	MessageId string `json:"message_id"`
@@ -1387,7 +1405,7 @@ type GenieQueryAttachment struct {
 	Id string `json:"id,omitempty"`
 	// Time when the user updated the query last
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
+	// The parameters of the SQL query, when the query is parameterized.
 	Parameters []QueryAttachmentParameter `json:"parameters,omitempty"`
 	// AI generated SQL query
 	Query string `json:"query,omitempty"`
@@ -1453,6 +1471,10 @@ func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A Genie space that business users query in natural language. Its
+// configuration (data sources, instructions, sample questions and benchmarks)
+// travels as a JSON string in `serialized_space`; the other fields are metadata
+// about the space.
 type GenieSpace struct {
 	// Time when the Genie space was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -1461,13 +1483,14 @@ type GenieSpace struct {
 	// ETag for this space. Pass this value back in the update request to
 	// prevent overwriting concurrent changes.
 	Etag string `json:"etag,omitempty"`
-	// Parent folder path of the Genie Space
+	// Path of the workspace folder that contains the space.
 	ParentPath string `json:"parent_path,omitempty"`
-	// The contents of the Genie Space in serialized string form. This field is
-	// excluded in List Genie spaces responses. Use the [Get Genie
-	// Space](:method:genie/getspace) API to retrieve an example response, which
-	// includes the `serialized_space` field. This field provides the structure
-	// of the JSON string that represents the space's layout and components.
+	// Configuration of the space (data sources, instructions, sample questions
+	// and benchmarks) as a JSON string. [Get Genie
+	// Space](:method:genie/getspace) returns it only when
+	// `include_serialized_space` is true, and List Genie spaces never returns
+	// it. For the JSON format and its validation rules, see
+	// https://docs.databricks.com/aws/en/genie-agents/conversation-api.
 	SerializedSpace string `json:"serialized_space,omitempty"`
 	// Genie space ID
 	SpaceId string `json:"space_id"`
@@ -1476,7 +1499,8 @@ type GenieSpace struct {
 	// Time when the Genie space was last modified, matching the value shown in
 	// the Genie Agent UI.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
-	// Warehouse associated with the Genie Space
+	// ID of the SQL warehouse that runs the queries Genie generates for this
+	// space.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1511,10 +1535,11 @@ func (s GenieStartConversationMessageRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GenieStartConversationResponse struct {
+	// The newly created conversation.
 	Conversation *GenieConversation `json:"conversation,omitempty"`
 	// Conversation ID
 	ConversationId string `json:"conversation_id"`
-
+	// The first message of the conversation, in its initial state.
 	Message *GenieMessage `json:"message,omitempty"`
 	// Message ID
 	MessageId string `json:"message_id"`
@@ -1544,7 +1569,7 @@ func (s *GenieTrashSpaceRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GenieUpdateSpaceRequest struct {
-	// Optional description
+	// New description for the space, up to 16384 bytes.
 	Description string `json:"description,omitempty"`
 	// ETag returned by a previous GET or UPDATE. When set, the update will fail
 	// if the space has been modified since. Omit to apply the update
@@ -1552,17 +1577,19 @@ type GenieUpdateSpaceRequest struct {
 	Etag string `json:"etag,omitempty"`
 	// Parent workspace folder path to move this Genie space under.
 	ParentPath string `json:"parent_path,omitempty"`
-	// The contents of the Genie Space in serialized string form (full
-	// replacement). Use the [Get Genie Space](:method:genie/getspace) API to
-	// retrieve an example response, which includes the `serialized_space`
-	// field. This field provides the structure of the JSON string that
-	// represents the space's layout and components.
+	// New configuration of the space as a JSON string. It replaces the whole
+	// configuration; when omitted, the current configuration is kept. Start
+	// from the value that [Get Genie Space](:method:genie/getspace) returns
+	// when `include_serialized_space` is true. For the JSON format and its
+	// validation rules, see
+	// https://docs.databricks.com/aws/en/genie-agents/conversation-api.
 	SerializedSpace string `json:"serialized_space,omitempty"`
 	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
-	// Optional title override
+	// New display name for the space. Cannot be empty or contain a slash.
 	Title string `json:"title,omitempty"`
-	// Optional warehouse override
+	// ID of the SQL warehouse that runs the queries Genie generates for the
+	// space.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1837,8 +1864,9 @@ func (s ListSubscriptionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type MessageError struct {
+	// A human-readable description of the error.
 	Error string `json:"error,omitempty"`
-
+	// The category of the error.
 	Type MessageErrorType `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2229,10 +2257,11 @@ func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
 }
 
 type QueryAttachmentParameter struct {
+	// The name of the parameter as referenced in the SQL query.
 	Keyword string `json:"keyword,omitempty"`
-
+	// The SQL type of the parameter value.
 	SqlType string `json:"sql_type,omitempty"`
-
+	// The value bound to the parameter.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

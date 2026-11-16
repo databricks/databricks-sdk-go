@@ -43,6 +43,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/softwareartifacts"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sql"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/statementexecutionv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/tags"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/vectorsearch"
@@ -183,6 +184,7 @@ func NewMockWorkspaceClient(t interface {
 			Shares:                              sharing.NewMockSharesInterface(t),
 			SoftwareArtifacts:                   softwareartifacts.NewMockSoftwareArtifactsInterface(t),
 			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
+			StatementExecutionV2:                statementexecutionv2.NewMockStatementExecutionV2Interface(t),
 			StorageCredentials:                  catalog.NewMockStorageCredentialsInterface(t),
 			SupervisorAgents:                    supervisoragents.NewMockSupervisorAgentsInterface(t),
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
@@ -1340,6 +1342,14 @@ func (m *MockWorkspaceClient) GetMockStatementExecutionAPI() *sql.MockStatementE
 	api, ok := m.WorkspaceClient.StatementExecution.(*sql.MockStatementExecutionInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected StatementExecution to be *sql.MockStatementExecutionInterface, actual was %T", m.WorkspaceClient.StatementExecution))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockStatementExecutionV2API() *statementexecutionv2.MockStatementExecutionV2Interface {
+	api, ok := m.WorkspaceClient.StatementExecutionV2.(*statementexecutionv2.MockStatementExecutionV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected StatementExecutionV2 to be *statementexecutionv2.MockStatementExecutionV2Interface, actual was %T", m.WorkspaceClient.StatementExecutionV2))
 	}
 	return api
 }

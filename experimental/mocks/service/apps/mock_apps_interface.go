@@ -912,6 +912,74 @@ func (_c *MockAppsInterface_Get_Call) RunAndReturn(run func(ctx context.Context,
 	return _c
 }
 
+// GetAppDeploymentScanFinding provides a mock function for the type MockAppsInterface
+func (_mock *MockAppsInterface) GetAppDeploymentScanFinding(ctx context.Context, request apps.GetAppDeploymentScanFindingRequest) (*apps.AppDeploymentScanFinding, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetAppDeploymentScanFinding")
+	}
+
+	var r0 *apps.AppDeploymentScanFinding
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, apps.GetAppDeploymentScanFindingRequest) (*apps.AppDeploymentScanFinding, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, apps.GetAppDeploymentScanFindingRequest) *apps.AppDeploymentScanFinding); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.AppDeploymentScanFinding)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, apps.GetAppDeploymentScanFindingRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAppsInterface_GetAppDeploymentScanFinding_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAppDeploymentScanFinding'
+type MockAppsInterface_GetAppDeploymentScanFinding_Call struct {
+	*mock.Call
+}
+
+// GetAppDeploymentScanFinding is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.GetAppDeploymentScanFindingRequest
+func (_e *MockAppsInterface_Expecter) GetAppDeploymentScanFinding(ctx any, request any) *MockAppsInterface_GetAppDeploymentScanFinding_Call {
+	return &MockAppsInterface_GetAppDeploymentScanFinding_Call{Call: _e.mock.On("GetAppDeploymentScanFinding", ctx, request)}
+}
+
+func (_c *MockAppsInterface_GetAppDeploymentScanFinding_Call) Run(run func(ctx context.Context, request apps.GetAppDeploymentScanFindingRequest)) *MockAppsInterface_GetAppDeploymentScanFinding_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 apps.GetAppDeploymentScanFindingRequest
+		if args[1] != nil {
+			arg1 = args[1].(apps.GetAppDeploymentScanFindingRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_GetAppDeploymentScanFinding_Call) Return(appDeploymentScanFinding *apps.AppDeploymentScanFinding, err error) *MockAppsInterface_GetAppDeploymentScanFinding_Call {
+	_c.Call.Return(appDeploymentScanFinding, err)
+	return _c
+}
+
+func (_c *MockAppsInterface_GetAppDeploymentScanFinding_Call) RunAndReturn(run func(ctx context.Context, request apps.GetAppDeploymentScanFindingRequest) (*apps.AppDeploymentScanFinding, error)) *MockAppsInterface_GetAppDeploymentScanFinding_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByName provides a mock function for the type MockAppsInterface
 func (_mock *MockAppsInterface) GetByName(ctx context.Context, name string) (*apps.App, error) {
 	ret := _mock.Called(ctx, name)
@@ -1725,6 +1793,133 @@ func (_c *MockAppsInterface_ListAll_Call) RunAndReturn(run func(ctx context.Cont
 	return _c
 }
 
+// ListAppDeploymentScanFindings provides a mock function for the type MockAppsInterface
+func (_mock *MockAppsInterface) ListAppDeploymentScanFindings(ctx context.Context, request apps.ListAppDeploymentScanFindingsRequest) listing.Iterator[apps.AppDeploymentScanFinding] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAppDeploymentScanFindings")
+	}
+
+	var r0 listing.Iterator[apps.AppDeploymentScanFinding]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, apps.ListAppDeploymentScanFindingsRequest) listing.Iterator[apps.AppDeploymentScanFinding]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[apps.AppDeploymentScanFinding])
+		}
+	}
+	return r0
+}
+
+// MockAppsInterface_ListAppDeploymentScanFindings_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAppDeploymentScanFindings'
+type MockAppsInterface_ListAppDeploymentScanFindings_Call struct {
+	*mock.Call
+}
+
+// ListAppDeploymentScanFindings is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.ListAppDeploymentScanFindingsRequest
+func (_e *MockAppsInterface_Expecter) ListAppDeploymentScanFindings(ctx any, request any) *MockAppsInterface_ListAppDeploymentScanFindings_Call {
+	return &MockAppsInterface_ListAppDeploymentScanFindings_Call{Call: _e.mock.On("ListAppDeploymentScanFindings", ctx, request)}
+}
+
+func (_c *MockAppsInterface_ListAppDeploymentScanFindings_Call) Run(run func(ctx context.Context, request apps.ListAppDeploymentScanFindingsRequest)) *MockAppsInterface_ListAppDeploymentScanFindings_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 apps.ListAppDeploymentScanFindingsRequest
+		if args[1] != nil {
+			arg1 = args[1].(apps.ListAppDeploymentScanFindingsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_ListAppDeploymentScanFindings_Call) Return(iterator listing.Iterator[apps.AppDeploymentScanFinding]) *MockAppsInterface_ListAppDeploymentScanFindings_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockAppsInterface_ListAppDeploymentScanFindings_Call) RunAndReturn(run func(ctx context.Context, request apps.ListAppDeploymentScanFindingsRequest) listing.Iterator[apps.AppDeploymentScanFinding]) *MockAppsInterface_ListAppDeploymentScanFindings_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListAppDeploymentScanFindingsAll provides a mock function for the type MockAppsInterface
+func (_mock *MockAppsInterface) ListAppDeploymentScanFindingsAll(ctx context.Context, request apps.ListAppDeploymentScanFindingsRequest) ([]apps.AppDeploymentScanFinding, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAppDeploymentScanFindingsAll")
+	}
+
+	var r0 []apps.AppDeploymentScanFinding
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, apps.ListAppDeploymentScanFindingsRequest) ([]apps.AppDeploymentScanFinding, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, apps.ListAppDeploymentScanFindingsRequest) []apps.AppDeploymentScanFinding); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]apps.AppDeploymentScanFinding)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, apps.ListAppDeploymentScanFindingsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAppsInterface_ListAppDeploymentScanFindingsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAppDeploymentScanFindingsAll'
+type MockAppsInterface_ListAppDeploymentScanFindingsAll_Call struct {
+	*mock.Call
+}
+
+// ListAppDeploymentScanFindingsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.ListAppDeploymentScanFindingsRequest
+func (_e *MockAppsInterface_Expecter) ListAppDeploymentScanFindingsAll(ctx any, request any) *MockAppsInterface_ListAppDeploymentScanFindingsAll_Call {
+	return &MockAppsInterface_ListAppDeploymentScanFindingsAll_Call{Call: _e.mock.On("ListAppDeploymentScanFindingsAll", ctx, request)}
+}
+
+func (_c *MockAppsInterface_ListAppDeploymentScanFindingsAll_Call) Run(run func(ctx context.Context, request apps.ListAppDeploymentScanFindingsRequest)) *MockAppsInterface_ListAppDeploymentScanFindingsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 apps.ListAppDeploymentScanFindingsRequest
+		if args[1] != nil {
+			arg1 = args[1].(apps.ListAppDeploymentScanFindingsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_ListAppDeploymentScanFindingsAll_Call) Return(appDeploymentScanFindings []apps.AppDeploymentScanFinding, err error) *MockAppsInterface_ListAppDeploymentScanFindingsAll_Call {
+	_c.Call.Return(appDeploymentScanFindings, err)
+	return _c
+}
+
+func (_c *MockAppsInterface_ListAppDeploymentScanFindingsAll_Call) RunAndReturn(run func(ctx context.Context, request apps.ListAppDeploymentScanFindingsRequest) ([]apps.AppDeploymentScanFinding, error)) *MockAppsInterface_ListAppDeploymentScanFindingsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListDeployments provides a mock function for the type MockAppsInterface
 func (_mock *MockAppsInterface) ListDeployments(ctx context.Context, request apps.ListAppDeploymentsRequest) listing.Iterator[apps.AppDeployment] {
 	ret := _mock.Called(ctx, request)
@@ -2489,6 +2684,74 @@ func (_c *MockAppsInterface_Update_Call) Return(app *apps.App, err error) *MockA
 }
 
 func (_c *MockAppsInterface_Update_Call) RunAndReturn(run func(ctx context.Context, request apps.UpdateAppRequest) (*apps.App, error)) *MockAppsInterface_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateAppDeploymentScanFinding provides a mock function for the type MockAppsInterface
+func (_mock *MockAppsInterface) UpdateAppDeploymentScanFinding(ctx context.Context, request apps.UpdateAppDeploymentScanFindingRequest) (*apps.AppDeploymentScanFinding, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateAppDeploymentScanFinding")
+	}
+
+	var r0 *apps.AppDeploymentScanFinding
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, apps.UpdateAppDeploymentScanFindingRequest) (*apps.AppDeploymentScanFinding, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, apps.UpdateAppDeploymentScanFindingRequest) *apps.AppDeploymentScanFinding); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.AppDeploymentScanFinding)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, apps.UpdateAppDeploymentScanFindingRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAppsInterface_UpdateAppDeploymentScanFinding_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateAppDeploymentScanFinding'
+type MockAppsInterface_UpdateAppDeploymentScanFinding_Call struct {
+	*mock.Call
+}
+
+// UpdateAppDeploymentScanFinding is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.UpdateAppDeploymentScanFindingRequest
+func (_e *MockAppsInterface_Expecter) UpdateAppDeploymentScanFinding(ctx any, request any) *MockAppsInterface_UpdateAppDeploymentScanFinding_Call {
+	return &MockAppsInterface_UpdateAppDeploymentScanFinding_Call{Call: _e.mock.On("UpdateAppDeploymentScanFinding", ctx, request)}
+}
+
+func (_c *MockAppsInterface_UpdateAppDeploymentScanFinding_Call) Run(run func(ctx context.Context, request apps.UpdateAppDeploymentScanFindingRequest)) *MockAppsInterface_UpdateAppDeploymentScanFinding_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 apps.UpdateAppDeploymentScanFindingRequest
+		if args[1] != nil {
+			arg1 = args[1].(apps.UpdateAppDeploymentScanFindingRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_UpdateAppDeploymentScanFinding_Call) Return(appDeploymentScanFinding *apps.AppDeploymentScanFinding, err error) *MockAppsInterface_UpdateAppDeploymentScanFinding_Call {
+	_c.Call.Return(appDeploymentScanFinding, err)
+	return _c
+}
+
+func (_c *MockAppsInterface_UpdateAppDeploymentScanFinding_Call) RunAndReturn(run func(ctx context.Context, request apps.UpdateAppDeploymentScanFindingRequest) (*apps.AppDeploymentScanFinding, error)) *MockAppsInterface_UpdateAppDeploymentScanFinding_Call {
 	_c.Call.Return(run)
 	return _c
 }

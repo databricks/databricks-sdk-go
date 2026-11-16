@@ -76,15 +76,27 @@ func (s CustomTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A Database Catalog registers a Postgres database that lives in a Lakebase
+// database instance as a catalog in Unity Catalog, so that the database's
+// schemas and tables are governed and discoverable through Unity Catalog. For
+// an overview, see
+// https://docs.databricks.com/aws/en/oltp/projects/register-uc.
 type DatabaseCatalog struct {
+	// If true, the database named in database_name is created in the instance
+	// when it does not already exist, with the calling user as its owner.
+	// Defaults to false.
 	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
 	// The name of the DatabaseInstance housing the database.
 	DatabaseInstanceName string `json:"database_instance_name"`
-	// The name of the database (in an instance) associated with the catalog.
+	// The name of the Postgres database in the instance that the catalog
+	// registers. The database must already exist unless
+	// create_database_if_not_exists is true. The system databases postgres,
+	// databricks_system, template0 and template1 cannot be registered.
 	DatabaseName string `json:"database_name"`
-	// The name of the catalog in UC.
+	// The name of the catalog in Unity Catalog.
 	Name string `json:"name"`
-
+	// An immutable UUID identifier for the catalog, assigned when the catalog
+	// is created.
 	Uid string `json:"uid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -98,9 +110,15 @@ func (s DatabaseCatalog) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A short-lived credential for connecting to database instances with the
+// caller's Databricks identity.
 type DatabaseCredential struct {
+	// The time at which the token expires. Tokens are valid for one hour after
+	// they are issued, and a new token is needed to open connections after that
+	// time.
 	ExpirationTime string `json:"expiration_time,omitempty"`
-
+	// The OAuth token to use as the Postgres password when connecting to a
+	// database instance.
 	Token string `json:"token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -118,6 +136,7 @@ func (s DatabaseCredential) MarshalJSON() ([]byte, error) {
 // compute and storage.
 type DatabaseInstance struct {
 	// The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8".
+	// Must be set when creating an instance.
 	Capacity string `json:"capacity,omitempty"`
 	// The refs of the child instances. This is only available if the instance
 	// is parent instance.
@@ -127,10 +146,11 @@ type DatabaseInstance struct {
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
 	// Custom tags associated with the instance. This field is only included on
-	// create and update responses.
+	// create and update responses. An instance can have at most 10 tags; keys
+	// must be unique ignoring case.
 	CustomTags []CustomTag `json:"custom_tags,omitempty"`
-	// Deprecated. The sku of the instance; this field will always match the
-	// value of capacity. This is an output only field that contains the value
+	// Deprecated: this field always matches the value of capacity; read
+	// capacity instead. This is an output only field that contains the value
 	// computed from the input field combined with server side defaults. Use the
 	// field without the effective_ prefix to set the value.
 	EffectiveCapacity string `json:"effective_capacity,omitempty"`
@@ -175,18 +195,21 @@ type DatabaseInstance struct {
 	// false.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// Whether to enable secondaries to serve read-only traffic. Defaults to
-	// false.
+	// false. Requires a node_count greater than 1.
 	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
 	// The name of the instance. This is the unique identifier for the instance.
+	// Must be 1 to 63 characters long, contain only letters, digits and
+	// hyphens, start with a letter, and not contain consecutive hyphens.
 	Name string `json:"name"`
 	// The number of nodes in the instance, composed of 1 primary and 0 or more
 	// secondaries. Defaults to 1 primary and 0 secondaries. This field is input
 	// only, see effective_node_count for the output.
 	NodeCount int `json:"node_count,omitempty"`
 	// The ref of the parent instance. This is only available if the instance is
-	// child instance. Input: For specifying the parent instance to create a
-	// child instance. Optional. Output: Only populated if provided as input to
-	// create a child instance.
+	// a child instance. A child instance inherits custom_tags and
+	// usage_policy_id from its parent and cannot set them. Input: For
+	// specifying the parent instance to create a child instance. Optional.
+	// Output: Only populated if provided as input to create a child instance.
 	ParentInstanceRef *DatabaseInstanceRef `json:"parent_instance_ref,omitempty"`
 	// The version of Postgres running on the instance.
 	PgVersion string `json:"pg_version,omitempty"`
@@ -202,7 +225,8 @@ type DatabaseInstance struct {
 	// The current state of the instance.
 	State DatabaseInstanceState `json:"state,omitempty"`
 	// Whether to stop the instance. An input only param, see effective_stopped
-	// for the output.
+	// for the output. An instance cannot be created in the stopped state; set
+	// this field on update to stop or start the instance.
 	Stopped bool `json:"stopped,omitempty"`
 	// An immutable UUID identifier for the instance.
 	Uid string `json:"uid,omitempty"`
@@ -446,24 +470,26 @@ func (f *DatabaseInstanceState) Type() string {
 	return "DatabaseInstanceState"
 }
 
+// A database table is a table that already exists in a Postgres database of a
+// Lakebase database instance and is registered in Unity Catalog, so that it is
+// governed and discoverable there while the Postgres table remains the source
+// of truth. Unlike a synced table, no data is copied from a Unity Catalog
+// source table into Postgres.
 type DatabaseTable struct {
-	// Name of the target database instance. This is required when creating
-	// database tables in standard catalogs. This is optional when creating
-	// database tables in registered catalogs. If this field is specified when
-	// creating database tables in registered catalogs, the database instance
-	// name MUST match that of the registered catalog (or the request will be
-	// rejected).
+	// The name of the database instance that hosts the Postgres table. It must
+	// be set when creating a database table.
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
-	// Target Postgres database object (logical database) name for this table.
-	//
-	// When creating a table in a standard catalog, this field is required. In
-	// this scenario, specifying this field will allow targeting an arbitrary
-	// postgres database.
-	//
-	// Registration of database tables via /database/tables is currently only
-	// supported in standard catalogs.
+	// The name of the Postgres database in the instance that contains the
+	// table. It must be set when creating a database table. Tables in the
+	// system databases postgres, databricks_system, template0 and template1,
+	// and tables in the schemas pg_catalog and information_schema, cannot be
+	// registered.
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
-	// Full three-part (catalog, schema, table) name of the table.
+	// Full three-part (catalog, schema, table) name of the table in Unity
+	// Catalog. The catalog must be a standard or default storage catalog;
+	// database tables cannot be registered in a database catalog. The schema
+	// and table parts must match the schema and table names of the Postgres
+	// table that is registered.
 	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -478,6 +504,7 @@ func (s DatabaseTable) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteDatabaseCatalogRequest struct {
+	// The Unity Catalog name of the catalog to delete.
 	Name string `json:"-" url:"-"`
 }
 
@@ -487,14 +514,13 @@ func (s *DeleteDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
 
 type DeleteDatabaseInstanceRequest struct {
 	// By default, an instance cannot be deleted if it has descendant instances
-	// created via PITR. If this flag is specified as true, all descendent
-	// instances will be deleted as well.
+	// created via PITR. Setting this flag to true is not supported and the
+	// request is rejected; delete the child instances first.
 	Force bool `json:"-" url:"force,omitempty"`
 	// Name of the instance to delete.
 	Name string `json:"-" url:"-"`
-	// Deprecated. Omitting the field or setting it to true will result in the
-	// field being hard deleted. Setting a value of false will throw a bad
-	// request.
+	// Deprecated: omitting the field or setting it to true hard deletes the
+	// instance. Setting it to false returns a bad request.
 	Purge bool `json:"-" url:"purge,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -531,6 +557,8 @@ func (s DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteDatabaseTableRequest struct {
+	// Specifies the database table by its full three-part (catalog, schema,
+	// table) name.
 	Name string `json:"-" url:"-"`
 }
 
@@ -539,9 +567,12 @@ func (s *DeleteDatabaseTableRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteSyncedDatabaseTableRequest struct {
+	// Specifies the synced table by its full three-part (catalog, schema,
+	// table) name.
 	Name string `json:"-" url:"-"`
-	// Optional. When set to true, the actual PostgreSQL table will be dropped
-	// from the database.
+	// When true, the Postgres table is also dropped from the database. When
+	// false, the synced table is unregistered from Unity Catalog and its
+	// pipeline stops syncing it, but the Postgres table and its data are kept.
 	PurgeData bool `json:"-" url:"purge_data,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -575,7 +606,7 @@ func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
 }
 
 type FindDatabaseInstanceByUidRequest struct {
-	// UID of the cluster to get.
+	// UID of the instance to get, as returned in the uid field of the instance.
 	Uid string `json:"-" url:"uid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -591,17 +622,19 @@ func (s FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
 
 // Generates a credential that can be used to access database instances
 type GenerateDatabaseCredentialRequest struct {
-	// A set of UC permissions to add to the credential. We verify that the
-	// caller has the necessary permissions in UC and include a reference in the
-	// token. Postgres uses that token to give the connecting user additional
-	// grants to the Postgres resources that correspond to the UC resources. The
-	// UC resources need to be something that have a Postgres counterpart. For
-	// example, a synced table or a table in a UC database catalog.
+	// Unity Catalog permissions to embed in the credential. Databricks verifies
+	// that the caller holds each permission in Unity Catalog and records a
+	// reference to it in the token. When the user connects, Postgres grants
+	// them the matching privileges on the Postgres objects that back those
+	// Unity Catalog resources. Each resource must have a Postgres counterpart,
+	// such as a synced table or a table in a database catalog.
 	Claims []RequestedClaims `json:"claims,omitempty"`
-	// Instances to request a credential for. At least one of instance_names or
-	// claims must be specified.
+	// Names of the database instances to connect to with the credential. Every
+	// named instance must exist in the workspace, or the request fails. At
+	// least one of instance_names or claims must be specified.
 	InstanceNames []string `json:"instance_names,omitempty"`
-
+	// A client-generated identifier for this request, such as a UUID. The
+	// request fails when it is omitted.
 	RequestId string `json:"request_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -616,6 +649,7 @@ func (s GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetDatabaseCatalogRequest struct {
+	// The Unity Catalog name of the catalog to retrieve.
 	Name string `json:"-" url:"-"`
 }
 
@@ -624,7 +658,7 @@ func (s *GetDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetDatabaseInstanceRequest struct {
-	// Name of the cluster to get.
+	// Name of the instance to get.
 	Name string `json:"-" url:"-"`
 }
 
@@ -643,6 +677,8 @@ func (s *GetDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetDatabaseTableRequest struct {
+	// Specifies the database table by its full three-part (catalog, schema,
+	// table) name.
 	Name string `json:"-" url:"-"`
 }
 
@@ -651,6 +687,8 @@ func (s *GetDatabaseTableRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetSyncedDatabaseTableRequest struct {
+	// Specifies the synced table by its full three-part (catalog, schema,
+	// table) name.
 	Name string `json:"-" url:"-"`
 }
 
@@ -731,7 +769,8 @@ func (s ListDatabaseInstanceRolesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListDatabaseInstancesRequest struct {
-	// Upper bound for items returned. The maximum value is 100.
+	// Upper bound for items returned. Defaults to 100, which is also the
+	// maximum value.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Pagination token to go to the next page of Database Instances. Requests
 	// first page if absent.
@@ -924,8 +963,11 @@ func (f *ProvisioningPhase) Type() string {
 }
 
 type RequestedClaims struct {
+	// The level of access that the credential grants on the listed resources.
+	// READ_ONLY covers SELECT on each table, along with USE SCHEMA on its
+	// schema and USE CATALOG on its catalog.
 	PermissionSet RequestedClaimsPermissionSet `json:"permission_set,omitempty"`
-
+	// The Unity Catalog resources that the permission set applies to.
 	Resources []RequestedResource `json:"resources,omitempty"`
 }
 
@@ -933,7 +975,7 @@ func (s *RequestedClaims) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// Might add WRITE in the future
+// The level of access that a claim grants on its resources.
 type RequestedClaimsPermissionSet string
 
 const RequestedClaimsPermissionSetReadOnly RequestedClaimsPermissionSet = `READ_ONLY`
@@ -969,6 +1011,8 @@ func (f *RequestedClaimsPermissionSet) Type() string {
 }
 
 type RequestedResource struct {
+	// The full three-level Unity Catalog name of the database table or synced
+	// table, in the form catalog.schema.table.
 	TableName string `json:"table_name,omitempty"`
 
 	UnspecifiedResourceName string `json:"unspecified_resource_name,omitempty"`
@@ -984,8 +1028,16 @@ func (s RequestedResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A synced table is a Postgres table in a Lakebase database instance that
+// Databricks keeps in sync with a source table in Unity Catalog. A data
+// synchronization pipeline loads the source data and then applies later changes
+// according to the scheduling policy, so the table can serve low-latency
+// queries without a hand-built ETL process. For an overview, see
+// https://docs.databricks.com/aws/en/oltp/projects/sync-tables.
 type SyncedDatabaseTable struct {
-	// Synced Table data synchronization status
+	// Reports the status of the data synchronization pipeline that keeps this
+	// table in sync with its source, including the pipeline ID and the position
+	// of the last successful sync.
 	DataSynchronizationStatus *SyncedTableStatus `json:"data_synchronization_status,omitempty"`
 	// Name of the target database instance. This is required when creating
 	// synced database tables in standard catalogs. This is optional when
@@ -995,11 +1047,11 @@ type SyncedDatabaseTable struct {
 	// the request will be rejected).
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
 	// The name of the database instance that this table is registered to. This
-	// field is always returned, and for tables inside database catalogs is
-	// inferred database instance associated with the catalog. This is an output
-	// only field that contains the value computed from the input field combined
-	// with server side defaults. Use the field without the effective_ prefix to
-	// set the value.
+	// field is always returned; for tables inside database catalogs it is the
+	// database instance associated with the catalog. This is an output only
+	// field that contains the value computed from the input field combined with
+	// server side defaults. Use the field without the effective_ prefix to set
+	// the value.
 	EffectiveDatabaseInstanceName string `json:"effective_database_instance_name,omitempty"`
 	// The name of the logical database that this table is registered to. This
 	// is an output only field that contains the value computed from the input
@@ -1016,12 +1068,13 @@ type SyncedDatabaseTable struct {
 	//
 	// When creating a synced table in a standard catalog, this field is
 	// required. In this scenario, specifying this field will allow targeting an
-	// arbitrary postgres database. Note that this has implications for the
-	// `create_database_objects_is_missing` field in `spec`.
+	// arbitrary postgres database. If this database does not exist yet, it is
+	// created when `create_database_objects_if_missing` in `spec` is true.
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`
-
+	// Specifies the source table, the key columns and how the data
+	// synchronization pipeline runs.
 	Spec *SyncedTableSpec `json:"spec,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
@@ -1068,7 +1121,6 @@ func (s SyncedTableContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
 // OFFLINE_FAILED or the SYNCED_PIPELINE_FAILED state.
 type SyncedTableFailedStatus struct {
 	// The last source table Delta version that was successfully synced to the
-	// synced table. The last source table Delta version that was synced to the
 	// synced table. Only populated if the table is still synced and available
 	// for serving.
 	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
@@ -1117,6 +1169,8 @@ func (s SyncedTablePipelineProgress) MarshalJSON() ([]byte, error) {
 }
 
 type SyncedTablePosition struct {
+	// Identifies the position in the source Delta table at the time of the last
+	// successful sync.
 	DeltaTableSyncInfo *DeltaTableSyncInfo `json:"delta_table_sync_info,omitempty"`
 	// The end timestamp of the most recent successful synchronization. This is
 	// the time when the data is available in the synced table.
@@ -1197,7 +1251,8 @@ type SyncedTableSpec struct {
 	// workspace-level enablement.
 	AcceleratedSync bool `json:"accelerated_sync,omitempty"`
 	// If true, the synced table's logical database and schema resources in PG
-	// will be created if they do not already exist.
+	// will be created if they do not already exist. The request fails if this
+	// is false and the database or schema does not exist.
 	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
 	// At most one of existing_pipeline_id and new_pipeline_spec should be
 	// defined.
@@ -1218,14 +1273,25 @@ type SyncedTableSpec struct {
 	// requires write permissions, whereas the source table only requires read
 	// permissions.
 	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
-	// Primary Key columns to be used for data insert/update in the destination.
+	// The primary key columns are used to insert and update rows in the
+	// destination table. At least one column is required. Rows whose primary
+	// key columns contain null values are not synced, and the primary key
+	// cannot be changed after the table is created.
 	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
-	// Scheduling policy of the underlying pipeline.
+	// Specifies the scheduling policy of the underlying pipeline. With
+	// CONTINUOUS, the pipeline keeps running and applies source changes as they
+	// happen. With TRIGGERED and SNAPSHOT, the pipeline stops after the initial
+	// load and syncs again only when it is run (manually, on a schedule or from
+	// a job); TRIGGERED applies source changes incrementally, while SNAPSHOT
+	// copies the full source table on every run. CONTINUOUS and TRIGGERED
+	// require the source table to provide a change data feed.
 	SchedulingPolicy SyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
 	SourceTableFullName string `json:"source_table_full_name,omitempty"`
-	// Time series key to deduplicate (tie-break) rows with the same primary
-	// key.
+	// The time series key deduplicates (tie-breaks) rows with the same primary
+	// key. When primary key values can repeat in the source table, the synced
+	// table keeps only the row with the latest value of this column for each
+	// primary key. The key cannot be changed after the table is created.
 	TimeseriesKey string `json:"timeseries_key,omitempty"`
 	// Override the default Delta->PG type mapping for specific columns. A
 	// TypeOverride with PG_SPECIFIC_TYPE_UNSPECIFIED is rejected; a valid
@@ -1375,10 +1441,16 @@ func (f *SyncedTableState) Type() string {
 
 // Status of a synced table.
 type SyncedTableStatus struct {
+	// Provides detailed status for an online table with the CONTINUOUS
+	// scheduling policy. It is populated when detailed_state is
+	// SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE or
+	// SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES.
 	ContinuousUpdateStatus *SyncedTableContinuousUpdateStatus `json:"continuous_update_status,omitempty"`
 	// The state of the synced table.
 	DetailedState SyncedTableState `json:"detailed_state,omitempty"`
-
+	// Provides detailed status for a table whose data synchronization pipeline
+	// has failed. It is populated when detailed_state is
+	// SYNCED_TABLE_OFFLINE_FAILED or SYNCED_TABLE_ONLINE_PIPELINE_FAILED.
 	FailedStatus *SyncedTableFailedStatus `json:"failed_status,omitempty"`
 	// Summary of the last successful synchronization from source to
 	// destination.
@@ -1400,9 +1472,16 @@ type SyncedTableStatus struct {
 	// the client (in the case of bin packing), or generated by the server (when
 	// creating a new pipeline).
 	PipelineId string `json:"pipeline_id,omitempty"`
-
+	// Provides detailed status while the table is being provisioned. It is
+	// populated when detailed_state is
+	// SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES or
+	// SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT.
 	ProvisioningStatus *SyncedTableProvisioningStatus `json:"provisioning_status,omitempty"`
-
+	// Provides detailed status for an online table with the TRIGGERED or
+	// SNAPSHOT scheduling policy. It is populated when detailed_state is
+	// SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE,
+	// SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE or
+	// SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES.
 	TriggeredUpdateStatus *SyncedTableTriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1443,7 +1522,7 @@ func (s SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
 type UpdateDatabaseCatalogRequest struct {
 	// Note that updating a database catalog is not yet supported.
 	DatabaseCatalog DatabaseCatalog `json:"database_catalog"`
-	// The name of the catalog in UC.
+	// The name of the catalog in Unity Catalog.
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. Setting this field is not yet supported.
 	UpdateMask string `json:"-" url:"update_mask"`
@@ -1454,12 +1533,15 @@ func (s *UpdateDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateDatabaseInstanceRequest struct {
+	// Specifies the instance to update, identified by its name.
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
 	// The name of the instance. This is the unique identifier for the instance.
+	// Must be 1 to 63 characters long, contain only letters, digits and
+	// hyphens, start with a letter, and not contain consecutive hyphens.
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. If unspecified, all fields will be updated
-	// when possible. To wipe out custom_tags, specify custom_tags in the
-	// update_mask with an empty custom_tags map.
+	// when possible. Use "*" to update every field. To wipe out custom_tags,
+	// specify custom_tags in the update_mask with an empty custom_tags list.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 

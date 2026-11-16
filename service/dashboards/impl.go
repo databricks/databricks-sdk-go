@@ -585,12 +585,8 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 	return &subscription, err
 }
 
-// List dashboards.
-//
-// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-// in addition to Workspace access.
-//
-// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
+// List the dashboards that the caller can view. Each entry carries summary
+// metadata only; use Get dashboard to retrieve a dashboard's full definition.
 func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
 
 	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListDashboardsResponse, error) {
@@ -615,12 +611,8 @@ func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) 
 	return iterator
 }
 
-// List dashboards.
-//
-// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-// in addition to Workspace access.
-//
-// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
+// List the dashboards that the caller can view. Each entry carries summary
+// metadata only; use Get dashboard to retrieve a dashboard's full definition.
 func (a *lakeviewImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Dashboard](ctx, iterator)

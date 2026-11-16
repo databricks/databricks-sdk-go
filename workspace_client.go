@@ -43,6 +43,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/softwareartifacts"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/statementexecutionv2"
 	"github.com/databricks/databricks-sdk-go/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
@@ -1116,6 +1117,13 @@ type WorkspaceClient struct {
 	// We suggest beginning with the [Databricks SQL Statement Execution API
 	// tutorial].
 	//
+	// **Lakehouse//RT warehouses**
+	//
+	// You can run statements on [Lakehouse//RT] warehouses with this API. For
+	// lower latency and higher concurrency, use version 2 of this API,
+	// Statement Execution (Lakehouse//RT), instead. It works the same way,
+	// except that `warehouse_id` is a path parameter.
+	//
 	// **Overview of statement execution and result fetching**
 	//
 	// Statement execution begins by issuing a
@@ -1223,7 +1231,22 @@ type WorkspaceClient struct {
 	//
 	// [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 	// [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
+	// [Lakehouse//RT]: https://docs.databricks.com/compute/sql-warehouse/real-time.html
 	StatementExecution sql.StatementExecutionInterface
+
+	// The Statement Execution API v2 can be used to execute SQL statements on a
+	// SQL warehouse and fetch the result. It works the same as the Statement
+	// Execution API (v1), except that `warehouse_id` is a path parameter on
+	// every call, including polling, fetching result chunks, and canceling.
+	// Routing on the warehouse ID gives lower latency and higher concurrency.
+	//
+	// Version 2 currently supports [Lakehouse//RT] warehouses only. For other
+	// warehouse types, use the Statement Execution API (v1). You can also run
+	// statements on Lakehouse//RT warehouses with version 1, but version 2 is
+	// optimized for them.
+	//
+	// [Lakehouse//RT]: https://docs.databricks.com/compute/sql-warehouse/real-time.html
+	StatementExecutionV2 statementexecutionv2.StatementExecutionV2Interface
 
 	// A storage credential represents an authentication and authorization
 	// mechanism for accessing data stored on your cloud tenant. Each storage
@@ -1639,6 +1662,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Shares:                              sharing.NewShares(databricksClient),
 		SoftwareArtifacts:                   softwareartifacts.NewSoftwareArtifacts(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),
+		StatementExecutionV2:                statementexecutionv2.NewStatementExecutionV2(databricksClient),
 		StorageCredentials:                  catalog.NewStorageCredentials(databricksClient),
 		SupervisorAgents:                    supervisoragents.NewSupervisorAgents(databricksClient),
 		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),

@@ -24,7 +24,7 @@ type AppsService interface {
 	// GetAppUpdate method.
 	CreateUpdate(ctx context.Context, request AsyncUpdateAppRequest) (*AppUpdate, error)
 
-	// Deletes an app.
+	// Deletes an app and the dedicated service principal created for it.
 	Delete(ctx context.Context, request DeleteAppRequest) (*App, error)
 
 	// Deletes the thumbnail for an app.
@@ -38,6 +38,9 @@ type AppsService interface {
 
 	// Retrieves information for the app with the supplied name.
 	Get(ctx context.Context, request GetAppRequest) (*App, error)
+
+	// Retrieves a single security scan finding for an app deployment.
+	GetAppDeploymentScanFinding(ctx context.Context, request GetAppDeploymentScanFindingRequest) (*AppDeploymentScanFinding, error)
 
 	// Retrieves information for the app deployment with the supplied name and
 	// deployment id.
@@ -62,6 +65,9 @@ type AppsService interface {
 	// Lists all apps in the workspace.
 	List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error)
 
+	// Lists the security scan findings for an app deployment.
+	ListAppDeploymentScanFindings(ctx context.Context, request ListAppDeploymentScanFindingsRequest) (*ListAppDeploymentScanFindingsResponse, error)
+
 	// Lists all app deployments for the app with the supplied name.
 	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
 
@@ -82,6 +88,10 @@ type AppsService interface {
 	// Updates the app with the supplied name. This is a full replacement:
 	// fields omitted from the request are cleared, so send the complete app.
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
+
+	// Updates the triage status (resolved / ignored / in-progress) of a single
+	// scan finding.
+	UpdateAppDeploymentScanFinding(ctx context.Context, request UpdateAppDeploymentScanFindingRequest) (*AppDeploymentScanFinding, error)
 
 	// Updates the thumbnail for an app.
 	UpdateAppThumbnail(ctx context.Context, request UpdateAppThumbnailRequest) (*AppThumbnail, error)

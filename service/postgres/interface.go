@@ -33,7 +33,12 @@ type PostgresService interface {
 	// Creates a new database branch in the project.
 	CreateBranch(ctx context.Context, request CreateBranchRequest) (*Operation, error)
 
-	// Register a Postgres database in the Unity Catalog.
+	// Registers a Postgres database from a Lakebase project branch as a catalog
+	// in Unity Catalog, so that its schemas, tables and views are governed and
+	// discoverable through Unity Catalog. The catalog is read-only; the data
+	// stays managed through Postgres. Returns a long-running operation. Poll it
+	// until done is true; its response holds the new catalog. For an overview,
+	// see https://docs.databricks.com/aws/en/oltp/projects/register-uc.
 	CreateCatalog(ctx context.Context, request CreateCatalogRequest) (*Operation, error)
 
 	// Create a CDF configuration that materializes the change data feed for all
@@ -51,14 +56,20 @@ type PostgresService interface {
 	// databases.
 	CreateDatabase(ctx context.Context, request CreateDatabaseRequest) (*Operation, error)
 
-	// Creates a new compute endpoint in the branch.
+	// Creates a compute endpoint in the branch. Each branch gets its read-write
+	// endpoint when the branch is created, so use this method to add read-only
+	// endpoints (read replicas) or, with `replace_existing`, to reconfigure the
+	// existing read-write endpoint.
 	CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Operation, error)
 
 	// Creates a migration.
 	CreateMigration(ctx context.Context, request CreateMigrationRequest) (*Operation, error)
 
 	// Creates a new Lakebase Autoscaling Postgres database project, which
-	// contains branches and compute endpoints.
+	// contains branches and compute endpoints. The new project starts with a
+	// single branch, a read-write compute endpoint on that branch, a Postgres
+	// database named `databricks_postgres`, and a Postgres role for the calling
+	// identity.
 	CreateProject(ctx context.Context, request CreateProjectRequest) (*Operation, error)
 
 	// Creates a new Postgres role in the branch.
@@ -74,7 +85,9 @@ type PostgresService interface {
 	// Deletes the specified database branch.
 	DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error)
 
-	// Delete a Database Catalog.
+	// Deletes the catalog from Unity Catalog. The Postgres database and its
+	// tables remain in the branch, and the database can be registered again
+	// afterwards. Returns a long-running operation. Poll it until done is true.
 	DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) (*Operation, error)
 
 	// Delete a CDF configuration and stop materializing the change data feed.
@@ -89,13 +102,19 @@ type PostgresService interface {
 	// Delete a Database.
 	DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error)
 
-	// Deletes the specified compute endpoint.
+	// Deletes the specified compute endpoint. Deletion is permanent. Only
+	// read-only endpoints can be deleted this way, because a branch's
+	// read-write endpoint is deleted together with the branch. To stop the
+	// compute costs of a read-write endpoint without deleting the branch, set
+	// `spec.disabled` to true.
 	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*Operation, error)
 
 	// Soft-deletes a migration.
 	DeleteMigration(ctx context.Context, request DeleteMigrationRequest) (*Operation, error)
 
-	// Deletes the specified database project.
+	// Deletes the specified database project. By default the project is
+	// soft-deleted and can be restored with Undelete during its retention
+	// period; set `purge` to delete it permanently.
 	DeleteProject(ctx context.Context, request DeleteProjectRequest) (*Operation, error)
 
 	// Deletes the specified Postgres role.
@@ -116,7 +135,8 @@ type PostgresService interface {
 	// Retrieves information about the specified database branch.
 	GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error)
 
-	// Get a Database Catalog.
+	// Gets the catalog with the given name. The status reports the Postgres
+	// database, project and branch that the catalog registers.
 	GetCatalog(ctx context.Context, request GetCatalogRequest) (*Catalog, error)
 
 	// Get a single Lakebase CDF configuration, including the source Postgres
@@ -179,7 +199,8 @@ type PostgresService interface {
 	// List Databases.
 	ListDatabases(ctx context.Context, request ListDatabasesRequest) (*ListDatabasesResponse, error)
 
-	// Returns a paginated list of compute endpoints in the branch.
+	// Lists the compute endpoints in the branch, including its read-write
+	// endpoint and any read-only endpoints.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointsResponse, error)
 
 	// Lists migrations in the workspace.
@@ -210,7 +231,10 @@ type PostgresService interface {
 	// Restores a soft-deleted migration before it is permanently purged.
 	UndeleteMigration(ctx context.Context, request UndeleteMigrationRequest) (*Operation, error)
 
-	// Undeletes a soft-deleted project.
+	// Restores a soft-deleted project together with its branches and their
+	// data, compute endpoints, Postgres databases and roles, project settings,
+	// and permissions. A project can be restored until its `purge_time`; after
+	// that it is permanently deleted and cannot be recovered.
 	UndeleteProject(ctx context.Context, request UndeleteProjectRequest) (*Operation, error)
 
 	// Updates the specified database branch. You can set this branch as the
@@ -223,14 +247,17 @@ type PostgresService interface {
 	// Update a Database.
 	UpdateDatabase(ctx context.Context, request UpdateDatabaseRequest) (*Operation, error)
 
-	// Updates the specified compute endpoint. You can update autoscaling
-	// limits, suspend timeout, or enable/disable the compute endpoint.
+	// Updates the configuration of the specified compute endpoint. Only the
+	// `spec` fields named in `update_mask` change, and `spec.endpoint_type`
+	// cannot be changed. The endpoint keeps its hostnames across updates, so
+	// existing connection strings stay valid.
 	UpdateEndpoint(ctx context.Context, request UpdateEndpointRequest) (*Operation, error)
 
 	// Updates user-owned migration configuration.
 	UpdateMigration(ctx context.Context, request UpdateMigrationRequest) (*Operation, error)
 
-	// Updates the specified database project.
+	// Updates the configuration of the specified database project. Only the
+	// fields named in `update_mask` change.
 	UpdateProject(ctx context.Context, request UpdateProjectRequest) (*Operation, error)
 
 	// Updates the mutable fields of a Postgres role for a branch.

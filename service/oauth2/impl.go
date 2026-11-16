@@ -152,7 +152,7 @@ func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomApp
 }
 
 // Get the list of custom OAuth app integrations for the specified Databricks
-// account
+// account.
 func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomAppIntegrationsRequest) listing.Iterator[GetCustomAppIntegrationOutput] {
 
 	getNextPage := func(ctx context.Context, req ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
@@ -178,7 +178,7 @@ func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomA
 }
 
 // Get the list of custom OAuth app integrations for the specified Databricks
-// account
+// account.
 func (a *customAppIntegrationImpl) ListAll(ctx context.Context, request ListCustomAppIntegrationsRequest) ([]GetCustomAppIntegrationOutput, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[GetCustomAppIntegrationOutput](ctx, iterator)
