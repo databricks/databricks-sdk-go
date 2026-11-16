@@ -712,14 +712,18 @@ type NotificationDestinationsService interface {
 	// Deletes a notification destination. Requires workspace admin permissions.
 	Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error
 
-	// Gets a notification destination.
+	// Gets a notification destination by ID. Workspace admins also receive its
+	// config.
 	Get(ctx context.Context, request GetNotificationDestinationRequest) (*NotificationDestination, error)
 
-	// Lists notification destinations.
+	// Lists the notification destinations in the workspace. Results never
+	// include a destination's config; workspace admins can retrieve it with
+	// Get.
 	List(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error)
 
 	// Updates a notification destination. Requires workspace admin permissions.
-	// At least one field is required in the request body.
+	// At least one field is required in the request body. A config provided in
+	// the request replaces the existing one.
 	Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error)
 }
 

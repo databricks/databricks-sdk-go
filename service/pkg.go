@@ -340,6 +340,8 @@
 //
 // - [sql.StatementExecutionAPI]: The Databricks SQL Statement Execution API can be used to execute SQL statements on a SQL warehouse and fetch the result.
 //
+// - [statementexecutionv2.StatementExecutionV2API]: The Statement Execution API v2 can be used to execute SQL statements on a SQL warehouse and fetch the result.
+//
 // - [provisioning.StorageAPI]: These APIs manage storage configurations for this workspace.
 //
 // - [catalog.StorageCredentialsAPI]: A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant.
@@ -442,6 +444,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/softwareartifacts"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/statementexecutionv2"
 	"github.com/databricks/databricks-sdk-go/service/supervisoragents"
 	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
@@ -623,6 +626,7 @@ var (
 	_ *softwareartifacts.SoftwareArtifactsAPI             = nil
 	_ *settings.SqlResultsDownloadAPI                     = nil
 	_ *sql.StatementExecutionAPI                          = nil
+	_ *statementexecutionv2.StatementExecutionV2API       = nil
 	_ *provisioning.StorageAPI                            = nil
 	_ *catalog.StorageCredentialsAPI                      = nil
 	_ *catalog.AccountStorageCredentialsAPI               = nil

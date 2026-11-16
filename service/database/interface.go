@@ -40,12 +40,23 @@ type DatabaseService interface {
 	// [Create a role]: https://docs.databricks.com/api/postgres/v1/create-role
 	CreateDatabaseInstanceRole(ctx context.Context, request CreateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
 
-	// Create a Database Table. Useful for registering pre-existing PG tables in
-	// UC. See CreateSyncedDatabaseTable for creating synced tables in PG from a
-	// source table in UC.
+	// Create a Database Table. This registers a table that already exists in a
+	// Postgres database of a database instance as a table in Unity Catalog. The
+	// Postgres database, schema and table must already exist; the request does
+	// not create them. Repeating the request for the same table succeeds, and a
+	// request for a name that is already registered from a different database
+	// or instance fails. To create a Postgres table from a Unity Catalog source
+	// table instead, use [Create a Synced Database Table].
+	//
+	// [Create a Synced Database Table]: https://docs.databricks.com/api/workspace/database/createsynceddatabasetable
 	CreateDatabaseTable(ctx context.Context, request CreateDatabaseTableRequest) (*DatabaseTable, error)
 
 	// Create a Synced Database Table.
+	//
+	// The table and its data synchronization pipeline are provisioned
+	// asynchronously. The response reflects the initial state; use Get a Synced
+	// Database Table to follow the data synchronization status until the table
+	// is online.
 	//
 	// For new workloads, Databricks recommends the Postgres API equivalent:
 	// [Create a synced table].
@@ -53,7 +64,8 @@ type DatabaseService interface {
 	// [Create a synced table]: https://docs.databricks.com/api/postgres/v1/create-synced-table
 	CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
 
-	// Delete a Database Catalog.
+	// Delete a Database Catalog. This removes the catalog from Unity Catalog,
+	// while the Postgres database and its tables remain in the instance.
 	//
 	// For new workloads, Databricks recommends the Postgres API equivalent:
 	// [Delete a catalog].
@@ -77,7 +89,12 @@ type DatabaseService interface {
 	// [Delete a role]: https://docs.databricks.com/api/postgres/v1/delete-role
 	DeleteDatabaseInstanceRole(ctx context.Context, request DeleteDatabaseInstanceRoleRequest) error
 
-	// Delete a Database Table.
+	// Delete a Database Table. This removes the table from Unity Catalog only;
+	// the Postgres table and its data are kept. Tables in a database catalog
+	// cannot be deleted with this method, and synced tables must be deleted
+	// with [Delete a Synced Database Table].
+	//
+	// [Delete a Synced Database Table]: https://docs.databricks.com/api/workspace/database/deletesynceddatabasetable
 	DeleteDatabaseTable(ctx context.Context, request DeleteDatabaseTableRequest) error
 
 	// Delete a Synced Database Table.
@@ -88,14 +105,18 @@ type DatabaseService interface {
 	// [Delete a synced table]: https://docs.databricks.com/api/postgres/v1/delete-synced-table
 	DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error
 
-	// Find a Database Instance by uid.
+	// Find a Database Instance by its uid rather than by name.
 	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
 
-	// Generates a credential that can be used to access database instances.
+	// Generates a short-lived OAuth token for connecting to database instances.
+	// Connect with the caller's Databricks identity as the Postgres user and
+	// the returned token as the password. For details about OAuth token
+	// authentication, see [About authentication].
 	//
 	// For new workloads, Databricks recommends the Postgres API equivalent:
 	// [Generate a database credential].
 	//
+	// [About authentication]: https://docs.databricks.com/aws/en/oltp/projects/authentication
 	// [Generate a database credential]: https://docs.databricks.com/api/postgres/v1/generate-database-credential
 	GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error)
 
@@ -123,7 +144,11 @@ type DatabaseService interface {
 	// [Get a role]: https://docs.databricks.com/api/postgres/v1/get-role
 	GetDatabaseInstanceRole(ctx context.Context, request GetDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
 
-	// Get a Database Table.
+	// Get a Database Table. The request fails if the name refers to a synced
+	// table or to a table that is not a database table; for synced tables, use
+	// [Get a Synced Database Table].
+	//
+	// [Get a Synced Database Table]: https://docs.databricks.com/api/workspace/database/getsynceddatabasetable
 	GetDatabaseTable(ctx context.Context, request GetDatabaseTableRequest) (*DatabaseTable, error)
 
 	// Get a Synced Database Table.

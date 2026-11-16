@@ -1,5 +1,23 @@
 # Version changelog
 
+## Release v0.200.0 (2026-11-16)
+
+### API Changes
+* Add [statementexecutionv2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/statementexecutionv2) package.
+* Add [w.StatementExecutionV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/statementexecutionv2#StatementExecutionV2API) workspace-level service.
+* Add `GetAppDeploymentScanFinding`, `ListAppDeploymentScanFindings` and `UpdateAppDeploymentScanFinding` methods for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppsAPI) workspace-level service.
+* Add `ScanOmittedCountIsLowerBound`, `ScanOmittedFindingsCount` and `ScanStatus` fields for [apps.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppDeployment).
+* Add `ImageUri` field for [compute.Environment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Environment).
+* Add `IcebergTableSource` field for [ml.DataSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DataSource).
+* Add `Testing` field for [pipelines.ClonePipelineRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ClonePipelineRequest).
+* Add `Testing` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+* Add `Testing` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+* Add `Testing` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+* Add `TestOnly` and `TestOptions` fields for [pipelines.StartUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#StartUpdate).
+* Add `TestOnly` field for [pipelines.UpdateInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#UpdateInfo).
+* Add `Overwrite` field for [sandbox.UploadFileRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#UploadFileRequest).
+* Add `Day` enum value for [billing.AlertConfigurationTimePeriod](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#AlertConfigurationTimePeriod).
+
 ## Release v0.199.0 (2026-11-12)
 
 ### API Changes

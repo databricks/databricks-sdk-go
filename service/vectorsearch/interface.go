@@ -30,7 +30,9 @@ type VectorSearchEndpointsService interface {
 	// List all AI Search endpoints in the workspace.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error)
 
-	// Update an endpoint
+	// Update the Target QPS of a STANDARD endpoint. The response is the updated
+	// endpoint; its scaling_info shows whether the resulting scaling change is
+	// applied or still in progress.
 	PatchEndpoint(ctx context.Context, request PatchEndpointRequest) (*EndpointInfo, error)
 
 	// Retrieve user-visible metrics for an endpoint
@@ -50,7 +52,7 @@ type VectorSearchEndpointsService interface {
 	// indexes until it is started.
 	StopEndpoint(ctx context.Context, request StopEndpointRequest) (*EndpointInfo, error)
 
-	// Update the budget policy of an endpoint
+	// Update the budget policy that the endpoint's usage is attributed to.
 	UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error)
 
 	// Update the custom tags of an endpoint.

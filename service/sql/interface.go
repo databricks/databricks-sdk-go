@@ -292,7 +292,7 @@ type DbsqlPermissionsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueriesService interface {
 
-	// Creates a query.
+	// Creates a query. The caller becomes the owner of the new query.
 	Create(ctx context.Context, request CreateQueryRequest) (*Query, error)
 
 	// Moves a query to the trash. Trashed queries immediately disappear from
@@ -312,7 +312,10 @@ type QueriesService interface {
 	// Gets a list of visualizations on a query.
 	ListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error)
 
-	// Updates a query.
+	// Updates the fields of a query named in `update_mask`. Changing
+	// `owner_user_name` requires workspace admin privileges. Changing
+	// `run_as_mode` requires CAN MANAGE permission on the query, and only the
+	// query owner can switch it to `OWNER`.
 	Update(ctx context.Context, request UpdateQueryRequest) (*Query, error)
 }
 
@@ -484,6 +487,13 @@ type RedashConfigService interface {
 // We suggest beginning with the [Databricks SQL Statement Execution API
 // tutorial].
 //
+// **Lakehouse//RT warehouses**
+//
+// You can run statements on [Lakehouse//RT] warehouses with this API. For lower
+// latency and higher concurrency, use version 2 of this API, Statement
+// Execution (Lakehouse//RT), instead. It works the same way, except that
+// `warehouse_id` is a path parameter.
+//
 // **Overview of statement execution and result fetching**
 //
 // Statement execution begins by issuing a
@@ -587,6 +597,7 @@ type RedashConfigService interface {
 //
 // [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 // [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
+// [Lakehouse//RT]: https://docs.databricks.com/compute/sql-warehouse/real-time.html
 type StatementExecutionService interface {
 
 	// Requests that an executing statement be canceled. Callers must poll for

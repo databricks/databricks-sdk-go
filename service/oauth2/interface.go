@@ -101,7 +101,7 @@ type CustomAppIntegrationService interface {
 	Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error)
 
 	// Get the list of custom OAuth app integrations for the specified
-	// Databricks account
+	// Databricks account.
 	List(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error)
 
 	// Updates an existing custom OAuth App Integration. You can retrieve the

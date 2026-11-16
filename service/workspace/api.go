@@ -154,10 +154,12 @@ type ReposInterface interface {
 	// remote Git repo, unlike repos created in the browser.
 	Create(ctx context.Context, request CreateRepoRequest) (*CreateRepoResponse, error)
 
-	// Deletes the specified repo.
+	// Deletes the Git folder (repo) and its contents from the workspace. The remote
+	// Git repository is not affected.
 	Delete(ctx context.Context, request DeleteRepoRequest) error
 
-	// Deletes the specified repo.
+	// Deletes the Git folder (repo) and its contents from the workspace. The remote
+	// Git repository is not affected.
 	DeleteByRepoId(ctx context.Context, repoId int64) error
 
 	// Returns the repo with the given repo ID.
@@ -226,7 +228,8 @@ type ReposInterface interface {
 	SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error)
 
 	// Updates the repo to a different branch or tag, or updates the repo to the
-	// latest commit on the same branch.
+	// latest commit on the same branch. Exactly one of `branch` or `tag` must be
+	// specified.
 	Update(ctx context.Context, request UpdateRepoRequest) error
 
 	// Updates the permissions on a repo. Repos can inherit permissions from their
@@ -256,7 +259,8 @@ type ReposAPI struct {
 	reposImpl
 }
 
-// Deletes the specified repo.
+// Deletes the Git folder (repo) and its contents from the workspace. The remote
+// Git repository is not affected.
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
 	return a.reposImpl.Delete(ctx, DeleteRepoRequest{
 		RepoId: repoId,

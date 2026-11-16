@@ -40,7 +40,9 @@ func (s Command) MarshalJSON() ([]byte, error) {
 }
 
 type ComputeSpec struct {
-	// Idle duration after which the sandbox is automatically terminated.
+	// Idle time after which the sandbox is automatically stopped. Unset or 0
+	// disables inactivity auto-stop. Negative values are rejected. Can be
+	// changed on an existing sandbox with UpdateSandbox.
 	InactivityTimeout *duration.Duration `json:"inactivity_timeout,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -82,10 +84,13 @@ func (s *CreateDirectoryResponse) UnmarshalJSON(b []byte) error {
 }
 
 type CreateSandboxRequest struct {
-	// The sandbox to create.
+	// The sandbox to create. An empty body creates a sandbox with the default
+	// configuration.
 	Sandbox Sandbox `json:"sandbox"`
 	// Client-supplied ID that becomes the final path segment of the resource
-	// name.
+	// name. It must start with a lowercase letter, contain only lowercase
+	// letters, digits and hyphens, end with a letter or digit, and be at most
+	// 63 characters long. Values shaped like a UUID are rejected.
 	SandboxId string `json:"-" url:"sandbox_id"`
 }
 
@@ -121,6 +126,8 @@ func (s *DeletePathResponse) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteSandboxRequest struct {
+	// Resource name of the sandbox to delete, in the form
+	// `sandboxes/{sandbox_id}`.
 	Name string `json:"-" url:"-"`
 }
 
@@ -193,10 +200,12 @@ func (s DownloadFileResponse) MarshalJSON() ([]byte, error) {
 }
 
 type EnvironmentSpec struct {
-	// The Unity Catalog container image to use for the sandbox environment (for
-	// example, `catalog.schema.folder.image:tag`). See [Artifact Registry].
+	// The Unity Catalog container image to run the sandbox from, in the form
+	// `catalog.schema.artifact:tag`, or
+	// `catalog.schema.artifact@sha256:<digest>` to pin an exact version. When
+	// omitted, the sandbox runs the default sandbox image. See [custom images].
 	//
-	// [Artifact Registry]: https://docs.databricks.com/en/artifact-registry/
+	// [custom images]: https://docs.databricks.com/en/compute/serverless/sandbox-custom-image
 	ImageUri string `json:"image_uri,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -335,6 +344,8 @@ func (s *GetMetadataResponse) UnmarshalJSON(b []byte) error {
 }
 
 type GetSandboxRequest struct {
+	// Resource name of the sandbox to retrieve, in the form
+	// `sandboxes/{sandbox_id}`.
 	Name string `json:"-" url:"-"`
 }
 
@@ -423,8 +434,12 @@ func (s ListDirectoryContentsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListSandboxesRequest struct {
+	// Maximum number of sandboxes to return in one page. When unset or 0 the
+	// server returns up to 1000 sandboxes; values above 5000 are reduced to
+	// 5000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Page token from the `next_page_token` of a previous ListSandboxes
+	// response. Omit it to retrieve the first page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -440,8 +455,10 @@ func (s ListSandboxesRequest) MarshalJSON() ([]byte, error) {
 
 // A list of Sandboxes.
 type ListSandboxesResponse struct {
+	// Token for retrieving the next page of results. Empty when there are no
+	// more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
-
+	// Sandboxes in this page of results.
 	Sandboxes []Sandbox `json:"sandboxes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -477,13 +494,19 @@ func (s *RenamePathResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A Sandbox resource representing an execution environment.
+// An isolated, pre-configured, low-latency Serverless compute environment for
+// running code. Create a sandbox, wait until its state is
+// `SANDBOX_STATE_RUNNING`, then run commands in it with ExecuteCommandSync. The
+// data in its home directory persists across stop and start and is removed when
+// the sandbox is deleted. See [Databricks Sandbox].
+//
+// [Databricks Sandbox]: https://docs.databricks.com/en/compute/serverless/sandbox
 type Sandbox struct {
 	// Output only. The creation time of the sandbox.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Human-readable display label for the sandbox. At most 256 characters.
 	DisplayName string `json:"display_name,omitempty"`
-	// Metadata associated with the sandbox.
+	// Tags and other metadata associated with the sandbox.
 	Metadata *SandboxMetadata `json:"metadata,omitempty"`
 	// The sandbox resource name, in the form `sandboxes/{sandbox_id}`. Derived
 	// from `sandbox_id`; any value supplied in a create or update request body
@@ -598,10 +621,11 @@ func (s *SandboxMetadata) UnmarshalJSON(b []byte) error {
 }
 
 type SandboxSpec struct {
-	// Compute configuration (size, inactivity timeout) requested for the
-	// sandbox.
+	// Compute settings requested for the sandbox, such as the inactivity
+	// timeout.
 	Compute *ComputeSpec `json:"compute,omitempty"`
-	// The execution environment to use for the sandbox.
+	// Software environment for the sandbox, such as the container image it
+	// runs.
 	Environment *EnvironmentSpec `json:"environment,omitempty"`
 }
 
@@ -657,6 +681,15 @@ func (f *SandboxState) Type() string {
 
 type SandboxStatus struct {
 	// Lifecycle state of the sandbox.
+	//
+	// - `SANDBOX_STATE_PENDING`: The sandbox is being provisioned after a
+	// create or start request and cannot run commands yet. -
+	// `SANDBOX_STATE_RUNNING`: The sandbox is ready and commands can run in it.
+	// - `SANDBOX_STATE_STOPPING`: The sandbox is shutting down. It settles to
+	// `SANDBOX_STATE_STOPPED`, or disappears if it is being deleted. -
+	// `SANDBOX_STATE_STOPPED`: The sandbox is stopped, by a stop request,
+	// inactivity auto-stop, or a failed provisioning. Its home directory is
+	// kept and it can be started again with StartSandbox.
 	State SandboxState `json:"state,omitempty"`
 }
 
@@ -706,12 +739,23 @@ func (s *UpdateSandboxRequest) UnmarshalJSON(b []byte) error {
 type UploadFileRequest struct {
 	// The complete file contents. An empty body creates an empty file.
 	Contents io.ReadCloser `json:"-"`
+	// Whether to replace an existing file. Defaults to true when omitted. If
+	// false, the upload atomically creates the file only if the destination
+	// does not exist, equivalent to If-None-Match: *. An existing entry returns
+	// 412 Precondition Failed. Explicit true conflicts with If-None-Match: *.
+	Overwrite bool `json:"-" url:"overwrite,omitempty"`
 	// The sandbox resource name, in the form sandboxes/{sandbox_id}.
 	Parent string `json:"-" url:"-"`
 	// The absolute UTF-8 destination path inside the sandbox.
 	Path string `json:"-" url:"path"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UploadFileRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s UploadFileRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

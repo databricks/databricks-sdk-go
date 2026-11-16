@@ -899,7 +899,9 @@ type CreateIssueRequest struct {
 	// retry with the same ID fails with ALREADY_EXISTS rather than making a
 	// duplicate. The server generates one if unset.
 	IssueId string `json:"-" url:"issue_id,omitempty"`
-	// experiments/{experiment}
+	// The experiment to create the Issue in, as `experiments/{experiment}`,
+	// where `{experiment}` is the experiment ID. For example,
+	// `experiments/1234567890`.
 	Parent string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1313,6 +1315,8 @@ type DataSource struct {
 	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
 	// A data source composed from registered upstream Features.
 	FeatureViewSource *FeatureViewSource `json:"feature_view_source,omitempty"`
+	// A Unity Catalog managed or foreign Iceberg table source.
+	IcebergTableSource *IcebergTableSource `json:"iceberg_table_source,omitempty"`
 	// A Kafka stream data source.
 	KafkaSource *KafkaSource `json:"kafka_source,omitempty"`
 	// Completeness timing for this Feature's use of the source. This
@@ -2975,7 +2979,10 @@ func (s GetHistoryRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetIssueRequest struct {
-	// experiments/{experiment}/issues/{issue}
+	// The Issue to get, as `experiments/{experiment}/issues/{issue}`, where
+	// `{experiment}` is the experiment ID and `{issue}` is the Issue ID: `iss-`
+	// followed by 32 lowercase hex digits. For example,
+	// `experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef`.
 	Name string `json:"-" url:"-"`
 }
 
@@ -3271,6 +3278,38 @@ func (s HttpUrlSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A Unity Catalog managed or foreign Iceberg table, in Iceberg v2 or v3 format.
+// Table identity, format, schema, and permissions are resolved through Unity
+// Catalog.
+type IcebergTableSource struct {
+	// Schema of the resulting dataframe after transformations, in Spark
+	// StructType JSON format (from df.schema.json()). Required if
+	// transformation_sql is specified. Example:
+	// {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}
+	DataframeSchema string `json:"dataframe_schema,omitempty"`
+	// A single WHERE clause to filter the Iceberg table before applying
+	// transformations. The predicate is evaluated for each row.
+	FilterCondition string `json:"filter_condition,omitempty"`
+	// Full three-part name of the source table. May be omitted on reads when
+	// inaccessible.
+	FullName string `json:"full_name"`
+	// A single SQL SELECT expression applied after filter_condition. The
+	// expression must contain all required columns (e.g., "*, col_a + col_b AS
+	// col_c"). If transformation_sql is not provided, all columns of the
+	// Iceberg table are present in the DataSource dataframe.
+	TransformationSql string `json:"transformation_sql,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IcebergTableSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IcebergTableSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Configuration for the Databricks-managed ingestion pipeline. Groups the
 // ingestion destination (required) and optional backfill source.
 type IngestionConfig struct {
@@ -3398,7 +3437,10 @@ type Issue struct {
 	// clients must tolerate unknown and missing keys. At most 20 entries, with
 	// keys of at most 64 UTF-8 bytes.
 	Metadata map[string]string `json:"metadata,omitempty"`
-	// experiments/{experiment}/issues/{issue}
+	// The Issue's resource name, as `experiments/{experiment}/issues/{issue}`,
+	// where `{experiment}` is the experiment ID and `{issue}` is the Issue ID:
+	// `iss-` followed by 32 lowercase hex digits. For example,
+	// `experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef`.
 	Name string `json:"name,omitempty"`
 	// Cannot be cleared: an Issue without a severity would match no severity
 	// filter.
@@ -7055,7 +7097,9 @@ type SearchIssuesRequest struct {
 	// Expires after 15 minutes. Every other argument except `view` must match
 	// the request that returned the token.
 	PageToken string `json:"page_token,omitempty"`
-	// experiments/{experiment}
+	// The experiment to search, as `experiments/{experiment}`, where
+	// `{experiment}` is the experiment ID. For example,
+	// `experiments/1234567890`.
 	Parent string `json:"-" url:"-"`
 	// Case-insensitive substring match on title.
 	Query string `json:"query,omitempty"`
@@ -8250,7 +8294,10 @@ func (s UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
 type UpdateIssueRequest struct {
 	// `issue.name` identifies the target.
 	Issue Issue `json:"issue"`
-	// experiments/{experiment}/issues/{issue}
+	// The Issue's resource name, as `experiments/{experiment}/issues/{issue}`,
+	// where `{experiment}` is the experiment ID and `{issue}` is the Issue ID:
+	// `iss-` followed by 32 lowercase hex digits. For example,
+	// `experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef`.
 	Name string `json:"-" url:"-"`
 	// Accepts title, description, status, severity, categories, tags,
 	// last_seen_time, and metadata.<key>. A path with an empty value clears the

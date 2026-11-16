@@ -12,13 +12,19 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// An app that runs on Databricks Apps. The app runs on managed compute in the
+// workspace and is deployed from a workspace folder or a Git repository. Each
+// app acts as its own dedicated service principal.
 type App struct {
 	// The active deployment of the app. A deployment is considered active when
 	// it has been deployed to the app compute.
 	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
-
+	// Status of the application process on the app compute, as reported by the
+	// app runtime.
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
-
+	// ID of the serverless budget policy that the app's compute usage is
+	// attributed to. Budget policies and usage policies are alternatives: set
+	// at most one of `budget_policy_id` and `usage_policy_id`.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Maximum number of app instances the app is configured to run. Must be set
 	// together with `compute_min_instances`.
@@ -26,11 +32,13 @@ type App struct {
 	// Minimum number of app instances the app is configured to run. Must be set
 	// together with `compute_max_instances`.
 	ComputeMinInstances int `json:"compute_min_instances,omitempty"`
-
+	// Size of the compute instances the app runs on. Defaults to MEDIUM. Larger
+	// sizes provide more CPU and memory at a higher hourly cost. See
+	// https://docs.databricks.com/aws/en/dev-tools/databricks-apps/compute-size.
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
-
+	// Status of the compute that runs the app.
 	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
-	// The creation time of the app. Formatted timestamp in ISO 6801.
+	// The creation time of the app. Formatted timestamp in ISO 8601.
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user that created the app.
 	Creator string `json:"creator,omitempty"`
@@ -45,12 +53,14 @@ type App struct {
 	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	Description string `json:"description,omitempty"`
-
+	// ID of the budget policy in effect for the app, after Databricks applies
+	// any defaults.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Resources added to the app, plus the resources it inherits from its
 	// space. Empty for apps that are not in a space.
 	EffectiveResources []AppResource `json:"effective_resources,omitempty"`
-
+	// ID of the usage policy in effect for the app, after Databricks applies
+	// any defaults.
 	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.
 	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
@@ -70,38 +80,53 @@ type App struct {
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
-
+	// OAuth client ID of the app integration that signs in the app's users.
 	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
-
+	// ID of the OAuth app integration that Databricks creates for the app to
+	// sign in its users.
 	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
 	// The pending deployment of the app. A deployment is considered pending
 	// when it is being prepared for deployment to the app compute.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
-	// Resources for the app.
+	// Databricks resources the app depends on. Each entry grants the app's
+	// service principal the listed permission on one resource and makes that
+	// resource available to the app under the entry's name.
 	Resources []AppResource `json:"resources,omitempty"`
-
+	// OAuth client ID of the app's service principal. The app runtime exposes
+	// it to the app as the DATABRICKS_CLIENT_ID environment variable.
 	ServicePrincipalClientId string `json:"service_principal_client_id,omitempty"`
-
+	// Numeric ID of the service principal the app runs as. Databricks creates a
+	// dedicated service principal for each app and deletes it with the app.
+	// Apps in some older spaces run as the space's shared service principal
+	// instead.
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
-
+	// Display name of the app's service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
+	// Workspace file system path of the app source code. On create, the app is
+	// deployed from this path. Alternative to `git_source`.
 	SourceCodePath string `json:"source_code_path,omitempty"`
 	// Name of the space this app belongs to.
 	Space string `json:"space,omitempty"`
-
+	// Destinations that receive the app's OpenTelemetry logs, metrics and
+	// traces. Changes take effect when the app is next deployed.
 	TelemetryExportDestinations []TelemetryExportDestination `json:"telemetry_export_destinations,omitempty"`
 	// The URL of the thumbnail image for the app.
 	ThumbnailUrl string `json:"thumbnail_url,omitempty"`
-	// The update time of the app. Formatted timestamp in ISO 6801.
+	// The update time of the app. Formatted timestamp in ISO 8601.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The email of the user that last updated the app.
 	Updater string `json:"updater,omitempty"`
 	// The URL of the app once it is deployed.
 	Url string `json:"url,omitempty"`
-
+	// ID of the usage policy that the app's compute usage is attributed to.
+	// Alternative to `budget_policy_id`.
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
-
+	// API scopes the app requests for user authorization. The user access token
+	// that Databricks forwards to the app is limited to these scopes plus the
+	// default identity scopes, so the app can act on the user's behalf only
+	// within them. Workspace admins can restrict which scopes apps in the
+	// workspace may request. See
+	// https://docs.databricks.com/aws/en/dev-tools/databricks-apps/auth.
 	UserApiScopes []string `json:"user_api_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -181,6 +206,18 @@ type AppDeployment struct {
 	HealthCheck *AppHealthCheck `json:"health_check,omitempty"`
 	// The mode of which the deployment will manage the source code.
 	Mode AppDeploymentMode `json:"mode,omitempty"`
+	// Whether `scan_omitted_findings_count` is a lower bound rather than an
+	// exact count, because the scanner itself stopped counting.
+	ScanOmittedCountIsLowerBound bool `json:"scan_omitted_count_is_lower_bound,omitempty"`
+	// The number of findings the scan reported but did not store, because the
+	// deployment hit the per-deployment findings cap. Non-zero means the listed
+	// findings are incomplete.
+	ScanOmittedFindingsCount int `json:"scan_omitted_findings_count,omitempty"`
+	// The security scan outcome for this deployment. UNSPECIFIED means no scan
+	// result has been recorded: the scan may still be in flight, or it ended
+	// without recording one, so don't wait indefinitely for it to change. The
+	// other values are terminal.
+	ScanStatus AppDeploymentScanStatus `json:"scan_status,omitempty"`
 	// The workspace file system path of the source code used to create the app
 	// deployment. This is different from
 	// `deployment_artifacts.source_code_path`, which is the path used by the
@@ -256,6 +293,92 @@ func (f *AppDeploymentMode) Values() []AppDeploymentMode {
 // Type always returns AppDeploymentMode to satisfy [pflag.Value] interface
 func (f *AppDeploymentMode) Type() string {
 	return "AppDeploymentMode"
+}
+
+// A single security scan finding for an app deployment. Findings are produced
+// when a deployment's source code is scanned, and their triage `status` is
+// preserved across re-scans of the same deployment.
+type AppDeploymentScanFinding struct {
+	// The app-relative path of the file the finding was reported in.
+	FilePath string `json:"file_path,omitempty"`
+	// The stable id of the finding (the last segment of `name`), derived from
+	// the rule, file, and line so the same issue keeps its triage status across
+	// re-scans.
+	FindingId string `json:"finding_id,omitempty"`
+	// The line number the finding was reported at.
+	Line int `json:"line,omitempty"`
+	// A human-readable description of the finding.
+	Message string `json:"message,omitempty"`
+	// The resource name of the finding, in the form
+	// `apps/{app}/deployments/{deployment}/scanFindings/{finding_id}`.
+	Name string `json:"name"`
+	// The scanner rule that produced the finding.
+	RuleId string `json:"rule_id,omitempty"`
+	// The scanner that produced the finding.
+	ScannerType ScanFindingScannerType `json:"scanner_type,omitempty"`
+	// The severity reported by the scanner.
+	Severity ScanFindingSeverity `json:"severity,omitempty"`
+	// The triage status of the finding. This is the only client-writable field;
+	// set it to resolve or ignore a finding.
+	Status ScanFindingStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppDeploymentScanFinding) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppDeploymentScanFinding) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The security scan outcome for an app deployment, mirrored from the durable
+// scan record.
+type AppDeploymentScanStatus string
+
+const AppDeploymentScanStatusAppDeploymentScanStatusClean AppDeploymentScanStatus = `APP_DEPLOYMENT_SCAN_STATUS_CLEAN`
+
+const AppDeploymentScanStatusAppDeploymentScanStatusFindings AppDeploymentScanStatus = `APP_DEPLOYMENT_SCAN_STATUS_FINDINGS`
+
+const AppDeploymentScanStatusAppDeploymentScanStatusNotScanned AppDeploymentScanStatus = `APP_DEPLOYMENT_SCAN_STATUS_NOT_SCANNED`
+
+const AppDeploymentScanStatusAppDeploymentScanStatusPartial AppDeploymentScanStatus = `APP_DEPLOYMENT_SCAN_STATUS_PARTIAL`
+
+const AppDeploymentScanStatusAppDeploymentScanStatusUnavailable AppDeploymentScanStatus = `APP_DEPLOYMENT_SCAN_STATUS_UNAVAILABLE`
+
+// String representation for [fmt.Print]
+func (f *AppDeploymentScanStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppDeploymentScanStatus) Set(v string) error {
+	switch v {
+	case `APP_DEPLOYMENT_SCAN_STATUS_CLEAN`, `APP_DEPLOYMENT_SCAN_STATUS_FINDINGS`, `APP_DEPLOYMENT_SCAN_STATUS_NOT_SCANNED`, `APP_DEPLOYMENT_SCAN_STATUS_PARTIAL`, `APP_DEPLOYMENT_SCAN_STATUS_UNAVAILABLE`:
+		*f = AppDeploymentScanStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APP_DEPLOYMENT_SCAN_STATUS_CLEAN", "APP_DEPLOYMENT_SCAN_STATUS_FINDINGS", "APP_DEPLOYMENT_SCAN_STATUS_NOT_SCANNED", "APP_DEPLOYMENT_SCAN_STATUS_PARTIAL", "APP_DEPLOYMENT_SCAN_STATUS_UNAVAILABLE"`, v)
+	}
+}
+
+// Values returns all possible values for AppDeploymentScanStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppDeploymentScanStatus) Values() []AppDeploymentScanStatus {
+	return []AppDeploymentScanStatus{
+		AppDeploymentScanStatusAppDeploymentScanStatusClean,
+		AppDeploymentScanStatusAppDeploymentScanStatusFindings,
+		AppDeploymentScanStatusAppDeploymentScanStatusNotScanned,
+		AppDeploymentScanStatusAppDeploymentScanStatusPartial,
+		AppDeploymentScanStatusAppDeploymentScanStatusUnavailable,
+	}
+}
+
+// Type always returns AppDeploymentScanStatus to satisfy [pflag.Value] interface
+func (f *AppDeploymentScanStatus) Type() string {
+	return "AppDeploymentScanStatus"
 }
 
 type AppDeploymentState string
@@ -849,28 +972,31 @@ func (s *AppPermissionsRequest) UnmarshalJSON(b []byte) error {
 }
 
 type AppResource struct {
+	// Another app in the workspace that this app is granted access to.
 	App *AppResourceApp `json:"app,omitempty"`
-
+	// Lakebase Provisioned database the app is granted access to.
 	Database *AppResourceDatabase `json:"database,omitempty"`
 	// Description of the App Resource.
 	Description string `json:"description,omitempty"`
-
+	// MLflow experiment the app is granted access to.
 	Experiment *AppResourceExperiment `json:"experiment,omitempty"`
-
+	// Genie space the app is granted access to.
 	GenieSpace *AppResourceGenieSpace `json:"genie_space,omitempty"`
-
+	// Lakeflow job the app is granted access to.
 	Job *AppResourceJob `json:"job,omitempty"`
-	// Name of the App Resource.
+	// Key that identifies the resource within the app. The app configuration
+	// (app.yaml) references the resource by this key.
 	Name string `json:"name"`
-
+	// Lakebase Autoscaling Postgres database the app is granted access to.
 	Postgres *AppResourcePostgres `json:"postgres,omitempty"`
-
+	// Secret the app is granted access to.
 	Secret *AppResourceSecret `json:"secret,omitempty"`
-
+	// Model serving endpoint the app is granted access to.
 	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
-
+	// SQL warehouse the app is granted access to.
 	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
-
+	// Unity Catalog securable (volume, table, function, connection or model
+	// service) the app is granted a privilege on.
 	UcSecurable *AppResourceUcSecurable `json:"uc_securable,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -885,8 +1011,9 @@ func (s AppResource) MarshalJSON() ([]byte, error) {
 }
 
 type AppResourceApp struct {
+	// Name of the app to grant access to.
 	Name string `json:"name,omitempty"`
-
+	// Permission to grant on that app.
 	Permission AppResourceAppAppPermission `json:"permission,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -935,10 +1062,11 @@ func (f *AppResourceAppAppPermission) Type() string {
 }
 
 type AppResourceDatabase struct {
+	// Name of the database within the instance.
 	DatabaseName string `json:"database_name"`
-
+	// Name of the Lakebase database instance.
 	InstanceName string `json:"instance_name"`
-
+	// Permission to grant the app on the database.
 	Permission AppResourceDatabaseDatabasePermission `json:"permission"`
 }
 
@@ -981,8 +1109,9 @@ func (f *AppResourceDatabaseDatabasePermission) Type() string {
 }
 
 type AppResourceExperiment struct {
+	// ID of the MLflow experiment.
 	ExperimentId string `json:"experiment_id"`
-
+	// Permission to grant the app on the experiment.
 	Permission AppResourceExperimentExperimentPermission `json:"permission"`
 }
 
@@ -1032,9 +1161,9 @@ func (f *AppResourceExperimentExperimentPermission) Type() string {
 
 type AppResourceGenieSpace struct {
 	Name string `json:"name"`
-
+	// Permission to grant the app on the Genie space.
 	Permission AppResourceGenieSpaceGenieSpacePermission `json:"permission"`
-
+	// ID of the Genie space.
 	SpaceId string `json:"space_id"`
 }
 
@@ -1141,10 +1270,13 @@ func (f *AppResourceJobJobPermission) Type() string {
 }
 
 type AppResourcePostgres struct {
+	// Resource name of the Lakebase Autoscaling branch, in the form
+	// `projects/{project}/branches/{branch}`.
 	Branch string `json:"branch,omitempty"`
-
+	// Resource name of the database within the branch, in the form
+	// `projects/{project}/branches/{branch}/databases/{database}`.
 	Database string `json:"database,omitempty"`
-
+	// Permission to grant the app on the database.
 	Permission AppResourcePostgresPostgresPermission `json:"permission,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1353,13 +1485,17 @@ func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
 }
 
 type AppResourceUcSecurable struct {
+	// Privilege to grant the app on the securable. The privilege must be valid
+	// for the securable type, such as READ_VOLUME for a volume or SELECT for a
+	// table.
 	Permission AppResourceUcSecurableUcSecurablePermission `json:"permission"`
-
+	// Full name of the Unity Catalog securable. For volumes, tables and
+	// functions this is the three-level catalog.schema.object name.
 	SecurableFullName string `json:"securable_full_name"`
 	// The securable kind from Unity Catalog. See
 	// https://docs.databricks.com/api/workspace/tables/get#securable_kind_manifest-securable_kind.
 	SecurableKind string `json:"securable_kind,omitempty"`
-
+	// Kind of Unity Catalog securable that `securable_full_name` refers to.
 	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1484,7 +1620,10 @@ func (s AppThumbnail) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Progress of an app update started by AsyncUpdateApp, together with the values
+// the update requested.
 type AppUpdate struct {
+	// Budget policy ID requested by the update.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Maximum number of app instances the app is configured to run. Must be set
 	// together with `compute_min_instances`.
@@ -1492,24 +1631,24 @@ type AppUpdate struct {
 	// Minimum number of app instances the app is configured to run. Must be set
 	// together with `compute_max_instances`.
 	ComputeMinInstances int `json:"compute_min_instances,omitempty"`
-
+	// Compute size requested by the update.
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
-
+	// Description requested by the update.
 	Description string `json:"description,omitempty"`
 	// Forward the user's access token to the app. Requires stopping and
 	// starting app compute to take effect.
 	ForwardUserAccessToken bool `json:"forward_user_access_token,omitempty"`
-
+	// Git repository configuration requested by the update.
 	GitRepository *GitRepository `json:"git_repository,omitempty"`
-
+	// Resources requested by the update.
 	Resources []AppResource `json:"resources,omitempty"`
-
+	// Progress of the update.
 	Status *AppUpdateUpdateStatus `json:"status,omitempty"`
-
+	// Telemetry export destinations requested by the update.
 	TelemetryExportDestinations []TelemetryExportDestination `json:"telemetry_export_destinations,omitempty"`
-
+	// Usage policy ID requested by the update.
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
-
+	// User API scopes requested by the update.
 	UserApiScopes []string `json:"user_api_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1524,8 +1663,9 @@ func (s AppUpdate) MarshalJSON() ([]byte, error) {
 }
 
 type AppUpdateUpdateStatus struct {
+	// Human-readable detail about the update state.
 	Message string `json:"message,omitempty"`
-
+	// State of the update.
 	State AppUpdateUpdateStatusUpdateState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1626,7 +1766,7 @@ func (f *ApplicationState) Type() string {
 }
 
 type ApplicationStatus struct {
-	// Application status message
+	// Human-readable detail about the application state.
 	Message string `json:"message,omitempty"`
 	// The number of app instances whose application process is running.
 	RunningInstances int `json:"running_instances,omitempty"`
@@ -1645,9 +1785,15 @@ func (s ApplicationStatus) MarshalJSON() ([]byte, error) {
 }
 
 type AsyncUpdateAppRequest struct {
+	// The new values for the app. Only the fields named in `update_mask` are
+	// applied; the others must still be valid.
 	App *App `json:"app,omitempty"`
-
+	// The name of the app to update.
 	AppName string `json:"-" url:"-"`
+	// Comma-separated names of the `app` fields to update, such as
+	// `description` or `resources`. A field named in the mask but absent from
+	// `app` is cleared, except `compute_size`, which resets to `MEDIUM`.
+	//
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -1762,7 +1908,7 @@ type ComputeStatus struct {
 	// The number of active compute instances currently used and billed for this
 	// application.
 	ActiveInstances int `json:"active_instances,omitempty"`
-	// Compute status message
+	// Human-readable detail about the compute state.
 	Message string `json:"message,omitempty"`
 	// State of the app compute.
 	State ComputeState `json:"state,omitempty"`
@@ -2214,6 +2360,16 @@ func (s *GetAppDeploymentRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetAppDeploymentScanFindingRequest struct {
+	// The resource name of the finding, in the form
+	// `apps/{app}/deployments/{deployment}/scanFindings/{finding_id}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetAppDeploymentScanFindingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetAppPermissionLevelsRequest struct {
 	// The app for which to get or manage permissions.
 	AppName string `json:"-" url:"-"`
@@ -2342,6 +2498,45 @@ func (s *GitSource) UnmarshalJSON(b []byte) error {
 }
 
 func (s GitSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAppDeploymentScanFindingsRequest struct {
+	// Upper bound for the number of findings returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to request the next page. Requests the first page if
+	// absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The parent deployment whose findings to list, in the form
+	// `apps/{app}/deployments/{deployment}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAppDeploymentScanFindingsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAppDeploymentScanFindingsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response message for ListAppDeploymentScanFindings.
+type ListAppDeploymentScanFindingsResponse struct {
+	// The scan findings for the deployment.
+	AppDeploymentScanFindings []AppDeploymentScanFinding `json:"app_deployment_scan_findings,omitempty"`
+	// Pagination token to request the next page of findings.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAppDeploymentScanFindingsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAppDeploymentScanFindingsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2518,6 +2713,123 @@ func (s *Operation) UnmarshalJSON(b []byte) error {
 
 func (s Operation) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The scanner that produced a finding.
+type ScanFindingScannerType string
+
+const ScanFindingScannerTypeScanFindingScannerTypeSemgrep ScanFindingScannerType = `SCAN_FINDING_SCANNER_TYPE_SEMGREP`
+
+// String representation for [fmt.Print]
+func (f *ScanFindingScannerType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ScanFindingScannerType) Set(v string) error {
+	switch v {
+	case `SCAN_FINDING_SCANNER_TYPE_SEMGREP`:
+		*f = ScanFindingScannerType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SCAN_FINDING_SCANNER_TYPE_SEMGREP"`, v)
+	}
+}
+
+// Values returns all possible values for ScanFindingScannerType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ScanFindingScannerType) Values() []ScanFindingScannerType {
+	return []ScanFindingScannerType{
+		ScanFindingScannerTypeScanFindingScannerTypeSemgrep,
+	}
+}
+
+// Type always returns ScanFindingScannerType to satisfy [pflag.Value] interface
+func (f *ScanFindingScannerType) Type() string {
+	return "ScanFindingScannerType"
+}
+
+// Severity of a scan finding, as reported by the scanner.
+type ScanFindingSeverity string
+
+const ScanFindingSeverityScanFindingSeverityError ScanFindingSeverity = `SCAN_FINDING_SEVERITY_ERROR`
+
+const ScanFindingSeverityScanFindingSeverityInfo ScanFindingSeverity = `SCAN_FINDING_SEVERITY_INFO`
+
+const ScanFindingSeverityScanFindingSeverityWarning ScanFindingSeverity = `SCAN_FINDING_SEVERITY_WARNING`
+
+// String representation for [fmt.Print]
+func (f *ScanFindingSeverity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ScanFindingSeverity) Set(v string) error {
+	switch v {
+	case `SCAN_FINDING_SEVERITY_ERROR`, `SCAN_FINDING_SEVERITY_INFO`, `SCAN_FINDING_SEVERITY_WARNING`:
+		*f = ScanFindingSeverity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SCAN_FINDING_SEVERITY_ERROR", "SCAN_FINDING_SEVERITY_INFO", "SCAN_FINDING_SEVERITY_WARNING"`, v)
+	}
+}
+
+// Values returns all possible values for ScanFindingSeverity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ScanFindingSeverity) Values() []ScanFindingSeverity {
+	return []ScanFindingSeverity{
+		ScanFindingSeverityScanFindingSeverityError,
+		ScanFindingSeverityScanFindingSeverityInfo,
+		ScanFindingSeverityScanFindingSeverityWarning,
+	}
+}
+
+// Type always returns ScanFindingSeverity to satisfy [pflag.Value] interface
+func (f *ScanFindingSeverity) Type() string {
+	return "ScanFindingSeverity"
+}
+
+// User triage state for a single scan finding.
+type ScanFindingStatus string
+
+const ScanFindingStatusScanFindingStatusIgnored ScanFindingStatus = `SCAN_FINDING_STATUS_IGNORED`
+
+const ScanFindingStatusScanFindingStatusInProgress ScanFindingStatus = `SCAN_FINDING_STATUS_IN_PROGRESS`
+
+const ScanFindingStatusScanFindingStatusResolved ScanFindingStatus = `SCAN_FINDING_STATUS_RESOLVED`
+
+// String representation for [fmt.Print]
+func (f *ScanFindingStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ScanFindingStatus) Set(v string) error {
+	switch v {
+	case `SCAN_FINDING_STATUS_IGNORED`, `SCAN_FINDING_STATUS_IN_PROGRESS`, `SCAN_FINDING_STATUS_RESOLVED`:
+		*f = ScanFindingStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SCAN_FINDING_STATUS_IGNORED", "SCAN_FINDING_STATUS_IN_PROGRESS", "SCAN_FINDING_STATUS_RESOLVED"`, v)
+	}
+}
+
+// Values returns all possible values for ScanFindingStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ScanFindingStatus) Values() []ScanFindingStatus {
+	return []ScanFindingStatus{
+		ScanFindingStatusScanFindingStatusIgnored,
+		ScanFindingStatusScanFindingStatusInProgress,
+		ScanFindingStatusScanFindingStatusResolved,
+	}
+}
+
+// Type always returns ScanFindingStatus to satisfy [pflag.Value] interface
+func (f *ScanFindingStatus) Type() string {
+	return "ScanFindingStatus"
 }
 
 type Space struct {
@@ -2742,6 +3054,7 @@ func (s *StopAppRequest) UnmarshalJSON(b []byte) error {
 
 // A single telemetry export destination with its configuration and status.
 type TelemetryExportDestination struct {
+	// Unity Catalog tables that receive the telemetry.
 	UnityCatalog *UnityCatalog `json:"unity_catalog,omitempty"`
 }
 
@@ -2751,15 +3064,34 @@ func (s *TelemetryExportDestination) UnmarshalJSON(b []byte) error {
 
 // Unity Catalog Destinations for OTEL telemetry export.
 type UnityCatalog struct {
-	// Unity Catalog table for OTEL logs.
+	// Three-level name of the Unity Catalog table that receives OpenTelemetry
+	// logs. The table is created if it does not exist.
 	LogsTable string `json:"logs_table"`
-	// Unity Catalog table for OTEL metrics.
+	// Three-level name of the Unity Catalog table that receives OpenTelemetry
+	// metrics. The table is created if it does not exist.
 	MetricsTable string `json:"metrics_table"`
-	// Unity Catalog table for OTEL traces (spans).
+	// Three-level name of the Unity Catalog table that receives OpenTelemetry
+	// traces (spans). The table is created if it does not exist.
 	TracesTable string `json:"traces_table"`
 }
 
 func (s *UnityCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type UpdateAppDeploymentScanFindingRequest struct {
+	// The finding to update. `name` identifies the finding and `status` is the
+	// new triage status.
+	AppDeploymentScanFinding AppDeploymentScanFinding `json:"app_deployment_scan_finding"`
+	// The resource name of the finding, in the form
+	// `apps/{app}/deployments/{deployment}/scanFindings/{finding_id}`.
+	Name string `json:"-" url:"-"`
+	// The fields to update. Must be exactly `status`, the only updatable field
+	// on a scan finding.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateAppDeploymentScanFindingRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 

@@ -10,6 +10,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// The notification destinations that receive access requests for a Unity
+// Catalog securable. A securable without destinations of its own uses its
+// owner's email when default owner email destinations are on; otherwise it
+// inherits the destinations of its nearest parent that has any.
 type AccessRequestDestinations struct {
 	// Indicates whether any destinations are hidden from the caller due to a
 	// lack of permissions. This value is true if the caller does not have
@@ -21,14 +25,12 @@ type AccessRequestDestinations struct {
 	DestinationSourceSecurable *Securable `json:"destination_source_securable,omitempty"`
 	// The access request destinations for the securable.
 	Destinations []NotificationDestination `json:"destinations,omitempty"`
-	// The full name of the securable. Redundant with the name in the securable
-	// object, but necessary for Terraform integration
+	// The full name of the securable, repeated from **securable**.
 	FullName string `json:"full_name,omitempty"`
 	// The securable for which the access request destinations are being
 	// modified or read.
 	Securable Securable `json:"securable"`
-	// The type of the securable. Redundant with the type in the securable
-	// object, but necessary for Terraform integration
+	// The type of the securable, repeated from **securable** as a plain string.
 	SecurableType string `json:"securable_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -400,8 +402,8 @@ type AwsSqsQueue struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
-	// The AQS queue url in the format
-	// https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only
+	// The SQS queue URL in the format
+	// `https://sqs.{region}.amazonaws.com/{account id}/{queue name}`. Only
 	// required for provided_sqs.
 	QueueUrl string `json:"queue_url,omitempty"`
 
@@ -536,8 +538,8 @@ type AzureQueueStorage struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
-	// The AQS queue url in the format https://{storage
-	// account}.queue.core.windows.net/{queue name} Only required for
+	// The AQS queue URL in the format `https://{storage
+	// account}.queue.core.windows.net/{queue name}`. Only required for
 	// provided_aqs.
 	QueueUrl string `json:"queue_url,omitempty"`
 	// Optional resource group for the queue, event grid subscription, and
@@ -607,6 +609,8 @@ func (s *BatchCreateAccessRequestsRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// The access request destinations resolved for each principal and securable in
+// the batch.
 type BatchCreateAccessRequestsResponse struct {
 	// The access request destinations for each securable object the principal
 	// requested.
@@ -628,38 +632,66 @@ func (s *CancelRefreshRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A catalog is the first layer of Unity Catalog's three-level namespace and
+// groups the schemas, tables, volumes, and other data assets under it. Catalogs
+// created through this API are standard catalogs, Delta Sharing catalogs
+// created from a share, or foreign catalogs that mirror a database behind a
+// connection to an external data source.
 type CatalogInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	BrowseOnly bool `json:"browse_only,omitempty"`
-
+	// The server sets the catalog type from the create request. Catalogs
+	// created through this API are MANAGED_CATALOG (standard catalogs),
+	// DELTASHARING_CATALOG when created from a share with provider_name and
+	// share_name, or FOREIGN_CATALOG when created from a connection with
+	// connection_name. The remaining types are provisioned by Databricks.
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// The name of the connection to an external data source.
+	// Naming a connection to an external data source creates a foreign catalog
+	// that mirrors a database in that source, which requires ownership of or
+	// the CREATE FOREIGN CATALOG privilege on the connection.
+	// Connection-specific settings, such as the database to mirror, go in
+	// options. The connection cannot be changed after creation.
 	ConnectionName string `json:"connection_name,omitempty"`
 	// Time at which this catalog was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Custom maximum retention period in hours for the catalog
+	// Dropped objects in the catalog remain recoverable for this number of
+	// hours before they are permanently purged. The value applies to standard
+	// catalogs only, must be 0 or within the range allowed for the metastore,
+	// and is inherited by schemas and tables that do not set their own value.
 	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
-
+	// Indicates the predictive optimization setting that is in effect for the
+	// catalog once inherited values are resolved.
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-	// Whether predictive optimization should be enabled for this object and
-	// objects under it.
+	// Whether predictive optimization is enabled for this catalog and the
+	// objects under it. Valid values are ENABLE, DISABLE, and INHERIT, where
+	// INHERIT applies the account-level setting. Standard catalogs start as
+	// INHERIT and other catalog types as DISABLE. It cannot be set when
+	// creating a catalog; use the update method instead.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// The full name of the catalog. Corresponds with the name field.
 	FullName string `json:"full_name,omitempty"`
-	// Whether the current securable is accessible from all workspaces or a
-	// specific set of workspaces.
+	// Whether the catalog is accessible from all workspaces attached to the
+	// metastore (OPEN) or only from the workspaces bound to it (ISOLATED). It
+	// cannot be set when creating a catalog; change it with the update method
+	// and manage the bound workspaces with the workspace bindings API. See
+	// [Workspace-catalog binding].
+	//
+	// [Workspace-catalog binding]: https://docs.databricks.com/aws/en/catalogs/binding
 	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
-	// Control CMK encryption for managed catalog data
+	// Customer-managed key (CMK) settings control the encryption at rest of the
+	// catalog's managed data.
 	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// Name of catalog.
+	// The name of the catalog is stored in lowercase, can be at most 255
+	// characters long, and cannot contain periods, spaces, forward slashes, or
+	// control characters.
 	Name string `json:"name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options,omitempty"`
@@ -667,20 +699,28 @@ type CatalogInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// The name of delta sharing provider.
-	//
-	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
-	// remote sharing server.
+	// The Delta Sharing provider that owns the share must be named here,
+	// together with share_name, to create a Delta Sharing catalog that exposes
+	// the data of the share on a remote sharing server. The provider cannot be
+	// changed after creation.
 	ProviderName string `json:"provider_name,omitempty"`
-
+	// Indicates the provisioning status of the catalog. It is present only for
+	// catalogs that are provisioned asynchronously.
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
-
+	// The securable type is always CATALOG for a catalog.
 	SecurableType SecurableType `json:"securable_type,omitempty"`
-	// The name of the share under the share provider.
+	// The share under the Delta Sharing provider must be named here, together
+	// with provider_name, to create a Delta Sharing catalog. The share cannot
+	// be changed after creation.
 	ShareName string `json:"share_name,omitempty"`
-	// Storage Location URL (full path) for managed tables within catalog.
+	// The server derives this full storage location URL for managed tables and
+	// volumes within the catalog from storage_root and the catalog ID.
 	StorageLocation string `json:"storage_location,omitempty"`
-	// Storage root URL for managed tables within catalog.
+	// Managed tables and volumes in the catalog are stored under this storage
+	// root URL. The path must be inside an external location on which the
+	// caller has the CREATE MANAGED STORAGE privilege. If omitted, managed data
+	// is stored under the metastore's root storage location, which must then be
+	// configured. Delta Sharing catalogs cannot have a storage root.
 	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this catalog was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -882,9 +922,11 @@ func (s *ColumnMaskOptions) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Mapping from a column of the source object to a column of the target object.
 type ColumnRelationship struct {
+	// Name of the column in the source object.
 	Source string `json:"source,omitempty"`
-
+	// Name of the column in the target object.
 	Target string `json:"target,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1303,6 +1345,11 @@ func (s CreateAccountsMetastore) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A storage credential represents an authentication and authorization mechanism
+// for accessing data stored on your cloud tenant. It holds exactly one cloud
+// credential, for example an AWS IAM role, an Azure managed identity or service
+// principal, or a GCP service account. Only the field for the selected
+// credential type is set in requests and responses.
 type CreateAccountsStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
@@ -1337,26 +1384,42 @@ func (s CreateAccountsStorageCredential) MarshalJSON() ([]byte, error) {
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// The name of the connection to an external data source.
+	// Naming a connection to an external data source creates a foreign catalog
+	// that mirrors a database in that source, which requires ownership of or
+	// the CREATE FOREIGN CATALOG privilege on the connection.
+	// Connection-specific settings, such as the database to mirror, go in
+	// options. The connection cannot be changed after creation.
 	ConnectionName string `json:"connection_name,omitempty"`
-	// Custom maximum retention period in hours for the catalog
+	// Dropped objects in the catalog remain recoverable for this number of
+	// hours before they are permanently purged. The value applies to standard
+	// catalogs only, must be 0 or within the range allowed for the metastore,
+	// and is inherited by schemas and tables that do not set their own value.
 	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
-	// Control CMK encryption for managed catalog data
+	// Customer-managed key (CMK) settings control the encryption at rest of the
+	// catalog's managed data.
 	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
-	// Name of catalog.
+	// The name of the catalog is stored in lowercase, can be at most 255
+	// characters long, and cannot contain periods, spaces, forward slashes, or
+	// control characters.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// The name of delta sharing provider.
-	//
-	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
-	// remote sharing server.
+	// The Delta Sharing provider that owns the share must be named here,
+	// together with share_name, to create a Delta Sharing catalog that exposes
+	// the data of the share on a remote sharing server. The provider cannot be
+	// changed after creation.
 	ProviderName string `json:"provider_name,omitempty"`
-	// The name of the share under the share provider.
+	// The share under the Delta Sharing provider must be named here, together
+	// with provider_name, to create a Delta Sharing catalog. The share cannot
+	// be changed after creation.
 	ShareName string `json:"share_name,omitempty"`
-	// Storage root URL for managed tables within catalog.
+	// Managed tables and volumes in the catalog are stored under this storage
+	// root URL. The path must be inside an external location on which the
+	// caller has the CREATE MANAGED STORAGE privilege. If omitted, managed data
+	// is stored under the metastore's root storage location, which must then be
+	// configured. Delta Sharing catalogs cannot have a storage root.
 	StorageRoot string `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1469,19 +1532,20 @@ type CreateExternalLocation struct {
 	// whether the user explicitly set `enable_file_events`. Use this field
 	// instead of `file_event_queue` for reading the actual queue state.
 	EffectiveFileEventQueue *FileEventQueue `json:"effective_file_event_queue,omitempty"`
-	// Whether to enable file events on this external location. Default to
+	// Whether to enable file events on this external location. Defaults to
 	// `true`. Set to `false` to disable file events. The actual applied value
 	// may differ due to server-side defaults; check
 	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
-
+	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is not `false`, must
-	// be defined and have exactly one of the documented properties.
+	// File event queue settings. When `enable_file_events` is `true`, exactly
+	// one of the queue options must be set. Must be omitted when
+	// `enable_file_events` is `false`.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
@@ -1490,7 +1554,8 @@ type CreateExternalLocation struct {
 	// Skips validation of the storage credential associated with the external
 	// location.
 	SkipValidation bool `json:"skip_validation,omitempty"`
-	// Path URL of the external location.
+	// URL of the cloud storage path that the external location points to,
+	// including the scheme (for example `s3://`, `abfss://`, or `gs://`).
 	Url string `json:"url"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1808,7 +1873,9 @@ type CreateModelServiceRequest struct {
 	// The model service to create. Do not set `name`; the server derives it
 	// from `parent` and `model_service_id`.
 	ModelService ModelService `json:"model_service"`
-	// Name for the model service, e.g. "my_model_service".
+	// Name of the model service within the parent schema. The name must not
+	// contain periods, spaces, forward slashes, percent signs, or control
+	// characters, and it is stored in lowercase.
 	ModelServiceId string `json:"-" url:"model_service_id"`
 	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
 	// `{...}` component is capped at 255 characters individually.
@@ -1940,12 +2007,21 @@ func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A lineage relationship between a source object and a target object, where at
+// least one of the two is an external metadata object. The other object can be
+// a Unity Catalog table, a cloud storage path, a model version, or another
+// external metadata object. A relationship is identified by its source and
+// target; optional column mappings and key-value properties describe the data
+// flow between them.
 type CreateRequestExternalLineage struct {
-	// List of column relationships between source and target objects.
+	// List of column relationships between source and target objects. The
+	// combined size of all source and target column names is limited.
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// The combined length of all keys and values must not exceed 5000
+	// characters.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	Source ExternalLineageObject `json:"source"`
@@ -2092,7 +2168,12 @@ type CreateVolumeRequestContent struct {
 	Name string `json:"name"`
 	// The name of the schema where the volume is
 	SchemaName string `json:"schema_name"`
-	// The storage location on the cloud
+	// The cloud storage URL where the files of the volume are stored. For an
+	// external volume, it must be set on creation to a path within an existing
+	// external location. For a managed volume, it must be omitted on creation;
+	// the volume is placed under the managed storage location of the parent
+	// schema, catalog, or metastore, and the assigned path is returned in this
+	// field.
 	StorageLocation string `json:"storage_location,omitempty"`
 	// The type of the volume. An external volume is located in the specified
 	// external location. A managed volume is located in the default location
@@ -2130,6 +2211,11 @@ func (s CredentialDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A storage credential represents an authentication and authorization mechanism
+// for accessing data stored on your cloud tenant. It holds exactly one cloud
+// credential, for example an AWS IAM role, an Azure managed identity or service
+// principal, or a GCP service account. Only the field for the selected
+// credential type is set in requests and responses.
 type CredentialInfo struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
@@ -2573,7 +2659,7 @@ func (s *DeleteConnectionRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteCredentialRequest struct {
-	// Force an update even if there are dependent services (when purpose is
+	// Force deletion even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
 	Force bool `json:"-" url:"force,omitempty"`
@@ -2605,6 +2691,10 @@ func (s *DeleteEntityTagAssignmentRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteExternalLineageRelationshipRequest struct {
+	// The relationship to delete, identified by its `source` and `target`
+	// objects. Since this field is a query parameter, flatten the nested
+	// fields, for example
+	// `external_lineage_relationship.source.table.name=main.sales.orders`.
 	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" url:"external_lineage_relationship"`
 }
 
@@ -2824,6 +2914,12 @@ func (s *DeleteRegisteredModelRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A lineage relationship between a source object and a target object, where at
+// least one of the two is an external metadata object. The other object can be
+// a Unity Catalog table, a cloud storage path, a model version, or another
+// external metadata object. A relationship is identified by its source and
+// target; optional column mappings and key-value properties describe the data
+// flow between them.
 type DeleteRequestExternalLineage struct {
 	// Unique identifier of the external lineage relationship.
 	Id string `json:"id,omitempty" url:"id,omitempty"`
@@ -2893,9 +2989,8 @@ func (s DeleteSkillRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteStorageCredentialRequest struct {
-	// Force an update even if there are dependent external locations or
-	// external tables (when purpose is **STORAGE**) or dependent services (when
-	// purpose is **SERVICE**).
+	// Force deletion even if there are dependent external locations or external
+	// tables.
 	Force bool `json:"-" url:"force,omitempty"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
@@ -3353,7 +3448,9 @@ func (s *ExistsRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// An external metadata object at one end of an external lineage relationship.
 type ExternalLineageExternalMetadata struct {
+	// Name of the external metadata object.
 	Name string `json:"name,omitempty" url:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3431,9 +3528,12 @@ func (s *ExternalLineageInfo) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A version of a Unity Catalog registered model at one end of an external
+// lineage relationship.
 type ExternalLineageModelVersion struct {
+	// Full name of the registered model, in the form `catalog.schema.model`.
 	Name string `json:"name,omitempty" url:"name,omitempty"`
-
+	// Version number of the model, as a string.
 	Version string `json:"version,omitempty" url:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3467,13 +3567,17 @@ func (s ExternalLineageModelVersionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// An object at one end of an external lineage relationship. Exactly one of the
+// fields is set.
 type ExternalLineageObject struct {
+	// An external metadata object registered in Unity Catalog.
 	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty" url:"external_metadata,omitempty"`
-
+	// A version of a Unity Catalog registered model.
 	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty" url:"model_version,omitempty"`
-
+	// A cloud storage path registered in Unity Catalog, i.e. under a table,
+	// volume, or external location.
 	Path *ExternalLineagePath `json:"path,omitempty" url:"path,omitempty"`
-
+	// A Unity Catalog table.
 	Table *ExternalLineageTable `json:"table,omitempty" url:"table,omitempty"`
 }
 
@@ -3481,7 +3585,10 @@ func (s *ExternalLineageObject) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A cloud storage path at one end of an external lineage relationship.
 type ExternalLineagePath struct {
+	// URL of the cloud storage path. The path must be registered in Unity
+	// Catalog, i.e. under a table, volume, or external location.
 	Url string `json:"url,omitempty" url:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3495,12 +3602,21 @@ func (s ExternalLineagePath) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A lineage relationship between a source object and a target object, where at
+// least one of the two is an external metadata object. The other object can be
+// a Unity Catalog table, a cloud storage path, a model version, or another
+// external metadata object. A relationship is identified by its source and
+// target; optional column mappings and key-value properties describe the data
+// flow between them.
 type ExternalLineageRelationship struct {
-	// List of column relationships between source and target objects.
+	// List of column relationships between source and target objects. The
+	// combined size of all source and target column names is limited.
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// The combined length of all keys and values must not exceed 5000
+	// characters.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	Source ExternalLineageObject `json:"source"`
@@ -3518,12 +3634,21 @@ func (s ExternalLineageRelationship) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A lineage relationship between a source object and a target object, where at
+// least one of the two is an external metadata object. The other object can be
+// a Unity Catalog table, a cloud storage path, a model version, or another
+// external metadata object. A relationship is identified by its source and
+// target; optional column mappings and key-value properties describe the data
+// flow between them.
 type ExternalLineageRelationshipInfo struct {
-	// List of column relationships between source and target objects.
+	// List of column relationships between source and target objects. The
+	// combined size of all source and target column names is limited.
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// The combined length of all keys and values must not exceed 5000
+	// characters.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	Source ExternalLineageObject `json:"source"`
@@ -3541,7 +3666,9 @@ func (s ExternalLineageRelationshipInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A Unity Catalog table at one end of an external lineage relationship.
 type ExternalLineageTable struct {
+	// Full name of the table, in the form `catalog.schema.table`.
 	Name string `json:"name,omitempty" url:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3577,6 +3704,11 @@ func (s ExternalLineageTableInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// An external location combines a cloud storage path with a storage credential
+// that authorizes access to that path. Privileges granted on the external
+// location control which users and groups can access the cloud storage path,
+// for example to create external tables, external volumes, or managed storage
+// locations under it.
 type ExternalLocationInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -3600,21 +3732,24 @@ type ExternalLocationInfo struct {
 	// whether the user explicitly set `enable_file_events`. Use this field
 	// instead of `file_event_queue` for reading the actual queue state.
 	EffectiveFileEventQueue *FileEventQueue `json:"effective_file_event_queue,omitempty"`
-	// Whether to enable file events on this external location. Default to
+	// Whether to enable file events on this external location. Defaults to
 	// `true`. Set to `false` to disable file events. The actual applied value
 	// may differ due to server-side defaults; check
 	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
-
+	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is not `false`, must
-	// be defined and have exactly one of the documented properties.
+	// File event queue settings. When `enable_file_events` is `true`, exactly
+	// one of the queue options must be set. Must be omitted when
+	// `enable_file_events` is `false`.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
-
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces. Cannot be set when creating an external
+	// location.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of metastore hosting the external location.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -3624,12 +3759,13 @@ type ExternalLocationInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
 	ReadOnly bool `json:"read_only,omitempty"`
-	// Time at which external location this was last modified, in epoch
+	// Time at which this external location was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the external location.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// Path URL of the external location.
+	// URL of the cloud storage path that the external location points to,
+	// including the scheme (for example `s3://`, `abfss://`, or `gs://`).
 	Url string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4166,7 +4302,7 @@ type GcpPubsub struct {
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The Pub/Sub subscription name in the format
-	// projects/{project}/subscriptions/{subscription name}. Only required for
+	// `projects/{project}/subscriptions/{subscription name}`. Only required for
 	// provided_pubsub.
 	SubscriptionName string `json:"subscription_name,omitempty"`
 
@@ -4361,9 +4497,11 @@ func (s GenerateTemporaryVolumeCredentialResponse) MarshalJSON() ([]byte, error)
 }
 
 type GetAccessRequestDestinationsRequest struct {
-	// The full name of the securable.
+	// The full name of the securable: the names of its parents followed by its
+	// own name, separated by dots, for example `main.sales.orders` for a table.
 	FullName string `json:"-" url:"-"`
-	// The type of the securable.
+	// The type of the securable. Matching is case-insensitive, and hyphens may
+	// replace underscores in multi-word types.
 	SecurableType string `json:"-" url:"-"`
 }
 
@@ -4457,8 +4595,9 @@ func (s GetByAliasRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetCatalogRequest struct {
-	// Whether to include catalogs in the response for which the principal can
-	// only access selective metadata for
+	// Whether to return the catalog when the principal can only access
+	// selective metadata for it through the BROWSE privilege. The response then
+	// has browse_only set to true.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
@@ -4551,7 +4690,7 @@ func (s *GetEntityTagAssignmentRequest) UnmarshalJSON(b []byte) error {
 
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
-	// principal can only access selective metadata for
+	// principal can only access selective metadata.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
@@ -5016,8 +5155,8 @@ type InferenceTableConfig struct {
 	// table. After the inference table is created, this field cannot be
 	// changed.
 	Parent string `json:"parent"`
-	// Resolved UC table for payload logs. Format:
-	// `tables/{catalog}.{schema}.{table}`.
+	// Resource name of the Unity Catalog table that receives the payload logs.
+	// Format: `tables/{catalog}.{schema}.{table}`.
 	Table string `json:"table,omitempty"`
 	// Prefix used to form the inference table's registered name. AI Gateway
 	// appends `_payload`; for example, `table_name_prefix = "orders"` creates
@@ -5149,8 +5288,9 @@ func (s *ListAccountStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
 }
 
 type ListCatalogsRequest struct {
-	// Whether to include catalogs in the response for which the principal can
-	// only access selective metadata for
+	// Whether to include catalogs for which the principal can only access
+	// selective metadata through the BROWSE privilege. Such catalogs are
+	// returned with browse_only set to true.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether to include catalogs not bound to the workspace. Effective only if
 	// the user has permission to update the catalog–workspace binding.
@@ -5380,7 +5520,10 @@ func (s ListEntityTagAssignmentsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListExternalLineageRelationshipsRequest struct {
-	// The lineage direction to filter on.
+	// Direction of the relationships to return, relative to `object_info`.
+	// `UPSTREAM` returns the relationships in which the object is the target,
+	// so each result describes a source; `DOWNSTREAM` returns the relationships
+	// in which the object is the source, so each result describes a target.
 	LineageDirection LineageDirection `json:"-" url:"lineage_direction"`
 	// The object to query external lineage relationships for. Since this field
 	// is a query parameter, please flatten the nested fields. For example, if
@@ -5405,8 +5548,13 @@ func (s ListExternalLineageRelationshipsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListExternalLineageRelationshipsResponse struct {
+	// Relationships that match the query. Each entry describes the object at
+	// the other end of the relationship in one of `table_info`, `file_info`,
+	// `model_info`, or `external_metadata_info`, together with the relationship
+	// itself in `external_lineage_info`.
 	ExternalLineageRelationships []ExternalLineageInfo `json:"external_lineage_relationships,omitempty"`
-
+	// Opaque token to retrieve the next page of results. Omitted when there are
+	// no more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5422,7 +5570,7 @@ func (s ListExternalLineageRelationshipsResponse) MarshalJSON() ([]byte, error) 
 
 type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
-	// principal can only access selective metadata for
+	// principal can only access selective metadata.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether to include external locations not bound to the workspace.
 	// Effective only if the user has permission to update the
@@ -6445,10 +6593,10 @@ func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListVolumesRequest struct {
-	// The identifier of the catalog
+	// The name of the catalog that contains the schema.
 	CatalogName string `json:"-" url:"catalog_name"`
-	// Whether to include volumes in the response for which the principal can
-	// only access selective metadata for
+	// Whether to include volumes for which the principal can only access
+	// selective metadata through the BROWSE privilege.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of volumes to return (page length).
 	//
@@ -6466,7 +6614,7 @@ type ListVolumesRequest struct {
 	// Opaque token returned by a previous request. It must be included in the
 	// request to retrieve the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// The identifier of the schema
+	// The name of the schema whose volumes are listed.
 	SchemaName string `json:"-" url:"schema_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7426,22 +7574,22 @@ type ModelService struct {
 	Config *ModelServiceConfig `json:"config,omitempty"`
 	// Time the model service was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Creator identity.
+	// Username of the user who created the model service.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Owner of the model service.
+	// Username or group name of the model service owner.
 	EffectiveOwner string `json:"effective_owner,omitempty"`
 	// Optimistic concurrency token returned on every read. To make an Update or
 	// Delete conditional, pass the last-read value in that request's `etag`
 	// field. In REST responses, this value is a base64 string; URL-encode it
 	// when setting the `etag` query parameter.
 	Etag string `json:"etag,omitempty"`
-	// Metastore hosting the model service.
+	// Unique identifier of the metastore that contains the model service.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Resource name of the model service. Format:
 	// `model-services/{catalog}.{schema}.{model_service}`. Each `{...}`
-	// component is capped at 255 characters individually. Server-derived on
-	// Create from `parent` + `model_service_id`; required and immutable on
-	// Update/Get/Delete.
+	// component is capped at 255 characters individually. The server derives
+	// the name on Create from `parent` and `model_service_id`; it is required
+	// and immutable on Update, Get, and Delete.
 	Name string `json:"name,omitempty"`
 	// API types supported across this service's destinations, such as
 	// `openai/v1/chat/completions`, `openai/v1/embeddings`, and
@@ -7450,7 +7598,7 @@ type ModelService struct {
 	SupportedApiTypes []string `json:"supported_api_types,omitempty"`
 	// Time the model service was last modified.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
-	// Identity of the last updater.
+	// Username of the user who last updated the model service.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7466,11 +7614,13 @@ func (s ModelService) MarshalJSON() ([]byte, error) {
 
 // Operational configuration wrapped around the ModelService resource.
 type ModelServiceConfig struct {
-	// Inference table configuration for payload logging.
+	// Configuration for logging request and response payloads to a Unity
+	// Catalog inference table. Omit this field to leave payload logging off.
 	InferenceTable *InferenceTableConfig `json:"inference_table,omitempty"`
 	// Rate limits applied to requests routed through this model service.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
-	// Routing configuration: destinations and fallback.
+	// Routing configuration: the primary destinations that receive traffic and
+	// the fallback destinations tried when a primary destination fails.
 	Routing *ModelServiceConfigRoutingConfig `json:"routing,omitempty"`
 }
 
@@ -7493,7 +7643,9 @@ type ModelServiceConfigDestinationConfig struct {
 	// broken dependency. Requests cannot use this destination until the backing
 	// resource is restored or the destination is replaced.
 	IsDeleted bool `json:"is_deleted,omitempty"`
-	// User-facing label for this destination, used in routing references.
+	// Label that identifies this destination. Names are compared
+	// case-insensitively and must be unique within the primary destinations and
+	// within the fallback destinations.
 	Name string `json:"name"`
 	// Configuration for a pay-per-token Databricks foundation model.
 	PayPerTokenConfig *ModelServiceConfigPayPerTokenConfig `json:"pay_per_token_config,omitempty"`
@@ -7593,8 +7745,9 @@ func (s *ModelServiceConfigFallbackConfig) UnmarshalJSON(b []byte) error {
 // the foundation model by its UC resource name; the platform resolves it to a
 // Model Serving endpoint at request time.
 type ModelServiceConfigPayPerTokenConfig struct {
-	// Resource name of the Unity Catalog model. Format:
-	// `models/{catalog}.{schema}.{model}`.
+	// Resource name of the Unity Catalog foundation model. Pay-per-token
+	// foundation models live in the `system.ai` schema, so the name has the
+	// form `models/system.ai.{model}`.
 	Model string `json:"model"`
 }
 
@@ -7607,9 +7760,9 @@ func (s *ModelServiceConfigPayPerTokenConfig) UnmarshalJSON(b []byte) error {
 // sizing (provisioned throughput, burst scaling, model version) is owned by the
 // Model Serving endpoint itself, not by this message.
 type ModelServiceConfigProvisionedThroughputConfig struct {
-	// UC model FQN of the model served by the backing endpoint (e.g.,
-	// `system.ai.databricks-claude-opus-4-6`). Resolved from Model Serving at
-	// Create/Update time.
+	// Resource name of the Unity Catalog model served by the backing endpoint,
+	// in the form `models/{catalog}.{schema}.{model}`. Resolved from Model
+	// Serving when the model service is created or updated.
 	Model string `json:"model,omitempty"`
 	// Name of the backing Model Serving endpoint serving the provisioned-
 	// throughput foundation model, in the form `serving-endpoints/{name}`. The
@@ -8860,7 +9013,8 @@ func (s PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
 type Principal struct {
 	// Databricks user, group or service principal ID.
 	Id string `json:"id,omitempty"`
-
+	// The type of principal that **id** identifies: a user, a group, or a
+	// service principal.
 	PrincipalType PrincipalType `json:"principal_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -9254,7 +9408,7 @@ type RateLimit struct {
 	// principal application ID. Required when `key` applies to a user, group,
 	// or service principal; otherwise it must be unset.
 	Principal string `json:"principal,omitempty"`
-	// Renewal period.
+	// Interval after which the request and token counters reset.
 	RenewalPeriod RateLimitRateLimitRenewalPeriod `json:"renewal_period"`
 	// Maximum requests allowed in one renewal period. Leave unset for no
 	// request limit. Set to `0` to deny all requests.
@@ -9360,8 +9514,8 @@ func (f *RateLimitRateLimitRenewalPeriod) Type() string {
 }
 
 type ReadVolumeRequest struct {
-	// Whether to include volumes in the response for which the principal can
-	// only access selective metadata for
+	// Whether to include volumes for which the principal can only access
+	// selective metadata through the BROWSE privilege.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The fully qualified name of the volume.
 	Name string `json:"-" url:"-"`
@@ -9873,7 +10027,8 @@ func (f *SecurableKind) Type() string {
 	return "SecurableKind"
 }
 
-// Manifest of a specific securable kind.
+// Manifest of a specific securable kind, or of an Atlas-native securable type,
+// which has no kinds.
 type SecurableKindManifest struct {
 	// Privileges that can be assigned to the securable.
 	AssignablePrivileges []string `json:"assignable_privileges,omitempty"`
@@ -9881,7 +10036,8 @@ type SecurableKindManifest struct {
 	Capabilities []string `json:"capabilities,omitempty"`
 	// Detailed specs of allowed options.
 	Options []OptionSpec `json:"options,omitempty"`
-	// Securable kind to get manifest of.
+	// Securable kind to get manifest of. Unset for Atlas-native securable
+	// types.
 	SecurableKind SecurableKind `json:"securable_kind,omitempty"`
 	// Securable Type of the kind.
 	SecurableType SecurableType `json:"securable_type,omitempty"`
@@ -9894,8 +10050,7 @@ func (s *SecurableKindManifest) UnmarshalJSON(b []byte) error {
 type SecurablePermissions struct {
 	// List of requested Unity Catalog permissions.
 	Permissions []string `json:"permissions,omitempty"`
-	// The securable for which the access request destinations are being
-	// requested.
+	// The securable on which the permissions are requested.
 	Securable *Securable `json:"securable,omitempty"`
 }
 
@@ -10218,6 +10373,11 @@ func (f *SseEncryptionDetailsAlgorithm) Type() string {
 	return "SseEncryptionDetailsAlgorithm"
 }
 
+// A storage credential represents an authentication and authorization mechanism
+// for accessing data stored on your cloud tenant. It holds exactly one cloud
+// credential, for example an AWS IAM role, an Azure managed identity or service
+// principal, or a GCP service account. Only the field for the selected
+// credential type is set in requests and responses.
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleResponse `json:"aws_iam_role,omitempty"`
@@ -10797,17 +10957,8 @@ type UpdateAccessRequestDestinationsRequest struct {
 	// destination, a **destination_id** and **destination_type** must be
 	// defined.
 	AccessRequestDestinations AccessRequestDestinations `json:"access_request_destinations"`
-	// The field mask must be a single string, with multiple fields separated by
-	// commas (no spaces). The field path is relative to the resource object,
-	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
-	// Specification of elements in sequence or map fields is not allowed, as
-	// only the entire collection field can be specified. Field names must
-	// exactly match the resource field names.
-	//
-	// A field mask of `*` indicates full replacement. It’s recommended to
-	// always explicitly list the fields being updated and avoid using `*`
-	// wildcards, as it can lead to unintended results if the API changes in the
-	// future.
+	// The paths of the field mask are not evaluated, because an update always
+	// replaces the full list of destinations.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -10845,6 +10996,11 @@ func (s UpdateAccountsMetastore) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A storage credential represents an authentication and authorization mechanism
+// for accessing data stored on your cloud tenant. It holds exactly one cloud
+// credential, for example an AWS IAM role, an Azure managed identity or service
+// principal, or a GCP service account. Only the field for the selected
+// credential type is set in requests and responses.
 type UpdateAccountsStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
@@ -10881,15 +11037,27 @@ func (s UpdateAccountsStorageCredential) MarshalJSON() ([]byte, error) {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Custom maximum retention period in hours for the catalog
+	// Dropped objects in the catalog remain recoverable for this number of
+	// hours before they are permanently purged. The value applies to standard
+	// catalogs only, must be 0 or within the range allowed for the metastore,
+	// and is inherited by schemas and tables that do not set their own value.
 	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
-	// Whether predictive optimization should be enabled for this object and
-	// objects under it.
+	// Whether predictive optimization is enabled for this catalog and the
+	// objects under it. Valid values are ENABLE, DISABLE, and INHERIT, where
+	// INHERIT applies the account-level setting. Standard catalogs start as
+	// INHERIT and other catalog types as DISABLE. It cannot be set when
+	// creating a catalog; use the update method instead.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-	// Whether the current securable is accessible from all workspaces or a
-	// specific set of workspaces.
+	// Whether the catalog is accessible from all workspaces attached to the
+	// metastore (OPEN) or only from the workspaces bound to it (ISOLATED). It
+	// cannot be set when creating a catalog; change it with the update method
+	// and manage the bound workspaces with the workspace bindings API. See
+	// [Workspace-catalog binding].
+	//
+	// [Workspace-catalog binding]: https://docs.databricks.com/aws/en/catalogs/binding
 	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
-	// Control CMK encryption for managed catalog data
+	// Customer-managed key (CMK) settings control the encryption at rest of the
+	// catalog's managed data.
 	ManagedEncryptionSettings *EncryptionSettings `json:"managed_encryption_settings,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
@@ -11021,17 +11189,10 @@ func (s *UpdateEntityTagAssignmentRequest) UnmarshalJSON(b []byte) error {
 
 type UpdateExternalLineageRelationshipRequest struct {
 	ExternalLineageRelationship UpdateRequestExternalLineage `json:"external_lineage_relationship"`
-	// The field mask must be a single string, with multiple fields separated by
-	// commas (no spaces). The field path is relative to the resource object,
-	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
-	// Specification of elements in sequence or map fields is not allowed, as
-	// only the entire collection field can be specified. Field names must
-	// exactly match the resource field names.
-	//
-	// A field mask of `*` indicates full replacement. It’s recommended to
-	// always explicitly list the fields being updated and avoid using `*`
-	// wildcards, as it can lead to unintended results if the API changes in the
-	// future.
+	// The fields of the relationship to update. The field mask must be a single
+	// string, with multiple fields separated by commas (no spaces), for example
+	// `columns,properties`. The `source` and `target` identify the relationship
+	// and cannot be changed.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -11052,24 +11213,27 @@ type UpdateExternalLocation struct {
 	// whether the user explicitly set `enable_file_events`. Use this field
 	// instead of `file_event_queue` for reading the actual queue state.
 	EffectiveFileEventQueue *FileEventQueue `json:"effective_file_event_queue,omitempty"`
-	// Whether to enable file events on this external location. Default to
+	// Whether to enable file events on this external location. Defaults to
 	// `true`. Set to `false` to disable file events. The actual applied value
 	// may differ due to server-side defaults; check
 	// `effective_enable_file_events` for the effective state.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
-
+	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is not `false`, must
-	// be defined and have exactly one of the documented properties.
+	// File event queue settings. When `enable_file_events` is `true`, exactly
+	// one of the queue options must be set. Must be omitted when
+	// `enable_file_events` is `false`.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
-
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces. Cannot be set when creating an external
+	// location.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
@@ -11082,7 +11246,8 @@ type UpdateExternalLocation struct {
 	// Skips validation of the storage credential associated with the external
 	// location.
 	SkipValidation bool `json:"skip_validation,omitempty"`
-	// Path URL of the external location.
+	// URL of the cloud storage path that the external location points to,
+	// including the scheme (for example `s3://`, `abfss://`, or `gs://`).
 	Url string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -11282,9 +11447,9 @@ type UpdateModelServiceRequest struct {
 	ModelService ModelService `json:"model_service"`
 	// Resource name of the model service. Format:
 	// `model-services/{catalog}.{schema}.{model_service}`. Each `{...}`
-	// component is capped at 255 characters individually. Server-derived on
-	// Create from `parent` + `model_service_id`; required and immutable on
-	// Update/Get/Delete.
+	// component is capped at 255 characters individually. The server derives
+	// the name on Create from `parent` and `model_service_id`; it is required
+	// and immutable on Update, Get, and Delete.
 	Name string `json:"-" url:"-"`
 	// Fields to update. Use `config` to replace the entire configuration. The
 	// replacement must include every required field; any optional field you
@@ -11527,12 +11692,21 @@ func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A lineage relationship between a source object and a target object, where at
+// least one of the two is an external metadata object. The other object can be
+// a Unity Catalog table, a cloud storage path, a model version, or another
+// external metadata object. A relationship is identified by its source and
+// target; optional column mappings and key-value properties describe the data
+// flow between them.
 type UpdateRequestExternalLineage struct {
-	// List of column relationships between source and target objects.
+	// List of column relationships between source and target objects. The
+	// combined size of all source and target column names is limited.
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// The combined length of all keys and values must not exceed 5000
+	// characters.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	Source ExternalLineageObject `json:"source"`
@@ -11693,9 +11867,10 @@ type UpdateVolumeRequestContent struct {
 	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the volume
 	Name string `json:"-" url:"-"`
-	// New name for the volume.
+	// The new name for the volume. Set it to rename the volume.
 	NewName string `json:"new_name,omitempty"`
-	// The identifier of the user who owns the volume
+	// The user or group that owns the volume. The user who creates a volume
+	// becomes its owner; the owner can be changed afterwards with an update.
 	Owner string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -12010,7 +12185,8 @@ func (f *ValidationResultResult) Type() string {
 }
 
 type VolumeInfo struct {
-	// The AWS access point to use when accesing s3 for this external location.
+	// The AWS access point to use when accessing S3 for the storage location of
+	// this volume.
 	AccessPoint string `json:"access_point,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -12020,25 +12196,32 @@ type VolumeInfo struct {
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the volume
 	Comment string `json:"comment,omitempty"`
-
+	// Time at which the volume was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the volume
 	CreatedBy string `json:"created_by,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
-	// The three-level (fully qualified) name of the volume
+	// The three-level (fully qualified) name of the volume, in the form
+	// catalog_name.schema_name.name.
 	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the metastore
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the volume
 	Name string `json:"name,omitempty"`
-	// The identifier of the user who owns the volume
+	// The user or group that owns the volume. The user who creates a volume
+	// becomes its owner; the owner can be changed afterwards with an update.
 	Owner string `json:"owner,omitempty"`
 	// The name of the schema where the volume is
 	SchemaName string `json:"schema_name,omitempty"`
-	// The storage location on the cloud
+	// The cloud storage URL where the files of the volume are stored. For an
+	// external volume, it must be set on creation to a path within an existing
+	// external location. For a managed volume, it must be omitted on creation;
+	// the volume is placed under the managed storage location of the parent
+	// schema, catalog, or metastore, and the assigned path is returned in this
+	// field.
 	StorageLocation string `json:"storage_location,omitempty"`
-
+	// Time at which the volume was last updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the volume last time
 	UpdatedBy string `json:"updated_by,omitempty"`

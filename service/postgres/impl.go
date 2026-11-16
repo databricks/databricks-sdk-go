@@ -883,7 +883,8 @@ func (a *postgresImpl) internalListDatabases(ctx context.Context, request ListDa
 	return &listDatabasesResponse, err
 }
 
-// Returns a paginated list of compute endpoints in the branch.
+// Lists the compute endpoints in the branch, including its read-write endpoint
+// and any read-only endpoints.
 func (a *postgresImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[Endpoint] {
 
 	getNextPage := func(ctx context.Context, req ListEndpointsRequest) (*ListEndpointsResponse, error) {
@@ -908,7 +909,8 @@ func (a *postgresImpl) ListEndpoints(ctx context.Context, request ListEndpointsR
 	return iterator
 }
 
-// Returns a paginated list of compute endpoints in the branch.
+// Lists the compute endpoints in the branch, including its read-write endpoint
+// and any read-only endpoints.
 func (a *postgresImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]Endpoint, error) {
 	iterator := a.ListEndpoints(ctx, request)
 	return listing.ToSlice[Endpoint](ctx, iterator)

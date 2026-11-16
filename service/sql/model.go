@@ -1206,7 +1206,7 @@ type CreateQueryRequest struct {
 	// fail the request if the query's display name conflicts with an existing
 	// query's display name.
 	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
-
+	// The query to create. A display name and query text are required.
 	Query *CreateQueryRequestQuery `json:"query,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1220,6 +1220,9 @@ func (s CreateQueryRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse
+// it runs on, its parameters, and metadata such as the display name,
+// description, owner, and tags.
 type CreateQueryRequestQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
 	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
@@ -1237,11 +1240,16 @@ type CreateQueryRequestQuery struct {
 	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	QueryText string `json:"query_text,omitempty"`
-	// Sets the "Run as" role for the object.
+	// Whose credentials the query runs with when it is shared. `VIEWER` uses
+	// the credentials of the user running the query. `OWNER` uses the owner's
+	// credentials where the product supports that, such as for legacy alerts
+	// and jobs. When omitted on create, the workspace default applies. A
+	// workspace admin can disallow `OWNER`.
 	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	Schema string `json:"schema,omitempty"`
-
+	// Tags attached to the query. Tags appear in the query list and can be used
+	// to filter it.
 	Tags []string `json:"tags,omitempty"`
 	// ID of the SQL warehouse attached to the query.
 	WarehouseId string `json:"warehouse_id,omitempty"`
@@ -1731,8 +1739,10 @@ func (f *DatePrecision) Type() string {
 }
 
 type DateRange struct {
+	// End of the range, in the same format as `start`.
 	End string `json:"end"`
-
+	// Start of the range in the format `yyyy-MM-dd`, optionally followed by a
+	// time as ` HH:mm` or ` HH:mm:ss`.
 	Start string `json:"start"`
 }
 
@@ -1748,7 +1758,8 @@ type DateRangeValue struct {
 	// Date-time precision to format the value into when the query is run.
 	// Defaults to DAY_PRECISION (YYYY-MM-DD).
 	Precision DatePrecision `json:"precision,omitempty"`
-
+	// Day the week starts on for week-based dynamic ranges such as `THIS_WEEK`
+	// and `LAST_WEEK`, from 0 (Sunday) to 6 (Saturday). Defaults to 0.
 	StartDayOfWeek int `json:"start_day_of_week,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1845,7 +1856,8 @@ func (f *DateRangeValueDynamicDateRange) Type() string {
 }
 
 type DateValue struct {
-	// Manually specified date-time value.
+	// Manually specified date-time value in the format `yyyy-MM-dd`, optionally
+	// followed by a time as ` HH:mm` or ` HH:mm:ss`.
 	DateValue string `json:"date_value,omitempty"`
 	// Dynamic date-time value based on current date-time.
 	DynamicDateValue DateValueDynamicDate `json:"dynamic_date_value,omitempty"`
@@ -2887,6 +2899,7 @@ func (s *GetQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetQueryRequest struct {
+	// UUID of the query to fetch.
 	Id string `json:"-" url:"-"`
 }
 
@@ -3692,8 +3705,11 @@ func (s ListQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListQueriesRequest struct {
+	// Maximum number of queries to return per page. Values above 100 are
+	// coerced to 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Token from the `next_page_token` of a previous response. Omit it to fetch
+	// the first page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3756,8 +3772,10 @@ func (s ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListQueryObjectsResponse struct {
+	// Token to pass as `page_token` to fetch the next page. Omitted when there
+	// are no more pages.
 	NextPageToken string `json:"next_page_token,omitempty"`
-
+	// Queries on this page.
 	Results []ListQueryObjectsResponseQuery `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3771,6 +3789,9 @@ func (s ListQueryObjectsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse
+// it runs on, its parameters, and metadata such as the display name,
+// description, owner, and tags.
 type ListQueryObjectsResponseQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
 	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
@@ -3796,11 +3817,16 @@ type ListQueryObjectsResponseQuery struct {
 	Parameters []QueryParameter `json:"parameters,omitempty"`
 	// Text of the query to be run.
 	QueryText string `json:"query_text,omitempty"`
-	// Sets the "Run as" role for the object.
+	// Whose credentials the query runs with when it is shared. `VIEWER` uses
+	// the credentials of the user running the query. `OWNER` uses the owner's
+	// credentials where the product supports that, such as for legacy alerts
+	// and jobs. When omitted on create, the workspace default applies. A
+	// workspace admin can disallow `OWNER`.
 	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	Schema string `json:"schema,omitempty"`
-
+	// Tags attached to the query. Tags appear in the query list and can be used
+	// to filter it.
 	Tags []string `json:"tags,omitempty"`
 	// Timestamp when this query was last updated.
 	UpdateTime string `json:"update_time,omitempty"`
@@ -3938,6 +3964,7 @@ func (s MultiValuesOptions) MarshalJSON() ([]byte, error) {
 }
 
 type NumericValue struct {
+	// Number substituted for the parameter marker when the query runs.
 	Value float64 `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4275,6 +4302,9 @@ func (f *PlansState) Type() string {
 	return "PlansState"
 }
 
+// A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse
+// it runs on, its parameters, and metadata such as the display name,
+// description, owner, and tags.
 type Query struct {
 	// Whether to apply a 1000 row limit to the query result.
 	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
@@ -4302,11 +4332,16 @@ type Query struct {
 	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	QueryText string `json:"query_text,omitempty"`
-	// Sets the "Run as" role for the object.
+	// Whose credentials the query runs with when it is shared. `VIEWER` uses
+	// the credentials of the user running the query. `OWNER` uses the owner's
+	// credentials where the product supports that, such as for legacy alerts
+	// and jobs. When omitted on create, the workspace default applies. A
+	// workspace admin can disallow `OWNER`.
 	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	Schema string `json:"schema,omitempty"`
-
+	// Tags attached to the query. Tags appear in the query list and can be used
+	// to filter it.
 	Tags []string `json:"tags,omitempty"`
 	// Timestamp when this query was last updated.
 	UpdateTime string `json:"update_time,omitempty"`
@@ -5435,6 +5470,10 @@ func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Statement Execution works with all SQL warehouse types, including
+// Lakehouse//RT. Statement Execution (Lakehouse//RT) is optimized for
+// Lakehouse//RT warehouses, with lower latency and higher concurrency, and
+// takes `warehouse_id` as a path parameter.
 type StatementResponse struct {
 	Manifest *ResultManifest `json:"manifest,omitempty"`
 
@@ -6310,6 +6349,8 @@ func (f *TerminationReasonType) Type() string {
 }
 
 type TextValue struct {
+	// Text substituted for the parameter marker when the query runs. Quotation
+	// marks are added around the value automatically.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6401,6 +6442,7 @@ func (s TrashAlertV2Request) MarshalJSON() ([]byte, error) {
 }
 
 type TrashQueryRequest struct {
+	// UUID of the query to move to the trash.
 	Id string `json:"-" url:"-"`
 }
 
@@ -6525,14 +6567,18 @@ func (s UpdateDefaultWarehouseOverrideRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateQueryRequest struct {
-	// If true, automatically resolve alert display name conflicts. Otherwise,
-	// fail the request if the alert's display name conflicts with an existing
-	// alert's display name.
+	// If true, automatically resolve query display name conflicts. Otherwise,
+	// fail the request if the query's display name conflicts with an existing
+	// query's display name.
 	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
-
+	// UUID of the query to update.
 	Id string `json:"-" url:"-"`
-
+	// Query fields to update. Only the fields named in `update_mask` are
+	// changed.
 	Query *UpdateQueryRequestQuery `json:"query,omitempty"`
+	// Comma-separated list of the query fields to update, such as the display
+	// name or query text. Fields not listed keep their current values.
+	//
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -6557,6 +6603,9 @@ func (s UpdateQueryRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse
+// it runs on, its parameters, and metadata such as the display name,
+// description, owner, and tags.
 type UpdateQueryRequestQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
 	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
@@ -6574,11 +6623,16 @@ type UpdateQueryRequestQuery struct {
 	Parameters []QueryParameter `json:"parameters,omitempty"`
 	// Text of the query to be run.
 	QueryText string `json:"query_text,omitempty"`
-	// Sets the "Run as" role for the object.
+	// Whose credentials the query runs with when it is shared. `VIEWER` uses
+	// the credentials of the user running the query. `OWNER` uses the owner's
+	// credentials where the product supports that, such as for legacy alerts
+	// and jobs. When omitted on create, the workspace default applies. A
+	// workspace admin can disallow `OWNER`.
 	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	Schema string `json:"schema,omitempty"`
-
+	// Tags attached to the query. Tags appear in the query list and can be used
+	// to filter it.
 	Tags []string `json:"tags,omitempty"`
 	// ID of the SQL warehouse attached to the query.
 	WarehouseId string `json:"warehouse_id,omitempty"`

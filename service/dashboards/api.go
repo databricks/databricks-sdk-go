@@ -22,7 +22,10 @@ type GenieInterface interface {
 
 	// Sends a new message in a chat-mode
 	// [conversation](:method:genie/startconversation). The AI response uses all
-	// previously created messages in the conversation to respond.
+	// previously created messages in the conversation to respond. The message is
+	// processed asynchronously. Poll [Get a conversation
+	// message](:method:genie/getmessage) until its `status` is `COMPLETED`,
+	// `FAILED`, or `CANCELLED`.
 	CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error)
 
 	// Calls [GenieAPIInterface.CreateMessage] and waits to reach COMPLETED state
@@ -39,10 +42,14 @@ type GenieInterface interface {
 	// Creates a Genie space from a serialized payload.
 	CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error)
 
-	// Delete a conversation.
+	// Deletes a conversation and all of its messages. Users can delete their own
+	// conversations. Deleting another user's conversation requires at least CAN
+	// MANAGE permission on the space.
 	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
 
-	// Delete a conversation.
+	// Deletes a conversation and all of its messages. Users can delete their own
+	// conversations. Deleting another user's conversation requires at least CAN
+	// MANAGE permission on the space.
 	DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error
 
 	// Delete a conversation message.
@@ -161,14 +168,14 @@ type GenieInterface interface {
 	// agent-mode transcript, use the List conversation items endpoint.
 	GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
+	// Gets the result of the SQL query in a message's query attachment. The result
+	// is available only while the message status is `EXECUTING_QUERY` or
+	// `COMPLETED`.
 	GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
+	// Gets the result of the SQL query in a message's query attachment. The result
+	// is available only while the message status is `EXECUTING_QUERY` or
+	// `COMPLETED`.
 	GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
 	// DEPRECATED: Use [Get Message Attachment Query
@@ -201,22 +208,32 @@ type GenieInterface interface {
 	// endpoint for the complete reasoning and tool-call history.
 	ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error)
 
-	// Get a list of conversations in a Genie Space.
+	// Lists the conversations in a Genie space. By default the list contains only
+	// the caller's own conversations, ordered by most recent activity. With
+	// `include_all`, it contains every user's conversations in the space, ordered
+	// by creation time with the newest first.
 	ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error)
 
-	// Get a list of conversations in a Genie Space.
+	// Lists the conversations in a Genie space. By default the list contains only
+	// the caller's own conversations, ordered by most recent activity. With
+	// `include_all`, it contains every user's conversations in the space, ordered
+	// by creation time with the newest first.
 	ListConversationsBySpaceId(ctx context.Context, spaceId string) (*GenieListConversationsResponse, error)
 
 	// List comments on a specific conversation message.
 	ListMessageComments(ctx context.Context, request GenieListMessageCommentsRequest) (*GenieListMessageCommentsResponse, error)
 
-	// Get list of Genie Spaces.
+	// Lists the Genie spaces that the caller can access, most recently updated
+	// first.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
 
 	// Sends feedback for a message in a chat-mode or agent-mode conversation.
 	SendMessageFeedback(ctx context.Context, request GenieSendMessageFeedbackRequest) error
 
-	// Starts a new chat-mode conversation and sends its first message.
+	// Starts a new chat-mode conversation and sends its first message. The message
+	// is processed asynchronously. Poll [Get a conversation
+	// message](:method:genie/getmessage) until its `status` is `COMPLETED`,
+	// `FAILED`, or `CANCELLED`.
 	StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error)
 
 	// Calls [GenieAPIInterface.StartConversation] and waits to reach COMPLETED state
@@ -233,7 +250,9 @@ type GenieInterface interface {
 	// Move a Genie Space to the trash.
 	TrashSpaceBySpaceId(ctx context.Context, spaceId string) error
 
-	// Updates a Genie space with a serialized payload.
+	// Updates a Genie space. Replaces the whole configuration when
+	// `serialized_space` is set and changes the title, description, warehouse or
+	// folder when those fields are set; omitted fields keep their current values.
 	UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error)
 }
 
@@ -314,7 +333,10 @@ func (w *WaitGetMessageGenieCompleted[R]) GetWithTimeout(timeout time.Duration) 
 
 // Sends a new message in a chat-mode
 // [conversation](:method:genie/startconversation). The AI response uses all
-// previously created messages in the conversation to respond.
+// previously created messages in the conversation to respond. The message is
+// processed asynchronously. Poll [Get a conversation
+// message](:method:genie/getmessage) until its `status` is `COMPLETED`,
+// `FAILED`, or `CANCELLED`.
 func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error) {
 	genieMessage, err := a.genieImpl.CreateMessage(ctx, genieCreateConversationMessageRequest)
 	if err != nil {
@@ -360,7 +382,9 @@ func (a *GenieAPI) CreateMessageAndWait(ctx context.Context, genieCreateConversa
 	return wait.Get()
 }
 
-// Delete a conversation.
+// Deletes a conversation and all of its messages. Users can delete their own
+// conversations. Deleting another user's conversation requires at least CAN
+// MANAGE permission on the space.
 func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error {
 	return a.genieImpl.DeleteConversation(ctx, GenieDeleteConversationRequest{
 		SpaceId:        spaceId,
@@ -410,9 +434,9 @@ func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.
 	})
 }
 
-// Get the result of SQL query if the message has a query attachment. This is
-// only available if a message has a query attachment and the message status is
-// `EXECUTING_QUERY` OR `COMPLETED`.
+// Gets the result of the SQL query in a message's query attachment. The result
+// is available only while the message status is `EXECUTING_QUERY` or
+// `COMPLETED`.
 func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageAttachmentQueryResult(ctx, GenieGetMessageAttachmentQueryResultRequest{
 		SpaceId:        spaceId,
@@ -450,14 +474,20 @@ func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*Geni
 	})
 }
 
-// Get a list of conversations in a Genie Space.
+// Lists the conversations in a Genie space. By default the list contains only
+// the caller's own conversations, ordered by most recent activity. With
+// `include_all`, it contains every user's conversations in the space, ordered
+// by creation time with the newest first.
 func (a *GenieAPI) ListConversationsBySpaceId(ctx context.Context, spaceId string) (*GenieListConversationsResponse, error) {
 	return a.genieImpl.ListConversations(ctx, GenieListConversationsRequest{
 		SpaceId: spaceId,
 	})
 }
 
-// Starts a new chat-mode conversation and sends its first message.
+// Starts a new chat-mode conversation and sends its first message. The message
+// is processed asynchronously. Poll [Get a conversation
+// message](:method:genie/getmessage) until its `status` is `COMPLETED`,
+// `FAILED`, or `CANCELLED`.
 func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error) {
 	genieStartConversationResponse, err := a.genieImpl.StartConversation(ctx, genieStartConversationMessageRequest)
 	if err != nil {
@@ -513,11 +543,6 @@ func (a *GenieAPI) TrashSpaceBySpaceId(ctx context.Context, spaceId string) erro
 type LakeviewInterface interface {
 
 	// Create a draft dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
 
 	// Create dashboard schedule.
@@ -578,19 +603,9 @@ type LakeviewInterface interface {
 	DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error
 
 	// Get a draft dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Get a draft dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error)
 
 	// Get the current published dashboard.
@@ -655,22 +670,14 @@ type LakeviewInterface interface {
 	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error)
 
-	// List dashboards.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
+	// List the dashboards that the caller can view. Each entry carries summary
+	// metadata only; use Get dashboard to retrieve a dashboard's full definition.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard]
 
-	// List dashboards.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
+	// List the dashboards that the caller can view. Each entry carries summary
+	// metadata only; use Get dashboard to retrieve a dashboard's full definition.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error)
@@ -754,59 +761,24 @@ type LakeviewInterface interface {
 	Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error)
 
 	// Publish the current draft dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
 
 	// Revert a dashboard's definition in draft mode to the last published version.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error)
 
 	// Trash a dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Trash(ctx context.Context, request TrashDashboardRequest) error
 
 	// Trash a dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	TrashByDashboardId(ctx context.Context, dashboardId string) error
 
 	// Unpublish the dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
 
 	// Unpublish the dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	UnpublishByDashboardId(ctx context.Context, dashboardId string) error
 
 	// Update a draft dashboard.
-	//
-	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-	// in addition to Workspace access.
-	//
-	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
 
 	// Update dashboard schedule.
@@ -864,11 +836,6 @@ func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptio
 }
 
 // Get a draft dashboard.
-//
-// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-// in addition to Workspace access.
-//
-// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
 	return a.lakeviewImpl.Get(ctx, GetDashboardRequest{
 		DashboardId: dashboardId,
@@ -953,11 +920,6 @@ func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Co
 }
 
 // Trash a dashboard.
-//
-// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-// in addition to Workspace access.
-//
-// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.lakeviewImpl.Trash(ctx, TrashDashboardRequest{
 		DashboardId: dashboardId,
@@ -965,11 +927,6 @@ func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string
 }
 
 // Unpublish the dashboard.
-//
-// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL access
-// in addition to Workspace access.
-//
-// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,

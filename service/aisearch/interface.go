@@ -16,7 +16,8 @@ type AiSearchService interface {
 	// Create a new AI Search endpoint.
 	CreateEndpoint(ctx context.Context, request CreateEndpointRequest) (*Endpoint, error)
 
-	// Create a new AI Search index.
+	// Create a new AI Search index. The index is provisioned asynchronously;
+	// `status.ready` on GetIndex reports when it can serve queries.
 	CreateIndex(ctx context.Context, request CreateIndexRequest) (*Index, error)
 
 	// Delete an AI Search endpoint.
@@ -47,9 +48,10 @@ type AiSearchService interface {
 	// Scan (paginate over) the rows of an AI Search index.
 	ScanIndex(ctx context.Context, request ScanIndexRequest) (*ScanIndexResponse, error)
 
-	// Synchronize a Delta Sync AI Search index with its source Delta table.
-	// Applies only to Delta Sync indexes; Direct Access indexes are written via
-	// the data-plane upsert path.
+	// Start a sync of a Delta Sync AI Search index with its source Delta table.
+	// Use it with `TRIGGERED` pipelines; `CONTINUOUS` pipelines sync
+	// automatically. Direct Access indexes are written through UpsertData
+	// instead.
 	SyncIndex(ctx context.Context, request SyncIndexRequest) (*SyncIndexResponse, error)
 
 	// Update an existing AI Search endpoint. Multi-bucket masks are supported

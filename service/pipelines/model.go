@@ -31,6 +31,7 @@ func (s *ApiSourceConnectorOptions) UnmarshalJSON(b []byte) error {
 }
 
 type ApplyEnvironmentRequest struct {
+	// The ID of the pipeline to apply the environment to.
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -128,15 +129,18 @@ type ClonePipelineRequest struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
-	// Budget policy of this pipeline.
+	// ID (UUID) of the serverless budget policy applied to this pipeline. Only
+	// supported for serverless pipelines.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// A catalog in Unity Catalog to publish data from this pipeline to. If
-	// `target` is specified, tables in this pipeline are published to a
-	// `target` schema inside `catalog` (for example,
-	// `catalog`.`target`.`table`). If `target` is not specified, no data is
-	// published to Unity Catalog.
+	// A catalog in Unity Catalog to publish data from this pipeline to. Tables
+	// are published to the schema set in `schema` (or the legacy `target`)
+	// inside this catalog, for example `catalog`.`schema`.`table`; source code
+	// can also use fully qualified names to write to other schemas and
+	// catalogs. If `catalog` is not specified, the pipeline uses the legacy
+	// Hive metastore.
 	Catalog string `json:"catalog,omitempty"`
-	// SDP Release Channel that specifies which version to use.
+	// Release channel that selects the pipeline runtime version: `CURRENT` (the
+	// default) or `PREVIEW`, which runs on the upcoming runtime release.
 	Channel string `json:"channel,omitempty"`
 	// The type of clone to perform. Currently, only deep copies are supported
 	CloneMode CloneMode `json:"clone_mode,omitempty"`
@@ -158,7 +162,8 @@ type ClonePipelineRequest struct {
 	//
 	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
-	// Pipeline product edition.
+	// Pipeline product edition: `CORE`, `PRO`, or `ADVANCED`. Serverless
+	// pipelines require `ADVANCED`.
 	Edition string `json:"edition,omitempty"`
 	// Environment specification for this pipeline used to install dependencies.
 	Environment *PipelinesEnvironment `json:"environment,omitempty"`
@@ -218,6 +223,8 @@ type ClonePipelineRequest struct {
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
 	Target string `json:"target,omitempty"`
+	// Test configuration for this pipeline. Used only by test-only updates.
+	Testing *PipelineTesting `json:"testing,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 	// Usage policy of this pipeline.
@@ -380,15 +387,18 @@ type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
-	// Budget policy of this pipeline.
+	// ID (UUID) of the serverless budget policy applied to this pipeline. Only
+	// supported for serverless pipelines.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// A catalog in Unity Catalog to publish data from this pipeline to. If
-	// `target` is specified, tables in this pipeline are published to a
-	// `target` schema inside `catalog` (for example,
-	// `catalog`.`target`.`table`). If `target` is not specified, no data is
-	// published to Unity Catalog.
+	// A catalog in Unity Catalog to publish data from this pipeline to. Tables
+	// are published to the schema set in `schema` (or the legacy `target`)
+	// inside this catalog, for example `catalog`.`schema`.`table`; source code
+	// can also use fully qualified names to write to other schemas and
+	// catalogs. If `catalog` is not specified, the pipeline uses the legacy
+	// Hive metastore.
 	Catalog string `json:"catalog,omitempty"`
-	// SDP Release Channel that specifies which version to use.
+	// Release channel that selects the pipeline runtime version: `CURRENT` (the
+	// default) or `PREVIEW`, which runs on the upcoming runtime release.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment. Applies to classic
 	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
@@ -408,9 +418,12 @@ type CreatePipeline struct {
 	//
 	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
-
+	// If true, no pipeline is created. The response contains the settings that
+	// would be applied, with server defaults filled in, instead of a pipeline
+	// ID.
 	DryRun bool `json:"dry_run,omitempty"`
-	// Pipeline product edition.
+	// Pipeline product edition: `CORE`, `PRO`, or `ADVANCED`. Serverless
+	// pipelines require `ADVANCED`.
 	Edition string `json:"edition,omitempty"`
 	// Environment specification for this pipeline used to install dependencies.
 	Environment *PipelinesEnvironment `json:"environment,omitempty"`
@@ -446,7 +459,8 @@ type CreatePipeline struct {
 	// editing the pipeline in the Databricks user interface and it is added to
 	// sys.path when executing Python sources during pipeline execution.
 	RootPath string `json:"root_path,omitempty"`
-
+	// The user or service principal that the pipeline runs as. If not
+	// specified, the pipeline runs as the user who created the pipeline.
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
@@ -469,6 +483,8 @@ type CreatePipeline struct {
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
 	Target string `json:"target,omitempty"`
+	// Test configuration for this pipeline. Used only by test-only updates.
+	Testing *PipelineTesting `json:"testing,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 	// Usage policy of this pipeline.
@@ -625,7 +641,7 @@ type DeletePipelineRequest struct {
 	// If true, deletion will proceed even if resource cleanup fails. By
 	// default, deletion will fail if resources cleanup is required but fails.
 	Force bool `json:"-" url:"force,omitempty"`
-
+	// The ID of the pipeline to delete.
 	PipelineId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -679,15 +695,18 @@ type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
-	// Budget policy of this pipeline.
+	// ID (UUID) of the serverless budget policy applied to this pipeline. Only
+	// supported for serverless pipelines.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// A catalog in Unity Catalog to publish data from this pipeline to. If
-	// `target` is specified, tables in this pipeline are published to a
-	// `target` schema inside `catalog` (for example,
-	// `catalog`.`target`.`table`). If `target` is not specified, no data is
-	// published to Unity Catalog.
+	// A catalog in Unity Catalog to publish data from this pipeline to. Tables
+	// are published to the schema set in `schema` (or the legacy `target`)
+	// inside this catalog, for example `catalog`.`schema`.`table`; source code
+	// can also use fully qualified names to write to other schemas and
+	// catalogs. If `catalog` is not specified, the pipeline uses the legacy
+	// Hive metastore.
 	Catalog string `json:"catalog,omitempty"`
-	// SDP Release Channel that specifies which version to use.
+	// Release channel that selects the pipeline runtime version: `CURRENT` (the
+	// default) or `PREVIEW`, which runs on the upcoming runtime release.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment. Applies to classic
 	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
@@ -707,7 +726,8 @@ type EditPipeline struct {
 	//
 	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
-	// Pipeline product edition.
+	// Pipeline product edition: `CORE`, `PRO`, or `ADVANCED`. Serverless
+	// pipelines require `ADVANCED`.
 	Edition string `json:"edition,omitempty"`
 	// Environment specification for this pipeline used to install dependencies.
 	Environment *PipelinesEnvironment `json:"environment,omitempty"`
@@ -749,7 +769,7 @@ type EditPipeline struct {
 	// editing the pipeline in the Databricks user interface and it is added to
 	// sys.path when executing Python sources during pipeline execution.
 	RootPath string `json:"root_path,omitempty"`
-
+	// The user or service principal that the pipeline runs as.
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
@@ -772,6 +792,8 @@ type EditPipeline struct {
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
 	Target string `json:"target,omitempty"`
+	// Test configuration for this pipeline. Used only by test-only updates.
+	Testing *PipelineTesting `json:"testing,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 	// Usage policy of this pipeline.
@@ -1088,6 +1110,7 @@ func (s *GetPipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetPipelineRequest struct {
+	// The ID of the pipeline.
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -2060,7 +2083,7 @@ type ListUpdatesResponse struct {
 	// If present, then this token can be used in a subsequent request to fetch
 	// the previous page.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
-
+	// The updates for the pipeline, ordered with the newest update first.
 	Updates []UpdateInfo `json:"updates,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2995,15 +3018,18 @@ func (s *PipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
 }
 
 type PipelineSpec struct {
-	// Budget policy of this pipeline.
+	// ID (UUID) of the serverless budget policy applied to this pipeline. Only
+	// supported for serverless pipelines.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-	// A catalog in Unity Catalog to publish data from this pipeline to. If
-	// `target` is specified, tables in this pipeline are published to a
-	// `target` schema inside `catalog` (for example,
-	// `catalog`.`target`.`table`). If `target` is not specified, no data is
-	// published to Unity Catalog.
+	// A catalog in Unity Catalog to publish data from this pipeline to. Tables
+	// are published to the schema set in `schema` (or the legacy `target`)
+	// inside this catalog, for example `catalog`.`schema`.`table`; source code
+	// can also use fully qualified names to write to other schemas and
+	// catalogs. If `catalog` is not specified, the pipeline uses the legacy
+	// Hive metastore.
 	Catalog string `json:"catalog,omitempty"`
-	// SDP Release Channel that specifies which version to use.
+	// Release channel that selects the pipeline runtime version: `CURRENT` (the
+	// default) or `PREVIEW`, which runs on the upcoming runtime release.
 	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment. Applies to classic
 	// (non-serverless) pipelines. Omit this field when `serverless` is `true`.
@@ -3023,7 +3049,8 @@ type PipelineSpec struct {
 	//
 	// Deprecated: set development mode for each update instead.
 	Development bool `json:"development,omitempty"`
-	// Pipeline product edition.
+	// Pipeline product edition: `CORE`, `PRO`, or `ADVANCED`. Serverless
+	// pipelines require `ADVANCED`.
 	Edition string `json:"edition,omitempty"`
 	// Environment specification for this pipeline used to install dependencies.
 	Environment *PipelinesEnvironment `json:"environment,omitempty"`
@@ -3077,6 +3104,8 @@ type PipelineSpec struct {
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
 	Target string `json:"target,omitempty"`
+	// Test configuration for this pipeline. Used only by test-only updates.
+	Testing *PipelineTesting `json:"testing,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 	// Usage policy of this pipeline.
@@ -3169,7 +3198,7 @@ type PipelineStateInfo struct {
 	// The username that the pipeline runs as. This is a read only value derived
 	// from the pipeline owner.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
-
+	// The current state of the pipeline.
 	State PipelineState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3219,6 +3248,64 @@ func (f *PipelineStateInfoHealth) Values() []PipelineStateInfoHealth {
 // Type always returns PipelineStateInfoHealth to satisfy [pflag.Value] interface
 func (f *PipelineStateInfoHealth) Type() string {
 	return "PipelineStateInfoHealth"
+}
+
+// The packages that a pipeline's tests need in addition to the pipeline's
+// environment.
+type PipelineTestEnvironment struct {
+	// A list of files that declare the packages the tests need: a project
+	// folder, a requirements file, or a wheel, in the workspace or a UC volume.
+	// A project folder can take `--editable` and an extra, for example
+	// `--editable /Workspace/Users/someone@example.com/orders[test]`. Package
+	// names, such as `faker==33.0`, and URLs are rejected.
+	Dependencies []string `json:"dependencies,omitempty"`
+}
+
+func (s *PipelineTestEnvironment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Options for selecting the tests that a test-only update runs.
+type PipelineTestOptions struct {
+	// A list of arguments to pass to pytest, for example `["-m", "slow"]`. Only
+	// `-k` and `-m` are accepted, each followed by its value. Other arguments
+	// are rejected.
+	PytestArgs []string `json:"pytest_args,omitempty"`
+	// A list of test files or folders to run, as absolute workspace paths
+	// inside the pipeline's test sources. A path outside the test sources is
+	// rejected. To run one test, append `::` and the test name to a file path,
+	// for example `/Workspace/orders/tests/test_orders.py::test_backfill`. When
+	// empty, every test in the test sources runs.
+	TestSelection []string `json:"test_selection,omitempty"`
+}
+
+func (s *PipelineTestOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// A workspace location that holds pipeline tests.
+type PipelineTestSource struct {
+	// An absolute workspace path to a test file, or to a folder followed by
+	// `/**`.
+	Glob *PathPattern `json:"glob,omitempty"`
+}
+
+func (s *PipelineTestSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Test configuration for a pipeline.
+type PipelineTesting struct {
+	// Packages that only the tests need. Test-only updates install them in
+	// addition to the pipeline's `environment`. Other updates do not.
+	Environment *PipelineTestEnvironment `json:"environment,omitempty"`
+	// The workspace files and folders that hold the pipeline's tests. They must
+	// not overlap the pipeline's `libraries`.
+	Sources []PipelineTestSource `json:"sources,omitempty"`
+}
+
+func (s *PipelineTesting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 type PipelineTrigger struct {
@@ -3796,6 +3883,8 @@ func (s StackFrame) MarshalJSON() ([]byte, error) {
 }
 
 type StartUpdate struct {
+	// What triggered this update, as recorded in the update's `cause`. Defaults
+	// to `API_CALL`.
 	Cause StartUpdateCause `json:"cause,omitempty"`
 	// Whether the update is started in the development mode. This is
 	// recommended for interactive development and testing. Reuses compute for
@@ -3814,7 +3903,7 @@ type StartUpdate struct {
 	FullRefreshSelectionByPath []string `json:"full_refresh_selection_by_path,omitempty"`
 	// Key/value map of parameters to pass to the pipeline execution
 	Parameters map[string]string `json:"parameters,omitempty"`
-
+	// The ID of the pipeline to start an update for.
 	PipelineId string `json:"-" url:"-"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
@@ -3835,6 +3924,16 @@ type StartUpdate struct {
 	// The information about the requested rewind operation. If specified this
 	// is a rewind mode update.
 	RewindSpec *RewindSpec `json:"rewind_spec,omitempty"`
+	// If true, this is a test-only update: it runs the pipeline's tests and
+	// does not update the pipeline's datasets. A failing test does not stop the
+	// other tests. The update is `COMPLETED` if at least one test runs and no
+	// test fails or errors. Otherwise the update is `FAILED`, including when no
+	// tests are found. Cannot be combined with `validate_only`, `explore_only`,
+	// or `rewind_spec`.
+	TestOnly bool `json:"test_only,omitempty"`
+	// Options for selecting the tests that this test-only update runs. Requires
+	// `test_only`. When absent, every test in the pipeline's test sources runs.
+	TestOptions *PipelineTestOptions `json:"test_options,omitempty"`
 	// If true, this update only validates the correctness of pipeline source
 	// code but does not materialize or publish any datasets.
 	ValidateOnly bool `json:"validate_only,omitempty"`
@@ -3904,6 +4003,7 @@ func (f *StartUpdateCause) Type() string {
 }
 
 type StartUpdateResponse struct {
+	// The ID of the update that was started.
 	UpdateId string `json:"update_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3918,6 +4018,7 @@ func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 }
 
 type StopRequest struct {
+	// The ID of the pipeline to stop.
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -4377,6 +4478,8 @@ type UpdateInfo struct {
 	RefreshSelectionByPath []string `json:"refresh_selection_by_path,omitempty"`
 	// The update state.
 	State UpdateInfoState `json:"state,omitempty"`
+	// If true, this update is a test-only update. Absent for other updates.
+	TestOnly bool `json:"test_only,omitempty"`
 	// The ID of this update.
 	UpdateId string `json:"update_id,omitempty"`
 	// If true, this update only validates the correctness of pipeline source
@@ -4550,10 +4653,11 @@ func (f *UpdateMode) Type() string {
 }
 
 type UpdateStateInfo struct {
+	// The time when the update was created, in ISO 8601 format.
 	CreationTime string `json:"creation_time,omitempty"`
-
+	// The state of the update.
 	State UpdateStateInfoState `json:"state,omitempty"`
-
+	// The ID of the update.
 	UpdateId string `json:"update_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
