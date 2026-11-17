@@ -838,7 +838,7 @@ func (a *postgresImpl) internalListCdfStatuses(ctx context.Context, request List
 	return &listCdfStatusesResponse, err
 }
 
-// List Databases.
+// Returns a list of Postgres databases in the branch.
 func (a *postgresImpl) ListDatabases(ctx context.Context, request ListDatabasesRequest) listing.Iterator[Database] {
 
 	getNextPage := func(ctx context.Context, req ListDatabasesRequest) (*ListDatabasesResponse, error) {
@@ -863,7 +863,7 @@ func (a *postgresImpl) ListDatabases(ctx context.Context, request ListDatabasesR
 	return iterator
 }
 
-// List Databases.
+// Returns a list of Postgres databases in the branch.
 func (a *postgresImpl) ListDatabasesAll(ctx context.Context, request ListDatabasesRequest) ([]Database, error) {
 	iterator := a.ListDatabases(ctx, request)
 	return listing.ToSlice[Database](ctx, iterator)

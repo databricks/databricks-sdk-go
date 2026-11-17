@@ -843,7 +843,11 @@ func (s *CloudflareApiToken) UnmarshalJSON(b []byte) error {
 type ColumnInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-
+	// The column mask function applied to this column, if any. A column mask is
+	// a SQL user-defined function that transforms the values a query returns
+	// for the column. See
+	// https://docs.databricks.com/aws/en/tables/row-and-column-filters for
+	// details.
 	Mask *ColumnMask `json:"mask,omitempty"`
 	// Name of Column.
 	Name string `json:"name,omitempty"`
@@ -857,7 +861,9 @@ type ColumnInfo struct {
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type specification, JSON-serialized.
 	TypeJson string `json:"type_json,omitempty"`
-
+	// The name of the column's data type, for example STRING, DECIMAL or
+	// STRUCT. The complete type, including parameters such as the precision of
+	// a decimal or the element type of an array, is in type_text.
 	TypeName ColumnTypeName `json:"type_name,omitempty"`
 	// Digits of precision; required for DecimalTypes.
 	TypePrecision int `json:"type_precision,omitempty"`
@@ -1795,7 +1801,9 @@ type CreateMcpServiceRequest struct {
 	// The MCP service to create. Do not set `name`; the server derives it from
 	// `parent` and `mcp_service_id`. `source_connection` is required.
 	McpService McpService `json:"mcp_service"`
-	// Name for the MCP service, e.g. "my_mcp_service".
+	// Name of the MCP service within the parent schema. The name must not
+	// contain periods, spaces, forward slashes, percent signs, or control
+	// characters, and it is stored in lowercase.
 	McpServiceId string `json:"-" url:"mcp_service_id"`
 	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
 	// `{...}` component is capped at 255 characters individually.
@@ -1858,7 +1866,10 @@ type CreateModelProviderServiceRequest struct {
 	// The model provider service to create. Do not set `name`; the server
 	// derives it from `parent` and `model_provider_service_id`.
 	ModelProviderService ModelProviderService `json:"model_provider_service"`
-	// Name for the model provider service, e.g. "openai_prod".
+	// Name of the model provider service within the parent schema. The name
+	// must not contain periods, spaces, forward slashes, percent signs, or
+	// control characters, must not end in `_DO_NOT_MODIFY`, and must not exceed
+	// 241 characters. It is stored in lowercase.
 	ModelProviderServiceId string `json:"-" url:"model_provider_service_id"`
 	// Name of the parent schema. Format: `schemas/{catalog}.{schema}`. Each
 	// `{...}` component is capped at 255 characters individually.
@@ -2044,13 +2055,22 @@ type CreateSchema struct {
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Custom maximum retention period in hours for the schema.
+	// Dropped objects in the schema remain recoverable for this number of hours
+	// before they are permanently purged. The value must be 0 or within the
+	// range allowed for the metastore. Schemas that do not set their own value
+	// inherit the parent catalog's value.
 	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
 	// Name of schema, relative to parent catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// Storage root URL for managed tables within schema.
+	// Managed tables and volumes in the schema are stored under this storage
+	// root URL. The path must be inside an external location on which the
+	// caller has the CREATE MANAGED STORAGE privilege. If omitted, managed data
+	// is stored under the parent catalog's storage root, or under the
+	// metastore's root storage location when the catalog has none. Schemas in
+	// Delta Sharing catalogs cannot have a storage root, and schemas in a
+	// federated Hive metastore catalog must set one.
 	StorageRoot string `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2141,7 +2161,9 @@ type CreateTableRequest struct {
 	CatalogName string `json:"catalog_name"`
 	// The array of __ColumnInfo__ definitions of the table's columns.
 	Columns []ColumnInfo `json:"columns,omitempty"`
-
+	// The format of the data that backs the table, such as DELTA, PARQUET, CSV
+	// or JSON. Foreign tables report the external system that holds them, for
+	// example SNOWFLAKE_FORMAT or MYSQL_FORMAT.
 	DataSourceFormat DataSourceFormat `json:"data_source_format"`
 	// Name of table, relative to parent schema.
 	Name string `json:"name"`
@@ -2149,9 +2171,20 @@ type CreateTableRequest struct {
 	Properties map[string]string `json:"properties,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name"`
-	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+	// The cloud storage URL under which the data files of the table are stored.
+	// For an EXTERNAL table, it must be set on creation to a path within an
+	// existing external location. For a MANAGED table, the server assigns a
+	// path under the managed storage location of the parent schema, catalog or
+	// metastore and returns it in this field. Views have no storage location.
 	StorageLocation string `json:"storage_location"`
-
+	// The type of the table. MANAGED tables store their data in storage that
+	// Unity Catalog manages, EXTERNAL tables store it in a registered external
+	// location, FOREIGN tables mirror objects of an external database through a
+	// connection, and the shallow clone types reference the data files of a
+	// base table. VIEW, MATERIALIZED_VIEW, STREAMING_TABLE and METRIC_VIEW are
+	// defined by a view definition. See
+	// https://docs.databricks.com/aws/en/tables/ for an overview of the table
+	// types.
 	TableType TableType `json:"table_type"`
 }
 
@@ -2942,7 +2975,7 @@ func (s DeleteRequestExternalLineage) MarshalJSON() ([]byte, error) {
 type DeleteSchemaRequest struct {
 	// Force deletion even if the schema is not empty.
 	Force bool `json:"-" url:"force,omitempty"`
-	// Full name of the schema.
+	// Full name of the schema, in the form catalog_name.schema_name.
 	FullName string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3175,7 +3208,7 @@ func (f *DestinationType) Type() string {
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
-	// Full name of the system schema.
+	// Name of the system schema, without the catalog prefix.
 	SchemaName string `json:"-" url:"-"`
 }
 
@@ -3344,11 +3377,13 @@ func (f *EnablePredictiveOptimization) Type() string {
 }
 
 type EnableRequest struct {
-	// the catalog for which the system schema is to enabled in
+	// Name of the catalog in which to enable the system schema. The supported
+	// values are `system` and `samples`. If not set, the system schema is
+	// enabled in the `system` catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
-	// Full name of the system schema.
+	// Name of the system schema, without the catalog prefix.
 	SchemaName string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5005,10 +5040,11 @@ func (s GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetSchemaRequest struct {
-	// Full name of the schema.
+	// Full name of the schema, in the form catalog_name.schema_name.
 	FullName string `json:"-" url:"-"`
-	// Whether to include schemas in the response for which the principal can
-	// only access selective metadata for
+	// Whether to return the schema when the principal can only access selective
+	// metadata for it through the BROWSE privilege. The response then has
+	// browse_only set to true.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6260,8 +6296,9 @@ func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
-	// Whether to include schemas in the response for which the principal can
-	// only access selective metadata for
+	// Whether to include schemas for which the principal can only access
+	// selective metadata through the BROWSE privilege. Such schemas are
+	// returned with browse_only set to true.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of schemas to return. If not set, all the schemas are
 	// returned (not recommended). - when set to a value greater than 0, the
@@ -6711,25 +6748,29 @@ type McpService struct {
 	Config *McpServiceConfig `json:"config,omitempty"`
 	// Time the MCP service was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Creator identity.
+	// Username or service principal application ID of the principal that
+	// created the MCP service.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Owner of the MCP service.
+	// Username, group name, or service principal application ID of the MCP
+	// service owner.
 	EffectiveOwner string `json:"effective_owner,omitempty"`
 	// Optimistic concurrency token returned on every read. To make an Update or
 	// Delete conditional, pass the last-read value in that request's `etag`
 	// field. In REST responses, this value is a base64 string; URL-encode it
 	// when setting the `etag` query parameter.
 	Etag string `json:"etag,omitempty"`
-	// Metastore hosting the MCP service.
+	// Unique identifier of the metastore that contains the MCP service.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Resource name of the MCP service. Format:
 	// `mcp-services/{catalog}.{schema}.{mcp_service}`. Each `{...}` component
-	// is capped at 255 characters individually. Server-derived on Create from
-	// `parent` + `mcp_service_id`; required and immutable on Update/Get/Delete.
+	// is capped at 255 characters individually. The server derives the name on
+	// Create from `parent` and `mcp_service_id`; it is required and immutable
+	// on Update, Get, and Delete.
 	Name string `json:"name,omitempty"`
 	// Time the MCP service was last modified.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
-	// Identity of the last updater.
+	// Username or service principal application ID of the principal that last
+	// updated the MCP service.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6919,26 +6960,28 @@ type ModelProviderService struct {
 	Config *ModelProviderServiceConfig `json:"config,omitempty"`
 	// Time the provider service was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Creator identity.
+	// Username of the user who created the model provider service.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Owner of the model provider service.
+	// Username or group name of the model provider service owner.
 	EffectiveOwner string `json:"effective_owner,omitempty"`
 	// Optimistic concurrency token returned on every read. To make an Update or
 	// Delete conditional, pass the last-read value in that request's `etag`
 	// field. In REST responses, this value is a base64 string; URL-encode it
 	// when setting the `etag` query parameter.
 	Etag string `json:"etag,omitempty"`
-	// Metastore hosting the provider service.
+	// Unique identifier of the metastore that contains the model provider
+	// service.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Resource name of the provider service. Format:
 	// `model-provider-services/{catalog}.{schema}.{model_provider_service}`.
-	// Each `{...}` component is capped at 255 characters individually.
-	// Server-derived on Create from `parent` + `model_provider_service_id`;
-	// required and immutable on Update/Get/Delete.
+	// Each `{...}` component is capped at 255 characters individually. The
+	// server derives the name on Create from `parent` and
+	// `model_provider_service_id`; it is required and immutable on Update, Get,
+	// and Delete.
 	Name string `json:"name,omitempty"`
 	// Time the provider service was last modified.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
-	// Identity of the last updater.
+	// Username of the user who last updated the model provider service.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6964,15 +7007,21 @@ type ModelProviderServiceConfig struct {
 	// built-in model catalog and must leave this false and list their models in
 	// `targets`.
 	AllowAllTargets bool `json:"allow_all_targets,omitempty"`
-
+	// Configuration for Amazon Bedrock. Set this field when `provider_type` is
+	// `EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK`.
 	AmazonBedrock *ModelProviderServiceConfigAmazonBedrockProviderConfig `json:"amazon_bedrock,omitempty"`
-
+	// Configuration for Anthropic. Set this field when `provider_type` is
+	// `EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC`.
 	Anthropic *ModelProviderServiceConfigAnthropicProviderConfig `json:"anthropic,omitempty"`
-
+	// Configuration for Azure OpenAI. Set this field when `provider_type` is
+	// `EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI`.
 	AzureOpenai *ModelProviderServiceConfigAzureOpenAiProviderConfig `json:"azure_openai,omitempty"`
-
+	// Configuration for Amazon Bedrock Mantle, with the same fields as
+	// `amazon_bedrock`. Set this field when `provider_type` is
+	// `EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE`.
 	BedrockMantle *ModelProviderServiceConfigAmazonBedrockProviderConfig `json:"bedrock_mantle,omitempty"`
-
+	// Configuration for a custom OpenAI-compatible provider. Set this field
+	// when `provider_type` is `EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM`.
 	Custom *ModelProviderServiceConfigCustomProviderConfig `json:"custom,omitempty"`
 	// Whether to forward incoming HTTP headers to the upstream provider.
 	// Defaults to false and is configured for the entire provider service, not
@@ -6991,15 +7040,18 @@ type ModelProviderServiceConfig struct {
 	// Policies on opaque unmanaged requests, so unmanaged requests are rejected
 	// whenever Service Policies are attached to this securable.
 	ForwardUnmanagedPaths bool `json:"forward_unmanaged_paths,omitempty"`
-
+	// Configuration for Google Gemini Enterprise. Set this field when
+	// `provider_type` is `EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE`.
 	GeminiEnterprise *ModelProviderServiceConfigGeminiEnterpriseProviderConfig `json:"gemini_enterprise,omitempty"`
 	// Payload logging configuration for requests sent directly to this provider
 	// service. Requests routed through a model service are captured by that
 	// model service's inference table instead.
 	InferenceTable *InferenceTableConfig `json:"inference_table,omitempty"`
-
+	// Configuration for Microsoft Foundry. Set this field when `provider_type`
+	// is `EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY`.
 	MicrosoftFoundry *ModelProviderServiceConfigMicrosoftFoundryProviderConfig `json:"microsoft_foundry,omitempty"`
-
+	// Configuration for OpenAI. Set this field when `provider_type` is
+	// `EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI`.
 	Openai *ModelProviderServiceConfigOpenAiProviderConfig `json:"openai,omitempty"`
 	// Pricing configuration for this provider service. An explicitly empty
 	// configuration is retained on Create and Update and applies no adjustment.
@@ -7196,7 +7248,7 @@ type ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth struct {
 	// supplied via `api_key_value`.
 	ApiKeyName string `json:"api_key_name,omitempty"`
 	// Secret value forwarded under the `api_key_name` header on outbound
-	// requests. Supplied as inline plaintext via `ProviderSecret.plaintext`.
+	// requests. Supply the value in `api_key_value.plaintext`.
 	ApiKeyValue *ModelProviderServiceConfigProviderSecret `json:"api_key_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7511,9 +7563,10 @@ func (s ModelProviderServiceConfigProviderPricingConfig) MarshalJSON() ([]byte, 
 // encrypted. The `plaintext` field is `INPUT_ONLY` and never round-trips on
 // reads.
 type ModelProviderServiceConfigProviderSecret struct {
-	// Inline plaintext credential. INPUT_ONLY: the value never round-trips on
-	// reads. Get and List responses omit `plaintext`; the enclosing secret
-	// object remains present to indicate that a secret is configured.
+	// Inline plaintext credential. The value is write-only and never
+	// round-trips on reads. Get and List responses omit `plaintext`; the
+	// enclosing secret object remains present to indicate that a secret is
+	// configured.
 	Plaintext string `json:"plaintext,omitempty"`
 	// Reference to a customer-owned UC Secret that carries this secret value.
 	// The value is read at invoke time under the model provider service owner's
@@ -9665,6 +9718,11 @@ func (s *RunRefreshRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A schema (also called a database) is the second layer of Unity Catalog's
+// three-level namespace and groups the tables, views, volumes, models, and
+// functions under its parent catalog. Managed tables and volumes in the schema
+// are stored under the schema's storage root when it has one, and otherwise
+// under the storage of the parent catalog or the metastore.
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -9672,7 +9730,7 @@ type SchemaInfo struct {
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// The type of the parent catalog.
+	// The type of the parent catalog, which the server copies from the catalog.
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -9680,12 +9738,19 @@ type SchemaInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Custom maximum retention period in hours for the schema.
+	// Dropped objects in the schema remain recoverable for this number of hours
+	// before they are permanently purged. The value must be 0 or within the
+	// range allowed for the metastore. Schemas that do not set their own value
+	// inherit the parent catalog's value.
 	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
-
+	// Indicates the predictive optimization setting that is in effect for the
+	// schema once inherited values are resolved.
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-	// Whether predictive optimization should be enabled for this object and
-	// objects under it.
+	// Whether predictive optimization is enabled for this schema and the
+	// objects under it. Valid values are ENABLE, DISABLE, and INHERIT, where
+	// INHERIT applies the parent catalog's setting. New schemas start as
+	// INHERIT. It cannot be set when creating a schema; use the update method
+	// instead.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
 	FullName string `json:"full_name,omitempty"`
@@ -9693,17 +9758,27 @@ type SchemaInfo struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of schema, relative to parent catalog.
 	Name string `json:"name,omitempty"`
-	// Username of current owner of schema.
+	// The user or group that owns the schema. The creator becomes the owner,
+	// and the owner can be changed only through the update method.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// The unique identifier of the schema.
+	// The unique identifier (UUID) that the server assigns to the schema when
+	// it is created.
 	SchemaId string `json:"schema_id,omitempty"`
-	// Storage location for managed tables within schema.
+	// The server derives this full storage location URL for managed tables and
+	// volumes within the schema from storage_root and the schema ID. It is
+	// absent when the schema has no storage root of its own.
 	StorageLocation string `json:"storage_location,omitempty"`
-	// Storage root URL for managed tables within schema.
+	// Managed tables and volumes in the schema are stored under this storage
+	// root URL. The path must be inside an external location on which the
+	// caller has the CREATE MANAGED STORAGE privilege. If omitted, managed data
+	// is stored under the parent catalog's storage root, or under the
+	// metastore's root storage location when the catalog has none. Schemas in
+	// Delta Sharing catalogs cannot have a storage root, and schemas in a
+	// federated Hive metastore catalog must set one.
 	StorageRoot string `json:"storage_root,omitempty"`
-	// Time at which this schema was created, in epoch milliseconds.
+	// Time at which this schema was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified schema.
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -10431,13 +10506,20 @@ func (s StorageCredentialInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A system schema of a metastore, with its current enablement state. System
+// schemas hold Databricks-provided system tables, such as audit logs and
+// billing usage. They live in the `system` catalog unless they are enabled in
+// another supported catalog. See
+// https://docs.databricks.com/aws/en/admin/system-tables/.
 type SystemSchemaInfo struct {
-	// Name of the system schema.
+	// Name of the system schema, without the catalog prefix.
 	Schema string `json:"schema"`
-	// The current state of enablement for the system schema. An empty string
-	// means the system schema is available and ready for opt-in. Possible
-	// values: AVAILABLE | ENABLE_INITIALIZED | ENABLE_COMPLETED |
-	// DISABLE_INITIALIZED | UNAVAILABLE | MANAGED
+	// The current enablement state of the system schema. Possible values are
+	// `AVAILABLE` (the schema can be enabled), `ENABLE_INITIALIZED` (enablement
+	// is in progress), `ENABLE_COMPLETED` (the schema is enabled),
+	// `DISABLE_INITIALIZED` (disablement is in progress), `UNAVAILABLE` (the
+	// schema cannot be enabled at the moment) and `MANAGED` (Databricks enables
+	// the schema automatically).
 	State string `json:"state"`
 }
 
@@ -10586,8 +10668,13 @@ func (s TableExistsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A table resides in the third layer of Unity Catalog's three-level namespace
+// and holds rows of data organized in columns. Besides managed and external
+// tables, it covers views, materialized views, streaming tables, metric views,
+// foreign tables and shallow clones, which table_type distinguishes.
 type TableInfo struct {
-	// The AWS access point to use when accesing s3 for this external location.
+	// The AWS access point to use when accessing S3 for the storage location of
+	// this table.
 	AccessPoint string `json:"access_point,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -10605,16 +10692,23 @@ type TableInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique ID of the Data Access Configuration to use with the table data.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-
+	// The format of the data that backs the table, such as DELTA, PARQUET, CSV
+	// or JSON. Foreign tables report the external system that holds them, for
+	// example SNOWFLAKE_FORMAT or MYSQL_FORMAT.
 	DataSourceFormat DataSourceFormat `json:"data_source_format,omitempty"`
 	// Time at which this table was deleted, in epoch milliseconds. Field is
 	// omitted if table is not deleted.
 	DeletedAt int64 `json:"deleted_at,omitempty"`
 	// Information pertaining to current state of the delta table.
 	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
-
+	// The predictive optimization setting that is in effect for the table once
+	// inherited values are resolved.
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-
+	// Whether predictive optimization is enabled for this table. Valid values
+	// are ENABLE, DISABLE and INHERIT, where INHERIT applies the setting of the
+	// parent schema. It is ignored when creating a table. See
+	// https://docs.databricks.com/aws/en/optimizations/predictive-optimization
+	// for details.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -10625,14 +10719,18 @@ type TableInfo struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of table, relative to parent schema.
 	Name string `json:"name,omitempty"`
-	// Username of current owner of table.
+	// The user or group that owns the table. The principal that creates the
+	// table becomes its owner.
 	Owner string `json:"owner,omitempty"`
 	// The pipeline ID of the table. Applicable for tables created by pipelines
 	// (Materialized View, Streaming Table, etc.).
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-
+	// The row filter function applied to the table, if any. A row filter is a
+	// SQL user-defined function that decides which rows a query returns. See
+	// https://docs.databricks.com/aws/en/tables/row-and-column-filters for
+	// details.
 	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name,omitempty"`
@@ -10643,14 +10741,25 @@ type TableInfo struct {
 	// Name of the storage credential, when a storage credential is configured
 	// for use with this table.
 	StorageCredentialName string `json:"storage_credential_name,omitempty"`
-	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+	// The cloud storage URL under which the data files of the table are stored.
+	// For an EXTERNAL table, it must be set on creation to a path within an
+	// existing external location. For a MANAGED table, the server assigns a
+	// path under the managed storage location of the parent schema, catalog or
+	// metastore and returns it in this field. Views have no storage location.
 	StorageLocation string `json:"storage_location,omitempty"`
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
 	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
 	// The unique identifier of the table.
 	TableId string `json:"table_id,omitempty"`
-
+	// The type of the table. MANAGED tables store their data in storage that
+	// Unity Catalog manages, EXTERNAL tables store it in a registered external
+	// location, FOREIGN tables mirror objects of an external database through a
+	// connection, and the shallow clone types reference the data files of a
+	// base table. VIEW, MATERIALIZED_VIEW, STREAMING_TABLE and METRIC_VIEW are
+	// defined by a view definition. See
+	// https://docs.databricks.com/aws/en/tables/ for an overview of the table
+	// types.
 	TableType TableType `json:"table_type,omitempty"`
 	// Time at which this table was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -10738,7 +10847,7 @@ type TableSummary struct {
 	FullName string `json:"full_name,omitempty"`
 	// SecurableKindManifest of table, including capabilities the table has.
 	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
-
+	// The type of the table, with the same meaning as table_type on TableInfo.
 	TableType TableType `json:"table_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -11313,8 +11422,9 @@ type UpdateMcpServiceRequest struct {
 	McpService McpService `json:"mcp_service"`
 	// Resource name of the MCP service. Format:
 	// `mcp-services/{catalog}.{schema}.{mcp_service}`. Each `{...}` component
-	// is capped at 255 characters individually. Server-derived on Create from
-	// `parent` + `mcp_service_id`; required and immutable on Update/Get/Delete.
+	// is capped at 255 characters individually. The server derives the name on
+	// Create from `parent` and `mcp_service_id`; it is required and immutable
+	// on Update, Get, and Delete.
 	Name string `json:"-" url:"-"`
 	// Fields to update. Use `config` to replace the entire configuration. The
 	// replacement must include every required field; any optional field you
@@ -11402,9 +11512,10 @@ type UpdateModelProviderServiceRequest struct {
 	ModelProviderService ModelProviderService `json:"model_provider_service"`
 	// Resource name of the provider service. Format:
 	// `model-provider-services/{catalog}.{schema}.{model_provider_service}`.
-	// Each `{...}` component is capped at 255 characters individually.
-	// Server-derived on Create from `parent` + `model_provider_service_id`;
-	// required and immutable on Update/Get/Delete.
+	// Each `{...}` component is capped at 255 characters individually. The
+	// server derives the name on Create from `parent` and
+	// `model_provider_service_id`; it is required and immutable on Update, Get,
+	// and Delete.
 	Name string `json:"-" url:"-"`
 	// Fields to update. Use `config` to replace the entire configuration. The
 	// replacement must include every required field; any optional field you
@@ -11727,16 +11838,23 @@ func (s UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Custom maximum retention period in hours for the schema.
+	// Dropped objects in the schema remain recoverable for this number of hours
+	// before they are permanently purged. The value must be 0 or within the
+	// range allowed for the metastore. Schemas that do not set their own value
+	// inherit the parent catalog's value.
 	CustomMaxRetentionHours int64 `json:"custom_max_retention_hours,omitempty"`
-	// Whether predictive optimization should be enabled for this object and
-	// objects under it.
+	// Whether predictive optimization is enabled for this schema and the
+	// objects under it. Valid values are ENABLE, DISABLE, and INHERIT, where
+	// INHERIT applies the parent catalog's setting. New schemas start as
+	// INHERIT. It cannot be set when creating a schema; use the update method
+	// instead.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-	// Full name of the schema.
+	// Full name of the schema, in the form catalog_name.schema_name.
 	FullName string `json:"-" url:"-"`
 	// New name for the schema.
 	NewName string `json:"new_name,omitempty"`
-	// Username of current owner of schema.
+	// The user or group that owns the schema. The creator becomes the owner,
+	// and the owner can be changed only through the update method.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
@@ -11848,7 +11966,8 @@ func (s UpdateStorageCredential) MarshalJSON() ([]byte, error) {
 type UpdateTableRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
-	// Username of current owner of table.
+	// The user or group that owns the table. The principal that creates the
+	// table becomes its owner.
 	Owner string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

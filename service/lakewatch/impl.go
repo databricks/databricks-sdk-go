@@ -35,6 +35,36 @@ func (a *lakewatchImpl) CreateDatasource(ctx context.Context, request CreateData
 	return &datasource, err
 }
 
+func (a *lakewatchImpl) CreateParser(ctx context.Context, request CreateParserRequest) (*Parser, error) {
+	var parser Parser
+	path := "/api/2.0/lakewatch/parsers"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Parser, &parser)
+	return &parser, err
+}
+
+func (a *lakewatchImpl) CreateParserVersion(ctx context.Context, request CreateParserVersionRequest) (*ParserVersion, error) {
+	var parserVersion ParserVersion
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v/versions", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ParserVersion, &parserVersion)
+	return &parserVersion, err
+}
+
 func (a *lakewatchImpl) CreateRule(ctx context.Context, request CreateRuleRequest) (*Rule, error) {
 	var rule Rule
 	path := "/api/2.0/lakewatch/rules"
@@ -51,6 +81,32 @@ func (a *lakewatchImpl) CreateRule(ctx context.Context, request CreateRuleReques
 }
 
 func (a *lakewatchImpl) DeleteDatasource(ctx context.Context, request DeleteDatasourceRequest) error {
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *lakewatchImpl) DeleteParser(ctx context.Context, request DeleteParserRequest) error {
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *lakewatchImpl) DeleteParserVersion(ctx context.Context, request DeleteParserVersionRequest) error {
 	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -88,6 +144,34 @@ func (a *lakewatchImpl) GetAlertConfig(ctx context.Context, request GetAlertConf
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &alertConfig)
 	return &alertConfig, err
+}
+
+func (a *lakewatchImpl) GetBuiltinParser(ctx context.Context, request GetBuiltinParserRequest) (*BuiltinParser, error) {
+	var builtinParser BuiltinParser
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &builtinParser)
+	return &builtinParser, err
+}
+
+func (a *lakewatchImpl) GetBuiltinParserVersion(ctx context.Context, request GetBuiltinParserVersionRequest) (*BuiltinParserVersion, error) {
+	var builtinParserVersion BuiltinParserVersion
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &builtinParserVersion)
+	return &builtinParserVersion, err
 }
 
 func (a *lakewatchImpl) GetCommonConfig(ctx context.Context, request GetCommonConfigRequest) (*CommonConfig, error) {
@@ -132,6 +216,34 @@ func (a *lakewatchImpl) GetDatasourceConfig(ctx context.Context, request GetData
 	return &datasourceConfig, err
 }
 
+func (a *lakewatchImpl) GetParser(ctx context.Context, request GetParserRequest) (*Parser, error) {
+	var parser Parser
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &parser)
+	return &parser, err
+}
+
+func (a *lakewatchImpl) GetParserVersion(ctx context.Context, request GetParserVersionRequest) (*ParserVersion, error) {
+	var parserVersion ParserVersion
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &parserVersion)
+	return &parserVersion, err
+}
+
 func (a *lakewatchImpl) GetRule(ctx context.Context, request GetRuleRequest) (*Rule, error) {
 	var rule Rule
 	path := fmt.Sprintf("/api/2.0/lakewatch/%v", request.Name)
@@ -158,6 +270,98 @@ func (a *lakewatchImpl) GetRuleConfig(ctx context.Context, request GetRuleConfig
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &ruleConfig)
 	return &ruleConfig, err
+}
+
+// Lists a built-in parser's published versions, oldest first (ascending
+// 1..resource_revision), without their specs.
+func (a *lakewatchImpl) ListBuiltinParserVersions(ctx context.Context, request ListBuiltinParserVersionsRequest) listing.Iterator[BuiltinParserVersion] {
+
+	getNextPage := func(ctx context.Context, req ListBuiltinParserVersionsRequest) (*ListBuiltinParserVersionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListBuiltinParserVersions(ctx, req)
+	}
+	getItems := func(resp *ListBuiltinParserVersionsResponse) []BuiltinParserVersion {
+		return resp.BuiltinParserVersions
+	}
+	getNextReq := func(resp *ListBuiltinParserVersionsResponse) *ListBuiltinParserVersionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists a built-in parser's published versions, oldest first (ascending
+// 1..resource_revision), without their specs.
+func (a *lakewatchImpl) ListBuiltinParserVersionsAll(ctx context.Context, request ListBuiltinParserVersionsRequest) ([]BuiltinParserVersion, error) {
+	iterator := a.ListBuiltinParserVersions(ctx, request)
+	return listing.ToSlice[BuiltinParserVersion](ctx, iterator)
+}
+
+func (a *lakewatchImpl) internalListBuiltinParserVersions(ctx context.Context, request ListBuiltinParserVersionsRequest) (*ListBuiltinParserVersionsResponse, error) {
+	var listBuiltinParserVersionsResponse ListBuiltinParserVersionsResponse
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v/versions", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBuiltinParserVersionsResponse)
+	return &listBuiltinParserVersionsResponse, err
+}
+
+// Lists the built-in parsers Databricks publishes, without their specs.
+func (a *lakewatchImpl) ListBuiltinParsers(ctx context.Context, request ListBuiltinParsersRequest) listing.Iterator[BuiltinParser] {
+
+	getNextPage := func(ctx context.Context, req ListBuiltinParsersRequest) (*ListBuiltinParsersResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListBuiltinParsers(ctx, req)
+	}
+	getItems := func(resp *ListBuiltinParsersResponse) []BuiltinParser {
+		return resp.BuiltinParsers
+	}
+	getNextReq := func(resp *ListBuiltinParsersResponse) *ListBuiltinParsersRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists the built-in parsers Databricks publishes, without their specs.
+func (a *lakewatchImpl) ListBuiltinParsersAll(ctx context.Context, request ListBuiltinParsersRequest) ([]BuiltinParser, error) {
+	iterator := a.ListBuiltinParsers(ctx, request)
+	return listing.ToSlice[BuiltinParser](ctx, iterator)
+}
+
+func (a *lakewatchImpl) internalListBuiltinParsers(ctx context.Context, request ListBuiltinParsersRequest) (*ListBuiltinParsersResponse, error) {
+	var listBuiltinParsersResponse ListBuiltinParsersResponse
+	path := "/api/2.0/lakewatch/builtin-parsers"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBuiltinParsersResponse)
+	return &listBuiltinParsersResponse, err
 }
 
 // Lists the datasources in a Unity Catalog catalog, optionally narrowed to one
@@ -207,6 +411,96 @@ func (a *lakewatchImpl) internalListDatasources(ctx context.Context, request Lis
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatasourcesResponse)
 	return &listDatasourcesResponse, err
+}
+
+// Lists a parser's versions, oldest first, without their specs.
+func (a *lakewatchImpl) ListParserVersions(ctx context.Context, request ListParserVersionsRequest) listing.Iterator[ParserVersion] {
+
+	getNextPage := func(ctx context.Context, req ListParserVersionsRequest) (*ListParserVersionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListParserVersions(ctx, req)
+	}
+	getItems := func(resp *ListParserVersionsResponse) []ParserVersion {
+		return resp.ParserVersions
+	}
+	getNextReq := func(resp *ListParserVersionsResponse) *ListParserVersionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists a parser's versions, oldest first, without their specs.
+func (a *lakewatchImpl) ListParserVersionsAll(ctx context.Context, request ListParserVersionsRequest) ([]ParserVersion, error) {
+	iterator := a.ListParserVersions(ctx, request)
+	return listing.ToSlice[ParserVersion](ctx, iterator)
+}
+
+func (a *lakewatchImpl) internalListParserVersions(ctx context.Context, request ListParserVersionsRequest) (*ListParserVersionsResponse, error) {
+	var listParserVersionsResponse ListParserVersionsResponse
+	path := fmt.Sprintf("/api/2.0/lakewatch/%v/versions", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listParserVersionsResponse)
+	return &listParserVersionsResponse, err
+}
+
+// Lists parsers in a catalog, without their specs.
+func (a *lakewatchImpl) ListParsers(ctx context.Context, request ListParsersRequest) listing.Iterator[Parser] {
+
+	getNextPage := func(ctx context.Context, req ListParsersRequest) (*ListParsersResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListParsers(ctx, req)
+	}
+	getItems := func(resp *ListParsersResponse) []Parser {
+		return resp.Parsers
+	}
+	getNextReq := func(resp *ListParsersResponse) *ListParsersRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists parsers in a catalog, without their specs.
+func (a *lakewatchImpl) ListParsersAll(ctx context.Context, request ListParsersRequest) ([]Parser, error) {
+	iterator := a.ListParsers(ctx, request)
+	return listing.ToSlice[Parser](ctx, iterator)
+}
+
+func (a *lakewatchImpl) internalListParsers(ctx context.Context, request ListParsersRequest) (*ListParsersResponse, error) {
+	var listParsersResponse ListParsersResponse
+	path := "/api/2.0/lakewatch/parsers"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listParsersResponse)
+	return &listParsersResponse, err
 }
 
 // Lists rules, with optional filtering and pagination.

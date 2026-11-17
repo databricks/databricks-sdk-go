@@ -35,11 +35,10 @@ type CreateEndpointRequest struct {
 	// the desired configuration; `endpoint.name` is server-assigned from
 	// `parent` and `endpoint_id`.
 	Endpoint Endpoint `json:"endpoint"`
-	// The user-supplied short name for the Endpoint, per AIP-133. The server
-	// composes the full `Endpoint.name` as `{parent}/endpoints/{endpoint_id}`.
-	// AIP-133 does not list `endpoint_id` as a fields-may-be-required entry, so
-	// we annotate it OPTIONAL on the wire; the server still rejects empty
-	// values with INVALID_PARAMETER_VALUE.
+	// Short name of the endpoint, which becomes the last segment of `name`. The
+	// server rejects a request without it. The name can have at most 50
+	// characters, can contain only lowercase letters, digits, hyphens, periods,
+	// and underscores, and must start and end with a letter or digit.
 	EndpointId string `json:"-" url:"endpoint_id,omitempty"`
 	// The Workspace where this Endpoint will be created. Format:
 	// `workspaces/{workspace_id}`
@@ -292,31 +291,38 @@ func (s EmbeddingVectorColumn) MarshalJSON() ([]byte, error) {
 // and serves queries against them. Customers create, query, and delete
 // endpoints; the system manages provisioning, scaling, and health status.
 type Endpoint struct {
-	// The user-selected budget policy id for the endpoint.
+	// ID of the serverless budget policy to apply to the endpoint. The caller
+	// must have permission to use the policy. Set either this field or
+	// `usage_policy_id`, not both. Responses do not echo this field; they
+	// report the applied policy in `effective_budget_policy_id`.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Time the endpoint was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Creator of the endpoint
+	// User name of the principal that created the endpoint. For a user, it is
+	// the user's email address; for any other principal, it is the principal's
+	// unique name.
 	Creator string `json:"creator,omitempty"`
-	// The custom tags assigned to the endpoint
+	// Custom tags assigned to the endpoint. On update, the list replaces all of
+	// the endpoint's existing tags.
 	CustomTags []CustomTag `json:"custom_tags,omitempty"`
-	// The budget policy id applied to the endpoint
+	// ID of the budget policy that is currently applied to the endpoint.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
-	// Current status of the endpoint
+	// Current lifecycle state of the endpoint, with an optional message that
+	// explains it.
 	EndpointStatus *EndpointStatus `json:"endpoint_status,omitempty"`
 	// Type of endpoint. Required on create and immutable thereafter.
 	EndpointType EndpointType `json:"endpoint_type"`
-	// Unique identifier of the endpoint
+	// System-generated UUID that uniquely identifies the endpoint.
 	Id string `json:"id,omitempty"`
 	// Number of indexes on the endpoint
 	IndexCount int `json:"index_count,omitempty"`
-	// User who last updated the endpoint
+	// User name of the principal that last updated the endpoint, in the same
+	// format as `creator`.
 	LastUpdatedUser string `json:"last_updated_user,omitempty"`
-	// Name of the AI Search endpoint. Server-assigned full resource path
-	// (`workspaces/{workspace}/endpoints/{endpoint}`) on output. On create, the
-	// user-supplied short name is conveyed via
-	// `CreateEndpointRequest.endpoint_id`; the server composes the full `name`
-	// and returns it on the response.
+	// Full resource name of the endpoint, in the form
+	// `workspaces/{workspace_id}/endpoints/{endpoint_id}`. On create, the
+	// server composes it from `parent` and `endpoint_id` and ignores any value
+	// supplied in the request body.
 	Name string `json:"name,omitempty"`
 	// The client-supplied desired number of replicas for the endpoint, applied
 	// at create/update time. Mutually exclusive with `target_qps`.
@@ -325,12 +331,15 @@ type Endpoint struct {
 	ScalingInfo *EndpointScalingInfo `json:"scaling_info,omitempty"`
 	// Target QPS for the endpoint. Mutually exclusive with `replica_count`.
 	// Best-effort; the system does not guarantee this QPS will be achieved.
+	// Responses report the requested value in
+	// `scaling_info.requested_target_qps`.
 	TargetQps int `json:"target_qps,omitempty"`
 	// Throughput information for the endpoint
 	ThroughputInfo *EndpointThroughputInfo `json:"throughput_info,omitempty"`
 	// Time the endpoint was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
-	// The usage policy id applied to the endpoint.
+	// ID of the usage policy to apply to the endpoint. The server treats it as
+	// the same setting as `budget_policy_id`, so set only one of the two.
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -711,15 +720,18 @@ func (s Index) MarshalJSON() ([]byte, error) {
 // Lifecycle and health state of an AI Search index, along with human-readable
 // detail about that state and basic indexing progress.
 type IndexStatus struct {
+	// Lifecycle and ingestion state. An online index can still have a failed
+	// update.
+	DetailedState IndexStatusState `json:"detailed_state,omitempty"`
 	// Index API URL used to perform operations on the index.
 	IndexUrl string `json:"index_url,omitempty"`
 	// Number of rows indexed.
 	IndexedRowCount int64 `json:"indexed_row_count,omitempty"`
 	// Human-readable detail about the index's current state.
 	Message string `json:"message,omitempty"`
-	// Whether the index is ready to serve queries. After CreateIndex, poll
-	// GetIndex until this is true; `message` describes the current state in the
-	// meantime.
+	// Whether the index can serve queries. After CreateIndex, poll GetIndex
+	// until true; message describes progress. This does not guarantee freshness
+	// or update success; check detailed_state for update failures.
 	Ready bool `json:"ready,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -731,6 +743,83 @@ func (s *IndexStatus) UnmarshalJSON(b []byte) error {
 
 func (s IndexStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Detailed lifecycle state of the index.
+type IndexStatusState string
+
+const IndexStatusStateDownloading IndexStatusState = `DOWNLOADING`
+
+const IndexStatusStateOffline IndexStatusState = `OFFLINE`
+
+const IndexStatusStateOfflineFailed IndexStatusState = `OFFLINE_FAILED`
+
+const IndexStatusStateOnline IndexStatusState = `ONLINE`
+
+const IndexStatusStateOnlineContinuousUpdate IndexStatusState = `ONLINE_CONTINUOUS_UPDATE`
+
+const IndexStatusStateOnlineDirectAccess IndexStatusState = `ONLINE_DIRECT_ACCESS`
+
+const IndexStatusStateOnlineNoPendingUpdate IndexStatusState = `ONLINE_NO_PENDING_UPDATE`
+
+const IndexStatusStateOnlinePipelineFailed IndexStatusState = `ONLINE_PIPELINE_FAILED`
+
+const IndexStatusStateOnlineTriggeredUpdate IndexStatusState = `ONLINE_TRIGGERED_UPDATE`
+
+const IndexStatusStateOnlineUpdatingPipelineResources IndexStatusState = `ONLINE_UPDATING_PIPELINE_RESOURCES`
+
+const IndexStatusStateProvisioning IndexStatusState = `PROVISIONING`
+
+const IndexStatusStateProvisioningEndpoint IndexStatusState = `PROVISIONING_ENDPOINT`
+
+const IndexStatusStateProvisioningIndex IndexStatusState = `PROVISIONING_INDEX`
+
+const IndexStatusStateProvisioningInitialSnapshot IndexStatusState = `PROVISIONING_INITIAL_SNAPSHOT`
+
+const IndexStatusStateProvisioningPipelineResources IndexStatusState = `PROVISIONING_PIPELINE_RESOURCES`
+
+// String representation for [fmt.Print]
+func (f *IndexStatusState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IndexStatusState) Set(v string) error {
+	switch v {
+	case `DOWNLOADING`, `OFFLINE`, `OFFLINE_FAILED`, `ONLINE`, `ONLINE_CONTINUOUS_UPDATE`, `ONLINE_DIRECT_ACCESS`, `ONLINE_NO_PENDING_UPDATE`, `ONLINE_PIPELINE_FAILED`, `ONLINE_TRIGGERED_UPDATE`, `ONLINE_UPDATING_PIPELINE_RESOURCES`, `PROVISIONING`, `PROVISIONING_ENDPOINT`, `PROVISIONING_INDEX`, `PROVISIONING_INITIAL_SNAPSHOT`, `PROVISIONING_PIPELINE_RESOURCES`:
+		*f = IndexStatusState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DOWNLOADING", "OFFLINE", "OFFLINE_FAILED", "ONLINE", "ONLINE_CONTINUOUS_UPDATE", "ONLINE_DIRECT_ACCESS", "ONLINE_NO_PENDING_UPDATE", "ONLINE_PIPELINE_FAILED", "ONLINE_TRIGGERED_UPDATE", "ONLINE_UPDATING_PIPELINE_RESOURCES", "PROVISIONING", "PROVISIONING_ENDPOINT", "PROVISIONING_INDEX", "PROVISIONING_INITIAL_SNAPSHOT", "PROVISIONING_PIPELINE_RESOURCES"`, v)
+	}
+}
+
+// Values returns all possible values for IndexStatusState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IndexStatusState) Values() []IndexStatusState {
+	return []IndexStatusState{
+		IndexStatusStateDownloading,
+		IndexStatusStateOffline,
+		IndexStatusStateOfflineFailed,
+		IndexStatusStateOnline,
+		IndexStatusStateOnlineContinuousUpdate,
+		IndexStatusStateOnlineDirectAccess,
+		IndexStatusStateOnlineNoPendingUpdate,
+		IndexStatusStateOnlinePipelineFailed,
+		IndexStatusStateOnlineTriggeredUpdate,
+		IndexStatusStateOnlineUpdatingPipelineResources,
+		IndexStatusStateProvisioning,
+		IndexStatusStateProvisioningEndpoint,
+		IndexStatusStateProvisioningIndex,
+		IndexStatusStateProvisioningInitialSnapshot,
+		IndexStatusStateProvisioningPipelineResources,
+	}
+}
+
+// Type always returns IndexStatusState to satisfy [pflag.Value] interface
+func (f *IndexStatusState) Type() string {
+	return "IndexStatusState"
 }
 
 // The subtype of the AI Search index, determining the indexing and retrieval
@@ -830,10 +919,9 @@ func (f *IndexType) Type() string {
 }
 
 type ListEndpointsRequest struct {
-	// Best-effort upper bound on the number of results to return. Honored as an
-	// upper bound by the shim: `page_size` only narrows the legacy backend's
-	// response, never widens it, so the practical cap is `min(page_size,
-	// legacy_fixed_page_size)`.
+	// Maximum number of endpoints to return in one page. The server applies its
+	// own page size limit, so a page can hold fewer endpoints than `page_size`
+	// even when more remain.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
@@ -1341,13 +1429,15 @@ type UpdateEndpointRequest struct {
 	// The Endpoint resource to update. `endpoint.name` carries the full
 	// resource path.
 	Endpoint Endpoint `json:"endpoint"`
-	// Name of the AI Search endpoint. Server-assigned full resource path
-	// (`workspaces/{workspace}/endpoints/{endpoint}`) on output. On create, the
-	// user-supplied short name is conveyed via
-	// `CreateEndpointRequest.endpoint_id`; the server composes the full `name`
-	// and returns it on the response.
+	// Full resource name of the endpoint, in the form
+	// `workspaces/{workspace_id}/endpoints/{endpoint_id}`. On create, the
+	// server composes it from `parent` and `endpoint_id` and ignores any value
+	// supplied in the request body.
 	Name string `json:"-" url:"-"`
-	// The list of fields to update.
+	// Comma-separated list of `Endpoint` fields to update. The updatable fields
+	// are `budget_policy_id`, `usage_policy_id`, `custom_tags`,
+	// `replica_count`, and `target_qps`. The server rejects nested paths and
+	// unknown fields.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

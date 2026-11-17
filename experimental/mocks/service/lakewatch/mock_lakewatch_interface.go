@@ -116,6 +116,142 @@ func (_c *MockLakewatchInterface_CreateDatasource_Call) RunAndReturn(run func(ct
 	return _c
 }
 
+// CreateParser provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) CreateParser(ctx context.Context, request lakewatch.CreateParserRequest) (*lakewatch.Parser, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateParser")
+	}
+
+	var r0 *lakewatch.Parser
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.CreateParserRequest) (*lakewatch.Parser, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.CreateParserRequest) *lakewatch.Parser); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*lakewatch.Parser)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.CreateParserRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_CreateParser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateParser'
+type MockLakewatchInterface_CreateParser_Call struct {
+	*mock.Call
+}
+
+// CreateParser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.CreateParserRequest
+func (_e *MockLakewatchInterface_Expecter) CreateParser(ctx any, request any) *MockLakewatchInterface_CreateParser_Call {
+	return &MockLakewatchInterface_CreateParser_Call{Call: _e.mock.On("CreateParser", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_CreateParser_Call) Run(run func(ctx context.Context, request lakewatch.CreateParserRequest)) *MockLakewatchInterface_CreateParser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.CreateParserRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.CreateParserRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_CreateParser_Call) Return(parser *lakewatch.Parser, err error) *MockLakewatchInterface_CreateParser_Call {
+	_c.Call.Return(parser, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_CreateParser_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.CreateParserRequest) (*lakewatch.Parser, error)) *MockLakewatchInterface_CreateParser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateParserVersion provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) CreateParserVersion(ctx context.Context, request lakewatch.CreateParserVersionRequest) (*lakewatch.ParserVersion, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateParserVersion")
+	}
+
+	var r0 *lakewatch.ParserVersion
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.CreateParserVersionRequest) (*lakewatch.ParserVersion, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.CreateParserVersionRequest) *lakewatch.ParserVersion); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*lakewatch.ParserVersion)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.CreateParserVersionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_CreateParserVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateParserVersion'
+type MockLakewatchInterface_CreateParserVersion_Call struct {
+	*mock.Call
+}
+
+// CreateParserVersion is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.CreateParserVersionRequest
+func (_e *MockLakewatchInterface_Expecter) CreateParserVersion(ctx any, request any) *MockLakewatchInterface_CreateParserVersion_Call {
+	return &MockLakewatchInterface_CreateParserVersion_Call{Call: _e.mock.On("CreateParserVersion", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_CreateParserVersion_Call) Run(run func(ctx context.Context, request lakewatch.CreateParserVersionRequest)) *MockLakewatchInterface_CreateParserVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.CreateParserVersionRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.CreateParserVersionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_CreateParserVersion_Call) Return(parserVersion *lakewatch.ParserVersion, err error) *MockLakewatchInterface_CreateParserVersion_Call {
+	_c.Call.Return(parserVersion, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_CreateParserVersion_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.CreateParserVersionRequest) (*lakewatch.ParserVersion, error)) *MockLakewatchInterface_CreateParserVersion_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateRule provides a mock function for the type MockLakewatchInterface
 func (_mock *MockLakewatchInterface) CreateRule(ctx context.Context, request lakewatch.CreateRuleRequest) (*lakewatch.Rule, error) {
 	ret := _mock.Called(ctx, request)
@@ -241,6 +377,120 @@ func (_c *MockLakewatchInterface_DeleteDatasource_Call) RunAndReturn(run func(ct
 	return _c
 }
 
+// DeleteParser provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) DeleteParser(ctx context.Context, request lakewatch.DeleteParserRequest) error {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteParser")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.DeleteParserRequest) error); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockLakewatchInterface_DeleteParser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteParser'
+type MockLakewatchInterface_DeleteParser_Call struct {
+	*mock.Call
+}
+
+// DeleteParser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.DeleteParserRequest
+func (_e *MockLakewatchInterface_Expecter) DeleteParser(ctx any, request any) *MockLakewatchInterface_DeleteParser_Call {
+	return &MockLakewatchInterface_DeleteParser_Call{Call: _e.mock.On("DeleteParser", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_DeleteParser_Call) Run(run func(ctx context.Context, request lakewatch.DeleteParserRequest)) *MockLakewatchInterface_DeleteParser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.DeleteParserRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.DeleteParserRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_DeleteParser_Call) Return(err error) *MockLakewatchInterface_DeleteParser_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_DeleteParser_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.DeleteParserRequest) error) *MockLakewatchInterface_DeleteParser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteParserVersion provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) DeleteParserVersion(ctx context.Context, request lakewatch.DeleteParserVersionRequest) error {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteParserVersion")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.DeleteParserVersionRequest) error); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockLakewatchInterface_DeleteParserVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteParserVersion'
+type MockLakewatchInterface_DeleteParserVersion_Call struct {
+	*mock.Call
+}
+
+// DeleteParserVersion is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.DeleteParserVersionRequest
+func (_e *MockLakewatchInterface_Expecter) DeleteParserVersion(ctx any, request any) *MockLakewatchInterface_DeleteParserVersion_Call {
+	return &MockLakewatchInterface_DeleteParserVersion_Call{Call: _e.mock.On("DeleteParserVersion", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_DeleteParserVersion_Call) Run(run func(ctx context.Context, request lakewatch.DeleteParserVersionRequest)) *MockLakewatchInterface_DeleteParserVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.DeleteParserVersionRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.DeleteParserVersionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_DeleteParserVersion_Call) Return(err error) *MockLakewatchInterface_DeleteParserVersion_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_DeleteParserVersion_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.DeleteParserVersionRequest) error) *MockLakewatchInterface_DeleteParserVersion_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteRule provides a mock function for the type MockLakewatchInterface
 func (_mock *MockLakewatchInterface) DeleteRule(ctx context.Context, request lakewatch.DeleteRuleRequest) error {
 	ret := _mock.Called(ctx, request)
@@ -362,6 +612,142 @@ func (_c *MockLakewatchInterface_GetAlertConfig_Call) Return(alertConfig *lakewa
 }
 
 func (_c *MockLakewatchInterface_GetAlertConfig_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.GetAlertConfigRequest) (*lakewatch.AlertConfig, error)) *MockLakewatchInterface_GetAlertConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetBuiltinParser provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) GetBuiltinParser(ctx context.Context, request lakewatch.GetBuiltinParserRequest) (*lakewatch.BuiltinParser, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBuiltinParser")
+	}
+
+	var r0 *lakewatch.BuiltinParser
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetBuiltinParserRequest) (*lakewatch.BuiltinParser, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetBuiltinParserRequest) *lakewatch.BuiltinParser); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*lakewatch.BuiltinParser)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.GetBuiltinParserRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_GetBuiltinParser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBuiltinParser'
+type MockLakewatchInterface_GetBuiltinParser_Call struct {
+	*mock.Call
+}
+
+// GetBuiltinParser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.GetBuiltinParserRequest
+func (_e *MockLakewatchInterface_Expecter) GetBuiltinParser(ctx any, request any) *MockLakewatchInterface_GetBuiltinParser_Call {
+	return &MockLakewatchInterface_GetBuiltinParser_Call{Call: _e.mock.On("GetBuiltinParser", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_GetBuiltinParser_Call) Run(run func(ctx context.Context, request lakewatch.GetBuiltinParserRequest)) *MockLakewatchInterface_GetBuiltinParser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.GetBuiltinParserRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.GetBuiltinParserRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetBuiltinParser_Call) Return(builtinParser *lakewatch.BuiltinParser, err error) *MockLakewatchInterface_GetBuiltinParser_Call {
+	_c.Call.Return(builtinParser, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetBuiltinParser_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.GetBuiltinParserRequest) (*lakewatch.BuiltinParser, error)) *MockLakewatchInterface_GetBuiltinParser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetBuiltinParserVersion provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) GetBuiltinParserVersion(ctx context.Context, request lakewatch.GetBuiltinParserVersionRequest) (*lakewatch.BuiltinParserVersion, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBuiltinParserVersion")
+	}
+
+	var r0 *lakewatch.BuiltinParserVersion
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetBuiltinParserVersionRequest) (*lakewatch.BuiltinParserVersion, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetBuiltinParserVersionRequest) *lakewatch.BuiltinParserVersion); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*lakewatch.BuiltinParserVersion)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.GetBuiltinParserVersionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_GetBuiltinParserVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBuiltinParserVersion'
+type MockLakewatchInterface_GetBuiltinParserVersion_Call struct {
+	*mock.Call
+}
+
+// GetBuiltinParserVersion is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.GetBuiltinParserVersionRequest
+func (_e *MockLakewatchInterface_Expecter) GetBuiltinParserVersion(ctx any, request any) *MockLakewatchInterface_GetBuiltinParserVersion_Call {
+	return &MockLakewatchInterface_GetBuiltinParserVersion_Call{Call: _e.mock.On("GetBuiltinParserVersion", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_GetBuiltinParserVersion_Call) Run(run func(ctx context.Context, request lakewatch.GetBuiltinParserVersionRequest)) *MockLakewatchInterface_GetBuiltinParserVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.GetBuiltinParserVersionRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.GetBuiltinParserVersionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetBuiltinParserVersion_Call) Return(builtinParserVersion *lakewatch.BuiltinParserVersion, err error) *MockLakewatchInterface_GetBuiltinParserVersion_Call {
+	_c.Call.Return(builtinParserVersion, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetBuiltinParserVersion_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.GetBuiltinParserVersionRequest) (*lakewatch.BuiltinParserVersion, error)) *MockLakewatchInterface_GetBuiltinParserVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -570,6 +956,142 @@ func (_c *MockLakewatchInterface_GetDatasourceConfig_Call) RunAndReturn(run func
 	return _c
 }
 
+// GetParser provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) GetParser(ctx context.Context, request lakewatch.GetParserRequest) (*lakewatch.Parser, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetParser")
+	}
+
+	var r0 *lakewatch.Parser
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetParserRequest) (*lakewatch.Parser, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetParserRequest) *lakewatch.Parser); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*lakewatch.Parser)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.GetParserRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_GetParser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetParser'
+type MockLakewatchInterface_GetParser_Call struct {
+	*mock.Call
+}
+
+// GetParser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.GetParserRequest
+func (_e *MockLakewatchInterface_Expecter) GetParser(ctx any, request any) *MockLakewatchInterface_GetParser_Call {
+	return &MockLakewatchInterface_GetParser_Call{Call: _e.mock.On("GetParser", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_GetParser_Call) Run(run func(ctx context.Context, request lakewatch.GetParserRequest)) *MockLakewatchInterface_GetParser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.GetParserRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.GetParserRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetParser_Call) Return(parser *lakewatch.Parser, err error) *MockLakewatchInterface_GetParser_Call {
+	_c.Call.Return(parser, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetParser_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.GetParserRequest) (*lakewatch.Parser, error)) *MockLakewatchInterface_GetParser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetParserVersion provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) GetParserVersion(ctx context.Context, request lakewatch.GetParserVersionRequest) (*lakewatch.ParserVersion, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetParserVersion")
+	}
+
+	var r0 *lakewatch.ParserVersion
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetParserVersionRequest) (*lakewatch.ParserVersion, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.GetParserVersionRequest) *lakewatch.ParserVersion); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*lakewatch.ParserVersion)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.GetParserVersionRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_GetParserVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetParserVersion'
+type MockLakewatchInterface_GetParserVersion_Call struct {
+	*mock.Call
+}
+
+// GetParserVersion is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.GetParserVersionRequest
+func (_e *MockLakewatchInterface_Expecter) GetParserVersion(ctx any, request any) *MockLakewatchInterface_GetParserVersion_Call {
+	return &MockLakewatchInterface_GetParserVersion_Call{Call: _e.mock.On("GetParserVersion", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_GetParserVersion_Call) Run(run func(ctx context.Context, request lakewatch.GetParserVersionRequest)) *MockLakewatchInterface_GetParserVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.GetParserVersionRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.GetParserVersionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetParserVersion_Call) Return(parserVersion *lakewatch.ParserVersion, err error) *MockLakewatchInterface_GetParserVersion_Call {
+	_c.Call.Return(parserVersion, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_GetParserVersion_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.GetParserVersionRequest) (*lakewatch.ParserVersion, error)) *MockLakewatchInterface_GetParserVersion_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetRule provides a mock function for the type MockLakewatchInterface
 func (_mock *MockLakewatchInterface) GetRule(ctx context.Context, request lakewatch.GetRuleRequest) (*lakewatch.Rule, error) {
 	ret := _mock.Called(ctx, request)
@@ -706,6 +1228,260 @@ func (_c *MockLakewatchInterface_GetRuleConfig_Call) RunAndReturn(run func(ctx c
 	return _c
 }
 
+// ListBuiltinParserVersions provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListBuiltinParserVersions(ctx context.Context, request lakewatch.ListBuiltinParserVersionsRequest) listing.Iterator[lakewatch.BuiltinParserVersion] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListBuiltinParserVersions")
+	}
+
+	var r0 listing.Iterator[lakewatch.BuiltinParserVersion]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListBuiltinParserVersionsRequest) listing.Iterator[lakewatch.BuiltinParserVersion]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[lakewatch.BuiltinParserVersion])
+		}
+	}
+	return r0
+}
+
+// MockLakewatchInterface_ListBuiltinParserVersions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListBuiltinParserVersions'
+type MockLakewatchInterface_ListBuiltinParserVersions_Call struct {
+	*mock.Call
+}
+
+// ListBuiltinParserVersions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListBuiltinParserVersionsRequest
+func (_e *MockLakewatchInterface_Expecter) ListBuiltinParserVersions(ctx any, request any) *MockLakewatchInterface_ListBuiltinParserVersions_Call {
+	return &MockLakewatchInterface_ListBuiltinParserVersions_Call{Call: _e.mock.On("ListBuiltinParserVersions", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParserVersions_Call) Run(run func(ctx context.Context, request lakewatch.ListBuiltinParserVersionsRequest)) *MockLakewatchInterface_ListBuiltinParserVersions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListBuiltinParserVersionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListBuiltinParserVersionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParserVersions_Call) Return(iterator listing.Iterator[lakewatch.BuiltinParserVersion]) *MockLakewatchInterface_ListBuiltinParserVersions_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParserVersions_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListBuiltinParserVersionsRequest) listing.Iterator[lakewatch.BuiltinParserVersion]) *MockLakewatchInterface_ListBuiltinParserVersions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListBuiltinParserVersionsAll provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListBuiltinParserVersionsAll(ctx context.Context, request lakewatch.ListBuiltinParserVersionsRequest) ([]lakewatch.BuiltinParserVersion, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListBuiltinParserVersionsAll")
+	}
+
+	var r0 []lakewatch.BuiltinParserVersion
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListBuiltinParserVersionsRequest) ([]lakewatch.BuiltinParserVersion, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListBuiltinParserVersionsRequest) []lakewatch.BuiltinParserVersion); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]lakewatch.BuiltinParserVersion)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.ListBuiltinParserVersionsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_ListBuiltinParserVersionsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListBuiltinParserVersionsAll'
+type MockLakewatchInterface_ListBuiltinParserVersionsAll_Call struct {
+	*mock.Call
+}
+
+// ListBuiltinParserVersionsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListBuiltinParserVersionsRequest
+func (_e *MockLakewatchInterface_Expecter) ListBuiltinParserVersionsAll(ctx any, request any) *MockLakewatchInterface_ListBuiltinParserVersionsAll_Call {
+	return &MockLakewatchInterface_ListBuiltinParserVersionsAll_Call{Call: _e.mock.On("ListBuiltinParserVersionsAll", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParserVersionsAll_Call) Run(run func(ctx context.Context, request lakewatch.ListBuiltinParserVersionsRequest)) *MockLakewatchInterface_ListBuiltinParserVersionsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListBuiltinParserVersionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListBuiltinParserVersionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParserVersionsAll_Call) Return(builtinParserVersions []lakewatch.BuiltinParserVersion, err error) *MockLakewatchInterface_ListBuiltinParserVersionsAll_Call {
+	_c.Call.Return(builtinParserVersions, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParserVersionsAll_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListBuiltinParserVersionsRequest) ([]lakewatch.BuiltinParserVersion, error)) *MockLakewatchInterface_ListBuiltinParserVersionsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListBuiltinParsers provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListBuiltinParsers(ctx context.Context, request lakewatch.ListBuiltinParsersRequest) listing.Iterator[lakewatch.BuiltinParser] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListBuiltinParsers")
+	}
+
+	var r0 listing.Iterator[lakewatch.BuiltinParser]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListBuiltinParsersRequest) listing.Iterator[lakewatch.BuiltinParser]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[lakewatch.BuiltinParser])
+		}
+	}
+	return r0
+}
+
+// MockLakewatchInterface_ListBuiltinParsers_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListBuiltinParsers'
+type MockLakewatchInterface_ListBuiltinParsers_Call struct {
+	*mock.Call
+}
+
+// ListBuiltinParsers is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListBuiltinParsersRequest
+func (_e *MockLakewatchInterface_Expecter) ListBuiltinParsers(ctx any, request any) *MockLakewatchInterface_ListBuiltinParsers_Call {
+	return &MockLakewatchInterface_ListBuiltinParsers_Call{Call: _e.mock.On("ListBuiltinParsers", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParsers_Call) Run(run func(ctx context.Context, request lakewatch.ListBuiltinParsersRequest)) *MockLakewatchInterface_ListBuiltinParsers_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListBuiltinParsersRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListBuiltinParsersRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParsers_Call) Return(iterator listing.Iterator[lakewatch.BuiltinParser]) *MockLakewatchInterface_ListBuiltinParsers_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParsers_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListBuiltinParsersRequest) listing.Iterator[lakewatch.BuiltinParser]) *MockLakewatchInterface_ListBuiltinParsers_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListBuiltinParsersAll provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListBuiltinParsersAll(ctx context.Context, request lakewatch.ListBuiltinParsersRequest) ([]lakewatch.BuiltinParser, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListBuiltinParsersAll")
+	}
+
+	var r0 []lakewatch.BuiltinParser
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListBuiltinParsersRequest) ([]lakewatch.BuiltinParser, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListBuiltinParsersRequest) []lakewatch.BuiltinParser); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]lakewatch.BuiltinParser)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.ListBuiltinParsersRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_ListBuiltinParsersAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListBuiltinParsersAll'
+type MockLakewatchInterface_ListBuiltinParsersAll_Call struct {
+	*mock.Call
+}
+
+// ListBuiltinParsersAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListBuiltinParsersRequest
+func (_e *MockLakewatchInterface_Expecter) ListBuiltinParsersAll(ctx any, request any) *MockLakewatchInterface_ListBuiltinParsersAll_Call {
+	return &MockLakewatchInterface_ListBuiltinParsersAll_Call{Call: _e.mock.On("ListBuiltinParsersAll", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParsersAll_Call) Run(run func(ctx context.Context, request lakewatch.ListBuiltinParsersRequest)) *MockLakewatchInterface_ListBuiltinParsersAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListBuiltinParsersRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListBuiltinParsersRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParsersAll_Call) Return(builtinParsers []lakewatch.BuiltinParser, err error) *MockLakewatchInterface_ListBuiltinParsersAll_Call {
+	_c.Call.Return(builtinParsers, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListBuiltinParsersAll_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListBuiltinParsersRequest) ([]lakewatch.BuiltinParser, error)) *MockLakewatchInterface_ListBuiltinParsersAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListDatasources provides a mock function for the type MockLakewatchInterface
 func (_mock *MockLakewatchInterface) ListDatasources(ctx context.Context, request lakewatch.ListDatasourcesRequest) listing.Iterator[lakewatch.Datasource] {
 	ret := _mock.Called(ctx, request)
@@ -829,6 +1605,260 @@ func (_c *MockLakewatchInterface_ListDatasourcesAll_Call) Return(datasources []l
 }
 
 func (_c *MockLakewatchInterface_ListDatasourcesAll_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListDatasourcesRequest) ([]lakewatch.Datasource, error)) *MockLakewatchInterface_ListDatasourcesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListParserVersions provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListParserVersions(ctx context.Context, request lakewatch.ListParserVersionsRequest) listing.Iterator[lakewatch.ParserVersion] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListParserVersions")
+	}
+
+	var r0 listing.Iterator[lakewatch.ParserVersion]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListParserVersionsRequest) listing.Iterator[lakewatch.ParserVersion]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[lakewatch.ParserVersion])
+		}
+	}
+	return r0
+}
+
+// MockLakewatchInterface_ListParserVersions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListParserVersions'
+type MockLakewatchInterface_ListParserVersions_Call struct {
+	*mock.Call
+}
+
+// ListParserVersions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListParserVersionsRequest
+func (_e *MockLakewatchInterface_Expecter) ListParserVersions(ctx any, request any) *MockLakewatchInterface_ListParserVersions_Call {
+	return &MockLakewatchInterface_ListParserVersions_Call{Call: _e.mock.On("ListParserVersions", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListParserVersions_Call) Run(run func(ctx context.Context, request lakewatch.ListParserVersionsRequest)) *MockLakewatchInterface_ListParserVersions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListParserVersionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListParserVersionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParserVersions_Call) Return(iterator listing.Iterator[lakewatch.ParserVersion]) *MockLakewatchInterface_ListParserVersions_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParserVersions_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListParserVersionsRequest) listing.Iterator[lakewatch.ParserVersion]) *MockLakewatchInterface_ListParserVersions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListParserVersionsAll provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListParserVersionsAll(ctx context.Context, request lakewatch.ListParserVersionsRequest) ([]lakewatch.ParserVersion, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListParserVersionsAll")
+	}
+
+	var r0 []lakewatch.ParserVersion
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListParserVersionsRequest) ([]lakewatch.ParserVersion, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListParserVersionsRequest) []lakewatch.ParserVersion); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]lakewatch.ParserVersion)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.ListParserVersionsRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_ListParserVersionsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListParserVersionsAll'
+type MockLakewatchInterface_ListParserVersionsAll_Call struct {
+	*mock.Call
+}
+
+// ListParserVersionsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListParserVersionsRequest
+func (_e *MockLakewatchInterface_Expecter) ListParserVersionsAll(ctx any, request any) *MockLakewatchInterface_ListParserVersionsAll_Call {
+	return &MockLakewatchInterface_ListParserVersionsAll_Call{Call: _e.mock.On("ListParserVersionsAll", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListParserVersionsAll_Call) Run(run func(ctx context.Context, request lakewatch.ListParserVersionsRequest)) *MockLakewatchInterface_ListParserVersionsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListParserVersionsRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListParserVersionsRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParserVersionsAll_Call) Return(parserVersions []lakewatch.ParserVersion, err error) *MockLakewatchInterface_ListParserVersionsAll_Call {
+	_c.Call.Return(parserVersions, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParserVersionsAll_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListParserVersionsRequest) ([]lakewatch.ParserVersion, error)) *MockLakewatchInterface_ListParserVersionsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListParsers provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListParsers(ctx context.Context, request lakewatch.ListParsersRequest) listing.Iterator[lakewatch.Parser] {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListParsers")
+	}
+
+	var r0 listing.Iterator[lakewatch.Parser]
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListParsersRequest) listing.Iterator[lakewatch.Parser]); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[lakewatch.Parser])
+		}
+	}
+	return r0
+}
+
+// MockLakewatchInterface_ListParsers_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListParsers'
+type MockLakewatchInterface_ListParsers_Call struct {
+	*mock.Call
+}
+
+// ListParsers is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListParsersRequest
+func (_e *MockLakewatchInterface_Expecter) ListParsers(ctx any, request any) *MockLakewatchInterface_ListParsers_Call {
+	return &MockLakewatchInterface_ListParsers_Call{Call: _e.mock.On("ListParsers", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListParsers_Call) Run(run func(ctx context.Context, request lakewatch.ListParsersRequest)) *MockLakewatchInterface_ListParsers_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListParsersRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListParsersRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParsers_Call) Return(iterator listing.Iterator[lakewatch.Parser]) *MockLakewatchInterface_ListParsers_Call {
+	_c.Call.Return(iterator)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParsers_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListParsersRequest) listing.Iterator[lakewatch.Parser]) *MockLakewatchInterface_ListParsers_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListParsersAll provides a mock function for the type MockLakewatchInterface
+func (_mock *MockLakewatchInterface) ListParsersAll(ctx context.Context, request lakewatch.ListParsersRequest) ([]lakewatch.Parser, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListParsersAll")
+	}
+
+	var r0 []lakewatch.Parser
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListParsersRequest) ([]lakewatch.Parser, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, lakewatch.ListParsersRequest) []lakewatch.Parser); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]lakewatch.Parser)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, lakewatch.ListParsersRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLakewatchInterface_ListParsersAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListParsersAll'
+type MockLakewatchInterface_ListParsersAll_Call struct {
+	*mock.Call
+}
+
+// ListParsersAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request lakewatch.ListParsersRequest
+func (_e *MockLakewatchInterface_Expecter) ListParsersAll(ctx any, request any) *MockLakewatchInterface_ListParsersAll_Call {
+	return &MockLakewatchInterface_ListParsersAll_Call{Call: _e.mock.On("ListParsersAll", ctx, request)}
+}
+
+func (_c *MockLakewatchInterface_ListParsersAll_Call) Run(run func(ctx context.Context, request lakewatch.ListParsersRequest)) *MockLakewatchInterface_ListParsersAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 lakewatch.ListParsersRequest
+		if args[1] != nil {
+			arg1 = args[1].(lakewatch.ListParsersRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParsersAll_Call) Return(parsers []lakewatch.Parser, err error) *MockLakewatchInterface_ListParsersAll_Call {
+	_c.Call.Return(parsers, err)
+	return _c
+}
+
+func (_c *MockLakewatchInterface_ListParsersAll_Call) RunAndReturn(run func(ctx context.Context, request lakewatch.ListParsersRequest) ([]lakewatch.Parser, error)) *MockLakewatchInterface_ListParsersAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

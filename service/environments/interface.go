@@ -20,12 +20,13 @@ type EnvironmentsService interface {
 	// The operation will asynchronously generate a materialized environment to
 	// optimize dependency resolution and is only marked as done when the
 	// materialized environment has been successfully generated or has failed.
+	// Poll the returned operation with GetOperation.
 	CreateWorkspaceBaseEnvironment(ctx context.Context, request CreateWorkspaceBaseEnvironmentRequest) (*Operation, error)
 
 	// Deletes a WorkspaceBaseEnvironment. Deleting a base environment may
 	// impact linked notebooks and jobs. This operation is irreversible and
 	// should be performed only when you are certain the environment is no
-	// longer needed.
+	// longer needed. Databricks-provided base environments cannot be deleted.
 	DeleteWorkspaceBaseEnvironment(ctx context.Context, request DeleteWorkspaceBaseEnvironmentRequest) error
 
 	// Gets the default WorkspaceBaseEnvironment configuration for the
@@ -34,7 +35,13 @@ type EnvironmentsService interface {
 	GetDefaultWorkspaceBaseEnvironment(ctx context.Context, request GetDefaultWorkspaceBaseEnvironmentRequest) (*DefaultWorkspaceBaseEnvironment, error)
 
 	// Gets the status of a long-running operation. Clients can use this method
-	// to poll the operation result.
+	// to poll the operation result. Create, update and refresh return an
+	// operation named `operations/{workspace_base_environment_id}`. The
+	// operation is done when the materialized environment build finishes. On
+	// success, `response` contains the WorkspaceBaseEnvironment with status
+	// `CREATED`. When the status is `FAILED`, `EXPIRED` or `INVALID`, `error`
+	// is set instead, and `error.message` carries the environment's status
+	// message when one is available.
 	GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
 
 	// Retrieves a WorkspaceBaseEnvironment by its name.
@@ -60,7 +67,8 @@ type EnvironmentsService interface {
 	// regenerate the materialized environment and is only marked as done when
 	// the materialized environment has been successfully generated or has
 	// failed. The existing materialized environment remains available until it
-	// expires.
+	// expires. Poll the returned operation with GetOperation.
+	// Databricks-provided base environments cannot be refreshed.
 	RefreshWorkspaceBaseEnvironment(ctx context.Context, request RefreshWorkspaceBaseEnvironmentRequest) (*Operation, error)
 
 	// Updates the default WorkspaceBaseEnvironment configuration for the
@@ -72,6 +80,8 @@ type EnvironmentsService interface {
 	// operation. The operation will asynchronously regenerate the materialized
 	// environment and is only marked as done when the materialized environment
 	// has been successfully generated or has failed. The existing materialized
-	// environment remains available until it expires.
+	// environment remains available until it expires. Poll the returned
+	// operation with GetOperation. Databricks-provided base environments cannot
+	// be updated.
 	UpdateWorkspaceBaseEnvironment(ctx context.Context, request UpdateWorkspaceBaseEnvironmentRequest) (*Operation, error)
 }

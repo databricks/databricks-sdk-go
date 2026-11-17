@@ -682,6 +682,8 @@ type ListProviderShareAssetsRequest struct {
 	ProviderName string `json:"-" url:"-"`
 	// The name of the share.
 	ShareName string `json:"-" url:"-"`
+	// Maximum number of skills to return.
+	SkillMaxResults int `json:"-" url:"skill_max_results,omitempty"`
 	// Maximum number of tables to return.
 	TableMaxResults int `json:"-" url:"table_max_results,omitempty"`
 	// Maximum number of volumes to return.
@@ -707,6 +709,8 @@ type ListProviderShareAssetsResponse struct {
 	Notebooks []NotebookFile `json:"notebooks,omitempty"`
 	// The metadata of the share.
 	Share *Share `json:"share,omitempty"`
+	// The list of skills in the share.
+	Skills []Skill `json:"skills,omitempty"`
 	// The list of tables in the share.
 	Tables []Table `json:"tables,omitempty"`
 	// The list of volumes in the share.
@@ -1674,6 +1678,8 @@ const SharedDataObjectDataObjectTypeNotebookFile SharedDataObjectDataObjectType 
 
 const SharedDataObjectDataObjectTypeSchema SharedDataObjectDataObjectType = `SCHEMA`
 
+const SharedDataObjectDataObjectTypeSkill SharedDataObjectDataObjectType = `SKILL`
+
 const SharedDataObjectDataObjectTypeStreamingTable SharedDataObjectDataObjectType = `STREAMING_TABLE`
 
 const SharedDataObjectDataObjectTypeTable SharedDataObjectDataObjectType = `TABLE`
@@ -1690,11 +1696,11 @@ func (f *SharedDataObjectDataObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SharedDataObjectDataObjectType) Set(v string) error {
 	switch v {
-	case `FEATURE_SPEC`, `FOREIGN_TABLE`, `FUNCTION`, `MATERIALIZED_VIEW`, `MODEL`, `NOTEBOOK_FILE`, `SCHEMA`, `STREAMING_TABLE`, `TABLE`, `VIEW`, `VOLUME`:
+	case `FEATURE_SPEC`, `FOREIGN_TABLE`, `FUNCTION`, `MATERIALIZED_VIEW`, `MODEL`, `NOTEBOOK_FILE`, `SCHEMA`, `SKILL`, `STREAMING_TABLE`, `TABLE`, `VIEW`, `VOLUME`:
 		*f = SharedDataObjectDataObjectType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FEATURE_SPEC", "FOREIGN_TABLE", "FUNCTION", "MATERIALIZED_VIEW", "MODEL", "NOTEBOOK_FILE", "SCHEMA", "STREAMING_TABLE", "TABLE", "VIEW", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FEATURE_SPEC", "FOREIGN_TABLE", "FUNCTION", "MATERIALIZED_VIEW", "MODEL", "NOTEBOOK_FILE", "SCHEMA", "SKILL", "STREAMING_TABLE", "TABLE", "VIEW", "VOLUME"`, v)
 	}
 }
 
@@ -1710,6 +1716,7 @@ func (f *SharedDataObjectDataObjectType) Values() []SharedDataObjectDataObjectTy
 		SharedDataObjectDataObjectTypeModel,
 		SharedDataObjectDataObjectTypeNotebookFile,
 		SharedDataObjectDataObjectTypeSchema,
+		SharedDataObjectDataObjectTypeSkill,
 		SharedDataObjectDataObjectTypeStreamingTable,
 		SharedDataObjectDataObjectTypeTable,
 		SharedDataObjectDataObjectTypeView,
@@ -1911,6 +1918,41 @@ func (s *SharesListRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s SharesListRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// An agent skill shared through a Delta Sharing share, as served to a
+// recipient.
+type Skill struct {
+	// The name from the skill bundle frontmatter, which may differ from the
+	// resource name.
+	BundleName string `json:"bundle_name,omitempty"`
+	// The comment of the skill.
+	Comment string `json:"comment,omitempty"`
+	// The bundle description parsed from the skill bundle's SKILL.md
+	// frontmatter.
+	Description string `json:"description,omitempty"`
+	// The shared-object ID that recipients match replicas on. For a skill
+	// shared through its schema, which has no shared-object row, this is
+	// derived from the shared schema and the skill.
+	Id string `json:"id,omitempty"`
+	// The name of the skill.
+	Name string `json:"name,omitempty"`
+	// The name of the schema that the skill belongs to.
+	Schema string `json:"schema,omitempty"`
+	// The name of the share that the skill belongs to.
+	Share string `json:"share,omitempty"`
+	// The id of the share that the skill belongs to.
+	ShareId string `json:"share_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Skill) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Skill) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

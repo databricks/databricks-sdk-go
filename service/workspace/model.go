@@ -95,10 +95,12 @@ type CreateCredentialsRequest struct {
 	// authentication depending on your Git provider / token requirements.
 	// Required for AWS CodeCommit.
 	GitUsername string `json:"git_username,omitempty"`
-	// if the credential is the default for the given provider
+	// Set to true to make the new credential the default for its Git provider,
+	// replacing the current default. The first credential created for a
+	// provider becomes the default regardless of this value.
 	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
-	// the name of the git credential, used for identification and ease of
-	// lookup
+	// The name of the Git credential, used for identification and ease of
+	// lookup. It must not exceed 100 characters.
 	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
@@ -106,8 +108,8 @@ type CreateCredentialsRequest struct {
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
-	// The ID of the service principal whose credentials will be modified. Only
-	// service principal managers can perform this action.
+	// The ID of the service principal for which the credential will be created.
+	// Only service principal managers can perform this action.
 	PrincipalId int64 `json:"principal_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -138,10 +140,12 @@ type CreateCredentialsResponse struct {
 	// authentication depending on your Git provider / token requirements.
 	// Required for AWS CodeCommit.
 	GitUsername string `json:"git_username,omitempty"`
-	// if the credential is the default for the given provider
+	// Whether this credential is the default for its Git provider. The default
+	// credential is the fallback that is used when no specific credential is
+	// selected.
 	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
-	// the name of the git credential, used for identification and ease of
-	// lookup
+	// The name of the Git credential, used for identification and ease of
+	// lookup.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -244,6 +248,9 @@ func (s CreateScope) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A Git credential that Databricks uses to authenticate to a Git provider on
+// behalf of a user or service principal. Each user has one default credential
+// per Git provider, which is used when no specific credential is selected.
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id"`
@@ -265,10 +272,13 @@ type CredentialInfo struct {
 	// authentication depending on your Git provider / token requirements.
 	// Required for AWS CodeCommit.
 	GitUsername string `json:"git_username,omitempty"`
-	// if the credential is the default for the given provider
+	// Whether this credential is the default for its Git provider. The default
+	// credential is the fallback that is used when no specific credential is
+	// selected. See
+	// https://docs.databricks.com/aws/en/repos/repos-setup#how-default-credentials-work.
 	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
-	// the name of the git credential, used for identification and ease of
-	// lookup
+	// The name of the Git credential, used for identification and ease of
+	// lookup.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -316,7 +326,7 @@ func (s *DeleteAcl) UnmarshalJSON(b []byte) error {
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
-	// The ID of the service principal whose credentials will be modified. Only
+	// The ID of the service principal whose credential will be deleted. Only
 	// service principal managers can perform this action.
 	PrincipalId int64 `json:"-" url:"principal_id,omitempty"`
 
@@ -503,7 +513,7 @@ func (s *GetAclRequest) UnmarshalJSON(b []byte) error {
 type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
-	// The ID of the service principal whose credentials will be modified. Only
+	// The ID of the service principal whose credential will be returned. Only
 	// service principal managers can perform this action.
 	PrincipalId int64 `json:"-" url:"principal_id,omitempty"`
 
@@ -535,10 +545,12 @@ type GetCredentialsResponse struct {
 	// authentication depending on your Git provider / token requirements.
 	// Required for AWS CodeCommit.
 	GitUsername string `json:"git_username,omitempty"`
-	// if the credential is the default for the given provider
+	// Whether this credential is the default for its Git provider. The default
+	// credential is the fallback that is used when no specific credential is
+	// selected.
 	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
-	// the name of the git credential, used for identification and ease of
-	// lookup
+	// The name of the Git credential, used for identification and ease of
+	// lookup.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -638,7 +650,8 @@ func (s *GetSecretRequest) UnmarshalJSON(b []byte) error {
 type GetSecretResponse struct {
 	// A unique name to identify the secret.
 	Key string `json:"key,omitempty"`
-	// The value of the secret in its byte representation.
+	// The secret value, base64-encoded. A secret written with ``string_value``
+	// is returned as the base64 encoding of its UTF-8 bytes.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1092,13 +1105,15 @@ func (s *PutAcl) UnmarshalJSON(b []byte) error {
 }
 
 type PutSecret struct {
-	// If specified, value will be stored as bytes.
+	// The secret value as raw bytes. The bytes must be base64-encoded in the
+	// JSON request body.
 	BytesValue string `json:"bytes_value,omitempty"`
 	// A unique name to identify the secret.
 	Key string `json:"key"`
-	// The name of the scope to which the secret will be associated with.
+	// The name of the scope to store the secret in.
 	Scope string `json:"scope"`
-	// If specified, note that the value will be stored in UTF-8 (MB4) form.
+	// The secret value as text. The server stores it as the UTF-8 encoding of
+	// the string.
 	StringValue string `json:"string_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1343,7 +1358,8 @@ func (f *ScopeBackendType) Type() string {
 type SecretMetadata struct {
 	// A unique name to identify the secret.
 	Key string `json:"key,omitempty"`
-	// The last updated timestamp (in milliseconds) for the secret.
+	// The time the secret was last written, in milliseconds since the Unix
+	// epoch.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1419,6 +1435,8 @@ type UpdateCredentialsRequest struct {
 	// DevOps Services, including Microsoft Entra ID authentication),
 	// `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
 	// `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit`.
+	// Must match the Git provider of the existing credential; the provider
+	// cannot be changed.
 	GitProvider string `json:"git_provider"`
 	// The username provided with your Git provider account and associated with
 	// the credential. For most Git providers it is only used to set the Git
@@ -1426,10 +1444,12 @@ type UpdateCredentialsRequest struct {
 	// authentication depending on your Git provider / token requirements.
 	// Required for AWS CodeCommit.
 	GitUsername string `json:"git_username,omitempty"`
-	// if the credential is the default for the given provider
+	// Set to true to make this credential the default for its Git provider,
+	// replacing the current default. Cannot be set to false; make another
+	// credential the default instead.
 	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
-	// the name of the git credential, used for identification and ease of
-	// lookup
+	// The name of the Git credential, used for identification and ease of
+	// lookup. It must not exceed 100 characters.
 	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of

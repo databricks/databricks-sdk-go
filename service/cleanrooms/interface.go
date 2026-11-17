@@ -94,11 +94,11 @@ type CleanRoomTaskRunsService interface {
 type CleanRoomsService interface {
 
 	// Create a new clean room with the specified collaborators. This method is
-	// asynchronous; the returned name field inside the clean_room field can be
-	// used to poll the clean room status, using the [cleanrooms/get] method.
-	// When this method returns, the clean room will be in a PROVISIONING state,
-	// with only name, owner, comment, created_at and status populated. The
-	// clean room will be usable once it enters an ACTIVE state.
+	// asynchronous; the name field of the returned clean room can be used to
+	// poll the clean room status, using the [cleanrooms/get] method. When this
+	// method returns, the clean room will be in a PROVISIONING state, with only
+	// name, owner, comment, created_at and status populated. The clean room
+	// will be usable once it enters an ACTIVE state.
 	//
 	// The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM**
 	// privilege on the metastore.
@@ -106,7 +106,11 @@ type CleanRoomsService interface {
 	// [cleanrooms/get]: https://docs.databricks.com/api/workspace/cleanrooms/get
 	Create(ctx context.Context, request CreateCleanRoomRequest) (*CleanRoom, error)
 
-	// Create the output catalog of the clean room.
+	// Create the output catalog of the clean room. The output catalog is a
+	// catalog in the caller's metastore where the output tables of the clean
+	// room runs that the caller triggers are made available. Each collaborator
+	// can create one output catalog per clean room, and the clean room must be
+	// ACTIVE.
 	CreateOutputCatalog(ctx context.Context, request CreateCleanRoomOutputCatalogRequest) (*CreateCleanRoomOutputCatalogResponse, error)
 
 	// Delete a clean room. After deletion, the clean room will be removed from

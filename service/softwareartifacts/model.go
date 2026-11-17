@@ -22,7 +22,8 @@ func (s *GetSoftwareArtifactRequest) UnmarshalJSON(b []byte) error {
 
 type GetSoftwareArtifactVersionRequest struct {
 	// Resource name of the version, of the form
-	// `software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}`.
+	// `software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}`,
+	// where `{version}` is the version's content digest.
 	Name string `json:"-" url:"-"`
 }
 
@@ -164,9 +165,13 @@ func (s ListSoftwareArtifactsResponse) MarshalJSON() ([]byte, error) {
 
 // Request to resolve a software artifact version from its tag alias.
 type ResolveSoftwareArtifactVersionRequest struct {
-	// Image tag alias selecting the version.
+	// Image tag alias selecting the version. The alias must be a valid OCI
+	// image tag of at most 128 characters, made of letters, digits,
+	// underscores, periods, and hyphens, and must not start with a period or
+	// hyphen.
 	Alias string `json:"alias"`
-	// Resource name of the software artifact containing the alias.
+	// Resource name of the software artifact containing the alias, of the form
+	// `software-artifacts/{catalog}.{schema}.{artifact}`.
 	Parent string `json:"-" url:"-"`
 }
 
@@ -184,19 +189,26 @@ func (s *ResolveSoftwareArtifactVersionResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A software artifact in a Unity Catalog schema.
+// A software artifact is a named container image stored in a Unity Catalog
+// schema and governed by Unity Catalog privileges. Images are pushed through
+// Databricks Artifact Registry; each pushed image digest becomes an immutable
+// version of the artifact, exposed as a SoftwareArtifactVersion. See
+// https://docs.databricks.com/aws/en/artifact-registry/ for concepts, naming
+// rules, and the privileges each operation requires.
 type SoftwareArtifact struct {
-	// Time at which this software artifact was created.
+	// Time at which the artifact was created, formatted as an RFC 3339
+	// timestamp in JSON.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Principal name of the software artifact creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// Resource name of the artifact, of the form
 	// `software-artifacts/{catalog}.{schema}.{artifact}`.
 	Name string `json:"name,omitempty"`
-	// Principal name (a user, service principal, or group) that owns this
-	// artifact.
+	// Principal that owns the artifact, given as a user's email address, a
+	// service principal's application ID, or a group name.
 	Owner string `json:"owner,omitempty"`
-	// Time at which this software artifact was last updated.
+	// Time at which the artifact was last updated, formatted as an RFC 3339
+	// timestamp in JSON.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Principal name that last updated this software artifact.
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -215,22 +227,26 @@ func (s SoftwareArtifact) MarshalJSON() ([]byte, error) {
 // An immutable version of a software artifact, identified by its content
 // digest.
 type SoftwareArtifactVersion struct {
-	// Time at which this software artifact version was created.
+	// Time at which this software artifact version was created, formatted as an
+	// RFC 3339 timestamp in JSON.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Principal name of the software artifact version creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Content digest of the version, for example `sha256:...`.
+	// Content digest of the version's image manifest, of the form
+	// `{algorithm}:{hex}`.
 	Digest string `json:"digest,omitempty"`
 	// Image acceleration information for this version.
 	ImageAccelerationDetails *ImageAccelerationDetail `json:"image_acceleration_details,omitempty"`
 	// Resource name of the version, of the form
-	// `software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}`.
+	// `software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}`,
+	// where `{version}` is the version's content digest.
 	Name string `json:"name,omitempty"`
 	// Tags (aliases) that currently point at this version, for example `latest`
 	// or `v1.2.3`. Bounded at 10 per version; a version pointed at by more tags
 	// returns an arbitrary 10 of them.
 	Tags []string `json:"tags,omitempty"`
-	// Time at which this software artifact version was last updated.
+	// Time at which this software artifact version was last updated, formatted
+	// as an RFC 3339 timestamp in JSON.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Principal name that last updated this software artifact version.
 	UpdatedBy string `json:"updated_by,omitempty"`

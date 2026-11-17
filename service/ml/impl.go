@@ -381,7 +381,8 @@ func (a *experimentsImpl) internalListArtifacts(ctx context.Context, request Lis
 	return &listArtifactsResponse, err
 }
 
-// Gets a list of all experiments.
+// Gets a list of all experiments, ordered by creation time with the newest
+// first.
 func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExperimentsRequest) listing.Iterator[Experiment] {
 
 	getNextPage := func(ctx context.Context, req ListExperimentsRequest) (*ListExperimentsResponse, error) {
@@ -406,7 +407,8 @@ func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExper
 	return iterator
 }
 
-// Gets a list of all experiments.
+// Gets a list of all experiments, ordered by creation time with the newest
+// first.
 func (a *experimentsImpl) ListExperimentsAll(ctx context.Context, request ListExperimentsRequest) ([]Experiment, error) {
 	iterator := a.ListExperiments(ctx, request)
 	return listing.ToSlice[Experiment](ctx, iterator)

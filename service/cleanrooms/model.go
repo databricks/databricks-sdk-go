@@ -12,12 +12,19 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 )
 
+// A clean room is a secure, Databricks-managed environment where collaborators
+// from one or more Unity Catalog metastores share tables, views, volumes and
+// notebooks and run approved analyses without seeing each other's data. Each
+// collaborator sees the clean room as a securable in their own metastore, while
+// the analyses run in a central clean room in the cloud and region chosen at
+// creation.
 type CleanRoom struct {
 	// Whether clean room access is restricted due to [CSP]
 	//
 	// [CSP]: https://docs.databricks.com/en/security/privacy/security-profile.html
 	AccessRestricted CleanRoomAccessRestricted `json:"access_restricted,omitempty"`
-
+	// Free-form description of the clean room. Comments are local to the
+	// caller's metastore and are not shared with the other collaborators.
 	Comment string `json:"comment,omitempty"`
 	// When the clean room was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -37,7 +44,8 @@ type CleanRoom struct {
 	// API.
 	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
 	// This is the Databricks username of the owner of the local clean room
-	// securable for permission management.
+	// securable for permission management. When creating a clean room, leave it
+	// empty or set it to the caller.
 	Owner string `json:"owner,omitempty"`
 	// Central clean room details. During creation, users need to specify
 	// cloud_vendor, region, and collaborators.global_metastore_id. This field
@@ -739,7 +747,7 @@ type CleanRoomOutputCatalog struct {
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
 	CatalogName string `json:"catalog_name,omitempty"`
-
+	// Status of the output catalog for the calling collaborator.
 	Status CleanRoomOutputCatalogOutputCatalogStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -799,7 +807,7 @@ type CleanRoomRemoteDetail struct {
 	CentralCleanRoomId string `json:"central_clean_room_id,omitempty"`
 	// Cloud vendor (aws,azure,gcp) of the central clean room.
 	CloudVendor string `json:"cloud_vendor,omitempty"`
-	// Collaborators in the central clean room. There should one and only one
+	// Collaborators in the central clean room. There should be one and only one
 	// collaborator in the list that satisfies the owner condition:
 	//
 	// 1. It has the creator's global_metastore_id (determined by caller of
@@ -807,11 +815,17 @@ type CleanRoomRemoteDetail struct {
 	//
 	// 2. Its invite_recipient_email is empty.
 	Collaborators []CleanRoomCollaborator `json:"collaborators,omitempty"`
-
+	// Compliance security profile of the central clean room. It is taken from
+	// the creator's workspace when the clean room is created; a collaborator
+	// whose workspace profile differs sees access_restricted set to
+	// CSP_MISMATCH.
 	ComplianceSecurityProfile *ComplianceSecurityProfile `json:"compliance_security_profile,omitempty"`
 	// Collaborator who creates the clean room.
 	Creator *CleanRoomCollaborator `json:"creator,omitempty"`
-	// Egress network policy to apply to the central clean room workspace.
+	// Egress network policy to apply to the central clean room workspace. Only
+	// internet_access.restriction_mode (FULL_ACCESS or RESTRICTED_ACCESS) and
+	// internet_access.allowed_internet_destinations can be set. When omitted,
+	// internet access is restricted with no allowed destinations.
 	EgressNetworkPolicy *settings.EgressNetworkPolicy `json:"egress_network_policy,omitempty"`
 	// Whether to enable shared output for the central clean room. When enabled,
 	// clean room task runs can write to the run-scoped shared output schema
@@ -1096,6 +1110,7 @@ func (s *CreateCleanRoomOutputCatalogRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateCleanRoomOutputCatalogResponse struct {
+	// The output catalog that was created.
 	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
@@ -1185,6 +1200,7 @@ func (s *GetCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetCleanRoomRequest struct {
+	// Name of the clean room.
 	Name string `json:"-" url:"-"`
 }
 
@@ -1501,6 +1517,9 @@ func (s *UpdateCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateCleanRoomRequest struct {
+	// Clean room fields to update. Only mutable fields such as owner, comment
+	// and enable_shared_output can be changed; remote_detailed_info, status,
+	// created_at and updated_at must be omitted.
 	CleanRoom *CleanRoom `json:"clean_room,omitempty"`
 	// Name of the clean room.
 	Name string `json:"-" url:"-"`

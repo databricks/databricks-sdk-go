@@ -107,6 +107,11 @@ func (s *AutomatedConstraints) UnmarshalJSON(b []byte) error {
 // Attributes set during cluster creation which are related to Amazon Web
 // Services.
 type AwsAttributes struct {
+	// Availability type used for all subsequent nodes past the
+	// `first_on_demand` ones.
+	//
+	// Note: If `first_on_demand` is zero, this availability type will be used
+	// for the entire cluster.
 	Availability AwsAvailability `json:"availability,omitempty"`
 	// The number of volumes launched for each instance. Users can choose up to
 	// 10 volumes. This feature is only enabled for supported node types. Legacy
@@ -269,7 +274,9 @@ type AzureAttributes struct {
 	// Note that this value does not affect cluster size and cannot currently be
 	// mutated over the lifetime of a cluster.
 	FirstOnDemand int `json:"first_on_demand,omitempty"`
-	// Defines values necessary to configure and run Azure Log Analytics agent
+	// Defines values necessary to configure and run Azure Log Analytics agent.
+	// Both `log_analytics_workspace_id` and `log_analytics_primary_key` must be
+	// set, or neither.
 	LogAnalyticsInfo *LogAnalyticsInfo `json:"log_analytics_info,omitempty"`
 	// The max bid price to be used for Azure spot instances. The Max price for
 	// the bid cannot be higher than the on-demand price of the instance. If not
@@ -381,6 +388,7 @@ func (s *CancelPendingClusterEnforcementResponse) UnmarshalJSON(b []byte) error 
 }
 
 type ChangeClusterOwner struct {
+	// The ID of the cluster whose owner is changed.
 	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
 	OwnerUsername string `json:"owner_username"`
@@ -543,11 +551,43 @@ type ClusterAttributes struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+	// multiple users. Cluster users are fully isolated so that they cannot see
+	// each other's data and credentials. Most data governance features are
+	// supported in this mode. But programming languages and cluster features
+	// might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that
+	// can only be exclusively used by a single user specified in
+	// `single_user_name`. Most programming languages, cluster features and data
+	// governance features are available in this mode. * `NONE`: No security
+	// isolation for multiple users sharing the cluster. Data governance
+	// features are not available in this mode.
+	//
+	// The following modes are legacy aliases for the above modes:
+	//
+	// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+	// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn't have UC or passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Controls dependency configuration for the cluster.
 	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
-	// Custom docker image BYOC
+	// Custom Docker image for the cluster's nodes, used with [Databricks
+	// Container Services].
+	//
+	// [Databricks Container Services]: https://docs.databricks.com/compute/custom-containers.html
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -580,7 +620,21 @@ type ClusterAttributes struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. * [is_single_node] *
+	// [use_ml_runtime]
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [is_single_node]: https://docs.databricks.com/api/workspace/clusters/create#is_single_node
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// [use_ml_runtime]: https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -647,7 +701,8 @@ type ClusterAttributes struct {
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 	// Flexible node type configuration for worker nodes.
 	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
-
+	// Types of workloads that can use the cluster, such as notebooks or jobs.
+	// If omitted, the cluster can be used for both notebooks and jobs.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -744,7 +799,36 @@ type ClusterDetails struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+	// multiple users. Cluster users are fully isolated so that they cannot see
+	// each other's data and credentials. Most data governance features are
+	// supported in this mode. But programming languages and cluster features
+	// might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that
+	// can only be exclusively used by a single user specified in
+	// `single_user_name`. Most programming languages, cluster features and data
+	// governance features are available in this mode. * `NONE`: No security
+	// isolation for multiple users sharing the cluster. Data governance
+	// features are not available in this mode.
+	//
+	// The following modes are legacy aliases for the above modes:
+	//
+	// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+	// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn't have UC or passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
@@ -761,7 +845,10 @@ type ClusterDetails struct {
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Controls dependency configuration for the cluster.
 	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
-	// Custom docker image BYOC
+	// Custom Docker image for the cluster's nodes, used with [Databricks
+	// Container Services].
+	//
+	// [Databricks Container Services]: https://docs.databricks.com/compute/custom-containers.html
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// Node on which the Spark driver resides. The driver node contains the
 	// Spark master and the Databricks application that manages the per-notebook
@@ -800,12 +887,27 @@ type ClusterDetails struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-	// Port on which Spark JDBC server is listening, in the driver nod. No
-	// service will be listeningon on this port in executor nodes.
+	// Port on which Spark JDBC server is listening in the driver node. No
+	// service will be listening on this port in executor nodes.
 	JdbcPort int `json:"jdbc_port,omitempty"`
-
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. * [is_single_node] *
+	// [use_ml_runtime]
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [is_single_node]: https://docs.databricks.com/api/workspace/clusters/create#is_single_node
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// [use_ml_runtime]: https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime
 	Kind Kind `json:"kind,omitempty"`
-	// the timestamp that the cluster was started/restarted
+	// Time (in epoch milliseconds) when the cluster was last started or
+	// restarted.
 	LastRestartedTime int64 `json:"last_restarted_time,omitempty"`
 	// Time when the cluster driver last lost its state (due to a restart or
 	// driver failure).
@@ -908,7 +1010,8 @@ type ClusterDetails struct {
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 	// Flexible node type configuration for worker nodes.
 	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
-
+	// Types of workloads that can use the cluster, such as notebooks or jobs.
+	// If omitted, the cluster can be used for both notebooks and jobs.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -923,16 +1026,18 @@ func (s ClusterDetails) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterEvent struct {
+	// The ID of the cluster the event belongs to.
 	ClusterId string `json:"cluster_id"`
 
 	DataPlaneEventDetails *DataPlaneEventDetails `json:"data_plane_event_details,omitempty"`
-
+	// Details about the event. Which fields are populated depends on the event
+	// `type`.
 	Details *EventDetails `json:"details,omitempty"`
 	// The timestamp when the event occurred, stored as the number of
 	// milliseconds since the Unix epoch. If not provided, this will be assigned
 	// by the Timeline service.
 	Timestamp int64 `json:"timestamp,omitempty"`
-
+	// The type of event, which determines which `details` fields are populated.
 	Type EventType `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1382,11 +1487,43 @@ type ClusterSpec struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+	// multiple users. Cluster users are fully isolated so that they cannot see
+	// each other's data and credentials. Most data governance features are
+	// supported in this mode. But programming languages and cluster features
+	// might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that
+	// can only be exclusively used by a single user specified in
+	// `single_user_name`. Most programming languages, cluster features and data
+	// governance features are available in this mode. * `NONE`: No security
+	// isolation for multiple users sharing the cluster. Data governance
+	// features are not available in this mode.
+	//
+	// The following modes are legacy aliases for the above modes:
+	//
+	// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+	// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn't have UC or passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Controls dependency configuration for the cluster.
 	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
-	// Custom docker image BYOC
+	// Custom Docker image for the cluster's nodes, used with [Databricks
+	// Container Services].
+	//
+	// [Databricks Container Services]: https://docs.databricks.com/compute/custom-containers.html
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -1419,7 +1556,21 @@ type ClusterSpec struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. * [is_single_node] *
+	// [use_ml_runtime]
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [is_single_node]: https://docs.databricks.com/api/workspace/clusters/create#is_single_node
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// [use_ml_runtime]: https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -1497,7 +1648,8 @@ type ClusterSpec struct {
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 	// Flexible node type configuration for worker nodes.
 	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
-
+	// Types of workloads that can use the cluster, such as notebooks or jobs.
+	// If omitted, the cluster can be used for both notebooks and jobs.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1827,11 +1979,43 @@ type CreateCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+	// multiple users. Cluster users are fully isolated so that they cannot see
+	// each other's data and credentials. Most data governance features are
+	// supported in this mode. But programming languages and cluster features
+	// might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that
+	// can only be exclusively used by a single user specified in
+	// `single_user_name`. Most programming languages, cluster features and data
+	// governance features are available in this mode. * `NONE`: No security
+	// isolation for multiple users sharing the cluster. Data governance
+	// features are not available in this mode.
+	//
+	// The following modes are legacy aliases for the above modes:
+	//
+	// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+	// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn't have UC or passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Controls dependency configuration for the cluster.
 	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
-	// Custom docker image BYOC
+	// Custom Docker image for the cluster's nodes, used with [Databricks
+	// Container Services].
+	//
+	// [Databricks Container Services]: https://docs.databricks.com/compute/custom-containers.html
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -1864,7 +2048,21 @@ type CreateCluster struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. * [is_single_node] *
+	// [use_ml_runtime]
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [is_single_node]: https://docs.databricks.com/api/workspace/clusters/create#is_single_node
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// [use_ml_runtime]: https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -1942,7 +2140,8 @@ type CreateCluster struct {
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 	// Flexible node type configuration for worker nodes.
 	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
-
+	// Types of workloads that can use the cluster, such as notebooks or jobs.
+	// If omitted, the cluster can be used for both notebooks and jobs.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2609,9 +2808,9 @@ func (f *DiskTypeEbsVolumeType) Type() string {
 }
 
 type DockerBasicAuth struct {
-	// Password of the user
+	// Password for authenticating to the Docker registry that hosts the image.
 	Password string `json:"password,omitempty"`
-	// Name of the user
+	// User name for authenticating to the Docker registry that hosts the image.
 	Username string `json:"username,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2726,11 +2925,43 @@ type EditCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+	// multiple users. Cluster users are fully isolated so that they cannot see
+	// each other's data and credentials. Most data governance features are
+	// supported in this mode. But programming languages and cluster features
+	// might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that
+	// can only be exclusively used by a single user specified in
+	// `single_user_name`. Most programming languages, cluster features and data
+	// governance features are available in this mode. * `NONE`: No security
+	// isolation for multiple users sharing the cluster. Data governance
+	// features are not available in this mode.
+	//
+	// The following modes are legacy aliases for the above modes:
+	//
+	// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+	// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn't have UC or passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Controls dependency configuration for the cluster.
 	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
-	// Custom docker image BYOC
+	// Custom Docker image for the cluster's nodes, used with [Databricks
+	// Container Services].
+	//
+	// [Databricks Container Services]: https://docs.databricks.com/compute/custom-containers.html
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -2763,7 +2994,21 @@ type EditCluster struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. * [is_single_node] *
+	// [use_ml_runtime]
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [is_single_node]: https://docs.databricks.com/api/workspace/clusters/create#is_single_node
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// [use_ml_runtime]: https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -2841,7 +3086,8 @@ type EditCluster struct {
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 	// Flexible node type configuration for worker nodes.
 	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
-
+	// Types of workloads that can use the cluster, such as notebooks or jobs.
+	// If omitted, the cluster can be used for both notebooks and jobs.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3085,11 +3331,43 @@ type EnforcePolicyComplianceForClusterResponseClusterSettings struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+	// multiple users. Cluster users are fully isolated so that they cannot see
+	// each other's data and credentials. Most data governance features are
+	// supported in this mode. But programming languages and cluster features
+	// might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that
+	// can only be exclusively used by a single user specified in
+	// `single_user_name`. Most programming languages, cluster features and data
+	// governance features are available in this mode. * `NONE`: No security
+	// isolation for multiple users sharing the cluster. Data governance
+	// features are not available in this mode.
+	//
+	// The following modes are legacy aliases for the above modes:
+	//
+	// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+	// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn't have UC or passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Controls dependency configuration for the cluster.
 	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
-	// Custom docker image BYOC
+	// Custom Docker image for the cluster's nodes, used with [Databricks
+	// Container Services].
+	//
+	// [Databricks Container Services]: https://docs.databricks.com/compute/custom-containers.html
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -3122,7 +3400,21 @@ type EnforcePolicyComplianceForClusterResponseClusterSettings struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. * [is_single_node] *
+	// [use_ml_runtime]
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [is_single_node]: https://docs.databricks.com/api/workspace/clusters/create#is_single_node
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// [use_ml_runtime]: https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -3200,7 +3492,8 @@ type EnforcePolicyComplianceForClusterResponseClusterSettings struct {
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 	// Flexible node type configuration for worker nodes.
 	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
-
+	// Types of workloads that can use the cluster, such as notebooks or jobs.
+	// If omitted, the cluster can be used for both notebooks and jobs.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3329,7 +3622,8 @@ type EventDetails struct {
 	CurrentNumVcpus int `json:"current_num_vcpus,omitempty"`
 	// The current number of nodes in the cluster.
 	CurrentNumWorkers int `json:"current_num_workers,omitempty"`
-
+	// The reason the disk was not expanded. Included in `DID_NOT_EXPAND_DISK`
+	// and `FAILED_TO_EXPAND_DISK` events.
 	DidNotExpandReason string `json:"did_not_expand_reason,omitempty"`
 	// Current disk size in bytes
 	DiskSize int64 `json:"disk_size,omitempty"`
@@ -3338,7 +3632,8 @@ type EventDetails struct {
 	// Whether or not a blocklisted node should be terminated. For
 	// ClusterEventType NODE_BLACKLISTED.
 	EnableTerminationForNodeBlocklisted bool `json:"enable_termination_for_node_blocklisted,omitempty"`
-
+	// Free disk space in bytes. Included in disk expansion events such as
+	// `EXPANDED_DISK` and `DID_NOT_EXPAND_DISK`.
 	FreeSpace int64 `json:"free_space,omitempty"`
 	// List of global and cluster init scripts associated with this cluster
 	// event.
@@ -3867,6 +4162,7 @@ func (f *GetEventsOrder) Type() string {
 }
 
 type GetEventsResponse struct {
+	// The events matching the request, in the requested `order`.
 	Events []ClusterEvent `json:"events,omitempty"`
 	// Deprecated: use next_page_token or prev_page_token instead.
 	//
@@ -5129,12 +5425,14 @@ func (f *Language) Type() string {
 	return "Language"
 }
 
+// A library to install on a cluster. Exactly one of the library-type fields
+// must be set.
 type Library struct {
-	// Specification of a CRAN library to be installed as part of the library
+	// Specification of a CRAN library to be installed.
 	Cran *RCranLibrary `json:"cran,omitempty"`
-	// Deprecated. URI of the egg library to install. Installing Python egg
-	// files is deprecated and is not supported in Databricks Runtime 14.0 and
-	// above.
+	// Deprecated: Installing Python egg files is not supported in Databricks
+	// Runtime 14.0 and above. Use a wheel (`whl`) or a PyPI package (`pypi`)
+	// instead. The value is the URI of the egg file to install.
 	Egg string `json:"egg,omitempty"`
 	// URI of the JAR library to install. Supported URIs include Workspace
 	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "jar":
@@ -5147,13 +5445,14 @@ type Library struct {
 	// Specification of a maven library to be installed. For example: `{
 	// "coordinates": "org.jsoup:jsoup:1.7.2" }`
 	Maven *MavenLibrary `json:"maven,omitempty"`
-	// Specification of a PyPi library to be installed. For example: `{
+	// Specification of a PyPI library to be installed. For example: `{
 	// "package": "simplejson" }`
 	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
 	// URI of the requirements.txt file to install. Only Workspace paths and
 	// Unity Catalog Volumes paths are supported. For example: `{
 	// "requirements": "/Workspace/path/to/requirements.txt" }` or `{
-	// "requirements" : "/Volumes/path/to/requirements.txt" }`
+	// "requirements" : "/Volumes/path/to/requirements.txt" }`. Installing a
+	// requirements file requires Databricks Runtime 15.0 or above.
 	Requirements string `json:"requirements,omitempty"`
 	// URI of the wheel library to install. Supported URIs include Workspace
 	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "whl":
@@ -5180,12 +5479,17 @@ type LibraryFullStatus struct {
 	// Whether the library was set to be installed on all clusters via the
 	// libraries UI.
 	IsLibraryForAllClusters bool `json:"is_library_for_all_clusters,omitempty"`
-	// Unique identifier for the library.
+	// The library whose status is reported.
 	Library *Library `json:"library,omitempty"`
 	// All the info and warning messages that have occurred so far for this
 	// library.
 	Messages []string `json:"messages,omitempty"`
-	// Status of installing the library on the cluster.
+	// Status of installing the library on the cluster. The status starts at
+	// PENDING and ends at INSTALLED, FAILED or SKIPPED. Intermediate states are
+	// not always reported. A library stays UNINSTALL_ON_RESTART after an
+	// uninstall request until the cluster restarts. While the cluster is not
+	// running, libraries are reported as PENDING, and libraries marked for
+	// uninstall are omitted.
 	Status LibraryInstallStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5728,8 +6032,11 @@ func (s *LocalFileInfo) UnmarshalJSON(b []byte) error {
 }
 
 type LogAnalyticsInfo struct {
+	// Primary key of the Azure Log Analytics workspace. The agent uses it to
+	// authenticate when reporting to the workspace.
 	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
-
+	// ID of the Azure Log Analytics workspace that the Log Analytics agent on
+	// the cluster's nodes reports to.
 	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5768,7 +6075,7 @@ type MapAny map[string]any
 type MavenLibrary struct {
 	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
 	Coordinates string `json:"coordinates"`
-	// List of dependences to exclude. For example: `["slf4j:slf4j",
+	// List of dependencies to exclude. For example: `["slf4j:slf4j",
 	// "*:hadoop-client"]`.
 	//
 	// Maven dependency exclusions:
@@ -6087,7 +6394,7 @@ func (s PolicyFamily) MarshalJSON() ([]byte, error) {
 }
 
 type PythonPyPiLibrary struct {
-	// The name of the pypi package to install. An optional exact version
+	// The name of the PyPI package to install. An optional exact version
 	// specification is also supported. Examples: "simplejson" and
 	// "simplejson==3.8.0".
 	Package string `json:"package"`
@@ -6185,7 +6492,9 @@ func (s ResizeCluster) MarshalJSON() ([]byte, error) {
 type RestartCluster struct {
 	// The cluster to be started.
 	ClusterId string `json:"cluster_id"`
-
+	// User name recorded in the `RESTARTING` cluster event as the user who
+	// restarted the cluster. If omitted, the name of the user making the
+	// request is recorded.
 	RestartUser string `json:"restart_user,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7340,11 +7649,43 @@ type UpdateClusterResource struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by
+	// multiple users. Cluster users are fully isolated so that they cannot see
+	// each other's data and credentials. Most data governance features are
+	// supported in this mode. But programming languages and cluster features
+	// might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that
+	// can only be exclusively used by a single user specified in
+	// `single_user_name`. Most programming languages, cluster features and data
+	// governance features are available in this mode. * `NONE`: No security
+	// isolation for multiple users sharing the cluster. Data governance
+	// features are not available in this mode.
+	//
+	// The following modes are legacy aliases for the above modes:
+	//
+	// * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. *
+	// `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn't have UC or passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Controls dependency configuration for the cluster.
 	DependencyMode DependencyMode `json:"dependency_mode,omitempty"`
-	// Custom docker image BYOC
+	// Custom Docker image for the cluster's nodes, used with [Databricks
+	// Container Services].
+	//
+	// [Databricks Container Services]: https://docs.databricks.com/compute/custom-containers.html
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -7377,7 +7718,21 @@ type UpdateClusterResource struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. * [is_single_node] *
+	// [use_ml_runtime]
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [is_single_node]: https://docs.databricks.com/api/workspace/clusters/create#is_single_node
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// [use_ml_runtime]: https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -7455,7 +7810,8 @@ type UpdateClusterResource struct {
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 	// Flexible node type configuration for worker nodes.
 	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
-
+	// Types of workloads that can use the cluster, such as notebooks or jobs.
+	// If omitted, the cluster can be used for both notebooks and jobs.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

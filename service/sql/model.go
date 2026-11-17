@@ -1333,7 +1333,9 @@ type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values: - Must be == 0 or >= 1 min for serverless warehouses. -
+	// Must be == 0 or >= 10 mins for classic and pro warehouses. - 0 indicates
+	// no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -2118,7 +2120,9 @@ type EditWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values: - Must be == 0 or >= 1 min for serverless warehouses. -
+	// Must be == 0 or >= 10 mins for classic and pro warehouses. - 0 indicates
+	// no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -2295,7 +2299,9 @@ type EndpointInfo struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values: - Must be == 0 or >= 1 min for serverless warehouses. -
+	// Must be == 0 or >= 10 mins for classic and pro warehouses. - 0 indicates
+	// no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -2753,7 +2759,8 @@ type ExternalQuerySource struct {
 	DashboardId string `json:"dashboard_id,omitempty"`
 	// The canonical identifier for this Genie space
 	GenieSpaceId string `json:"genie_space_id,omitempty"`
-
+	// Identifiers of the job, job run, and task run that executed this
+	// statement, when it ran as part of a job.
 	JobInfo *ExternalQuerySourceJobInfo `json:"job_info,omitempty"`
 	// The canonical identifier for this legacy dashboard
 	LegacyDashboardId string `json:"legacy_dashboard_id,omitempty"`
@@ -2986,7 +2993,9 @@ type GetWarehouseResponse struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values: - Must be == 0 or >= 1 min for serverless warehouses. -
+	// Must be == 0 or >= 10 mins for classic and pro warehouses. - 0 indicates
+	// no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -3744,18 +3753,18 @@ func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
 
 type ListQueryHistoryRequest struct {
 	// An optional filter object to limit query history results. Accepts
-	// parameters such as user IDs, endpoint IDs, and statuses to narrow the
+	// parameters such as user IDs, warehouse IDs, and statuses to narrow the
 	// returned data. In a URL, the parameters of this filter are specified with
 	// dot notation. For example: `filter_by.statement_ids`.
 	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
 	// Whether to include the query metrics with each query. Only use this for a
 	// small subset of queries (max_results). Defaults to false.
 	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
-	// Limit the number of results returned in one page. Must be less than 1000
-	// and the default is 100.
+	// Limit the number of results returned in one page. Must be no more than
+	// 1000; the default is 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// A token that can be used to get the next page of results. The token can
-	// contains characters that need to be encoded before using it in a URL. For
+	// contain characters that need to be encoded before using it in a URL. For
 	// example, the character '+' needs to be replaced by %2B. This field is
 	// optional.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -4438,7 +4447,8 @@ func (s *QueryFilter) UnmarshalJSON(b []byte) error {
 }
 
 type QueryInfo struct {
-	// The ID of the cached query if this result retrieved from cache
+	// The ID of the query whose cached result was returned, if this result was
+	// retrieved from the cache.
 	CacheQueryId string `json:"cache_query_id,omitempty"`
 	// SQL Warehouse channel information at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
@@ -4447,9 +4457,9 @@ type QueryInfo struct {
 	// provided by client applications. While values are expected to remain
 	// static over time, this cannot be guaranteed.
 	ClientApplication string `json:"client_application,omitempty"`
-	// Total time of the statement execution. This value does not include the
-	// time taken to retrieve the results, which can result in a discrepancy
-	// between this value and the start-to-finish wall-clock time.
+	// Total time of the statement execution, in milliseconds. This value does
+	// not include the time taken to retrieve the results, which can result in a
+	// discrepancy between this value and the start-to-finish wall-clock time.
 	Duration int64 `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
 	EndpointId string `json:"endpoint_id,omitempty"`
@@ -4460,27 +4470,34 @@ type QueryInfo struct {
 	// The email address or username of the user whose credentials were used to
 	// run the query.
 	ExecutedAsUserName string `json:"executed_as_user_name,omitempty"`
-	// The time execution of the query ended.
+	// The time execution of the query ended, in milliseconds since the Unix
+	// epoch.
 	ExecutionEndTimeMs int64 `json:"execution_end_time_ms,omitempty"`
-	// Whether more updates for the query are expected.
+	// Whether the query has reached a final state, so no further updates to
+	// this record are expected.
 	IsFinal bool `json:"is_final,omitempty"`
 	// A key that can be used to look up query details.
 	LookupKey string `json:"lookup_key,omitempty"`
-	// Metrics about query execution.
+	// Metrics about query execution. Only returned when `include_metrics` is
+	// true in the request.
 	Metrics *QueryMetrics `json:"metrics,omitempty"`
 	// Whether plans exist for the execution, or the reason why they are missing
 	PlansState PlansState `json:"plans_state,omitempty"`
-	// The time the query ended.
+	// The time the query ended, in milliseconds since the Unix epoch.
 	QueryEndTimeMs int64 `json:"query_end_time_ms,omitempty"`
-	// The query ID.
+	// The UUID that uniquely identifies the query execution. It matches the
+	// statement ID shown in the Query History UI and the values accepted by the
+	// `statement_ids` filter.
 	QueryId string `json:"query_id,omitempty"`
 	// A struct that contains key-value pairs representing Databricks entities
 	// that were involved in the execution of this statement, such as jobs,
 	// notebooks, or dashboards. This field only records Databricks entities.
 	QuerySource *ExternalQuerySource `json:"query_source,omitempty"`
-	// The time the query started.
+	// The time the query started, in milliseconds since the Unix epoch.
 	QueryStartTimeMs int64 `json:"query_start_time_ms,omitempty"`
-	// A query execution can be optionally annotated with query tags
+	// Key-value tags attached to the query execution, for example with the `SET
+	// QUERY_TAGS` statement, for grouping and filtering. See
+	// https://docs.databricks.com/aws/en/sql/user/queries/query-tags.
 	QueryTags []QueryTag `json:"query_tags,omitempty"`
 	// The text of the query.
 	QueryText string `json:"query_text,omitempty"`
@@ -4493,7 +4510,7 @@ type QueryInfo struct {
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
 	// Type of statement for this query
 	StatementType QueryStatementType `json:"statement_type,omitempty"`
-	// Query status with one the following values:
+	// Query status with one of the following values:
 	//
 	// - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has
 	// started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`:
@@ -4503,7 +4520,7 @@ type QueryInfo struct {
 	UserId int64 `json:"user_id,omitempty"`
 	// The email address or username of the user who ran the query.
 	UserName string `json:"user_name,omitempty"`
-	// Warehouse ID.
+	// ID of the warehouse that ran the query.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4549,8 +4566,8 @@ type QueryMetrics struct {
 	// shuffle, in bytes.
 	NetworkSentBytes int64 `json:"network_sent_bytes,omitempty"`
 	// Timestamp of when the query was enqueued waiting while the warehouse was
-	// at max load. This field is optional and will not appear if the query
-	// skipped the overloading queue.
+	// at max load, in milliseconds since the Unix epoch. This field is optional
+	// and will not appear if the query skipped the overloading queue.
 	OverloadingQueueStartTimestamp int64 `json:"overloading_queue_start_timestamp,omitempty"`
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
@@ -4562,15 +4579,16 @@ type QueryMetrics struct {
 	// projected_remaining_task_total_time_ms / maximum concurrency
 	ProjectedRemainingWallclockTimeMs int64 `json:"projected_remaining_wallclock_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
-	// provisioned for the warehouse. This field is optional and will not appear
-	// if the query skipped the provisioning queue.
+	// provisioned for the warehouse, in milliseconds since the Unix epoch. This
+	// field is optional and will not appear if the query skipped the
+	// provisioning queue.
 	ProvisioningQueueStartTimestamp int64 `json:"provisioning_queue_start_timestamp,omitempty"`
 	// Total number of file bytes in all tables not read due to pruning
 	PrunedBytes int64 `json:"pruned_bytes,omitempty"`
 	// Total number of files from all tables not read due to pruning
 	PrunedFilesCount int64 `json:"pruned_files_count,omitempty"`
 	// Timestamp of when the underlying compute started compilation of the
-	// query.
+	// query, in milliseconds since the Unix epoch.
 	QueryCompilationStartTimestamp int64 `json:"query_compilation_start_timestamp,omitempty"`
 	// Total size of data read by the query, in bytes.
 	ReadBytes int64 `json:"read_bytes,omitempty"`
@@ -4597,8 +4615,8 @@ type QueryMetrics struct {
 	RowsProducedCount int64 `json:"rows_produced_count,omitempty"`
 	// Total number of rows read by the query.
 	RowsReadCount int64 `json:"rows_read_count,omitempty"`
-	// number of remaining tasks to complete, calculated by autoscaler
-	// StatementAnalysis.scala deprecated: use remaining_task_count instead
+	// Deprecated: use `remaining_task_count` instead. Number of remaining tasks
+	// to complete.
 	RunnableTasks int64 `json:"runnable_tasks,omitempty"`
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
@@ -4612,11 +4630,11 @@ type QueryMetrics struct {
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	TotalTimeMs int64 `json:"total_time_ms,omitempty"`
-	// remaining work to be done across all stages in the query, calculated by
-	// autoscaler StatementAnalysis.scala, in milliseconds deprecated: using
-	// projected_remaining_task_total_time_ms instead
+	// Deprecated: use `projected_remaining_task_total_time_ms` instead.
+	// Remaining work to be done across all stages in the query, in
+	// milliseconds.
 	WorkToBeDone int64 `json:"work_to_be_done,omitempty"`
-	// Size pf persistent data written to cloud object storage in your cloud
+	// Size of persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
 	WriteRemoteBytes int64 `json:"write_remote_bytes,omitempty"`
 
@@ -4883,8 +4901,9 @@ func (f *QueryStatus) Type() string {
 // users to attribute the executions by key and optional value to filter by.
 // QueryTag is the user-facing representation.
 type QueryTag struct {
+	// The key of the tag.
 	Key string `json:"key"`
-
+	// The value of the tag. Key-only tags have no value.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5664,6 +5683,8 @@ func (f *SuccessMessage) Type() string {
 }
 
 type TaskTimeOverRange struct {
+	// Each entry covers one consecutive time bucket of length `interval`,
+	// starting at `query_start_time_ms`.
 	Entries []TaskTimeOverRangeEntry `json:"entries,omitempty"`
 	// interval length for all entries (difference in start time and end time of
 	// an entry range) the same for all entries start time of first interval is
@@ -6365,9 +6386,9 @@ func (s TextValue) MarshalJSON() ([]byte, error) {
 }
 
 type TimeRange struct {
-	// The end time in milliseconds.
+	// End of the range, in milliseconds since the Unix epoch.
 	EndTimeMs int64 `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
-	// The start time in milliseconds.
+	// Start of the range, in milliseconds since the Unix epoch.
 	StartTimeMs int64 `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
