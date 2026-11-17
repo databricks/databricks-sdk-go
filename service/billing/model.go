@@ -416,7 +416,10 @@ func (s *BudgetConfigurationFilterWorkspaceIdClause) UnmarshalJSON(b []byte) err
 	return marshal.Unmarshal(b, s)
 }
 
-// Contains the BudgetPolicy details.
+// A serverless usage policy is a set of tags that are applied to the serverless
+// usage of the workloads that use the policy. Each usage record in the billable
+// usage system table carries the policy ID and these tags, so that serverless
+// usage can be attributed to the policy.
 type BudgetPolicy struct {
 	// List of workspaces that this budget policy will be exclusively bound to.
 	// An empty binding implies that this budget policy is open to any workspace
@@ -659,9 +662,9 @@ func (s *CreateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
 
 // A request to create a BudgetPolicy.
 type CreateBudgetPolicyRequest struct {
-	// The policy to create. `policy_id` needs to be empty as it will be
-	// generated `policy_name` must be provided, custom_tags may need to be
-	// provided depending on the cloud provider. All other fields are optional.
+	// The policy to create. `policy_name` must be provided, and `custom_tags`
+	// may be required depending on the cloud provider. Leave `policy_id` empty
+	// because Databricks generates it. All other fields are optional.
 	Policy *BudgetPolicy `json:"policy,omitempty"`
 	// A unique identifier for this request. Restricted to 36 ASCII characters.
 	// A random UUID is recommended. This request is only idempotent if a
@@ -867,15 +870,15 @@ func (s *DownloadResponse) UnmarshalJSON(b []byte) error {
 // Structured representation of a filter to be applied to a list of policies.
 // All specified filters will be applied in conjunction.
 type Filter struct {
-	// The policy creator user id to be filtered on. If unspecified, all
-	// policies will be returned.
+	// Deprecated: This field is ignored. Creator filtering will be removed in a
+	// future version.
 	CreatorUserId int64 `json:"creator_user_id,omitempty" url:"creator_user_id,omitempty"`
 	// Deprecated: Do not use this field in new integrations. Creator filtering
 	// will be removed in a future version. The policy creator user name to be
 	// filtered on. If unspecified, all policies will be returned.
 	CreatorUserName string `json:"creator_user_name,omitempty" url:"creator_user_name,omitempty"`
-	// The partial name of policies to be filtered on. If unspecified, all
-	// policies will be returned.
+	// Only policies whose name contains this string are returned. Matching is
+	// case-insensitive. If unspecified, all policies are returned.
 	PolicyName string `json:"policy_name,omitempty" url:"policy_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1031,15 +1034,15 @@ type ListBudgetPoliciesRequest struct {
 	// 100 budget policies will be returned. The maximum value is 1000; values
 	// above 1000 will be coerced to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// A page token, received from a previous `ListServerlessPolicies` call.
-	// Provide this to retrieve the subsequent page. If unspecified, the first
-	// page will be returned.
+	// A page token, received from a previous `ListBudgetPolicies` call. Provide
+	// this to retrieve the subsequent page. If unspecified, the first page will
+	// be returned.
 	//
-	// When paginating, all other parameters provided to
-	// `ListServerlessPoliciesRequest` must match the call that provided the
-	// page token.
+	// When paginating, all other parameters provided to `ListBudgetPolicies`
+	// must match the call that provided the page token.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// The sort specification.
+	// How to sort the returned policies. If unspecified, policies are sorted by
+	// name in ascending order.
 	SortSpec *SortSpec `json:"-" url:"sort_spec,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1418,7 +1421,7 @@ func (s PrincipalOverride) MarshalJSON() ([]byte, error) {
 type SortSpec struct {
 	// Whether to sort in descending order.
 	Descending bool `json:"descending,omitempty" url:"descending,omitempty"`
-	// The filed to sort by
+	// The field to sort by. If unspecified, policies are sorted by name.
 	Field SortSpecField `json:"field,omitempty" url:"field,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1534,8 +1537,7 @@ func (s *UpdateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateBudgetPolicyRequest struct {
-	// DEPRECATED. This is redundant field as LimitConfig is part of the
-	// BudgetPolicy
+	// Deprecated: This field is ignored.
 	LimitConfig *LimitConfig `json:"-" url:"limit_config,omitempty"`
 	// The policy to update. `creator_user_id` cannot be specified in the
 	// request. All other fields must be specified even if not changed. The

@@ -26,6 +26,7 @@ type EnvironmentsInterface interface {
 	// Deletes a WorkspaceBaseEnvironment. Deleting a base environment may impact
 	// linked notebooks and jobs. This operation is irreversible and should be
 	// performed only when you are certain the environment is no longer needed.
+	// Databricks-provided base environments cannot be deleted.
 	DeleteWorkspaceBaseEnvironment(ctx context.Context, request DeleteWorkspaceBaseEnvironmentRequest) error
 
 	// Gets the default WorkspaceBaseEnvironment configuration for the workspace.
@@ -34,7 +35,13 @@ type EnvironmentsInterface interface {
 	GetDefaultWorkspaceBaseEnvironment(ctx context.Context, request GetDefaultWorkspaceBaseEnvironmentRequest) (*DefaultWorkspaceBaseEnvironment, error)
 
 	// Gets the status of a long-running operation. Clients can use this method to
-	// poll the operation result.
+	// poll the operation result. Create, update and refresh return an operation
+	// named `operations/{workspace_base_environment_id}`. The operation is done
+	// when the materialized environment build finishes. On success, `response`
+	// contains the WorkspaceBaseEnvironment with status `CREATED`. When the status
+	// is `FAILED`, `EXPIRED` or `INVALID`, `error` is set instead, and
+	// `error.message` carries the environment's status message when one is
+	// available.
 	GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
 
 	// Retrieves a WorkspaceBaseEnvironment by its name.

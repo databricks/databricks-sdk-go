@@ -11,10 +11,12 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SoftwareArtifactsService interface {
 
-	// Gets a software artifact.
+	// Gets a software artifact by its resource name. Returns `NOT_FOUND` if the
+	// artifact does not exist.
 	GetSoftwareArtifact(ctx context.Context, request GetSoftwareArtifactRequest) (*SoftwareArtifact, error)
 
-	// Gets a software artifact version.
+	// Gets a software artifact version by its resource name. Returns
+	// `NOT_FOUND` if the version does not exist.
 	GetSoftwareArtifactVersion(ctx context.Context, request GetSoftwareArtifactVersionRequest) (*SoftwareArtifactVersion, error)
 
 	// Lists the versions of a software artifact.
@@ -23,7 +25,8 @@ type SoftwareArtifactsService interface {
 	// Lists software artifacts in a schema.
 	ListSoftwareArtifacts(ctx context.Context, request ListSoftwareArtifactsRequest) (*ListSoftwareArtifactsResponse, error)
 
-	// Resolves a software artifact version from its tag alias.
+	// Resolves a software artifact version from its tag alias. Returns
+	// `NOT_FOUND` if the artifact or the alias does not exist.
 	ResolveSoftwareArtifactVersion(ctx context.Context, request ResolveSoftwareArtifactVersionRequest) (*ResolveSoftwareArtifactVersionResponse, error)
 
 	// Updates a software artifact. The name is immutable; only the owner may be

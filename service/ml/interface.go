@@ -43,7 +43,8 @@ type ExperimentsService interface {
 
 	// Marks an experiment and associated metadata, runs, metrics, params, and
 	// tags for deletion. If the experiment uses FileStore, artifacts associated
-	// with the experiment are also deleted.
+	// with the experiment are also deleted. Only workspace experiments can be
+	// deleted through this method.
 	DeleteExperiment(ctx context.Context, request DeleteExperiment) error
 
 	// Delete a logged model.
@@ -114,7 +115,8 @@ type ExperimentsService interface {
 	// contents | Files API](/api/workspace/files/listdirectorycontents).
 	ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error)
 
-	// Gets a list of all experiments.
+	// Gets a list of all experiments, ordered by creation time with the newest
+	// first.
 	ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
 
 	// Logs a batch of metrics, params, and tags for a run. If any data failed
@@ -203,6 +205,8 @@ type ExperimentsService interface {
 	// metadata, runs, metrics, params, and tags. If experiment uses FileStore,
 	// underlying artifacts associated with experiment are also restored.
 	//
+	// Only workspace experiments can be restored through this method.
+	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was
 	// permanently deleted.
 	RestoreExperiment(ctx context.Context, request RestoreExperiment) error
@@ -249,7 +253,8 @@ type ExperimentsService interface {
 	// run and after a run completes.
 	SetTag(ctx context.Context, request SetTag) error
 
-	// Updates experiment metadata.
+	// Updates experiment metadata. Only workspace experiments can be updated; a
+	// notebook experiment takes its name from its notebook.
 	UpdateExperiment(ctx context.Context, request UpdateExperiment) error
 
 	// Updates the fields of an issue named in `update_mask`.
@@ -607,7 +612,7 @@ type ModelRegistryService interface {
 	// Updates a registered model.
 	UpdateModel(ctx context.Context, request UpdateModelRequest) (*UpdateModelResponse, error)
 
-	// Updates the model version.
+	// Updates the description of a model version.
 	UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) (*UpdateModelVersionResponse, error)
 
 	// Updates the permissions on a registered model. Registered models can

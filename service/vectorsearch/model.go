@@ -5,6 +5,7 @@ package vectorsearch
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -648,6 +649,31 @@ func (s FacetResultData) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Failure details for an index or its latest ingestion update.
+type FailedStatus struct {
+	// Error code associated with the error message, when available.
+	ErrorCode string `json:"error_code,omitempty"`
+	// Error message, when available.
+	ErrorMessage string `json:"error_message,omitempty"`
+	// [Standard endpoint] timestamp when the last processed commit was
+	// committed to the source table. [Storage Optimized endpoint] timestamp
+	// when the last processed commit was processed by the pipeline.
+	LastProcessedCommitTimestamp *time.Time `json:"last_processed_commit_timestamp,omitempty"`
+	// Last source Delta table version fully processed while the index is still
+	// queryable.
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FailedStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FailedStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetEndpointRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"-"`
@@ -703,6 +729,83 @@ type GetVectorSearchEndpointPermissionsRequest struct {
 
 func (s *GetVectorSearchEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Lifecycle and ingestion state of an index.
+type IndexStatus string
+
+const IndexStatusDownloading IndexStatus = `DOWNLOADING`
+
+const IndexStatusOffline IndexStatus = `OFFLINE`
+
+const IndexStatusOfflineFailed IndexStatus = `OFFLINE_FAILED`
+
+const IndexStatusOnline IndexStatus = `ONLINE`
+
+const IndexStatusOnlineContinuousUpdate IndexStatus = `ONLINE_CONTINUOUS_UPDATE`
+
+const IndexStatusOnlineDirectAccess IndexStatus = `ONLINE_DIRECT_ACCESS`
+
+const IndexStatusOnlineNoPendingUpdate IndexStatus = `ONLINE_NO_PENDING_UPDATE`
+
+const IndexStatusOnlinePipelineFailed IndexStatus = `ONLINE_PIPELINE_FAILED`
+
+const IndexStatusOnlineTriggeredUpdate IndexStatus = `ONLINE_TRIGGERED_UPDATE`
+
+const IndexStatusOnlineUpdatingPipelineResources IndexStatus = `ONLINE_UPDATING_PIPELINE_RESOURCES`
+
+const IndexStatusProvisioning IndexStatus = `PROVISIONING`
+
+const IndexStatusProvisioningEndpoint IndexStatus = `PROVISIONING_ENDPOINT`
+
+const IndexStatusProvisioningIndex IndexStatus = `PROVISIONING_INDEX`
+
+const IndexStatusProvisioningInitialSnapshot IndexStatus = `PROVISIONING_INITIAL_SNAPSHOT`
+
+const IndexStatusProvisioningPipelineResources IndexStatus = `PROVISIONING_PIPELINE_RESOURCES`
+
+// String representation for [fmt.Print]
+func (f *IndexStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IndexStatus) Set(v string) error {
+	switch v {
+	case `DOWNLOADING`, `OFFLINE`, `OFFLINE_FAILED`, `ONLINE`, `ONLINE_CONTINUOUS_UPDATE`, `ONLINE_DIRECT_ACCESS`, `ONLINE_NO_PENDING_UPDATE`, `ONLINE_PIPELINE_FAILED`, `ONLINE_TRIGGERED_UPDATE`, `ONLINE_UPDATING_PIPELINE_RESOURCES`, `PROVISIONING`, `PROVISIONING_ENDPOINT`, `PROVISIONING_INDEX`, `PROVISIONING_INITIAL_SNAPSHOT`, `PROVISIONING_PIPELINE_RESOURCES`:
+		*f = IndexStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DOWNLOADING", "OFFLINE", "OFFLINE_FAILED", "ONLINE", "ONLINE_CONTINUOUS_UPDATE", "ONLINE_DIRECT_ACCESS", "ONLINE_NO_PENDING_UPDATE", "ONLINE_PIPELINE_FAILED", "ONLINE_TRIGGERED_UPDATE", "ONLINE_UPDATING_PIPELINE_RESOURCES", "PROVISIONING", "PROVISIONING_ENDPOINT", "PROVISIONING_INDEX", "PROVISIONING_INITIAL_SNAPSHOT", "PROVISIONING_PIPELINE_RESOURCES"`, v)
+	}
+}
+
+// Values returns all possible values for IndexStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IndexStatus) Values() []IndexStatus {
+	return []IndexStatus{
+		IndexStatusDownloading,
+		IndexStatusOffline,
+		IndexStatusOfflineFailed,
+		IndexStatusOnline,
+		IndexStatusOnlineContinuousUpdate,
+		IndexStatusOnlineDirectAccess,
+		IndexStatusOnlineNoPendingUpdate,
+		IndexStatusOnlinePipelineFailed,
+		IndexStatusOnlineTriggeredUpdate,
+		IndexStatusOnlineUpdatingPipelineResources,
+		IndexStatusProvisioning,
+		IndexStatusProvisioningEndpoint,
+		IndexStatusProvisioningIndex,
+		IndexStatusProvisioningInitialSnapshot,
+		IndexStatusProvisioningPipelineResources,
+	}
+}
+
+// Type always returns IndexStatus to satisfy [pflag.Value] interface
+func (f *IndexStatus) Type() string {
+	return "IndexStatus"
 }
 
 // The subtype of the AI Search index, determining the indexing and retrieval
@@ -1534,13 +1637,21 @@ func (s VectorIndex) MarshalJSON() ([]byte, error) {
 }
 
 type VectorIndexStatus struct {
+	// Lifecycle and ingestion state. An online index can still have a failed
+	// update.
+	DetailedState IndexStatus `json:"detailed_state,omitempty"`
+	// Failure details, when available, for OFFLINE_FAILED or
+	// ONLINE_PIPELINE_FAILED.
+	FailedStatus *FailedStatus `json:"failed_status,omitempty"`
 	// Index API Url to be used to perform operations on the index
 	IndexUrl string `json:"index_url,omitempty"`
 	// Number of rows indexed
 	IndexedRowCount int64 `json:"indexed_row_count,omitempty"`
 	// Message associated with the index status
 	Message string `json:"message,omitempty"`
-	// Whether the index is ready for search
+	// Whether the index can serve queries. This does not mean the latest update
+	// succeeded or that all source-table changes have been indexed; check
+	// detailed_state for update failures.
 	Ready bool `json:"ready,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

@@ -76,7 +76,8 @@ type PostgresService interface {
 	CreateRole(ctx context.Context, request CreateRoleRequest) (*Operation, error)
 
 	// Creates a snapshot, an immutable point-in-time copy of a branch's data,
-	// within the project.
+	// within the project. Returns a long-running operation. Poll it until done
+	// is true; its response holds the new snapshot.
 	CreateSnapshot(ctx context.Context, request CreateSnapshotRequest) (*Operation, error)
 
 	// Create a Synced Table.
@@ -99,7 +100,7 @@ type PostgresService interface {
 	// Disable Data API for a database.
 	DeleteDataApi(ctx context.Context, request DeleteDataApiRequest) (*Operation, error)
 
-	// Delete a Database.
+	// Deletes the specified Postgres database.
 	DeleteDatabase(ctx context.Context, request DeleteDatabaseRequest) (*Operation, error)
 
 	// Deletes the specified compute endpoint. Deletion is permanent. Only
@@ -120,7 +121,8 @@ type PostgresService interface {
 	// Deletes the specified Postgres role.
 	DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error)
 
-	// Deletes the specified snapshot.
+	// Deletes the specified snapshot. A deleted snapshot cannot be recovered.
+	// Returns a long-running operation. Poll it until done is true.
 	DeleteSnapshot(ctx context.Context, request DeleteSnapshotRequest) (*Operation, error)
 
 	// Delete a Synced Table.
@@ -150,7 +152,7 @@ type PostgresService interface {
 	// Get Data API configuration for a database.
 	GetDataApi(ctx context.Context, request GetDataApiRequest) (*DataApi, error)
 
-	// Get a Database.
+	// Retrieves information about the specified Postgres database.
 	GetDatabase(ctx context.Context, request GetDatabaseRequest) (*Database, error)
 
 	// Retrieves information about the specified compute endpoint, including its
@@ -196,7 +198,7 @@ type PostgresService interface {
 	// streaming, or skipped.
 	ListCdfStatuses(ctx context.Context, request ListCdfStatusesRequest) (*ListCdfStatusesResponse, error)
 
-	// List Databases.
+	// Returns a list of Postgres databases in the branch.
 	ListDatabases(ctx context.Context, request ListDatabasesRequest) (*ListDatabasesResponse, error)
 
 	// Lists the compute endpoints in the branch, including its read-write
@@ -244,7 +246,8 @@ type PostgresService interface {
 	// Update Data API configuration for a database.
 	UpdateDataApi(ctx context.Context, request UpdateDataApiRequest) (*Operation, error)
 
-	// Update a Database.
+	// Updates the specified Postgres database. Only the fields named in
+	// `update_mask` change.
 	UpdateDatabase(ctx context.Context, request UpdateDatabaseRequest) (*Operation, error)
 
 	// Updates the configuration of the specified compute endpoint. Only the

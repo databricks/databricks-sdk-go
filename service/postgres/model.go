@@ -731,8 +731,9 @@ type CreateDatabaseRequest struct {
 	// The ID used to identify and manage the Database resource through the API.
 	// The Postgres database name is specified in `spec.postgres_database`.
 	//
-	// This value should be 4-63 characters, and only use characters available
-	// in DNS names, as defined by RFC-1123
+	// This value should be 3-63 characters, start with a lowercase letter, end
+	// with a lowercase letter or digit, and contain only lowercase letters,
+	// digits, and hyphens.
 	//
 	// If database_id is not specified in the request, it is generated
 	// automatically.
@@ -741,7 +742,9 @@ type CreateDatabaseRequest struct {
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
 	// If true, update the database if it already exists instead of returning an
-	// error.
+	// error. This requires `database_id` to be set. Without `database_id`, the
+	// request follows the normal create path and fails if the database name
+	// already exists.
 	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -863,10 +866,14 @@ type CreateSnapshotRequest struct {
 	// The project in which to create the snapshot. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
-	// The snapshot to create.
+	// The snapshot to create. Only `spec` is read from this message; the system
+	// sets the other fields.
 	Snapshot Snapshot `json:"snapshot"`
 	// Client-chosen ID for the snapshot. It becomes the final segment of the
-	// snapshot resource name and cannot be changed after creation.
+	// snapshot resource name and cannot be changed after creation. The ID must
+	// be 3 to 63 characters long, start with a lowercase letter, end with a
+	// lowercase letter or digit, and contain only lowercase letters, digits,
+	// and hyphens.
 	SnapshotId string `json:"-" url:"snapshot_id"`
 }
 
@@ -1087,8 +1094,8 @@ type DatabaseDatabaseSpec struct {
 	// The name of the role that owns the database. Format:
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	//
-	// To change the owner, pass valid existing Role name when updating the
-	// Database
+	// The role must be in the same branch as the database. To change the owner,
+	// pass valid existing Role name when updating the Database
 	//
 	// Required when creating the Database.
 	Role string `json:"role"`
@@ -3656,7 +3663,10 @@ func (s *ScheduleCadence) UnmarshalJSON(b []byte) error {
 }
 
 // An immutable, point-in-time copy of a branch's data within a project. It
-// remains available after the source branch is deleted.
+// remains available after the source branch is deleted. To restore a snapshot,
+// create a new branch with `spec.source_snapshot` set to the snapshot's
+// resource name. For an overview, see
+// https://docs.databricks.com/aws/en/oltp/projects/snapshots.
 type Snapshot struct {
 	// When the snapshot was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -3665,7 +3675,8 @@ type Snapshot struct {
 	Name string `json:"name,omitempty"`
 	// The user-chosen ID; the final segment of `name`.
 	SnapshotId string `json:"snapshot_id,omitempty"`
-	// Client-provided configuration of the snapshot.
+	// Client-provided configuration of the snapshot. When you create a
+	// snapshot, set exactly one of `expire_time`, `ttl`, or `no_expiry`.
 	Spec *SnapshotSpec `json:"spec,omitempty"`
 	// Server-observed state of the snapshot.
 	Status *SnapshotStatus `json:"status,omitempty"`
@@ -3726,23 +3737,28 @@ func (s *SnapshotScheduleOperationMetadata) UnmarshalJSON(b []byte) error {
 
 // Client-provided configuration of the snapshot.
 type SnapshotSpec struct {
-	// Absolute time at which the snapshot is deleted. Mutually exclusive with
-	// `ttl` and `no_expiry`.
+	// Absolute time at which the snapshot is deleted. It must not be in the
+	// past. Mutually exclusive with `ttl` and `no_expiry`.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
-	// If true, the snapshot never expires. Mutually exclusive with `ttl` and
+	// If true, the snapshot never expires. The value `false` is rejected; set
+	// `expire_time` or `ttl` instead. Mutually exclusive with `ttl` and
 	// `expire_time`.
 	NoExpiry bool `json:"no_expiry,omitempty"`
-	// The source branch to snapshot. Format:
-	// projects/{project_id}/branches/{branch_id}
+	// The source branch to snapshot. The branch must belong to the same project
+	// as the snapshot. Format: projects/{project_id}/branches/{branch_id}
 	SourceBranch string `json:"source_branch"`
-	// LSN to snapshot from, e.g. `16/B374D848`. Mutually exclusive with
-	// `source_branch_time`.
+	// Postgres log sequence number (LSN) to snapshot from. It must fall within
+	// the project's history retention window. If neither this field nor
+	// `source_branch_time` is set, the snapshot captures the current head of
+	// the source branch. Mutually exclusive with `source_branch_time`.
 	SourceBranchLsn string `json:"source_branch_lsn,omitempty"`
-	// Timestamp to snapshot from. Mutually exclusive with `source_branch_lsn`.
+	// Timestamp to snapshot from. It must fall within the project's history
+	// retention window. Mutually exclusive with `source_branch_lsn`.
 	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
-	// Time-to-live. The snapshot expires this long after it is created.
-	// Mutually exclusive with `expire_time` and `no_expiry`. Reads report the
-	// resolved absolute `expire_time` instead.
+	// Time-to-live, as a positive duration in seconds with an `s` suffix. The
+	// snapshot expires this long after it is created. Mutually exclusive with
+	// `expire_time` and `no_expiry`. Reads report the resolved absolute
+	// `expire_time` instead.
 	Ttl *duration.Duration `json:"ttl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4312,7 +4328,8 @@ type UpdateDatabaseRequest struct {
 	// The resource name of the database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update.
+	// The list of fields to update. The updatable fields are `spec.role` and
+	// `spec.postgres_database`.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

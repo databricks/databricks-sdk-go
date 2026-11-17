@@ -81,7 +81,9 @@ type CreateManagedMemoryStoreRequest struct {
 	ManagedMemoryStore ManagedMemoryStore `json:"managed_memory_store"`
 	// Caller-provided, workspace-unique memory store ID. It must be 3-56
 	// characters, begin with a lowercase letter, contain only lowercase
-	// letters, digits, and hyphens, and end with a letter or digit.
+	// letters, digits, and hyphens, and end with a letter or digit. It becomes
+	// the last segment of the store's `name` and cannot be changed after
+	// creation.
 	ManagedMemoryStoreId string `json:"-" url:"managed_memory_store_id"`
 }
 
@@ -316,7 +318,9 @@ func (s *GetSessionStoreRequest) UnmarshalJSON(b []byte) error {
 type GrantMemoryStorePermissionRequest struct {
 	// Resource name in the form `memory-stores/{managed_memory_store_id}`.
 	Name string `json:"-" url:"-"`
-	// Permission level to grant.
+	// Permission level to grant. `WRITE` includes `READ`. Grants are additive:
+	// granting `READ` to a principal that already holds `WRITE` does not lower
+	// its access. To downgrade a principal, revoke its grants and grant again.
 	Permission PermissionLevel `json:"permission"`
 	// Principal to grant the permission to.
 	Principal StorePrincipal `json:"principal"`
@@ -413,7 +417,8 @@ type ListManagedMemoryStoresRequest struct {
 	// Maximum number of stores to return. The service may return fewer stores
 	// than requested. Defaults to 10; must be between 1 and 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Opaque pagination token from a previous ListManagedMemoryStores response.
+	// Opaque pagination token, taken from the `next_page_token` of a previous
+	// response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -678,9 +683,8 @@ type ManagedMemoryEntry struct {
 	// When omitted, the entry applies across the actor's sessions.
 	SessionId string `json:"session_id,omitempty"`
 	// Which writer created this entry. Caller sets this on Create; immutable
-	// after creation. While the workspace's default-source-type rollout flag is
-	// on, omitted or UNSPECIFIED is stored as AGENT. While it is off, omitted
-	// is stored unset and UNSPECIFIED as UNSPECIFIED.
+	// after creation. The server may store an omitted or UNSPECIFIED value as
+	// AGENT.
 	SourceType ManagedMemoryEntrySourceType `json:"source_type,omitempty"`
 	// Time when the entry was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
@@ -790,7 +794,11 @@ func (f *ManagedMemoryEntryView) Type() string {
 	return "ManagedMemoryEntryView"
 }
 
-// A workspace-scoped memory store backed by service-managed storage.
+// A workspace-scoped memory store backed by service-managed storage. A store is
+// the container for an agent's memory entries and the boundary at which access
+// is granted; creating one provisions its Lakebase storage automatically. See
+// https://docs.databricks.com/aws/en/agents/agent-memory/managed-memory for an
+// overview.
 type ManagedMemoryStore struct {
 	// Time when the store was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -1158,7 +1166,9 @@ func (s *SessionStorePermission) UnmarshalJSON(b []byte) error {
 
 // Service-managed storage backing a memory store.
 type StorageBackend struct {
-	// Backend-specific identifier. For Lakebase, this is the project ID.
+	// Backend-specific identifier. For Lakebase, this is the resource name of
+	// the database that holds the store's entries, in the form
+	// `projects/{project_id}/branches/{branch_id}/databases/{database_id}`.
 	BackendId string `json:"backend_id,omitempty"`
 	// Type of the storage backend.
 	BackendType StorageBackendType `json:"backend_type,omitempty"`
@@ -1213,9 +1223,11 @@ func (f *StorageBackendType) Type() string {
 // Lakebase identifier: a user's email or a service principal's application
 // (client) id.
 type StorePrincipal struct {
+	// Identifier of the principal: the email address of a user, or the
+	// application (client) ID of a service principal. Groups are not supported.
 	Name string `json:"name"`
-	// The kind of principal. Required unless the deprecated type alias is
-	// supplied.
+	// The kind of principal, which determines how `name` is interpreted. A
+	// principal without a type is rejected.
 	PrincipalType PrincipalType `json:"principal_type,omitempty"`
 }
 
@@ -1243,8 +1255,9 @@ type UpdateManagedMemoryStoreRequest struct {
 	ManagedMemoryStore ManagedMemoryStore `json:"managed_memory_store"`
 	// Resource name in the form `memory-stores/{managed_memory_store_id}`.
 	Name string `json:"-" url:"-"`
-	// Only `description` and `metadata` may be updated. Selecting `metadata`
-	// replaces the entire map.
+	// Only `description` and `metadata` may be updated. Selecting `description`
+	// while leaving it unset clears it. Selecting `metadata` replaces the
+	// entire map.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

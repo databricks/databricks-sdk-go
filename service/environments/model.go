@@ -531,7 +531,7 @@ func (s Operation) MarshalJSON() ([]byte, error) {
 
 // Request message for RefreshWorkspaceBaseEnvironments.
 type RefreshWorkspaceBaseEnvironmentRequest struct {
-	// Required. The resource name of the workspace base environment to delete.
+	// Required. The resource name of the workspace base environment to refresh.
 	// Format: workspace-base-environments/{workspace_base_environment}
 	Name string `json:"-" url:"-"`
 }
@@ -562,9 +562,15 @@ func (s *UpdateDefaultWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) e
 }
 
 type UpdateWorkspaceBaseEnvironmentRequest struct {
+	// The resource name of the workspace base environment to update. Format:
+	// workspace-base-environments/{workspace_base_environment}
 	Name string `json:"-" url:"-"`
-	// Required. The workspace base environment with updated fields. The name
-	// field is used to identify the environment to update.
+	// The workspace base environment with its new configuration. The `name`
+	// path parameter identifies the environment to update. Set `display_name`
+	// and `filepath` on every update, even when they do not change. An update
+	// keeps the stored `base_environment_type`, but the YAML file is validated
+	// against the type in the request, which defaults to `CPU`, so also set it
+	// for a GPU environment.
 	WorkspaceBaseEnvironment WorkspaceBaseEnvironment `json:"workspace_base_environment"`
 }
 
@@ -576,7 +582,7 @@ func (s *UpdateWorkspaceBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
 // configuration consisting of an environment version and a list of
 // dependencies.
 type WorkspaceBaseEnvironment struct {
-	// The type of base environment (CPU or GPU).
+	// The type of base environment (CPU or GPU). The default is `CPU`.
 	BaseEnvironmentType BaseEnvironmentType `json:"base_environment_type,omitempty"`
 	// Timestamp when the environment was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -584,20 +590,29 @@ type WorkspaceBaseEnvironment struct {
 	CreatorUserId string `json:"creator_user_id,omitempty"`
 	// Human-readable display name for the workspace base environment.
 	DisplayName string `json:"display_name"`
-	// The WSFS or UC Volumes path to the environment YAML file.
+	// The workspace file or Unity Catalog volume path to the YAML file that
+	// defines the environment version and dependencies. The file name must end
+	// in `.yaml` or `.yml`. Create and update requests must set this field.
 	Filepath string `json:"filepath,omitempty"`
 	// Whether this is the default environment for the workspace.
 	IsDefault bool `json:"is_default,omitempty"`
 	// User ID of the last user who updated the environment.
 	LastUpdatedUserId string `json:"last_updated_user_id,omitempty"`
 	// Status message providing additional details about the environment status.
+	// When the status is `FAILED`, the message contains the build error.
 	Message string `json:"message,omitempty"`
 	// The resource name of the workspace base environment. Format:
-	// workspace-base-environments/{workspace-base-environment}
+	// workspace-base-environments/{workspace-base-environment} The server
+	// ignores this field on create and builds the name from
+	// `workspace_base_environment_id`, or from `display_name` plus a random
+	// suffix when no ID is given.
 	Name string `json:"name,omitempty"`
-	// The environment specification containing version and dependencies.
+	// The environment specification containing version and dependencies, read
+	// from the YAML file at `filepath`.
 	Spec *EnvironmentSpec `json:"spec,omitempty"`
-	// The status of the materialized workspace base environment.
+	// The status of the materialized workspace base environment, which the
+	// server builds from the YAML file. The status is `CREATED` once the build
+	// has succeeded.
 	Status WorkspaceBaseEnvironmentCacheStatus `json:"status,omitempty"`
 	// Timestamp when the environment was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`

@@ -193,7 +193,8 @@ type LakeviewService interface {
 	// Create a draft dashboard.
 	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
 
-	// Create dashboard schedule.
+	// Creates a schedule for a dashboard. The dashboard must be published
+	// before a schedule can be created for it.
 	//
 	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
 	// access in addition to Workspace access.
@@ -201,7 +202,14 @@ type LakeviewService interface {
 	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error)
 
-	// Create schedule subscription.
+	// Create schedule subscription. Subscribes a workspace user or a
+	// notification destination to the schedule, so that it receives a snapshot
+	// of the dashboard each time the schedule runs. Subscribing yourself
+	// requires CAN VIEW permission on the dashboard; subscribing another user
+	// or a notification destination requires CAN EDIT. On dashboards published
+	// without embedded credentials, you can only subscribe yourself. If the
+	// subscriber is already subscribed to the schedule, the existing
+	// subscription is returned.
 	//
 	// The caller must be a workspace user with one of the following
 	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
@@ -213,7 +221,7 @@ type LakeviewService interface {
 	// [entitlements]: https://docs.databricks.com/security/auth/entitlements
 	CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error)
 
-	// Delete dashboard schedule.
+	// Deletes a schedule together with all of its subscriptions.
 	//
 	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
 	// access in addition to Workspace access.
@@ -221,7 +229,10 @@ type LakeviewService interface {
 	// [Databricks SQL access]: https://docs.databricks.com/security/auth/entitlements
 	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error
 
-	// Delete schedule subscription.
+	// Delete schedule subscription. The subscriber receives no further
+	// snapshots from the schedule. Deleting your own subscription requires CAN
+	// VIEW permission on the dashboard; deleting another user's or a
+	// notification destination's subscription requires CAN EDIT.
 	//
 	// The caller must be a workspace user with one of the following
 	// [entitlements]: Workspace access, Databricks SQL access, or Consumer
@@ -236,7 +247,8 @@ type LakeviewService interface {
 	// Get a draft dashboard.
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
-	// Get the current published dashboard.
+	// Get the current published dashboard. The request fails with NOT_FOUND if
+	// the dashboard has never been published or has been unpublished.
 	//
 	// The caller must be a workspace user with one of the following
 	// entitlements: Workspace access, Databricks SQL access, or Consumer
@@ -307,19 +319,25 @@ type LakeviewService interface {
 	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
 
 	// Revert a dashboard's definition in draft mode to the last published
-	// version.
+	// version. The draft's datasets, pages and widgets are replaced with those
+	// of the current published version, and the updated draft is returned. The
+	// dashboard must have been published at least once; the published version
+	// itself is not changed.
 	Revert(ctx context.Context, request RevertDashboardRequest) (*RevertDashboardResponse, error)
 
 	// Trash a dashboard.
 	Trash(ctx context.Context, request TrashDashboardRequest) error
 
-	// Unpublish the dashboard.
+	// Unpublish the dashboard. This deletes the published version, so viewers
+	// can no longer open it, and pauses the dashboard's schedules. The draft is
+	// not changed; publish it again to make the dashboard available to viewers.
 	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
 
 	// Update a draft dashboard.
 	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
 
-	// Update dashboard schedule.
+	// Updates a schedule. The request body replaces the stored schedule, so
+	// fields omitted from the body are reset to their defaults.
 	//
 	// Requires the [Databricks SQL access] entitlement. Grant Databricks SQL
 	// access in addition to Workspace access.
@@ -333,8 +351,12 @@ type LakeviewService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LakeviewEmbeddedService interface {
 
-	// Get a required authorization details and scopes of a published dashboard
-	// to mint an OAuth token.
+	// Get the OAuth scope and authorization details needed to mint a token that
+	// is scoped to viewing the published dashboard, for example to embed it in
+	// an external application. Pass the response fields, with
+	// `authorization_details` serialized as a JSON string, to the workspace
+	// OAuth token endpoint with the `client_credentials` grant to mint the
+	// token. See [Embedding for external users].
 	//
 	// The caller must be a workspace user with one of the following
 	// entitlements: Workspace access, Databricks SQL access, or Consumer
@@ -342,5 +364,7 @@ type LakeviewEmbeddedService interface {
 	//
 	// Account-level users who are not members of the workspace cannot call this
 	// endpoint, even if the dashboard has been shared with them.
+	//
+	// [Embedding for external users]: https://docs.databricks.com/dashboards/share/embedding/external-embed
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 }

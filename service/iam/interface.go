@@ -110,10 +110,10 @@ type AccountServicePrincipalsV2Service interface {
 	// Creates a new service principal in the Databricks account.
 	Create(ctx context.Context, request CreateAccountServicePrincipalRequest) (*AccountServicePrincipal, error)
 
-	// Delete a single service principal in the Databricks account.
+	// Deletes a single service principal from the Databricks account.
 	Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error
 
-	// Gets the details for a single service principal define in the Databricks
+	// Gets the details for a single service principal in the Databricks
 	// account.
 	Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*AccountServicePrincipal, error)
 
@@ -126,7 +126,8 @@ type AccountServicePrincipalsV2Service interface {
 
 	// Updates the details of a single service principal.
 	//
-	// This action replaces the existing service principal with the same name.
+	// This action replaces the existing service principal that has the given
+	// ID.
 	Update(ctx context.Context, request UpdateAccountServicePrincipalRequest) error
 }
 

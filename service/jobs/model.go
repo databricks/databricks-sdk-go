@@ -6317,8 +6317,9 @@ func (f *SqlAlertState) Type() string {
 }
 
 type SqlConditionConfiguration struct {
-	// The ID of the SQL query to evaluate as the trigger condition.
-	SqlQueryId string `json:"sql_query_id"`
+	// The ID of the SQL query to evaluate as the trigger condition. Exactly one
+	// of `sql_query_id` or `file` must be set.
+	SqlQueryId string `json:"sql_query_id,omitempty"`
 	// Determines how the SQL query result is interpreted to decide whether the
 	// condition fires. Must be set to a recognized value when provided. When
 	// unset on an existing serialized configuration, the server preserves the
@@ -6329,10 +6330,16 @@ type SqlConditionConfiguration struct {
 	// The canonical identifier of the SQL warehouse to run the condition query
 	// against.
 	WarehouseId string `json:"warehouse_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlConditionConfiguration) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlConditionConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // SQL condition evaluation details captured at the time the run was triggered
