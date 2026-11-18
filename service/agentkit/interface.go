@@ -27,7 +27,8 @@ type AgentKitService interface {
 	// the same actor and path.
 	CreateMemory(ctx context.Context, request CreateManagedMemoryEntryRequest) (*ManagedMemoryEntry, error)
 
-	// Creates a memory store in the caller's workspace.
+	// Creates a memory store in the caller's workspace. Returns
+	// `ALREADY_EXISTS` when a store with the requested ID already exists.
 	CreateMemoryStore(ctx context.Context, request CreateManagedMemoryStoreRequest) (*ManagedMemoryStore, error)
 
 	// Creates a session within a session store.
@@ -40,8 +41,10 @@ type AgentKitService interface {
 	// entry does not exist in the caller's workspace.
 	DeleteMemory(ctx context.Context, request DeleteManagedMemoryEntryRequest) error
 
-	// Deletes a memory store by resource name. Returns `NOT_FOUND` when the
-	// store does not exist in the caller's workspace.
+	// Deletes a memory store by resource name. Deleting a store also deletes
+	// all of its memory entries, and its ID becomes available for reuse.
+	// Returns `NOT_FOUND` when the store does not exist in the caller's
+	// workspace.
 	DeleteMemoryStore(ctx context.Context, request DeleteManagedMemoryStoreRequest) error
 
 	// Deletes a session, its items, and any descendant sessions recursively.

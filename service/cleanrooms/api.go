@@ -219,10 +219,10 @@ type CleanRoomsInterface interface {
 		timeout time.Duration, callback func(*CleanRoom)) (*CleanRoom, error)
 
 	// Create a new clean room with the specified collaborators. This method is
-	// asynchronous; the returned name field inside the clean_room field can be used
-	// to poll the clean room status, using the [cleanrooms/get] method. When this
-	// method returns, the clean room will be in a PROVISIONING state, with only
-	// name, owner, comment, created_at and status populated. The clean room will be
+	// asynchronous; the name field of the returned clean room can be used to poll
+	// the clean room status, using the [cleanrooms/get] method. When this method
+	// returns, the clean room will be in a PROVISIONING state, with only name,
+	// owner, comment, created_at and status populated. The clean room will be
 	// usable once it enters an ACTIVE state.
 	//
 	// The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM**
@@ -239,7 +239,10 @@ type CleanRoomsInterface interface {
 	// Deprecated: use [CleanRoomsAPIInterface.Create].Get() or [CleanRoomsAPIInterface.WaitGetCleanRoomActive]
 	CreateAndWait(ctx context.Context, createCleanRoomRequest CreateCleanRoomRequest, options ...retries.Option[CleanRoom]) (*CleanRoom, error)
 
-	// Create the output catalog of the clean room.
+	// Create the output catalog of the clean room. The output catalog is a catalog
+	// in the caller's metastore where the output tables of the clean room runs that
+	// the caller triggers are made available. Each collaborator can create one
+	// output catalog per clean room, and the clean room must be ACTIVE.
 	CreateOutputCatalog(ctx context.Context, request CreateCleanRoomOutputCatalogRequest) (*CreateCleanRoomOutputCatalogResponse, error)
 
 	// Delete a clean room. After deletion, the clean room will be removed from the
@@ -346,10 +349,10 @@ func (w *WaitGetCleanRoomActive[R]) GetWithTimeout(timeout time.Duration) (*Clea
 }
 
 // Create a new clean room with the specified collaborators. This method is
-// asynchronous; the returned name field inside the clean_room field can be used
-// to poll the clean room status, using the [cleanrooms/get] method. When this
-// method returns, the clean room will be in a PROVISIONING state, with only
-// name, owner, comment, created_at and status populated. The clean room will be
+// asynchronous; the name field of the returned clean room can be used to poll
+// the clean room status, using the [cleanrooms/get] method. When this method
+// returns, the clean room will be in a PROVISIONING state, with only name,
+// owner, comment, created_at and status populated. The clean room will be
 // usable once it enters an ACTIVE state.
 //
 // The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM**

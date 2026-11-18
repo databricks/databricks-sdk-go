@@ -1,5 +1,20 @@
 # Version changelog
 
+## Release v0.201.0 (2026-11-18)
+
+### API Changes
+* Add `CreateParser`, `CreateParserVersion`, `DeleteParser`, `DeleteParserVersion`, `GetBuiltinParser`, `GetBuiltinParserVersion`, `GetParser`, `GetParserVersion`, `ListBuiltinParserVersions`, `ListBuiltinParsers`, `ListParserVersions` and `ListParsers` methods for [w.Lakewatch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#LakewatchAPI) workspace-level service.
+* Add `DetailedState` field for [aisearch.IndexStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aisearch#IndexStatus).
+* Add `Operations` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `SkillMaxResults` field for [sharing.ListProviderShareAssetsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ListProviderShareAssetsRequest).
+* Add `Skills` field for [sharing.ListProviderShareAssetsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ListProviderShareAssetsResponse).
+* Add `DetailedState` and `FailedStatus` fields for [vectorsearch.VectorIndexStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndexStatus).
+* Add `GoogleAds` enum value for [pipelines.IngestionSourceType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionSourceType).
+* Add `Skill` enum value for [sharing.SharedDataObjectDataObjectType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharedDataObjectDataObjectType).
+* Change `SqlQueryId` field for [jobs.SqlConditionConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SqlConditionConfiguration) to no longer be required.
+* [Breaking] Change `SqlQueryId` field for [jobs.SqlConditionConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SqlConditionConfiguration) to no longer be required.
+* [Breaking] Remove `MigrationTypeOnline` enum value for [postgres.MigrationType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#MigrationType).
+
 ## Release v0.200.0 (2026-11-16)
 
 ### API Changes

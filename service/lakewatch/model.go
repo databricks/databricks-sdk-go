@@ -177,6 +177,75 @@ func (f *AutoLoaderFormat) Type() string {
 	return "AutoLoaderFormat"
 }
 
+// A Databricks-authored parser, shared by every customer.
+//
+// Same container-plus-versions shape as the custom `Parser`, and addressed the
+// same way, by UUID. Built-ins are global rather than catalog-scoped, so they
+// carry no owning catalog or schema.
+type BuiltinParser struct {
+	// Newest published version number.
+	LatestVersion int64 `json:"latest_version,omitempty"`
+	// Resource name. Format: `builtin-parsers/{parser_id}`.
+	Name string `json:"name,omitempty"`
+	// The parser's UUID, authored into the built-in's published definition
+	// rather than minted per customer, so every workspace addresses the same
+	// built-in by the same id. It is the leaf of `name`.
+	ParserId string `json:"parser_id,omitempty"`
+	// The built-in's own leaf name, as published in content-marketplace. Stable
+	// and human-readable, which is what a UI shows; `name` addresses the
+	// resource by id.
+	ParserName string `json:"parser_name,omitempty"`
+	// Key/value tags describing this parser, e.g. `cloud_provider=aws` or
+	// `log_source=cloudtrail`. A parser may carry up to 32. Filterable on list.
+	Tags []ParserTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BuiltinParser) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BuiltinParser) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// One published version of a built-in parser, carrying the spec.
+//
+// The content pipeline owns versioning, so unlike the custom version there is
+// no authoring principal and no append timestamp here.
+type BuiltinParserVersion struct {
+	// Free-form description of this parser, authored by Databricks.
+	Description string `json:"description,omitempty"`
+	// Resource name. Format: `builtin-parsers/{parser_id}/versions/{version}`.
+	Name string `json:"name,omitempty"`
+	// The parent built-in's published leaf name, copied from the container on
+	// read. Denormalized so a caller that needs identity alongside the spec
+	// reads the version alone rather than the container as well. Populated by
+	// `GetBuiltinParserVersion`; List omits it, as List omits `spec`.
+	ParserName string `json:"parser_name,omitempty"`
+	// The parser spec: the field definitions for this log source, as a YAML
+	// document. Read-only; built-in specs are authored by Databricks, so no
+	// client-facing size cap is enforced here.
+	Spec string `json:"spec,omitempty"`
+	// The parent built-in's tags, copied from the container on read. Rendering
+	// reads these for connector-specific details, such as the source table a
+	// Lakeflow Connect parser reads.
+	Tags []ParserTag `json:"tags,omitempty"`
+	// Version number.
+	Version int64 `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BuiltinParserVersion) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BuiltinParserVersion) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Unwraps an AWS CloudWatch Logs delivery envelope: each element of `logEvents`
 // becomes its own row, with the element's `message` parsed as the event body.
 type CloudWatchLogsEnvelope struct {
@@ -251,6 +320,27 @@ type CreateDatasourceRequest struct {
 }
 
 func (s *CreateDatasourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type CreateParserRequest struct {
+	// The parser to create. `spec` and `description` become version 1.
+	Parser Parser `json:"parser"`
+}
+
+func (s *CreateParserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type CreateParserVersionRequest struct {
+	// Resource name of the parser to append a version to. Format:
+	// `parsers/{parser_id}`.
+	Parent string `json:"-" url:"-"`
+	// The version to append.
+	ParserVersion ParserVersion `json:"parser_version"`
+}
+
+func (s *CreateParserVersionRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -537,6 +627,28 @@ func (s *DeleteDatasourceRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type DeleteParserRequest struct {
+	// Resource name of the parser. Format: `parsers/{parser_id}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteParserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type DeleteParserVersionRequest struct {
+	// Resource name of the version. Format:
+	// `parsers/{parser_id}/versions/{version}`, where `{version}` is a version
+	// number written without sign or leading zeros, such as `3`. Unlike
+	// GetParserVersion, the alias `latest` and forms such as `007` or `+3` are
+	// rejected, so a delete always names one fixed version.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteParserVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type DeleteRuleRequest struct {
 	// Resource name of the rule to delete. Format: `rules/{rule_id}`.
 	Name string `json:"-" url:"-"`
@@ -646,6 +758,26 @@ func (s *GetAlertConfigRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetBuiltinParserRequest struct {
+	// Resource name. Format: `builtin-parsers/{parser_id}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetBuiltinParserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetBuiltinParserVersionRequest struct {
+	// Resource name of the version. Format:
+	// `builtin-parsers/{parser_id}/versions/{version}`, where `{version}` is
+	// either a version number or the alias `latest`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetBuiltinParserVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetCommonConfigRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -667,6 +799,27 @@ type GetDatasourceRequest struct {
 }
 
 func (s *GetDatasourceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetParserRequest struct {
+	// Resource name of the parser. Format: `parsers/{parser_id}`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetParserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetParserVersionRequest struct {
+	// Resource name of the version. Format:
+	// `parsers/{parser_id}/versions/{version}`, where `{version}` is either a
+	// version number or the alias `latest`. `latest` is NOT_FOUND when every
+	// version of the parser has been deleted.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *GetParserVersionRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -719,6 +872,94 @@ type JsonArrayEnvelope struct {
 
 func (s *JsonArrayEnvelope) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+type ListBuiltinParserVersionsRequest struct {
+	// Maximum number of results to return in one page. If unset or 0, at most
+	// 100 versions are returned. The maximum allowed value is 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token from a previous `ListBuiltinParserVersions` response, used to
+	// fetch the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Resource name of the built-in parser whose versions are listed. Format:
+	// `builtin-parsers/{parser_id}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBuiltinParserVersionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBuiltinParserVersionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A page of built-in version metadata, without the specs.
+type ListBuiltinParserVersionsResponse struct {
+	// Version metadata only, oldest first, without the spec.
+	BuiltinParserVersions []BuiltinParserVersion `json:"builtin_parser_versions,omitempty"`
+	// Opaque token for fetching the next page; pass it as `page_token` on the
+	// next call. It is empty when there are no more results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBuiltinParserVersionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBuiltinParserVersionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListBuiltinParsersRequest struct {
+	// AIP-160 filter expression. Built-ins are filterable by their `tags`; the
+	// exact tag-filter grammar is defined by the server.
+	Filter string `json:"-" url:"filter,omitempty"`
+	// Maximum number of results to return in one page. This is a best-effort
+	// upper bound, not a guarantee: the server may return fewer items than
+	// requested (even zero) while more results still exist. If unset or 0, the
+	// server picks a default.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token from a previous `ListBuiltinParsers` response, used to fetch
+	// the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBuiltinParsersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBuiltinParsersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A page of built-in parsers, without their specs.
+type ListBuiltinParsersResponse struct {
+	// Summary rows: the container fields only, without the spec. Read a spec
+	// with `GetBuiltinParserVersion`.
+	BuiltinParsers []BuiltinParser `json:"builtin_parsers,omitempty"`
+	// Opaque token for fetching the next page; pass it as `page_token` on the
+	// next call. It is empty only when there are no more results. Page size is
+	// best-effort, so a short or even empty page does not mean the end; keep
+	// paging until this token is empty, which is the only reliable
+	// end-of-results signal.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListBuiltinParsersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBuiltinParsersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListDatasourcesRequest struct {
@@ -779,6 +1020,110 @@ func (s ListDatasourcesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListParserVersionsRequest struct {
+	// Maximum number of results to return in one page. This is a best-effort
+	// upper bound, not a guarantee: the server may return fewer items than
+	// requested (even zero) while more results still exist. If unset or 0, the
+	// server picks a default.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token from a previous `ListParserVersions` response, used to fetch
+	// the next page of results. Send the same `parent` when requesting later
+	// pages; a token from a request for a different parser is rejected.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Resource name of the parser whose versions are listed. Format:
+	// `parsers/{parser_id}`.
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListParserVersionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListParserVersionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A page of version metadata, without the specs.
+type ListParserVersionsResponse struct {
+	// Opaque token for fetching the next page; pass it as `page_token` on the
+	// next call. It is empty only when there are no more results. Page size is
+	// best-effort, so a short or even empty page does not mean the end; keep
+	// paging until this token is empty, which is the only reliable
+	// end-of-results signal.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Version metadata only, oldest first, without the spec. Each row's
+	// `create_time` and `created_by` are that version's own.
+	ParserVersions []ParserVersion `json:"parser_versions,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListParserVersionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListParserVersionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListParsersRequest struct {
+	// Name of the parent UC catalog to list parsers from. Required: List is
+	// scoped to a single catalog, mirroring the Unity Catalog tables/functions
+	// APIs, which take catalog_name as a request field (bound to a query
+	// parameter) rather than a catalog path segment.
+	CatalogName string `json:"-" url:"catalog_name"`
+	// AIP-160 filter expression. Parsers are filterable by `parser_name`.
+	Filter string `json:"-" url:"filter,omitempty"`
+	// Maximum number of results to return in one page. This is a best-effort
+	// upper bound, not a guarantee: the server may return fewer items than
+	// requested (even zero) while more results still exist. If unset or 0, the
+	// server picks a default.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Page token from a previous `ListParsers` response, used to fetch the next
+	// page of results. Send the other request fields unchanged when requesting
+	// later pages; a token from a request with different fields is rejected.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Name of the parent UC schema. Optional: when set, results are narrowed to
+	// this schema; when omitted, parsers across all schemas in `catalog_name`
+	// are returned.
+	SchemaName string `json:"-" url:"schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListParsersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListParsersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A page of parsers, without their specs.
+type ListParsersResponse struct {
+	// Opaque token for fetching the next page; pass it as `page_token` on the
+	// next call. It is empty only when there are no more results. Page size is
+	// best-effort, so a short or even empty page does not mean the end; keep
+	// paging until this token is empty, which is the only reliable
+	// end-of-results signal.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Summary rows: the container fields only, without the spec. Read a spec
+	// with `GetParserVersion`.
+	Parsers []Parser `json:"parsers,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListParsersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListParsersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListRulesRequest struct {
 	// Name of the Unity Catalog catalog to list rules from. Required.
 	CatalogName string `json:"-" url:"catalog_name"`
@@ -830,6 +1175,72 @@ func (s ListRulesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A customer-authored, versioned contract describing the fields of an ingested
+// log source.
+//
+// The parser is a container: it carries the identity and a pointer to the
+// newest version. Specs live on the immutable `ParserVersion` children, so one
+// parser can be attached to many data sources and each attachment pins a
+// version.
+type Parser struct {
+	// Name of the parent UC catalog, set on create. Reads return the value as
+	// supplied; the current UC catalog name is reported in
+	// `effective_catalog_name`.
+	CatalogName string `json:"catalog_name"`
+	// When the parser was created.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The principal that created this parser. Each version records its own
+	// `created_by`.
+	CreatedBy *Principal `json:"created_by,omitempty"`
+	// Description of version 1. Accepted only by `CreateParser`; read a
+	// version's description with `GetParserVersion`.
+	Description string `json:"description,omitempty"`
+	// The current name of the parser's UC catalog. Tracks UC renames; when the
+	// current name cannot be looked up, the name as of the parser's last write.
+	EffectiveCatalogName string `json:"effective_catalog_name,omitempty"`
+	// The current name of the parser's UC schema. Tracks UC renames; when the
+	// current name cannot be looked up, the name as of the parser's last write.
+	EffectiveSchemaName string `json:"effective_schema_name,omitempty"`
+	// Newest version of this parser. Read its spec by passing this to
+	// `GetParserVersion`, or by using the `latest` alias. Absent when every
+	// version has been deleted.
+	LatestVersion int64 `json:"latest_version,omitempty"`
+	// Resource name. Format: `parsers/{parser_id}`, where the leaf is the
+	// immutable server-assigned UUID. Create-time placement names are stored
+	// separately and do not affect the resource name.
+	Name string `json:"name,omitempty"`
+	// The principal that owns this parser. Server-set from the authenticated
+	// creator, never supplied by the client. Beta reads by UUID perform no
+	// authorization. Owner-gated write RPCs are outside this API's current
+	// implementation scope.
+	Owner *Principal `json:"owner,omitempty"`
+	// The parser's server-assigned UUID. It is not currently a UC securable ID,
+	// is immutable for the life of the resource, is the leaf of `name`, and is
+	// returned by CreateParser.
+	ParserId string `json:"parser_id,omitempty"`
+	// Client-supplied parser name, stored as supplied and fixed at create time.
+	// Must be a valid UC identifier. A custom parser is not currently a UC
+	// securable and this field has no rename path.
+	ParserName string `json:"parser_name"`
+	// Name of the parent UC schema, set on create. Reads return the value as
+	// supplied; the current UC schema name is reported in
+	// `effective_schema_name`.
+	SchemaName string `json:"schema_name"`
+	// Spec of version 1, as a YAML document. Accepted only by `CreateParser`;
+	// read a version's spec with `GetParserVersion`.
+	Spec string `json:"spec"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Parser) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Parser) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Reference to a parser that the datasource uses. Each parser defines the
 // schema of the parsed table that it writes.
 type ParserRef struct {
@@ -852,6 +1263,63 @@ type ParserRef struct {
 
 func (s *ParserRef) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// A key/value tag on a built-in parser, e.g. `key = "cloud_provider"`, `value =
+// "aws"`. Key/value pairs match the tag shape used across Databricks (MLflow,
+// model-serving endpoints, clusters) rather than a bare string list.
+type ParserTag struct {
+	// The tag key, e.g. `cloud_provider`. Required: a keyless tag cannot be
+	// filtered on and is meaningless.
+	Key string `json:"key"`
+	// The tag value, e.g. `aws`.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ParserTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ParserTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// One immutable version of a parser, carrying the spec.
+//
+// Immutable: an edit creates a new version rather than mutating an existing
+// one, so a data source that pins a version is never affected. Version numbers
+// are never reused, including after a delete.
+type ParserVersion struct {
+	// When this version was appended.
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The principal that appended this version.
+	CreatedBy *Principal `json:"created_by,omitempty"`
+	// Free-form description of this version, set when the version is created.
+	Description string `json:"description,omitempty"`
+	// Resource name. Format: `parsers/{parser_id}/versions/{version}`.
+	Name string `json:"name,omitempty"`
+	// The parent parser's name, copied from the container on read. Denormalized
+	// so a caller that needs identity alongside the spec reads the version
+	// alone rather than the container as well. Populated by `GetParserVersion`;
+	// List omits it, as List omits `spec`.
+	ParserName string `json:"parser_name,omitempty"`
+	// The field definitions for this log source, as a YAML document. Validated
+	// on write, so an invalid spec is never stored.
+	Spec string `json:"spec"`
+	// Version number, assigned by the server when the version is appended.
+	Version int64 `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ParserVersion) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ParserVersion) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A principal — user or service-principal — used as the value type for

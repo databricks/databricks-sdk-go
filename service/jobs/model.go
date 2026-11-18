@@ -1306,10 +1306,14 @@ func (s *ContinuousTriggerConfiguration) UnmarshalJSON(b []byte) error {
 }
 
 type ContinuousTriggerState struct {
+	// The number of consecutive unsuccessful runs. Resets to `0` after a
+	// healthy run and determines the exponential backoff before the next run.
 	ConsecutiveFailures int `json:"consecutive_failures,omitempty"`
-
+	// Whether the trigger is delaying the next run with exponential backoff
+	// after repeated failures.
 	IsBackingOff bool `json:"is_backing_off,omitempty"`
-
+	// The time at which the trigger next attempts to start a run, in epoch
+	// milliseconds.
 	NextAttemptMs int64 `json:"next_attempt_ms,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1391,7 +1395,7 @@ type CreateJob struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
-
+	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -2496,7 +2500,8 @@ type GitSource struct {
 	// Unique identifier of the service used to host the Git repository. The
 	// value is case insensitive.
 	GitProvider GitProvider `json:"git_provider"`
-
+	// Read-only state of the remote repository at the time the job was run.
+	// This field is only included on job runs.
 	GitSnapshot *GitSnapshot `json:"git_snapshot,omitempty"`
 	// Name of the tag to be checked out and used by this job. This field cannot
 	// be specified in conjunction with git_branch or git_commit.
@@ -2506,7 +2511,8 @@ type GitSource struct {
 	// The source of the job specification in the remote repository when the job
 	// is source controlled.
 	JobSource *JobSource `json:"job_source,omitempty"`
-
+	// Sparse checkout settings for the repository. When set, only the
+	// directories listed in `patterns` are checked out.
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2731,7 +2737,6 @@ type JobCompletionTriggerConfigurationMonitoredJob struct {
 	// The ID of the workspace containing the upstream job. This can differ from
 	// the caller's workspace and downstream services enforce correct
 	// entitlements and CAN_VIEW permissions for the user + job combination.
-	// SDR: https://databricks.atlassian.net/browse/SDR-5267
 	WorkspaceId string `json:"workspace_id"`
 }
 
@@ -2986,7 +2991,8 @@ func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
 type JobEnvironment struct {
 	// The key of an environment. It has to be unique within a job.
 	EnvironmentKey string `json:"environment_key"`
-
+	// The environment specification, including the environment version and the
+	// dependencies to install before a task runs.
 	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
@@ -3300,7 +3306,7 @@ type JobSettings struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
-
+	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -3573,8 +3579,21 @@ func (f *JobsHealthOperator) Type() string {
 }
 
 type JobsHealthRule struct {
+	// Specifies the health metric that is being evaluated for a particular
+	// health rule.
+	//
+	// * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. *
+	// `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data
+	// waiting to be consumed across all streams. This metric is in Public
+	// Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset
+	// lag across all streams. This metric is in Public Preview. *
+	// `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay
+	// across all streams. This metric is in Public Preview. *
+	// `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of
+	// outstanding files across all streams. This metric is in Public Preview.
 	Metric JobsHealthMetric `json:"metric"`
-
+	// Specifies the operator used to compare the health metric value with the
+	// specified threshold.
 	Op JobsHealthOperator `json:"op"`
 	// Specifies the threshold value that the health metric should obey to
 	// satisfy the health rule.
@@ -3587,6 +3606,7 @@ func (s *JobsHealthRule) UnmarshalJSON(b []byte) error {
 
 // An optional set of health rules that can be defined for this job.
 type JobsHealthRules struct {
+	// The health rules to evaluate for each run.
 	Rules []JobsHealthRule `json:"rules,omitempty"`
 }
 
@@ -4007,24 +4027,25 @@ func (f *PauseStatus) Type() string {
 // one variant matching the corresponding trigger's type. Variants with no
 // runtime state today (`schedule`, `model`) are emitted as empty messages.
 type PerTriggerState struct {
+	// State of the continuous trigger.
 	Continuous *ContinuousTriggerState `json:"continuous,omitempty"`
-
+	// State of the file arrival trigger.
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
-
+	// State of the job completion trigger.
 	JobCompletion *JobCompletionTriggerState `json:"job_completion,omitempty"`
-
+	// State of the model trigger.
 	Model *ModelTriggerState `json:"model,omitempty"`
 	// Whether this trigger is paused or not. Mirrors the configured
 	// pause_status.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
-
+	// State of the periodic trigger.
 	Periodic *PeriodicTriggerState `json:"periodic,omitempty"`
-
+	// State of the cron schedule trigger.
 	Schedule *ScheduleTriggerState `json:"schedule,omitempty"`
 	// State for SQL condition evaluation, can coexist with other trigger
 	// states.
 	SqlCondition *SqlConditionState `json:"sql_condition,omitempty"`
-
+	// State of the table update trigger.
 	TableUpdate *TableTriggerState `json:"table_update,omitempty"`
 }
 
@@ -4128,6 +4149,8 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
 }
 
 type PeriodicTriggerState struct {
+	// The time of the next scheduled run, in epoch milliseconds. Only set while
+	// the trigger is not paused.
 	NextRunTime int64 `json:"next_run_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5405,8 +5428,8 @@ type RunNow struct {
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id"`
-	// Job-level parameters used in the run. for example `"param":
-	// "overriding_val"`
+	// Job-level parameters used in the run, for example `"param":
+	// "overriding_val"`.
 	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
@@ -6240,7 +6263,8 @@ func (s *SparkSubmitTask) UnmarshalJSON(b []byte) error {
 }
 
 type SparseCheckout struct {
-	// List of patterns to include for sparse checkout.
+	// List of patterns to include for sparse checkout. Each pattern is the path
+	// of a directory relative to the repository root.
 	Patterns []string `json:"patterns,omitempty"`
 }
 
@@ -6317,8 +6341,9 @@ func (f *SqlAlertState) Type() string {
 }
 
 type SqlConditionConfiguration struct {
-	// The ID of the SQL query to evaluate as the trigger condition.
-	SqlQueryId string `json:"sql_query_id"`
+	// The ID of the SQL query to evaluate as the trigger condition. Exactly one
+	// of `sql_query_id` or `file` must be set.
+	SqlQueryId string `json:"sql_query_id,omitempty"`
 	// Determines how the SQL query result is interpreted to decide whether the
 	// condition fires. Must be set to a recognized value when provided. When
 	// unset on an existing serialized configuration, the server preserves the
@@ -6329,10 +6354,16 @@ type SqlConditionConfiguration struct {
 	// The canonical identifier of the SQL warehouse to run the condition query
 	// against.
 	WarehouseId string `json:"warehouse_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlConditionConfiguration) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlConditionConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // SQL condition evaluation details captured at the time the run was triggered
@@ -7317,6 +7348,7 @@ func (s TableState) MarshalJSON() ([]byte, error) {
 }
 
 type TableTriggerState struct {
+	// The last observed state of each monitored table.
 	LastSeenTableStates []TableState `json:"last_seen_table_states,omitempty"`
 	// Indicates whether the trigger is using scalable monitoring.
 	UsingScalableMonitoring bool `json:"using_scalable_monitoring,omitempty"`
@@ -7427,7 +7459,7 @@ type Task struct {
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
 
 	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
-
+	// An optional set of health rules that can be defined for this task.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
@@ -8056,7 +8088,7 @@ type TriggerSettings struct {
 	// in combination with other trigger types and runs *after* other trigger
 	// types conditions are evaluated.
 	SqlCondition *SqlConditionConfiguration `json:"sql_condition,omitempty"`
-
+	// Table update trigger settings.
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
@@ -8065,8 +8097,9 @@ func (s *TriggerSettings) UnmarshalJSON(b []byte) error {
 }
 
 type TriggerStateProto struct {
+	// State of the file arrival trigger.
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
-
+	// State of the job completion trigger.
 	JobCompletion *JobCompletionTriggerState `json:"job_completion,omitempty"`
 	// Whether this trigger is paused or not. For continuous schedules, it can
 	// differ from the configured pause_status whenever a paused continuous job
@@ -8075,7 +8108,7 @@ type TriggerStateProto struct {
 	// State for SQL condition evaluation, can coexist with other trigger
 	// states.
 	SqlCondition *SqlConditionState `json:"sql_condition,omitempty"`
-
+	// State of the table update trigger.
 	Table *TableTriggerState `json:"table,omitempty"`
 }
 
@@ -8310,6 +8343,7 @@ func (s *VolumeSource) UnmarshalJSON(b []byte) error {
 }
 
 type Webhook struct {
+	// The ID of the notification destination to call. Must be a UUID.
 	Id string `json:"id"`
 }
 

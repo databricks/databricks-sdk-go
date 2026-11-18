@@ -1000,8 +1000,11 @@ type librariesImpl struct {
 	client *client.DatabricksClient
 }
 
-// Get the status of all libraries on all clusters. A status is returned for all
-// libraries installed on this cluster via the API or the libraries UI.
+// Get the status of all libraries on all clusters in the workspace. A status is
+// returned for all libraries installed on each cluster via the API or the
+// libraries UI. If the workspace has more library statuses than the response
+// limit allows, the request fails; call the per-cluster status method for each
+// cluster instead.
 func (a *librariesImpl) AllClusterStatuses(ctx context.Context) listing.Iterator[ClusterLibraryStatuses] {
 	request := struct{}{}
 
@@ -1021,8 +1024,11 @@ func (a *librariesImpl) AllClusterStatuses(ctx context.Context) listing.Iterator
 	return iterator
 }
 
-// Get the status of all libraries on all clusters. A status is returned for all
-// libraries installed on this cluster via the API or the libraries UI.
+// Get the status of all libraries on all clusters in the workspace. A status is
+// returned for all libraries installed on each cluster via the API or the
+// libraries UI. If the workspace has more library statuses than the response
+// limit allows, the request fails; call the per-cluster status method for each
+// cluster instead.
 func (a *librariesImpl) AllClusterStatusesAll(ctx context.Context) ([]ClusterLibraryStatuses, error) {
 	iterator := a.AllClusterStatuses(ctx)
 	return listing.ToSlice[ClusterLibraryStatuses](ctx, iterator)
@@ -1047,8 +1053,8 @@ func (a *librariesImpl) internalAllClusterStatuses(ctx context.Context) (*ListAl
 // order of returned libraries is as follows: 1. Libraries set to be installed
 // on this cluster, in the order that the libraries were added to the cluster,
 // are returned first. 2. Libraries that were previously requested to be
-// installed on this cluster or, but are now marked for removal, in no
-// particular order, are returned last.
+// installed on this cluster but are now marked for removal, in no particular
+// order, are returned last.
 func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) listing.Iterator[LibraryFullStatus] {
 
 	getNextPage := func(ctx context.Context, req ClusterStatus) (*ClusterLibraryStatuses, error) {
@@ -1072,8 +1078,8 @@ func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus
 // order of returned libraries is as follows: 1. Libraries set to be installed
 // on this cluster, in the order that the libraries were added to the cluster,
 // are returned first. 2. Libraries that were previously requested to be
-// installed on this cluster or, but are now marked for removal, in no
-// particular order, are returned last.
+// installed on this cluster but are now marked for removal, in no particular
+// order, are returned last.
 func (a *librariesImpl) ClusterStatusAll(ctx context.Context, request ClusterStatus) ([]LibraryFullStatus, error) {
 	iterator := a.ClusterStatus(ctx, request)
 	return listing.ToSlice[LibraryFullStatus](ctx, iterator)

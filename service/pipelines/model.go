@@ -1605,6 +1605,8 @@ const IngestionSourceTypeForeignCatalog IngestionSourceType = `FOREIGN_CATALOG`
 
 const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
+const IngestionSourceTypeGoogleAds IngestionSourceType = `GOOGLE_ADS`
+
 const IngestionSourceTypeGoogleDrive IngestionSourceType = `GOOGLE_DRIVE`
 
 const IngestionSourceTypeJira IngestionSourceType = `JIRA`
@@ -1651,11 +1653,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ONEDRIVE`, `ORACLE`, `POSTGRESQL`, `RABBITMQ`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SMARTSHEET`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_ADS`, `GOOGLE_DRIVE`, `JIRA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ONEDRIVE`, `ORACLE`, `POSTGRESQL`, `RABBITMQ`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SMARTSHEET`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ONEDRIVE", "ORACLE", "POSTGRESQL", "RABBITMQ", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SMARTSHEET", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_ADS", "GOOGLE_DRIVE", "JIRA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ONEDRIVE", "ORACLE", "POSTGRESQL", "RABBITMQ", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SMARTSHEET", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1669,6 +1671,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeForeignCatalog,
 		IngestionSourceTypeGa4RawData,
+		IngestionSourceTypeGoogleAds,
 		IngestionSourceTypeGoogleDrive,
 		IngestionSourceTypeJira,
 		IngestionSourceTypeManagedPostgresql,

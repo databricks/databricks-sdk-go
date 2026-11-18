@@ -147,6 +147,12 @@ func (s ListTagPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A tag assignment attaches a tag, which is a key with an optional value, to a
+// workspace object such as a dashboard, notebook, Genie space or app. An object
+// can have at most one assignment for each tag key. If the key belongs to a
+// governed tag, the caller needs the ASSIGN permission on that governed tag,
+// and the value must be one of its allowed values. See
+// https://docs.databricks.com/aws/en/admin/governed-tags/.
 type TagAssignment struct {
 	// The identifier of the entity to which the tag is assigned. For apps, the
 	// entity_id is the app name
@@ -157,7 +163,8 @@ type TagAssignment struct {
 	// The key of the tag. The characters , . : / - = and leading/trailing
 	// spaces are not allowed
 	TagKey string `json:"tag_key"`
-	// The value of the tag
+	// The value of the tag. If the value is omitted, the tag is assigned with
+	// its key only.
 	TagValue string `json:"tag_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -208,17 +215,9 @@ type UpdateTagAssignmentRequest struct {
 	// The key of the tag. The characters , . : / - = and leading/trailing
 	// spaces are not allowed
 	TagKey string `json:"-" url:"-"`
-	// The field mask must be a single string, with multiple fields separated by
-	// commas (no spaces). The field path is relative to the resource object,
-	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
-	// Specification of elements in sequence or map fields is not allowed, as
-	// only the entire collection field can be specified. Field names must
-	// exactly match the resource field names.
-	//
-	// A field mask of `*` indicates full replacement. It’s recommended to
-	// always explicitly list the fields being updated and avoid using `*`
-	// wildcards, as it can lead to unintended results if the API changes in the
-	// future.
+	// The comma-separated list of fields to update. Only `tag_value` can be
+	// updated, because the entity type, entity ID and tag key identify the tag
+	// assignment.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 

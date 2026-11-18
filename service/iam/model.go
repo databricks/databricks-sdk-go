@@ -52,20 +52,29 @@ func (s AccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Represents a group of users, service principals and other groups in the
+// Databricks account. Members inherit the permissions that are granted to the
+// group.
 type AccountGroup struct {
-	// Databricks account ID
+	// Identifies the Databricks account that the group belongs to.
 	AccountId string `json:"account_id,omitempty"`
-	// String that represents a human-readable group name
+	// Identifies the group by a human-readable name. The name must be unique
+	// within the account and must not exceed 255 characters.
 	DisplayName string `json:"displayName,omitempty"`
-	// external_id should be unique for identifying groups
+	// Identifies the group in an external identity provider. Identity providers
+	// use it to match the groups they manage to Databricks groups, so it should
+	// be unique among the groups in the account.
 	ExternalId string `json:"externalId,omitempty"`
-	// Databricks group ID
+	// Identifies the group within Databricks. Databricks generates the ID when
+	// the group is created.
 	Id string `json:"id,omitempty"`
-
+	// Lists the members of the group. Each entry identifies a user, service
+	// principal or group in the account by its ID in the value sub-attribute.
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
 	Meta *ResourceMeta `json:"meta,omitempty"`
-	// Indicates if the group has the admin role.
+	// Lists the account roles that are assigned to the group. The only
+	// supported role value is `account_admin`.
 	Roles []ComplexValue `json:"roles,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -79,20 +88,31 @@ func (s AccountGroup) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Represents a service principal in the Databricks account. Service principals
+// are identities for jobs, automated tools and systems such as scripts, apps
+// and CI/CD platforms.
 type AccountServicePrincipal struct {
-	// Databricks account ID
+	// Identifies the Databricks account that the service principal belongs to.
 	AccountId string `json:"account_id,omitempty"`
-	// If this user is active
+	// Indicates whether the service principal is active. A deactivated service
+	// principal cannot authenticate or access Databricks APIs, but it keeps its
+	// permissions.
 	Active bool `json:"active,omitempty"`
-	// UUID relating to the service principal
+	// Identifies the service principal when it authenticates to Databricks.
+	// Databricks generates the application ID, except on Azure, where it can be
+	// the application ID of a Microsoft Entra ID service principal.
 	ApplicationId string `json:"applicationId,omitempty"`
-	// String that represents a concatenation of given and family names.
+	// Identifies the service principal by a human-readable name.
 	DisplayName string `json:"displayName,omitempty"`
-
+	// Identifies the service principal in an external identity provider.
+	// Identity providers use it to match the service principals they manage to
+	// Databricks service principals.
 	ExternalId string `json:"externalId,omitempty"`
-	// Databricks service principal ID.
+	// Identifies the service principal within Databricks. Databricks generates
+	// the ID when the service principal is created.
 	Id string `json:"id,omitempty"`
-	// Indicates if the group has the admin role.
+	// Lists the account roles that are assigned to the service principal. The
+	// only supported role value is `account_admin`.
 	Roles []ComplexValue `json:"roles,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -281,17 +301,20 @@ func (s *ConsistencyToken) UnmarshalJSON(b []byte) error {
 }
 
 type CreateAccountGroupRequest struct {
-	// String that represents a human-readable group name
+	// Sets the human-readable name of the group. The name must be unique within
+	// the account and must not exceed 255 characters.
 	DisplayName string `json:"displayName,omitempty"`
-
+	// Sets the identifier of the group in an external identity provider.
 	ExternalId string `json:"externalId,omitempty"`
-	// Databricks group ID
+	// Identifies the group within Databricks.
 	Id string `json:"id,omitempty"`
-
+	// Lists the members of the group. Each entry identifies a user, service
+	// principal or group in the account by its ID in the value sub-attribute.
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
 	Meta *ResourceMeta `json:"meta,omitempty"`
-	// Indicates if the group has the admin role.
+	// Lists the account roles that are assigned to the group. The only
+	// supported role value is `account_admin`.
 	Roles []ComplexValue `json:"roles,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -306,17 +329,24 @@ func (s CreateAccountGroupRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateAccountServicePrincipalRequest struct {
-	// If this user is active
+	// Indicates whether the service principal is active. A deactivated service
+	// principal cannot authenticate or access Databricks APIs, but it keeps its
+	// permissions.
 	Active bool `json:"active,omitempty"`
-	// UUID relating to the service principal
+	// Sets the application ID of a Microsoft Entra ID service principal. Only
+	// Azure accepts this field. On AWS and GCP, Databricks generates the
+	// application ID and rejects requests that set it.
 	ApplicationId string `json:"applicationId,omitempty"`
-	// String that represents a concatenation of given and family names.
+	// Sets the human-readable name of the service principal. The name is
+	// required unless the request sets `applicationId`.
 	DisplayName string `json:"displayName,omitempty"`
-
+	// Sets the identifier of the service principal in an external identity
+	// provider.
 	ExternalId string `json:"externalId,omitempty"`
-	// Databricks service principal ID.
+	// Identifies the service principal within Databricks.
 	Id string `json:"id,omitempty"`
-	// Indicates if the group has the admin role.
+	// Lists the account roles that are assigned to the service principal. The
+	// only supported role value is `account_admin`.
 	Roles []ComplexValue `json:"roles,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -930,7 +960,8 @@ func (f *GroupSchema) Type() string {
 type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
-	// Desired number of results per page. Default is 10000.
+	// Specifies the number of results per page. When omitted, the server uses
+	// its default page size.
 	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
@@ -963,7 +994,7 @@ func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
 type ListAccountGroupsResponse struct {
 	// Total results returned in the response.
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
-	// User objects returned in the response.
+	// Group objects returned in the response.
 	Resources []AccountGroup `json:"Resources,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
@@ -1018,7 +1049,7 @@ func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
 type ListAccountServicePrincipalsResponse struct {
 	// Total results returned in the response.
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
-	// User objects returned in the response.
+	// Lists the service principals that are returned in the response.
 	Resources []AccountServicePrincipal `json:"Resources,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
@@ -1632,9 +1663,9 @@ func (s Patch) MarshalJSON() ([]byte, error) {
 }
 
 type PatchAccountGroupRequest struct {
-	// Unique ID in the Databricks workspace.
+	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
-
+	// Lists the patch operations to apply to the group.
 	Operations []Patch `json:"Operations,omitempty"`
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -1646,9 +1677,9 @@ func (s *PatchAccountGroupRequest) UnmarshalJSON(b []byte) error {
 }
 
 type PatchAccountServicePrincipalRequest struct {
-	// Unique ID in the Databricks workspace.
+	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
-
+	// Lists the patch operations to apply to the service principal.
 	Operations []Patch `json:"Operations,omitempty"`
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -2032,8 +2063,8 @@ type ResourceInfo struct {
 	Id string `json:"id" url:"id"`
 	// The legacy acl path of the current resource.
 	LegacyAclPath string `json:"legacy_acl_path,omitempty" url:"legacy_acl_path,omitempty"`
-	// Parent resource info for the current resource. The parent may have
-	// another parent.
+	// Deprecated: use `contributing_resources`. Parent resource info for the
+	// current resource. The parent may have another parent.
 	ParentResourceInfo *ResourceInfo `json:"parent_resource_info,omitempty" url:"parent_resource_info,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2225,17 +2256,20 @@ func (s *SetObjectPermissions) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateAccountGroupRequest struct {
-	// String that represents a human-readable group name
+	// Sets the human-readable name of the group. The name must be unique within
+	// the account and must not exceed 255 characters.
 	DisplayName string `json:"displayName,omitempty"`
-
+	// Sets the identifier of the group in an external identity provider.
 	ExternalId string `json:"externalId,omitempty"`
-	// Databricks group ID
+	// Identifies the group within Databricks.
 	Id string `json:"-" url:"-"`
-
+	// Lists the members of the group. Each entry identifies a user, service
+	// principal or group in the account by its ID in the value sub-attribute.
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
 	Meta *ResourceMeta `json:"meta,omitempty"`
-	// Indicates if the group has the admin role.
+	// Lists the account roles that are assigned to the group. The only
+	// supported role value is `account_admin`.
 	Roles []ComplexValue `json:"roles,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2250,17 +2284,24 @@ func (s UpdateAccountGroupRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateAccountServicePrincipalRequest struct {
-	// If this user is active
+	// Indicates whether the service principal is active. A deactivated service
+	// principal cannot authenticate or access Databricks APIs, but it keeps its
+	// permissions.
 	Active bool `json:"active,omitempty"`
-	// UUID relating to the service principal
+	// Sets the application ID of a Microsoft Entra ID service principal. Only
+	// Azure accepts this field. On AWS and GCP, Databricks generates the
+	// application ID and rejects requests that set it.
 	ApplicationId string `json:"applicationId,omitempty"`
-	// String that represents a concatenation of given and family names.
+	// Sets the human-readable name of the service principal. The name is
+	// required unless the request sets `applicationId`.
 	DisplayName string `json:"displayName,omitempty"`
-
+	// Sets the identifier of the service principal in an external identity
+	// provider.
 	ExternalId string `json:"externalId,omitempty"`
-	// Databricks service principal ID.
+	// Identifies the service principal within Databricks.
 	Id string `json:"-" url:"-"`
-	// Indicates if the group has the admin role.
+	// Lists the account roles that are assigned to the service principal. The
+	// only supported role value is `account_admin`.
 	Roles []ComplexValue `json:"roles,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
