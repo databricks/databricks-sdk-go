@@ -89,7 +89,7 @@ type FailoverFailoverGroupRequest struct {
 	// current etag. If omitted, the failover proceeds regardless of current
 	// state.
 	Etag string `json:"etag,omitempty"`
-	// The type of failover to perform.
+	// The type of failover to perform. FORCED is the only supported type.
 	FailoverType FailoverFailoverGroupRequestFailoverType `json:"failover_type"`
 	// The fully qualified resource name of the failover group to failover.
 	// Format: accounts/{account_id}/failover-groups/{failover_group_id}.
@@ -145,8 +145,13 @@ func (f *FailoverFailoverGroupRequestFailoverType) Type() string {
 	return "FailoverFailoverGroupRequestFailoverType"
 }
 
-// A failover group manages disaster recovery across workspace sets,
-// coordinating Unity Catalog and workspace assets replication.
+// A failover group manages Databricks Managed Disaster Recovery for a pair of
+// workspaces in two regions. It continuously replicates the selected Unity
+// Catalog catalogs and workspace assets from the primary region to the
+// secondary region and lets you fail over to the secondary region; at least one
+// of the two replication types must be enabled. See
+// https://docs.databricks.com/aws/en/admin/managed-disaster-recovery for the
+// product documentation.
 type FailoverGroup struct {
 	// Time at which this failover group was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -156,10 +161,14 @@ type FailoverGroup struct {
 	// Opaque version string for optimistic locking. Server-generated and
 	// returned in responses.
 	Etag string `json:"etag,omitempty"`
-	// True if errors currently block the replication point.
+	// True when replication errors are preventing the replication point from
+	// advancing. Populated only while the failover group is INITIAL_REPLICATION
+	// or ACTIVE; the blocking errors are listed in the
+	// system.replication.states system table.
 	HasReplicationPointBlockingErrors bool `json:"has_replication_point_blocking_errors,omitempty"`
 	// Initial primary region. Used only in Create requests to set the starting
-	// primary region. Not returned in responses.
+	// primary region, and must be one of the regions in `regions`. Not returned
+	// in responses.
 	InitialPrimaryRegion string `json:"initial_primary_region"`
 	// Initial replication progress of all in-scope assets. Set only when the
 	// FailoverGroup is in INITIAL_REPLICATION state.
@@ -167,17 +176,33 @@ type FailoverGroup struct {
 	// Fully qualified resource name in the format
 	// accounts/{account_id}/failover-groups/{failover_group_id}.
 	Name string `json:"name,omitempty"`
-	// List of all regions participating in this failover group.
+	// The two cloud regions that participate in this failover group, the
+	// primary and the secondary. Each workspace set contains one workspace in
+	// each region.
 	Regions []string `json:"regions"`
-	// The latest point in time to which data has been replicated.
+	// The most recent point in time up to which all in-scope assets have been
+	// replicated to the secondary region. Data written after this point might
+	// not exist in the secondary yet and can be lost in an unplanned failover.
+	// When both Unity Catalog and workspace assets are replicated, this is the
+	// older of the two replication points. Not populated until the first
+	// replication point exists, and not populated in ListFailoverGroups
+	// responses.
 	ReplicationPoint *time.Time `json:"replication_point,omitempty"`
-	// Aggregate state of the failover group.
+	// Aggregate state of the failover group across Unity Catalog and workspace
+	// asset replication. The group is INITIAL_REPLICATION until it has a
+	// replication point, ACTIVE while replication is in steady state and
+	// failover is available, and FAILING_OVER while a failover is in progress;
+	// the `*_FAILED` values mean that the last operation did not complete. Not
+	// populated in ListFailoverGroups responses.
 	State FailoverGroupState `json:"state,omitempty"`
-	// Unity Catalog replication configuration.
+	// Unity Catalog replication configuration: the catalogs to replicate and
+	// the storage location mappings for their data. Omit it to replicate
+	// workspace assets only.
 	UnityCatalogAssets *UcReplicationConfig `json:"unity_catalog_assets,omitempty"`
 	// Time at which this failover group was last modified.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// Workspace sets, each containing workspaces that replicate to each other.
+	// A failover group currently supports exactly one workspace set.
 	WorkspaceSets []WorkspaceSet `json:"workspace_sets"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -271,7 +296,8 @@ func (s *GetStableUrlRequest) UnmarshalJSON(b []byte) error {
 // workspace assets) of a FailoverGroup. Populated only while the FailoverGroup
 // is in INITIAL_REPLICATION.
 type InitialReplicationProgress struct {
-	// Percent complete, 0-100.
+	// Percentage of in-scope assets replicated so far, from 0 to 100. Stays
+	// below 100 while errors block the first replication point.
 	Completed int `json:"completed,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -374,9 +400,10 @@ func (s ListStableUrlsResponse) MarshalJSON() ([]byte, error) {
 // A location mapping identified by a name, with URIs per region. The system
 // derives replication direction from effective_primary_region.
 type LocationMapping struct {
-	// Resource name for this location.
+	// Identifier of this location mapping, unique within the failover group.
 	Name string `json:"name"`
-	// URI for each region. Each entry maps a region name to a storage URI.
+	// The storage URI of this location in each region, with exactly one entry
+	// per region of the failover group.
 	UriByRegion []LocationMappingEntry `json:"uri_by_region"`
 }
 
@@ -387,9 +414,12 @@ func (s *LocationMapping) UnmarshalJSON(b []byte) error {
 // A single entry in a location mapping, mapping a region to a storage URI. Used
 // instead of map<string, string> for proto2 compatibility.
 type LocationMappingEntry struct {
-	// The region name.
+	// Cloud region this URI applies to. Must be one of the failover group's
+	// regions.
 	Region string `json:"region"`
-	// The storage URI for this region.
+	// Cloud storage URI of the location in this region. End the URI with `/*`
+	// to map every path under it as a prefix; within one mapping, either all
+	// URIs or none carry the `/*` suffix.
 	Uri string `json:"uri"`
 }
 
@@ -443,7 +473,7 @@ func (s StableUrl) MarshalJSON() ([]byte, error) {
 
 // A Unity Catalog catalog to replicate.
 type UcCatalog struct {
-	// The name of the UC catalog to replicate.
+	// Name of the Unity Catalog catalog to replicate.
 	Name string `json:"name"`
 }
 
@@ -453,12 +483,18 @@ func (s *UcCatalog) UnmarshalJSON(b []byte) error {
 
 // Unity Catalog replication configuration (top-level, not per-set).
 type UcReplicationConfig struct {
-	// UC catalogs to replicate.
+	// Unity Catalog catalogs to replicate, including their metadata and managed
+	// table data. Adding a catalog to an existing failover group returns the
+	// group to INITIAL_REPLICATION until the catalog has been replicated.
 	Catalogs []UcCatalog `json:"catalogs"`
-	// The workspace set whose workspaces will be used for data replication of
-	// all UC catalogs' underlying storage.
+	// Name of the workspace set whose workspaces run the data replication for
+	// the catalogs' underlying storage. Must match the name of a workspace set
+	// in this failover group.
 	DataReplicationWorkspaceSet string `json:"data_replication_workspace_set"`
-	// Location mappings - storage URI per region for each location.
+	// Storage location mappings. Each mapping pairs a storage path used by the
+	// replicated catalogs in one region with the corresponding path in the
+	// other region, so that replicated data is written to the matching storage
+	// in the secondary region.
 	LocationMappings []LocationMapping `json:"location_mappings,omitempty"`
 }
 
@@ -478,7 +514,9 @@ type UpdateFailoverGroupRequest struct {
 	// Fully qualified resource name in the format
 	// accounts/{account_id}/failover-groups/{failover_group_id}.
 	Name string `json:"-" url:"-"`
-	// Comma-separated list of fields to update.
+	// Comma-separated list of the fields to update. The supported paths are
+	// `workspace_sets`, `unity_catalog_assets`, `unity_catalog_assets.catalogs`
+	// and `unity_catalog_assets.location_mappings`; any other path is rejected.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -494,17 +532,25 @@ func (s UpdateFailoverGroupRequest) MarshalJSON() ([]byte, error) {
 
 // A set of workspaces that replicate to each other across regions.
 type WorkspaceSet struct {
-	// Resource name for this workspace set.
+	// Identifier of the workspace set, unique within the failover group and
+	// referenced by unity_catalog_assets.data_replication_workspace_set. Cannot
+	// be changed after creation.
 	Name string `json:"name"`
-	// Whether to enable control plane DR (notebooks, jobs, clusters, etc.) for
-	// this set. Defaults to false.
+	// Whether to replicate workspace assets (notebooks, jobs, clusters, SQL
+	// warehouses and so on) and their ACLs for this set. Defaults to false. Can
+	// be turned on or off with UpdateFailoverGroup.
 	ReplicateWorkspaceAssets bool `json:"replicate_workspace_assets,omitempty"`
 	// Resource names of stable URLs associated with this workspace set. Format:
 	// accounts/{account_id}/stable-urls/{stable_url_id}. The referenced stable
-	// URLs must already exist (via CreateStableUrl).
+	// URLs must already exist (via CreateStableUrl), and the list can only be
+	// set when replicate_workspace_assets is true. While workspace asset
+	// replication stays enabled, an update can attach or detach one stable URL
+	// at a time.
 	StableUrlNames []string `json:"stable_url_names,omitempty"`
-	// Workspace IDs in this set. The system derives and validates regions. All
-	// workspaces must be in the Mission Critical tier.
+	// IDs of the two workspaces in this set, one in each of the failover
+	// group's regions. The system derives and validates each workspace's
+	// region. Both workspaces must belong to the account and have the Mission
+	// Critical add-on enabled, and they cannot be changed after creation.
 	WorkspaceIds []string `json:"workspace_ids"`
 
 	ForceSendFields []string `json:"-" url:"-"`

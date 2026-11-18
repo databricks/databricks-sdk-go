@@ -320,9 +320,11 @@ type AiExtractRequest struct {
 	Options *AiExtractOptions `json:"options,omitempty"`
 	// The extraction schema defining the fields to extract. Either a JSON array
 	// of field names, assumed to be strings (e.g. ["company", "valuation"]), or
-	// a JSON object mapping each field to its type/description/nullability
-	// (e.g. {"company": {"type": "string", "description": "the company
-	// name"}}). Accepts up to 256 fields, 12 levels of nesting, and 500 enum
+	// a JSON object mapping each field to its type/description (e.g.
+	// {"company": {"type": "string", "description": "the company name"}}). Enum
+	// fields list their values in "labels" (e.g. {"currency": {"type": "enum",
+	// "labels": ["USD", "EUR"]}}). Primitive and enum fields are nullable by
+	// default. Accepts up to 256 fields, 12 levels of nesting, and 500 enum
 	// values. Supported field types are string, integer, number, boolean, and
 	// enum.
 	Schema json.RawMessage `json:"schema"`

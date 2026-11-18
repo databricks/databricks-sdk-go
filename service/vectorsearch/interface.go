@@ -35,7 +35,9 @@ type VectorSearchEndpointsService interface {
 	// applied or still in progress.
 	PatchEndpoint(ctx context.Context, request PatchEndpointRequest) (*EndpointInfo, error)
 
-	// Retrieve user-visible metrics for an endpoint
+	// Retrieve time series of usage and health metrics for an endpoint and its
+	// indexes, such as request counts, request latency percentiles and endpoint
+	// utilization.
 	RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they
@@ -77,13 +79,19 @@ type VectorSearchEndpointsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VectorSearchIndexesService interface {
 
-	// Create a new index.
+	// Create a new index on an endpoint. Creating a Delta Sync index also
+	// creates the pipeline that populates it from the source table; a Direct
+	// Vector Access index starts empty and is populated through Upsert data
+	// into an index.
 	CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*VectorIndex, error)
 
-	// Handles the deletion of data from a specified vector index.
+	// Delete rows from a Direct Vector Access index by primary key. The
+	// response reports how many rows were deleted and the primary keys of the
+	// rows that failed.
 	DeleteDataVectorIndex(ctx context.Context, request DeleteDataVectorIndexRequest) (*DeleteDataVectorIndexResponse, error)
 
-	// Delete an index.
+	// Delete an index and the data it holds. The source table of a Delta Sync
+	// index is not affected.
 	DeleteIndex(ctx context.Context, request DeleteIndexRequest) error
 
 	// Get an index.
@@ -92,20 +100,26 @@ type VectorSearchIndexesService interface {
 	// List all indexes in the given endpoint.
 	ListIndexes(ctx context.Context, request ListIndexesRequest) (*ListVectorIndexesResponse, error)
 
-	// Query the specified vector index.
+	// Query an index with a vector, text, or both, and return the requested
+	// columns of the best-matching rows.
 	QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error)
 
 	// Use `next_page_token` returned from previous `QueryVectorIndex` or
 	// `QueryVectorIndexNextPage` request to fetch next page of results.
 	QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error)
 
-	// Scan the specified vector index and return the first `num_results`
-	// entries after the exclusive `primary_key`.
+	// Scan an index and return the first `num_results` rows after the exclusive
+	// `last_primary_key`. Repeat the call with the returned `last_primary_key`
+	// to read the whole index.
 	ScanIndex(ctx context.Context, request ScanVectorIndexRequest) (*ScanVectorIndexResponse, error)
 
-	// Triggers a synchronization process for a specified vector index.
+	// Start a sync of a Delta Sync index with a `TRIGGERED` pipeline from its
+	// source table. An index with a `CONTINUOUS` pipeline syncs automatically
+	// and rejects manual syncs.
 	SyncIndex(ctx context.Context, request SyncIndexRequest) error
 
-	// Handles the upserting of data into a specified vector index.
+	// Insert rows into a Direct Vector Access index, replacing existing rows
+	// that have the same primary key. The response reports how many rows
+	// succeeded and the primary keys of the rows that failed.
 	UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error)
 }

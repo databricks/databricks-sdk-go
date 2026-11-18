@@ -692,9 +692,11 @@ type ExternalMetadataService interface {
 	// default.
 	CreateExternalMetadata(ctx context.Context, request CreateExternalMetadataRequest) (*ExternalMetadata, error)
 
-	// Deletes the external metadata object that matches the supplied name. The
-	// caller must be a metastore admin, the owner of the external metadata
-	// object, or a user that has the **MANAGE** privilege.
+	// Deletes the external metadata object that matches the supplied name.
+	// Every external lineage relationship in which the object is the source or
+	// the target is deleted with it. The caller must be a metastore admin, the
+	// owner of the external metadata object, or a user that has the **MANAGE**
+	// privilege.
 	DeleteExternalMetadata(ctx context.Context, request DeleteExternalMetadataRequest) error
 
 	// Gets the specified external metadata object in a metastore. The caller

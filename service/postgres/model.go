@@ -731,8 +731,9 @@ type CreateDatabaseRequest struct {
 	// The ID used to identify and manage the Database resource through the API.
 	// The Postgres database name is specified in `spec.postgres_database`.
 	//
-	// This value should be 4-63 characters, and only use characters available
-	// in DNS names, as defined by RFC-1123
+	// This value should be 3-63 characters, start with a lowercase letter, end
+	// with a lowercase letter or digit, and contain only lowercase letters,
+	// digits, and hyphens.
 	//
 	// If database_id is not specified in the request, it is generated
 	// automatically.
@@ -741,7 +742,9 @@ type CreateDatabaseRequest struct {
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
 	// If true, update the database if it already exists instead of returning an
-	// error.
+	// error. This requires `database_id` to be set. Without `database_id`, the
+	// request follows the normal create path and fails if the database name
+	// already exists.
 	ReplaceExisting bool `json:"-" url:"replace_existing,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -863,10 +866,14 @@ type CreateSnapshotRequest struct {
 	// The project in which to create the snapshot. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
-	// The snapshot to create.
+	// The snapshot to create. Only `spec` is read from this message; the system
+	// sets the other fields.
 	Snapshot Snapshot `json:"snapshot"`
 	// Client-chosen ID for the snapshot. It becomes the final segment of the
-	// snapshot resource name and cannot be changed after creation.
+	// snapshot resource name and cannot be changed after creation. The ID must
+	// be 3 to 63 characters long, start with a lowercase letter, end with a
+	// lowercase letter or digit, and contain only lowercase letters, digits,
+	// and hyphens.
 	SnapshotId string `json:"-" url:"snapshot_id"`
 }
 
@@ -875,6 +882,8 @@ func (s *CreateSnapshotRequest) UnmarshalJSON(b []byte) error {
 }
 
 type CreateSyncedTableRequest struct {
+	// The synced table to create. Its configuration is read from spec, and its
+	// name comes from synced_table_id.
 	SyncedTable SyncedTable `json:"synced_table"`
 	// The ID to use for the Synced Table. This becomes the final component of
 	// the SyncedTable's resource name. ID is required and is the synced table
@@ -1087,8 +1096,8 @@ type DatabaseDatabaseSpec struct {
 	// The name of the role that owns the database. Format:
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	//
-	// To change the owner, pass valid existing Role name when updating the
-	// Database
+	// The role must be in the same branch as the database. To change the owner,
+	// pass valid existing Role name when updating the Database
 	//
 	// Required when creating the Database.
 	Role string `json:"role"`
@@ -2791,8 +2800,6 @@ type MigrationType string
 
 const MigrationTypeMigrationTypeOneTimeCopy MigrationType = `MIGRATION_TYPE_ONE_TIME_COPY`
 
-const MigrationTypeMigrationTypeOnline MigrationType = `MIGRATION_TYPE_ONLINE`
-
 // String representation for [fmt.Print]
 func (f *MigrationType) String() string {
 	return string(*f)
@@ -2801,11 +2808,11 @@ func (f *MigrationType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MigrationType) Set(v string) error {
 	switch v {
-	case `MIGRATION_TYPE_ONE_TIME_COPY`, `MIGRATION_TYPE_ONLINE`:
+	case `MIGRATION_TYPE_ONE_TIME_COPY`:
 		*f = MigrationType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "MIGRATION_TYPE_ONE_TIME_COPY", "MIGRATION_TYPE_ONLINE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "MIGRATION_TYPE_ONE_TIME_COPY"`, v)
 	}
 }
 
@@ -2815,7 +2822,6 @@ func (f *MigrationType) Set(v string) error {
 func (f *MigrationType) Values() []MigrationType {
 	return []MigrationType{
 		MigrationTypeMigrationTypeOneTimeCopy,
-		MigrationTypeMigrationTypeOnline,
 	}
 }
 
@@ -3656,7 +3662,10 @@ func (s *ScheduleCadence) UnmarshalJSON(b []byte) error {
 }
 
 // An immutable, point-in-time copy of a branch's data within a project. It
-// remains available after the source branch is deleted.
+// remains available after the source branch is deleted. To restore a snapshot,
+// create a new branch with `spec.source_snapshot` set to the snapshot's
+// resource name. For an overview, see
+// https://docs.databricks.com/aws/en/oltp/projects/snapshots.
 type Snapshot struct {
 	// When the snapshot was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -3665,7 +3674,8 @@ type Snapshot struct {
 	Name string `json:"name,omitempty"`
 	// The user-chosen ID; the final segment of `name`.
 	SnapshotId string `json:"snapshot_id,omitempty"`
-	// Client-provided configuration of the snapshot.
+	// Client-provided configuration of the snapshot. When you create a
+	// snapshot, set exactly one of `expire_time`, `ttl`, or `no_expiry`.
 	Spec *SnapshotSpec `json:"spec,omitempty"`
 	// Server-observed state of the snapshot.
 	Status *SnapshotStatus `json:"status,omitempty"`
@@ -3726,23 +3736,28 @@ func (s *SnapshotScheduleOperationMetadata) UnmarshalJSON(b []byte) error {
 
 // Client-provided configuration of the snapshot.
 type SnapshotSpec struct {
-	// Absolute time at which the snapshot is deleted. Mutually exclusive with
-	// `ttl` and `no_expiry`.
+	// Absolute time at which the snapshot is deleted. It must not be in the
+	// past. Mutually exclusive with `ttl` and `no_expiry`.
 	ExpireTime *time.Time `json:"expire_time,omitempty"`
-	// If true, the snapshot never expires. Mutually exclusive with `ttl` and
+	// If true, the snapshot never expires. The value `false` is rejected; set
+	// `expire_time` or `ttl` instead. Mutually exclusive with `ttl` and
 	// `expire_time`.
 	NoExpiry bool `json:"no_expiry,omitempty"`
-	// The source branch to snapshot. Format:
-	// projects/{project_id}/branches/{branch_id}
+	// The source branch to snapshot. The branch must belong to the same project
+	// as the snapshot. Format: projects/{project_id}/branches/{branch_id}
 	SourceBranch string `json:"source_branch"`
-	// LSN to snapshot from, e.g. `16/B374D848`. Mutually exclusive with
-	// `source_branch_time`.
+	// Postgres log sequence number (LSN) to snapshot from. It must fall within
+	// the project's history retention window. If neither this field nor
+	// `source_branch_time` is set, the snapshot captures the current head of
+	// the source branch. Mutually exclusive with `source_branch_time`.
 	SourceBranchLsn string `json:"source_branch_lsn,omitempty"`
-	// Timestamp to snapshot from. Mutually exclusive with `source_branch_lsn`.
+	// Timestamp to snapshot from. It must fall within the project's history
+	// retention window. Mutually exclusive with `source_branch_lsn`.
 	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
-	// Time-to-live. The snapshot expires this long after it is created.
-	// Mutually exclusive with `expire_time` and `no_expiry`. Reads report the
-	// resolved absolute `expire_time` instead.
+	// Time-to-live, as a positive duration in seconds with an `s` suffix. The
+	// snapshot expires this long after it is created. Mutually exclusive with
+	// `expire_time` and `no_expiry`. Reads report the resolved absolute
+	// `expire_time` instead.
 	Ttl *duration.Duration `json:"ttl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3803,14 +3818,19 @@ func (s *StartMigrationResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A synced table is a read-only Postgres table that Databricks keeps up to date
+// from a Unity Catalog source table through a managed pipeline. It is also
+// registered in Unity Catalog under its three-part name. See
+// https://docs.databricks.com/aws/en/oltp/projects/sync-tables.
 type SyncedTable struct {
+	// The time when the synced table was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Output only. The Full resource name of the synced table in Postgres where
-	// (catalog, schema, table) are the UC entity names.
+	// The full resource name of the synced table, where (catalog, schema,
+	// table) are the Unity Catalog names of the synced table.
 	//
-	// Format "synced_tables/{catalog}.{schema}.{table}"
+	// Format: "synced_tables/{catalog}.{schema}.{table}".
 	//
-	// For the corresponding source table in the Unity catalog look for the
+	// For the corresponding source table in Unity Catalog, look for the
 	// "source_table_full_name" attribute.
 	Name string `json:"name,omitempty"`
 	// Configuration details of the synced table, such as the source table,
@@ -3818,7 +3838,9 @@ type SyncedTable struct {
 	Spec *SyncedTableSyncedTableSpec `json:"spec,omitempty"`
 	// Synced Table data synchronization status.
 	Status *SyncedTableSyncedTableStatus `json:"status,omitempty"`
-	// The part of the name, chosen by the user when the resource was created.
+	// The three-part Unity Catalog name of the synced table, in the format
+	// "{catalog}.{schema}.{table}". It is the synced_table_id that was used to
+	// create the synced table and the last component of name.
 	SyncedTableId string `json:"synced_table_id,omitempty"`
 	// The Unity Catalog table ID for this synced table.
 	Uid string `json:"uid,omitempty"`
@@ -3869,6 +3891,7 @@ func (s SyncedTablePipelineProgress) MarshalJSON() ([]byte, error) {
 }
 
 type SyncedTablePosition struct {
+	// The source Delta table version that the last successful sync read.
 	DeltaTableSyncInfo *DeltaTableSyncInfo `json:"delta_table_sync_info,omitempty"`
 	// The end timestamp of the most recent successful synchronization. This is
 	// the time when the data is available in the synced table.
@@ -3960,9 +3983,13 @@ type SyncedTableSyncedTableSpec struct {
 	// significantly improves performance for large tables. Requires
 	// workspace-level enablement through Lakebase Accelerated Sync preview.
 	AcceleratedSync bool `json:"accelerated_sync,omitempty"`
-	// The full resource name the branch associated with the table.
+	// The full resource name of the branch that contains the synced table.
 	//
 	// Format: "projects/{project_id}/branches/{branch_id}".
+	//
+	// A value must be specified when creating a synced table inside a standard
+	// catalog. Inside a Lakebase catalog it can be omitted, and if specified it
+	// must match the branch of that catalog.
 	Branch string `json:"branch,omitempty"`
 	// If true, the synced table's logical database and schema resources in PG
 	// will be created if they do not already exist. The request will fail if
@@ -3970,33 +3997,32 @@ type SyncedTableSyncedTableSpec struct {
 	//
 	// Defaults to true if omitted.
 	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
-	// ID of an existing pipeline to bin-pack this synced table into. At most
-	// one of existing_pipeline_id and new_pipeline_spec should be defined.
+	// ID of an existing pipeline to bin-pack this synced table into. The
+	// pipeline must be a synced table pipeline that runs continuously if and
+	// only if scheduling_policy is CONTINUOUS. At most one of
+	// existing_pipeline_id and new_pipeline_spec should be defined.
 	//
-	// The pipeline used for the synced table is returned via the top level
-	// pipeline_id attribute.
+	// The pipeline used for the synced table is returned in status.pipeline_id.
 	ExistingPipelineId string `json:"existing_pipeline_id,omitempty"`
 	// Extra PostgreSQL-only columns to add to the synced table.
 	ExtraColumns []SyncedTableSyncedTableSpecExtraColumn `json:"extra_columns,omitempty"`
 	// Specification for creating a new pipeline. At most one of
 	// existing_pipeline_id and new_pipeline_spec should be defined.
 	//
-	// The pipeline used for the synced table is returned via the top level
-	// pipeline_id attribute.
+	// The pipeline used for the synced table is returned in status.pipeline_id.
 	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
-	// The Postgres database name where the synced table will be created in.
-	//
-	// If this synced table is created inside a Lakebase Catalog, this attribute
-	// can be omitted on creation and is inferred from the postgres_database
-	// associated with the Lakebase Catalog. If specified when inside a Lakebase
-	// Catalog, the value must match.
-	//
-	// A value must be specified when creating a synced table inside a Standard
-	// Catalog.
+	// The name of the Postgres database where the synced table is created. A
+	// value must be specified on creation. If the synced table is created
+	// inside a Lakebase catalog, the value must match the Postgres database of
+	// that catalog.
 	PostgresDatabase string `json:"postgres_database,omitempty"`
 	// Primary Key columns to be used for data insert/update in the destination.
+	// At least one column must be specified.
 	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
-	// Scheduling policy of the underlying pipeline.
+	// Scheduling policy of the underlying pipeline. A value must be specified
+	// on creation. See
+	// https://docs.databricks.com/aws/en/oltp/projects/sync-tables for how to
+	// choose a sync mode.
 	SchedulingPolicy SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
 	//
@@ -4204,7 +4230,8 @@ type SyncedTableSyncedTableStatus struct {
 	LastSyncTime *time.Time `json:"last_sync_time,omitempty"`
 	// A text description of the current state of the synced table.
 	Message string `json:"message,omitempty"`
-
+	// Progress of the sync that is currently running, either the initial data
+	// load or an update of a triggered or snapshot synced table.
 	OngoingSyncProgress *SyncedTablePipelineProgress `json:"ongoing_sync_progress,omitempty"`
 	// ID of the associated pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
@@ -4312,7 +4339,8 @@ type UpdateDatabaseRequest struct {
 	// The resource name of the database. Format:
 	// projects/{project_id}/branches/{branch_id}/databases/{database_id}
 	Name string `json:"-" url:"-"`
-	// The list of fields to update.
+	// The list of fields to update. The updatable fields are `spec.role` and
+	// `spec.postgres_database`.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

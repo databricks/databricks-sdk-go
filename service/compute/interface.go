@@ -451,8 +451,11 @@ type InstanceProfilesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LibrariesService interface {
 
-	// Get the status of all libraries on all clusters. A status is returned for
-	// all libraries installed on this cluster via the API or the libraries UI.
+	// Get the status of all libraries on all clusters in the workspace. A
+	// status is returned for all libraries installed on each cluster via the
+	// API or the libraries UI. If the workspace has more library statuses than
+	// the response limit allows, the request fails; call the per-cluster status
+	// method for each cluster instead.
 	AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error)
 
 	// Get the status of libraries on a cluster. A status is returned for all
@@ -460,8 +463,8 @@ type LibrariesService interface {
 	// order of returned libraries is as follows: 1. Libraries set to be
 	// installed on this cluster, in the order that the libraries were added to
 	// the cluster, are returned first. 2. Libraries that were previously
-	// requested to be installed on this cluster or, but are now marked for
-	// removal, in no particular order, are returned last.
+	// requested to be installed on this cluster but are now marked for removal,
+	// in no particular order, are returned last.
 	ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error)
 
 	// Add libraries to install on a cluster. The installation is asynchronous;

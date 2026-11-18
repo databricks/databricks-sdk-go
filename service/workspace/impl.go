@@ -503,16 +503,6 @@ func (a *secretsImpl) internalListScopes(ctx context.Context) (*ListScopesRespon
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
 //
-// Example response:
-//
-// .. code::
-//
-// { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp":
-// "1520467595000" }, { "key": "my-byte-key", "last_updated_timestamp":
-// "1520467595000" }, ] }
-//
-// The lastUpdatedTimestamp returned is in milliseconds since epoch.
-//
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
@@ -537,16 +527,6 @@ func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsReques
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
-//
-// Example response:
-//
-// .. code::
-//
-// { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp":
-// "1520467595000" }, { "key": "my-byte-key", "last_updated_timestamp":
-// "1520467595000" }, ] }
-//
-// The lastUpdatedTimestamp returned is in milliseconds since epoch.
 //
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API

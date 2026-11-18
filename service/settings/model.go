@@ -1245,10 +1245,7 @@ func (f *CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode) Type() 
 // — including request origin, destination, and authentication.
 type CustomerFacingIngressNetworkPolicyPrivateIngressRule struct {
 	// The authenticated identity the request must match. When unset, the rule
-	// matches all users and service principals. On the account-level network
-	// policy, scoping to specific identities is not currently supported, so
-	// this field must be unset (the rule matches all users and service
-	// principals).
+	// matches all users and service principals.
 	Authentication *CustomerFacingIngressNetworkPolicyAuthentication `json:"authentication,omitempty"`
 	// The destination the request must match — the resource being accessed,
 	// for example the workspace UI, workspace APIs, or account-level APIs. See

@@ -512,8 +512,9 @@ func (s *GetStatementResultRequest) UnmarshalJSON(b []byte) error {
 // users to attribute the executions by key and optional value to filter by.
 // QueryTag is the user-facing representation.
 type QueryTag struct {
+	// The key of the tag.
 	Key string `json:"key"`
-
+	// The value of the tag. Key-only tags have no value.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

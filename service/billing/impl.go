@@ -70,8 +70,9 @@ func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyReque
 	return &budgetPolicy, err
 }
 
-// Lists all policies. Policies are returned in the alphabetically ascending
-// order of their names.
+// Lists the usage policies that the caller has permission to view. Policies are
+// sorted by name in ascending order unless `sort_spec` requests a different
+// order.
 func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesRequest) listing.Iterator[BudgetPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
@@ -96,8 +97,9 @@ func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesR
 	return iterator
 }
 
-// Lists all policies. Policies are returned in the alphabetically ascending
-// order of their names.
+// Lists the usage policies that the caller has permission to view. Policies are
+// sorted by name in ascending order unless `sort_spec` requests a different
+// order.
 func (a *budgetPolicyImpl) ListAll(ctx context.Context, request ListBudgetPoliciesRequest) ([]BudgetPolicy, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[BudgetPolicy](ctx, iterator)
