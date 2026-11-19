@@ -449,7 +449,9 @@ type Datasource struct {
 	// Schedule on which the datasource's ingestion job runs. A datasource
 	// cannot be paused, so a request that sets `schedule.enabled` to `false` is
 	// rejected. Continuous schedules are not supported for Unity Catalog
-	// connection datasources.
+	// connection datasources. For an existing-table datasource, runs must be no
+	// further apart than the shorter of the source table's
+	// `delta.deletedFileRetentionDuration` and `delta.logRetentionDuration`.
 	Schedule Schedule `json:"schedule"`
 	// Name of the Unity Catalog schema that contains the datasource. Required
 	// on create and cannot be changed afterward. Reads return the value as
@@ -1996,8 +1998,9 @@ func (f *RuleView) Type() string {
 // Defines when a recurring job executes.
 //
 // Exactly one of the timing modes (`at_least_every`, `cron_expression`,
-// `continuous`) must be set; combining them or setting none is rejected by the
-// server. `compute_group` and `enabled` are orthogonal to the timing.
+// `continuous`, `file_arrival`) must be set; combining them or setting none is
+// rejected by the server. `compute_group` and `enabled` are orthogonal to the
+// timing.
 type Schedule struct {
 	// Duration string defining the minimum cadence. May contain components for
 	// days, hours, minutes, seconds (e.g. `5d`, `5d3h`, `3d2h5m12s`, `12m16s`).

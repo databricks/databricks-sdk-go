@@ -48,6 +48,120 @@ func (_m *MockSoftwareArtifactsInterface) EXPECT() *MockSoftwareArtifactsInterfa
 	return &MockSoftwareArtifactsInterface_Expecter{mock: &_m.Mock}
 }
 
+// DeleteSoftwareArtifact provides a mock function for the type MockSoftwareArtifactsInterface
+func (_mock *MockSoftwareArtifactsInterface) DeleteSoftwareArtifact(ctx context.Context, request softwareartifacts.DeleteSoftwareArtifactRequest) error {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSoftwareArtifact")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, softwareartifacts.DeleteSoftwareArtifactRequest) error); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSoftwareArtifact'
+type MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call struct {
+	*mock.Call
+}
+
+// DeleteSoftwareArtifact is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request softwareartifacts.DeleteSoftwareArtifactRequest
+func (_e *MockSoftwareArtifactsInterface_Expecter) DeleteSoftwareArtifact(ctx any, request any) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call {
+	return &MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call{Call: _e.mock.On("DeleteSoftwareArtifact", ctx, request)}
+}
+
+func (_c *MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call) Run(run func(ctx context.Context, request softwareartifacts.DeleteSoftwareArtifactRequest)) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 softwareartifacts.DeleteSoftwareArtifactRequest
+		if args[1] != nil {
+			arg1 = args[1].(softwareartifacts.DeleteSoftwareArtifactRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call) Return(err error) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call) RunAndReturn(run func(ctx context.Context, request softwareartifacts.DeleteSoftwareArtifactRequest) error) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifact_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteSoftwareArtifactVersion provides a mock function for the type MockSoftwareArtifactsInterface
+func (_mock *MockSoftwareArtifactsInterface) DeleteSoftwareArtifactVersion(ctx context.Context, request softwareartifacts.DeleteSoftwareArtifactVersionRequest) error {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSoftwareArtifactVersion")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, softwareartifacts.DeleteSoftwareArtifactVersionRequest) error); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSoftwareArtifactVersion'
+type MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call struct {
+	*mock.Call
+}
+
+// DeleteSoftwareArtifactVersion is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request softwareartifacts.DeleteSoftwareArtifactVersionRequest
+func (_e *MockSoftwareArtifactsInterface_Expecter) DeleteSoftwareArtifactVersion(ctx any, request any) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call {
+	return &MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call{Call: _e.mock.On("DeleteSoftwareArtifactVersion", ctx, request)}
+}
+
+func (_c *MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call) Run(run func(ctx context.Context, request softwareartifacts.DeleteSoftwareArtifactVersionRequest)) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 softwareartifacts.DeleteSoftwareArtifactVersionRequest
+		if args[1] != nil {
+			arg1 = args[1].(softwareartifacts.DeleteSoftwareArtifactVersionRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call) Return(err error) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call) RunAndReturn(run func(ctx context.Context, request softwareartifacts.DeleteSoftwareArtifactVersionRequest) error) *MockSoftwareArtifactsInterface_DeleteSoftwareArtifactVersion_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetSoftwareArtifact provides a mock function for the type MockSoftwareArtifactsInterface
 func (_mock *MockSoftwareArtifactsInterface) GetSoftwareArtifact(ctx context.Context, request softwareartifacts.GetSoftwareArtifactRequest) (*softwareartifacts.SoftwareArtifact, error) {
 	ret := _mock.Called(ctx, request)

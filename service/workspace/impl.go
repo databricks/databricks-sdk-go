@@ -378,13 +378,6 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 //
 // Users must have the “MANAGE“ permission to invoke this API.
 //
-// Example response:
-//
-// .. code::
-//
-// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
-// "data-scientists", "permission": "READ" }] }
-//
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
@@ -410,13 +403,6 @@ func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) lis
 //
 // Users must have the “MANAGE“ permission to invoke this API.
 //
-// Example response:
-//
-// .. code::
-//
-// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
-// "data-scientists", "permission": "READ" }] }
-//
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
@@ -441,13 +427,6 @@ func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequ
 
 // Lists all secret scopes available in the workspace.
 //
-// Example response:
-//
-// .. code::
-//
-// { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
-// },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
-//
 // Throws “PERMISSION_DENIED“ if the user does not have permission to make
 // this API call.
 func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretScope] {
@@ -470,13 +449,6 @@ func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretSco
 }
 
 // Lists all secret scopes available in the workspace.
-//
-// Example response:
-//
-// .. code::
-//
-// { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
-// },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
 //
 // Throws “PERMISSION_DENIED“ if the user does not have permission to make
 // this API call.

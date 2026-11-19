@@ -97,12 +97,20 @@ func (s DatabricksServiceExceptionWithDetailsProto) MarshalJSON() ([]byte, error
 // configuration. This resource contains the workspace base environments that
 // are used as defaults for serverless notebooks and jobs in the workspace, for
 // both CPU and GPU compute types.
+//
+// When cpu_workspace_base_environment or gpu_workspace_base_environment is
+// unset, new serverless notebooks for that compute type use the Databricks
+// Standard base environment: the latest stable standard environment version
+// provided by Databricks, with no workspace base environment applied. The
+// workspace settings page shows this as Standard Latest.
 type DefaultWorkspaceBaseEnvironment struct {
-	// The default workspace base environment for CPU compute. Format:
-	// workspace-base-environments/{workspace_base_environment}
+	// The default workspace base environment for CPU compute. If unset, CPU
+	// compute defaults to the Databricks Standard base environment (Standard
+	// Latest). Format: workspace-base-environments/{workspace_base_environment}
 	CpuWorkspaceBaseEnvironment string `json:"cpu_workspace_base_environment,omitempty"`
-	// The default workspace base environment for GPU compute. Format:
-	// workspace-base-environments/{workspace_base_environment}
+	// The default workspace base environment for GPU compute. If unset, GPU
+	// compute defaults to the Databricks Standard base environment (Standard
+	// Latest). Format: workspace-base-environments/{workspace_base_environment}
 	GpuWorkspaceBaseEnvironment string `json:"gpu_workspace_base_environment,omitempty"`
 	// The resource name of this singleton resource. Format:
 	// default-workspace-base-environment
@@ -553,7 +561,10 @@ type UpdateDefaultWorkspaceBaseEnvironmentRequest struct {
 	//
 	// To unset one or both defaults, include the field path(s) in the mask and
 	// omit them from the request body. To unset both, you must list both paths
-	// explicitly — the wildcard '*' cannot be used to unset fields.
+	// explicitly — the wildcard '*' cannot be used to unset fields. Unsetting
+	// a default makes that compute type use the Databricks Standard base
+	// environment. The Standard base environment has no resource name, so
+	// unsetting the field is the only way to select it.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

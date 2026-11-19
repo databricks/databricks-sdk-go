@@ -405,12 +405,16 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 
 type UsageDashboardsInterface interface {
 
-	// Create a usage dashboard specified by workspaceId, accountId, and dashboard
-	// type.
+	// Imports a pre-built usage dashboard of the given type into a workspace. Each
+	// call imports a new dashboard, even if the caller already created one of the
+	// same type in that workspace. The caller must be an account admin and a user
+	// of the target workspace. See
+	// https://docs.databricks.com/admin/account-settings/usage.html.
 	Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error)
 
-	// Get a usage dashboard specified by workspaceId, accountId, and dashboard
-	// type.
+	// Gets the most recent usage dashboard of the given type that the caller
+	// created. The response is empty if no such dashboard exists, if it has been
+	// deleted, or if the caller can no longer access its workspace.
 	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)
 }
 

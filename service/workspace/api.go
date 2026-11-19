@@ -350,17 +350,6 @@ type SecretsInterface interface {
 	// The scope name must consist of alphanumeric characters, dashes, underscores,
 	// and periods, and may not exceed 128 characters.
 	//
-	// Example request:
-	//
-	// .. code::
-	//
-	// { "scope": "my-simple-databricks-scope", "initial_manage_principal": "users"
-	// "scope_backend_type": "databricks|azure_keyvault", # below is only required
-	// if scope type is azure_keyvault "backend_azure_keyvault": { "resource_id":
-	// "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",
-	// "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name":
-	// "https://xxxx.vault.azure.net/", } }
-	//
 	// If ``initial_manage_principal`` is specified, the initial ACL applied to the
 	// scope is applied to the supplied principal (user or group) with ``MANAGE``
 	// permissions. The only supported principal for this option is the group
@@ -369,30 +358,24 @@ type SecretsInterface interface {
 	// ``MANAGE`` permission applied to the scope is assigned to the API request
 	// issuer's user identity.
 	//
-	// If ``scope_backend_type`` is ``azure_keyvault``, a secret scope is created
-	// with secrets from a given Azure KeyVault. The caller must provide the
-	// keyvault_resource_id and the tenant_id for the key vault. If
-	// ``scope_backend_type`` is ``databricks`` or is unspecified, an empty secret
-	// scope is created and stored in Databricks's own storage.
+	// If ``scope_backend_type`` is ``AZURE_KEYVAULT``, a secret scope is created
+	// with secrets from an existing Azure key vault. The caller must provide the
+	// key vault's resource ID and DNS name in ``backend_azure_keyvault``. If
+	// ``scope_backend_type`` is ``DATABRICKS`` or is unspecified, an empty secret
+	// scope is created and stored in Databricks-managed storage.
 	//
 	// Throws ``RESOURCE_ALREADY_EXISTS`` if a scope with the given name already
 	// exists. Throws ``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in the
 	// workspace is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the scope name
 	// is invalid. Throws ``BAD_REQUEST`` if request violated constraints. Throws
-	// ``CUSTOMER_UNAUTHORIZED`` if normal user attempts to create a scope with name
-	// reserved for databricks internal usage. Throws ``UNAUTHENTICATED`` if unable
-	// to verify user access permission on Azure KeyVault
+	// ``CUSTOMER_UNAUTHORIZED`` if the scope name is reserved for Databricks
+	// internal use. Throws ``UNAUTHENTICATED`` if Databricks cannot verify the
+	// caller's access to the Azure key vault.
 	CreateScope(ctx context.Context, request CreateScope) error
 
 	// Deletes the given ACL on the given scope.
 	//
 	// Users must have the ``MANAGE`` permission to invoke this API.
-	//
-	// Example request:
-	//
-	// .. code::
-	//
-	// { "scope": "my-secret-scope", "principal": "data-scientists" }
 	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL
 	// exists. Throws ``PERMISSION_DENIED`` if the user does not have permission to
@@ -402,30 +385,16 @@ type SecretsInterface interface {
 
 	// Deletes a secret scope.
 	//
-	// Example request:
-	//
-	// .. code::
-	//
-	// { "scope": "my-secret-scope" }
-	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this API
-	// call. Throws ``BAD_REQUEST`` if system user attempts to delete internal
-	// secret scope.
+	// call.
 	DeleteScope(ctx context.Context, request DeleteScope) error
 
 	// Deletes a secret scope.
 	//
-	// Example request:
-	//
-	// .. code::
-	//
-	// { "scope": "my-secret-scope" }
-	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this API
-	// call. Throws ``BAD_REQUEST`` if system user attempts to delete internal
-	// secret scope.
+	// call.
 	DeleteScopeByScope(ctx context.Context, scope string) error
 
 	// Deletes the secret stored in this secret scope. You must have ``WRITE`` or
@@ -433,19 +402,13 @@ type SecretsInterface interface {
 	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists.
 	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
-	// this API call. Throws ``BAD_REQUEST`` if system user attempts to delete an
-	// internal secret, or request is made against Azure KeyVault backed scope.
+	// this API call. Throws ``BAD_REQUEST`` if the request is made against an Azure
+	// Key Vault-backed scope.
 	DeleteSecret(ctx context.Context, request DeleteSecret) error
 
 	// Describes the details about the given ACL, such as the group and permission.
 	//
 	// Users must have the ``MANAGE`` permission to invoke this API.
-	//
-	// Example response:
-	//
-	// .. code::
-	//
-	// { "principal": "data-scientists", "permission": "READ" }
 	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this API
@@ -473,13 +436,6 @@ type SecretsInterface interface {
 	//
 	// Users must have the ``MANAGE`` permission to invoke this API.
 	//
-	// Example response:
-	//
-	// .. code::
-	//
-	// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
-	// "data-scientists", "permission": "READ" }] }
-	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this API
 	// call.
@@ -490,13 +446,6 @@ type SecretsInterface interface {
 	// Lists the ACLs set on the given scope.
 	//
 	// Users must have the ``MANAGE`` permission to invoke this API.
-	//
-	// Example response:
-	//
-	// .. code::
-	//
-	// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
-	// "data-scientists", "permission": "READ" }] }
 	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this API
@@ -509,26 +458,12 @@ type SecretsInterface interface {
 	//
 	// Users must have the ``MANAGE`` permission to invoke this API.
 	//
-	// Example response:
-	//
-	// .. code::
-	//
-	// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
-	// "data-scientists", "permission": "READ" }] }
-	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this API
 	// call.
 	ListAclsByScope(ctx context.Context, scope string) (*ListAclsResponse, error)
 
 	// Lists all secret scopes available in the workspace.
-	//
-	// Example response:
-	//
-	// .. code::
-	//
-	// { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
-	// },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
 	//
 	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
 	// this API call.
@@ -537,13 +472,6 @@ type SecretsInterface interface {
 	ListScopes(ctx context.Context) listing.Iterator[SecretScope]
 
 	// Lists all secret scopes available in the workspace.
-	//
-	// Example response:
-	//
-	// .. code::
-	//
-	// { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
-	// },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
 	//
 	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
 	// this API call.
@@ -592,29 +520,12 @@ type SecretsInterface interface {
 	// ``READ`` - Allowed to read this secret scope and list what secrets are
 	// available.
 	//
-	// Note that in general, secret values can only be read from within a command on
-	// a cluster (for example, through a notebook). There is no API to read the
-	// actual secret value material outside of a cluster. However, the user's
-	// permission will be applied based on who is executing the command, and they
-	// must have at least READ permission.
-	//
 	// Users must have the ``MANAGE`` permission to invoke this API.
 	//
-	// Example request:
-	//
-	// .. code::
-	//
-	// { "scope": "my-secret-scope", "principal": "data-scientists", "permission":
-	// "READ" }
-	//
-	// The principal is a user or group name corresponding to an existing Databricks
-	// principal to be granted or revoked access.
-	//
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``RESOURCE_ALREADY_EXISTS`` if a permission for the principal already exists.
-	// Throws ``INVALID_PARAMETER_VALUE`` if the permission or principal is invalid.
-	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
-	// this API call.
+	// ``INVALID_PARAMETER_VALUE`` if the permission or principal is invalid. Throws
+	// ``PERMISSION_DENIED`` if the user does not have permission to make this API
+	// call.
 	PutAcl(ctx context.Context, request PutAcl) error
 
 	// Inserts a secret under the provided scope with the given name. If a secret
@@ -667,16 +578,9 @@ type SecretsAPI struct {
 
 // Deletes a secret scope.
 //
-// Example request:
-//
-// .. code::
-//
-// { "scope": "my-secret-scope" }
-//
 // Throws “RESOURCE_DOES_NOT_EXIST“ if the scope does not exist. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
-// call. Throws “BAD_REQUEST“ if system user attempts to delete internal
-// secret scope.
+// call.
 func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error {
 	return a.secretsImpl.DeleteScope(ctx, DeleteScope{
 		Scope: scope,
@@ -686,13 +590,6 @@ func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error
 // Lists the ACLs set on the given scope.
 //
 // Users must have the “MANAGE“ permission to invoke this API.
-//
-// Example response:
-//
-// .. code::
-//
-// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
-// "data-scientists", "permission": "READ" }] }
 //
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API

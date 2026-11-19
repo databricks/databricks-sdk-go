@@ -138,7 +138,9 @@ func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAsset
 	return &cleanRoomAsset, err
 }
 
-// List assets.
+// List the assets in a clean room. Listed assets do not include their
+// asset-type specific details, such as table columns or notebook content; use
+// the get method to retrieve them.
 func (a *cleanRoomAssetsImpl) List(ctx context.Context, request ListCleanRoomAssetsRequest) listing.Iterator[CleanRoomAsset] {
 
 	getNextPage := func(ctx context.Context, req ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error) {
@@ -163,7 +165,9 @@ func (a *cleanRoomAssetsImpl) List(ctx context.Context, request ListCleanRoomAss
 	return iterator
 }
 
-// List assets.
+// List the assets in a clean room. Listed assets do not include their
+// asset-type specific details, such as table columns or notebook content; use
+// the get method to retrieve them.
 func (a *cleanRoomAssetsImpl) ListAll(ctx context.Context, request ListCleanRoomAssetsRequest) ([]CleanRoomAsset, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[CleanRoomAsset](ctx, iterator)

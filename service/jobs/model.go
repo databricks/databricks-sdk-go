@@ -358,7 +358,7 @@ func (s AiRuntimeTaskOutput) MarshalJSON() ([]byte, error) {
 // when the scheduler ranks pending work.
 type AiRuntimeTaskPriorityClass string
 
-const AiRuntimeTaskPriorityClassBestEffort AiRuntimeTaskPriorityClass = `BEST_EFFORT`
+const AiRuntimeTaskPriorityClassHigh AiRuntimeTaskPriorityClass = `HIGH`
 
 const AiRuntimeTaskPriorityClassNormal AiRuntimeTaskPriorityClass = `NORMAL`
 
@@ -370,11 +370,11 @@ func (f *AiRuntimeTaskPriorityClass) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AiRuntimeTaskPriorityClass) Set(v string) error {
 	switch v {
-	case `BEST_EFFORT`, `NORMAL`:
+	case `HIGH`, `NORMAL`:
 		*f = AiRuntimeTaskPriorityClass(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BEST_EFFORT", "NORMAL"`, v)
+		return fmt.Errorf(`value "%s" is not one of "HIGH", "NORMAL"`, v)
 	}
 }
 
@@ -383,7 +383,7 @@ func (f *AiRuntimeTaskPriorityClass) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *AiRuntimeTaskPriorityClass) Values() []AiRuntimeTaskPriorityClass {
 	return []AiRuntimeTaskPriorityClass{
-		AiRuntimeTaskPriorityClassBestEffort,
+		AiRuntimeTaskPriorityClassHigh,
 		AiRuntimeTaskPriorityClassNormal,
 	}
 }
@@ -1423,7 +1423,9 @@ type CreateJob struct {
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// Path of the job parent folder in workspace file tree. If absent, the job
-	// doesn't have a workspace object.
+	// doesn't have a parent folder.
+	//
+	// Example: /Workspace/Projects/my_project
 	ParentPath string `json:"parent_path,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run. The performance
@@ -3334,7 +3336,9 @@ type JobSettings struct {
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// Path of the job parent folder in workspace file tree. If absent, the job
-	// doesn't have a workspace object.
+	// doesn't have a parent folder.
+	//
+	// Example: /Workspace/Projects/my_project
 	ParentPath string `json:"parent_path,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run. The performance

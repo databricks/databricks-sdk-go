@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.202.0 (2026-11-19)
+
+### API Changes
+* Add `DeleteSoftwareArtifact` and `DeleteSoftwareArtifactVersion` methods for [w.SoftwareArtifacts](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/softwareartifacts#SoftwareArtifactsAPI) workspace-level service.
+* Add `High` enum value for [jobs.AiRuntimeTaskPriorityClass](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTaskPriorityClass).
+* [Breaking] Remove `BestEffort` enum value for [jobs.AiRuntimeTaskPriorityClass](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTaskPriorityClass).
+
 ## Release v0.201.0 (2026-11-18)
 
 ### API Changes

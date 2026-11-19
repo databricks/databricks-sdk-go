@@ -906,7 +906,7 @@ func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*G
 	return &getFileResponse, err
 }
 
-// List files attached to a parent entity.
+// Lists the files attached to a provider profile or a listing.
 func (a *providerFilesImpl) List(ctx context.Context, request ListFilesRequest) listing.Iterator[FileInfo] {
 
 	getNextPage := func(ctx context.Context, req ListFilesRequest) (*ListFilesResponse, error) {
@@ -931,7 +931,7 @@ func (a *providerFilesImpl) List(ctx context.Context, request ListFilesRequest) 
 	return iterator
 }
 
-// List files attached to a parent entity.
+// Lists the files attached to a provider profile or a listing.
 func (a *providerFilesImpl) ListAll(ctx context.Context, request ListFilesRequest) ([]FileInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FileInfo](ctx, iterator)
@@ -998,7 +998,7 @@ func (a *providerListingsImpl) Get(ctx context.Context, request GetListingReques
 	return &getListingResponse, err
 }
 
-// List listings owned by this provider
+// Lists the listings owned by the provider profiles in the caller's account.
 func (a *providerListingsImpl) List(ctx context.Context, request GetListingsRequest) listing.Iterator[Listing] {
 
 	getNextPage := func(ctx context.Context, req GetListingsRequest) (*GetListingsResponse, error) {
@@ -1023,7 +1023,7 @@ func (a *providerListingsImpl) List(ctx context.Context, request GetListingsRequ
 	return iterator
 }
 
-// List listings owned by this provider
+// Lists the listings owned by the provider profiles in the caller's account.
 func (a *providerListingsImpl) ListAll(ctx context.Context, request GetListingsRequest) ([]Listing, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Listing](ctx, iterator)
@@ -1235,7 +1235,7 @@ func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 	return &getProviderResponse, err
 }
 
-// List provider profiles for account.
+// Lists the provider profiles in the caller's account.
 func (a *providerProvidersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
 
 	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
@@ -1260,7 +1260,7 @@ func (a *providerProvidersImpl) List(ctx context.Context, request ListProvidersR
 	return iterator
 }
 
-// List provider profiles for account.
+// Lists the provider profiles in the caller's account.
 func (a *providerProvidersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ProviderInfo](ctx, iterator)

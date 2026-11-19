@@ -167,17 +167,19 @@ type ProviderExchangesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderFilesService interface {
 
-	// Create a file. Currently, only provider icons and attached notebooks are
-	// supported.
+	// Creates a file and returns a short-lived URL for uploading its content
+	// with an HTTP PUT request. Only provider icons (PROVIDER_ICON files on a
+	// PROVIDER parent) and sample notebooks (EMBEDDED_NOTEBOOK files on a
+	// LISTING parent) are supported.
 	Create(ctx context.Context, request CreateFileRequest) (*CreateFileResponse, error)
 
-	// Delete a file
+	// Deletes a file. Fails if the file is still in use.
 	Delete(ctx context.Context, request DeleteFileRequest) error
 
-	// Get a file
+	// Gets a file's metadata, including a short-lived download URL.
 	Get(ctx context.Context, request GetFileRequest) (*GetFileResponse, error)
 
-	// List files attached to a parent entity.
+	// Lists the files attached to a provider profile or a listing.
 	List(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error)
 }
 
@@ -187,19 +189,27 @@ type ProviderFilesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderListingsService interface {
 
-	// Create a new listing
+	// Creates a listing under one of the caller's provider profiles. The
+	// listing name, provider ID and visibility are required, and the caller
+	// must have access to any share that the listing references. Returns the ID
+	// of the new listing.
 	Create(ctx context.Context, request CreateListingRequest) (*CreateListingResponse, error)
 
-	// Delete a listing
+	// Deletes a listing permanently. The underlying share is not deleted, and
+	// consumers who already have access to the share keep that access until it
+	// is revoked in Delta Sharing.
 	Delete(ctx context.Context, request DeleteListingRequest) error
 
-	// Get a listing
+	// Gets a listing owned by one of the caller's provider profiles.
 	Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error)
 
-	// List listings owned by this provider
+	// Lists the listings owned by the provider profiles in the caller's
+	// account.
 	List(ctx context.Context, request GetListingsRequest) (*GetListingsResponse, error)
 
-	// Update a listing
+	// Updates a listing. Send the full listing definition; the listing type
+	// cannot be changed after the listing is created, and changing the share
+	// re-links the listing to the new share.
 	Update(ctx context.Context, request UpdateListingRequest) (*UpdateListingResponse, error)
 }
 
@@ -213,8 +223,10 @@ type ProviderPersonalizationRequestsService interface {
 	// personalization requests, regardless of which listing they are for.
 	List(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error)
 
-	// Update personalization request. This method only permits updating the
-	// status of the request.
+	// Updates the status of a personalization request; other properties of the
+	// request cannot be changed. Fulfilling a request grants the consumer
+	// access to the share, and denying a fulfilled request revokes that access.
+	// The listing must be published.
 	Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error)
 }
 
@@ -223,17 +235,24 @@ type ProviderPersonalizationRequestsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderProviderAnalyticsDashboardsService interface {
 
-	// Create provider analytics dashboard. Returns Marketplace specific `id`.
-	// Not to be confused with the Lakeview dashboard id.
+	// Creates the Provider Analytics Dashboard in the caller's workspace from
+	// the latest template. Fails if the dashboard already exists. Returns the
+	// Marketplace-specific `id` of the dashboard record, which is distinct from
+	// the AI/BI dashboard ID.
 	Create(ctx context.Context) (*ProviderAnalyticsDashboard, error)
 
-	// Get provider analytics dashboard.
+	// Gets the Provider Analytics Dashboard that was created for the caller's
+	// account. Returns an empty response if the dashboard has not been created
+	// yet.
 	Get(ctx context.Context) (*ListProviderAnalyticsDashboardResponse, error)
 
-	// Get latest version of provider analytics dashboard.
+	// Gets the latest available version of the Provider Analytics Dashboard
+	// template.
 	GetLatestVersion(ctx context.Context) (*GetLatestVersionProviderAnalyticsDashboardResponse, error)
 
-	// Update provider analytics dashboard.
+	// Updates the Provider Analytics Dashboard to a newer version of the
+	// template. The requested version must be newer than the version that the
+	// dashboard currently uses.
 	Update(ctx context.Context, request UpdateProviderAnalyticsDashboardRequest) (*UpdateProviderAnalyticsDashboardResponse, error)
 }
 
@@ -242,18 +261,19 @@ type ProviderProviderAnalyticsDashboardsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderProvidersService interface {
 
-	// Create a provider
+	// Creates a provider profile in the caller's account. Returns the ID of the
+	// new profile.
 	Create(ctx context.Context, request CreateProviderRequest) (*CreateProviderResponse, error)
 
-	// Delete provider
+	// Deletes a provider profile and all of the listings that it owns.
 	Delete(ctx context.Context, request DeleteProviderRequest) error
 
-	// Get provider profile
+	// Gets a provider profile by ID.
 	Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error)
 
-	// List provider profiles for account.
+	// Lists the provider profiles in the caller's account.
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 
-	// Update provider profile
+	// Updates a provider profile. Send the full profile definition.
 	Update(ctx context.Context, request UpdateProviderRequest) (*UpdateProviderResponse, error)
 }

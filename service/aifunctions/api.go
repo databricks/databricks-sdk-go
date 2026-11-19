@@ -19,7 +19,9 @@ type AiFunctionsInterface interface {
 
 	// Turn text and structured data into decisions your application can use. Define
 	// questions and criteria to choose an option, estimate a probability, or assign
-	// a score given a provided state.
+	// a score given a provided state. For REST API requests, the default rate limit
+	// is 1,200 requests per minute per workspace. Contact your Databricks account
+	// team to request a higher limit.
 	AiDecide(ctx context.Context, request AiDecideRequest) (*AiDecideResponse, error)
 
 	// Extracts structured data from text and documents according to a provided

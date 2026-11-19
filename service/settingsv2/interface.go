@@ -59,7 +59,7 @@ type AccountSettingsV2Service interface {
 type WorkspaceSettingsV2Service interface {
 
 	// Get a setting value at workspace level. See
-	// :method:settingsv2/listworkspacesettingsmetadata for list of setting
+	// :method:settingsv2/listworkspacesettingsmetadata for the list of settings
 	// available via public APIs.
 	GetPublicWorkspaceSetting(ctx context.Context, request GetPublicWorkspaceSettingRequest) (*Setting, error)
 
@@ -69,7 +69,7 @@ type WorkspaceSettingsV2Service interface {
 	ListWorkspaceSettingsMetadata(ctx context.Context, request ListWorkspaceSettingsMetadataRequest) (*ListWorkspaceSettingsMetadataResponse, error)
 
 	// Patch a setting value at workspace level. See
-	// :method:settingsv2/listworkspacesettingsmetadata for list of setting
+	// :method:settingsv2/listworkspacesettingsmetadata for the list of settings
 	// available via public APIs at workspace level. To determine the correct
 	// field to include in a patch request, refer to the type field of the
 	// setting returned in the :method:settingsv2/listworkspacesettingsmetadata

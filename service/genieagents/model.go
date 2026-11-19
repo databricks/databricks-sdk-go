@@ -231,10 +231,9 @@ func (s *GenieAgentConfig) UnmarshalJSON(b []byte) error {
 type GenieAgentDataSources struct {
 	// Unity Catalog MCP connections, sorted by `mcp_connection`.
 	McpConnections []GenieAgentMcpConnection `json:"mcp_connections,omitempty"`
-	// Unity Catalog tables, views, and metric views, in the order they were
-	// added.
+	// Unity Catalog tables, views, and metric views, sorted by `identifier`.
 	Tables []GenieAgentTable `json:"tables,omitempty"`
-	// Unity Catalog volumes, in the order they were added.
+	// Unity Catalog volumes, sorted by `path`.
 	Volumes []GenieAgentVolume `json:"volumes,omitempty"`
 }
 

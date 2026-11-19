@@ -844,8 +844,9 @@ type CreateRoleRequest struct {
 	// The ID used to identify and manage the Role resource through the API. The
 	// Postgres role name is specified in `spec.postgres_role`.
 	//
-	// This value should be 4-63 characters, and valid characters are lowercase
-	// letters, numbers, and hyphens, as defined by RFC 1123.
+	// This value should be 3-63 characters, start with a lowercase letter, end
+	// with a lowercase letter or digit, and contain only lowercase letters,
+	// digits, and hyphens.
 	//
 	// If role_id is not specified in the request, it is generated
 	// automatically.
@@ -1372,7 +1373,8 @@ type DeleteRoleRequest struct {
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	Name string `json:"-" url:"-"`
 	// Reassign objects. If this is set, all objects owned by the role are
-	// reassigned to the role specified in this parameter.
+	// reassigned to the role specified in this parameter. The role must already
+	// exist. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	//
 	// NOTE: setting this requires spinning up a compute to succeed, since it
 	// involves running SQL queries.
@@ -3369,6 +3371,7 @@ func (s RevealRolePasswordResponse) MarshalJSON() ([]byte, error) {
 
 // Role represents a Postgres role within a Branch.
 type Role struct {
+	// A timestamp indicating when the role was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// Output only. The full resource path of the role. Format:
 	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
@@ -3388,7 +3391,7 @@ type Role struct {
 	// Current status of the role, including its identity type, authentication
 	// method, and role attributes.
 	Status *RoleRoleStatus `json:"status,omitempty"`
-
+	// A timestamp indicating when the role was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3408,10 +3411,13 @@ func (s Role) MarshalJSON() ([]byte, error) {
 // Postgres keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they
 // don't include typical underscores between words.
 type RoleAttributes struct {
+	// Whether the role bypasses every row-level security policy (the Postgres
+	// BYPASSRLS attribute).
 	Bypassrls bool `json:"bypassrls,omitempty"`
-
+	// Whether the role can create databases (the Postgres CREATEDB attribute).
 	Createdb bool `json:"createdb,omitempty"`
-
+	// Whether the role can create, alter and drop other roles (the Postgres
+	// CREATEROLE attribute).
 	Createrole bool `json:"createrole,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3552,8 +3558,7 @@ func (s *RoleOperationMetadata) UnmarshalJSON(b []byte) error {
 }
 
 type RoleRoleSpec struct {
-	// The desired API-exposed Postgres role attribute to associate with the
-	// role. Optional.
+	// The Postgres role attributes to grant to the role.
 	Attributes *RoleAttributes `json:"attributes,omitempty"`
 	// Controls how the Postgres role authenticates when a client opens a
 	// database connection. Supported values:
@@ -3578,8 +3583,10 @@ type RoleRoleSpec struct {
 	//
 	// This value cannot be changed after creation.
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
-	// The type of role. When specifying a managed-identity, the chosen
-	// postgres_role must be a valid:
+	// The type of Databricks identity that backs the role. Leave unset to
+	// create a native Postgres role that is not associated with a Databricks
+	// identity. When specifying a managed-identity, the chosen postgres_role
+	// must be a valid:
 	//
 	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
 	// for GROUP
@@ -3602,7 +3609,7 @@ type RoleRoleSpec struct {
 	// identity, then postgres_role must be one of the following:
 	//
 	// 1. user email for IdentityType.USER 2. app ID for
-	// IdentityType.SERVICE_PRINCIPAL 2. group name for IdentityType.GROUP
+	// IdentityType.SERVICE_PRINCIPAL 3. group name for IdentityType.GROUP
 	//
 	// This value cannot be changed after creation.
 	PostgresRole string `json:"postgres_role,omitempty"`
@@ -3619,13 +3626,13 @@ func (s RoleRoleSpec) MarshalJSON() ([]byte, error) {
 }
 
 type RoleRoleStatus struct {
-	// The PG role attributes associated with the role.
+	// The Postgres role attributes currently granted to the role.
 	Attributes *RoleAttributes `json:"attributes,omitempty"`
-
+	// How the role authenticates when it connects to Postgres.
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
-	// The type of the role.
+	// The type of Databricks identity that backs the role, if any.
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
-	// An enum value for a standard role that this role is a member of.
+	// The standard roles that the role is currently a member of.
 	MembershipRoles []RoleMembershipRole `json:"membership_roles,omitempty"`
 	// The name of the Postgres role.
 	PostgresRole string `json:"postgres_role,omitempty"`

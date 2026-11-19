@@ -9,13 +9,13 @@ import (
 )
 
 type AccessControlRequest struct {
-	// name of the group
+	// Display name of the group.
 	GroupName string `json:"group_name,omitempty"`
-
+	// Permission level to grant to the principal.
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
-	// application ID of a service principal
+	// Application ID of the service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// name of the user
+	// Username of the user, which is the user's email address.
 	UserName string `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -30,15 +30,16 @@ func (s AccessControlRequest) MarshalJSON() ([]byte, error) {
 }
 
 type AccessControlResponse struct {
-	// All permissions.
+	// Permission levels the principal holds on the object, both granted
+	// directly and inherited.
 	AllPermissions []Permission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	DisplayName string `json:"display_name,omitempty"`
-	// name of the group
+	// Display name of the group.
 	GroupName string `json:"group_name,omitempty"`
-	// Name of the service principal.
+	// Application ID of the service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// name of the user
+	// Username of the user, which is the user's email address.
 	UserName string `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -701,6 +702,10 @@ func (s *GetPasswordPermissionsRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetPermissionLevelsRequest struct {
+	// The id of the object. It is the id that the object's own API uses, for
+	// example the cluster id for clusters, the job id for jobs, and the
+	// workspace object id for notebooks and directories. For the
+	// `authorization` object type, use `tokens` to manage token permissions.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
@@ -716,7 +721,7 @@ func (s *GetPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetPermissionLevelsResponse struct {
-	// Specific permission levels
+	// Permission levels that can be granted on objects of the requested type.
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
 
@@ -725,7 +730,10 @@ func (s *GetPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
 }
 
 type GetPermissionRequest struct {
-	// The id of the request object.
+	// The id of the object. It is the id that the object's own API uses, for
+	// example the cluster id for clusters, the job id for jobs, and the
+	// workspace object id for notebooks and directories. For the
+	// `authorization` object type, use `tokens` to manage token permissions.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
@@ -1486,11 +1494,18 @@ func (s Name) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The permissions set on an object, with one entry per principal that holds a
+// permission on it.
 type ObjectPermissions struct {
+	// Permissions on the object, with one entry per principal. Each entry lists
+	// the principal's direct and inherited permission levels.
 	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
-
+	// Path that identifies the object in the access control list, built from
+	// the object type and the object id.
 	ObjectId string `json:"object_id,omitempty"`
-
+	// Type of the object, as recorded in the access control list. It can differ
+	// from the `request_object_type` path segment, for example a request for
+	// `clusters` returns `cluster`.
 	ObjectType string `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1822,10 +1837,13 @@ func (s *PatchUserRequest) UnmarshalJSON(b []byte) error {
 }
 
 type Permission struct {
+	// Whether the permission is inherited from a parent object or the root
+	// object instead of being granted directly on the object.
 	Inherited bool `json:"inherited,omitempty"`
-
+	// Paths of the objects the permission is inherited from. It is only set
+	// when `inherited` is true.
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
+	// Permission level the principal holds on the object.
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1979,8 +1997,9 @@ func (s PermissionOutput) MarshalJSON() ([]byte, error) {
 }
 
 type PermissionsDescription struct {
+	// Human-readable description of the permission level.
 	Description string `json:"description,omitempty"`
-
+	// Permission level that can be granted on the object.
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2239,8 +2258,14 @@ func (f *ServicePrincipalSchema) Type() string {
 }
 
 type SetObjectPermissions struct {
+	// Permissions to apply to the object, with one entry per principal. Each
+	// entry names exactly one principal through `user_name`, `group_name` or
+	// `service_principal_name` and the `permission_level` for that principal.
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-	// The id of the request object.
+	// The id of the object. It is the id that the object's own API uses, for
+	// example the cluster id for clusters, the job id for jobs, and the
+	// workspace object id for notebooks and directories. For the
+	// `authorization` object type, use `tokens` to manage token permissions.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
@@ -2383,8 +2408,14 @@ func (s UpdateGroupRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateObjectPermissions struct {
+	// Permissions to apply to the object, with one entry per principal. Each
+	// entry names exactly one principal through `user_name`, `group_name` or
+	// `service_principal_name` and the `permission_level` for that principal.
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-	// The id of the request object.
+	// The id of the object. It is the id that the object's own API uses, for
+	// example the cluster id for clusters, the job id for jobs, and the
+	// workspace object id for notebooks and directories. For the
+	// `authorization` object type, use `tokens` to manage token permissions.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,

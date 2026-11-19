@@ -190,7 +190,9 @@ type ClonePipelineRequest struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Path of the pipeline parent folder in workspace file tree.
 	//
-	// If absent, the pipeline doesn't have a workspace object.
+	// If absent, the pipeline doesn't have a parent folder.
+	//
+	// Example: /Workspace/Projects/my_project
 	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
@@ -386,6 +388,10 @@ func (f *ConnectorType) Type() string {
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
+	//
+	// Ignored when `parent_path` is set. A pipeline in a workspace folder must
+	// have a name that is unique within that folder, and creation fails if the
+	// folder already contains an object with the same name.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
 	// ID (UUID) of the serverless budget policy applied to this pipeline. Only
 	// supported for serverless pipelines.
@@ -449,7 +455,9 @@ type CreatePipeline struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// Path of the pipeline parent folder in workspace file tree.
 	//
-	// If absent, the pipeline doesn't have a workspace object.
+	// If absent, the pipeline doesn't have a parent folder.
+	//
+	// Example: /Workspace/Projects/my_project
 	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
@@ -692,8 +700,12 @@ func (f *DeploymentKind) Type() string {
 }
 
 type EditPipeline struct {
-	// If false, deployment will fail if name has changed and conflicts the name
-	// of another pipeline.
+	// If false, deployment will fail if name has changed and conflicts with the
+	// name of another pipeline.
+	//
+	// Ignored when the pipeline is in a workspace folder or the request sets
+	// `parent_path`. Renaming or moving such a pipeline fails if the target
+	// folder already contains an object with the same name.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
 	// ID (UUID) of the serverless budget policy applied to this pipeline. Only
 	// supported for serverless pipelines.
@@ -757,7 +769,9 @@ type EditPipeline struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// Path of the pipeline parent folder in workspace file tree.
 	//
-	// If absent, the pipeline doesn't have a workspace object.
+	// If absent, the pipeline doesn't have a parent folder.
+	//
+	// Example: /Workspace/Projects/my_project
 	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
@@ -3076,7 +3090,9 @@ type PipelineSpec struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Path of the pipeline parent folder in workspace file tree.
 	//
-	// If absent, the pipeline doesn't have a workspace object.
+	// If absent, the pipeline doesn't have a parent folder.
+	//
+	// Example: /Workspace/Projects/my_project
 	ParentPath string `json:"parent_path,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`

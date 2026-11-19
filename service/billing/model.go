@@ -533,13 +533,14 @@ func (s BudgetSpendStatus) MarshalJSON() ([]byte, error) {
 type CreateBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
-	// workspaces in the account.
+	// workspaces in the account. The request fails if the type is not set.
 	DashboardType UsageDashboardType `json:"dashboard_type,omitempty"`
-	// The major version of the usage dashboard template to use. Defaults to
-	// VERSION_1.
+	// The major version of the usage dashboard template to import. Version 2
+	// adds cost forecasting and object-level cost drill-down.
 	MajorVersion UsageDashboardMajorVersion `json:"major_version,omitempty"`
-	// The workspace ID of the workspace in which the usage dashboard is
-	// created.
+	// The ID of the workspace to import the usage dashboard into. The workspace
+	// must be running, belong to the account, and not be a disaster recovery
+	// secondary.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -554,7 +555,7 @@ func (s CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateBillingUsageDashboardResponse struct {
-	// The unique id of the usage dashboard.
+	// The ID of the AI/BI dashboard that was created.
 	DashboardId string `json:"dashboard_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -927,10 +928,11 @@ func (s Filter) MarshalJSON() ([]byte, error) {
 type GetBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
-	// workspaces in the account.
+	// workspaces in the account. The request fails if the type is not set.
 	DashboardType UsageDashboardType `json:"-" url:"dashboard_type,omitempty"`
-	// The workspace ID of the workspace in which the usage dashboard is
-	// created.
+	// The ID of the workspace that contains the usage dashboard. If omitted,
+	// the most recently created dashboard of the given type across all
+	// workspaces in the account is returned.
 	WorkspaceId int64 `json:"-" url:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -945,9 +947,11 @@ func (s GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetBillingUsageDashboardResponse struct {
-	// The unique id of the usage dashboard.
+	// The ID of the AI/BI dashboard. The ID is empty if no matching dashboard
+	// is found.
 	DashboardId string `json:"dashboard_id,omitempty"`
-	// The URL of the usage dashboard.
+	// The URL of the dashboard in its workspace. The URL is empty if no
+	// matching dashboard is found.
 	DashboardUrl string `json:"dashboard_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

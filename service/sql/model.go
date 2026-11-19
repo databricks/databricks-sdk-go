@@ -815,8 +815,12 @@ func (s *CancelExecutionRequest) UnmarshalJSON(b []byte) error {
 // Configures the channel name and DBSQL version of the warehouse.
 // CHANNEL_NAME_CUSTOM should be chosen only when `dbsql_version` is specified.
 type Channel struct {
+	// Databricks SQL version to pin to. Set it if and only if name is
+	// CHANNEL_NAME_CUSTOM.
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
-
+	// Channel to follow. CHANNEL_NAME_CURRENT is the default, and
+	// CHANNEL_NAME_PREVIEW carries the upcoming Databricks SQL release for
+	// testing.
 	Name ChannelName `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1339,7 +1343,7 @@ type CreateWarehouseRequest struct {
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
-	// Channel Details
+	// Channel that determines which Databricks SQL version the warehouse runs.
 	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -1348,7 +1352,8 @@ type CreateWarehouseRequest struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
-	// warehouse creator name
+	// Name of the user who created the warehouse. Set by the server and ignored
+	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
 	// Compute version label for a REALTIME warehouse. This field is output
 	// only.
@@ -1383,9 +1388,9 @@ type CreateWarehouseRequest struct {
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
-	// Logical name for the cluster.
+	// Logical name for the warehouse.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
+	// Supported values: - Must be unique within an org. - Must be 1 to 100
 	// characters.
 	Name string `json:"name,omitempty"`
 	// Cluster size multiplier for Reyden warehouses. Scales the effective
@@ -1397,9 +1402,14 @@ type CreateWarehouseRequest struct {
 	// to 1.0. - Values above the configured maximum are capped at that maximum.
 	// - When absent, the warehouse is treated as having a multiplier of 1.0.
 	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
+	// Configures whether the warehouse should use spot instances.
+	// COST_OPTIMIZED uses spot instances where the cloud provider supports
+	// them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// Warehouse statement timeout in seconds.
+	// Maximum time in seconds that a statement can run on this warehouse before
+	// it is cancelled. Set to 0 to remove the warehouse-level timeout. Changing
+	// the value of a running warehouse restarts it. See
+	// https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
 	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
@@ -2126,7 +2136,7 @@ type EditWarehouseRequest struct {
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
-	// Channel Details
+	// Channel that determines which Databricks SQL version the warehouse runs.
 	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -2135,7 +2145,8 @@ type EditWarehouseRequest struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
-	// warehouse creator name
+	// Name of the user who created the warehouse. Set by the server and ignored
+	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
 	// Compute version label for a REALTIME warehouse. This field is output
 	// only.
@@ -2172,9 +2183,9 @@ type EditWarehouseRequest struct {
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
-	// Logical name for the cluster.
+	// Logical name for the warehouse.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
+	// Supported values: - Must be unique within an org. - Must be 1 to 100
 	// characters.
 	Name string `json:"name,omitempty"`
 	// Cluster size multiplier for Reyden warehouses. Scales the effective
@@ -2186,9 +2197,14 @@ type EditWarehouseRequest struct {
 	// to 1.0. - Values above the configured maximum are capped at that maximum.
 	// - When absent, the warehouse is treated as having a multiplier of 1.0.
 	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
+	// Configures whether the warehouse should use spot instances.
+	// COST_OPTIMIZED uses spot instances where the cloud provider supports
+	// them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// Warehouse statement timeout in seconds.
+	// Maximum time in seconds that a statement can run on this warehouse before
+	// it is cancelled. Set to 0 to remove the warehouse-level timeout. Changing
+	// the value of a running warehouse restarts it. See
+	// https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
 	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
@@ -2255,8 +2271,9 @@ func (f *EditWarehouseRequestWarehouseType) Type() string {
 }
 
 type EndpointConfPair struct {
+	// Name of the configuration parameter.
 	Key string `json:"key,omitempty"`
-
+	// Value of the configuration parameter.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2305,7 +2322,7 @@ type EndpointInfo struct {
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
-	// Channel Details
+	// Channel that determines which Databricks SQL version the warehouse runs.
 	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -2314,7 +2331,8 @@ type EndpointInfo struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
-	// warehouse creator name
+	// Name of the user who created the warehouse. Set by the server and ignored
+	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
 	// Compute version label for a REALTIME warehouse. This field is output
 	// only.
@@ -2328,11 +2346,11 @@ type EndpointInfo struct {
 	// Optional health status. Assume the warehouse is healthy if this field is
 	// not set.
 	Health *EndpointHealth `json:"health,omitempty"`
-	// unique identifier for warehouse
+	// Unique identifier of the warehouse.
 	Id string `json:"id,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-	// the jdbc connection string for this warehouse
+	// JDBC connection string for the warehouse.
 	JdbcUrl string `json:"jdbc_url,omitempty"`
 	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
 	// Must be at least the minimum DBU for the selected warehouse size and no
@@ -2356,14 +2374,15 @@ type EndpointInfo struct {
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
-	// Logical name for the cluster.
+	// Logical name for the warehouse.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
+	// Supported values: - Must be unique within an org. - Must be 1 to 100
 	// characters.
 	Name string `json:"name,omitempty"`
 	// Deprecated. current number of active sessions for the warehouse
 	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
-	// current number of clusters running for the service
+	// Number of clusters currently allocated to the warehouse, including
+	// clusters that are still starting.
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
@@ -2376,11 +2395,16 @@ type EndpointInfo struct {
 	// to 1.0. - Values above the configured maximum are capped at that maximum.
 	// - When absent, the warehouse is treated as having a multiplier of 1.0.
 	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
+	// Configures whether the warehouse should use spot instances.
+	// COST_OPTIMIZED uses spot instances where the cloud provider supports
+	// them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// state of the endpoint
+	// Current state of the warehouse.
 	State State `json:"state,omitempty"`
-	// Warehouse statement timeout in seconds.
+	// Maximum time in seconds that a statement can run on this warehouse before
+	// it is cancelled. Set to 0 to remove the warehouse-level timeout. Changing
+	// the value of a running warehouse restarts it. See
+	// https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
 	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
@@ -2447,8 +2471,11 @@ func (f *EndpointInfoWarehouseType) Type() string {
 }
 
 type EndpointTagPair struct {
+	// Tag key. Keys must be unique within the warehouse and cannot use the keys
+	// that Databricks reserves for the tags it sets automatically.
 	Key string `json:"key,omitempty"`
-
+	// Tag value. Keys and values must follow the tagging rules of the cloud
+	// provider.
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2463,6 +2490,8 @@ func (s EndpointTagPair) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointTags struct {
+	// User-defined tags, applied in addition to the tags Databricks sets
+	// automatically.
 	CustomTags []EndpointTagPair `json:"custom_tags,omitempty"`
 }
 
@@ -2594,10 +2623,10 @@ type ExecuteStatementRequest struct {
 	//
 	// The parameters can be passed in the request body as follows:
 	//
-	// ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND
+	// ``` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND
 	// date = :my_date", "parameters": [ { "name": "my_name", "value": "the
 	// name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] }
-	// `
+	// ```
 	//
 	// Currently, positional parameters denoted by a `?` marker are not
 	// supported by the Databricks SQL Statement Execution API.
@@ -2729,7 +2758,7 @@ type ExternalLink struct {
 	HttpHeaders map[string]string `json:"http_headers,omitempty"`
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
-	// with a :method:statementexecution/getstatementresultchunkn request.
+	// with a :method:statementexecution/getStatementResultChunkN request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
@@ -2943,6 +2972,7 @@ func (s *GetStatementRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetStatementResultChunkNRequest struct {
+	// The zero-based index of the result chunk to fetch.
 	ChunkIndex int `json:"-" url:"-"`
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
@@ -2999,7 +3029,7 @@ type GetWarehouseResponse struct {
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
-	// Channel Details
+	// Channel that determines which Databricks SQL version the warehouse runs.
 	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -3008,7 +3038,8 @@ type GetWarehouseResponse struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
-	// warehouse creator name
+	// Name of the user who created the warehouse. Set by the server and ignored
+	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
 	// Compute version label for a REALTIME warehouse. This field is output
 	// only.
@@ -3022,11 +3053,11 @@ type GetWarehouseResponse struct {
 	// Optional health status. Assume the warehouse is healthy if this field is
 	// not set.
 	Health *EndpointHealth `json:"health,omitempty"`
-	// unique identifier for warehouse
+	// Unique identifier of the warehouse.
 	Id string `json:"id,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-	// the jdbc connection string for this warehouse
+	// JDBC connection string for the warehouse.
 	JdbcUrl string `json:"jdbc_url,omitempty"`
 	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
 	// Must be at least the minimum DBU for the selected warehouse size and no
@@ -3050,14 +3081,15 @@ type GetWarehouseResponse struct {
 	//
 	// Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
-	// Logical name for the cluster.
+	// Logical name for the warehouse.
 	//
-	// Supported values: - Must be unique within an org. - Must be less than 100
+	// Supported values: - Must be unique within an org. - Must be 1 to 100
 	// characters.
 	Name string `json:"name,omitempty"`
 	// Deprecated. current number of active sessions for the warehouse
 	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
-	// current number of clusters running for the service
+	// Number of clusters currently allocated to the warehouse, including
+	// clusters that are still starting.
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
@@ -3070,11 +3102,16 @@ type GetWarehouseResponse struct {
 	// to 1.0. - Values above the configured maximum are capped at that maximum.
 	// - When absent, the warehouse is treated as having a multiplier of 1.0.
 	ReydenClusterSizeMultiplier float64 `json:"reyden_cluster_size_multiplier,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
+	// Configures whether the warehouse should use spot instances.
+	// COST_OPTIMIZED uses spot instances where the cloud provider supports
+	// them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// state of the endpoint
+	// Current state of the warehouse.
 	State State `json:"state,omitempty"`
-	// Warehouse statement timeout in seconds.
+	// Maximum time in seconds that a statement can run on this warehouse before
+	// it is cancelled. Set to 0 to remove the warehouse-level timeout. Changing
+	// the value of a running warehouse restarts it. See
+	// https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
 	StatementTimeout int `json:"statement_timeout,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
@@ -3145,8 +3182,11 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	Channel *Channel `json:"channel,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	ConfigParam *RepeatedEndpointConfPairs `json:"config_param,omitempty"`
-	// Spark confs for external hive metastore configuration JSON serialized
-	// size must be less than <= 512K
+	// Spark configuration applied to every warehouse in the workspace, for
+	// example to connect to an external Hive metastore or to configure access
+	// to cloud storage. Only allowlisted keys are accepted, and the
+	// JSON-serialized size must be at most 512 KB. See
+	// https://docs.databricks.com/aws/en/admin/sql/data-access-configuration.
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// Deprecated: only setting this to true is allowed.
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
@@ -3154,13 +3194,12 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
 	// cannot be disabled, they don't need to be specified in
 	// SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
-	// warehouses to be converted to another type. Used by frontend to save
-	// specific type availability in the warehouse create and edit form UI.
+	// warehouses to be converted to another type.
 	EnabledWarehouseTypes []WarehouseTypePair `json:"enabled_warehouse_types,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	GlobalParam *RepeatedEndpointConfPairs `json:"global_param,omitempty"`
-	// GCP only: Google Service Account used to pass to cluster to access Google
-	// Cloud Storage
+	// GCP only: Google service account that the warehouse clusters use to
+	// access Google Cloud Storage.
 	GoogleServiceAccount string `json:"google_service_account,omitempty"`
 	// AWS Only: The instance profile used to pass an IAM role to the SQL
 	// warehouses. This configuration is also applied to the workspace's
@@ -3168,7 +3207,9 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Security policy for warehouses
 	SecurityPolicy GetWorkspaceWarehouseConfigResponseSecurityPolicy `json:"security_policy,omitempty"`
-	// SQL configuration parameters
+	// SQL configuration parameters applied to every warehouse in the workspace.
+	// Only parameters that can be set at the workspace scope are accepted. See
+	// https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-parameters.
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4076,12 +4117,13 @@ func (f *ObjectTypePlural) Type() string {
 }
 
 type OdbcParams struct {
+	// Hostname of the workspace to connect to.
 	Hostname string `json:"hostname,omitempty"`
-
+	// HTTP path of the warehouse.
 	Path string `json:"path,omitempty"`
-
+	// The connection port is always 443.
 	Port int `json:"port,omitempty"`
-
+	// The transport protocol is always https.
 	Protocol string `json:"protocol,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4920,7 +4962,7 @@ func (s QueryTag) MarshalJSON() ([]byte, error) {
 type RepeatedEndpointConfPairs struct {
 	// Deprecated: Use configuration_pairs
 	ConfigPair []EndpointConfPair `json:"config_pair,omitempty"`
-
+	// Configuration parameters, each a key-value pair.
 	ConfigurationPairs []EndpointConfPair `json:"configuration_pairs,omitempty"`
 }
 
@@ -4960,11 +5002,12 @@ type ResultData struct {
 	// non-null value is formatted as a string. Null values are encoded as JSON
 	// `null`.
 	DataArray [][]string `json:"data_array,omitempty"`
-
+	// Short-lived cloud-storage links to the result data, used with the
+	// `EXTERNAL_LINKS` disposition.
 	ExternalLinks []ExternalLink `json:"external_links,omitempty"`
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
-	// with a :method:statementexecution/getstatementresultchunkn request.
+	// with a :method:statementexecution/getStatementResultChunkN request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
@@ -4991,9 +5034,9 @@ func (s ResultData) MarshalJSON() ([]byte, error) {
 type ResultManifest struct {
 	// Array of result set chunk metadata.
 	Chunks []BaseChunkInfo `json:"chunks,omitempty"`
-
+	// The format of the result data, as requested with `format`.
 	Format Format `json:"format,omitempty"`
-
+	// The schema of the result set: the ordered list of column descriptions.
 	Schema *ResultSchema `json:"schema,omitempty"`
 	// The total number of bytes in the result set. This field is not available
 	// when using `INLINE` disposition.
@@ -5019,8 +5062,9 @@ func (s ResultManifest) MarshalJSON() ([]byte, error) {
 
 // The schema is an ordered list of column descriptions.
 type ResultSchema struct {
+	// The number of columns in the result set.
 	ColumnCount int `json:"column_count,omitempty"`
-
+	// The column descriptions, in result set order.
 	Columns []ColumnInfo `json:"columns,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5146,6 +5190,7 @@ func (f *SchedulePauseStatus) Type() string {
 }
 
 type ServiceError struct {
+	// The error code that classifies the failure.
 	ErrorCode ServiceErrorCode `json:"error_code,omitempty"`
 	// A brief summary of the error condition.
 	Message string `json:"message,omitempty"`
@@ -5275,8 +5320,11 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	Channel *Channel `json:"channel,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	ConfigParam *RepeatedEndpointConfPairs `json:"config_param,omitempty"`
-	// Spark confs for external hive metastore configuration JSON serialized
-	// size must be less than <= 512K
+	// Spark configuration applied to every warehouse in the workspace, for
+	// example to connect to an external Hive metastore or to configure access
+	// to cloud storage. Only allowlisted keys are accepted, and the
+	// JSON-serialized size must be at most 512 KB. See
+	// https://docs.databricks.com/aws/en/admin/sql/data-access-configuration.
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// Deprecated: only setting this to true is allowed.
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
@@ -5284,13 +5332,12 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
 	// cannot be disabled, they don't need to be specified in
 	// SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
-	// warehouses to be converted to another type. Used by frontend to save
-	// specific type availability in the warehouse create and edit form UI.
+	// warehouses to be converted to another type.
 	EnabledWarehouseTypes []WarehouseTypePair `json:"enabled_warehouse_types,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	GlobalParam *RepeatedEndpointConfPairs `json:"global_param,omitempty"`
-	// GCP only: Google Service Account used to pass to cluster to access Google
-	// Cloud Storage
+	// GCP only: Google service account that the warehouse clusters use to
+	// access Google Cloud Storage.
 	GoogleServiceAccount string `json:"google_service_account,omitempty"`
 	// AWS Only: The instance profile used to pass an IAM role to the SQL
 	// warehouses. This configuration is also applied to the workspace's
@@ -5298,7 +5345,9 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Security policy for warehouses
 	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy `json:"security_policy,omitempty"`
-	// SQL configuration parameters
+	// SQL configuration parameters applied to every warehouse in the workspace.
+	// Only parameters that can be set at the workspace scope are accepted. See
+	// https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-parameters.
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5494,13 +5543,22 @@ func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
 // Lakehouse//RT warehouses, with lower latency and higher concurrency, and
 // takes `warehouse_id` as a path parameter.
 type StatementResponse struct {
+	// The schema and metadata of the result set. Present when `status.state` is
+	// `SUCCEEDED`.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
-
+	// Contains the result data of a single chunk when using `INLINE`
+	// disposition. When using `EXTERNAL_LINKS` disposition, the array
+	// `external_links` is used instead to provide short-lived cloud-storage
+	// URLs to the result data in cloud storage. Exactly one of these
+	// alternatives is used. Calls to `getResultData` return the link for the
+	// requested chunk; `executeStatement` and `getStatementResult` responses
+	// can contain links for multiple chunks.
 	Result *ResultData `json:"result,omitempty"`
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
-
+	// The execution state of the statement and, if it failed, the error
+	// details.
 	Status *StatementStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5566,6 +5624,8 @@ func (f *StatementState) Type() string {
 // The status response includes execution state and if relevant, error
 // information.
 type StatementStatus struct {
+	// The error that caused the statement to fail. Only populated when `state`
+	// is `FAILED`.
 	Error *ServiceError `json:"error,omitempty"`
 	// SQLSTATE error code returned when the statement execution fails. Only
 	// populated when the statement status is `FAILED`.
@@ -6953,7 +7013,7 @@ type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
 	Enabled bool `json:"enabled,omitempty"`
-
+	// Warehouse type that this entry enables or disables.
 	WarehouseType WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

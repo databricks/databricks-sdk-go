@@ -31,7 +31,8 @@ type EnvironmentsService interface {
 
 	// Gets the default WorkspaceBaseEnvironment configuration for the
 	// workspace. Returns the current default base environment settings for both
-	// CPU and GPU compute.
+	// CPU and GPU compute. An unset CPU or GPU field means that compute type
+	// uses the Databricks Standard base environment.
 	GetDefaultWorkspaceBaseEnvironment(ctx context.Context, request GetDefaultWorkspaceBaseEnvironmentRequest) (*DefaultWorkspaceBaseEnvironment, error)
 
 	// Gets the status of a long-running operation. Clients can use this method
@@ -73,7 +74,10 @@ type EnvironmentsService interface {
 
 	// Updates the default WorkspaceBaseEnvironment configuration for the
 	// workspace. Sets the specified base environments as the workspace defaults
-	// for CPU and/or GPU compute.
+	// for CPU and/or GPU compute. Unsetting a default makes that compute type
+	// use the Databricks Standard base environment. The Standard base
+	// environment has no resource name, so unsetting the field is the only way
+	// to select it.
 	UpdateDefaultWorkspaceBaseEnvironment(ctx context.Context, request UpdateDefaultWorkspaceBaseEnvironmentRequest) (*DefaultWorkspaceBaseEnvironment, error)
 
 	// Updates an existing WorkspaceBaseEnvironment. This is a long-running

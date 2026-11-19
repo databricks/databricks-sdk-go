@@ -116,8 +116,8 @@ type CleanRoomAsset struct {
 	// Foreign table details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **FOREIGN_TABLE**
 	ForeignTable *CleanRoomAssetForeignTable `json:"foreign_table,omitempty"`
-	// Local details for a foreign that are only available to its owner. Present
-	// if and only if **asset_type** is **FOREIGN_TABLE**
+	// Local details for a foreign table that are only available to its owner.
+	// Present if and only if **asset_type** is **FOREIGN_TABLE**
 	ForeignTableLocalDetails *CleanRoomAssetForeignTableLocalDetails `json:"foreign_table_local_details,omitempty"`
 	// Jar analysis details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **JAR_ANALYSIS**
@@ -137,7 +137,9 @@ type CleanRoomAsset struct {
 	Notebook *CleanRoomAssetNotebook `json:"notebook,omitempty"`
 	// The alias of the collaborator who owns this asset
 	OwnerCollaboratorAlias string `json:"owner_collaborator_alias,omitempty"`
-	// Status of the asset
+	// The sharing status of the asset. `PERMISSION_DENIED` means the clean room
+	// owner no longer has the privileges needed on the underlying Unity Catalog
+	// object, so the asset is not shared into the clean room.
 	Status CleanRoomAssetStatusEnum `json:"status,omitempty"`
 	// Table details available to all collaborators of the clean room. Present
 	// if and only if **asset_type** is **TABLE** or **STREAMING_TABLE**
