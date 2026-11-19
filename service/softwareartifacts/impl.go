@@ -19,6 +19,32 @@ type softwareArtifactsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *softwareArtifactsImpl) DeleteSoftwareArtifact(ctx context.Context, request DeleteSoftwareArtifactRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *softwareArtifactsImpl) DeleteSoftwareArtifactVersion(ctx context.Context, request DeleteSoftwareArtifactVersionRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *softwareArtifactsImpl) GetSoftwareArtifact(ctx context.Context, request GetSoftwareArtifactRequest) (*SoftwareArtifact, error) {
 	var softwareArtifact SoftwareArtifact
 	path := fmt.Sprintf("/api/2.1/unity-catalog/%v", request.Name)

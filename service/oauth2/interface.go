@@ -138,17 +138,18 @@ type PublishedAppIntegrationService interface {
 	// [PublishedAppIntegration/get]: https://docs.databricks.com/api/account/publishedappintegration/get
 	Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error)
 
-	// Delete an existing Published OAuth App Integration. You can retrieve the
-	// published OAuth app integration via [PublishedAppIntegration/get].
+	// Delete an existing Published OAuth App Integration. The app can no longer
+	// be used to sign in to the account until it is enabled again with
+	// [PublishedAppIntegration/create].
 	//
-	// [PublishedAppIntegration/get]: https://docs.databricks.com/api/account/publishedappintegration/get
+	// [PublishedAppIntegration/create]: https://docs.databricks.com/api/account/publishedappintegration/create
 	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error
 
 	// Gets the Published OAuth App Integration for the given integration id.
 	Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error)
 
 	// Get the list of published OAuth app integrations for the specified
-	// Databricks account
+	// Databricks account.
 	List(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error)
 
 	// Updates an existing published OAuth App Integration. You can retrieve the

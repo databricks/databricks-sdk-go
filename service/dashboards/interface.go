@@ -81,20 +81,32 @@ type GenieService interface {
 	// state is returned.
 	GenieCancelResponse(ctx context.Context, request GenieCancelResponseRequest) (*GenieMessage, error)
 
-	// Creates and runs chat-mode evaluations for multiple benchmark questions
-	// in a Genie space.
+	// Starts a benchmark evaluation run that asks Genie each selected benchmark
+	// question in a Genie space and compares every response with the benchmark
+	// SQL. The run executes asynchronously: the response is the new run with
+	// its current status. If it is still running, poll with the get method
+	// until the status is terminal.
 	GenieCreateEvalRun(ctx context.Context, request GenieCreateEvalRunRequest) (*GenieEvalRunResponse, error)
 
-	// Get details for evaluation results.
+	// Gets the full result for one benchmark question in an evaluation run: its
+	// assessment and the reasons for it, Genie's response with the SQL
+	// execution result, and the expected response from the benchmark. The
+	// result must belong to the given run.
 	GenieGetEvalResultDetails(ctx context.Context, request GenieGetEvalResultDetailsRequest) (*GenieEvalResultDetails, error)
 
-	// Get evaluation run details.
+	// Gets the current status and summary counts of a benchmark evaluation run.
+	// Poll this method until `eval_run_status` is terminal: DONE,
+	// EVALUATION_CANCELLED or EVALUATION_TIMEOUT.
 	GenieGetEvalRun(ctx context.Context, request GenieGetEvalRunRequest) (*GenieEvalRunResponse, error)
 
-	// List evaluation results for a specific evaluation run.
+	// Lists the results of a benchmark evaluation run, one per benchmark
+	// question. Each entry carries the result status and a snapshot of the
+	// question and benchmark answer; the assessment and Genie's response are
+	// available through the result details method.
 	GenieListEvalResults(ctx context.Context, request GenieListEvalResultsRequest) (*GenieListEvalResultsResponse, error)
 
-	// Lists all evaluation runs in a space.
+	// Lists the benchmark evaluation runs in a Genie space with the current
+	// status and summary counts of each run.
 	GenieListEvalRuns(ctx context.Context, request GenieListEvalRunsRequest) (*GenieListEvalRunsResponse, error)
 
 	// After [Generating a Full Query Result

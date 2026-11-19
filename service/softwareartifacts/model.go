@@ -10,6 +10,37 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type DeleteSoftwareArtifactRequest struct {
+	// Force deletion even if the software artifact has versions, deleting them
+	// with it. Default is false.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Resource name of the software artifact, of the form
+	// `software-artifacts/{catalog}.{schema}.{artifact}`.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteSoftwareArtifactRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSoftwareArtifactRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DeleteSoftwareArtifactVersionRequest struct {
+	// Resource name of the version, of the form
+	// `software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}`,
+	// where `{version}` is the version's content digest, for example
+	// `sha256:<hex>`.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *DeleteSoftwareArtifactVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetSoftwareArtifactRequest struct {
 	// Resource name of the artifact, of the form
 	// `software-artifacts/{catalog}.{schema}.{artifact}`.

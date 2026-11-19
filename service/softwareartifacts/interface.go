@@ -11,6 +11,13 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SoftwareArtifactsService interface {
 
+	// Deletes a software artifact. Fails if the artifact still has versions
+	// unless `force` is set.
+	DeleteSoftwareArtifact(ctx context.Context, request DeleteSoftwareArtifactRequest) error
+
+	// Deletes a software artifact version.
+	DeleteSoftwareArtifactVersion(ctx context.Context, request DeleteSoftwareArtifactVersionRequest) error
+
 	// Gets a software artifact by its resource name. Returns `NOT_FOUND` if the
 	// artifact does not exist.
 	GetSoftwareArtifact(ctx context.Context, request GetSoftwareArtifactRequest) (*SoftwareArtifact, error)

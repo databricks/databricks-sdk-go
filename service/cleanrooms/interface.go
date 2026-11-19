@@ -42,7 +42,9 @@ type CleanRoomAssetsService interface {
 	// Get the details of a clean room asset by its type and full name.
 	Get(ctx context.Context, request GetCleanRoomAssetRequest) (*CleanRoomAsset, error)
 
-	// List assets.
+	// List the assets in a clean room. Listed assets do not include their
+	// asset-type specific details, such as table columns or notebook content;
+	// use the get method to retrieve them.
 	List(ctx context.Context, request ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error)
 
 	// Update a clean room asset. For example, updating the content of a

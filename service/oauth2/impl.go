@@ -292,7 +292,7 @@ func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublis
 }
 
 // Get the list of published OAuth app integrations for the specified Databricks
-// account
+// account.
 func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPublishedAppIntegrationsRequest) listing.Iterator[GetPublishedAppIntegrationOutput] {
 
 	getNextPage := func(ctx context.Context, req ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
@@ -318,7 +318,7 @@ func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPubl
 }
 
 // Get the list of published OAuth app integrations for the specified Databricks
-// account
+// account.
 func (a *publishedAppIntegrationImpl) ListAll(ctx context.Context, request ListPublishedAppIntegrationsRequest) ([]GetPublishedAppIntegrationOutput, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[GetPublishedAppIntegrationOutput](ctx, iterator)

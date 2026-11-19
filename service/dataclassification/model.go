@@ -16,7 +16,8 @@ type AutoTaggingConfig struct {
 	AutoTaggingMode AutoTaggingConfigAutoTaggingMode `json:"auto_tagging_mode"`
 	// The Classification Tag. For built-in classes this is a system tag (e.g.,
 	// "class.name", "class.location"); for custom classes it is a user-defined
-	// governance tag key.
+	// governance tag key. The built-in tags are listed at
+	// https://docs.databricks.com/aws/en/data-governance/unity-catalog/data-classification-tags.
 	ClassificationTag string `json:"classification_tag"`
 }
 
@@ -68,17 +69,20 @@ func (f *AutoTaggingConfigAutoTaggingMode) Type() string {
 // Classification, Delete disables it - It has no unique identifier of its own
 // and uses its parent catalog's identifier (catalog_name)
 type CatalogConfig struct {
-	// List of auto-tagging configurations for this catalog. Empty list means no
-	// auto-tagging is enabled.
+	// Auto-tagging configurations that apply to this catalog. Each entry
+	// overrides the metastore-level auto-tagging setting for its classification
+	// tag; tags without an entry inherit the metastore-level setting.
 	AutoTagConfigs []AutoTaggingConfig `json:"auto_tag_configs,omitempty"`
 	// Schemas to exclude from the scan, each named relative to the parent
 	// catalog. If specified, all schemas except the specified ones will be
-	// scanned. Mutually exclusive with `included_schemas`: only one may be set
-	// per request. If neither `included_schemas` nor `excluded_schemas` is set,
-	// all schemas are scanned.
+	// scanned, including schemas created later. Mutually exclusive with
+	// `included_schemas`: only one may be set per request. If neither
+	// `included_schemas` nor `excluded_schemas` is set, all schemas are
+	// scanned.
 	ExcludedSchemas *CatalogConfigSchemaNames `json:"excluded_schemas,omitempty"`
 	// Schemas to include in the scan, each named relative to the parent
-	// catalog. If specified, only listed schemas will be scanned. Mutually
+	// catalog. If specified, only listed schemas will be scanned. Schemas
+	// created later are not scanned until you add them to the list. Mutually
 	// exclusive with `excluded_schemas`: only one may be set per request. If
 	// neither `included_schemas` nor `excluded_schemas` is set, all schemas are
 	// scanned.
@@ -110,7 +114,7 @@ func (s *CatalogConfigSchemaNames) UnmarshalJSON(b []byte) error {
 type CreateCatalogConfigRequest struct {
 	// The configuration to create.
 	CatalogConfig CatalogConfig `json:"catalog_config"`
-	// Parent resource in the format: catalogs/{catalog_name}
+	// Name of the catalog to enable, in the format catalogs/{catalog_name}.
 	Parent string `json:"-" url:"-"`
 }
 
@@ -119,7 +123,8 @@ func (s *CreateCatalogConfigRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteCatalogConfigRequest struct {
-	// Resource name in the format: catalogs/{catalog_name}/config
+	// Resource name of the config, in the format
+	// catalogs/{catalog_name}/config.
 	Name string `json:"-" url:"-"`
 }
 
@@ -128,7 +133,8 @@ func (s *DeleteCatalogConfigRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetCatalogConfigRequest struct {
-	// Resource name in the format: catalogs/{catalog_name}/config
+	// Resource name of the config, in the format
+	// catalogs/{catalog_name}/config.
 	Name string `json:"-" url:"-"`
 }
 
@@ -142,7 +148,8 @@ type UpdateCatalogConfigRequest struct {
 	CatalogConfig CatalogConfig `json:"catalog_config"`
 	// Resource name in the format: catalogs/{catalog_name}/config.
 	Name string `json:"-" url:"-"`
-	// Field mask specifying which fields to update.
+	// Comma-separated list of the fields of catalog_config to update, for
+	// example `included_schemas` or `auto_tag_configs`.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

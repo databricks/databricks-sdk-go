@@ -1084,16 +1084,20 @@ type ConnectionInfo struct {
 	Comment string `json:"comment,omitempty"`
 	// Unique identifier of the Connection.
 	ConnectionId string `json:"connection_id,omitempty"`
-	// The type of connection.
+	// The type of external data source or service that the connection reaches.
+	// The connection type determines which keys are required in options and
+	// cannot be changed after creation.
 	ConnectionType ConnectionType `json:"connection_type,omitempty"`
 	// Time at which this connection was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of connection creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The type of credential.
+	// The type of credential that is used to authenticate to the external data
+	// source. The server derives it from the connection type and the keys
+	// present in options.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
-	// [Create,Update:OPT] Connection environment settings as
-	// EnvironmentSettings object.
+	// Environment settings for the connection, such as the Java libraries that
+	// it needs and the environment version.
 	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
@@ -1103,25 +1107,28 @@ type ConnectionInfo struct {
 	Name string `json:"name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options,omitempty"`
-	// Username of current owner of the connection.
+	// Username of the current owner of the connection. The creator becomes the
+	// owner at creation, and ownership can be transferred on update.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-
+	// Provisioning status of the connection.
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
-	// If the connection is read only.
+	// Whether the connection is read only. All connections are currently read
+	// only, so a value set on create or update is ignored.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// A map of option names to UC Secret references. Keys are connection option
 	// names (same as in OptionsKVPairs) and values are UC Secret fully
 	// qualified names.
 	Secrets map[string]string `json:"secrets,omitempty"`
-
+	// The type of Unity Catalog securable. This is always CONNECTION.
 	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified connection.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// URL of the remote data source, extracted from options.
+	// URL of the remote data source. The server derives it from the host, port
+	// and path options.
 	Url string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1442,10 +1449,12 @@ func (s CreateCatalog) MarshalJSON() ([]byte, error) {
 type CreateConnection struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// The type of connection.
+	// The type of external data source or service that the connection reaches.
+	// The connection type determines which keys are required in options and
+	// cannot be changed after creation.
 	ConnectionType ConnectionType `json:"connection_type"`
-	// [Create,Update:OPT] Connection environment settings as
-	// EnvironmentSettings object.
+	// Environment settings for the connection, such as the Java libraries that
+	// it needs and the environment version.
 	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
@@ -1457,7 +1466,8 @@ type CreateConnection struct {
 	Parent string `json:"parent,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// If the connection is read only.
+	// Whether the connection is read only. All connections are currently read
+	// only, so a value set on create or update is ignored.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// A map of option names to UC Secret references. Keys are connection option
 	// names (same as in OptionsKVPairs) and values are UC Secret fully
@@ -1583,53 +1593,76 @@ func (s *CreateExternalMetadataRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A user-defined function (UDF) registered in Unity Catalog. A function belongs
+// to a schema and is referenced as catalog_name.schema_name.function_name. Its
+// body is either a SQL expression or query, or source code in an external
+// language such as Python. See
+// https://docs.databricks.com/aws/en/udf/unity-catalog for an overview.
 type CreateFunction struct {
 	// Name of parent Catalog.
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Scalar function return data type.
+	// Data type of the value the function returns. A table function uses
+	// TABLE_TYPE and describes its result columns in return_params, except for
+	// a polymorphic Python UDTF, which omits them.
 	DataType ColumnTypeName `json:"data_type"`
-	// External function language.
+	// Language of the function body for an EXTERNAL function. It is required
+	// when routine_body is EXTERNAL.
 	ExternalLanguage string `json:"external_language,omitempty"`
-	// External function name.
+	// Name of the function in its external language. It is reserved for future
+	// use.
 	ExternalName string `json:"external_name,omitempty"`
-	// Pretty printed function data type.
+	// Return data type of the function in SQL syntax, including any type
+	// parameters such as precision and scale.
 	FullDataType string `json:"full_data_type"`
-	// Function input parameters.
+	// Input parameters of the function. When it is set, parameters must contain
+	// at least one entry. A function that takes no arguments omits
+	// input_params, even though the Create request schema marks it as required.
 	InputParams FunctionParameterInfos `json:"input_params"`
-	// Whether the function is deterministic.
+	// Whether the function returns the same result for the same arguments. It
+	// corresponds to the DETERMINISTIC characteristic of CREATE FUNCTION.
 	IsDeterministic bool `json:"is_deterministic"`
-	// Function null call.
+	// Whether the function is a null-call function in the sense of the SQL
+	// standard, which returns NULL whenever any argument is NULL.
 	IsNullCall bool `json:"is_null_call"`
 	// Name of function, relative to parent schema.
 	Name string `json:"name"`
-	// Function parameter style. **S** is the value for SQL.
+	// How arguments are passed to the function body. S means that each argument
+	// is passed as a single scalar value.
 	ParameterStyle CreateFunctionParameterStyle `json:"parameter_style"`
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
 	Properties string `json:"properties,omitempty"`
-	// Table function return parameters.
+	// Result columns of a table function. Set it when data_type is TABLE_TYPE,
+	// except for a polymorphic Python UDTF (an EXTERNAL Python function with
+	// full_data_type "()"), which must not set it.
 	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
-	// Function language. When **EXTERNAL** is used, the language of the routine
-	// function should be specified in the **external_language** field, and the
-	// **return_params** of the function cannot be used (as **TABLE** return
-	// type is not supported), and the **sql_data_access** field must be
-	// **NO_SQL**.
+	// Language of the function body. SQL means that routine_definition holds a
+	// SQL expression or query. EXTERNAL means that it holds source code in the
+	// language named by external_language, and sql_data_access must then be
+	// NO_SQL.
 	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
-	// Function body.
+	// Body of the function. For a SQL function it is the expression or query
+	// that computes the result; for an EXTERNAL function it is the source code
+	// of the function. It is omitted when the caller can only browse the
+	// function.
 	RoutineDefinition string `json:"routine_definition"`
 	// Function dependencies. For external UDFs, dependencies may contain only
 	// credential, secret, or volume objects.
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent Schema relative to its parent Catalog.
 	SchemaName string `json:"schema_name"`
-	// Function security type.
+	// Whose privileges the function body runs with. DEFINER runs it with the
+	// privileges of the function owner.
 	SecurityType CreateFunctionSecurityType `json:"security_type"`
-	// Specific name of the function; Reserved for future use.
+	// Specific name of the function. Set it to the same value as name.
 	SpecificName string `json:"specific_name"`
-	// Function SQL data access.
+	// How the function body interacts with SQL data. CONTAINS_SQL means that
+	// the body contains SQL but reads no table or view, READS_SQL_DATA means
+	// that it reads a table or view, and NO_SQL is required for EXTERNAL
+	// functions.
 	SqlDataAccess CreateFunctionSqlDataAccess `json:"sql_data_access"`
-	// List of schemes whose objects can be referenced without qualification.
+	// List of schemas whose objects can be referenced without qualification.
 	SqlPath string `json:"sql_path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2762,10 +2795,10 @@ func (s *DeleteExternalMetadataRequest) UnmarshalJSON(b []byte) error {
 }
 
 type DeleteFunctionRequest struct {
-	// Force deletion even if the function is notempty.
+	// Force deletion even if the function is not empty.
 	Force bool `json:"-" url:"force,omitempty"`
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name__) .
+	// __catalog_name__.__schema_name__.__function_name__).
 	Name string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3998,6 +4031,11 @@ func (s *FunctionDependency) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A user-defined function (UDF) registered in Unity Catalog. A function belongs
+// to a schema and is referenced as catalog_name.schema_name.function_name. Its
+// body is either a SQL expression or query, or source code in an external
+// language such as Python. See
+// https://docs.databricks.com/aws/en/udf/unity-catalog for an overview.
 type FunctionInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -4011,24 +4049,33 @@ type FunctionInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of function creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Scalar function return data type.
+	// Data type of the value the function returns. A table function uses
+	// TABLE_TYPE and describes its result columns in return_params, except for
+	// a polymorphic Python UDTF, which omits them.
 	DataType ColumnTypeName `json:"data_type,omitempty"`
-	// External function language.
+	// Language of the function body for an EXTERNAL function. It is required
+	// when routine_body is EXTERNAL.
 	ExternalLanguage string `json:"external_language,omitempty"`
-	// External function name.
+	// Name of the function in its external language. It is reserved for future
+	// use.
 	ExternalName string `json:"external_name,omitempty"`
-	// Pretty printed function data type.
+	// Return data type of the function in SQL syntax, including any type
+	// parameters such as precision and scale.
 	FullDataType string `json:"full_data_type,omitempty"`
 	// Full name of Function, in form of
 	// **catalog_name**.**schema_name**.**function_name**
 	FullName string `json:"full_name,omitempty"`
 	// Id of Function, relative to parent schema.
 	FunctionId string `json:"function_id,omitempty"`
-	// Function input parameters.
+	// Input parameters of the function. When it is set, parameters must contain
+	// at least one entry. A function that takes no arguments omits
+	// input_params, even though the Create request schema marks it as required.
 	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
-	// Whether the function is deterministic.
+	// Whether the function returns the same result for the same arguments. It
+	// corresponds to the DETERMINISTIC characteristic of CREATE FUNCTION.
 	IsDeterministic bool `json:"is_deterministic,omitempty"`
-	// Function null call.
+	// Whether the function is a null-call function in the sense of the SQL
+	// standard, which returns NULL whenever any argument is NULL.
 	IsNullCall bool `json:"is_null_call,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -4036,32 +4083,41 @@ type FunctionInfo struct {
 	Name string `json:"name,omitempty"`
 	// Username of current owner of the function.
 	Owner string `json:"owner,omitempty"`
-	// Function parameter style. **S** is the value for SQL.
+	// How arguments are passed to the function body. S means that each argument
+	// is passed as a single scalar value.
 	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
 	Properties string `json:"properties,omitempty"`
-	// Table function return parameters.
+	// Result columns of a table function. Set it when data_type is TABLE_TYPE,
+	// except for a polymorphic Python UDTF (an EXTERNAL Python function with
+	// full_data_type "()"), which must not set it.
 	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
-	// Function language. When **EXTERNAL** is used, the language of the routine
-	// function should be specified in the **external_language** field, and the
-	// **return_params** of the function cannot be used (as **TABLE** return
-	// type is not supported), and the **sql_data_access** field must be
-	// **NO_SQL**.
+	// Language of the function body. SQL means that routine_definition holds a
+	// SQL expression or query. EXTERNAL means that it holds source code in the
+	// language named by external_language, and sql_data_access must then be
+	// NO_SQL.
 	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
-	// Function body.
+	// Body of the function. For a SQL function it is the expression or query
+	// that computes the result; for an EXTERNAL function it is the source code
+	// of the function. It is omitted when the caller can only browse the
+	// function.
 	RoutineDefinition string `json:"routine_definition,omitempty"`
 	// Function dependencies. For external UDFs, dependencies may contain only
 	// credential, secret, or volume objects.
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent Schema relative to its parent Catalog.
 	SchemaName string `json:"schema_name,omitempty"`
-	// Function security type.
+	// Whose privileges the function body runs with. DEFINER runs it with the
+	// privileges of the function owner.
 	SecurityType FunctionInfoSecurityType `json:"security_type,omitempty"`
-	// Specific name of the function; Reserved for future use.
+	// Specific name of the function. Set it to the same value as name.
 	SpecificName string `json:"specific_name,omitempty"`
-	// Function SQL data access.
+	// How the function body interacts with SQL data. CONTAINS_SQL means that
+	// the body contains SQL but reads no table or view, READS_SQL_DATA means
+	// that it reads a table or view, and NO_SQL is required for EXTERNAL
+	// functions.
 	SqlDataAccess FunctionInfoSqlDataAccess `json:"sql_data_access,omitempty"`
-	// List of schemes whose objects can be referenced without qualification.
+	// List of schemas whose objects can be referenced without qualification.
 	SqlPath string `json:"sql_path,omitempty"`
 	// Time at which this function was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -4229,17 +4285,23 @@ type FunctionParameterInfo struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of Parameter.
 	Name string `json:"name"`
-	// Default value of the parameter.
+	// Default value of the parameter as a SQL expression, used when a call
+	// omits the argument.
 	ParameterDefault string `json:"parameter_default,omitempty"`
-	// Function parameter mode.
+	// Direction of the parameter. Only IN parameters, which pass a value into
+	// the function, are supported.
 	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
-	// Function parameter type.
+	// Whether the entry is an input parameter (PARAM) or a result column of a
+	// table function (COLUMN).
 	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
-	// Ordinal position of column (starting at position 0).
+	// Zero-based position of the parameter in the parameter list. Positions
+	// must be unique and consecutive.
 	Position int `json:"position"`
-	// Format of IntervalType.
+	// Unit range of the data type for INTERVAL parameters. It is unset for
+	// other types.
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
-	// Full data type spec, JSON-serialized.
+	// Data type of the parameter as the JSON representation of a Spark SQL
+	// struct field, with name, type, nullable and metadata keys.
 	TypeJson string `json:"type_json,omitempty"`
 	// Name of type (INT, STRUCT, MAP, etc.)
 	TypeName ColumnTypeName `json:"type_name"`
@@ -4247,7 +4309,8 @@ type FunctionParameterInfo struct {
 	TypePrecision int `json:"type_precision,omitempty"`
 	// Digits to right of decimal; Required on Create for DecimalTypes.
 	TypeScale int `json:"type_scale,omitempty"`
-	// Full data type spec, SQL/catalogString text.
+	// Data type of the parameter in SQL syntax, including any type parameters
+	// such as precision and scale.
 	TypeText string `json:"type_text"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4262,6 +4325,7 @@ func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
 }
 
 type FunctionParameterInfos struct {
+	// The parameters that make up the list, ordered by position.
 	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
 }
 
@@ -4343,6 +4407,8 @@ func (f *FunctionParameterType) Type() string {
 // GCP temporary credentials for API authentication. Read more at
 // https://developers.google.com/identity/protocols/oauth2/service-account
 type GcpOauthToken struct {
+	// The OAuth 2.0 access token to pass as a bearer token to Google Cloud
+	// APIs.
 	OauthToken string `json:"oauth_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4399,17 +4465,22 @@ func (s GenerateTemporaryPathCredentialRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GenerateTemporaryPathCredentialResponse struct {
+	// Temporary AWS credentials that can be used to sign AWS API requests.
 	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
-
+	// A Microsoft Entra ID (formerly Azure Active Directory) token that is
+	// issued for the credential's identity.
 	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
-
+	// An Azure user delegation shared access signature (SAS) that grants access
+	// to the requested storage path.
 	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
+	// A GCP OAuth 2.0 access token that is issued for the credential's service
+	// account.
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
-
+	// Temporary Cloudflare R2 credentials that can be used with the R2
+	// S3-compatible API.
 	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
 	// The URL of the storage path accessible by the temporary credential.
 	Url string `json:"url,omitempty"`
@@ -4429,7 +4500,9 @@ func (s GenerateTemporaryPathCredentialResponse) MarshalJSON() ([]byte, error) {
 type GenerateTemporaryServiceCredentialAzureOptions struct {
 	// The resources to which the temporary Azure credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
-	// https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
+	// https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python).
+	// Exactly one resource is supported, and its URL must end with the
+	// `.default` scope.
 	Resources []string `json:"resources,omitempty"`
 }
 
@@ -4441,7 +4514,9 @@ func (s *GenerateTemporaryServiceCredentialAzureOptions) UnmarshalJSON(b []byte)
 type GenerateTemporaryServiceCredentialGcpOptions struct {
 	// The scopes to which the temporary GCP credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
-	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
+	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials).
+	// Each scope must be a Google OAuth 2.0 scope URL on the `googleapis.com`
+	// or `www.googleapis.com` host.
 	Scopes []string `json:"scopes,omitempty"`
 }
 
@@ -4450,11 +4525,14 @@ func (s *GenerateTemporaryServiceCredentialGcpOptions) UnmarshalJSON(b []byte) e
 }
 
 type GenerateTemporaryServiceCredentialRequest struct {
+	// Options for an Azure service credential. They are required when the
+	// service credential uses an Azure managed identity.
 	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
 	// The name of the service credential used to generate a temporary
 	// credential
 	CredentialName string `json:"credential_name"`
-
+	// Options for a GCP service credential. They are required when the service
+	// credential uses a Databricks-managed GCP service account.
 	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions `json:"gcp_options,omitempty"`
 }
 
@@ -4482,17 +4560,22 @@ func (s GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GenerateTemporaryTableCredentialResponse struct {
+	// Temporary AWS credentials that can be used to sign AWS API requests.
 	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
-
+	// A Microsoft Entra ID (formerly Azure Active Directory) token that is
+	// issued for the credential's identity.
 	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
-
+	// An Azure user delegation shared access signature (SAS) that grants access
+	// to the requested storage path.
 	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
+	// A GCP OAuth 2.0 access token that is issued for the credential's service
+	// account.
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
-
+	// Temporary Cloudflare R2 credentials that can be used with the R2
+	// S3-compatible API.
 	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
 	// The URL of the storage path accessible by the temporary credential.
 	Url string `json:"url,omitempty"`
@@ -4529,17 +4612,22 @@ func (s GenerateTemporaryVolumeCredentialRequest) MarshalJSON() ([]byte, error) 
 }
 
 type GenerateTemporaryVolumeCredentialResponse struct {
+	// Temporary AWS credentials that can be used to sign AWS API requests.
 	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
-
+	// A Microsoft Entra ID (formerly Azure Active Directory) token that is
+	// issued for the credential's identity.
 	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
-
+	// An Azure user delegation shared access signature (SAS) that grants access
+	// to the requested storage path.
 	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
+	// A GCP OAuth 2.0 access token that is issued for the credential's service
+	// account.
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
-
+	// Temporary Cloudflare R2 credentials that can be used with the R2
+	// S3-compatible API.
 	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
 	// The URL of the storage path accessible by the temporary credential.
 	Url string `json:"url,omitempty"`
@@ -4779,7 +4867,7 @@ type GetFunctionRequest struct {
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name__).
+	// __catalog_name__.__schema_name__.__function_name__).
 	Name string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -11020,15 +11108,19 @@ func (s *TagValueExtraction) UnmarshalJSON(b []byte) error {
 }
 
 type TemporaryCredentials struct {
+	// Temporary AWS credentials that can be used to sign AWS API requests.
 	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
-
+	// A Microsoft Entra ID (formerly Azure Active Directory) token that is
+	// issued for the credential's identity.
 	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
+	// A GCP OAuth 2.0 access token that is issued for the credential's service
+	// account.
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
-
+	// Temporary Cloudflare R2 credentials that can be used with the R2
+	// S3-compatible API.
 	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -11226,8 +11318,8 @@ func (s *UpdateCatalogWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateConnection struct {
-	// [Create,Update:OPT] Connection environment settings as
-	// EnvironmentSettings object.
+	// Environment settings for the connection, such as the Java libraries that
+	// it needs and the environment version.
 	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
@@ -11235,7 +11327,8 @@ type UpdateConnection struct {
 	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options"`
-	// Username of current owner of the connection.
+	// Username of the current owner of the connection. The creator becomes the
+	// owner at creation, and ownership can be transferred on update.
 	Owner string `json:"owner,omitempty"`
 	// A map of option names to UC Secret references. Keys are connection option
 	// names (same as in OptionsKVPairs) and values are UC Secret fully
@@ -11417,7 +11510,7 @@ func (s *UpdateExternalMetadataRequest) UnmarshalJSON(b []byte) error {
 
 type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name__).
+	// __catalog_name__.__schema_name__.__function_name__).
 	Name string `json:"-" url:"-"`
 	// Username of current owner of the function.
 	Owner string `json:"owner,omitempty"`

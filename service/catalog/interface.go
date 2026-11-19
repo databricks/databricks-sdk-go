@@ -444,7 +444,7 @@ type ConnectionsService interface {
 	// Deletes the connection that matches the supplied name.
 	Delete(ctx context.Context, request DeleteConnectionRequest) error
 
-	// Gets a connection from it's name.
+	// Gets a connection from its name.
 	Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error)
 
 	// List all connections.
@@ -458,7 +458,9 @@ type ConnectionsService interface {
 	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error)
 
-	// Updates the connection that matches the supplied name.
+	// Updates the connection that matches the supplied name. When options are
+	// provided, they replace the existing options of the connection, so include
+	// every key that the connection type requires.
 	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
 }
 
@@ -489,7 +491,7 @@ type CredentialsService interface {
 
 	// Returns a set of temporary credentials generated using the specified
 	// service credential. The caller must be a metastore admin or have the
-	// metastore privilege **ACCESS** on the service credential.
+	// **ACCESS** privilege on the service credential.
 	GenerateTemporaryServiceCredential(ctx context.Context, request GenerateTemporaryServiceCredentialRequest) (*TemporaryCredentials, error)
 
 	// Gets a service or storage credential from the metastore. The caller must

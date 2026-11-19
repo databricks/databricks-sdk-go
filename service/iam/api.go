@@ -402,13 +402,17 @@ type PermissionsInterface interface {
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error)
 
-	// Sets permissions on an object, replacing existing permissions if they exist.
-	// Deletes all direct permissions if none are specified. Objects can inherit
-	// permissions from their parent objects or root object.
+	// Sets permissions on an object, replacing all direct permissions with the ones
+	// in the request. Principals that are not in the request lose their direct
+	// permissions on the object, and all direct permissions are deleted if none are
+	// specified. Objects can inherit permissions from their parent objects or root
+	// object.
 	Set(ctx context.Context, request SetObjectPermissions) (*ObjectPermissions, error)
 
-	// Updates the permissions on an object. Objects can inherit permissions from
-	// their parent objects or root object.
+	// Updates the permissions on an object by adding or changing the permissions of
+	// the principals in the request. Principals that are not in the request keep
+	// their existing permissions. Objects can inherit permissions from their parent
+	// objects or root object.
 	Update(ctx context.Context, request UpdateObjectPermissions) (*ObjectPermissions, error)
 }
 

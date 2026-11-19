@@ -74,6 +74,7 @@ func (f *AggregationGranularity) Type() string {
 // Anomaly Detection Configurations.
 type AnomalyDetectionConfig struct {
 	// List of fully qualified table names to exclude from anomaly detection.
+	// Format: `catalog.schema.table_name`.
 	ExcludedTableFullNames []string `json:"excluded_table_full_names,omitempty"`
 	// Who to alert when anomaly detection finds unhealthy tables in this
 	// schema. Applicable to `schema` monitors only. This is the same schema
@@ -177,11 +178,10 @@ type CronSchedule struct {
 	//
 	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	QuartzCronExpression string `json:"quartz_cron_expression"`
-	// A Java timezone id. The schedule for a job will be resolved with respect
-	// to this timezone. See `Java TimeZone
-	// <http://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`_ for
-	// details. The timezone id (e.g., ``America/Los_Angeles``) in which to
-	// evaluate the quartz expression.
+	// The Java timezone ID in which the cron expression is evaluated. See [Java
+	// TimeZone] for the supported IDs.
+	//
+	// [Java TimeZone]: https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
 }
 
@@ -229,25 +229,32 @@ func (f *CronSchedulePauseStatus) Type() string {
 
 // Data Profiling Configurations.
 type DataProfilingConfig struct {
-	// Field for specifying the absolute path to a custom directory to store
-	// data-monitoring assets. Normally prepopulated to a default user location
-	// via UI and Python APIs.
+	// The absolute workspace path of the directory where the monitor's assets,
+	// such as the dashboard, are stored. The UI and the Python APIs normally
+	// prepopulate a default user location.
 	AssetsDir string `json:"assets_dir,omitempty"`
-	// Baseline table name. Baseline data is used to compute drift from the data
-	// in the monitored `table_name`. The baseline table and the monitored table
-	// shall have the same schema.
+	// The fully qualified name of a baseline table. Format:
+	// `catalog.schema.table_name`. Drift metrics compare the monitored table
+	// against the baseline data, so the two tables must have the same schema.
 	BaselineTableName string `json:"baseline_table_name,omitempty"`
-	// Custom metrics.
+	// Custom metrics to compute in addition to the built-in ones. See [custom
+	// metrics].
+	//
+	// [custom metrics]: https://docs.databricks.com/aws/en/data-governance/unity-catalog/data-quality-monitoring/data-profiling/custom-metrics
 	CustomMetrics []DataProfilingCustomMetric `json:"custom_metrics,omitempty"`
-	// Id of dashboard that visualizes the computed metrics. This can be empty
-	// if the monitor is in PENDING state.
+	// The ID of the dashboard that visualizes the computed metrics. It is empty
+	// while the monitor is pending, when the dashboard was skipped with
+	// `skip_builtin_dashboard`, or when the caller is in a different workspace
+	// from the one where the monitor was created.
 	DashboardId string `json:"dashboard_id,omitempty"`
 	// Table that stores drift metrics data. Format:
 	// `catalog.schema.table_name`.
 	DriftMetricsTableName string `json:"drift_metrics_table_name,omitempty"`
 	// The warehouse for dashboard creation
 	EffectiveWarehouseId string `json:"effective_warehouse_id,omitempty"`
-	// `Analysis Configuration` for monitoring inference log tables.
+	// Profiles an inference log table, which stores the requests and
+	// predictions of a model. Metrics are computed per time window and include
+	// model quality metrics.
 	InferenceLog *InferenceLogConfig `json:"inference_log,omitempty"`
 	// The latest error message for a monitor failure.
 	LatestMonitorFailureMessage string `json:"latest_monitor_failure_message,omitempty"`
@@ -256,16 +263,20 @@ type DataProfilingConfig struct {
 	// flexibility to take on negative values, which can indicate corrupted
 	// monitor_version numbers.
 	MonitorVersion int64 `json:"monitor_version,omitempty"`
-	// Unity Catalog table to monitor. Format: `catalog.schema.table_name`
+	// The fully qualified name of the monitored table. Format:
+	// `catalog.schema.table_name`.
 	MonitoredTableName string `json:"monitored_table_name,omitempty"`
-	// Field for specifying notification settings.
+	// Who to notify about this monitor's refreshes. Only `on_failure` with
+	// `email_addresses` is supported here.
 	NotificationSettings *NotificationSettings `json:"notification_settings,omitempty"`
-	// ID of the schema where output tables are created.
+	// The UUID of the Unity Catalog schema where the profile and drift metrics
+	// tables are created.
 	OutputSchemaId string `json:"output_schema_id"`
 	// Table that stores profile metrics data. Format:
 	// `catalog.schema.table_name`.
 	ProfileMetricsTableName string `json:"profile_metrics_table_name,omitempty"`
-	// The cron schedule.
+	// The schedule on which the monitor refreshes its metrics. Refreshes can
+	// also be triggered on demand through the Refresh resource.
 	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// Whether to skip creating a default dashboard summarizing data quality
 	// metrics.
@@ -273,19 +284,28 @@ type DataProfilingConfig struct {
 	// List of column expressions to slice data with for targeted analysis. The
 	// data is grouped by each expression independently, resulting in a separate
 	// slice for each predicate and its complements. For example
-	// `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-	// following slices: two slices for `col_2 > 10` (True and False), and one
-	// slice per unique value in `col1`. For high-cardinality columns, only the
-	// top 100 unique values by frequency will generate slices.
+	// `slicing_exprs=["col_1", "col_2 > 10"]` will generate the following
+	// slices: two slices for `col_2 > 10` (True and False), and one slice per
+	// unique value in `col_1`. For high-cardinality columns, only the top 100
+	// unique values by frequency will generate slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
-	// `Analysis Configuration` for monitoring snapshot tables.
+	// Profiles the full contents of the table. Metrics are computed over all
+	// rows at each refresh.
 	Snapshot *SnapshotConfig `json:"snapshot,omitempty"`
-	// The data profiling monitor status.
+	// The status of the monitor. `DATA_PROFILING_STATUS_PENDING` means the
+	// monitor's assets are being created or updated.
+	// `DATA_PROFILING_STATUS_ACTIVE` means the monitor is ready and can be
+	// refreshed. `DATA_PROFILING_STATUS_FAILED` and
+	// `DATA_PROFILING_STATUS_ERROR` mean the monitor is not operational, and
+	// `latest_monitor_failure_message` describes the cause when one was
+	// recorded. `DATA_PROFILING_STATUS_DELETE_PENDING` means the monitor is
+	// being deleted.
 	Status DataProfilingStatus `json:"status,omitempty"`
-	// `Analysis Configuration` for monitoring time series tables.
+	// Profiles a time series table. Metrics are computed per time window, as
+	// defined by `timestamp_column` and `granularities`.
 	TimeSeries *TimeSeriesConfig `json:"time_series,omitempty"`
-	// Optional argument to specify the warehouse for dashboard creation. If not
-	// specified, the first running warehouse will be used.
+	// The ID of the SQL warehouse used to create the dashboard. If not
+	// specified, the first running warehouse the caller can access is used.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -307,14 +327,20 @@ type DataProfilingCustomMetric struct {
 	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
 	Definition string `json:"definition"`
 	// A list of column names in the input table the metric should be computed
-	// for. Can use ``":table"`` to indicate that the metric needs information
+	// for. Can use `":table"` to indicate that the metric needs information
 	// from multiple columns.
 	InputColumns []string `json:"input_columns"`
 	// Name of the metric in the output tables.
 	Name string `json:"name"`
-	// The output type of the custom metric.
+	// Specifies the Spark SQL data type of the metric value, either as a plain
+	// type name or as a JSON-encoded StructField.
 	OutputDataType string `json:"output_data_type"`
 	// The type of the custom metric.
+	// `DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE` metrics depend only on the
+	// columns of the input table, `DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED`
+	// metrics depend only on previously computed aggregate metrics, and
+	// `DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT` metrics depend on previously
+	// computed aggregate or derived metrics.
 	Type DataProfilingCustomMetricType `json:"type"`
 }
 
@@ -519,15 +545,18 @@ type InferenceLogConfig struct {
 	// List of granularities to use when aggregating data into time windows
 	// based on their timestamp.
 	Granularities []AggregationGranularity `json:"granularities"`
-	// Column for the label.
+	// Column containing the ground truth for the model's predictions.
 	LabelColumn string `json:"label_column,omitempty"`
-	// Column for the model identifier.
+	// Column containing the ID of the model that produced each prediction. A
+	// slice is created automatically for each distinct model ID.
 	ModelIdColumn string `json:"model_id_column"`
-	// Column for the prediction.
+	// Column containing the model's predicted values.
 	PredictionColumn string `json:"prediction_column"`
-	// Problem type the model aims to solve.
+	// The type of problem the model solves. It determines which model quality
+	// metrics are computed.
 	ProblemType InferenceProblemType `json:"problem_type"`
-	// Column for the timestamp.
+	// Column containing the timestamp of each inference request. Its type must
+	// be TIMESTAMP or convertible to a timestamp.
 	TimestampColumn string `json:"timestamp_column"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -580,8 +609,9 @@ func (f *InferenceProblemType) Type() string {
 }
 
 type ListMonitorRequest struct {
+	// The maximum number of monitors to return in one page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Pagination token from a previous response, used to fetch the next page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -597,8 +627,9 @@ func (s ListMonitorRequest) MarshalJSON() ([]byte, error) {
 
 // Response for listing Monitors.
 type ListMonitorResponse struct {
+	// The monitors on this page.
 	Monitors []Monitor `json:"monitors,omitempty"`
-
+	// Pagination token to pass as `page_token` to fetch the next page.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -664,13 +695,17 @@ func (s ListRefreshResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Monitor for the data quality of unity catalog entities such as schema or
-// table.
+// A data quality monitor on a Unity Catalog object. A `schema` monitor runs
+// anomaly detection on the tables in the schema and is configured through
+// `anomaly_detection_config`. A `table` monitor profiles a single table and is
+// configured through `data_profiling_config`.
 type Monitor struct {
-	// Anomaly Detection Configuration, applicable to `schema` object types.
+	// Anomaly detection settings. Required when `object_type` is `schema`. When
+	// reading a `table` monitor, this holds the settings of the parent schema's
+	// monitor if the schema has one.
 	AnomalyDetectionConfig *AnomalyDetectionConfig `json:"anomaly_detection_config,omitempty"`
-	// Data Profiling Configuration, applicable to `table` object types. Exactly
-	// one `Analysis Configuration` must be present.
+	// Data profiling settings. Required when `object_type` is `table`. Exactly
+	// one of `inference_log`, `time_series` or `snapshot` must be set.
 	DataProfilingConfig *DataProfilingConfig `json:"data_profiling_config,omitempty"`
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.
@@ -710,7 +745,8 @@ type NotificationDestination struct {
 	// `anomaly_detection_config`; rejected on table monitors.
 	DestinationUserIds []int64 `json:"destination_user_ids,omitempty"`
 	// The list of email addresses to send the notification to. A maximum of 5
-	// email addresses is supported.
+	// email addresses is supported. Only supported on table monitors, via
+	// `data_profiling_config`; rejected on schema monitors.
 	EmailAddresses []string `json:"email_addresses,omitempty"`
 }
 
@@ -720,7 +756,9 @@ func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
 
 // Settings for sending notifications on the data quality monitoring.
 type NotificationSettings struct {
-	// Destinations to send notifications on failure/timeout.
+	// Recipients to notify when a refresh of the monitor fails or times out.
+	// Only supported on table monitors, via `data_profiling_config`, and only
+	// `email_addresses` is accepted there.
 	OnFailure *NotificationDestination `json:"on_failure,omitempty"`
 	// Recipients to notify when anomaly detection finds unhealthy tables in the
 	// schema. Each recipient gets one notification per important unhealthy
@@ -885,7 +923,8 @@ type TimeSeriesConfig struct {
 	// List of granularities to use when aggregating data into time windows
 	// based on their timestamp.
 	Granularities []AggregationGranularity `json:"granularities"`
-	// Column for the timestamp.
+	// Column containing the timestamp of each row. Its type must be TIMESTAMP
+	// or convertible to a timestamp.
 	TimestampColumn string `json:"timestamp_column"`
 }
 
@@ -894,7 +933,8 @@ func (s *TimeSeriesConfig) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateMonitorRequest struct {
-	// The monitor to update.
+	// The new values for the monitor. Only the fields named in `update_mask`
+	// are applied.
 	Monitor Monitor `json:"monitor"`
 	// The UUID of the request object. It is `schema_id` for `schema`, and
 	// `table_id` for `table`.

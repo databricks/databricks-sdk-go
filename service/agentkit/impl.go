@@ -323,9 +323,9 @@ func (a *agentKitImpl) GrantSessionStorePermission(ctx context.Context, request 
 }
 
 // Lists memory entries for one actor. An exact `path` filters entries across
-// sessions, ignoring session metadata. Otherwise, `session_id` and
-// `path_prefix` restrict the actor partition. `view` controls whether each
-// returned entry includes memory content.
+// sessions, ignoring session metadata. Otherwise, `path_prefix` and the
+// deprecated `session_id` restrict the actor partition. `view` controls whether
+// each returned entry includes memory content.
 func (a *agentKitImpl) ListMemories(ctx context.Context, request ListManagedMemoryEntriesRequest) listing.Iterator[ManagedMemoryEntry] {
 
 	getNextPage := func(ctx context.Context, req ListManagedMemoryEntriesRequest) (*ListManagedMemoryEntriesResponse, error) {
@@ -351,9 +351,9 @@ func (a *agentKitImpl) ListMemories(ctx context.Context, request ListManagedMemo
 }
 
 // Lists memory entries for one actor. An exact `path` filters entries across
-// sessions, ignoring session metadata. Otherwise, `session_id` and
-// `path_prefix` restrict the actor partition. `view` controls whether each
-// returned entry includes memory content.
+// sessions, ignoring session metadata. Otherwise, `path_prefix` and the
+// deprecated `session_id` restrict the actor partition. `view` controls whether
+// each returned entry includes memory content.
 func (a *agentKitImpl) ListMemoriesAll(ctx context.Context, request ListManagedMemoryEntriesRequest) ([]ManagedMemoryEntry, error) {
 	iterator := a.ListMemories(ctx, request)
 	return listing.ToSlice[ManagedMemoryEntry](ctx, iterator)

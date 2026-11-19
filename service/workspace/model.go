@@ -13,7 +13,8 @@ import (
 type AclItem struct {
 	// The permission level applied to the principal.
 	Permission AclPermission `json:"permission"`
-	// The principal in which the permission is applied.
+	// The user name or group name of an existing Databricks principal that the
+	// permission applies to.
 	Principal string `json:"principal"`
 }
 
@@ -65,10 +66,10 @@ func (f *AclPermission) Type() string {
 // The metadata of the Azure KeyVault for a secret scope of type
 // `AZURE_KEYVAULT`
 type AzureKeyVaultSecretScopeMetadata struct {
-	// The DNS of the KeyVault
+	// The DNS name of the key vault, for example
+	// ``https://my-key-vault.vault.azure.net/``.
 	DnsName string `json:"dns_name"`
-	// The resource id of the azure KeyVault that user wants to associate the
-	// scope with.
+	// The Azure resource ID of the key vault to associate with the scope.
 	ResourceId string `json:"resource_id"`
 }
 
@@ -233,8 +234,7 @@ type CreateScope struct {
 	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
 	// Scope name requested by the user. Scope names are unique.
 	Scope string `json:"scope"`
-	// The backend type the scope will be created with. If not specified, will
-	// default to ``DATABRICKS``
+	// The backend type of the new scope. Defaults to ``DATABRICKS``.
 	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1094,7 +1094,8 @@ func (f *ObjectType) Type() string {
 type PutAcl struct {
 	// The permission level applied to the principal.
 	Permission AclPermission `json:"permission"`
-	// The principal in which the permission is applied.
+	// The user name or group name of an existing Databricks principal that the
+	// permission applies to.
 	Principal string `json:"principal"`
 	// The name of the scope to apply permissions to.
 	Scope string `json:"scope"`
@@ -1314,8 +1315,7 @@ func (s *RepoPermissionsRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// The types of secret scope backends in the Secret Manager. Azure KeyVault
-// backed secret scopes will be supported in a later release.
+// The types of secret scope backends in the Secret Manager.
 type ScopeBackendType string
 
 const ScopeBackendTypeAzureKeyvault ScopeBackendType = `AZURE_KEYVAULT`
@@ -1373,13 +1373,13 @@ func (s SecretMetadata) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// An organizational resource for storing secrets. Secret scopes can be
-// different types (Databricks-managed, Azure KeyVault backed, etc), and ACLs
-// can be applied to control permissions for all secrets within a scope.
+// An organizational resource for storing secrets. A secret scope is either
+// Databricks-backed or Azure Key Vault-backed, and ACLs can be applied to
+// control permissions for all secrets within a scope.
 type SecretScope struct {
 	// The type of secret scope backend.
 	BackendType ScopeBackendType `json:"backend_type,omitempty"`
-	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
+	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``.
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// A unique name to identify the secret scope.
 	Name string `json:"name,omitempty"`

@@ -64,6 +64,10 @@ func (s AccountNetworkPolicy) MarshalJSON() ([]byte, error) {
 }
 
 type AibiDashboardEmbeddingAccessPolicy struct {
+	// Where AI/BI dashboards can be embedded: in any domain
+	// (ALLOW_ALL_DOMAINS), only in the approved domains configured for the
+	// workspace (ALLOW_APPROVED_DOMAINS), or nowhere (DENY_ALL_DOMAINS).
+	// Defaults to ALLOW_APPROVED_DOMAINS.
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
 }
 
@@ -140,6 +144,9 @@ func (s AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error)
 }
 
 type AibiDashboardEmbeddingApprovedDomains struct {
+	// Domains allowed to host embedded AI/BI dashboards. A leading wildcard
+	// allows every subdomain of a domain. The list applies, and can only be
+	// changed, while the embedding access policy is ALLOW_APPROVED_DOMAINS.
 	ApprovedDomains []string `json:"approved_domains,omitempty"`
 }
 
@@ -218,14 +225,25 @@ func (s BooleanMessage) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterAutoRestartMessage struct {
+	// Whether the workspace can change the enabled state. Databricks computes
+	// this value: it is false when the compliance security profile forces the
+	// feature on or when the workspace lacks the Enhanced Security and
+	// Compliance entitlement. A value sent in an update request has no effect.
 	CanToggle bool `json:"can_toggle,omitempty"`
-
+	// Whether automatic cluster update is enabled for the workspace. The
+	// effective value is always true while the compliance security profile is
+	// enabled on the workspace.
 	Enabled bool `json:"enabled,omitempty"`
-
+	// Why the feature is forced on or unavailable. Databricks sets these
+	// details for information only; they do not determine whether the feature
+	// is enabled.
 	EnablementDetails *ClusterAutoRestartMessageEnablementDetails `json:"enablement_details,omitempty"`
-
+	// When the maintenance window runs. When unset, it defaults to the first
+	// Sunday of every month at 01:00 UTC.
 	MaintenanceWindow *ClusterAutoRestartMessageMaintenanceWindow `json:"maintenance_window,omitempty"`
-
+	// Whether compute resources restart during every maintenance window even
+	// when no update is available. When false, they restart only when an update
+	// is available.
 	RestartEvenIfNoUpdatesAvailable bool `json:"restart_even_if_no_updates_available,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -248,8 +266,8 @@ func (s ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
 type ClusterAutoRestartMessageEnablementDetails struct {
 	// The feature is force enabled if compliance mode is active
 	ForcedForComplianceMode bool `json:"forced_for_compliance_mode,omitempty"`
-	// The feature is unavailable if the corresponding entitlement disabled (see
-	// getShieldEntitlementEnable)
+	// The feature is unavailable because the workspace does not have the
+	// Enhanced Security and Compliance entitlement.
 	UnavailableForDisabledEntitlement bool `json:"unavailable_for_disabled_entitlement,omitempty"`
 	// The feature is unavailable if the customer doesn't have enterprise tier
 	UnavailableForNonEnterpriseTier bool `json:"unavailable_for_non_enterprise_tier,omitempty"`
@@ -266,6 +284,8 @@ func (s ClusterAutoRestartMessageEnablementDetails) MarshalJSON() ([]byte, error
 }
 
 type ClusterAutoRestartMessageMaintenanceWindow struct {
+	// Schedule anchored to a day of the week, either every week or on given
+	// weeks of the month.
 	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule `json:"week_day_based_schedule,omitempty"`
 }
 
@@ -326,10 +346,12 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Type() string {
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
+	// Day of the week on which the maintenance window starts.
 	DayOfWeek ClusterAutoRestartMessageMaintenanceWindowDayOfWeek `json:"day_of_week,omitempty"`
-
+	// How often the maintenance window occurs: every week, or only on the
+	// listed occurrences of the day of the week within each month.
 	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
-
+	// Time of day, in UTC, at which the maintenance window starts.
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
 }
 
@@ -390,8 +412,9 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Type() stri
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
+	// Hour of the day on a 24-hour clock.
 	Hours int `json:"hours,omitempty"`
-
+	// Minute of the hour.
 	Minutes int `json:"minutes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4877,7 +4900,15 @@ type RestrictWorkspaceAdminsMessage struct {
 	// When true, workspace admins cannot create governance tags. ALLOW_ALL
 	// status does not override this; they are independent.
 	DisableGovTagCreation bool `json:"disable_gov_tag_creation,omitempty"`
-
+	// Controls what workspace admins can do with service principal tokens and
+	// job identities. With ALLOW_ALL, workspace admins can create personal
+	// access tokens on behalf of any service principal in the workspace, change
+	// a job owner to any workspace user, and set a job's run_as identity to any
+	// workspace user or to a service principal they have the Service Principal
+	// User role on. With RESTRICT_TOKENS_AND_JOB_RUN_AS, they can only create
+	// tokens for service principals they have the Service Principal User role
+	// on, change a job owner to themselves, and set run_as to themselves or to
+	// a service principal they have that role on.
 	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
 
 	ForceSendFields []string `json:"-" url:"-"`

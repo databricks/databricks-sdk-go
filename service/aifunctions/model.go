@@ -45,6 +45,7 @@ type AiClassifyRequest struct {
 	// ["spam", "not_spam"]), or a JSON object mapping each label to a
 	// description (e.g. {"spam": "unsolicited bulk message", "not_spam": "a
 	// legitimate message"}). Accepts 2 to 500 labels, each 1 to 100 characters.
+	// When multilabel is true, a single label is also accepted.
 	Labels json.RawMessage `json:"labels"`
 	// Function options. Omitted fields fall back to their documented defaults.
 	Options *AiClassifyOptions `json:"options,omitempty"`
@@ -86,8 +87,8 @@ func (s AiClassifyResponseMetadata) MarshalJSON() ([]byte, error) {
 
 // ai_decide
 type AiDecideOptions struct {
-	// The function API version to invoke. Defaults to "1.0". Supported
-	// versions: ["1.0"].
+	// The function API version to invoke. If unset, the version is inferred per
+	// row. Supported versions: ["1.0"].
 	Version string `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

@@ -24,7 +24,8 @@ type AgentKitService interface {
 	// path already exists. Omitted `session_id` is its own uniqueness key: two
 	// omitted-session entries with the same actor and path conflict, but an
 	// omitted-session entry does not conflict with a session-scoped entry at
-	// the same actor and path.
+	// the same actor and path. `session_id` is deprecated: once it is ignored,
+	// the uniqueness key becomes actor and path.
 	CreateMemory(ctx context.Context, request CreateManagedMemoryEntryRequest) (*ManagedMemoryEntry, error)
 
 	// Creates a memory store in the caller's workspace. Returns
@@ -95,9 +96,9 @@ type AgentKitService interface {
 	GrantSessionStorePermission(ctx context.Context, request GrantSessionStorePermissionRequest) (*GrantSessionStorePermissionResponse, error)
 
 	// Lists memory entries for one actor. An exact `path` filters entries
-	// across sessions, ignoring session metadata. Otherwise, `session_id` and
-	// `path_prefix` restrict the actor partition. `view` controls whether each
-	// returned entry includes memory content.
+	// across sessions, ignoring session metadata. Otherwise, `path_prefix` and
+	// the deprecated `session_id` restrict the actor partition. `view` controls
+	// whether each returned entry includes memory content.
 	ListMemories(ctx context.Context, request ListManagedMemoryEntriesRequest) (*ListManagedMemoryEntriesResponse, error)
 
 	// Lists explicit memory store grants. Only the owner or a workspace admin

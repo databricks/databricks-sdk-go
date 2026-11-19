@@ -331,7 +331,12 @@ func (s *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A user, service principal, or group that's a direct member of a group.
+// A user, service principal, or group that's a direct member of a group. To
+// address a membership, put its resource name in the URL: `GET
+// /api/2.0/identity/accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}`
+// in account APIs, or `GET
+// /api/2.0/identity/groups/{group_id}/direct-members/{principal_id}` in
+// workspace APIs.
 type DirectGroupMember struct {
 	// The member's display name.
 	DisplayName string `json:"display_name,omitempty"`
@@ -431,7 +436,10 @@ func (s *ExactMatchRule) UnmarshalJSON(b []byte) error {
 // This resource is read-only. Getting an external group syncs its name and
 // parent groups from your IdP, and adds it to your account if it isn't already
 // there. If your account has group visibility filters, the group must match
-// them.
+// them. To address an external group, put its resource name in the URL: `GET
+// /api/2.0/identity/accounts/{account_id}/external-groups/{external_group_id}`
+// in account APIs, or `GET
+// /api/2.0/identity/external-groups/{external_group_id}` in workspace APIs.
 type ExternalGroup struct {
 	// The ID of the account that contains the group.
 	AccountId string `json:"account_id,omitempty"`
@@ -463,7 +471,12 @@ func (s ExternalGroup) MarshalJSON() ([]byte, error) {
 // in your IdP. This resource is read-only and requires Microsoft Entra ID as
 // your IdP. Getting an external service principal syncs its details and group
 // memberships from your IdP, and adds it to your account if it isn't already
-// there.
+// there. To address an external service principal, put its resource name in the
+// URL: `GET
+// /api/2.0/identity/accounts/{account_id}/external-service-principals/{external_service_principal_id}`
+// in account APIs, or `GET
+// /api/2.0/identity/external-service-principals/{external_service_principal_id}`
+// in workspace APIs.
 type ExternalServicePrincipal struct {
 	// The ID of the account that contains the service principal.
 	AccountId string `json:"account_id,omitempty"`
@@ -499,7 +512,11 @@ func (s ExternalServicePrincipal) MarshalJSON() ([]byte, error) {
 // A user from your identity provider (IdP), identified by their ID in your IdP.
 // This resource is read-only. Getting an external user syncs the user's details
 // and group memberships from your IdP, and adds the user to your account if
-// they aren't already there.
+// they aren't already there. To address an external user, put its resource name
+// in the URL: `GET
+// /api/2.0/identity/accounts/{account_id}/external-users/{external_user_id}` in
+// account APIs, or `GET /api/2.0/identity/external-users/{external_user_id}` in
+// workspace APIs.
 type ExternalUser struct {
 	// The ID of the account that contains the user.
 	AccountId string `json:"account_id,omitempty"`
@@ -774,7 +791,10 @@ func (s *GetWorkspaceIdentityDetailRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A group in your Databricks account.
+// A group in your Databricks account. To address a group, put its resource name
+// in the URL: `GET /api/2.0/identity/accounts/{account_id}/groups/{group_id}`
+// in account APIs, or `GET /api/2.0/identity/groups/{group_id}` in workspace
+// APIs.
 type Group struct {
 	// The ID of the account that contains the group.
 	AccountId string `json:"account_id,omitempty"`
@@ -858,6 +878,9 @@ func (f *GroupMembershipSource) Type() string {
 // You can only create group filters. Filters don't affect provisioning or
 // sign-in for users and service principals. You can't change a filter: to
 // change a rule, delete it and create a new one.
+//
+// To address a filter, put its resource name in the URL: `GET
+// /api/2.0/identity/accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}`.
 type IdentityVisibilityFilter struct {
 	// Matches a group by its ID in your IdP.
 	Exact *ExactMatchRule `json:"exact,omitempty"`
@@ -1524,7 +1547,12 @@ func (s *ResolveUserResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A service principal in your Databricks account.
+// A service principal in your Databricks account. To address a service
+// principal, put its resource name in the URL: `GET
+// /api/2.0/identity/accounts/{account_id}/service-principals/{service_principal_id}`
+// in account APIs, or `GET
+// /api/2.0/identity/service-principals/{service_principal_id}` in workspace
+// APIs.
 type ServicePrincipal struct {
 	// The ID of the account that contains the service principal.
 	AccountId string `json:"account_id,omitempty"`
@@ -1600,7 +1628,12 @@ func (f *State) Type() string {
 }
 
 // A group that a principal belongs to, either directly or through another
-// group.
+// group. To list a principal's parent groups, put the principal's resource name
+// in the URL: `GET
+// /api/2.0/identity/accounts/{account_id}/principals/{principal_id}/transitive-parent-groups`
+// in account APIs, or `GET
+// /api/2.0/identity/principals/{principal_id}/transitive-parent-groups` in
+// workspace APIs.
 type TransitiveParentGroup struct {
 	// The ID of the account that contains the group.
 	AccountId string `json:"account_id,omitempty"`
@@ -1805,7 +1838,9 @@ func (s *UpdateWorkspaceIdentityDetailRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// A user in your Databricks account.
+// A user in your Databricks account. To address a user, put its resource name
+// in the URL: `GET /api/2.0/identity/accounts/{account_id}/users/{user_id}` in
+// account APIs, or `GET /api/2.0/identity/users/{user_id}` in workspace APIs.
 type User struct {
 	// The ID of the account that contains the user.
 	AccountId string `json:"account_id,omitempty"`
@@ -1982,6 +2017,11 @@ func (f *WorkspaceAccessDetailView) Type() string {
 // includes the entitlements the principal gets through its groups. An
 // assignment must grant at least one entitlement. To remove a principal's
 // direct access, delete the assignment.
+//
+// To address an assignment, put its resource name in the URL: `GET
+// /api/2.0/identity/accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}`
+// in account APIs, or `GET
+// /api/2.0/identity/workspace-assignments/{principal_id}` in workspace APIs.
 type WorkspaceAssignment struct {
 	// The ID of the account that contains the workspace.
 	AccountId string `json:"account_id,omitempty"`
@@ -2076,7 +2116,9 @@ func (s WorkspaceAssignmentDetail) MarshalJSON() ([]byte, error) {
 
 // A user, service principal, or group's status in a workspace, and whether it
 // has access to the workspace directly or through a group. Update it to
-// activate or deactivate a user or service principal in the workspace.
+// activate or deactivate a user or service principal in the workspace. To
+// address it, put its resource name in the URL: `GET
+// /api/2.0/identity/principals/{principal_id}/workspace-identity-detail`.
 type WorkspaceIdentityDetail struct {
 	// Whether the principal is assigned to the workspace directly or has access
 	// through a group.
