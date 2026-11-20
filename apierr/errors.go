@@ -93,6 +93,16 @@ func GetErrorInfo(err error) []ErrorDetail {
 
 // IsRetriable returns true if error is retriable.
 func (apiError *APIError) IsRetriable(ctx context.Context) bool {
+	if errors.Is(apiError, ErrResourceExhausted) {
+		// RESOURCE_EXHAUSTED also represents permanent quota limits. Retry only
+		// when the server supplies explicit guidance that the condition is temporary.
+		if apiError.errorDetails.RetryInfo != nil {
+			return true
+		}
+		return apiError.ResponseWrapper != nil &&
+			apiError.ResponseWrapper.Response != nil &&
+			apiError.ResponseWrapper.Response.Header.Get("Retry-After") != ""
+	}
 	if apiError.IsTooManyRequests() {
 		return true
 	}
