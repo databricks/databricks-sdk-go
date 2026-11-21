@@ -165,7 +165,9 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOption) error {
 	var authVisitor RequestVisitor
 	var explicitQueryParams map[string]any
-	visitors := c.config.Visitors[:]
+	// Copy the client-wide visitors so that appending request-specific ones
+	// below never writes into the backing array shared by concurrent calls.
+	visitors := append([]RequestVisitor(nil), c.config.Visitors...)
 	for _, o := range opts {
 		if o.queryParams != nil {
 			if explicitQueryParams != nil {

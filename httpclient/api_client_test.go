@@ -785,3 +785,32 @@ func TestTraceparentHeaderDoesNotOverrideUserHeader(t *testing.T) {
 	}))
 	assert.NoError(t, err)
 }
+
+func TestRequestVisitorsAreNotSharedAcrossCalls(t *testing.T) {
+	// Client-wide visitors whose backing array has spare capacity, as happens
+	// when they are built with append (e.g. config.Headers is set).
+	visitors := make([]RequestVisitor, 0, 4)
+	var c *ApiClient
+	visitors = append(visitors, func(r *http.Request) error {
+		if r.URL.Path != "/a" {
+			return nil
+		}
+		// Another call made while the request to /a is being prepared, as a
+		// concurrent caller sharing the client would.
+		return c.Do(r.Context(), "GET", "/b", WithRequestHeader("X-Request", "b"))
+	})
+	c = NewApiClient(ClientConfig{
+		Visitors: visitors,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			want := strings.TrimPrefix(r.URL.Path, "/")
+			assert.Equal(t, want, r.Header.Get("X-Request"), "request to %s", r.URL.Path)
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	err := c.Do(context.Background(), "GET", "/a", WithRequestHeader("X-Request", "a"))
+	require.NoError(t, err)
+}
