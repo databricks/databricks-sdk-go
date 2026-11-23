@@ -327,7 +327,8 @@ func (a *appsImpl) internalListAppDeploymentScanFindings(ctx context.Context, re
 	return &listAppDeploymentScanFindingsResponse, err
 }
 
-// Lists all app deployments for the app with the supplied name.
+// Lists all app deployments for the app with the supplied name. The history
+// holds only the app's most recent deployments.
 func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) listing.Iterator[AppDeployment] {
 
 	getNextPage := func(ctx context.Context, req ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
@@ -352,7 +353,8 @@ func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymen
 	return iterator
 }
 
-// Lists all app deployments for the app with the supplied name.
+// Lists all app deployments for the app with the supplied name. The history
+// holds only the app's most recent deployments.
 func (a *appsImpl) ListDeploymentsAll(ctx context.Context, request ListAppDeploymentsRequest) ([]AppDeployment, error) {
 	iterator := a.ListDeployments(ctx, request)
 	return listing.ToSlice[AppDeployment](ctx, iterator)

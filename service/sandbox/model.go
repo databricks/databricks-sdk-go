@@ -472,6 +472,24 @@ func (s ListSandboxesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Network configuration for the sandbox.
+type NetworkSpec struct {
+	// Whether the sandbox can reach the public internet. Defaults to true.
+	// Control-plane, PrivateLink, and workspace/UC/Delta-shared storage stay
+	// reachable either way.
+	InternetAccess bool `json:"internet_access,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *NetworkSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NetworkSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Identifies the source and exact destination for a sandbox path rename.
 type RenamePathRequest struct {
 	// Exact absolute UTF-8 destination; it must not already exist.
@@ -627,6 +645,8 @@ type SandboxSpec struct {
 	// Software environment for the sandbox, such as the container image it
 	// runs.
 	Environment *EnvironmentSpec `json:"environment,omitempty"`
+	// Network configuration requested for the sandbox.
+	Network *NetworkSpec `json:"network,omitempty"`
 }
 
 func (s *SandboxSpec) UnmarshalJSON(b []byte) error {

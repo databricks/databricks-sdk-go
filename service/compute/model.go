@@ -5,6 +5,7 @@ package compute
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -2169,6 +2170,15 @@ func (s CreateClusterResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateComputePolicyRequest struct {
+	// The compute policy to create.
+	ComputePolicy ComputePolicy `json:"compute_policy"`
+}
+
+func (s *CreateComputePolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateContext struct {
 	// ID of the cluster to create the execution context on. The cluster must be
 	// running.
@@ -2573,6 +2583,15 @@ type DeleteCluster struct {
 }
 
 func (s *DeleteCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type DeleteComputePolicyRequest struct {
+	// The ID of the compute policy to delete.
+	ComputePolicyId string `json:"-" url:"-"`
+}
+
+func (s *DeleteComputePolicyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -4074,6 +4093,15 @@ type GetClusterRequest struct {
 }
 
 func (s *GetClusterRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type GetComputePolicyRequest struct {
+	// The ID of the compute policy to retrieve.
+	ComputePolicyId string `json:"-" url:"-"`
+}
+
+func (s *GetComputePolicyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -6137,8 +6165,9 @@ type NodeType struct {
 	// Whether the node type is deprecated. Non-deprecated node types offer
 	// greater performance.
 	IsDeprecated bool `json:"is_deprecated,omitempty"`
-	// AWS specific, whether this instance supports encryption in transit, used
-	// for hipaa and pci workloads.
+	// Whether this node type supports encryption in transit, which matters for
+	// workloads that need it, such as hipaa and pci. Always true on GCP; on AWS
+	// and Azure it depends on the node type.
 	IsEncryptedInTransit bool `json:"is_encrypted_in_transit,omitempty"`
 	// Whether this is an Arm-based instance.
 	IsGraviton bool `json:"is_graviton,omitempty"`
@@ -7819,6 +7848,29 @@ func (s *UpdateClusterResource) UnmarshalJSON(b []byte) error {
 
 func (s UpdateClusterResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateComputePolicyRequest struct {
+	// The compute policy to update. `compute_policy.compute_policy_id`
+	// identifies which policy to update; only the fields named in `update_mask`
+	// are applied.
+	ComputePolicy ComputePolicy `json:"compute_policy"`
+	// The unique identifier of the compute policy (UUID). Server-assigned on
+	// create.
+	ComputePolicyId string `json:"-" url:"-"`
+	// Fields to update, relative to `compute_policy`. Must contain at least one
+	// path; the supported paths are `display_name` and
+	// `allowed_compute_products`. Supplied product arms replace their
+	// constraints and omitted products remain unchanged. An empty arm clears
+	// that product's limits; an absent or empty products object is invalid.
+	// Removing a product requires its delete API. Nested masks and wildcards
+	// are unsupported. `display_name` cannot be cleared: if it is in the mask
+	// it must be non-empty.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateComputePolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A storage location back by UC Volumes.

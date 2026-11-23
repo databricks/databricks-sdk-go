@@ -142,6 +142,25 @@ func (s *GetCatalogConfigRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Request to rescan a catalog that has Data Classification enabled.
+type RescanCatalogRequest struct {
+	// Resource name of the catalog, in the format: catalogs/{catalog_name}.
+	Name string `json:"-" url:"-"`
+}
+
+func (s *RescanCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Response for RescanCatalog. Empty for now; a named message lets later
+// versions add fields.
+type RescanCatalogResponse struct {
+}
+
+func (s *RescanCatalogResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type UpdateCatalogConfigRequest struct {
 	// The configuration to apply to the catalog. The name field in
 	// catalog_config identifies which resource to update.

@@ -3208,14 +3208,18 @@ func (a *secretsUcImpl) GetSecret(ctx context.Context, request GetSecretRequest)
 	return &secret, err
 }
 
-// Lists secrets in Unity Catalog.
+// Lists the secrets in a schema.
 //
-// You must be a metastore admin, the owner of the secret, or have the
-// **MANAGE** privilege on the secret.
+// With **USE CATALOG** on the catalog and **USE SCHEMA** on the schema, the
+// response contains the secrets that you own or hold a privilege on. Metastore
+// admins, principals with the **MANAGE** privilege on the catalog, and
+// principals with the **MANAGE** privilege on the schema together with **USE
+// CATALOG** on the catalog see every secret in the schema.
 //
-// Both **catalog_name** and **schema_name** must be specified together to
-// filter secrets within a specific schema. Results are paginated; use the
-// **page_token** field from the response to retrieve subsequent pages.
+// Secrets are listed within a single schema, so both **catalog_name** and
+// **schema_name** must be specified. Results are paginated; pass the
+// **next_page_token** value from the response as **page_token** to retrieve the
+// next page.
 func (a *secretsUcImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) listing.Iterator[Secret] {
 
 	getNextPage := func(ctx context.Context, req ListSecretsRequest) (*ListSecretsResponse, error) {
@@ -3240,14 +3244,18 @@ func (a *secretsUcImpl) ListSecrets(ctx context.Context, request ListSecretsRequ
 	return iterator
 }
 
-// Lists secrets in Unity Catalog.
+// Lists the secrets in a schema.
 //
-// You must be a metastore admin, the owner of the secret, or have the
-// **MANAGE** privilege on the secret.
+// With **USE CATALOG** on the catalog and **USE SCHEMA** on the schema, the
+// response contains the secrets that you own or hold a privilege on. Metastore
+// admins, principals with the **MANAGE** privilege on the catalog, and
+// principals with the **MANAGE** privilege on the schema together with **USE
+// CATALOG** on the catalog see every secret in the schema.
 //
-// Both **catalog_name** and **schema_name** must be specified together to
-// filter secrets within a specific schema. Results are paginated; use the
-// **page_token** field from the response to retrieve subsequent pages.
+// Secrets are listed within a single schema, so both **catalog_name** and
+// **schema_name** must be specified. Results are paginated; pass the
+// **next_page_token** value from the response as **page_token** to retrieve the
+// next page.
 func (a *secretsUcImpl) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]Secret, error) {
 	iterator := a.ListSecrets(ctx, request)
 	return listing.ToSlice[Secret](ctx, iterator)

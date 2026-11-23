@@ -112,17 +112,62 @@ type AccountIamV2Service interface {
 	// and parent groups from your IdP. If the group isn't in your account yet,
 	// it's added. Requires automatic identity management. If your account has
 	// group visibility filters, the group must match them.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	GetExternalGroup(ctx context.Context, request GetExternalGroupRequest) (*ExternalGroup, error)
 
 	// Gets a service principal by its ID in your identity provider (IdP) and
 	// syncs its details and group memberships from your IdP. If the service
 	// principal isn't in your account yet, it's added. Requires automatic
 	// identity management with Microsoft Entra ID as your IdP.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	GetExternalServicePrincipal(ctx context.Context, request GetExternalServicePrincipalRequest) (*ExternalServicePrincipal, error)
 
 	// Gets a user by their ID in your identity provider (IdP) and syncs their
 	// details and group memberships from your IdP. If the user isn't in your
 	// account yet, they're added. Requires automatic identity management.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	GetExternalUser(ctx context.Context, request GetExternalUserRequest) (*ExternalUser, error)
 
 	// Gets a group by its Databricks ID.
@@ -156,8 +201,14 @@ type AccountIamV2Service interface {
 	GetWorkspaceAssignmentDetail(ctx context.Context, request GetWorkspaceAssignmentDetailRequest) (*WorkspaceAssignmentDetail, error)
 
 	// Lists the direct members of a group, sorted by display name, with where
-	// each membership comes from. Members in your identity provider who haven't
-	// been added to Databricks aren't included.
+	// each membership comes from. Results combine memberships added in
+	// Databricks (in the UI, through the API, or through SCIM provisioning)
+	// with, if automatic identity management is on and the group has an
+	// `external_id`, memberships from your identity provider (IdP). Only
+	// members in your Databricks account are returned: an IdP member of the
+	// group appears only if that user, service principal, or group has been
+	// added to Databricks. Nested groups aren't expanded. To get the full
+	// membership, list the direct members of each member group.
 	ListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error)
 
 	// Lists the groups in your account, sorted by Databricks ID. Groups in your
@@ -174,9 +225,14 @@ type AccountIamV2Service interface {
 	ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalsResponse, error)
 
 	// Lists every group that a user, service principal, or group belongs to,
-	// directly or through other groups, sorted by Databricks ID. If automatic
-	// identity management is on, the principal's group memberships are synced
-	// from your identity provider first.
+	// directly or through other groups, sorted by Databricks ID. Results
+	// combine memberships from every source: added in the UI, through the API,
+	// through SCIM provisioning, or synced from your identity provider (IdP) by
+	// automatic identity management. Only groups that exist in your Databricks
+	// account are returned, not every group that the principal belongs to in
+	// your IdP. If automatic identity management is on, only the principal's
+	// own group memberships are refreshed from your IdP before the list is
+	// read.
 	ListTransitiveParentGroups(ctx context.Context, request ListTransitiveParentGroupsRequest) (*ListTransitiveParentGroupsResponse, error)
 
 	// Lists the users in your account, sorted by Databricks ID. Users in your
@@ -198,17 +254,62 @@ type AccountIamV2Service interface {
 	// and parent groups from your IdP. If the group isn't in your account yet,
 	// it's added. Requires automatic identity management. If your account has
 	// group visibility filters, the group must match them.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	ResolveGroup(ctx context.Context, request ResolveGroupRequest) (*ResolveGroupResponse, error)
 
 	// Gets a service principal by its ID in your identity provider (IdP) and
 	// syncs its details and group memberships from your IdP. If the service
 	// principal isn't in your account yet, it's added. Requires automatic
 	// identity management with Microsoft Entra ID as your IdP.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	ResolveServicePrincipal(ctx context.Context, request ResolveServicePrincipalRequest) (*ResolveServicePrincipalResponse, error)
 
 	// Gets a user by their ID in your identity provider (IdP) and syncs their
 	// details and group memberships from your IdP. If the user isn't in your
 	// account yet, they're added. Requires automatic identity management.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	ResolveUser(ctx context.Context, request ResolveUserRequest) (*ResolveUserResponse, error)
 
 	// Updates a group. Only the fields in `update_mask` change.
@@ -349,6 +450,21 @@ type WorkspaceIamV2Service interface {
 	// contains this workspace yet, it's added. Requires automatic identity
 	// management. If your account has group visibility filters, the group must
 	// match them.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	GetExternalGroupProxy(ctx context.Context, request GetExternalGroupProxyRequest) (*ExternalGroup, error)
 
 	// Gets a service principal by its ID in your identity provider (IdP) and
@@ -356,12 +472,42 @@ type WorkspaceIamV2Service interface {
 	// principal isn't in the account that contains this workspace yet, it's
 	// added. Requires automatic identity management with Microsoft Entra ID as
 	// your IdP.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	GetExternalServicePrincipalProxy(ctx context.Context, request GetExternalServicePrincipalProxyRequest) (*ExternalServicePrincipal, error)
 
 	// Gets a user by their ID in your identity provider (IdP) and syncs their
 	// details and group memberships from your IdP. If the user isn't in the
 	// account that contains this workspace yet, they're added. Requires
 	// automatic identity management.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	GetExternalUserProxy(ctx context.Context, request GetExternalUserProxyRequest) (*ExternalUser, error)
 
 	// Gets a group in the account that contains this workspace by its
@@ -400,8 +546,13 @@ type WorkspaceIamV2Service interface {
 
 	// Lists the direct members of a group in the account that contains this
 	// workspace, sorted by display name, with where each membership comes from.
-	// Members in your identity provider who haven't been added to Databricks
-	// aren't included.
+	// Results combine memberships added in Databricks (in the UI, through the
+	// API, or through SCIM provisioning) with, if automatic identity management
+	// is on and the group has an `external_id`, memberships from your identity
+	// provider (IdP). Only members in your Databricks account are returned: an
+	// IdP member of the group appears only if that user, service principal, or
+	// group has been added to Databricks. Nested groups aren't expanded. To get
+	// the full membership, list the direct members of each member group.
 	ListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) (*ListDirectGroupMembersResponse, error)
 
 	// Lists the groups in the account that contains this workspace, sorted by
@@ -416,9 +567,13 @@ type WorkspaceIamV2Service interface {
 
 	// Lists every group that a user, service principal, or group belongs to,
 	// directly or through other groups, in the account that contains this
-	// workspace. Results are sorted by Databricks ID. If automatic identity
-	// management is on, the principal's group memberships are synced from your
-	// identity provider first.
+	// workspace. Results are sorted by Databricks ID and combine memberships
+	// from every source: added in the UI, through the API, through SCIM
+	// provisioning, or synced from your identity provider (IdP) by automatic
+	// identity management. Only groups that exist in your Databricks account
+	// are returned, not every group that the principal belongs to in your IdP.
+	// If automatic identity management is on, only the principal's own group
+	// memberships are refreshed from your IdP before the list is read.
 	ListTransitiveParentGroupsProxy(ctx context.Context, request ListTransitiveParentGroupsProxyRequest) (*ListTransitiveParentGroupsResponse, error)
 
 	// Lists the users in the account that contains this workspace, sorted by
@@ -442,6 +597,21 @@ type WorkspaceIamV2Service interface {
 	// contains this workspace yet, it's added. Requires automatic identity
 	// management. If your account has group visibility filters, the group must
 	// match them.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	ResolveGroupProxy(ctx context.Context, request ResolveGroupProxyRequest) (*ResolveGroupResponse, error)
 
 	// Gets a service principal by its ID in your identity provider (IdP) and
@@ -449,12 +619,42 @@ type WorkspaceIamV2Service interface {
 	// principal isn't in the account that contains this workspace yet, it's
 	// added. Requires automatic identity management with Microsoft Entra ID as
 	// your IdP.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	ResolveServicePrincipalProxy(ctx context.Context, request ResolveServicePrincipalProxyRequest) (*ResolveServicePrincipalResponse, error)
 
 	// Gets a user by their ID in your identity provider (IdP) and syncs their
 	// details and group memberships from your IdP. If the user isn't in the
 	// account that contains this workspace yet, they're added. Requires
 	// automatic identity management.
+	//
+	// To control how fresh the synced data is, send a `Cache-Control` request
+	// header:
+	//
+	// - `no-cache` syncs from your IdP before the call returns. - `max-age=<n>,
+	// max-stale=0` syncs from your IdP before the call returns if the last sync
+	// is more than `<n>` seconds old.
+	//
+	// Without the header, the call skips the sync if the last sync is within
+	// the default freshness window. Databricks might sync more often than you
+	// request. If you send `max-age` without `max-stale=0`, the call can return
+	// the data from the last sync and sync in the background. Databricks
+	// ignores other `Cache-Control` directives. A forced sync makes the call
+	// wait for your IdP. A forced sync on every call adds load on your IdP and
+	// can hit rate limits.
 	ResolveUserProxy(ctx context.Context, request ResolveUserProxyRequest) (*ResolveUserResponse, error)
 
 	// Updates a group in the account that contains this workspace. Only the
