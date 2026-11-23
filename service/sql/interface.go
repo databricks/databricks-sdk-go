@@ -32,7 +32,9 @@ type AlertsService interface {
 	// in throttling, service degradation, or a temporary ban.
 	List(ctx context.Context, request ListAlertsRequest) (*ListAlertsResponse, error)
 
-	// Updates an alert.
+	// Updates the fields of an alert named in `update_mask`. Changing
+	// `owner_user_name` requires workspace admin privileges; changing any other
+	// field requires CAN MANAGE permission on the alert.
 	Update(ctx context.Context, request UpdateAlertRequest) (*Alert, error)
 }
 

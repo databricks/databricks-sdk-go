@@ -1798,6 +1798,19 @@ func (s *DirectSchemas) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Binds one entity column of a Lookup's upstream Feature to the input that
+// supplies its values.
+type EntityBinding struct {
+	// Specifies the entity column of the upstream Feature.
+	Entity string `json:"entity"`
+	// Specifies where the column's values come from.
+	Input InputReference `json:"input"`
+}
+
+func (s *EntityBinding) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type EntityColumn struct {
 	// The name of the entity column. For Kafka sources, use dot-prefixed path
 	// notation to reference fields within the key or value schema (e.g.,
@@ -2768,6 +2781,12 @@ type Function struct {
 	ExtraParameters []FunctionExtraParameter `json:"extra_parameters,omitempty"`
 
 	FunctionType FunctionFunctionType `json:"function_type,omitempty"`
+	// Looks up an upstream Feature using entity values from other Features or
+	// the request.
+	Lookup *Lookup `json:"lookup,omitempty"`
+	// Selects the secondary key values an upstream Feature has stored for the
+	// request's entity.
+	SecondaryKeys *SecondaryKeys `json:"secondary_keys,omitempty"`
 }
 
 func (s *Function) UnmarshalJSON(b []byte) error {
@@ -3418,6 +3437,17 @@ func (s *InputBinding) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// The input that supplies a value. A value from the request comes from a
+// Feature whose source is a RequestSource.
+type InputReference struct {
+	// Specifies another Feature whose output supplies the value.
+	Feature *FeatureReference `json:"feature,omitempty"`
+}
+
+func (s *InputReference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // Tag for a dataset input.
 type InputTag struct {
 	// The tag key.
@@ -3454,7 +3484,8 @@ type Issue struct {
 	// Additional details about the Issue, such as how issue detection observed
 	// it. Not a stable contract: keys and values can change without notice, so
 	// clients must tolerate unknown and missing keys. At most 20 entries, with
-	// keys of at most 64 UTF-8 bytes.
+	// keys of at most 64 UTF-8 bytes. Values are at most 256 UTF-8 bytes,
+	// except recent_affected_trace_ids (4 KiB) and suggested_fix (16 KiB).
 	Metadata map[string]string `json:"metadata,omitempty"`
 	// The Issue's resource name, as `experiments/{experiment}/issues/{issue}`,
 	// where `{experiment}` is the experiment ID and `{issue}` is the Issue ID:
@@ -4698,6 +4729,29 @@ func (s *LoggedModelTag) UnmarshalJSON(b []byte) error {
 
 func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Looks up an upstream Feature using entity values bound from other Features or
+// from the request. When a binding is an array, such as the output of a
+// SecondaryKeys Feature, returns one value per position as an array aligned
+// with that binding. The Feature's source must be a FeatureViewSource that
+// includes `feature` and every Feature referenced in `entities`. Currently,
+// exactly one entity must be bound to a Feature: a SecondaryKeys Feature whose
+// key has the same name as that entity. Its target can be `feature` or another
+// Feature. Every other entity must be bound to a request column of the same
+// name. Names are compared without struct prefixes, so `user_id` matches
+// `value.user_id`. A FeatureSpec can't also look up `feature` with all of its
+// entities supplied.
+type Lookup struct {
+	// One binding per entity column of the upstream Feature. Every entity
+	// column must be bound exactly once.
+	Entities []EntityBinding `json:"entities"`
+	// The upstream Feature to look up.
+	Feature FeatureReference `json:"feature"`
+}
+
+func (s *Lookup) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Recipients to notify when a materialization run fails.
@@ -7448,6 +7502,26 @@ func (s *SearchRunsResponse) UnmarshalJSON(b []byte) error {
 
 func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Returns the values of one entity column that an upstream Feature has stored
+// for the request's other entity columns, as an array. For example, given a
+// Feature with entities (user_id, ad_id), returns the ad_ids stored for the
+// requested user_id. The Feature's source must be a FeatureViewSource that
+// includes `feature`.
+type SecondaryKeys struct {
+	// The upstream Feature whose stored keys are selected.
+	Feature FeatureReference `json:"feature"`
+	// The entity column of the upstream Feature to return values for. It is not
+	// supplied by the request.
+	Key string `json:"key"`
+	// Maximum number of keys to return per entity, in primary key order. Must
+	// not exceed the workspace limit.
+	MaxKeys int64 `json:"max_keys"`
+}
+
+func (s *SecondaryKeys) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // Reference to an entry in a Databricks secret scope.

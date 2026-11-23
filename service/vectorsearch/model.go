@@ -503,6 +503,8 @@ const EndpointScalingInfoScalingPhaseAdjustingCapacity EndpointScalingInfoScalin
 
 const EndpointScalingInfoScalingPhaseEstimating EndpointScalingInfoScalingPhase = `ESTIMATING`
 
+const EndpointScalingInfoScalingPhaseFinalizing EndpointScalingInfoScalingPhase = `FINALIZING`
+
 const EndpointScalingInfoScalingPhaseInitializingIndex EndpointScalingInfoScalingPhase = `INITIALIZING_INDEX`
 
 // String representation for [fmt.Print]
@@ -513,11 +515,11 @@ func (f *EndpointScalingInfoScalingPhase) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointScalingInfoScalingPhase) Set(v string) error {
 	switch v {
-	case `ADJUSTING_CAPACITY`, `ESTIMATING`, `INITIALIZING_INDEX`:
+	case `ADJUSTING_CAPACITY`, `ESTIMATING`, `FINALIZING`, `INITIALIZING_INDEX`:
 		*f = EndpointScalingInfoScalingPhase(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ADJUSTING_CAPACITY", "ESTIMATING", "INITIALIZING_INDEX"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ADJUSTING_CAPACITY", "ESTIMATING", "FINALIZING", "INITIALIZING_INDEX"`, v)
 	}
 }
 
@@ -528,6 +530,7 @@ func (f *EndpointScalingInfoScalingPhase) Values() []EndpointScalingInfoScalingP
 	return []EndpointScalingInfoScalingPhase{
 		EndpointScalingInfoScalingPhaseAdjustingCapacity,
 		EndpointScalingInfoScalingPhaseEstimating,
+		EndpointScalingInfoScalingPhaseFinalizing,
 		EndpointScalingInfoScalingPhaseInitializingIndex,
 	}
 }

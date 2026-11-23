@@ -44,8 +44,8 @@ type AiClassifyRequest struct {
 	// The label set to classify as. Either a JSON array of label strings (e.g.
 	// ["spam", "not_spam"]), or a JSON object mapping each label to a
 	// description (e.g. {"spam": "unsolicited bulk message", "not_spam": "a
-	// legitimate message"}). Accepts 2 to 500 labels, each 1 to 100 characters.
-	// When multilabel is true, a single label is also accepted.
+	// legitimate message"}). Accepts 2 to 5000 labels, each 1 to 100
+	// characters. When multilabel is true, a single label is also accepted.
 	Labels json.RawMessage `json:"labels"`
 	// Function options. Omitted fields fall back to their documented defaults.
 	Options *AiClassifyOptions `json:"options,omitempty"`
@@ -87,8 +87,8 @@ func (s AiClassifyResponseMetadata) MarshalJSON() ([]byte, error) {
 
 // ai_decide
 type AiDecideOptions struct {
-	// The function API version to invoke. If unset, the version is inferred per
-	// row. Supported versions: ["1.0"].
+	// The function API version to invoke. If unset, version 1.0 is used.
+	// Supported versions: ["1.0"].
 	Version string `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -493,6 +493,11 @@ func (s AiParseDocumentResponseMetadata) MarshalJSON() ([]byte, error) {
 // as a batch in a single call. It is in Beta: a workspace admin must turn on
 // the **AI Functions Asynchronous API** preview on the workspace Previews page
 // before you can call it.
+//
+// For examples, see
+// [`ai_parse_document`](/agents/agent-bricks/document-parsing#asynchronous-api),
+// [`ai_extract`](/agents/agent-bricks/info-extraction#asynchronous-api), and
+// [`ai_classify`](/agents/agent-bricks/classification#asynchronous-api).
 type Batch struct {
 	// Output only. The time when the batch was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -502,14 +507,14 @@ type Batch struct {
 	// request, in the form `{"custom_id": ..., "body": ...}`. The file can hold
 	// up to 50,000 requests and be up to 200 MiB.
 	InputRef string `json:"input_ref"`
-	// Output only. Identifier. Resource name of the batch, returned by create.
-	// Format: `batch_<id>`.
+	// Output only. Unique identifier of the batch, returned by create. Format:
+	// `batch_<id>`.
 	Name string `json:"name,omitempty"`
 	// Unity Catalog volume path to write the JSONL output file to. If the path
 	// is a directory, the file is `<path>/<name>_output.jsonl`. Each line is
 	// the result of one request, in the form `{"custom_id": ..., "response":
 	// ...}`, or `{"custom_id": ..., "error": {"type": ..., "message": ...}}`
-	// for a request that failed.
+	// for a request that failed or did not finish.
 	OutputRef string `json:"output_ref"`
 	// Parameters of the function other than its input, applied to every request
 	// in the batch, for example `schema` for `ai_extract`. Put function
@@ -523,7 +528,11 @@ type Batch struct {
 	// Output only. The number of requests in the batch, by result. Returned
 	// when you get a batch, not when you list batches.
 	RequestCounts *BatchRequestCounts `json:"request_counts,omitempty"`
-	// Output only. The status of the batch.
+	// Output only. The status of the batch. A batch starts as `PENDING`, runs
+	// as `IN_PROGRESS`, is `FINALIZING` while the output file is written, and
+	// ends as `COMPLETED`. A running batch that is cancelled is `CANCELLING`,
+	// then `CANCELLED`. A `COMPLETED` batch can include requests that failed,
+	// and a `FAILED` batch has no `output_ref`.
 	Status BatchStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -612,7 +621,7 @@ func (f *BatchStatus) Type() string {
 }
 
 type CancelBatchRequest struct {
-	// Resource name of the batch. Format: `batch_<id>`.
+	// Unique identifier of the batch. Format: `batch_<id>`.
 	Name string `json:"-" url:"-"`
 }
 
@@ -637,7 +646,7 @@ func (s *CreateBatchRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetBatchRequest struct {
-	// Resource name of the batch. Format: `batch_<id>`.
+	// Unique identifier of the batch. Format: `batch_<id>`.
 	Name string `json:"-" url:"-"`
 }
 

@@ -3698,7 +3698,7 @@ type SchemaSpec struct {
 	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store tables in. Tables with the same
 	// name as the source tables are created in this destination schema. The
-	// pipeline fails If a table with the same name already exists.
+	// pipeline fails if a table with the same name already exists.
 	DestinationSchema string `json:"destination_schema"`
 	// Fanout options for multi-table routing from streaming sources. When set,
 	// records are routed to destination tables based on a per-record routing
@@ -4362,10 +4362,11 @@ func (f *TikTokAdsOptionsTikTokReportType) Type() string {
 	return "TikTokAdsOptionsTikTokReportType"
 }
 
-// Specifies how to transform binary data into structured data.
+// One step that transforms a column: either decodes data into structured data
+// (`format`) or reshapes an already-decoded column (`operation`).
 type Transformer struct {
 	AvroOptions *AvroTransformerOptions `json:"avro_options,omitempty"`
-	// Required: the wire format of the data.
+	// The format to decode the input column from.
 	Format TransformerFormat `json:"format,omitempty"`
 	// Optional input column to transform. When set, the transformer reads from
 	// this column instead of the default source column.

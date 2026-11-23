@@ -240,6 +240,74 @@ func (_c *MockDataClassificationInterface_GetCatalogConfig_Call) RunAndReturn(ru
 	return _c
 }
 
+// RescanCatalog provides a mock function for the type MockDataClassificationInterface
+func (_mock *MockDataClassificationInterface) RescanCatalog(ctx context.Context, request dataclassification.RescanCatalogRequest) (*dataclassification.RescanCatalogResponse, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RescanCatalog")
+	}
+
+	var r0 *dataclassification.RescanCatalogResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, dataclassification.RescanCatalogRequest) (*dataclassification.RescanCatalogResponse, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, dataclassification.RescanCatalogRequest) *dataclassification.RescanCatalogResponse); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dataclassification.RescanCatalogResponse)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, dataclassification.RescanCatalogRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockDataClassificationInterface_RescanCatalog_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RescanCatalog'
+type MockDataClassificationInterface_RescanCatalog_Call struct {
+	*mock.Call
+}
+
+// RescanCatalog is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dataclassification.RescanCatalogRequest
+func (_e *MockDataClassificationInterface_Expecter) RescanCatalog(ctx any, request any) *MockDataClassificationInterface_RescanCatalog_Call {
+	return &MockDataClassificationInterface_RescanCatalog_Call{Call: _e.mock.On("RescanCatalog", ctx, request)}
+}
+
+func (_c *MockDataClassificationInterface_RescanCatalog_Call) Run(run func(ctx context.Context, request dataclassification.RescanCatalogRequest)) *MockDataClassificationInterface_RescanCatalog_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 dataclassification.RescanCatalogRequest
+		if args[1] != nil {
+			arg1 = args[1].(dataclassification.RescanCatalogRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockDataClassificationInterface_RescanCatalog_Call) Return(rescanCatalogResponse *dataclassification.RescanCatalogResponse, err error) *MockDataClassificationInterface_RescanCatalog_Call {
+	_c.Call.Return(rescanCatalogResponse, err)
+	return _c
+}
+
+func (_c *MockDataClassificationInterface_RescanCatalog_Call) RunAndReturn(run func(ctx context.Context, request dataclassification.RescanCatalogRequest) (*dataclassification.RescanCatalogResponse, error)) *MockDataClassificationInterface_RescanCatalog_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateCatalogConfig provides a mock function for the type MockDataClassificationInterface
 func (_mock *MockDataClassificationInterface) UpdateCatalogConfig(ctx context.Context, request dataclassification.UpdateCatalogConfigRequest) (*dataclassification.CatalogConfig, error) {
 	ret := _mock.Called(ctx, request)

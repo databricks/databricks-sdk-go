@@ -14,7 +14,9 @@ type SupervisorAgentsService interface {
 	// Creates an example for a Supervisor Agent.
 	CreateExample(ctx context.Context, request CreateExampleRequest) (*Example, error)
 
-	// Creates a new Supervisor Agent.
+	// Creates a Supervisor Agent together with its serving endpoint and MLflow
+	// experiment. Tools and subagents are added to the agent afterwards with
+	// the Tool methods.
 	CreateSupervisorAgent(ctx context.Context, request CreateSupervisorAgentRequest) (*SupervisorAgent, error)
 
 	// Creates a Tool under a Supervisor Agent. Specify one of "genie_space",
@@ -30,7 +32,8 @@ type SupervisorAgentsService interface {
 	// Deletes an example from a Supervisor Agent.
 	DeleteExample(ctx context.Context, request DeleteExampleRequest) error
 
-	// Deletes a Supervisor Agent.
+	// Deletes a Supervisor Agent together with the resources created for it,
+	// including its tools, examples, serving endpoint and MLflow experiment.
 	DeleteSupervisorAgent(ctx context.Context, request DeleteSupervisorAgentRequest) error
 
 	// Deletes a Tool.
@@ -55,7 +58,8 @@ type SupervisorAgentsService interface {
 	// Lists examples under a Supervisor Agent.
 	ListExamples(ctx context.Context, request ListExamplesRequest) (*ListExamplesResponse, error)
 
-	// Lists Supervisor Agents.
+	// Lists the Supervisor Agents in the workspace that the caller has
+	// permission to view.
 	ListSupervisorAgents(ctx context.Context, request ListSupervisorAgentsRequest) (*ListSupervisorAgentsResponse, error)
 
 	// Lists Tools under a Supervisor Agent.
@@ -73,9 +77,8 @@ type SupervisorAgentsService interface {
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request SupervisorAgentPermissionsRequest) (*SupervisorAgentPermissions, error)
 
-	// Updates a Supervisor Agent. The fields that are required depend on the
-	// paths specified in `update_mask`. Only fields included in the mask will
-	// be updated.
+	// Updates a Supervisor Agent. Only the fields listed in `update_mask` are
+	// changed. All other fields keep their current values.
 	UpdateSupervisorAgent(ctx context.Context, request UpdateSupervisorAgentRequest) (*SupervisorAgent, error)
 
 	// Updates a Tool. Only the `description` field can be updated. To change

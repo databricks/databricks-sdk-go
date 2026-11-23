@@ -48,6 +48,199 @@ func (_m *MockServerlessComputeServiceInterface) EXPECT() *MockServerlessCompute
 	return &MockServerlessComputeServiceInterface_Expecter{mock: &_m.Mock}
 }
 
+// CreateComputePolicy provides a mock function for the type MockServerlessComputeServiceInterface
+func (_mock *MockServerlessComputeServiceInterface) CreateComputePolicy(ctx context.Context, request compute.CreateComputePolicyRequest) (*compute.ComputePolicy, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateComputePolicy")
+	}
+
+	var r0 *compute.ComputePolicy
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, compute.CreateComputePolicyRequest) (*compute.ComputePolicy, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, compute.CreateComputePolicyRequest) *compute.ComputePolicy); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.ComputePolicy)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, compute.CreateComputePolicyRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockServerlessComputeServiceInterface_CreateComputePolicy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateComputePolicy'
+type MockServerlessComputeServiceInterface_CreateComputePolicy_Call struct {
+	*mock.Call
+}
+
+// CreateComputePolicy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.CreateComputePolicyRequest
+func (_e *MockServerlessComputeServiceInterface_Expecter) CreateComputePolicy(ctx any, request any) *MockServerlessComputeServiceInterface_CreateComputePolicy_Call {
+	return &MockServerlessComputeServiceInterface_CreateComputePolicy_Call{Call: _e.mock.On("CreateComputePolicy", ctx, request)}
+}
+
+func (_c *MockServerlessComputeServiceInterface_CreateComputePolicy_Call) Run(run func(ctx context.Context, request compute.CreateComputePolicyRequest)) *MockServerlessComputeServiceInterface_CreateComputePolicy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 compute.CreateComputePolicyRequest
+		if args[1] != nil {
+			arg1 = args[1].(compute.CreateComputePolicyRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_CreateComputePolicy_Call) Return(computePolicy *compute.ComputePolicy, err error) *MockServerlessComputeServiceInterface_CreateComputePolicy_Call {
+	_c.Call.Return(computePolicy, err)
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_CreateComputePolicy_Call) RunAndReturn(run func(ctx context.Context, request compute.CreateComputePolicyRequest) (*compute.ComputePolicy, error)) *MockServerlessComputeServiceInterface_CreateComputePolicy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteComputePolicy provides a mock function for the type MockServerlessComputeServiceInterface
+func (_mock *MockServerlessComputeServiceInterface) DeleteComputePolicy(ctx context.Context, request compute.DeleteComputePolicyRequest) error {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteComputePolicy")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, compute.DeleteComputePolicyRequest) error); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockServerlessComputeServiceInterface_DeleteComputePolicy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteComputePolicy'
+type MockServerlessComputeServiceInterface_DeleteComputePolicy_Call struct {
+	*mock.Call
+}
+
+// DeleteComputePolicy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.DeleteComputePolicyRequest
+func (_e *MockServerlessComputeServiceInterface_Expecter) DeleteComputePolicy(ctx any, request any) *MockServerlessComputeServiceInterface_DeleteComputePolicy_Call {
+	return &MockServerlessComputeServiceInterface_DeleteComputePolicy_Call{Call: _e.mock.On("DeleteComputePolicy", ctx, request)}
+}
+
+func (_c *MockServerlessComputeServiceInterface_DeleteComputePolicy_Call) Run(run func(ctx context.Context, request compute.DeleteComputePolicyRequest)) *MockServerlessComputeServiceInterface_DeleteComputePolicy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 compute.DeleteComputePolicyRequest
+		if args[1] != nil {
+			arg1 = args[1].(compute.DeleteComputePolicyRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_DeleteComputePolicy_Call) Return(err error) *MockServerlessComputeServiceInterface_DeleteComputePolicy_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_DeleteComputePolicy_Call) RunAndReturn(run func(ctx context.Context, request compute.DeleteComputePolicyRequest) error) *MockServerlessComputeServiceInterface_DeleteComputePolicy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetComputePolicy provides a mock function for the type MockServerlessComputeServiceInterface
+func (_mock *MockServerlessComputeServiceInterface) GetComputePolicy(ctx context.Context, request compute.GetComputePolicyRequest) (*compute.ComputePolicy, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetComputePolicy")
+	}
+
+	var r0 *compute.ComputePolicy
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, compute.GetComputePolicyRequest) (*compute.ComputePolicy, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, compute.GetComputePolicyRequest) *compute.ComputePolicy); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.ComputePolicy)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, compute.GetComputePolicyRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockServerlessComputeServiceInterface_GetComputePolicy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetComputePolicy'
+type MockServerlessComputeServiceInterface_GetComputePolicy_Call struct {
+	*mock.Call
+}
+
+// GetComputePolicy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.GetComputePolicyRequest
+func (_e *MockServerlessComputeServiceInterface_Expecter) GetComputePolicy(ctx any, request any) *MockServerlessComputeServiceInterface_GetComputePolicy_Call {
+	return &MockServerlessComputeServiceInterface_GetComputePolicy_Call{Call: _e.mock.On("GetComputePolicy", ctx, request)}
+}
+
+func (_c *MockServerlessComputeServiceInterface_GetComputePolicy_Call) Run(run func(ctx context.Context, request compute.GetComputePolicyRequest)) *MockServerlessComputeServiceInterface_GetComputePolicy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 compute.GetComputePolicyRequest
+		if args[1] != nil {
+			arg1 = args[1].(compute.GetComputePolicyRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_GetComputePolicy_Call) Return(computePolicy *compute.ComputePolicy, err error) *MockServerlessComputeServiceInterface_GetComputePolicy_Call {
+	_c.Call.Return(computePolicy, err)
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_GetComputePolicy_Call) RunAndReturn(run func(ctx context.Context, request compute.GetComputePolicyRequest) (*compute.ComputePolicy, error)) *MockServerlessComputeServiceInterface_GetComputePolicy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // List provides a mock function for the type MockServerlessComputeServiceInterface
 func (_mock *MockServerlessComputeServiceInterface) List(ctx context.Context, request compute.ListServerlessComputesRequest) listing.Iterator[compute.ServerlessCompute] {
 	ret := _mock.Called(ctx, request)
@@ -298,6 +491,74 @@ func (_c *MockServerlessComputeServiceInterface_ListComputePoliciesAll_Call) Ret
 }
 
 func (_c *MockServerlessComputeServiceInterface_ListComputePoliciesAll_Call) RunAndReturn(run func(ctx context.Context, request compute.ListComputePoliciesRequest) ([]compute.ComputePolicy, error)) *MockServerlessComputeServiceInterface_ListComputePoliciesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateComputePolicy provides a mock function for the type MockServerlessComputeServiceInterface
+func (_mock *MockServerlessComputeServiceInterface) UpdateComputePolicy(ctx context.Context, request compute.UpdateComputePolicyRequest) (*compute.ComputePolicy, error) {
+	ret := _mock.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateComputePolicy")
+	}
+
+	var r0 *compute.ComputePolicy
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, compute.UpdateComputePolicyRequest) (*compute.ComputePolicy, error)); ok {
+		return returnFunc(ctx, request)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, compute.UpdateComputePolicyRequest) *compute.ComputePolicy); ok {
+		r0 = returnFunc(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.ComputePolicy)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, compute.UpdateComputePolicyRequest) error); ok {
+		r1 = returnFunc(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockServerlessComputeServiceInterface_UpdateComputePolicy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateComputePolicy'
+type MockServerlessComputeServiceInterface_UpdateComputePolicy_Call struct {
+	*mock.Call
+}
+
+// UpdateComputePolicy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.UpdateComputePolicyRequest
+func (_e *MockServerlessComputeServiceInterface_Expecter) UpdateComputePolicy(ctx any, request any) *MockServerlessComputeServiceInterface_UpdateComputePolicy_Call {
+	return &MockServerlessComputeServiceInterface_UpdateComputePolicy_Call{Call: _e.mock.On("UpdateComputePolicy", ctx, request)}
+}
+
+func (_c *MockServerlessComputeServiceInterface_UpdateComputePolicy_Call) Run(run func(ctx context.Context, request compute.UpdateComputePolicyRequest)) *MockServerlessComputeServiceInterface_UpdateComputePolicy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 compute.UpdateComputePolicyRequest
+		if args[1] != nil {
+			arg1 = args[1].(compute.UpdateComputePolicyRequest)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_UpdateComputePolicy_Call) Return(computePolicy *compute.ComputePolicy, err error) *MockServerlessComputeServiceInterface_UpdateComputePolicy_Call {
+	_c.Call.Return(computePolicy, err)
+	return _c
+}
+
+func (_c *MockServerlessComputeServiceInterface_UpdateComputePolicy_Call) RunAndReturn(run func(ctx context.Context, request compute.UpdateComputePolicyRequest) (*compute.ComputePolicy, error)) *MockServerlessComputeServiceInterface_UpdateComputePolicy_Call {
 	_c.Call.Return(run)
 	return _c
 }

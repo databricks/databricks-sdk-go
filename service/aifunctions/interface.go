@@ -35,8 +35,8 @@ type AiFunctionsService interface {
 	AiParseDocument(ctx context.Context, request AiParseDocumentRequest) (*AiParseDocumentResponse, error)
 
 	// Starts the asynchronous cancellation of a batch. Requests in progress are
-	// drained first. Cancellation is best effort, so the batch can still
-	// complete.
+	// stopped, and the results of the requests that finished are kept.
+	// Cancellation is best effort, so the batch can still complete.
 	CancelBatch(ctx context.Context, request CancelBatchRequest) (*CancelBatchResponse, error)
 
 	// Creates a batch that runs an AI function on every request in a JSONL file
