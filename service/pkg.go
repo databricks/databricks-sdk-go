@@ -10,7 +10,7 @@
 //
 // - [agentkit.AgentKitAPI]: APIs for managing agent memory and durable session state.
 //
-// - [aifunctions.AiFunctionsAPI]: Transform and enrich data with AI on Databricks.
+// - [aifunctions.AiFunctionsAPI]: Transform and enrich data with AI.
 //
 // - [catalog.AiGatewayAPI]: Govern AI workloads in Unity Catalog.
 //

@@ -83,44 +83,57 @@ func (f *Aggregation) Type() string {
 	return "Aggregation"
 }
 
+// A legacy Databricks SQL alert. An alert runs a saved query, compares a column
+// of the result against a threshold, and notifies its subscribers when the
+// condition is met. See
+// https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details.
 type Alert struct {
-	// Trigger conditions of the alert.
+	// Condition that triggers the alert: a column of the query result, a
+	// comparison operator, and a threshold value. The value in the first row of
+	// the column is evaluated; aggregations are not supported through this API.
 	Condition *AlertCondition `json:"condition,omitempty"`
 	// The timestamp indicating when the alert was created.
 	CreateTime string `json:"create_time,omitempty"`
-	// Custom body of alert notification, if it exists. See [here] for custom
-	// templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom body of the alert notification. It can use the template variables
+	// and HTML described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default notification body is used.
 	CustomBody string `json:"custom_body,omitempty"`
-	// Custom subject of alert notification, if it exists. This can include
-	// email subject entries and Slack notification headers, for example. See
-	// [here] for custom templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom subject of the alert notification, used as the email subject or
+	// the Slack message header. It can use the template variables described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default subject is used.
 	CustomSubject string `json:"custom_subject,omitempty"`
-	// The display name of the alert.
+	// Display name of the alert, shown in list views and notifications. It must
+	// not be empty.
 	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying the alert.
 	Id string `json:"id,omitempty"`
-	// The workspace state of the alert. Used for tracking trashed status.
+	// Lifecycle state of the alert: `ACTIVE`, or `TRASHED` after it has been
+	// moved to the trash.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
-	// Whether to notify alert subscribers when alert returns back to normal.
+	// Whether to notify subscribers when the alert state changes from
+	// `TRIGGERED` back to `OK`. Defaults to true.
 	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
-	// The workspace path of the folder containing the alert.
+	// Workspace path of the folder containing the alert. Defaults to the
+	// creator's home folder when omitted on create. It cannot be changed after
+	// creation.
 	ParentPath string `json:"parent_path,omitempty"`
-	// UUID of the query attached to the alert.
+	// UUID of the saved query whose result the alert evaluates. The caller must
+	// have permission to view the query.
 	QueryId string `json:"query_id,omitempty"`
-	// Number of seconds an alert must wait after being triggered to rearm
-	// itself. After rearming, it can be triggered again. If 0 or not specified,
-	// the alert will not be triggered again.
+	// Number of seconds the alert waits after a notification before it can
+	// notify again while its state stays `TRIGGERED`. If 0 or not specified,
+	// the alert notifies once when its state changes to `TRIGGERED` and does
+	// not notify again until its state has changed.
 	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
-	// Current state of the alert's trigger status. This field is set to UNKNOWN
-	// if the alert has not yet been evaluated or ran into an error during the
-	// last evaluation.
+	// Current state of the alert's trigger status: `TRIGGERED` if the condition
+	// was met on the last evaluation, `OK` if it was not, and `UNKNOWN` if the
+	// alert has not yet been evaluated or ran into an error during the last
+	// evaluation.
 	State AlertState `json:"state,omitempty"`
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
@@ -140,14 +153,20 @@ func (s Alert) MarshalJSON() ([]byte, error) {
 }
 
 type AlertCondition struct {
-	// Alert state if result is empty.
+	// State the alert takes when the query returns no rows. Defaults to
+	// `UNKNOWN` when not set.
 	EmptyResultState AlertState `json:"empty_result_state,omitempty"`
-	// Operator used for comparison in alert evaluation.
+	// Comparison operator applied between the operand column value and the
+	// threshold. The alert is triggered when the comparison is true. `IS_NULL`
+	// triggers when the column value is null; a threshold must still be
+	// supplied but its value is ignored.
 	Op AlertOperator `json:"op,omitempty"`
-	// Name of the column from the query result to use for comparison in alert
-	// evaluation.
+	// Left-hand side of the comparison. Through this API it must be a `column`
+	// naming a column of the query result; the value in the first row of that
+	// column is compared against the threshold.
 	Operand *AlertConditionOperand `json:"operand,omitempty"`
-	// Threshold value used for comparison in alert evaluation.
+	// Right-hand side of the comparison. Through this API it must be a fixed
+	// `value` whose type matches the operand column.
 	Threshold *AlertConditionThreshold `json:"threshold,omitempty"`
 }
 
@@ -156,6 +175,7 @@ func (s *AlertCondition) UnmarshalJSON(b []byte) error {
 }
 
 type AlertConditionOperand struct {
+	// A column of the query result. Used for the `operand` of a condition.
 	Column *AlertOperandColumn `json:"column,omitempty"`
 }
 
@@ -164,6 +184,7 @@ func (s *AlertConditionOperand) UnmarshalJSON(b []byte) error {
 }
 
 type AlertConditionThreshold struct {
+	// A fixed value. Used for the `threshold` of a condition.
 	Value *AlertOperandValue `json:"value,omitempty"`
 }
 
@@ -255,6 +276,7 @@ func (f *AlertLifecycleState) Type() string {
 }
 
 type AlertOperandColumn struct {
+	// Name of the column in the query result.
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -269,10 +291,11 @@ func (s AlertOperandColumn) MarshalJSON() ([]byte, error) {
 }
 
 type AlertOperandValue struct {
+	// Boolean threshold, for boolean columns.
 	BoolValue bool `json:"bool_value,omitempty"`
-
+	// Numeric threshold, for numeric columns.
 	DoubleValue float64 `json:"double_value,omitempty"`
-
+	// String threshold, for string or timestamp columns.
 	StringValue string `json:"string_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1129,6 +1152,8 @@ func (s CreateAlert) MarshalJSON() ([]byte, error) {
 }
 
 type CreateAlertRequest struct {
+	// The alert to create. A display name, a `query_id`, and a `condition` are
+	// required.
 	Alert *CreateAlertRequestAlert `json:"alert,omitempty"`
 	// If true, automatically resolve alert display name conflicts. Otherwise,
 	// fail the request if the alert's display name conflicts with an existing
@@ -1146,31 +1171,42 @@ func (s CreateAlertRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A legacy Databricks SQL alert. An alert runs a saved query, compares a column
+// of the result against a threshold, and notifies its subscribers when the
+// condition is met. See
+// https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details.
 type CreateAlertRequestAlert struct {
-	// Trigger conditions of the alert.
+	// Condition that triggers the alert: a column of the query result, a
+	// comparison operator, and a threshold value. The value in the first row of
+	// the column is evaluated; aggregations are not supported through this API.
 	Condition *AlertCondition `json:"condition,omitempty"`
-	// Custom body of alert notification, if it exists. See [here] for custom
-	// templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom body of the alert notification. It can use the template variables
+	// and HTML described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default notification body is used.
 	CustomBody string `json:"custom_body,omitempty"`
-	// Custom subject of alert notification, if it exists. This can include
-	// email subject entries and Slack notification headers, for example. See
-	// [here] for custom templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom subject of the alert notification, used as the email subject or
+	// the Slack message header. It can use the template variables described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default subject is used.
 	CustomSubject string `json:"custom_subject,omitempty"`
-	// The display name of the alert.
+	// Display name of the alert, shown in list views and notifications. It must
+	// not be empty.
 	DisplayName string `json:"display_name,omitempty"`
-	// Whether to notify alert subscribers when alert returns back to normal.
+	// Whether to notify subscribers when the alert state changes from
+	// `TRIGGERED` back to `OK`. Defaults to true.
 	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
-	// The workspace path of the folder containing the alert.
+	// Workspace path of the folder containing the alert. Defaults to the
+	// creator's home folder when omitted on create. It cannot be changed after
+	// creation.
 	ParentPath string `json:"parent_path,omitempty"`
-	// UUID of the query attached to the alert.
+	// UUID of the saved query whose result the alert evaluates. The caller must
+	// have permission to view the query.
 	QueryId string `json:"query_id,omitempty"`
-	// Number of seconds an alert must wait after being triggered to rearm
-	// itself. After rearming, it can be triggered again. If 0 or not specified,
-	// the alert will not be triggered again.
+	// Number of seconds the alert waits after a notification before it can
+	// notify again while its state stays `TRIGGERED`. If 0 or not specified,
+	// the alert notifies once when its state changes to `TRIGGERED` and does
+	// not notify again until its state has changed.
 	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1355,7 +1391,7 @@ type CreateWarehouseRequest struct {
 	// Name of the user who created the warehouse. Set by the server and ignored
 	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
-	// Compute version label for a REALTIME warehouse. This field is output
+	// Compute version label for a Real-Time warehouse. This field is output
 	// only.
 	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
@@ -1366,10 +1402,10 @@ type CreateWarehouseRequest struct {
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
-	// Must be at least the minimum DBU for the selected warehouse size and no
-	// greater than the configured DBU limit. Actual capacity may be below this
-	// ceiling.
+	// Maximum autoscaling capacity of a Real-Time SQL warehouse, in DBU per
+	// hour. Must be at least the minimum DBU for the selected warehouse size
+	// and no greater than the configured DBU limit. Actual capacity may be
+	// below this ceiling.
 	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -1416,9 +1452,10 @@ type CreateWarehouseRequest struct {
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
+	// Warehouse type: `PRO`, `CLASSIC`, or `REALTIME`. For serverless compute,
+	// use `PRO` or `REALTIME` with `enable_serverless_compute=true`. `REALTIME`
+	// requires serverless compute and Photon; `enable_photon` defaults to
+	// `true`.
 	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2148,7 +2185,7 @@ type EditWarehouseRequest struct {
 	// Name of the user who created the warehouse. Set by the server and ignored
 	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
-	// Compute version label for a REALTIME warehouse. This field is output
+	// Compute version label for a Real-Time warehouse. This field is output
 	// only.
 	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
@@ -2161,10 +2198,10 @@ type EditWarehouseRequest struct {
 	Id string `json:"-" url:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
-	// Must be at least the minimum DBU for the selected warehouse size and no
-	// greater than the configured DBU limit. Actual capacity may be below this
-	// ceiling.
+	// Maximum autoscaling capacity of a Real-Time SQL warehouse, in DBU per
+	// hour. Must be at least the minimum DBU for the selected warehouse size
+	// and no greater than the configured DBU limit. Actual capacity may be
+	// below this ceiling.
 	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -2211,9 +2248,10 @@ type EditWarehouseRequest struct {
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
+	// Warehouse type: `PRO`, `CLASSIC`, or `REALTIME`. For serverless compute,
+	// use `PRO` or `REALTIME` with `enable_serverless_compute=true`. `REALTIME`
+	// requires serverless compute and Photon; `enable_photon` defaults to
+	// `true`.
 	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2334,7 +2372,7 @@ type EndpointInfo struct {
 	// Name of the user who created the warehouse. Set by the server and ignored
 	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
-	// Compute version label for a REALTIME warehouse. This field is output
+	// Compute version label for a Real-Time warehouse. This field is output
 	// only.
 	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
@@ -2352,10 +2390,10 @@ type EndpointInfo struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// JDBC connection string for the warehouse.
 	JdbcUrl string `json:"jdbc_url,omitempty"`
-	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
-	// Must be at least the minimum DBU for the selected warehouse size and no
-	// greater than the configured DBU limit. Actual capacity may be below this
-	// ceiling.
+	// Maximum autoscaling capacity of a Real-Time SQL warehouse, in DBU per
+	// hour. Must be at least the minimum DBU for the selected warehouse size
+	// and no greater than the configured DBU limit. Actual capacity may be
+	// below this ceiling.
 	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -2411,9 +2449,10 @@ type EndpointInfo struct {
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
+	// Warehouse type: `PRO`, `CLASSIC`, or `REALTIME`. For serverless compute,
+	// use `PRO` or `REALTIME` with `enable_serverless_compute=true`. `REALTIME`
+	// requires serverless compute and Photon; `enable_photon` defaults to
+	// `true`.
 	WarehouseType EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2870,6 +2909,7 @@ func (f *Format) Type() string {
 }
 
 type GetAlertRequest struct {
+	// UUID of the alert to fetch.
 	Id string `json:"-" url:"-"`
 }
 
@@ -3041,7 +3081,7 @@ type GetWarehouseResponse struct {
 	// Name of the user who created the warehouse. Set by the server and ignored
 	// in requests.
 	CreatorName string `json:"creator_name,omitempty"`
-	// Compute version label for a REALTIME warehouse. This field is output
+	// Compute version label for a Real-Time warehouse. This field is output
 	// only.
 	CustomerVersionLabel string `json:"customer_version_label,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
@@ -3059,10 +3099,10 @@ type GetWarehouseResponse struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// JDBC connection string for the warehouse.
 	JdbcUrl string `json:"jdbc_url,omitempty"`
-	// Maximum compute capacity of a real-time SQL warehouse, in DBU per hour.
-	// Must be at least the minimum DBU for the selected warehouse size and no
-	// greater than the configured DBU limit. Actual capacity may be below this
-	// ceiling.
+	// Maximum autoscaling capacity of a Real-Time SQL warehouse, in DBU per
+	// hour. Must be at least the minimum DBU for the selected warehouse size
+	// and no greater than the configured DBU limit. Actual capacity may be
+	// below this ceiling.
 	MaxDbu int `json:"max_dbu,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -3118,9 +3158,10 @@ type GetWarehouseResponse struct {
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
+	// Warehouse type: `PRO`, `CLASSIC`, or `REALTIME`. For serverless compute,
+	// use `PRO` or `REALTIME` with `enable_serverless_compute=true`. `REALTIME`
+	// requires serverless compute and Photon; `enable_photon` defaults to
+	// `true`.
 	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3499,8 +3540,10 @@ func (f *LifecycleState) Type() string {
 }
 
 type ListAlertsRequest struct {
+	// Maximum number of alerts to return per page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Token from the `next_page_token` of a previous response. Omit it to fetch
+	// the first page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3515,8 +3558,10 @@ func (s ListAlertsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListAlertsResponse struct {
+	// Token to pass as `page_token` to fetch the next page. Omitted when there
+	// are no more pages.
 	NextPageToken string `json:"next_page_token,omitempty"`
-
+	// Alerts on this page.
 	Results []ListAlertsResponseAlert `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3530,42 +3575,53 @@ func (s ListAlertsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A legacy Databricks SQL alert. An alert runs a saved query, compares a column
+// of the result against a threshold, and notifies its subscribers when the
+// condition is met. See
+// https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details.
 type ListAlertsResponseAlert struct {
-	// Trigger conditions of the alert.
+	// Condition that triggers the alert: a column of the query result, a
+	// comparison operator, and a threshold value. The value in the first row of
+	// the column is evaluated; aggregations are not supported through this API.
 	Condition *AlertCondition `json:"condition,omitempty"`
 	// The timestamp indicating when the alert was created.
 	CreateTime string `json:"create_time,omitempty"`
-	// Custom body of alert notification, if it exists. See [here] for custom
-	// templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom body of the alert notification. It can use the template variables
+	// and HTML described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default notification body is used.
 	CustomBody string `json:"custom_body,omitempty"`
-	// Custom subject of alert notification, if it exists. This can include
-	// email subject entries and Slack notification headers, for example. See
-	// [here] for custom templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom subject of the alert notification, used as the email subject or
+	// the Slack message header. It can use the template variables described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default subject is used.
 	CustomSubject string `json:"custom_subject,omitempty"`
-	// The display name of the alert.
+	// Display name of the alert, shown in list views and notifications. It must
+	// not be empty.
 	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying the alert.
 	Id string `json:"id,omitempty"`
-	// The workspace state of the alert. Used for tracking trashed status.
+	// Lifecycle state of the alert: `ACTIVE`, or `TRASHED` after it has been
+	// moved to the trash.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
-	// Whether to notify alert subscribers when alert returns back to normal.
+	// Whether to notify subscribers when the alert state changes from
+	// `TRIGGERED` back to `OK`. Defaults to true.
 	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
-	// UUID of the query attached to the alert.
+	// UUID of the saved query whose result the alert evaluates. The caller must
+	// have permission to view the query.
 	QueryId string `json:"query_id,omitempty"`
-	// Number of seconds an alert must wait after being triggered to rearm
-	// itself. After rearming, it can be triggered again. If 0 or not specified,
-	// the alert will not be triggered again.
+	// Number of seconds the alert waits after a notification before it can
+	// notify again while its state stays `TRIGGERED`. If 0 or not specified,
+	// the alert notifies once when its state changes to `TRIGGERED` and does
+	// not notify again until its state has changed.
 	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
-	// Current state of the alert's trigger status. This field is set to UNKNOWN
-	// if the alert has not yet been evaluated or ran into an error during the
-	// last evaluation.
+	// Current state of the alert's trigger status: `TRIGGERED` if the condition
+	// was met on the last evaluation, `OK` if it was not, and `UNKNOWN` if the
+	// alert has not yet been evaluated or ran into an error during the last
+	// evaluation.
 	State AlertState `json:"state,omitempty"`
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
@@ -6497,6 +6553,7 @@ func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
 }
 
 type TrashAlertRequest struct {
+	// UUID of the alert to move to the trash.
 	Id string `json:"-" url:"-"`
 }
 
@@ -6532,13 +6589,19 @@ func (s *TrashQueryRequest) UnmarshalJSON(b []byte) error {
 }
 
 type UpdateAlertRequest struct {
+	// Alert fields to update. Only the fields named in `update_mask` are
+	// changed.
 	Alert *UpdateAlertRequestAlert `json:"alert,omitempty"`
 	// If true, automatically resolve alert display name conflicts. Otherwise,
 	// fail the request if the alert's display name conflicts with an existing
 	// alert's display name.
 	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
-
+	// UUID of the alert to update.
 	Id string `json:"-" url:"-"`
+	// Comma-separated list of the alert fields to update, such as
+	// `display_name` or `condition`. Fields not listed keep their current
+	// values.
+	//
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -6563,32 +6626,41 @@ func (s UpdateAlertRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A legacy Databricks SQL alert. An alert runs a saved query, compares a column
+// of the result against a threshold, and notifies its subscribers when the
+// condition is met. See
+// https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details.
 type UpdateAlertRequestAlert struct {
-	// Trigger conditions of the alert.
+	// Condition that triggers the alert: a column of the query result, a
+	// comparison operator, and a threshold value. The value in the first row of
+	// the column is evaluated; aggregations are not supported through this API.
 	Condition *AlertCondition `json:"condition,omitempty"`
-	// Custom body of alert notification, if it exists. See [here] for custom
-	// templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom body of the alert notification. It can use the template variables
+	// and HTML described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default notification body is used.
 	CustomBody string `json:"custom_body,omitempty"`
-	// Custom subject of alert notification, if it exists. This can include
-	// email subject entries and Slack notification headers, for example. See
-	// [here] for custom templating instructions.
-	//
-	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Custom subject of the alert notification, used as the email subject or
+	// the Slack message header. It can use the template variables described at
+	// https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted,
+	// the default subject is used.
 	CustomSubject string `json:"custom_subject,omitempty"`
-	// The display name of the alert.
+	// Display name of the alert, shown in list views and notifications. It must
+	// not be empty.
 	DisplayName string `json:"display_name,omitempty"`
-	// Whether to notify alert subscribers when alert returns back to normal.
+	// Whether to notify subscribers when the alert state changes from
+	// `TRIGGERED` back to `OK`. Defaults to true.
 	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
-	// UUID of the query attached to the alert.
+	// UUID of the saved query whose result the alert evaluates. The caller must
+	// have permission to view the query.
 	QueryId string `json:"query_id,omitempty"`
-	// Number of seconds an alert must wait after being triggered to rearm
-	// itself. After rearming, it can be triggered again. If 0 or not specified,
-	// the alert will not be triggered again.
+	// Number of seconds the alert waits after a notification before it can
+	// notify again while its state stays `TRIGGERED`. If 0 or not specified,
+	// the alert notifies once when its state changes to `TRIGGERED` and does
+	// not notify again until its state has changed.
 	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

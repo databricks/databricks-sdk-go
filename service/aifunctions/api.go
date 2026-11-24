@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// Transform and enrich data with AI on Databricks.
+// Transform and enrich data with AI.
 package aifunctions
 
 import (
@@ -12,29 +12,29 @@ import (
 
 type AiFunctionsInterface interface {
 
-	// Classifies content according to a set of provided labels. For REST API
-	// requests, the default rate limit is 1,200 requests per minute per workspace.
-	// Contact your Databricks account team to request a higher limit.
+	// Classifies content according to a set of provided labels. The AI Classify
+	// REST API has a default rate limit of 1,200 requests per minute per workspace.
+	// Contact your account team to request a higher limit.
 	AiClassify(ctx context.Context, request AiClassifyRequest) (*AiClassifyResponse, error)
 
 	// Turn text and structured data into decisions your application can use. Define
 	// questions and criteria to choose an option, estimate a probability, or assign
-	// a score given a provided state. For REST API requests, the default rate limit
-	// is 1,200 requests per minute per workspace. Contact your Databricks account
-	// team to request a higher limit.
+	// a score given a provided state. The AI Decide REST API has a default rate
+	// limit of 1,200 requests per minute per workspace. Contact your account team
+	// to request a higher limit.
 	AiDecide(ctx context.Context, request AiDecideRequest) (*AiDecideResponse, error)
 
 	// Extracts structured data from text and documents according to a provided
-	// schema. For REST API requests, the default rate limit is 120 requests per
-	// minute per workspace. Contact your Databricks account team to request a
-	// higher limit.
+	// schema. The AI Extract REST API has a default rate limit of 120 requests per
+	// minute per workspace. Contact your account team to request a higher limit.
 	AiExtract(ctx context.Context, request AiExtractRequest) (*AiExtractResponse, error)
 
 	// Parse structured content from unstructured documents.
 	AiParseDocument(ctx context.Context, request AiParseDocumentRequest) (*AiParseDocumentResponse, error)
 
 	// Starts the asynchronous cancellation of a batch. Requests in progress are
-	// drained first. Cancellation is best effort, so the batch can still complete.
+	// stopped, and the results of the requests that finished are kept. Cancellation
+	// is best effort, so the batch can still complete.
 	CancelBatch(ctx context.Context, request CancelBatchRequest) (*CancelBatchResponse, error)
 
 	// Creates a batch that runs an AI function on every request in a JSONL file on
@@ -64,7 +64,7 @@ func NewAiFunctions(client *client.DatabricksClient) *AiFunctionsAPI {
 	}
 }
 
-// Transform and enrich data with AI on Databricks.
+// Transform and enrich data with AI.
 type AiFunctionsAPI struct {
 	aiFunctionsImpl
 }

@@ -32,6 +32,20 @@ type AccessRequestDestinations struct {
 	Securable Securable `json:"securable"`
 	// The type of the securable, repeated from **securable** as a plain string.
 	SecurableType string `json:"securable_type,omitempty"`
+	// The access request URLs shared by every workspace in the metastore. Only
+	// set when the securable is a metastore. These URLs are used when neither
+	// the requested securable nor its parents have an explicit destination or a
+	// default owner email destination, and they take precedence over metastore
+	// destinations.
+	//
+	// A **dynamic_url** and default owner email destinations cannot both be on:
+	// saving one turns the other off. Saving a **dynamic_url** while they are
+	// on requires a metastore admin.
+	//
+	// Setting this field removes the metastore destinations in this workspace.
+	// The first save also removes the metastore URL destinations of other
+	// workspaces. Once set, the configuration can be cleared but not removed.
+	UrlConfiguration *UrlConfiguration `json:"url_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1162,6 +1176,8 @@ const ConnectionTypeGithub ConnectionType = `GITHUB`
 
 const ConnectionTypeGlue ConnectionType = `GLUE`
 
+const ConnectionTypeGoogleAds ConnectionType = `GOOGLE_ADS`
+
 const ConnectionTypeHiveMetastore ConnectionType = `HIVE_METASTORE`
 
 const ConnectionTypeHttp ConnectionType = `HTTP`
@@ -1218,11 +1234,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `AWS_SECRETS_MANAGER`, `AZURE_KEY_VAULT`, `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `AWS_SECRETS_MANAGER`, `AZURE_KEY_VAULT`, `BIGQUERY`, `CONFLUENCE`, `DATABRICKS`, `DYNAMICS365`, `GA4_RAW_DATA`, `GITHUB`, `GLUE`, `GOOGLE_ADS`, `HIVE_METASTORE`, `HTTP`, `HUBSPOT`, `JDBC`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `OUTLOOK`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SMARTSHEET`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AWS_SECRETS_MANAGER", "AZURE_KEY_VAULT", "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AWS_SECRETS_MANAGER", "AZURE_KEY_VAULT", "BIGQUERY", "CONFLUENCE", "DATABRICKS", "DYNAMICS365", "GA4_RAW_DATA", "GITHUB", "GLUE", "GOOGLE_ADS", "HIVE_METASTORE", "HTTP", "HUBSPOT", "JDBC", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "OUTLOOK", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SMARTSHEET", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -1240,6 +1256,7 @@ func (f *ConnectionType) Values() []ConnectionType {
 		ConnectionTypeGa4RawData,
 		ConnectionTypeGithub,
 		ConnectionTypeGlue,
+		ConnectionTypeGoogleAds,
 		ConnectionTypeHiveMetastore,
 		ConnectionTypeHttp,
 		ConnectionTypeHubspot,
@@ -2135,9 +2152,10 @@ type CreateSkillRequest struct {
 	// be omitted. Do not set `name`; the server derives it from `parent` and
 	// `skill_id`.
 	Skill Skill `json:"skill"`
-	// Name for the skill, e.g. "basic-math". The server normalizes this
-	// identifier to lowercase. It is independent of the bundle name read from
-	// SKILL.md.
+	// Name of the skill within the parent schema. The name must not contain
+	// periods, spaces, forward slashes, percent signs, or control characters,
+	// and it is stored in lowercase. It is independent of the bundle name read
+	// from SKILL.md.
 	SkillId string `json:"-" url:"skill_id"`
 }
 
@@ -2190,7 +2208,8 @@ func (s *CreateTableConstraint) UnmarshalJSON(b []byte) error {
 }
 
 type CreateTableRequest struct {
-	// Name of parent catalog.
+	// Name of parent catalog. Required for creation using catalog and schema
+	// names.
 	CatalogName string `json:"catalog_name"`
 	// The array of __ColumnInfo__ definitions of the table's columns.
 	Columns []ColumnInfo `json:"columns,omitempty"`
@@ -2202,7 +2221,8 @@ type CreateTableRequest struct {
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// Name of parent schema relative to its parent catalog.
+	// Name of parent schema relative to its parent catalog. Required for
+	// creation using catalog and schema names.
 	SchemaName string `json:"schema_name"`
 	// The cloud storage URL under which the data files of the table are stored.
 	// For an EXTERNAL table, it must be set on creation to a path within an
@@ -2915,7 +2935,8 @@ func (s DeleteModelServiceRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteModelVersionRequest struct {
-	// The three-level (fully qualified) name of the model version
+	// The three-level (fully qualified) name of the parent registered model, in
+	// the form `catalog_name.schema_name.model_name`.
 	FullName string `json:"-" url:"-"`
 	// The integer version number of the model version
 	Version int `json:"-" url:"-"`
@@ -3170,12 +3191,13 @@ func (s *DenyOptions) UnmarshalJSON(b []byte) error {
 // __table__, __function__, __connection__, __credential__, __volume__, or
 // __secret__.
 type Dependency struct {
+	// A dependency on a Unity Catalog connection.
 	Connection *ConnectionDependency `json:"connection,omitempty"`
-
+	// A dependency on a Unity Catalog credential.
 	Credential *CredentialDependency `json:"credential,omitempty"`
-
+	// A dependency on a Unity Catalog function.
 	Function *FunctionDependency `json:"function,omitempty"`
-
+	// A dependency on a Unity Catalog table.
 	Table *TableDependency `json:"table,omitempty"`
 }
 
@@ -4761,7 +4783,7 @@ func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetCatalogWorkspaceBindingsResponse struct {
-	// A list of workspace IDs
+	// The IDs of the workspaces that are bound to the catalog.
 	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
@@ -4882,7 +4904,9 @@ func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetGrantRequest struct {
-	// Full name of securable.
+	// Full name of the securable. Tables, views, volumes and functions use the
+	// three-level name `catalog.schema.object`; a metastore uses its metastore
+	// ID.
 	FullName string `json:"-" url:"-"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
@@ -4902,7 +4926,8 @@ type GetGrantRequest struct {
 	// If provided, only the permissions for the specified principal (user or
 	// group) are returned.
 	Principal string `json:"-" url:"principal,omitempty"`
-	// Type of securable.
+	// Type of the securable, such as `catalog`, `schema`, `table` or `volume`.
+	// The value is case-insensitive.
 	SecurableType string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5024,7 +5049,8 @@ func (s *GetModelServiceRequest) UnmarshalJSON(b []byte) error {
 }
 
 type GetModelVersionRequest struct {
-	// The three-level (fully qualified) name of the model version
+	// The three-level (fully qualified) name of the parent registered model, in
+	// the form `catalog_name.schema_name.model_name`.
 	FullName string `json:"-" url:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
@@ -6465,8 +6491,8 @@ type ListSecretsRequest struct {
 	// 1000. - If set to 0, the page length is set to 1000. - If set to a value
 	// less than 0, an invalid parameter error is returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Opaque pagination token to go to the next page based on previous query.
-	// The maximum page length is determined by a server configured value.
+	// Opaque pagination token for the next page of results. Set it to the
+	// **next_page_token** value from the previous response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The name of the schema under which to list secrets. Both **catalog_name**
 	// and **schema_name** must be specified together.
@@ -7968,6 +7994,10 @@ func (s *ModelServiceConfigRoutingConfig) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// A numbered version of a registered model in Unity Catalog. A model version is
+// identified by the full name of its parent registered model and its version
+// number, or by an alias that points to it. See
+// https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/.
 type ModelVersionInfo struct {
 	// List of aliases associated with the model version
 	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
@@ -7975,7 +8005,7 @@ type ModelVersionInfo struct {
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the model version
 	Comment string `json:"comment,omitempty"`
-
+	// Time at which the model version was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the model version
 	CreatedBy string `json:"created_by,omitempty"`
@@ -8008,7 +8038,7 @@ type ModelVersionInfo struct {
 	// The storage location on the cloud under which model version data files
 	// are stored
 	StorageLocation string `json:"storage_location,omitempty"`
-
+	// Time at which the model version was last updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the model version last time
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -8975,8 +9005,7 @@ func (f *PathOperation) Type() string {
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []Privilege `json:"add,omitempty"`
-	// The principal whose privileges we are changing. Only one of principal or
-	// principal_id should be specified, never both at the same time.
+	// The principal whose privileges we are changing.
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
@@ -9429,8 +9458,7 @@ func (f *Privilege) Type() string {
 }
 
 type PrivilegeAssignment struct {
-	// The principal (user email address or group name). For deleted principals,
-	// `principal` is empty while `principal_id` is populated.
+	// The principal (user email address or group name).
 	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
@@ -9939,8 +9967,9 @@ type Secret struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the secret, relative to its parent schema.
 	Name string `json:"name"`
-	// The owner of the secret. Defaults to the creating principal on creation.
-	// Can be updated to transfer ownership of the secret to another principal.
+	// The owner of the secret. It cannot be set when creating a secret and
+	// defaults to the creating principal. Set it in UpdateSecret to transfer
+	// ownership of the secret to another principal.
 	Owner string `json:"owner,omitempty"`
 	// The name of the schema where the secret resides.
 	SchemaName string `json:"schema_name"`
@@ -9948,11 +9977,10 @@ type Secret struct {
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// The principal that last updated the secret.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// The secret value to store. This field is input-only and is not returned
-	// in responses — use the **effective_value** field (via GetSecret with
-	// **include_value** set to true) to read the secret value. The maximum size
-	// is 60 KiB (pre-encryption). Accepted content includes passwords, tokens,
-	// keys, and other sensitive credential data.
+	// The secret value to store, such as a password, token, or key. It is never
+	// returned in responses. To read it, call GetSecret with **include_value**
+	// set to true and use the **effective_value** field. The maximum size is 60
+	// KiB before encryption.
 	Value string `json:"value"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10395,21 +10423,23 @@ type Skill struct {
 	// differ from the final component of the Skill resource name. Unset until
 	// FinalizeSkill succeeds.
 	BundleName string `json:"bundle_name,omitempty"`
-	// User-provided comment for the skill. Free-text, user-editable via
-	// UpdateSkill (listed in its `update_mask`). DISTINCT from `description`,
-	// which is the server-parsed, OUTPUT_ONLY SKILL.md frontmatter value:
-	// `comment` is the customer's own annotation and is preserved across bundle
-	// re-uploads. When `comment` is in the update mask, omitting it clears the
-	// field, while an explicitly empty string is retained.
+	// User-provided comment for the skill, which you can change with
+	// UpdateSkill. It is separate from `description`, which the server reads
+	// from the SKILL.md frontmatter, and it is preserved across bundle
+	// re-uploads and FinalizeSkill. When `comment` is in the update mask,
+	// omitting it clears the field, while an explicitly empty string is
+	// retained.
 	Comment string `json:"comment,omitempty"`
 	// Time the skill was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// Creator identity.
+	// Username or service principal application ID of the principal that
+	// created the skill.
 	CreatedBy string `json:"created_by,omitempty"`
 	// Description from the most recently successfully finalized SKILL.md. Unset
 	// until FinalizeSkill succeeds.
 	Description string `json:"description,omitempty"`
-	// Owner of the skill.
+	// Username, group name, or service principal application ID of the skill
+	// owner.
 	EffectiveOwner string `json:"effective_owner,omitempty"`
 	// Optimistic concurrency token returned on every read. To make an Update or
 	// Delete conditional, pass the last-read value in that request's `etag`
@@ -10419,17 +10449,18 @@ type Skill struct {
 	// Time of the most recent successful FinalizeSkill. Unset until one
 	// succeeds.
 	FinalizeTime *time.Time `json:"finalize_time,omitempty"`
-	// Metastore hosting the skill.
+	// Unique identifier of the metastore that contains the skill.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Resource name of the skill. Format: `skills/{catalog}.{schema}.{skill}`.
-	// Each `{...}` component is capped at 255 characters individually.
-	// Server-derived on Create from `parent` + `skill_id`; required and
-	// immutable on Update/Get/Delete.
+	// Each `{...}` component is capped at 255 characters individually. The
+	// server derives the name on Create from `parent` and `skill_id`; it is
+	// required and immutable on Update, Get, and Delete.
 	Name string `json:"name,omitempty"`
 	// Time of the most recent Skill metadata mutation. Uploading bundle files
 	// alone does not change this value.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
-	// Identity of the last updater.
+	// Username or service principal application ID of the principal that last
+	// updated the skill.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10794,7 +10825,8 @@ type TableInfo struct {
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	BrowseOnly bool `json:"browse_only,omitempty"`
-	// Name of parent catalog.
+	// Name of parent catalog. Required for creation using catalog and schema
+	// names.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The array of __ColumnInfo__ definitions of the table's columns.
 	Columns []ColumnInfo `json:"columns,omitempty"`
@@ -10846,7 +10878,8 @@ type TableInfo struct {
 	// https://docs.databricks.com/aws/en/tables/row-and-column-filters for
 	// details.
 	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
-	// Name of parent schema relative to its parent catalog.
+	// Name of parent schema relative to its parent catalog. Required for
+	// creation using catalog and schema names.
 	SchemaName string `json:"schema_name,omitempty"`
 	// SecurableKindManifest of table, including capabilities the table has.
 	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
@@ -11309,7 +11342,7 @@ func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateCatalogWorkspaceBindingsResponse struct {
-	// A list of workspace IDs
+	// The IDs of the workspaces that are bound to the catalog.
 	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
@@ -11705,11 +11738,12 @@ type UpdateModelVersionRequest struct {
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the model version
 	Comment string `json:"comment,omitempty"`
-
+	// Time at which the model version was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the model version
 	CreatedBy string `json:"created_by,omitempty"`
-	// The three-level (fully qualified) name of the model version
+	// The three-level (fully qualified) name of the parent registered model, in
+	// the form `catalog_name.schema_name.model_name`.
 	FullName string `json:"-" url:"-"`
 	// The unique identifier of the model version
 	Id string `json:"id,omitempty"`
@@ -11740,7 +11774,7 @@ type UpdateModelVersionRequest struct {
 	// The storage location on the cloud under which model version data files
 	// are stored
 	StorageLocation string `json:"storage_location,omitempty"`
-
+	// Time at which the model version was last updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the model version last time
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -11811,12 +11845,16 @@ func (s UpdateMonitor) MarshalJSON() ([]byte, error) {
 type UpdatePermissions struct {
 	// Array of permissions change objects.
 	Changes []PermissionsChange `json:"changes,omitempty"`
-	// Full name of securable.
+	// Full name of the securable. Tables, views, volumes and functions use the
+	// three-level name `catalog.schema.object`; a metastore uses its metastore
+	// ID.
 	FullName string `json:"-" url:"-"`
-	// Optional, default false. Specifies whether all the permissions should be
-	// returned in the response.
+	// Whether to omit the privilege assignments from the response. When false,
+	// the response lists all direct privilege assignments on the securable
+	// after the update.
 	OmitPermissionsInResponse bool `json:"omit_permissions_in_response,omitempty"`
-	// Type of securable.
+	// Type of the securable, such as `catalog`, `schema`, `table` or `volume`.
+	// The value is case-insensitive.
 	SecurableType string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -12013,16 +12051,16 @@ type UpdateSkillRequest struct {
 	// returned by the API when setting the `etag` query parameter.
 	Etag string `json:"-" url:"etag,omitempty"`
 	// Resource name of the skill. Format: `skills/{catalog}.{schema}.{skill}`.
-	// Each `{...}` component is capped at 255 characters individually.
-	// Server-derived on Create from `parent` + `skill_id`; required and
-	// immutable on Update/Get/Delete.
+	// Each `{...}` component is capped at 255 characters individually. The
+	// server derives the name on Create from `parent` and `skill_id`; it is
+	// required and immutable on Update, Get, and Delete.
 	Name string `json:"-" url:"-"`
 	// The skill with the updated field values. `name` identifies the resource
 	// (`skills/{catalog}.{schema}.{skill}`); only fields listed in
 	// `update_mask` are applied.
 	Skill Skill `json:"skill"`
-	// Fields to update; validated against `skill`. REQUIRED, matching the
-	// sibling Update RPCs. `comment` is the only mutable field.
+	// Comma-separated list of `skill` fields to update. `comment` is the only
+	// field that can be updated.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -12120,11 +12158,11 @@ func (s UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateWorkspaceBindings struct {
-	// A list of workspace IDs.
+	// The IDs of the workspaces to bind to the catalog.
 	AssignWorkspaces []int64 `json:"assign_workspaces,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
-	// A list of workspace IDs.
+	// The IDs of the workspaces to unbind from the catalog.
 	UnassignWorkspaces []int64 `json:"unassign_workspaces,omitempty"`
 }
 
@@ -12159,6 +12197,49 @@ type UpdateWorkspaceBindingsResponse struct {
 
 func (s *UpdateWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
+}
+
+// Access request URLs shared by every workspace in a metastore.
+type UrlConfiguration struct {
+	// The URL template for access requests on catalogs and the securables
+	// inside them, such as schemas, tables, volumes, functions, and registered
+	// models. Placeholders are replaced with percent-encoded values from the
+	// requested securable: `{catalog}` with the catalog name (`main`),
+	// `{catalog.schema}` with the catalog and schema names (`main.sales`),
+	// `{catalog.schema.object}` with the full name (`main.sales.orders`),
+	// `{securable_type}` with the securable type (`TABLE`), and
+	// `{securable_id}` with the securable ID. Name placeholders leave out
+	// levels the securable does not have, so `{catalog.schema.object}` is
+	// `main.sales` for a schema. When the deepest name placeholder stops above
+	// the requested securable, such as `{catalog.schema}` for a table,
+	// `{securable_type}` and `{securable_id}` describe that parent. If the
+	// filled-in URL is longer than 4,096 characters, the **redirect_url** is
+	// used instead.
+	//
+	// Must start with `http://` or `https://`, contain only printable ASCII
+	// characters without spaces or backslashes, and be at most 2,048
+	// characters. Braces are only allowed around a placeholder.
+	DynamicUrl string `json:"dynamic_url,omitempty"`
+	// The URL for access requests on the metastore and on securables outside
+	// catalogs, such as external locations, connections, and credentials. Also
+	// used for catalogs and the securables inside them when **dynamic_url** is
+	// not set or cannot produce a valid URL. Must start with `http://` or
+	// `https://`, contain only printable ASCII characters without spaces or
+	// backslashes, and be at most 2,048 characters.
+	RedirectUrl string `json:"redirect_url,omitempty"`
+	// The version of the placeholder syntax used in **dynamic_url**. The only
+	// supported version is `1`.
+	SyntaxVersion int `json:"syntax_version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UrlConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UrlConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ValidateCredentialRequest struct {
@@ -12555,10 +12636,14 @@ func (f *VolumeType) Type() string {
 	return "VolumeType"
 }
 
+// A binding between a workspace and a securable. When the isolation mode of the
+// securable is `ISOLATED`, only bound workspaces can access it.
 type WorkspaceBinding struct {
-	// One of READ_WRITE/READ_ONLY. Default is READ_WRITE.
+	// One of READ_WRITE/READ_ONLY. Default is READ_WRITE. Only catalogs support
+	// `BINDING_TYPE_READ_ONLY`; other securable types accept only
+	// `BINDING_TYPE_READ_WRITE`.
 	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
-	// Required
+	// The ID of the workspace that the binding applies to.
 	WorkspaceId int64 `json:"workspace_id"`
 }
 

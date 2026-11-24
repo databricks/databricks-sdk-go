@@ -222,7 +222,8 @@ func (a *supervisorAgentsImpl) internalListExamples(ctx context.Context, request
 	return &listExamplesResponse, err
 }
 
-// Lists Supervisor Agents.
+// Lists the Supervisor Agents in the workspace that the caller has permission
+// to view.
 func (a *supervisorAgentsImpl) ListSupervisorAgents(ctx context.Context, request ListSupervisorAgentsRequest) listing.Iterator[SupervisorAgent] {
 
 	getNextPage := func(ctx context.Context, req ListSupervisorAgentsRequest) (*ListSupervisorAgentsResponse, error) {
@@ -247,7 +248,8 @@ func (a *supervisorAgentsImpl) ListSupervisorAgents(ctx context.Context, request
 	return iterator
 }
 
-// Lists Supervisor Agents.
+// Lists the Supervisor Agents in the workspace that the caller has permission
+// to view.
 func (a *supervisorAgentsImpl) ListSupervisorAgentsAll(ctx context.Context, request ListSupervisorAgentsRequest) ([]SupervisorAgent, error) {
 	iterator := a.ListSupervisorAgents(ctx, request)
 	return listing.ToSlice[SupervisorAgent](ctx, iterator)

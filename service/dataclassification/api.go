@@ -31,6 +31,19 @@ type DataClassificationInterface interface {
 	// Get the Data Classification configuration for a catalog.
 	GetCatalogConfig(ctx context.Context, request GetCatalogConfigRequest) (*CatalogConfig, error)
 
+	// Rescan the tables in a catalog's Data Classification scope that changed since
+	// their last scan.
+	//
+	// The rescan uses the catalog's current classifiers and follows its config
+	// (schema selection) and SKIP tags. Tables with no commits since their last
+	// scan are skipped. Views and tables without a Delta commit history keep their
+	// regular rescan schedule. The call returns once the rescan is scheduled;
+	// scanning runs in the background. If a scan of the catalog is running, the
+	// call cancels it and starts a new run. - Data Classification must be enabled
+	// for the catalog. - The call must come from the workspace where Data
+	// Classification was enabled.
+	RescanCatalog(ctx context.Context, request RescanCatalogRequest) (*RescanCatalogResponse, error)
+
 	// Update the Data Classification configuration for a catalog.
 	//
 	// The config must already exist for the catalog. Only the fields named in

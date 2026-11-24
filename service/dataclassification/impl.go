@@ -59,6 +59,21 @@ func (a *dataClassificationImpl) GetCatalogConfig(ctx context.Context, request G
 	return &catalogConfig, err
 }
 
+func (a *dataClassificationImpl) RescanCatalog(ctx context.Context, request RescanCatalogRequest) (*RescanCatalogResponse, error) {
+	var rescanCatalogResponse RescanCatalogResponse
+	path := fmt.Sprintf("/api/data-classification/v1/%v/rescan", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &rescanCatalogResponse)
+	return &rescanCatalogResponse, err
+}
+
 func (a *dataClassificationImpl) UpdateCatalogConfig(ctx context.Context, request UpdateCatalogConfigRequest) (*CatalogConfig, error) {
 	var catalogConfig CatalogConfig
 	path := fmt.Sprintf("/api/data-classification/v1/%v", request.Name)

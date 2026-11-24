@@ -4,8 +4,10 @@ package compute
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -1296,6 +1298,48 @@ type serverlessComputeServiceImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *serverlessComputeServiceImpl) CreateComputePolicy(ctx context.Context, request CreateComputePolicyRequest) (*ComputePolicy, error) {
+	var computePolicy ComputePolicy
+	path := "/api/2.0/policies/compute"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ComputePolicy, &computePolicy)
+	return &computePolicy, err
+}
+
+func (a *serverlessComputeServiceImpl) DeleteComputePolicy(ctx context.Context, request DeleteComputePolicyRequest) error {
+	path := fmt.Sprintf("/api/2.0/policies/compute/%v", request.ComputePolicyId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *serverlessComputeServiceImpl) GetComputePolicy(ctx context.Context, request GetComputePolicyRequest) (*ComputePolicy, error) {
+	var computePolicy ComputePolicy
+	path := fmt.Sprintf("/api/2.0/policies/compute/%v", request.ComputePolicyId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &computePolicy)
+	return &computePolicy, err
+}
+
 // Lists Interactive serverless computes that the caller can use or manage.
 // Results are returned in an unspecified order.
 func (a *serverlessComputeServiceImpl) List(ctx context.Context, request ListServerlessComputesRequest) listing.Iterator[ServerlessCompute] {
@@ -1390,4 +1434,26 @@ func (a *serverlessComputeServiceImpl) internalListComputePolicies(ctx context.C
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listComputePoliciesResponse)
 	return &listComputePoliciesResponse, err
+}
+
+func (a *serverlessComputeServiceImpl) UpdateComputePolicy(ctx context.Context, request UpdateComputePolicyRequest) (*ComputePolicy, error) {
+	var computePolicy ComputePolicy
+	path := fmt.Sprintf("/api/2.0/policies/compute/%v", request.ComputePolicyId)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.WorkspaceID != "" {
+		headers["X-Databricks-Workspace-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ComputePolicy, &computePolicy)
+	return &computePolicy, err
 }

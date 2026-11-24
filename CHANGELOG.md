@@ -1,5 +1,22 @@
 # Version changelog
 
+## Release v0.203.0 (2026-11-24)
+
+### API Changes
+* Add `CreateComputePolicy`, `DeleteComputePolicy`, `GetComputePolicy` and `UpdateComputePolicy` methods for [w.ServerlessComputeService](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ServerlessComputeServiceAPI) workspace-level service.
+* Add `RescanCatalog` method for [w.DataClassification](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataclassification#DataClassificationAPI) workspace-level service.
+* Add `UrlConfiguration` field for [catalog.AccessRequestDestinations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccessRequestDestinations).
+* Add `Streaming` field for [lakewatch.Rule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#Rule).
+* Add `Lookup` and `SecondaryKeys` fields for [ml.Function](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Function).
+* Add `ComputePolicyId` field for [postgres.ProjectStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectStatus).
+* Add `Network` field for [sandbox.SandboxSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sandbox#SandboxSpec).
+* Add `Finalizing` enum value for [aisearch.EndpointScalingInfoPhase](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/aisearch#EndpointScalingInfoPhase).
+* Add `GoogleAds` enum value for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
+* Add `Preemptable` enum value for [jobs.AiRuntimeTaskPriorityClass](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#AiRuntimeTaskPriorityClass).
+* Add `Finalizing` enum value for [vectorsearch.EndpointScalingInfoScalingPhase](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointScalingInfoScalingPhase).
+* Change `Schedule` field for [lakewatch.Rule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#Rule) to no longer be required.
+* [Breaking] Change `Schedule` field for [lakewatch.Rule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/lakewatch#Rule) to no longer be required.
+
 ## Release v0.202.0 (2026-11-19)
 
 ### API Changes

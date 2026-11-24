@@ -229,7 +229,9 @@ type CreateShare struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the share.
 	Name string `json:"name"`
-	// Storage root URL for the share.
+	// Cloud storage path, within an external location, under which the share
+	// stores the notebook files added to it. When unset, notebook files are
+	// stored under the metastore root storage location.
 	StorageRoot string `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -613,7 +615,8 @@ func (s GetSharePermissionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type GetShareRequest struct {
-	// Query for data to include in the share.
+	// Whether to include the share's data objects in the response. When false
+	// or omitted, the response omits `objects`.
 	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
 	// The name of the share.
 	Name string `json:"-" url:"-"`
@@ -944,7 +947,9 @@ func (s *OidcFederationPolicy) UnmarshalJSON(b []byte) error {
 }
 
 type Partition struct {
-	// An array of partition values.
+	// An array of partition values. A row belongs to the partition when it
+	// matches every value in the array, and each `name` must appear at most
+	// once in the array.
 	Values []PartitionValue `json:"values,omitempty"`
 }
 
@@ -955,7 +960,8 @@ func (s *Partition) UnmarshalJSON(b []byte) error {
 type PartitionValue struct {
 	// The name of the partition column.
 	Name string `json:"name,omitempty"`
-	// The operator to apply for the value.
+	// The operator to apply for the value. **EQUAL** matches the partition
+	// value exactly; **LIKE** matches it against a SQL `LIKE` pattern.
 	Op PartitionValueOp `json:"op,omitempty"`
 	// The key of a Delta Sharing recipient's property. For example
 	// "databricks-account-id". When this field is set, field `value` can not be
@@ -1017,8 +1023,7 @@ func (f *PartitionValueOp) Type() string {
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []string `json:"add,omitempty"`
-	// The principal whose privileges we are changing. Only one of principal or
-	// principal_id should be specified, never both at the same time.
+	// The principal whose privileges we are changing.
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	Remove []string `json:"remove,omitempty"`
@@ -1201,8 +1206,7 @@ func (f *Privilege) Type() string {
 }
 
 type PrivilegeAssignment struct {
-	// The principal (user email address or group name). For deleted principals,
-	// `principal` is empty while `principal_id` is populated.
+	// The principal (user email address or group name).
 	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
@@ -1480,6 +1484,11 @@ func (s Share) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A share is a named collection of data and AI assets from a single Unity
+// Catalog metastore that a provider makes available to recipients through Delta
+// Sharing. A share is created empty; tables, views, volumes, models, notebook
+// files, or whole schemas are added to it with **update**, and recipients are
+// granted access to it through share permissions.
 type ShareInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1493,9 +1502,12 @@ type ShareInfo struct {
 	Objects []SharedDataObject `json:"objects,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
-	// Storage Location URL (full path) for the share.
+	// Full storage path, derived from `storage_root`, where the share's
+	// notebook files are stored.
 	StorageLocation string `json:"storage_location,omitempty"`
-	// Storage root URL for the share.
+	// Cloud storage path, within an external location, under which the share
+	// stores the notebook files added to it. When unset, notebook files are
+	// stored under the metastore root storage location.
 	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this share was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -1563,7 +1575,9 @@ type SharedDataObject struct {
 	AddedAt int64 `json:"added_at,omitempty"`
 	// Username of the sharer.
 	AddedBy string `json:"added_by,omitempty"`
-	// Whether to enable cdf or indicate if cdf is enabled on the shared object.
+	// Whether to share the table's change data feed (CDF) with recipients.
+	// Requires change data feed to be enabled on the source table, and
+	// implicitly enables history sharing. Only applies to tables.
 	CdfEnabled bool `json:"cdf_enabled,omitempty"`
 	// A user-provided comment when adding the data object to the share.
 	Comment string `json:"comment,omitempty"`
@@ -1571,16 +1585,24 @@ type SharedDataObject struct {
 	// NOTEBOOK_FILE. This should be base64 encoded. Required for adding a
 	// NOTEBOOK_FILE, optional for updating, ignored for other types.
 	Content string `json:"content,omitempty"`
-	// The type of the data object.
+	// The type of the data object. One of **TABLE**, **VIEW**,
+	// **MATERIALIZED_VIEW**, **STREAMING_TABLE**, **FOREIGN_TABLE**,
+	// **SCHEMA**, **VOLUME**, **MODEL**, **FUNCTION**, **FEATURE_SPEC**, or
+	// **NOTEBOOK_FILE**. Defaults to **TABLE** when omitted.
 	DataObjectType SharedDataObjectDataObjectType `json:"data_object_type,omitempty"`
-	// Whether to enable or disable sharing of data history. If not specified,
-	// the default is **DISABLED**.
+	// Whether to share the table's history, which lets recipients run time
+	// travel queries and streaming reads against it. When a **TABLE** is added
+	// without this field or `cdf_enabled`, history sharing is **ENABLED** by
+	// default; otherwise the default is **DISABLED**.
 	HistoryDataSharingStatus SharedDataObjectHistoryDataSharingStatus `json:"history_data_sharing_status,omitempty"`
 	// A fully qualified name that uniquely identifies a data object. For
 	// example, a table's fully qualified name is in the format of
-	// `<catalog>.<schema>.<table>`,
+	// `<catalog>.<schema>.<table>`, a schema's is `<catalog>.<schema>`, a
+	// volume's, model's, or function's is `<catalog>.<schema>.<object_name>`,
+	// and a notebook file's is its workspace path.
 	Name string `json:"name"`
-	// Array of partitions for the shared data.
+	// Array of partitions for the shared data. Only rows that belong to at
+	// least one of the listed partitions are shared. Only applies to tables.
 	Partitions []Partition `json:"partitions,omitempty"`
 	// A user-provided alias name for table-like data objects within the share.
 	//
@@ -1615,7 +1637,10 @@ type SharedDataObject struct {
 	//
 	// NOTE: The start_version should be <= the `current` version of the object.
 	StartVersion int64 `json:"start_version,omitempty"`
-	// One of: **ACTIVE**, **PERMISSION_DENIED**.
+	// Sharing status of the data object. **ACTIVE** means the object is being
+	// shared with recipients without issues; **PERMISSION_DENIED** means the
+	// share owner has lost access to the object, so it is not being shared with
+	// recipients.
 	Status SharedDataObjectStatus `json:"status,omitempty"`
 	// A user-provided alias name for non-table data objects within the share.
 	//
@@ -1804,10 +1829,11 @@ func (f *SharedDataObjectStatus) Type() string {
 }
 
 type SharedDataObjectUpdate struct {
-	// One of: **ADD**, **REMOVE**, **UPDATE**.
+	// One of: **ADD**, **REMOVE**, **UPDATE**. **ADD** adds the data object to
+	// the share, **REMOVE** removes it, and **UPDATE** changes the properties
+	// of a data object that is already in the share.
 	Action SharedDataObjectUpdateAction `json:"action,omitempty"`
-	// The data object that is being added, removed, or updated. The maximum
-	// number update data objects allowed is a 100.
+	// The data object that is being added, removed, or updated.
 	DataObject *SharedDataObject `json:"data_object,omitempty"`
 }
 
@@ -2052,9 +2078,12 @@ type UpdateShare struct {
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
-	// Storage root URL for the share.
+	// Cloud storage path, within an external location, under which the share
+	// stores the notebook files added to it. When unset, notebook files are
+	// stored under the metastore root storage location.
 	StorageRoot string `json:"storage_root,omitempty"`
-	// Array of shared data object updates.
+	// Array of shared data object updates. The server limits how many updates a
+	// single request can contain.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

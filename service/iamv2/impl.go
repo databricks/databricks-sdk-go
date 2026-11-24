@@ -300,8 +300,14 @@ func (a *accountIamV2Impl) GetWorkspaceAssignmentDetail(ctx context.Context, req
 }
 
 // Lists the direct members of a group, sorted by display name, with where each
-// membership comes from. Members in your identity provider who haven't been
-// added to Databricks aren't included.
+// membership comes from. Results combine memberships added in Databricks (in
+// the UI, through the API, or through SCIM provisioning) with, if automatic
+// identity management is on and the group has an `external_id`, memberships
+// from your identity provider (IdP). Only members in your Databricks account
+// are returned: an IdP member of the group appears only if that user, service
+// principal, or group has been added to Databricks. Nested groups aren't
+// expanded. To get the full membership, list the direct members of each member
+// group.
 func (a *accountIamV2Impl) ListDirectGroupMembers(ctx context.Context, request ListDirectGroupMembersRequest) listing.Iterator[DirectGroupMember] {
 
 	getNextPage := func(ctx context.Context, req ListDirectGroupMembersRequest) (*ListDirectGroupMembersResponse, error) {
@@ -327,8 +333,14 @@ func (a *accountIamV2Impl) ListDirectGroupMembers(ctx context.Context, request L
 }
 
 // Lists the direct members of a group, sorted by display name, with where each
-// membership comes from. Members in your identity provider who haven't been
-// added to Databricks aren't included.
+// membership comes from. Results combine memberships added in Databricks (in
+// the UI, through the API, or through SCIM provisioning) with, if automatic
+// identity management is on and the group has an `external_id`, memberships
+// from your identity provider (IdP). Only members in your Databricks account
+// are returned: an IdP member of the group appears only if that user, service
+// principal, or group has been added to Databricks. Nested groups aren't
+// expanded. To get the full membership, list the direct members of each member
+// group.
 func (a *accountIamV2Impl) ListDirectGroupMembersAll(ctx context.Context, request ListDirectGroupMembersRequest) ([]DirectGroupMember, error) {
 	iterator := a.ListDirectGroupMembers(ctx, request)
 	return listing.ToSlice[DirectGroupMember](ctx, iterator)
@@ -1095,8 +1107,13 @@ func (a *workspaceIamV2Impl) GetWorkspaceIdentityDetail(ctx context.Context, req
 
 // Lists the direct members of a group in the account that contains this
 // workspace, sorted by display name, with where each membership comes from.
-// Members in your identity provider who haven't been added to Databricks aren't
-// included.
+// Results combine memberships added in Databricks (in the UI, through the API,
+// or through SCIM provisioning) with, if automatic identity management is on
+// and the group has an `external_id`, memberships from your identity provider
+// (IdP). Only members in your Databricks account are returned: an IdP member of
+// the group appears only if that user, service principal, or group has been
+// added to Databricks. Nested groups aren't expanded. To get the full
+// membership, list the direct members of each member group.
 func (a *workspaceIamV2Impl) ListDirectGroupMembersProxy(ctx context.Context, request ListDirectGroupMembersProxyRequest) listing.Iterator[DirectGroupMember] {
 
 	getNextPage := func(ctx context.Context, req ListDirectGroupMembersProxyRequest) (*ListDirectGroupMembersResponse, error) {
@@ -1123,8 +1140,13 @@ func (a *workspaceIamV2Impl) ListDirectGroupMembersProxy(ctx context.Context, re
 
 // Lists the direct members of a group in the account that contains this
 // workspace, sorted by display name, with where each membership comes from.
-// Members in your identity provider who haven't been added to Databricks aren't
-// included.
+// Results combine memberships added in Databricks (in the UI, through the API,
+// or through SCIM provisioning) with, if automatic identity management is on
+// and the group has an `external_id`, memberships from your identity provider
+// (IdP). Only members in your Databricks account are returned: an IdP member of
+// the group appears only if that user, service principal, or group has been
+// added to Databricks. Nested groups aren't expanded. To get the full
+// membership, list the direct members of each member group.
 func (a *workspaceIamV2Impl) ListDirectGroupMembersProxyAll(ctx context.Context, request ListDirectGroupMembersProxyRequest) ([]DirectGroupMember, error) {
 	iterator := a.ListDirectGroupMembersProxy(ctx, request)
 	return listing.ToSlice[DirectGroupMember](ctx, iterator)

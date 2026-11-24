@@ -184,27 +184,36 @@ func (s AppAccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A deployment of an app's source code, taken from a workspace path or a Git
+// reference. When a deployment succeeds, it becomes the app's active
+// deployment. See
+// https://docs.databricks.com/aws/en/dev-tools/databricks-apps/deploy.
 type AppDeployment struct {
 	// The command with which to run the app. This will override the command
 	// specified in the app.yaml file.
 	Command []string `json:"command,omitempty"`
-	// The creation time of the deployment. Formatted timestamp in ISO 6801.
+	// The creation time of the deployment. Formatted timestamp in ISO 8601.
 	CreateTime string `json:"create_time,omitempty"`
-	// The email of the user creates the deployment.
+	// The email of the user that created the deployment.
 	Creator string `json:"creator,omitempty"`
 	// The deployment artifacts for an app.
 	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
-	// The unique id of the deployment.
+	// The unique ID of the deployment. Databricks generates the ID when the
+	// deployment is created.
 	DeploymentId string `json:"deployment_id,omitempty"`
 	// The environment variables to set in the app runtime environment. This
 	// will override the environment variables specified in the app.yaml file.
+	// Responses return only the variable names, not their values.
 	EnvVars []EnvVar `json:"env_vars,omitempty"`
-	// Git repository to use as the source for the app deployment.
+	// Git repository to use as the source for the app deployment. The
+	// repository itself is configured on the app, so set only the branch, tag
+	// or commit here, and optionally `source_code_path`.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// Deploy-time health check for the app. Verifies the app is responding to
 	// HTTP requests before considering the deployment successful.
 	HealthCheck *AppHealthCheck `json:"health_check,omitempty"`
-	// The mode of which the deployment will manage the source code.
+	// The mode in which the deployment manages the source code. The mode
+	// defaults to `SNAPSHOT`, which is the only supported mode.
 	Mode AppDeploymentMode `json:"mode,omitempty"`
 	// Whether `scan_omitted_findings_count` is a lower bound rather than an
 	// exact count, because the scanner itself stopped counting.
@@ -224,11 +233,14 @@ type AppDeployment struct {
 	// deployed app. The former refers to the original source code location of
 	// the app in the workspace during deployment creation, whereas the latter
 	// provides a system generated stable snapshotted source code path used by
-	// the deployment.
+	// the deployment. Set either `source_code_path` or `git_source`, not both.
+	// If neither is set, the deployment reuses the source of the app's active
+	// deployment.
 	SourceCodePath string `json:"source_code_path,omitempty"`
-	// Status and status message of the deployment
+	// The current state of the deployment and a message that describes its
+	// progress or failure.
 	Status *AppDeploymentStatus `json:"status,omitempty"`
-	// The update time of the deployment. Formatted timestamp in ISO 6801.
+	// The update time of the deployment. Formatted timestamp in ISO 8601.
 	UpdateTime string `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -427,7 +439,8 @@ func (f *AppDeploymentState) Type() string {
 type AppDeploymentStatus struct {
 	// Message corresponding with the deployment state.
 	Message string `json:"message,omitempty"`
-	// State of the deployment.
+	// State of the deployment. A deployment starts in `IN_PROGRESS` and ends in
+	// `SUCCEEDED`, `FAILED` or `CANCELLED`.
 	State AppDeploymentState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2543,10 +2556,11 @@ func (s ListAppDeploymentScanFindingsResponse) MarshalJSON() ([]byte, error) {
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
-	// Upper bound for items returned.
+	// Upper bound for items returned. The default is 100 and the maximum is
+	// 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of apps. Requests first page if
-	// absent.
+	// Pagination token to go to the next page of deployments. Requests first
+	// page if absent.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2561,9 +2575,9 @@ func (s ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListAppDeploymentsResponse struct {
-	// Deployment history of the app.
+	// Deployment history of the app, most recent deployment first.
 	AppDeployments []AppDeployment `json:"app_deployments,omitempty"`
-	// Pagination token to request the next page of apps.
+	// Pagination token to request the next page of deployments.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2832,13 +2846,17 @@ func (f *ScanFindingStatus) Type() string {
 	return "ScanFindingStatus"
 }
 
+// An app space groups Databricks apps and shares configuration across them.
+// Resources, user API scopes and the usage policy configured on a space apply
+// to every app in the space. See
+// https://docs.databricks.com/aws/en/dev-tools/databricks-apps/app-spaces.
 type Space struct {
 	// The group whose permissions users assume via Role Authorization for apps
 	// in this space. When set, user tokens assume the role of this group
 	// instead of doing regular obo token downscoping. Set only at space
 	// creation.
 	AssumeGroupId string `json:"assume_group_id,omitempty"`
-	// The creation time of the app space. Formatted timestamp in ISO 6801.
+	// The creation time of the app space. Formatted timestamp in ISO 8601.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The email of the user that created the app space.
 	Creator string `json:"creator,omitempty"`
@@ -2852,26 +2870,28 @@ type Space struct {
 	Id string `json:"id,omitempty"`
 	// The name of the app space. The name must contain only lowercase
 	// alphanumeric characters and hyphens. It must be unique within the
-	// workspace.
+	// workspace. It can't start or end with a hyphen, and it can't be changed
+	// after the space is created.
 	Name string `json:"name"`
 	// Resources for the app space. Resources configured at the space level are
 	// available to all apps in the space.
 	Resources []AppResource `json:"resources,omitempty"`
-	// The service principal client ID for the app space.
+	// OAuth client ID of the app space's service principal.
 	ServicePrincipalClientId string `json:"service_principal_client_id,omitempty"`
-	// The service principal ID for the app space.
+	// Numeric ID of the app space's service principal.
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
-	// The service principal name for the app space.
+	// Display name of the app space's service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The status of the app space.
 	Status *SpaceStatus `json:"status,omitempty"`
-	// The update time of the app space. Formatted timestamp in ISO 6801.
+	// The update time of the app space. Formatted timestamp in ISO 8601.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// The email of the user that last updated the app space.
 	Updater string `json:"updater,omitempty"`
 	// The usage policy ID for managing cost at the space level.
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
-	// OAuth scopes for apps in the space.
+	// API scopes that apps in the space can request for user authorization. See
+	// https://docs.databricks.com/aws/en/dev-tools/databricks-apps/auth.
 	UserApiScopes []string `json:"user_api_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3133,21 +3153,14 @@ func (s *UpdateCustomTemplateRequest) UnmarshalJSON(b []byte) error {
 type UpdateSpaceRequest struct {
 	// The name of the app space. The name must contain only lowercase
 	// alphanumeric characters and hyphens. It must be unique within the
-	// workspace.
+	// workspace. It can't start or end with a hyphen, and it can't be changed
+	// after the space is created.
 	Name string `json:"-" url:"-"`
 
 	Space Space `json:"space"`
-	// The field mask must be a single string, with multiple fields separated by
-	// commas (no spaces). The field path is relative to the resource object,
-	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
-	// Specification of elements in sequence or map fields is not allowed, as
-	// only the entire collection field can be specified. Field names must
-	// exactly match the resource field names.
-	//
-	// A field mask of `*` indicates full replacement. It’s recommended to
-	// always explicitly list the fields being updated and avoid using `*`
-	// wildcards, as it can lead to unintended results if the API changes in the
-	// future.
+	// Comma-separated names of the `space` fields to update, such as
+	// `description` or `resources`. A field named in the mask but absent from
+	// `space` is cleared.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

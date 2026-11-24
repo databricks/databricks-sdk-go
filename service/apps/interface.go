@@ -33,7 +33,11 @@ type AppsService interface {
 	// Deletes an app space.
 	DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (*Operation, error)
 
-	// Creates an app deployment for the app with the supplied name.
+	// Creates an app deployment for the app with the supplied name. The call
+	// returns while the deployment is still `IN_PROGRESS`; poll the deployment
+	// until it reaches a terminal state. The request fails with
+	// RESOURCE_CONFLICT if another deployment of the same app is still pending
+	// and has not timed out.
 	Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error)
 
 	// Retrieves information for the app with the supplied name.
@@ -68,7 +72,8 @@ type AppsService interface {
 	// Lists the security scan findings for an app deployment.
 	ListAppDeploymentScanFindings(ctx context.Context, request ListAppDeploymentScanFindingsRequest) (*ListAppDeploymentScanFindingsResponse, error)
 
-	// Lists all app deployments for the app with the supplied name.
+	// Lists all app deployments for the app with the supplied name. The history
+	// holds only the app's most recent deployments.
 	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
 
 	// Lists all app spaces in the workspace.

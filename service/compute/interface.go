@@ -309,7 +309,8 @@ type CommandExecutionService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GlobalInitScriptsService interface {
 
-	// Creates a new global init script in this workspace.
+	// Creates a new global init script in this workspace. The number of global
+	// init scripts per workspace is limited.
 	Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error)
 
 	// Deletes a global init script.
@@ -358,7 +359,12 @@ type InstancePoolsService interface {
 	// terminated asynchronously.
 	Delete(ctx context.Context, request DeleteInstancePool) error
 
-	// Modifies the configuration of an existing instance pool.
+	// Modifies the configuration of an existing instance pool. Settings that
+	// are fixed at creation, such as the node type, cannot be changed and the
+	// request fails if it attempts to change one. Omitted `min_idle_instances`,
+	// `max_capacity` and `idle_instance_autotermination_minutes` are reset to
+	// their defaults; omitted `custom_tags` keep their current value. On Azure,
+	// an omitted `azure_attributes.capacity_reservation_group` is removed.
 	Edit(ctx context.Context, request EditInstancePool) error
 
 	// Retrieve the information for an instance pool based on its identifier.
@@ -550,6 +556,16 @@ type PolicyFamiliesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServerlessComputeServiceService interface {
 
+	// Creates a custom compute policy in the workspace.
+	CreateComputePolicy(ctx context.Context, request CreateComputePolicyRequest) (*ComputePolicy, error)
+
+	// Deletes a custom compute policy in the workspace. Default
+	// (system-provisioned) policies cannot be deleted.
+	DeleteComputePolicy(ctx context.Context, request DeleteComputePolicyRequest) error
+
+	// Retrieves a compute policy by its ID.
+	GetComputePolicy(ctx context.Context, request GetComputePolicyRequest) (*ComputePolicy, error)
+
 	// Lists Interactive serverless computes that the caller can use or manage.
 	// Results are returned in an unspecified order.
 	List(ctx context.Context, request ListServerlessComputesRequest) (*ListServerlessComputesResponse, error)
@@ -558,4 +574,9 @@ type ServerlessComputeServiceService interface {
 	// unspecified order; callers should sort client-side if a specific order is
 	// needed.
 	ListComputePolicies(ctx context.Context, request ListComputePoliciesRequest) (*ListComputePoliciesResponse, error)
+
+	// Updates a custom compute policy in the workspace. The display_name and
+	// allowed_compute_products are mutable; use update_mask to control which
+	// fields change. Default (system-provisioned) policies cannot be updated.
+	UpdateComputePolicy(ctx context.Context, request UpdateComputePolicyRequest) (*ComputePolicy, error)
 }

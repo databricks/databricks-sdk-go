@@ -55,12 +55,12 @@ type GenieAgent struct {
 	// Time when the Genie Agent was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The definition of the Genie Agent: its sample questions, data sources,
-	// instructions, and benchmarks. Must set at least one field. Returned on
-	// get and on list with `GENIE_AGENT_VIEW_FULL`. Create and update return a
-	// submitted definition unchanged; one the service would store differently,
-	// or with a column config the workspace can't keep (unknown column, or a
-	// display name while those are disabled), is rejected with
-	// INVALID_PARAMETER_VALUE.
+	// instructions, and benchmarks. Create requires at least one table, volume,
+	// MCP connection, or sub-agent in `data_sources`. Returned on get and on
+	// list with `GENIE_AGENT_VIEW_FULL`. Create and update return a submitted
+	// definition unchanged; one the service would store differently, or with a
+	// column config the workspace can't keep (unknown column, or a display name
+	// while those are disabled), is rejected with INVALID_PARAMETER_VALUE.
 	Definition GenieAgentDefinition `json:"definition"`
 	// Description of the Genie Agent.
 	//
@@ -744,8 +744,12 @@ type UpdateGenieAgentRequest struct {
 	// it is unset there: an unset `description` is cleared; an unset
 	// `display_name`, `warehouse_id`, or `definition` is rejected with
 	// INVALID_PARAMETER_VALUE; an unset `parent_path` is cleared without moving
-	// the Genie Agent. `definition` is replaced as a whole; paths within it are
-	// not supported.
+	// the Genie Agent. `definition` is replaced as a whole.
+	//
+	// The one supported path inside `definition` is
+	// `definition.data_sources.sub_agents`, and only alongside `definition`.
+	// Naming it makes the sub-agent list exact, so an empty list detaches every
+	// sub-agent. Without it, including with `*`, an empty list keeps them.
 	//
 	// The special value `*` replaces the whole Genie Agent, as if every
 	// updatable field were named. It must be the only path in the mask. Prefer
