@@ -5,6 +5,7 @@ package compute
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -2169,6 +2170,15 @@ func (s CreateClusterResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateComputePolicyRequest struct {
+	// The compute policy to create.
+	ComputePolicy ComputePolicy `json:"compute_policy"`
+}
+
+func (s *CreateComputePolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type CreateContext struct {
 	// ID of the cluster to create the execution context on. The cluster must be
 	// running.
@@ -2196,18 +2206,22 @@ type CreateInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to `default_tags`. Notes:
+	// addition to `default_tags`, and clusters backed by the pool inherit them.
+	// When editing a pool, omitting this field or passing an empty map keeps
+	// the existing tags, and a non-empty map replaces them. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
-	// containers.
+	// containers. The disk specification cannot be changed after the pool is
+	// created.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool will
-	// dynamically acquire additional disk space when its Spark workers are
+	// Autoscaling Local Storage: when enabled, the instances in this pool will
+	// dynamically acquire additional disk space when their Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
-	// permissions to function correctly - refer to the User Guide for more
-	// details.
+	// permissions to function correctly; see
+	// https://docs.databricks.com/aws/en/compute/pools#autoscaling-local-storage
+	// for details. This setting cannot be changed after the pool is created.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
@@ -2225,27 +2239,35 @@ type CreateInstancePool struct {
 	InstancePoolName string `json:"instance_pool_name"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
-	// further instance provisioning will fail during upsize requests.
+	// further instance provisioning will fail during upsize requests. If unset,
+	// the pool size is not capped.
 	MaxCapacity int `json:"max_capacity,omitempty"`
-	// Minimum number of idle instances to keep in the instance pool
+	// Minimum number of idle instances to keep in the instance pool. These
+	// instances do not terminate regardless of
+	// `idle_instance_autotermination_minutes`, and the pool provisions
+	// replacements when clusters consume them. Defaults to 0.
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// Flexible node type configuration for the pool.
 	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads. A
-	// list of available node types can be retrieved by using the
-	// [clusters/listNodeTypes] API call. The node type cannot be changed after
-	// the pool is created.
+	// each of the Spark nodes in clusters that use this pool. For example, the
+	// Spark nodes can be provisioned and optimized for memory or compute
+	// intensive workloads. A list of available node types can be retrieved by
+	// using the [clusters/listNodeTypes] API call. The node type cannot be
+	// changed after the pool is created.
 	//
 	// [clusters/listNodeTypes]: https://docs.databricks.com/api/workspace/clusters/listnodetypes
 	NodeTypeId string `json:"node_type_id"`
-	// Custom Docker Image BYOC
+	// A list containing at most one custom Docker image to preload on the
+	// pool's idle instances. Clusters that use Databricks Container Services
+	// with the preloaded image start faster. The list cannot be changed after
+	// the pool is created.
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
-	// [clusters/sparkVersions] API call.
+	// [clusters/sparkVersions] API call. The list cannot be changed after the
+	// pool is created.
 	//
 	// [clusters/sparkVersions]: https://docs.databricks.com/api/workspace/clusters/sparkversions
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
@@ -2573,6 +2595,15 @@ type DeleteCluster struct {
 }
 
 func (s *DeleteCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+type DeleteComputePolicyRequest struct {
+	// The ID of the compute policy to delete.
+	ComputePolicyId string `json:"-" url:"-"`
+}
+
+func (s *DeleteComputePolicyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -3104,7 +3135,9 @@ func (s EditCluster) MarshalJSON() ([]byte, error) {
 type EditInstancePool struct {
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to `default_tags`. Notes:
+	// addition to `default_tags`, and clusters backed by the pool inherit them.
+	// When editing a pool, omitting this field or passing an empty map keeps
+	// the existing tags, and a non-empty map replaces them. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
@@ -3116,23 +3149,27 @@ type EditInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-	// Instance pool ID
+	// Identifier of the instance pool to edit.
 	InstancePoolId string `json:"instance_pool_id"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	InstancePoolName string `json:"instance_pool_name"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
-	// further instance provisioning will fail during upsize requests.
+	// further instance provisioning will fail during upsize requests. If unset,
+	// the pool size is not capped.
 	MaxCapacity int `json:"max_capacity,omitempty"`
-	// Minimum number of idle instances to keep in the instance pool
+	// Minimum number of idle instances to keep in the instance pool. These
+	// instances do not terminate regardless of
+	// `idle_instance_autotermination_minutes`, and the pool provisions
+	// replacements when clusters consume them. Defaults to 0.
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads. A
-	// list of available node types can be retrieved by using the
-	// [clusters/listNodeTypes] API call. The node type cannot be changed after
-	// the pool is created.
+	// each of the Spark nodes in clusters that use this pool. For example, the
+	// Spark nodes can be provisioned and optimized for memory or compute
+	// intensive workloads. A list of available node types can be retrieved by
+	// using the [clusters/listNodeTypes] API call. The node type cannot be
+	// changed after the pool is created.
 	//
 	// [clusters/listNodeTypes]: https://docs.databricks.com/api/workspace/clusters/listnodetypes
 	NodeTypeId string `json:"node_type_id"`
@@ -4077,6 +4114,15 @@ func (s *GetClusterRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+type GetComputePolicyRequest struct {
+	// The ID of the compute policy to retrieve.
+	ComputePolicyId string `json:"-" url:"-"`
+}
+
+func (s *GetComputePolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 type GetEvents struct {
 	// The ID of the cluster to retrieve events about.
 	ClusterId string `json:"cluster_id"`
@@ -4212,12 +4258,14 @@ type GetInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to `default_tags`. Notes:
+	// addition to `default_tags`, and clusters backed by the pool inherit them.
+	// When editing a pool, omitting this field or passing an empty map keeps
+	// the existing tags, and a non-empty map replaces them. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
-	// including:
+	// Tags that Databricks adds to every pool resource in addition to any
+	// `custom_tags`:
 	//
 	// - Vendor: Databricks
 	//
@@ -4226,13 +4274,15 @@ type GetInstancePool struct {
 	// - DatabricksInstancePoolId: <id_of_pool>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
-	// containers.
+	// containers. The disk specification cannot be changed after the pool is
+	// created.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool will
-	// dynamically acquire additional disk space when its Spark workers are
+	// Autoscaling Local Storage: when enabled, the instances in this pool will
+	// dynamically acquire additional disk space when their Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
-	// permissions to function correctly - refer to the User Guide for more
-	// details.
+	// permissions to function correctly; see
+	// https://docs.databricks.com/aws/en/compute/pools#autoscaling-local-storage
+	// for details. This setting cannot be changed after the pool is created.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
@@ -4252,27 +4302,35 @@ type GetInstancePool struct {
 	InstancePoolName string `json:"instance_pool_name,omitempty"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
-	// further instance provisioning will fail during upsize requests.
+	// further instance provisioning will fail during upsize requests. If unset,
+	// the pool size is not capped.
 	MaxCapacity int `json:"max_capacity,omitempty"`
-	// Minimum number of idle instances to keep in the instance pool
+	// Minimum number of idle instances to keep in the instance pool. These
+	// instances do not terminate regardless of
+	// `idle_instance_autotermination_minutes`, and the pool provisions
+	// replacements when clusters consume them. Defaults to 0.
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// Flexible node type configuration for the pool.
 	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads. A
-	// list of available node types can be retrieved by using the
-	// [clusters/listNodeTypes] API call. The node type cannot be changed after
-	// the pool is created.
+	// each of the Spark nodes in clusters that use this pool. For example, the
+	// Spark nodes can be provisioned and optimized for memory or compute
+	// intensive workloads. A list of available node types can be retrieved by
+	// using the [clusters/listNodeTypes] API call. The node type cannot be
+	// changed after the pool is created.
 	//
 	// [clusters/listNodeTypes]: https://docs.databricks.com/api/workspace/clusters/listnodetypes
 	NodeTypeId string `json:"node_type_id,omitempty"`
-	// Custom Docker Image BYOC
+	// A list containing at most one custom Docker image to preload on the
+	// pool's idle instances. Clusters that use Databricks Container Services
+	// with the preloaded image start faster. The list cannot be changed after
+	// the pool is created.
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
-	// [clusters/sparkVersions] API call.
+	// [clusters/sparkVersions] API call. The list cannot be changed after the
+	// pool is created.
 	//
 	// [clusters/sparkVersions]: https://docs.databricks.com/api/workspace/clusters/sparkversions
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
@@ -4366,7 +4424,7 @@ func (s *GetSparkVersionsResponse) UnmarshalJSON(b []byte) error {
 type GlobalInitScriptCreateRequest struct {
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	Enabled bool `json:"enabled,omitempty"`
-	// The name of the script
+	// The name of the script. The name must be unique within the workspace.
 	Name string `json:"name"`
 	// The position of a global init script, where 0 represents the first script
 	// to run, 1 is the second script to run, in ascending order.
@@ -4380,7 +4438,8 @@ type GlobalInitScriptCreateRequest struct {
 	// value, your request succeeds, but the original script at that position
 	// and all later scripts have their positions incremented by 1.
 	Position int `json:"position,omitempty"`
-	// The Base64-encoded content of the script.
+	// The Base64-encoded content of the script. The decoded content must not be
+	// empty and cannot exceed 64 KB.
 	Script string `json:"script"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4394,6 +4453,8 @@ func (s GlobalInitScriptCreateRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A global init script in the workspace. Only workspace admins can view and
+// manage global init scripts.
 type GlobalInitScriptDetails struct {
 	// Time when the script was created, represented as a Unix timestamp in
 	// milliseconds.
@@ -4402,7 +4463,7 @@ type GlobalInitScriptDetails struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	Enabled bool `json:"enabled,omitempty"`
-	// The name of the script
+	// The name of the script. The name must be unique within the workspace.
 	Name string `json:"name,omitempty"`
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order.
@@ -4412,7 +4473,7 @@ type GlobalInitScriptDetails struct {
 	// Time when the script was updated, represented as a Unix timestamp in
 	// milliseconds.
 	UpdatedAt int `json:"updated_at,omitempty"`
-	// The username of the user who last updated the script
+	// The username of the user who last updated the script.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4426,6 +4487,8 @@ func (s GlobalInitScriptDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A global init script in the workspace. Only workspace admins can view and
+// manage global init scripts.
 type GlobalInitScriptDetailsWithContent struct {
 	// Time when the script was created, represented as a Unix timestamp in
 	// milliseconds.
@@ -4434,7 +4497,7 @@ type GlobalInitScriptDetailsWithContent struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	Enabled bool `json:"enabled,omitempty"`
-	// The name of the script
+	// The name of the script. The name must be unique within the workspace.
 	Name string `json:"name,omitempty"`
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order.
@@ -4446,7 +4509,7 @@ type GlobalInitScriptDetailsWithContent struct {
 	// Time when the script was updated, represented as a Unix timestamp in
 	// milliseconds.
 	UpdatedAt int `json:"updated_at,omitempty"`
-	// The username of the user who last updated the script
+	// The username of the user who last updated the script.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4463,7 +4526,7 @@ func (s GlobalInitScriptDetailsWithContent) MarshalJSON() ([]byte, error) {
 type GlobalInitScriptUpdateRequest struct {
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	Enabled bool `json:"enabled,omitempty"`
-	// The name of the script
+	// The name of the script. The name must be unique within the workspace.
 	Name string `json:"name"`
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order. To move the script to
@@ -4478,7 +4541,8 @@ type GlobalInitScriptUpdateRequest struct {
 	// request succeeds, but the original script at that position and all later
 	// scripts have their positions incremented by 1.
 	Position int `json:"position,omitempty"`
-	// The Base64-encoded content of the script.
+	// The Base64-encoded content of the script. The decoded content must not be
+	// empty and cannot exceed 64 KB.
 	Script string `json:"script"`
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
@@ -4762,12 +4826,14 @@ type InstancePoolAndStats struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to `default_tags`. Notes:
+	// addition to `default_tags`, and clusters backed by the pool inherit them.
+	// When editing a pool, omitting this field or passing an empty map keeps
+	// the existing tags, and a non-empty map replaces them. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
-	// including:
+	// Tags that Databricks adds to every pool resource in addition to any
+	// `custom_tags`:
 	//
 	// - Vendor: Databricks
 	//
@@ -4776,13 +4842,15 @@ type InstancePoolAndStats struct {
 	// - DatabricksInstancePoolId: <id_of_pool>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
-	// containers.
+	// containers. The disk specification cannot be changed after the pool is
+	// created.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool will
-	// dynamically acquire additional disk space when its Spark workers are
+	// Autoscaling Local Storage: when enabled, the instances in this pool will
+	// dynamically acquire additional disk space when their Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
-	// permissions to function correctly - refer to the User Guide for more
-	// details.
+	// permissions to function correctly; see
+	// https://docs.databricks.com/aws/en/compute/pools#autoscaling-local-storage
+	// for details. This setting cannot be changed after the pool is created.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
@@ -4802,27 +4870,35 @@ type InstancePoolAndStats struct {
 	InstancePoolName string `json:"instance_pool_name,omitempty"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
-	// further instance provisioning will fail during upsize requests.
+	// further instance provisioning will fail during upsize requests. If unset,
+	// the pool size is not capped.
 	MaxCapacity int `json:"max_capacity,omitempty"`
-	// Minimum number of idle instances to keep in the instance pool
+	// Minimum number of idle instances to keep in the instance pool. These
+	// instances do not terminate regardless of
+	// `idle_instance_autotermination_minutes`, and the pool provisions
+	// replacements when clusters consume them. Defaults to 0.
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// Flexible node type configuration for the pool.
 	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads. A
-	// list of available node types can be retrieved by using the
-	// [clusters/listNodeTypes] API call. The node type cannot be changed after
-	// the pool is created.
+	// each of the Spark nodes in clusters that use this pool. For example, the
+	// Spark nodes can be provisioned and optimized for memory or compute
+	// intensive workloads. A list of available node types can be retrieved by
+	// using the [clusters/listNodeTypes] API call. The node type cannot be
+	// changed after the pool is created.
 	//
 	// [clusters/listNodeTypes]: https://docs.databricks.com/api/workspace/clusters/listnodetypes
 	NodeTypeId string `json:"node_type_id,omitempty"`
-	// Custom Docker Image BYOC
+	// A list containing at most one custom Docker image to preload on the
+	// pool's idle instances. Clusters that use Databricks Container Services
+	// with the preloaded image start faster. The list cannot be changed after
+	// the pool is created.
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
-	// [clusters/sparkVersions] API call.
+	// [clusters/sparkVersions] API call. The list cannot be changed after the
+	// pool is created.
 	//
 	// [clusters/sparkVersions]: https://docs.databricks.com/api/workspace/clusters/sparkversions
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
@@ -4892,7 +4968,7 @@ type InstancePoolAwsAttributes struct {
 	// availability zone must be in the same region as the Databricks
 	// deployment. For example, "us-west-2a" is not a valid zone id if the
 	// Databricks deployment resides in the "us-east-1" region. This is an
-	// optional field at cluster creation, and if not specified, a default zone
+	// optional field at pool creation, and if not specified, a default zone
 	// will be used. The list of available zones as well as the default value
 	// can be found by using the `List Zones` method.
 	//
@@ -5202,11 +5278,11 @@ func (s *InstancePoolPermissionsRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// The state of a Cluster. The current allowable state transitions are as
+// The state of an instance pool. The current allowable state transitions are as
 // follows:
 //
-// - “ACTIVE“ -> “STOPPED“ - “ACTIVE“ -> “DELETED“ - “STOPPED“ ->
-// “ACTIVE“ - “STOPPED“ -> “DELETED“
+// - `ACTIVE` -> `STOPPED` - `ACTIVE` -> `DELETED` - `STOPPED` -> `ACTIVE` -
+// `STOPPED` -> `DELETED`
 type InstancePoolState string
 
 const InstancePoolStateActive InstancePoolState = `ACTIVE`
@@ -5269,10 +5345,10 @@ func (s InstancePoolStats) MarshalJSON() ([]byte, error) {
 }
 
 type InstancePoolStatus struct {
-	// List of error messages for the failed pending instances. The
-	// pending_instance_errors follows FIFO with maximum length of the min_idle
-	// of the pool. The pending_instance_errors is emptied once the number of
-	// exiting available instances reaches the min_idle of the pool.
+	// List of errors for pending instances that failed to launch, most recent
+	// first. The list holds at most `min_idle_instances` entries, and never
+	// more than 20, and is emptied once the pool has at least
+	// `min_idle_instances` available instances and no pending ones.
 	PendingInstanceErrors []PendingInstanceError `json:"pending_instance_errors,omitempty"`
 }
 
@@ -5838,6 +5914,8 @@ func (s *ListGlobalInitScriptsResponse) UnmarshalJSON(b []byte) error {
 }
 
 type ListInstancePools struct {
+	// Instance pools in the workspace, each with its usage statistics and
+	// status.
 	InstancePools []InstancePoolAndStats `json:"instance_pools,omitempty"`
 }
 
@@ -6137,8 +6215,9 @@ type NodeType struct {
 	// Whether the node type is deprecated. Non-deprecated node types offer
 	// greater performance.
 	IsDeprecated bool `json:"is_deprecated,omitempty"`
-	// AWS specific, whether this instance supports encryption in transit, used
-	// for hipaa and pci workloads.
+	// Whether this node type supports encryption in transit, which matters for
+	// workloads that need it, such as hipaa and pci. Always true on GCP; on AWS
+	// and Azure it depends on the node type.
 	IsEncryptedInTransit bool `json:"is_encrypted_in_transit,omitempty"`
 	// Whether this is an Arm-based instance.
 	IsGraviton bool `json:"is_graviton,omitempty"`
@@ -6272,10 +6351,13 @@ func (f *PendingEnforcementEnforcementStatus) Type() string {
 	return "PendingEnforcementEnforcementStatus"
 }
 
-// Error message of a failed pending instances
+// Error for an instance that failed to launch while the pool was provisioning
+// it.
 type PendingInstanceError struct {
+	// Identifier of the pending instance that failed to launch.
 	InstanceId string `json:"instance_id,omitempty"`
-
+	// Error message describing why the instance failed to launch. The message
+	// may be omitted, because not all pool status reads include it.
 	Message string `json:"message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7819,6 +7901,29 @@ func (s *UpdateClusterResource) UnmarshalJSON(b []byte) error {
 
 func (s UpdateClusterResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateComputePolicyRequest struct {
+	// The compute policy to update. `compute_policy.compute_policy_id`
+	// identifies which policy to update; only the fields named in `update_mask`
+	// are applied.
+	ComputePolicy ComputePolicy `json:"compute_policy"`
+	// The unique identifier of the compute policy (UUID). Server-assigned on
+	// create.
+	ComputePolicyId string `json:"-" url:"-"`
+	// Fields to update, relative to `compute_policy`. Must contain at least one
+	// path; the supported paths are `display_name` and
+	// `allowed_compute_products`. Supplied product arms replace their
+	// constraints and omitted products remain unchanged. An empty arm clears
+	// that product's limits; an absent or empty products object is invalid.
+	// Removing a product requires its delete API. Nested masks and wildcards
+	// are unsupported. `display_name` cannot be cleared: if it is in the mask
+	// it must be non-empty.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+}
+
+func (s *UpdateComputePolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
 // A storage location back by UC Volumes.

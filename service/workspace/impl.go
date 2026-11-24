@@ -192,8 +192,10 @@ func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissio
 //
 // Deprecated: This operation does not return a complete list of the repos in
 // the workspace, because repos with the Git CLI enabled are not included in its
-// results. Instead, use the Repos and Workspace APIs to find repos and their
-// associated metadata in the workspace.
+// results. Instead, find Git folders with `GET /api/2.0/workspace/get-status`
+// (for one path) or `GET /api/2.0/workspace/list` (keep objects with
+// `object_type == "REPO"` or `directory_info.is_git_folder == true`), then call
+// `GET /api/2.0/repos/{object_id}` for Git metadata.
 func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.Iterator[RepoInfo] {
 
 	getNextPage := func(ctx context.Context, req ListReposRequest) (*ListReposResponse, error) {
@@ -223,8 +225,10 @@ func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.
 //
 // Deprecated: This operation does not return a complete list of the repos in
 // the workspace, because repos with the Git CLI enabled are not included in its
-// results. Instead, use the Repos and Workspace APIs to find repos and their
-// associated metadata in the workspace.
+// results. Instead, find Git folders with `GET /api/2.0/workspace/get-status`
+// (for one path) or `GET /api/2.0/workspace/list` (keep objects with
+// `object_type == "REPO"` or `directory_info.is_git_folder == true`), then call
+// `GET /api/2.0/repos/{object_id}` for Git metadata.
 func (a *reposImpl) ListAll(ctx context.Context, request ListReposRequest) ([]RepoInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[RepoInfo](ctx, iterator)

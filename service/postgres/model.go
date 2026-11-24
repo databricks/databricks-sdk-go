@@ -3157,6 +3157,8 @@ type ProjectStatus struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The most recent time when any endpoint of this project was active.
 	ComputeLastActiveTime *time.Time `json:"compute_last_active_time,omitempty"`
+	// The compute policy that is applied to the project.
+	ComputePolicyId string `json:"compute_policy_id,omitempty"`
 	// The effective custom tags associated with the project.
 	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
 	// The full resource path of the default branch of the project.

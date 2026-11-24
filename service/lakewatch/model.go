@@ -250,8 +250,9 @@ func (s BuiltinParserVersion) MarshalJSON() ([]byte, error) {
 // becomes its own row, with the element's `message` parsed as the event body.
 type CloudWatchLogsEnvelope struct {
 	// Whether to keep the envelope's `owner`, `logGroup`, and `logStream`
-	// values in the `data.lw_header` field of each unwrapped row. Must be set
-	// explicitly to `true` or `false`.
+	// values in the `data.lw_header` field of each unwrapped row whose message
+	// is a JSON object. A message that is any other JSON value is kept without
+	// the field. Must be set explicitly to `true` or `false`.
 	HeaderRetention bool `json:"header_retention,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1617,6 +1618,10 @@ type Rule struct {
 	// the requester must still be authorized to delegate to it; an editor who
 	// is not must supply a run_as_principal they can delegate to (for example,
 	// their own identity), or clear it, either of which reassigns the rule. An
+	// update that only enables or disables the rule (changes `schedule.enabled`
+	// and nothing else) does not require delegate permission and keeps the
+	// current identity. Enabling the rule still requires the current identity
+	// to have the access the rule needs to run, or the request is rejected. An
 	// update whose mask includes `run_as_principal` but supplies no value
 	// clears it: the rule then runs as the requester, exactly as when it is
 	// omitted on create. Reads return the value as supplied; the identity the
@@ -1627,8 +1632,9 @@ type Rule struct {
 	// rejected. Supports Markdown; analysts and the investigation agent follow
 	// it when triaging this rule's alerts.
 	Runbook string `json:"runbook,omitempty"`
-	// When the rule executes.
-	Schedule RuleSchedule `json:"schedule"`
+	// When the rule executes. Required for scheduled rules. A streaming rule
+	// accepts only `enabled`, and an omitted schedule means enabled.
+	Schedule *RuleSchedule `json:"schedule,omitempty"`
 	// Name of the Unity Catalog schema that contains the rule. Required. Cannot
 	// be changed after creation. Reads return the value as supplied; the
 	// schema's current name is reported in `effective_schema_name`.
@@ -1638,6 +1644,9 @@ type Rule struct {
 	Severity string `json:"severity"`
 	// Read-only lifecycle status.
 	Status *ResourceStatus `json:"status,omitempty"`
+	// Native streaming rule input: one source table filtered by one stateless
+	// row predicate. Permanent field number; must not be renumbered.
+	Streaming *RuleInputStreaming `json:"streaming,omitempty"`
 	// If set, this rule's signals do not open new alerts until the given time.
 	SuppressUntilTime *time.Time `json:"suppress_until_time,omitempty"`
 	// Time-range configuration for scheduled detections. If unset, the
@@ -1857,6 +1866,20 @@ func (s *RuleInputCustomNotebook) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
+// Native V2 streaming input for a detection rule: one Delta table and one
+// stateless row predicate. The complete source row is preserved as event
+// context.
+type RuleInputStreaming struct {
+	// Row predicate that selects matching rows.
+	Predicate StreamingPredicate `json:"predicate"`
+	// Source table whose rows are evaluated.
+	Source StreamingSource `json:"source"`
+}
+
+func (s *RuleInputStreaming) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
 // MITRE ATT&CK mapping for a detection rule.
 type RuleMitreMapping struct {
 	// Human-readable MITRE sub-technique name.
@@ -2067,6 +2090,28 @@ type SlackExportConfig struct {
 }
 
 func (s *SlackExportConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Stateless row predicate for a streaming detection rule.
+type StreamingPredicate struct {
+	// A SQL expression suitable for a WHERE clause, not a SELECT query.
+	// Evaluated per input row; only stateless, row-local expressions are
+	// accepted.
+	Expression string `json:"expression"`
+}
+
+func (s *StreamingPredicate) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// Source Delta table for a streaming detection rule.
+type StreamingSource struct {
+	// Fully-qualified Unity Catalog table in `catalog.schema.table` form.
+	Table string `json:"table"`
+}
+
+func (s *StreamingSource) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 

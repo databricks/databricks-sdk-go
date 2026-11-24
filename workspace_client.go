@@ -71,7 +71,7 @@ type WorkspaceClient struct {
 	// is under active development and may change.
 	AgentKit agentkit.AgentKitInterface
 
-	// Transform and enrich data with AI on Databricks.
+	// Transform and enrich data with AI.
 	AiFunctions aifunctions.AiFunctionsInterface
 
 	// Govern AI workloads in Unity Catalog. This API manages the Unity Catalog

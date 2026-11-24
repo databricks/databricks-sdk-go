@@ -39,7 +39,11 @@ type AgentKitService interface {
 	CreateSessionStore(ctx context.Context, request CreateSessionStoreRequest) (*SessionStore, error)
 
 	// Deletes a memory entry by resource name. Returns `NOT_FOUND` when the
-	// entry does not exist in the caller's workspace.
+	// entry does not exist in the caller's workspace. The entry stops appearing
+	// in Get, List and Search. In a store that records memory history, the
+	// versions written before the delete, including their content, stay
+	// readable through `ListMemoryChanges` and `GetMemoryChange` to anyone who
+	// can read the store, until the store itself is deleted.
 	DeleteMemory(ctx context.Context, request DeleteManagedMemoryEntryRequest) error
 
 	// Deletes a memory store by resource name. Deleting a store also deletes

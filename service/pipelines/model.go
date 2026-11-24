@@ -212,7 +212,8 @@ type ClonePipelineRequest struct {
 	// uses classic compute configured through the `clusters` field. When
 	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
-	// Serverless compute ID specified by the user for serverless pipelines.
+	// Serverless compute ID specified by the user for serverless pipelines. Use
+	// compute_policy_id instead. Only one of these fields may be set.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
@@ -478,7 +479,8 @@ type CreatePipeline struct {
 	// uses classic compute configured through the `clusters` field. When
 	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
-	// Serverless compute ID specified by the user for serverless pipelines.
+	// Serverless compute ID specified by the user for serverless pipelines. Use
+	// compute_policy_id instead. Only one of these fields may be set.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
@@ -793,7 +795,8 @@ type EditPipeline struct {
 	// uses classic compute configured through the `clusters` field. When
 	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
-	// Serverless compute ID specified by the user for serverless pipelines.
+	// Serverless compute ID specified by the user for serverless pipelines. Use
+	// compute_policy_id instead. Only one of these fields may be set.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
@@ -1143,7 +1146,8 @@ type GetPipelineResponse struct {
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Publishing mode of the pipeline
 	EffectivePublishingMode PublishingMode `json:"effective_publishing_mode,omitempty"`
-	// Serverless compute ID resolved for the pipeline.
+	// Serverless compute ID resolved for the pipeline. For the equivalent
+	// compute policy ID, use effective_compute_policy_id.
 	EffectiveServerlessComputeId string `json:"effective_serverless_compute_id,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
@@ -3110,7 +3114,8 @@ type PipelineSpec struct {
 	// uses classic compute configured through the `clusters` field. When
 	// `true`, omit `clusters`; Photon is always enabled.
 	Serverless bool `json:"serverless,omitempty"`
-	// Serverless compute ID specified by the user for serverless pipelines.
+	// Serverless compute ID specified by the user for serverless pipelines. Use
+	// compute_policy_id instead. Only one of these fields may be set.
 	ServerlessComputeId string `json:"serverless_compute_id,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
@@ -3698,7 +3703,7 @@ type SchemaSpec struct {
 	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store tables in. Tables with the same
 	// name as the source tables are created in this destination schema. The
-	// pipeline fails If a table with the same name already exists.
+	// pipeline fails if a table with the same name already exists.
 	DestinationSchema string `json:"destination_schema"`
 	// Fanout options for multi-table routing from streaming sources. When set,
 	// records are routed to destination tables based on a per-record routing
@@ -4362,10 +4367,11 @@ func (f *TikTokAdsOptionsTikTokReportType) Type() string {
 	return "TikTokAdsOptionsTikTokReportType"
 }
 
-// Specifies how to transform binary data into structured data.
+// One step that transforms a column: either decodes data into structured data
+// (`format`) or reshapes an already-decoded column (`operation`).
 type Transformer struct {
 	AvroOptions *AvroTransformerOptions `json:"avro_options,omitempty"`
-	// Required: the wire format of the data.
+	// The format to decode the input column from.
 	Format TransformerFormat `json:"format,omitempty"`
 	// Optional input column to transform. When set, the transformer reads from
 	// this column instead of the default source column.

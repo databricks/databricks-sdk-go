@@ -660,7 +660,8 @@ func (s CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
 type CreateOboTokenRequest struct {
 	// Application ID of the service principal.
 	ApplicationId string `json:"application_id"`
-	// Whether to enable autoscoping for this token.
+	// Whether to enable autoscoping for this token. `disable_autoscoping`
+	// supersedes this field and is the one read when both are set.
 	AutoscopeEnabled bool `json:"autoscope_enabled,omitempty"`
 	// Comment that describes the purpose of the token.
 	Comment string `json:"comment,omitempty"`
@@ -754,6 +755,8 @@ func (s *CreatePrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
 type CreateTokenRequest struct {
 	// Whether to enable autoscoping for this token. When true, the token will
 	// automatically collect inferred API path scopes as it is used.
+	// `disable_autoscoping` supersedes this field and is the one read when both
+	// are set.
 	AutoscopeEnabled bool `json:"autoscope_enabled,omitempty"`
 	// Optional description to attach to the token.
 	Comment string `json:"comment,omitempty"`

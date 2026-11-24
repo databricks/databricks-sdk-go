@@ -362,6 +362,8 @@ const AiRuntimeTaskPriorityClassHigh AiRuntimeTaskPriorityClass = `HIGH`
 
 const AiRuntimeTaskPriorityClassNormal AiRuntimeTaskPriorityClass = `NORMAL`
 
+const AiRuntimeTaskPriorityClassPreemptable AiRuntimeTaskPriorityClass = `PREEMPTABLE`
+
 // String representation for [fmt.Print]
 func (f *AiRuntimeTaskPriorityClass) String() string {
 	return string(*f)
@@ -370,11 +372,11 @@ func (f *AiRuntimeTaskPriorityClass) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AiRuntimeTaskPriorityClass) Set(v string) error {
 	switch v {
-	case `HIGH`, `NORMAL`:
+	case `HIGH`, `NORMAL`, `PREEMPTABLE`:
 		*f = AiRuntimeTaskPriorityClass(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "HIGH", "NORMAL"`, v)
+		return fmt.Errorf(`value "%s" is not one of "HIGH", "NORMAL", "PREEMPTABLE"`, v)
 	}
 }
 
@@ -385,6 +387,7 @@ func (f *AiRuntimeTaskPriorityClass) Values() []AiRuntimeTaskPriorityClass {
 	return []AiRuntimeTaskPriorityClass{
 		AiRuntimeTaskPriorityClassHigh,
 		AiRuntimeTaskPriorityClassNormal,
+		AiRuntimeTaskPriorityClassPreemptable,
 	}
 }
 
@@ -2775,7 +2778,9 @@ type JobCompletionTriggerStateMonitoredJobState struct {
 	// may become stale while the trigger is paused or evaluation cannot access
 	// the upstream job.
 	IsDeleted bool `json:"is_deleted,omitempty"`
-	// The ID of the upstream job.
+	// The ID of the upstream job. For a job monitored by name, the ID of the
+	// job that the name last resolved to. Omitted until the name resolves to a
+	// job.
 	JobId string `json:"job_id,omitempty"`
 	// The completion time of the latest matching upstream run observed by the
 	// trigger.
@@ -4295,8 +4300,7 @@ type PythonOperatorTask struct {
 	// Fully qualified name of the main class or function. For example,
 	// `my_project.my_function` or `my_project.MyOperator`.
 	Main string `json:"main,omitempty"`
-	// An ordered list of task parameters. TODO(JOBS-30885): Add limits for
-	// parameters.
+	// An ordered list of task parameters.
 	Parameters []PythonOperatorTaskParameter `json:"parameters,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
