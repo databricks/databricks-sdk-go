@@ -1552,9 +1552,10 @@ func (s *UpdateDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
 type UpdateSyncedDatabaseTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
-	// Note that updating a synced database table is not yet supported.
+	// The synced database table and requested spec values.
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
-	// The list of fields to update. Setting this field is not yet supported.
+	// The list of fields to update. Updatable paths include
+	// spec.accelerated_sync and *.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 

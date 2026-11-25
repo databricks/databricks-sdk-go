@@ -37,7 +37,7 @@ func (c CredentialsProviderFn) SetHeaders(r *http.Request) error {
 // are already set.
 func FromCredentials(c auth.Credentials) CredentialsProvider {
 	return CredentialsProviderFn(func(r *http.Request) error {
-		headers, err := c.AuthHeaders(context.Background())
+		headers, err := c.AuthHeaders(r.Context())
 		if err != nil {
 			return err
 		}
@@ -78,7 +78,7 @@ type tsOAuthCredentialsProvider struct {
 }
 
 func (cp tsOAuthCredentialsProvider) SetHeaders(r *http.Request) error {
-	token, err := cp.ts.Token(context.Background())
+	token, err := cp.ts.Token(r.Context())
 	if err != nil {
 		return fmt.Errorf("error getting token: %w", err)
 	}

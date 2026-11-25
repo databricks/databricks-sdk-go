@@ -693,8 +693,7 @@ func (a *agentKitImpl) RevokeSessionStorePermission(ctx context.Context, request
 }
 
 // Searches memory entries by text query for one actor. Returns matching entries
-// and scores ranked by relevance; `view` controls whether each returned entry
-// includes content.
+// and scores ranked by relevance.
 func (a *agentKitImpl) SearchMemories(ctx context.Context, request SearchManagedMemoryEntriesRequest) listing.Iterator[ManagedMemoryEntrySearchResult] {
 
 	getNextPage := func(ctx context.Context, req SearchManagedMemoryEntriesRequest) (*SearchManagedMemoryEntriesResponse, error) {
@@ -720,8 +719,7 @@ func (a *agentKitImpl) SearchMemories(ctx context.Context, request SearchManaged
 }
 
 // Searches memory entries by text query for one actor. Returns matching entries
-// and scores ranked by relevance; `view` controls whether each returned entry
-// includes content.
+// and scores ranked by relevance.
 func (a *agentKitImpl) SearchMemoriesAll(ctx context.Context, request SearchManagedMemoryEntriesRequest) ([]ManagedMemoryEntrySearchResult, error) {
 	iterator := a.SearchMemories(ctx, request)
 	return listing.ToSlice[ManagedMemoryEntrySearchResult](ctx, iterator)

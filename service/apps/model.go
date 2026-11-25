@@ -33,7 +33,9 @@ type App struct {
 	// together with `compute_max_instances`.
 	ComputeMinInstances int `json:"compute_min_instances,omitempty"`
 	// Size of the compute instances the app runs on. Defaults to MEDIUM. Larger
-	// sizes provide more CPU and memory at a higher hourly cost. See
+	// sizes provide more CPU and memory at a higher hourly cost. Leave unset
+	// for an app in a space: apps in a space always run on space compute and
+	// reject any other size. See
 	// https://docs.databricks.com/aws/en/dev-tools/databricks-apps/compute-size.
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
 	// Status of the compute that runs the app.
@@ -1805,7 +1807,8 @@ type AsyncUpdateAppRequest struct {
 	AppName string `json:"-" url:"-"`
 	// Comma-separated names of the `app` fields to update, such as
 	// `description` or `resources`. A field named in the mask but absent from
-	// `app` is cleared, except `compute_size`, which resets to `MEDIUM`.
+	// `app` is cleared, except `compute_size`, which resets to `MEDIUM`. Sent
+	// in the request body together with `app`.
 	//
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -3160,7 +3163,7 @@ type UpdateSpaceRequest struct {
 	Space Space `json:"space"`
 	// Comma-separated names of the `space` fields to update, such as
 	// `description` or `resources`. A field named in the mask but absent from
-	// `space` is cleared.
+	// `space` is cleared. Sent as a query parameter, not in the `space` body.
 	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 

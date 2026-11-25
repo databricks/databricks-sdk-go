@@ -117,7 +117,8 @@ type AppsInterface interface {
 	// object.
 	GetPermissionsByAppName(ctx context.Context, appName string) (*AppPermissions, error)
 
-	// Retrieves information for the app space with the supplied name.
+	// Retrieves information for the app space with the supplied name. Spaces are
+	// identified by name, not by id.
 	GetSpace(ctx context.Context, request GetSpaceRequest) (*Space, error)
 
 	// Gets the status of an app space update operation.

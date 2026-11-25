@@ -30,7 +30,8 @@ type AppsService interface {
 	// Deletes the thumbnail for an app.
 	DeleteAppThumbnail(ctx context.Context, request DeleteAppThumbnailRequest) error
 
-	// Deletes an app space.
+	// Deletes the app space with the supplied name. Spaces are identified by
+	// name, not by id. The workspace's default space can't be deleted.
 	DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (*Operation, error)
 
 	// Creates an app deployment for the app with the supplied name. The call
@@ -57,7 +58,8 @@ type AppsService interface {
 	// root object.
 	GetPermissions(ctx context.Context, request GetAppPermissionsRequest) (*AppPermissions, error)
 
-	// Retrieves information for the app space with the supplied name.
+	// Retrieves information for the app space with the supplied name. Spaces
+	// are identified by name, not by id.
 	GetSpace(ctx context.Context, request GetSpaceRequest) (*Space, error)
 
 	// Gets the status of an app space update operation.
@@ -105,8 +107,10 @@ type AppsService interface {
 	// their root object.
 	UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error)
 
-	// Updates an app space. The update process is asynchronous and the status
-	// of the update can be checked with the GetSpaceOperation method.
+	// Updates the app space with the supplied name. Spaces are identified by
+	// name, not by id. The workspace's default space can't be updated. The
+	// update process is asynchronous and the status of the update can be
+	// checked with the GetSpaceOperation method.
 	UpdateSpace(ctx context.Context, request UpdateSpaceRequest) (*Operation, error)
 }
 

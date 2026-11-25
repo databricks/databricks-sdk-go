@@ -227,30 +227,17 @@ func (s *GenieAgentConfig) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-// The data a Genie Agent can access.
-type GenieAgentDataSources struct {
-	// Unity Catalog MCP connections, sorted by `mcp_connection`.
-	McpConnections []GenieAgentMcpConnection `json:"mcp_connections,omitempty"`
-	// Unity Catalog tables, views, and metric views, sorted by `identifier`.
-	Tables []GenieAgentTable `json:"tables,omitempty"`
-	// Unity Catalog volumes, sorted by `path`.
-	Volumes []GenieAgentVolume `json:"volumes,omitempty"`
-}
-
-func (s *GenieAgentDataSources) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
 // The definition of a Genie Agent.
 type GenieAgentDefinition struct {
 	// Benchmarks for evaluating the quality of the Genie Agent's answers.
 	Benchmarks *GenieAgentBenchmarks `json:"benchmarks,omitempty"`
 	// General settings of the Genie Agent.
 	Config *GenieAgentConfig `json:"config,omitempty"`
-	// The data the Genie Agent can access.
-	DataSources *GenieAgentDataSources `json:"data_sources,omitempty"`
 	// Instructions and SQL that guide how the Genie Agent answers questions.
 	Instructions *GenieAgentInstructions `json:"instructions,omitempty"`
+	// The resources the Genie Agent can use: data, SQL functions, connections,
+	// and sub-agents.
+	Resources *GenieAgentResources `json:"resources,omitempty"`
 }
 
 func (s *GenieAgentDefinition) UnmarshalJSON(b []byte) error {
@@ -288,12 +275,10 @@ type GenieAgentInstructions struct {
 	ExampleQuestionSqls []GenieAgentExampleQuestionSql `json:"example_question_sqls,omitempty"`
 	// Predefined joins between tables or metric views.
 	JoinSpecs []GenieAgentJoinSpec `json:"join_specs,omitempty"`
-	// Unity Catalog SQL functions the generated SQL may call.
-	SqlFunctions []GenieAgentSqlFunction `json:"sql_functions,omitempty"`
 	// Reusable SQL filters, expressions, and measures.
 	SqlSnippets *GenieAgentSqlSnippets `json:"sql_snippets,omitempty"`
-	// General text instructions. At most one text instruction is supported.
-	TextInstructions []GenieAgentTextInstruction `json:"text_instructions,omitempty"`
+	// The general text instruction.
+	TextInstruction *GenieAgentTextInstruction `json:"text_instruction,omitempty"`
 }
 
 func (s *GenieAgentInstructions) UnmarshalJSON(b []byte) error {
@@ -399,6 +384,23 @@ type GenieAgentMcpConnection struct {
 }
 
 func (s *GenieAgentMcpConnection) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+// The resources a Genie Agent can use.
+type GenieAgentResources struct {
+	// Unity Catalog MCP connections, sorted by `mcp_connection`.
+	McpConnections []GenieAgentMcpConnection `json:"mcp_connections,omitempty"`
+	// Unity Catalog SQL functions the generated SQL may call, sorted by `id`,
+	// then `identifier`.
+	SqlFunctions []GenieAgentSqlFunction `json:"sql_functions,omitempty"`
+	// Unity Catalog tables, views, and metric views, sorted by `identifier`.
+	Tables []GenieAgentTable `json:"tables,omitempty"`
+	// Unity Catalog volumes, sorted by `path`.
+	Volumes []GenieAgentVolume `json:"volumes,omitempty"`
+}
+
+func (s *GenieAgentResources) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
@@ -747,7 +749,7 @@ type UpdateGenieAgentRequest struct {
 	// the Genie Agent. `definition` is replaced as a whole.
 	//
 	// The one supported path inside `definition` is
-	// `definition.data_sources.sub_agents`, and only alongside `definition`.
+	// `definition.resources.sub_agents`, and only alongside `definition`.
 	// Naming it makes the sub-agent list exact, so an empty list detaches every
 	// sub-agent. Without it, including with `*`, an empty list keeps them.
 	//

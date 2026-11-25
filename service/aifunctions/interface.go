@@ -21,6 +21,12 @@ type AiFunctionsService interface {
 	// probability, or assign a score given a provided state. The AI Decide REST
 	// API has a default rate limit of 1,200 requests per minute per workspace.
 	// Contact your account team to request a higher limit.
+	//
+	// > **Note:** The v1 AI Decide syntax supporting strings and objects in
+	// `state` and objects and arrays in `instructions` will no longer be
+	// supported starting February 1, 2027. To use AI Decide, you must set
+	// `options.version` to `"2.0"`, pass an array of typed content objects to
+	// `state`, and a nonblank string to `instructions`.
 	AiDecide(ctx context.Context, request AiDecideRequest) (*AiDecideResponse, error)
 
 	// Extracts structured data from text and documents according to a provided
