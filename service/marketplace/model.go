@@ -28,6 +28,8 @@ func (s *AddExchangeForListingResponse) UnmarshalJSON(b []byte) error {
 
 type AssetType string
 
+const AssetTypeAssetTypeAgentSkill AssetType = `ASSET_TYPE_AGENT_SKILL`
+
 const AssetTypeAssetTypeApp AssetType = `ASSET_TYPE_APP`
 
 const AssetTypeAssetTypeDataTable AssetType = `ASSET_TYPE_DATA_TABLE`
@@ -37,6 +39,8 @@ const AssetTypeAssetTypeGitRepo AssetType = `ASSET_TYPE_GIT_REPO`
 const AssetTypeAssetTypeMcp AssetType = `ASSET_TYPE_MCP`
 
 const AssetTypeAssetTypeMedia AssetType = `ASSET_TYPE_MEDIA`
+
+const AssetTypeAssetTypeMetricView AssetType = `ASSET_TYPE_METRIC_VIEW`
 
 const AssetTypeAssetTypeModel AssetType = `ASSET_TYPE_MODEL`
 
@@ -52,11 +56,11 @@ func (f *AssetType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AssetType) Set(v string) error {
 	switch v {
-	case `ASSET_TYPE_APP`, `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MCP`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`, `ASSET_TYPE_PARTNER_INTEGRATION`:
+	case `ASSET_TYPE_AGENT_SKILL`, `ASSET_TYPE_APP`, `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MCP`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_METRIC_VIEW`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`, `ASSET_TYPE_PARTNER_INTEGRATION`:
 		*f = AssetType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_APP", "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MCP", "ASSET_TYPE_MEDIA", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK", "ASSET_TYPE_PARTNER_INTEGRATION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_AGENT_SKILL", "ASSET_TYPE_APP", "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MCP", "ASSET_TYPE_MEDIA", "ASSET_TYPE_METRIC_VIEW", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK", "ASSET_TYPE_PARTNER_INTEGRATION"`, v)
 	}
 }
 
@@ -65,11 +69,13 @@ func (f *AssetType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *AssetType) Values() []AssetType {
 	return []AssetType{
+		AssetTypeAssetTypeAgentSkill,
 		AssetTypeAssetTypeApp,
 		AssetTypeAssetTypeDataTable,
 		AssetTypeAssetTypeGitRepo,
 		AssetTypeAssetTypeMcp,
 		AssetTypeAssetTypeMedia,
+		AssetTypeAssetTypeMetricView,
 		AssetTypeAssetTypeModel,
 		AssetTypeAssetTypeNotebook,
 		AssetTypeAssetTypePartnerIntegration,

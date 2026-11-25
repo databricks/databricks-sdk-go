@@ -166,6 +166,8 @@
 //
 // - [genieagents.GenieAgentsAPI]: Genie provides a no-code experience for business users, powered by AI/BI.
 //
+// - [geniemigrate.GenieMigrateAPI]: Use the Genie Migrate API to create and manage migration projects and the source files to convert.
+//
 // - [workspace.GitCredentialsAPI]: Registers personal access token for Databricks to do operations on behalf of the user.
 //
 // - [compute.GlobalInitScriptsAPI]: The Global Init Scripts API enables Workspace administrators to configure global initialization scripts for their workspace.
@@ -424,6 +426,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/genieagents"
+	"github.com/databricks/databricks-sdk-go/service/geniemigrate"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -539,6 +542,7 @@ var (
 	_ *catalog.FunctionsAPI                               = nil
 	_ *dashboards.GenieAPI                                = nil
 	_ *genieagents.GenieAgentsAPI                         = nil
+	_ *geniemigrate.GenieMigrateAPI                       = nil
 	_ *workspace.GitCredentialsAPI                        = nil
 	_ *compute.GlobalInitScriptsAPI                       = nil
 	_ *catalog.GrantsAPI                                  = nil

@@ -46,9 +46,9 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		ccfg.EndpointParams = url.Values{"assume_group": {cfg.GroupID}}
 	}
 	ts := auth.TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
-		// Callers like CredentialsProvider.SetHeaders pass context.Background()
-		// rather than the actual context from the HTTP client. Because of this,
-		// the request would bypass the configured transport.
+		// Callers may pass a context that does not carry the refresh client's
+		// transport, for example a plain request context. Because of this, the
+		// request would bypass the configured transport.
 		//
 		// The following is a workaround to ensure the refresh client's
 		// transport is always used.

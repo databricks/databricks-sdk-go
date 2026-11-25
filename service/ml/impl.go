@@ -678,7 +678,7 @@ func (a *experimentsImpl) SearchLoggedModels(ctx context.Context, request Search
 
 // Searches for runs that satisfy expressions.
 //
-// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
+// Search expressions can use metric, param, and tag keys.
 func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) listing.Iterator[Run] {
 
 	getNextPage := func(ctx context.Context, req SearchRuns) (*SearchRunsResponse, error) {
@@ -705,7 +705,7 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) li
 
 // Searches for runs that satisfy expressions.
 //
-// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
+// Search expressions can use metric, param, and tag keys.
 func (a *experimentsImpl) SearchRunsAll(ctx context.Context, request SearchRuns) ([]Run, error) {
 	iterator := a.SearchRuns(ctx, request)
 	return listing.ToSlice[Run](ctx, iterator)

@@ -45,7 +45,9 @@ type JobsService interface {
 	// Deletes a non-active run. Returns an error if the run is active.
 	DeleteRun(ctx context.Context, request DeleteRun) error
 
-	// Export and retrieve the job run task.
+	// Export and retrieve the job run task. Only notebook task runs can be
+	// exported. For a multi-task job run, pass the `run_id` of the individual
+	// notebook task run rather than the ID of the job run.
 	ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error)
 
 	// Retrieves the details for a single job.

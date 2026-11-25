@@ -87,8 +87,8 @@ func (s AiClassifyResponseMetadata) MarshalJSON() ([]byte, error) {
 
 // ai_decide
 type AiDecideOptions struct {
-	// The function API version to invoke. If unset, version 1.0 is used.
-	// Supported versions: ["1.0"].
+	// Set to `"2.0"`. If unset, the deprecated version 1.0 is used during the
+	// [migration period](/api/ai-functions/v1#aidecide).
 	Version string `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -105,35 +105,33 @@ func (s AiDecideOptions) MarshalJSON() ([]byte, error) {
 type AiDecideRequest struct {
 	// Function options. Omitted fields fall back to their documented defaults.
 	Options *AiDecideOptions `json:"options,omitempty"`
-	// A JSON object mapping question IDs to their definitions. Each ID must
-	// contain non-whitespace text; its answer is returned with the same ID in
+	// A JSON object mapping up to 256 question IDs to their definitions. Each
+	// ID must be nonblank; its answer is returned with the same ID in
 	// `response.answers`.
 	//
 	// Each definition is an object with the required fields `type` and
 	// `instructions`. The `criteria` field is optional for the type `noul` but
 	// is required for the types `choice` and `score`.
 	//
-	// The `instructions` field describes the judgment to make and can be a
-	// string, object, or array. Use an object or array to include supporting
-	// context alongside the instructions.
+	// In AI Decide v2, `instructions` and each criteria description must be
+	// nonblank strings. Each question may contain at most 20,000 characters
+	// across its ID, instructions, and criteria.
 	//
 	// The `type` can be one of:
 	//
 	// - `choice`: Selects one option from a defined set. Requires `criteria` to
-	// be an object mapping 1 to 255 nonempty option names to descriptions. The
-	// criteria description can be a string, object, array, or null when the
-	// name needs no additional detail. For example:
+	// be an object mapping 1 to 255 nonblank option names to nonblank string
+	// descriptions. For example:
 	//
 	// ```json { "team": { "type": "choice", "instructions": "Which team should
 	// handle this ticket?", "criteria": { "billing": "Payments, charges, and
-	// refunds", "technical_support": null } } } ```
+	// refunds", "technical_support": "Product errors and troubleshooting" } } }
+	// ```
 	//
 	// - `noul`: Estimates the probability that the answer to a true-or-false
 	// question is true. `criteria` can take the fields `true` or `false`, or
-	// both, with descriptions that are strings, objects, or arrays. Omit
-	// `criteria` to use the question alone. The instructions or at least one
-	// criteria description must contain non-whitespace text, a nonempty object,
-	// or a nonempty array. For example, both of the following are valid:
+	// both, with nonblank string descriptions. Omit `criteria` to use the
+	// question alone. For example, both of the following are valid:
 	//
 	// ```json { "escalate": { "type": "noul", "instructions": "Does this ticket
 	// need escalation?", "criteria": { "true": "Suspected fraud or an exception
@@ -146,19 +144,30 @@ type AiDecideRequest struct {
 	// need escalation?" } } ```
 	//
 	// - `score`: Rates the state on an ordered scale. Requires `criteria` to be
-	// an array of 2 to 10 level descriptions, ordered from low to high.
-	// Descriptions must contain non-whitespace text, a nonempty object, or a
-	// nonempty array. Array positions define levels starting at 0. For example:
+	// an array of 2 to 10 unique, nonblank string descriptions, ordered from
+	// low to high. Array positions define levels starting at 0. For example:
 	//
 	// ```json { "urgency": { "type": "score", "instructions": "How urgent is
 	// this ticket?", "criteria": [ "Routine: can wait a few days",
 	// "Time-sensitive: needs attention today", "Critical: needs immediate
 	// action" ] } } ```
 	Questions json.RawMessage `json:"questions"`
-	// A string, JSON object, or array containing the content, related context,
-	// and examples needed to answer the provided questions. For example,
-	// provide a support message, a conversation, or records describing the
-	// current state of an application. All questions receive this same state.
+	// A nonempty array of typed content objects shared by all questions. Set
+	// `options.version` to `"2.0"` to use this format. Text and JSON content
+	// plus questions must fit within 32 KiB as compact UTF-8 JSON, excluding
+	// image parts.
+	//
+	// | type | Content field | Value | | --- | --- | --- | | `text` | `text` |
+	// A nonblank string. | | `json` | `data` | A JSON object or array. | |
+	// `image` | `image_url` | An inline base64 PNG or JPEG data URL:
+	// `data:image/png;base64,<base64-encoded image bytes>` or
+	// `data:image/jpeg;base64,<base64-encoded image bytes>`. HTTP URLs and file
+	// paths are not supported. Each image must be at most 4 MiB after base64
+	// decoding, with a resolution up to 1,568 × 1,568 pixels (or an equivalent
+	// pixel count). A request supports up to five images. Images are only
+	// supported in [select regions]. |
+	//
+	// [select regions]: https://docs.databricks.com/aws/en/resources/feature-region-support#ai-function-availability
 	State json.RawMessage `json:"state"`
 }
 
@@ -189,13 +198,17 @@ type AiDecideResponse struct {
 	// ```json { "answers": { "escalate": { "type": "noul", "probability": 0.8 }
 	// } } ```
 	//
-	// - `score`: score is the probability-weighted mean of the zero-based level
-	// indices. It can fall between levels, from 0 to the number of levels minus
-	// 1. `probabilities` maps each level index to its probability, and `legend`
-	// maps each index to its original description. Both maps use string keys
-	// such as "0", "1", and "2". `confidence` is a number from 0 to 1
-	// indicating how well the state supports the assessment. The
-	// `probabilities` values sum to 1. For example:
+	// - `score`: score is a numeric rating on the zero-based scale defined by
+	// `criteria`. It can fall between levels, from 0 to the number of levels
+	// minus 1. `probabilities` maps each level index to its probability, and
+	// `legend` maps each index to its original description. Both maps use
+	// string keys such as "0", "1", and "2". `confidence` is a number from 0 to
+	// 1 indicating how well the state supports the assessment. The
+	// `probabilities` values sum to 1. Depending on the model, `score` may be
+	// truncated and `probabilities` rounded to 2 decimal places while
+	// preserving a sum of 1, so the score can differ slightly from the
+	// probability-weighted mean computed from the returned probabilities. For
+	// example:
 	//
 	// ```json { "answers": { "urgency": { "type": "score", "score": 1.6,
 	// "probabilities": { "0": 0.1, "1": 0.2, "2": 0.7 }, "legend": { "0":

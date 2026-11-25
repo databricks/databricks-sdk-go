@@ -4479,9 +4479,8 @@ func (s NccAzureServiceEndpointRule) MarshalJSON() ([]byte, error) {
 }
 
 type NccEgressConfig struct {
-	// The network connectivity rules that are applied by default without
-	// resource specific configurations. You can find the stable network
-	// information of your serverless compute resources here.
+	// Deprecated. This field is retained for compatibility with existing
+	// clients. Avoid using it in new integrations.
 	DefaultRules *NccEgressDefaultRules `json:"default_rules,omitempty"`
 	// The network connectivity rules that configured for each destinations.
 	// These rules override default rules.
@@ -4506,10 +4505,11 @@ func (s *NccEgressDefaultRules) UnmarshalJSON(b []byte) error {
 // Target rule controls the egress rules that are dedicated to specific
 // resources.
 type NccEgressTargetRules struct {
-	// AWS private endpoint rule controls the AWS private endpoint based egress
-	// rules.
+	// Deprecated. This field is not supported anymore and kept purely for
+	// interface stability.
 	AwsPrivateEndpointRules []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule `json:"aws_private_endpoint_rules,omitempty"`
-
+	// Deprecated. This field is not supported anymore and kept purely for
+	// interface stability.
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule `json:"azure_private_endpoint_rules,omitempty"`
 }
 
