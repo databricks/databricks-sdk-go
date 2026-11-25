@@ -26,6 +26,77 @@ func TestAPIError_IsRetriable_transientRegexMatches(t *testing.T) {
 	}
 }
 
+func TestAPIError_IsRetriable_tooManyRequests(t *testing.T) {
+	testCases := []struct {
+		name          string
+		body          string
+		retryAfter    string
+		wantRetriable bool
+	}{
+		{
+			name: "permanent resource exhaustion",
+			body: `{
+				"error_code": "RESOURCE_EXHAUSTED",
+				"message": "Account abc has reached the maximum of 200 network policies."
+			}`,
+			wantRetriable: false,
+		},
+		{
+			name: "resource exhaustion with RetryInfo",
+			body: `{
+				"error_code": "RESOURCE_EXHAUSTED",
+				"message": "Request quota exhausted.",
+				"details": [{
+					"@type": "type.googleapis.com/google.rpc.RetryInfo",
+					"retry_delay": "1s"
+				}]
+			}`,
+			wantRetriable: true,
+		},
+		{
+			name: "resource exhaustion with Retry-After",
+			body: `{
+				"error_code": "RESOURCE_EXHAUSTED",
+				"message": "Request quota exhausted."
+			}`,
+			retryAfter:    "30",
+			wantRetriable: true,
+		},
+		{
+			name:          "status code",
+			body:          `{"message": "Too many requests."}`,
+			wantRetriable: true,
+		},
+		{
+			name: "request limit error code",
+			body: `{
+				"error_code": "REQUEST_LIMIT_EXCEEDED",
+				"message": "Request limit exceeded."
+			}`,
+			wantRetriable: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			resp := makeTestReponseWrapper(http.StatusTooManyRequests, tc.body)
+			if tc.retryAfter != "" {
+				resp.Response.Header = http.Header{"Retry-After": []string{tc.retryAfter}}
+			}
+			err := GetAPIError(context.Background(), resp)
+			var apiError *APIError
+			if !errors.As(err, &apiError) {
+				t.Fatalf("expected *APIError, got %T", err)
+			}
+
+			got := apiError.IsRetriable(context.Background())
+			if got != tc.wantRetriable {
+				t.Errorf("IsRetriable() = %t, want %t", got, tc.wantRetriable)
+			}
+		})
+	}
+}
+
 func makeTestReponseWrapper(statusCode int, resp string) common.ResponseWrapper {
 	return common.ResponseWrapper{
 		Response: &http.Response{
