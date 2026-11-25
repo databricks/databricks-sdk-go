@@ -68,9 +68,8 @@ type AgentKitService interface {
 	// Forks a session into an independent top-level copy.
 	ForkSession(ctx context.Context, request ForkSessionRequest) (*ForkSessionResponse, error)
 
-	// Retrieves a memory entry by resource name. `view` controls whether the
-	// response includes memory content. Returns `NOT_FOUND` when the entry does
-	// not exist in the caller's workspace.
+	// Retrieves a memory entry by resource name. Returns `NOT_FOUND` when the
+	// entry does not exist in the caller's workspace.
 	GetMemory(ctx context.Context, request GetManagedMemoryEntryRequest) (*ManagedMemoryEntry, error)
 
 	// Retrieves a memory store by resource name. Returns `NOT_FOUND` when the
@@ -139,8 +138,7 @@ type AgentKitService interface {
 	RevokeSessionStorePermission(ctx context.Context, request RevokeSessionStorePermissionRequest) (*RevokeSessionStorePermissionResponse, error)
 
 	// Searches memory entries by text query for one actor. Returns matching
-	// entries and scores ranked by relevance; `view` controls whether each
-	// returned entry includes content.
+	// entries and scores ranked by relevance.
 	SearchMemories(ctx context.Context, request SearchManagedMemoryEntriesRequest) (*SearchManagedMemoryEntriesResponse, error)
 
 	// Updates selected mutable fields on a memory entry. Identity fields are

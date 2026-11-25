@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/environments"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/genieagents"
+	"github.com/databricks/databricks-sdk-go/service/geniemigrate"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -477,6 +478,10 @@ type WorkspaceClient struct {
 	// requires at least CAN USE permission on a Pro or Serverless SQL
 	// warehouse. Also, Databricks Assistant must be enabled.
 	GenieAgents genieagents.GenieAgentsInterface
+
+	// Use the Genie Migrate API to create and manage migration projects and the
+	// source files to convert.
+	GenieMigrate geniemigrate.GenieMigrateInterface
 
 	// Registers personal access token for Databricks to do operations on behalf
 	// of the user.
@@ -1599,6 +1604,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Functions:                           catalog.NewFunctions(databricksClient),
 		Genie:                               dashboards.NewGenie(databricksClient),
 		GenieAgents:                         genieagents.NewGenieAgents(databricksClient),
+		GenieMigrate:                        geniemigrate.NewGenieMigrate(databricksClient),
 		GitCredentials:                      workspace.NewGitCredentials(databricksClient),
 		GlobalInitScripts:                   compute.NewGlobalInitScripts(databricksClient),
 		Grants:                              catalog.NewGrants(databricksClient),

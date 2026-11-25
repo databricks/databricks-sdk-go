@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/environments"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/genieagents"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/geniemigrate"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
@@ -121,6 +122,7 @@ func NewMockWorkspaceClient(t interface {
 			Functions:                           catalog.NewMockFunctionsInterface(t),
 			Genie:                               dashboards.NewMockGenieInterface(t),
 			GenieAgents:                         genieagents.NewMockGenieAgentsInterface(t),
+			GenieMigrate:                        geniemigrate.NewMockGenieMigrateInterface(t),
 			GitCredentials:                      workspace.NewMockGitCredentialsInterface(t),
 			GlobalInitScripts:                   compute.NewMockGlobalInitScriptsInterface(t),
 			Grants:                              catalog.NewMockGrantsInterface(t),
@@ -838,6 +840,14 @@ func (m *MockWorkspaceClient) GetMockGenieAgentsAPI() *genieagents.MockGenieAgen
 	api, ok := m.WorkspaceClient.GenieAgents.(*genieagents.MockGenieAgentsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected GenieAgents to be *genieagents.MockGenieAgentsInterface, actual was %T", m.WorkspaceClient.GenieAgents))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockGenieMigrateAPI() *geniemigrate.MockGenieMigrateInterface {
+	api, ok := m.WorkspaceClient.GenieMigrate.(*geniemigrate.MockGenieMigrateInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected GenieMigrate to be *geniemigrate.MockGenieMigrateInterface, actual was %T", m.WorkspaceClient.GenieMigrate))
 	}
 	return api
 }

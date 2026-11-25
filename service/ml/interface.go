@@ -37,8 +37,7 @@ type ExperimentsService interface {
 
 	// Creates a new run within an experiment. A run is usually a single
 	// execution of a machine learning or data ETL pipeline. MLflow uses runs to
-	// track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag` associated
-	// with a single execution.
+	// track the params, metrics, and tags associated with a single execution.
 	CreateRun(ctx context.Context, request CreateRun) (*CreateRunResponse, error)
 
 	// Marks an experiment and associated metadata, runs, metrics, params, and
@@ -234,7 +233,7 @@ type ExperimentsService interface {
 
 	// Searches for runs that satisfy expressions.
 	//
-	// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
+	// Search expressions can use metric, param, and tag keys.
 	SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
 
 	// Sets a tag on an experiment. Experiment tags are metadata that can be

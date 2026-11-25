@@ -58,8 +58,9 @@ func (s *ClearSessionItemsResponse) UnmarshalJSON(b []byte) error {
 type CreateManagedMemoryEntryRequest struct {
 	// The memory entry to create.
 	ManagedMemoryEntry ManagedMemoryEntry `json:"managed_memory_entry"`
-	// Optional caller-selected memory entry ID. The service generates an ID
-	// when omitted.
+	// Caller-selected memory entry ID. It must contain 1-255 letters, digits,
+	// hyphens, or underscores, and it becomes the last segment of the entry's
+	// `name`. The service generates a UUID when it is omitted.
 	ManagedMemoryEntryId string `json:"-" url:"managed_memory_entry_id,omitempty"`
 	// Memory store that will contain the entry, in the form
 	// `memory-stores/{managed_memory_store_id}`.
@@ -367,8 +368,9 @@ type ListManagedMemoryEntriesRequest struct {
 	// Maximum number of entries to return. The service may return fewer entries
 	// than requested. Defaults to 10; must be between 1 and 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Opaque pagination token from a previous ListManagedMemoryEntries
-	// response.
+	// Opaque pagination token, taken from the `next_page_token` of a previous
+	// response. The other request parameters must match the request that
+	// returned the token.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Memory store whose entries are listed, in the form
 	// `memory-stores/{managed_memory_store_id}`.
@@ -397,7 +399,8 @@ func (s ListManagedMemoryEntriesRequest) MarshalJSON() ([]byte, error) {
 
 // Response containing memory entries.
 type ListManagedMemoryEntriesResponse struct {
-	// Memory entries matching the request and selected response view.
+	// Memory entries matching the request and selected response view, ordered
+	// by creation time, oldest first.
 	ManagedMemoryEntries []ManagedMemoryEntry `json:"managed_memory_entries,omitempty"`
 	// Opaque pagination token. This field is omitted when there are no more
 	// results.
@@ -661,7 +664,9 @@ func (s ListSessionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// A workspace-scoped entry in a memory store.
+// A workspace-scoped entry in a memory store. Each entry belongs to one actor
+// and, optionally, one session, and its `path` is unique within that actor and
+// session.
 type ManagedMemoryEntry struct {
 	// Customer-provided identifier for the actor whose memory this entry
 	// represents.
@@ -1013,7 +1018,8 @@ type SearchManagedMemoryEntriesRequest struct {
 	// entries within the actor partition. The prefix must begin with `/` and
 	// must not contain empty, `.` or `..` segments.
 	PathPrefix string `json:"path_prefix,omitempty"`
-	// Free-form search query.
+	// Free-form search query. Entries are ranked by how well their `content`
+	// and `description` match it.
 	Query string `json:"query"`
 	// Deprecated: the service will ignore this filter. Until then, when set,
 	// only entries with this exact `session_id` are searched, and

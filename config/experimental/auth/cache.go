@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -20,9 +21,14 @@ const maxAsyncRefreshLeadTime = 20 * time.Minute
 // blocking call.
 const asyncRefreshRetryBackoff = 1 * time.Minute
 
-// Maximum time an async refresh is allowed to run before the child context
-// is canceled.
-const asyncRefreshTimeout = 1 * time.Minute
+// Maximum time a token refresh is allowed to run before its context is
+// canceled. It applies to blocking and async refreshes alike, since neither is
+// tied to the context of the caller that started it.
+const refreshTimeout = 1 * time.Minute
+
+// Allow a replacement for one timed-out source call. Some providers ignore
+// cancellation and can keep running after the cache releases their waiters.
+const maxRunningRefreshes = 2
 
 // computeAsyncRefreshLeadTime calculates how long before expiry async
 // refreshes may start for a token with the given remaining TTL.
@@ -66,11 +72,16 @@ func WithAsyncRefresh(b bool) Option {
 // By default, the cache will refresh tokens asynchronously a few minutes before
 // they expire.
 //
-// The token cache is safe for concurrent use by multiple goroutines and will
-// guarantee that only one token refresh is triggered at a time.
+// The token cache is safe for concurrent use by multiple goroutines and
+// shares one refresh attempt among callers.
+//
+// Each caller waits only while its context is live. A refresh already in
+// progress can continue and populate the cache using its own one-minute deadline.
+// After the deadline, the cache can start a new attempt even if the token
+// source is still handling the canceled attempt.
 //
 // The token cache does not take care of retries in case the token source
-// returns and error; it is the responsibility of the provided token source to
+// returns an error; it is the responsibility of the provided token source to
 // handle retries appropriately.
 //
 // If the TokenSource is already a cached token source (obtained by calling this
@@ -118,9 +129,11 @@ type cachedTokenSource struct {
 	mu          sync.Mutex
 	cachedToken *oauth2.Token
 
-	// Indicates that an async refresh is in progress. This is used to prevent
-	// multiple async refreshes from being triggered at the same time.
-	isRefreshing bool
+	// The active token refresh, if any. Callers waiting for a token share it.
+	inflight *tokenRefresh
+
+	// Includes calls whose waiters were released at the refresh deadline.
+	runningRefreshes int
 
 	timeNow func() time.Time // for testing
 }
@@ -185,56 +198,119 @@ func (cts *cachedTokenSource) asyncToken(ctx context.Context) (*oauth2.Token, er
 	return t, nil
 }
 
+// tokenRefresh records a refresh that callers can wait on. Its result is set
+// before done closes.
+type tokenRefresh struct {
+	done      chan struct{}
+	proactive bool
+	token     *oauth2.Token
+	err       error
+}
+
+func (r *tokenRefresh) wait(ctx context.Context) error {
+	select {
+	case <-r.done:
+		return nil
+	case <-ctx.Done():
+		return fmt.Errorf("waiting for token refresh: %w", ctx.Err())
+	}
+}
+
 func (cts *cachedTokenSource) blockingToken(ctx context.Context) (*oauth2.Token, error) {
-	cts.mu.Lock()
+	for {
+		cts.mu.Lock()
+		if !cts.tokenExpired() {
+			t := cts.cachedToken
+			cts.mu.Unlock()
+			return t, nil
+		}
+		if err := ctx.Err(); err != nil {
+			cts.mu.Unlock()
+			return nil, fmt.Errorf("waiting for token refresh: %w", err)
+		}
+		r := cts.inflight
+		if r == nil {
+			if cts.runningRefreshes >= maxRunningRefreshes {
+				cts.mu.Unlock()
+				return nil, fmt.Errorf("previous token refreshes are still running: %w", context.DeadlineExceeded)
+			}
+			r = cts.startRefresh(ctx, false)
+		}
+		cts.mu.Unlock()
 
-	// The lock is kept for the entire operation to ensure that only one
-	// blockingToken operation is running at a time.
-	defer cts.mu.Unlock()
-
-	// It's possible that the token got refreshed (either by a blockingToken or
-	// an asyncRefresh call) while this particular call was waiting to acquire
-	// the mutex. This check avoids refreshing the token again in such cases.
-	if !cts.tokenExpired() {
-		return cts.cachedToken, nil
+		if err := r.wait(ctx); err != nil {
+			return nil, err
+		}
+		if !r.proactive {
+			return r.token, r.err
+		}
+		// A proactive attempt can fail or yield a token that the cache
+		// discards. Recheck the cache before deciding to refresh again.
 	}
+}
 
-	t, err := cts.tokenSource.Token(ctx)
-	if err != nil {
-		return nil, err
+// startRefresh starts a token refresh in the background and records it as the
+// refresh in flight. The caller must hold cts.mu.
+//
+// The refresh runs on a context detached from ctx, so it is not canceled when
+// the caller that started it gives up. Its result is cached for the next caller.
+func (cts *cachedTokenSource) startRefresh(ctx context.Context, proactive bool) *tokenRefresh {
+	r := &tokenRefresh{
+		done:      make(chan struct{}),
+		proactive: proactive,
 	}
-	cts.cachedToken = t
-	cts.updateNextAsyncRefresh()
-	return t, nil
+	cts.inflight = r
+	cts.runningRefreshes++
+	refreshCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), refreshTimeout)
+	finish := func(t *oauth2.Token, err error, returned bool) {
+		cts.mu.Lock()
+		defer cts.mu.Unlock()
+		if returned {
+			cts.runningRefreshes--
+		}
+		// A result that arrives after the deadline must not replace a later token.
+		if cts.inflight != r {
+			return
+		}
+		defer close(r.done)
+		cts.inflight = nil
+		if ctxErr := refreshCtx.Err(); ctxErr != nil {
+			t, err = nil, ctxErr
+		}
+		r.token, r.err = t, err
+		if err != nil {
+			if proactive {
+				cts.nextAsyncRefresh = cts.timeNow().Add(asyncRefreshRetryBackoff)
+			}
+			return
+		}
+		// A proactive attempt must not replace the cached token with an older one.
+		if proactive && cts.cachedToken != nil && !cts.cachedToken.Expiry.IsZero() && t.Expiry.Before(cts.cachedToken.Expiry) {
+			return
+		}
+		cts.cachedToken = t
+		cts.updateNextAsyncRefresh()
+	}
+	// Some token sources cannot honor cancellation. Release the shared
+	// attempt at the deadline even if the source hasn't returned.
+	stop := context.AfterFunc(refreshCtx, func() {
+		finish(nil, refreshCtx.Err(), false)
+	})
+	go func() {
+		defer cancel()
+		defer stop()
+		t, err := cts.tokenSource.Token(refreshCtx)
+		finish(t, err, true)
+	}()
+	return r
 }
 
 func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 	cts.mu.Lock()
 	defer cts.mu.Unlock()
-	if cts.isRefreshing || cts.tokenExpired() || !cts.canRefreshAsync() {
+	if ctx.Err() != nil || cts.inflight != nil || cts.runningRefreshes >= maxRunningRefreshes ||
+		cts.tokenExpired() || !cts.canRefreshAsync() {
 		return
 	}
-
-	cts.isRefreshing = true
-	go func() {
-		refreshCtx, cancel := context.WithTimeout(ctx, asyncRefreshTimeout)
-		defer cancel()
-
-		t, err := cts.tokenSource.Token(refreshCtx)
-
-		cts.mu.Lock()
-		defer cts.mu.Unlock()
-		cts.isRefreshing = false
-		if err != nil {
-			cts.nextAsyncRefresh = cts.timeNow().Add(asyncRefreshRetryBackoff)
-			return
-		}
-		// Skip the update if a blocking refresh cached a newer token while
-		// this async refresh was in flight.
-		if cts.cachedToken != nil && !cts.cachedToken.Expiry.IsZero() && t.Expiry.Before(cts.cachedToken.Expiry) {
-			return
-		}
-		cts.cachedToken = t
-		cts.updateNextAsyncRefresh()
-	}()
+	cts.startRefresh(ctx, true)
 }

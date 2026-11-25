@@ -1,5 +1,20 @@
 # Version changelog
 
+## Release v0.204.0 (2026-11-25)
+
+### Bug Fixes
+* Callers waiting for a cached OAuth token can cancel their wait through the request context. A refresh already in progress can continue in the background and populate the cache. Blocking and proactive refresh attempts have a one-minute deadline.
+
+### API Changes
+* Add [geniemigrate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/geniemigrate) package.
+* Add [w.GenieMigrate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/geniemigrate#GenieMigrateAPI) workspace-level service.
+* Add `Resources` field for [genieagents.GenieAgentDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/genieagents#GenieAgentDefinition).
+* Add `TextInstruction` field for [genieagents.GenieAgentInstructions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/genieagents#GenieAgentInstructions).
+* Add `AssetTypeMetricView` and `AssetTypeAgentSkill` enum values for [marketplace.AssetType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#AssetType).
+* [Breaking] Remove `DataSources` field for [genieagents.GenieAgentDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/genieagents#GenieAgentDefinition).
+* [Breaking] Remove `SqlFunctions` and `TextInstructions` fields for [genieagents.GenieAgentInstructions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/genieagents#GenieAgentInstructions).
+* [Breaking] Remove `Notifications` field for [ml.MaterializationSet](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializationSet).
+
 ## Release v0.203.0 (2026-11-24)
 
 ### API Changes

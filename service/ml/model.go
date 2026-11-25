@@ -4872,11 +4872,6 @@ type MaterializationSet struct {
 	// `UpdateMaterializationSet` request with `materialized_features` or `*` in
 	// its update mask deletes omitted materialized features.
 	MaterializedFeatures []MaterializedFeature `json:"materialized_features,omitempty"`
-	// Notification configuration around the materialization job or pipeline
-	// lifecycle. They are applied to every job and pipeline that materializes a
-	// feature in this set. Features which are materialized in the same pipeline
-	// will share the same notification.
-	Notifications *MaterializationNotifications `json:"notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5217,7 +5212,8 @@ type Metric struct {
 	RunId string `json:"run_id,omitempty"`
 	// The step at which the metric was logged.
 	Step int64 `json:"step,omitempty"`
-	// The timestamp at which the metric was recorded.
+	// Time at which the metric was recorded, as a Unix timestamp in
+	// milliseconds.
 	Timestamp int64 `json:"timestamp,omitempty"`
 	// The value of the metric.
 	Value float64 `json:"value,omitempty"`
@@ -6727,16 +6723,15 @@ func (s *RunData) UnmarshalJSON(b []byte) error {
 
 // Metadata of a single run.
 type RunInfo struct {
-	// URI of the directory where artifacts should be uploaded. This can be a
-	// local path (starting with "/"), or a distributed file system (DFS) path,
-	// like ``s3://bucket/directory`` or ``dbfs:/my/directory``. If not set, the
-	// local ``./mlruns`` directory is chosen.
+	// URI of the directory where the run's artifacts are stored. MLflow sets it
+	// when the run is created, as the `artifact_location` of the run's
+	// experiment followed by `/<run_id>/artifacts`.
 	ArtifactUri string `json:"artifact_uri,omitempty"`
 	// Unix timestamp of when the run ended in milliseconds.
 	EndTime int64 `json:"end_time,omitempty"`
-	// The experiment ID.
+	// ID of the experiment that the run belongs to.
 	ExperimentId string `json:"experiment_id,omitempty"`
-	// Current life cycle stage of the experiment : OneOf("active", "deleted")
+	// Current life cycle stage of the run: `active` or `deleted`.
 	LifecycleStage string `json:"lifecycle_stage,omitempty"`
 	// Unique identifier for the run.
 	RunId string `json:"run_id,omitempty"`
@@ -6814,7 +6809,7 @@ func (f *RunInfoStatus) Type() string {
 
 // Run inputs.
 type RunInputs struct {
-	// Run metrics.
+	// Datasets used as inputs to the run.
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
 	// Model inputs to the Run.
 	ModelInputs []ModelInput `json:"model_inputs,omitempty"`

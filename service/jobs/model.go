@@ -678,7 +678,8 @@ type BaseRun struct {
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	JobId int64 `json:"job_id,omitempty"`
-	// Job-level parameters used in the run
+	// Job-level parameters used in the run. Each entry carries the parameter's
+	// name, its default, and the value used in this run.
 	JobParameters []JobParameter `json:"job_parameters,omitempty"`
 	// ID of the job run that this run belongs to. For legacy and single-task
 	// job runs the field is populated with the job run ID. For task runs, the
@@ -728,7 +729,8 @@ type BaseRun struct {
 	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
-
+	// The current status of the run. Use this field instead of the deprecated
+	// `state` field.
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run results. If
@@ -738,7 +740,8 @@ type BaseRun struct {
 	Tasks []RunTask `json:"tasks,omitempty"`
 
 	Trigger TriggerType `json:"trigger,omitempty"`
-
+	// Additional details about the trigger that fired the run. The fields that
+	// are populated depend on the value of `trigger`.
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 	// ID of the deployment version that produced the job when this run was
 	// created. Identifies a specific snapshot of the deployment in the
@@ -776,7 +779,7 @@ func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
 }
 
 type CancelRun struct {
-	// This field is required.
+	// The canonical identifier of the run to cancel.
 	RunId int64 `json:"run_id"`
 }
 
@@ -2752,6 +2755,8 @@ func (s *JobCompletionTriggerConfigurationMonitoredJob) UnmarshalJSON(b []byte) 
 // Contains the immutable set of upstream completions that triggered the run, in
 // configured jobs order
 type JobCompletionTriggerRunInfoDetails struct {
+	// The upstream job completions that fired the trigger, in the order in
+	// which the jobs are configured on the trigger.
 	CompletedJobs []CompletedJob `json:"completed_jobs,omitempty"`
 }
 
@@ -3739,8 +3744,8 @@ type ListRunsRequest struct {
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
 	JobId int64 `json:"-" url:"job_id,omitempty"`
-	// The number of runs to return. This value must be greater than 0 and less
-	// than 25. The default value is 20. If a request specifies a limit of 0,
+	// The number of runs to return. This value must be greater than 0 and at
+	// most 25. The default value is 20. If a request specifies a limit of 0,
 	// the service instead uses the maximum limit.
 	Limit int `json:"-" url:"limit,omitempty"`
 	// The offset of the first run to return, relative to the most recent run.
@@ -4458,16 +4463,20 @@ type RepairHistoryItem struct {
 	// `COST_OPTIMIZED`: Enables lower job costs by optimizing compute for your
 	// selected target duration time. Must provide a duration target.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
-	// The end time of the (repaired) run.
+	// The end time of this repair history item in epoch milliseconds
+	// (milliseconds since 1/1/1970 UTC).
 	EndTime int64 `json:"end_time,omitempty"`
 	// The ID of the repair. Only returned for the items that represent a repair
 	// in `repair_history`.
 	Id int64 `json:"id,omitempty"`
-	// The start time of the (repaired) run.
+	// The start time of this repair history item in epoch milliseconds
+	// (milliseconds since 1/1/1970 UTC).
 	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
-
+	// The status of the run at the end of this repair history item, or its
+	// current status for the latest item. Use this field instead of the
+	// deprecated `state` field.
 	Status *RunStatus `json:"status,omitempty"`
 	// The run IDs of the task runs that ran as part of this repair history
 	// item.
@@ -4556,8 +4565,8 @@ type RepairRun struct {
 	//
 	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	JarParams []string `json:"jar_params,omitempty"`
-	// Job-level parameters used in the run. for example `"param":
-	// "overriding_val"`
+	// Job-level parameters used in the run, for example `"param":
+	// "overriding_val"`.
 	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// The ID of the latest repair. This parameter is not required when
 	// repairing a run for the first time, but must be provided on subsequent
@@ -4700,8 +4709,11 @@ func (s *ResetJob) UnmarshalJSON(b []byte) error {
 }
 
 type ResolvedConditionTaskValues struct {
+	// The left operand of the condition with dynamic value references replaced
+	// by their concrete values.
 	Left string `json:"left,omitempty"`
-
+	// The right operand of the condition with dynamic value references replaced
+	// by their concrete values.
 	Right string `json:"right,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4716,6 +4728,8 @@ func (s ResolvedConditionTaskValues) MarshalJSON() ([]byte, error) {
 }
 
 type ResolvedDbtTaskValues struct {
+	// The dbt commands with dynamic value references replaced by their concrete
+	// values.
 	Commands []string `json:"commands,omitempty"`
 }
 
@@ -4724,6 +4738,8 @@ func (s *ResolvedDbtTaskValues) UnmarshalJSON(b []byte) error {
 }
 
 type ResolvedNotebookTaskValues struct {
+	// The notebook parameters with dynamic value references replaced by their
+	// concrete values.
 	BaseParameters map[string]string `json:"base_parameters,omitempty"`
 }
 
@@ -4732,6 +4748,8 @@ func (s *ResolvedNotebookTaskValues) UnmarshalJSON(b []byte) error {
 }
 
 type ResolvedParamPairValues struct {
+	// The query parameters with dynamic value references replaced by their
+	// concrete values.
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
@@ -4750,8 +4768,11 @@ func (s *ResolvedPipelineTaskValues) UnmarshalJSON(b []byte) error {
 }
 
 type ResolvedPythonWheelTaskValues struct {
+	// The named parameters with dynamic value references replaced by their
+	// concrete values.
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
-
+	// The positional parameters with dynamic value references replaced by their
+	// concrete values.
 	Parameters []string `json:"parameters,omitempty"`
 }
 
@@ -4760,6 +4781,8 @@ func (s *ResolvedPythonWheelTaskValues) UnmarshalJSON(b []byte) error {
 }
 
 type ResolvedRunJobTaskValues struct {
+	// The job-level parameters passed to the triggered job with dynamic value
+	// references replaced by their concrete values.
 	JobParameters map[string]string `json:"job_parameters,omitempty"`
 
 	Parameters map[string]string `json:"parameters,omitempty"`
@@ -4770,6 +4793,8 @@ func (s *ResolvedRunJobTaskValues) UnmarshalJSON(b []byte) error {
 }
 
 type ResolvedStringParamsValues struct {
+	// The parameters passed to the main class with dynamic value references
+	// replaced by their concrete values.
 	Parameters []string `json:"parameters,omitempty"`
 }
 
@@ -4785,27 +4810,27 @@ type ResolvedValues struct {
 	// `{{tasks.<key>.values.<name>}}` references substituted to concrete values
 	// before submission to the training service.
 	AiRuntimeTask *ResolvedValuesAiRuntimeTaskResolvedValues `json:"ai_runtime_task,omitempty"`
-
+	// Resolved operands of a condition task.
 	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
-
+	// Resolved commands of a dbt task.
 	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
-
+	// Resolved parameters of a notebook task.
 	NotebookTask *ResolvedNotebookTaskValues `json:"notebook_task,omitempty"`
-
+	// Resolved parameters of a pipeline task.
 	PipelineTask *ResolvedPipelineTaskValues `json:"pipeline_task,omitempty"`
-
+	// Resolved parameters of a Python wheel task.
 	PythonWheelTask *ResolvedPythonWheelTaskValues `json:"python_wheel_task,omitempty"`
-
+	// Resolved parameters of a Run Job task.
 	RunJobTask *ResolvedRunJobTaskValues `json:"run_job_task,omitempty"`
 
 	SimulationTask *ResolvedParamPairValues `json:"simulation_task,omitempty"`
-
+	// Resolved parameters of a JAR task.
 	SparkJarTask *ResolvedStringParamsValues `json:"spark_jar_task,omitempty"`
-
+	// Resolved parameters of a Python script task.
 	SparkPythonTask *ResolvedStringParamsValues `json:"spark_python_task,omitempty"`
-
+	// Resolved parameters of a spark-submit task.
 	SparkSubmitTask *ResolvedStringParamsValues `json:"spark_submit_task,omitempty"`
-
+	// Resolved parameters of a SQL task.
 	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
 }
 
@@ -4930,7 +4955,8 @@ type Run struct {
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	JobId int64 `json:"job_id,omitempty"`
-	// Job-level parameters used in the run
+	// Job-level parameters used in the run. Each entry carries the parameter's
+	// name, its default, and the value used in this run.
 	JobParameters []JobParameter `json:"job_parameters,omitempty"`
 	// ID of the job run that this run belongs to. For legacy and single-task
 	// job runs the field is populated with the job run ID. For task runs, the
@@ -4982,7 +5008,8 @@ type Run struct {
 	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
-
+	// The current status of the run. Use this field instead of the deprecated
+	// `state` field.
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run results. If
@@ -4992,7 +5019,8 @@ type Run struct {
 	Tasks []RunTask `json:"tasks,omitempty"`
 
 	Trigger TriggerType `json:"trigger,omitempty"`
-
+	// Additional details about the trigger that fired the run. The fields that
+	// are populated depend on the value of `trigger`.
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 	// ID of the deployment version that produced the job when this run was
 	// created. Identifies a specific snapshot of the deployment in the
@@ -6030,7 +6058,7 @@ type RunTask struct {
 	RunIf RunIf `json:"run_if,omitempty"`
 	// The task triggers another job when the `run_job_task` field is present.
 	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
-
+	// The URL to the detail page of the task run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
@@ -6059,7 +6087,8 @@ type RunTask struct {
 	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
-
+	// The current status of the task run. Use this field instead of the
+	// deprecated `state` field.
 	Status *RunStatus `json:"status,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
